@@ -1,0 +1,148 @@
+{
+  "title": "Initialisation Complète Projet AI-KIDO",
+  "description": "Crée automatiquement un projet AI-KIDO avec toute la structure, tables de vérité, et personas selon la méthodologie officielle",
+  "version": "1.0.0",
+  "steps": [
+    {
+      "id": "project_brief",
+      "title": "1. Brief du Projet",
+      "prompt": "[RÔLE] Expert Méthodologie AI-KIDO\n\n[CONTEXTE]\nNous allons initialiser un nouveau projet selon la méthodologie AI-KIDO officielle.\n\n[TÂCHE]\nFournissez un brief complet du projet que vous souhaitez créer:\n\n1. Nom du projet\n2. Description de l'objectif principal (2-3 phrases)\n3. Domaine métier (ex: finance, santé, e-commerce)\n4. Problématiques principales à résoudre\n5. Utilisateurs cibles\n\nCes informations serviront de base pour générer l'ensemble de la structure AI-KIDO.\n\n[FORMAT]\nRépondez sous forme de texte structuré par points.",
+      "requireUserInput": true,
+      "userInputTitle": "Brief du projet",
+      "next": "tech_stack"
+    },
+    {
+      "id": "tech_stack",
+      "title": "2. Stack Technique",
+      "prompt": "[RÔLE] Architecte Technique\n\n[CONTEXTE]\nProjet: {{project_brief}}\n\n[TÂCHE]\nDécrivez la stack technique que vous souhaitez utiliser pour ce projet:\n\n1. Langages de programmation\n2. Frameworks frontend/backend\n3. Base(s) de données\n4. Infrastructure/Cloud\n5. Outils DevOps\n6. Autres technologies spécifiques\n\nCes informations permettront de générer des tables de vérité techniques précises et des personas adaptés.\n\n[FORMAT]\nRépondez sous forme de liste structurée.",
+      "requireUserInput": true,
+      "userInputTitle": "Stack technique",
+      "next": "personas_identification"
+    },
+    {
+      "id": "personas_identification",
+      "title": "3. Identification des Personas",
+      "prompt": "[RÔLE] Expert en Méthodologie AI-KIDO\n\n[CONTEXTE]\nProjet: {{project_brief}}\nStack technique: {{tech_stack}}\n\n[TÂCHE]\nIdentifiez les personas clés nécessaires pour ce projet, en fonction du domaine métier et de la stack technique.\n\nPour chaque rôle, précisez:\n- Expertise principale\n- Responsabilités dans le projet\n- Connaissances spécifiques requises\n\n[FORMAT]\nListe structurée des personas avec leurs caractéristiques.",
+      "next": "research_tech_info"
+    },
+    {
+      "id": "research_tech_info",
+      "title": "4. Recherche Informations Techniques",
+      "prompt": "[RÔLE] Chercheur Technique Senior\n\n[CONTEXTE]\nProjet: {{project_brief}}\nStack technique: {{tech_stack}}\n\n[TÂCHE]\nRecherchez et synthétisez les informations techniques essentielles sur la stack mentionnée:\n\n1. Meilleures pratiques actuelles pour chaque technologie\n2. Patterns d'architecture recommandés\n3. Standards de code et conventions\n4. Bibliothèques et outils essentiels\n5. Limitations connues et solutions alternatives\n\nRecherchez ces informations comme si vous consultiez la documentation officielle, les ressources communautaires et les articles techniques récents.\n\n[FORMAT]\nSynthèse organisée par technologie avec références aux sources d'information.",
+      "next": "research_domain_info"
+    },
+    {
+      "id": "research_domain_info",
+      "title": "5. Recherche Informations Métier",
+      "prompt": "[RÔLE] Expert Domaine Métier\n\n[CONTEXTE]\nProjet: {{project_brief}}\nDomaine: [extrait du brief]\n\n[TÂCHE]\nRecherchez et synthétisez les informations essentielles sur le domaine métier du projet:\n\n1. Terminologie métier spécifique (glossaire)\n2. Processus métier standards dans ce domaine\n3. Contraintes réglementaires ou de conformité\n4. Tendances actuelles et évolutions attendues\n5. Défis typiques et solutions courantes\n\nRecherchez ces informations comme si vous consultiez des publications sectorielles, études de marché et ressources spécialisées.\n\n[FORMAT]\nSynthèse structurée du domaine métier, incluant un mini-glossaire et des processus clés.",
+      "next": "create_directory_structure"
+    },
+    {
+      "id": "create_directory_structure",
+      "title": "6. Création Structure de Répertoires",
+      "prompt": "[RÔLE] Architecte Système AI-KIDO\n\n[CONTEXTE]\nNous allons maintenant créer la structure de répertoires AI-KIDO conforme à la méthodologie officielle.\n\n[TÂCHE]\nGénérez les commandes shell exactes pour créer la structure complète de répertoires AI-KIDO:\n\n```bash\nmkdir -p prompts/gen/{concepts,techniques,personas,use_cases}\nmkdir -p prompts/hard_points\nmkdir -p prompts/spec/connaissances\n```\n\nConfirmez également la commande pour configurer le .gitignore approprié:\n\n```bash\necho \"/prompts/spec/\" >> .gitignore\n```\n\n[FORMAT]\nCommandes shell prêtes à être exécutées, avec confirmation de leur objectif.",
+      "next": "create_main_index"
+    },
+    {
+      "id": "create_main_index",
+      "title": "7. Création Index Principal",
+      "prompt": "[RÔLE] Architecte Documentation AI-KIDO\n\n[CONTEXTE]\nProjet: {{project_brief}}\nStructure de répertoires créée.\n\n[TÂCHE]\nGénérez le contenu complet du fichier index.md principal pour le projet, qui sera placé à la racine du répertoire /prompts/gen/.\n\nCe fichier doit contenir:\n1. Présentation du projet et objectif d'AI-KIDO\n2. Structure de navigation claire vers les sous-répertoires\n3. Instructions d'utilisation pour les LLMs\n4. Mécanisme d'activation des connaissances personnelles\n5. Principes directeurs du projet\n\nReproduisez fidèlement la structure recommandée dans la méthodologie AI-KIDO officielle, en l'adaptant au projet spécifique.\n\n[FORMAT]\nContenu markdown complet du fichier index.md, prêt à être utilisé.",
+      "next": "create_secondary_indexes"
+    },
+    {
+      "id": "create_secondary_indexes",
+      "title": "8. Création Index Secondaires",
+      "prompt": "[RÔLE] Architecte Documentation AI-KIDO\n\n[CONTEXTE]\nProjet: {{project_brief}}\nIndex principal créé: {{create_main_index}}\n\n[TÂCHE]\nGénérez le contenu des index secondaires pour chaque sous-répertoire de la structure AI-KIDO:\n\n1. /prompts/gen/concepts/index.md\n2. /prompts/gen/techniques/index.md\n3. /prompts/gen/personas/index.md\n4. /prompts/gen/use_cases/index.md\n\nChaque index secondaire doit:\n- Présenter le contenu de la section\n- Fournir des liens vers les fichiers spécifiques (à créer ultérieurement)\n- Respecter la structure recommandée dans la méthodologie AI-KIDO\n\n[FORMAT]\nContenu markdown complet pour chacun des quatre index secondaires, clairement séparés.",
+      "next": "create_personas"
+    },
+    {
+      "id": "create_personas",
+      "title": "9. Création des Personas",
+      "prompt": "[RÔLE] Expert en Conception de Personas AI-KIDO\n\n[CONTEXTE]\nProjet: {{project_brief}}\nStack technique: {{tech_stack}}\nPersonas identifiés: {{personas_identification}}\nInformations techniques: {{research_tech_info}}\nInformations métier: {{research_domain_info}}\n\n[TÂCHE]\nGénérez des personas AI-KIDO complets pour chaque rôle identifié précédemment. Chaque persona doit:\n\n1. Être expert dans son domaine spécifique\n2. Avoir une expertise adaptée à la stack technique du projet\n3. Posséder des connaissances métier pertinentes\n4. Suivre la structure officielle des personas AI-KIDO\n\nPour chaque persona, créez un fichier markdown complet à placer dans /prompts/gen/personas/\n\n[FORMAT]\nContenu markdown complet pour chaque persona, avec nom de fichier suggéré (ex: expert_backend.md, architecte_systeme.md, etc.).",
+      "next": "create_concept_tables"
+    },
+    {
+      "id": "create_concept_tables",
+      "title": "10. Création Tables de Vérité Concepts",
+      "prompt": "[RÔLE] Expert en Tables de Vérité AI-KIDO\n\n[CONTEXTE]\nProjet: {{project_brief}}\nStack technique: {{tech_stack}}\nInformations techniques: {{research_tech_info}}\nInformations métier: {{research_domain_info}}\n\n[TÂCHE]\nGénérez les tables de vérité fondamentales pour le répertoire concepts, incluant au minimum:\n\n1. Modèle de domaine (domain_model.md)\n2. Architecture système (system_architecture.md)\n3. Principes techniques (technical_principles.md)\n4. Glossaire métier (business_glossary.md)\n5. Standards de code (code_standards.md)\n\nChaque table doit suivre strictement le format AI-KIDO:\n- En-tête avec méta-informations (version, date, statut)\n- Vue d'ensemble\n- Sections structurées\n- Exemples concrets adaptés au projet\n- Relations avec d'autres tables\n\n[FORMAT]\nContenu markdown complet pour chaque table de vérité, clairement séparé et identifié.",
+      "next": "create_technique_tables"
+    },
+    {
+      "id": "create_technique_tables",
+      "title": "11. Création Tables de Vérité Techniques",
+      "prompt": "[RÔLE] Expert Technique AI-KIDO\n\n[CONTEXTE]\nProjet: {{project_brief}}\nStack technique: {{tech_stack}}\nInformations techniques: {{research_tech_info}}\nTables de concepts: {{create_concept_tables}}\n\n[TÂCHE]\nGénérez les tables de vérité techniques pour le répertoire techniques, incluant au minimum:\n\n1. Patterns de conception (design_patterns.md)\n2. Pratiques de test (testing_practices.md)\n3. CI/CD et déploiement (ci_cd_deployment.md)\n4. Sécurité et performances (security_performance.md)\n5. API et intégrations (api_integration.md)\n\nChaque table doit:\n- Référencer les concepts appropriés des tables précédentes\n- Inclure des exemples de code pertinents pour la stack technique\n- Fournir des directives claires d'implémentation\n- Référencer les meilleures pratiques actuelles\n\n[FORMAT]\nContenu markdown complet pour chaque table technique, clairement séparé et identifié.",
+      "next": "create_usecase_tables_choice"
+    },
+    {
+      "id": "create_usecase_tables_choice",
+      "title": "12. Choix pour les Cas d'Usage",
+      "prompt": "Souhaitez-vous créer des tables de vérité pour les cas d'usage métier?\n\nCes tables sont particulièrement utiles pour documenter:\n- Les scénarios utilisateurs principaux\n- Les flux de travail métier\n- Les règles métier et validation\n- Les intégrations externes\n\nSi votre projet est plutôt technique ou si vous préférez définir ces cas d'usage plus tard, vous pouvez sauter cette étape.",
+      "requireUserInput": true,
+      "userInputTitle": "Votre choix (oui/non)",
+      "next": "determine_next_step"
+    },
+    {
+      "id": "determine_next_step",
+      "title": "Détermination prochaine étape",
+      "prompt": "[RÔLE] Assistant de workflow\n\n[CONTEXTE]\nUtilisateur a répondu: {{create_usecase_tables_choice}}\n\n[TÂCHE]\nDétermine si l'utilisateur souhaite créer des tables de cas d'usage.\n\n[FORMAT]\nRetourne simplement soit \"create_usecase_tables\" soit \"create_improvement_rules\" sans autre texte.",
+      "next": "branch_based_on_choice"
+    },
+    {
+      "id": "branch_based_on_choice",
+      "title": "Transition conditionnelle",
+      "prompt": "Traitement de votre réponse...",
+      "conditionalNext": {
+        "create_usecase_tables": "create_usecase_tables",
+        "create_improvement_rules": "create_improvement_rules",
+        "default": "create_improvement_rules"
+      }
+    },
+    {
+      "id": "create_usecase_tables",
+      "title": "12a. Création Tables de Vérité Cas d'Usage",
+      "prompt": "[RÔLE] Analyste Métier AI-KIDO\n\n[CONTEXTE]\nProjet: {{project_brief}}\nDomaine métier: [extrait du brief]\nInformations métier: {{research_domain_info}}\nGlossaire: [référence à la table pertinente]\n\n[TÂCHE]\nGénérez les tables de vérité pour les cas d'usage métier dans le répertoire use_cases, incluant au minimum:\n\n1. Scénarios utilisateurs principaux (user_scenarios.md)\n2. Flux de travail métier (business_workflows.md)\n3. Règles métier et validation (business_rules.md)\n4. Intégrations externes (external_integrations.md)\n\nChaque table doit:\n- Utiliser la terminologie exacte du glossaire métier\n- Décrire des scénarios réalistes pour le domaine spécifique\n- Inclure des diagrammes ou représentations visuelles (format texte ou markdown)\n- Établir des connexions avec les autres tables\n\n[FORMAT]\nContenu markdown complet pour chaque table de cas d'usage, clairement séparé et identifié.",
+      "next": "create_improvement_rules"
+    },
+    {
+      "id": "create_improvement_rules",
+      "title": "13. Création Règles d'Amélioration Continue",
+      "prompt": "[RÔLE] Expert en Amélioration Continue AI-KIDO\n\n[CONTEXTE]\nProjet: {{project_brief}}\nEnsemble complet de tables de vérité créées aux étapes précédentes.\n\n[TÂCHE]\nGénérez des règles d'amélioration continue (Kokyu) pour maintenir et enrichir le système AI-KIDO au fil du temps. Créez le fichier hard_points/improvement_rules.md qui doit inclure:\n\n1. Processus de mise à jour des tables de vérité\n2. Mécanismes de détection du glissement sémantique\n3. Cycle de feedback et d'apprentissage des erreurs\n4. Règles d'optimisation de la structure arborescente\n5. Critères de promotion en hard points\n\nCes règles doivent être concrètes, actionnables et alignées avec les principes fondamentaux d'AI-KIDO.\n\n[FORMAT]\nContenu markdown complet du fichier improvement_rules.md, structuré avec des sections claires.",
+      "next": "create_optimization_rules"
+    },
+    {
+      "id": "create_optimization_rules",
+      "title": "14. Création Règles d'Optimisation",
+      "prompt": "[RÔLE] Expert en Optimisation AI-KIDO\n\n[CONTEXTE]\nProjet: {{project_brief}}\nRègles d'amélioration: {{create_improvement_rules}}\n\n[TÂCHE]\nGénérez des règles d'optimisation pour maximiser l'efficacité du système AI-KIDO. Créez le fichier hard_points/optimization_rules.md qui doit inclure:\n\n1. Stratégies d'optimisation de la densité sémantique\n2. Techniques de chaînage optimal entre tables de vérité\n3. Méthodes de réduction de la redondance\n4. Procédures d'archivage et de refactoring\n5. Métriques d'évaluation de la qualité\n\nCes règles doivent permettre de maintenir un système AI-KIDO efficace et performant même avec l'accroissement de la complexité.\n\n[FORMAT]\nContenu markdown complet du fichier optimization_rules.md, structuré avec sections claires et exemples.",
+      "next": "create_roocode_personas"
+    },
+    {
+      "id": "create_roocode_personas",
+      "title": "15. Création Personas Roo-Code",
+      "prompt": "[RÔLE] Expert en Intégration RooCode\n\n[CONTEXTE]\nProjet: {{project_brief}}\nPersonas AI-KIDO: {{create_personas}}\n\n[TÂCHE]\nTransformez chaque persona AI-KIDO en configuration de persona Roo-Code (lire absolument @https://docs.roocode.com/features/custom-modes) utilisable directement dans l'environnement RooCode. Pour chaque persona:\n\n1. Créez un fichier JSON de configuration selon le format Roo-Code (@https://docs.roocode.com/features/custom-modes)\n2. Définissez les paramètres spécifiques de la documentation , mais tout en intgrant cela en références aux tables de vérités\n3. Intégrez les références aux tables de vérité pertinentes\n4. Établissez les permissions et capacités\n\nLes personas doivent être compatibles avec le format de mode personnalisé de Roo-Code.\n\n[FORMAT]\nFichiers JSON complets pour chaque persona, prêts à être utilisés dans la configuration Roo-Code, avec indications sur leur emplacement et utilisation.",
+      "next": "create_first_prompt"
+    },
+    {
+      "id": "create_first_prompt",
+      "title": "16. Création Premier Prompt Complet",
+      "prompt": "[RÔLE] Expert en Prompting AI-KIDO\n\n[CONTEXTE]\nProjet: {{project_brief}}\nL'ensemble de la structure AI-KIDO a été créée, incluant les tables de vérité, personas et règles.\n\n[TÂCHE]\nGénérez le premier prompt complet selon la méthodologie AI-KIDO, qui permettra d'initialiser l'interaction avec le système. Ce prompt doit:\n\n1. Présenter le projet et son contexte\n2. Référencer les tables de vérité pertinentes\n3. Indiquer comment naviguer dans le système\n4. Démontrer l'interaction avec les personas\n5. Établir les attentes et contraintes\n\nCe premier prompt servira de modèle pour toutes les interactions futures.\n\n[FORMAT]\nPrompt complet, prêt à être utilisé, formaté selon les meilleures pratiques AI-KIDO.",
+      "next": "verification_prompt"
+    },
+    {
+      "id": "verification_prompt",
+      "title": "17. Prompt de Vérification",
+      "prompt": "[RÔLE] Expert en Assurance Qualité AI-KIDO\n\n[CONTEXTE]\nL'initialisation du projet AI-KIDO est presque terminée.\n\n[TÂCHE]\nGénérez un prompt de vérification qui permettra de valider l'exhaustivité et la qualité du système AI-KIDO créé. Ce prompt doit permettre de vérifier:\n\n1. La présence et qualité de toutes les tables de vérité\n2. La cohérence entre les différentes tables\n3. L'application correcte des principes AI-KIDO\n4. L'exhaustivité des personas et cas d'usage\n5. La fonctionnalité des mécanismes d'amélioration et d'optimisation\n\nCe prompt de vérification est une étape critique pour s'assurer que rien n'a été omis.\n\n[FORMAT]\nPrompt de vérification complet, structuré par catégories d'éléments à vérifier.",
+      "next": "final_summary"
+    },
+    {
+      "id": "final_summary",
+      "title": "18. Résumé Final et Documentation",
+      "prompt": "[RÔLE] Chef de Projet AI-KIDO\n\n[CONTEXTE]\nL'ensemble du processus d'initialisation AI-KIDO est maintenant terminé.\n\n[TÂCHE]\nGénérez un résumé complet de tout ce qui a été créé, incluant:\n\n1. Vue d'ensemble de la structure mise en place\n2. Inventaire complet des fichiers et tables de vérité\n3. Guide d'utilisation du système pour différents types d'utilisateurs\n4. Recommandations pour les prochaines étapes\n5. Documentation du processus d'initialisation pour référence future\n\nCe résumé servira de documentation de référence pour tous les utilisateurs du système.\n\n[FORMAT]\nDocument markdown complet et structuré, avec sections et sous-sections clairement définies.",
+      "requireUserValidation": true
+    }
+  ],
+  "configuration": {
+    "validateOnCompletion": true,
+    "rollbackOnError": true,
+    "generateLogs": true
+  }
+}

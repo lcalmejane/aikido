@@ -1,0 +1,132 @@
+{
+  "title": "Revue de Code AI-KIDO",
+  "description": "Analyse et amélioration du code basées sur les tables de vérité",
+  "version": "1.0.0",
+  "steps": [
+    {
+      "id": "tables_exploration",
+      "title": "1. Exploration des Tables de Vérité",
+      "prompt": "[RÔLE] Chef d'équipe technique\n\n[CONTEXTE]\nNous allons effectuer une revue de code basée sur nos standards.\n\n[TÂCHE]\nExplorez les tables de vérité existantes dans prompts/gen/index.md pour identifier les critères pertinents.\n\n[FORMAT]\nListe des critères extraits des tables de vérité",
+      "requireUserInput": true,
+      "userInputTitle": "Critères extraits des tables de vérité",
+      "next": "review_type_selection"
+    },
+    {
+      "id": "review_type_selection",
+      "title": "2. Sélection du Type de Revue",
+      "prompt": "[RÔLE] Reviewer technique\n\n[CONTEXTE]\nCritères: {{tables_exploration}}\n\n[TÂCHE]\nSélectionnez le type de revue à effectuer (ex: architecture, performance, sécurité, etc.).\n\n[FORMAT]\nType de revue sélectionné",
+      "requireUserInput": true,
+      "userInputTitle": "Type de revue",
+      "next": "criteria_modification"
+    },
+    {
+      "id": "criteria_modification",
+      "title": "3. Modification des Critères",
+      "prompt": "[RÔLE] Expert technique\n\n[CONTEXTE]\nCritères: {{tables_exploration}}\nType de revue: {{review_type_selection}}\n\n[TÂCHE]\nAjoutez ou modifiez les critères de revue si nécessaire.\n\n[FORMAT]\nListe des critères modifiés",
+      "requireUserInput": true,
+      "userInputTitle": "Critères modifiés",
+      "next": "context_analysis"
+    },
+    {
+      "id": "context_analysis",
+      "title": "4. Analyse du Contexte",
+      "prompt": "[RÔLE] Expert technique\n\n[CONTEXTE]\nCritères: {{criteria_modification}}\nCode: {{code_selection}}\n\n[TÂCHE]\nAnalyser les standards et le contexte technique du code.\n\n[FORMAT]\nSynthèse des critères d'évaluation et du contexte technique",
+      "next": "focus_areas"
+    },
+    {
+      "id": "focus_areas",
+      "title": "5. Définition des Points Focaux",
+      "prompt": "Quels aspects souhaitez-vous prioriser dans cette revue?\n\n- Architecture et structure\n- Qualité et maintenabilité\n- Performance et optimisation\n- Sécurité et robustesse\n- Documentation et lisibilité\n- Autre (précisez)\n\nVous pouvez sélectionner plusieurs aspects et ajouter des précisions.",
+      "requireUserInput": true,
+      "userInputTitle": "Aspects prioritaires",
+      "next": "review_depth"
+    },
+    {
+      "id": "review_depth",
+      "title": "6. Profondeur d'Analyse",
+      "prompt": "Quel niveau de détail souhaitez-vous pour cette revue?\n\n1. Aperçu rapide (problèmes majeurs uniquement)\n2. Standard (équilibre entre profondeur et concision)\n3. Approfondi (analyse exhaustive avec suggestions détaillées)\n4. Expert (incluant analyse de patterns et refactoring)",
+      "requireUserInput": true,
+      "userInputTitle": "Niveau de détail (1-4)",
+      "next": "detailed_analysis"
+    },
+    {
+      "id": "detailed_analysis",
+      "title": "7. Analyse Détaillée",
+      "prompt": "[RÔLE] Analyste technique senior\n\n[CONTEXTE]\nCritères: {{context_analysis}}\nCode: {{code_selection}}\nPoints focaux: {{focus_areas}}\nProfondeur: {{review_depth}}\n\n[TÂCHE]\nAnalyser le code selon les critères établis et la profondeur demandée.\n\n[FORMAT]\nRapport d'analyse structuré avec preuves et références",
+      "next": "recommendations_generation"
+    },
+    {
+      "id": "recommendations_generation",
+      "title": "8. Génération des Recommandations",
+      "prompt": "[RÔLE] Mentor technique\n\n[CONTEXTE]\nAnalyse: {{detailed_analysis}}\n\n[TÂCHE]\nProposer des améliorations concrètes et actionnables, priorisées par impact.\n\n[FORMAT]\nRecommandations structurées avec exemples de code et justifications",
+      "next": "code_examples"
+    },
+    {
+      "id": "code_examples",
+      "title": "9. Exemples d'Implémentation?",
+      "prompt": "Souhaitez-vous des exemples concrets de code amélioré pour les problèmes identifiés?\n\n1. Oui, pour tous les problèmes\n2. Oui, uniquement pour les problèmes critiques\n3. Non, les descriptions suffisent",
+      "requireUserInput": true,
+      "userInputTitle": "Besoin d'exemples de code (1-3)",
+      "next": "determine_examples_path"
+    },
+    {
+      "id": "determine_examples_path",
+      "title": "Détermination du chemin d'exemples",
+      "prompt": "[RÔLE] Assistant de workflow\n\n[CONTEXTE]\nChoix de l'utilisateur: {{code_examples}}\n\n[TÂCHE]\nDéterminer l'étape suivante.\n\n[FORMAT]\nRetourner simplement: \"examples_all\", \"examples_critical\" ou \"learning_resources\"",
+      "next": "branch_examples"
+    },
+    {
+      "id": "branch_examples",
+      "title": "Branchement vers exemples",
+      "prompt": "Traitement du choix...",
+      "conditionalNext": {
+        "examples_all": "examples_all",
+        "examples_critical": "examples_critical",
+        "learning_resources": "learning_resources",
+        "default": "learning_resources"
+      }
+    },
+    {
+      "id": "examples_all",
+      "title": "9a. Exemples Complets",
+      "prompt": "[RÔLE] Développeur senior\n\n[CONTEXTE]\nRecommandations: {{recommendations_generation}}\n\n[TÂCHE]\nFournir des exemples de code amélioré pour tous les problèmes identifiés.\n\n[FORMAT]\nExemples de code avant/après avec explications",
+      "next": "learning_resources"
+    },
+    {
+      "id": "examples_critical",
+      "title": "9b. Exemples Critiques",
+      "prompt": "[RÔLE] Développeur senior\n\n[CONTEXTE]\nRecommandations: {{recommendations_generation}}\n\n[TÂCHE]\nFournir des exemples de code amélioré uniquement pour les problèmes critiques.\n\n[FORMAT]\nExemples de code avant/après avec explications pour les problèmes prioritaires",
+      "next": "learning_resources"
+    },
+    {
+      "id": "learning_resources",
+      "title": "10. Ressources d'Apprentissage",
+      "prompt": "[RÔLE] Formateur technique\n\n[CONTEXTE]\nAnalyse: {{detailed_analysis}}\nRecommandations: {{recommendations_generation}}\n\n[TÂCHE]\nSuggérer des ressources d'apprentissage pertinentes pour approfondir les concepts identifiés.\n\n[FORMAT]\nListe de ressources organisées par thème avec brèves descriptions",
+      "next": "generate_summary"
+    },
+    {
+      "id": "generate_summary",
+      "title": "11. Synthèse de la Revue",
+      "prompt": "[RÔLE] Architecte technique\n\n[CONTEXTE]\nEnsemble de l'analyse et des recommandations\n\n[TÂCHE]\nRésumer les points clés de la revue, les améliorations prioritaires et l'impact attendu.\n\n[FORMAT]\nRésumé exécutif structuré avec points d'action priorisés",
+      "next": "feedback_request"
+    },
+    {
+      "id": "feedback_request",
+      "title": "12. Votre Avis",
+      "prompt": "Voici le résumé de la revue de code:\n\n{{generate_summary}}\n\nCette revue a-t-elle répondu à vos attentes? Y a-t-il des aspects que vous souhaiteriez approfondir?",
+      "requireUserInput": true,
+      "userInputTitle": "Feedback sur la revue",
+      "next": "follow_up"
+    },
+    {
+      "id": "follow_up",
+      "title": "13. Recommandations Complémentaires",
+      "prompt": "[RÔLE] Coach technique\n\n[CONTEXTE]\nRevue complète et feedback: {{feedback_request}}\n\n[TÂCHE]\nFournir des conseils supplémentaires basés sur le feedback et proposer les prochaines étapes.\n\n[FORMAT]\nRecommandations personnalisées et plan d'action",
+      "requireUserValidation": true
+    }
+  ],
+  "configuration": {
+    "validateOnCompletion": true,
+    "rollbackOnError": true
+  }
+}
