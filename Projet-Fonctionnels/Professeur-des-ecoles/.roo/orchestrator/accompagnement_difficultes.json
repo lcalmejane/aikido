@@ -1,0 +1,64 @@
+{
+  "workflow_id": "WF_DIFF_001",
+  "name": "Accompagnement des élèves en difficulté",
+  "description": "Assistance pour l'identification et le suivi des élèves en difficulté d'apprentissage",
+  "inputs": {
+    "niveau": {
+      "description": "Niveau de la classe",
+      "type": "string",
+      "required": true
+    },
+    "difficulte": {
+      "description": "Type de difficulté principale observée",
+      "type": "string",
+      "required": true
+    },
+    "contexte": {
+      "description": "Contexte de la classe et de l'élève",
+      "type": "string",
+      "required": false
+    }
+  },
+  "steps": [
+    {
+      "id": "etape1",
+      "name": "Identification",
+      "mode": "prof-cycle2",
+      "task_template": "<new_task>\n<mode>prof-cycle2</mode>\n<message>\nJ'observe des difficultés d'apprentissage chez un ou plusieurs élèves de ma classe de {{niveau}}.\n\nDifficulté principale observée: {{difficulte}}\nContexte: {{contexte}}\n\nPouvez-vous m'aider à:\n1. Observer et documenter précisément ces difficultés\n2. Identifier les situations problématiques\n3. Évaluer les compétences concernées\n</message>\n</new_task>",
+      "completion_template": "<attempt_completion>\n<result>\n[RÉSULTAT DE L'ÉTAPE D'IDENTIFICATION]\n</result>\n</attempt_completion>"
+    },
+    {
+      "id": "etape2",
+      "name": "Analyse",
+      "mode": "psychologue-scolaire",
+      "task_template": "<new_task>\n<mode>psychologue-scolaire</mode>\n<message>\nJe cherche à comprendre les difficultés d'apprentissage observées chez un ou plusieurs élèves de {{niveau}}.\n\nVoici les observations réalisées:\n{{etape1.result}}\n\nPouvez-vous m'aider à:\n1. Réaliser un bilan des difficultés\n2. Identifier les causes possibles\n3. Évaluer l'impact sur les apprentissages\n</message>\n</new_task>",
+      "completion_template": "<attempt_completion>\n<result>\n[RÉSULTAT DE L'ÉTAPE D'ANALYSE]\n</result>\n</attempt_completion>"
+    },
+    {
+      "id": "etape3",
+      "name": "Stratégie",
+      "mode": "expert-differenciation",
+      "task_template": "<new_task>\n<mode>expert-differenciation</mode>\n<message>\nJe dois mettre en place une stratégie d'accompagnement pour des élèves de {{niveau}} rencontrant des difficultés.\n\nVoici les éléments dont je dispose:\n- Observations: {{etape1.result}}\n- Analyse psychologique: {{etape2.result}}\n\nPouvez-vous m'aider à:\n1. Définir des objectifs adaptés\n2. Proposer des outils et méthodes\n3. Planifier les interventions\n</message>\n</new_task>",
+      "completion_template": "<attempt_completion>\n<result>\n[RÉSULTAT DE L'ÉTAPE DE STRATÉGIE]\n</result>\n</attempt_completion>"
+    },
+    {
+      "id": "etape4",
+      "name": "Mise en œuvre",
+      "mode": "prof-cycle2",
+      "task_template": "<new_task>\n<mode>prof-cycle2</mode>\n<message>\nJe dois maintenant mettre en œuvre un accompagnement pour des élèves de {{niveau}} rencontrant des difficultés de type {{difficulte}}.\n\nVoici les éléments à ma disposition:\n- Observations initiales: {{etape1.result}}\n- Analyse des difficultés: {{etape2.result}}\n- Stratégie proposée: {{etape3.result}}\n\nPouvez-vous m'aider à:\n1. Adapter concrètement mon enseignement\n2. Utiliser les outils proposés\n3. Mettre en place un suivi des progrès\n</message>\n</new_task>",
+      "completion_template": "<attempt_completion>\n<result>\n[RÉSULTAT DE L'ÉTAPE DE MISE EN ŒUVRE]\n</result>\n</attempt_completion>"
+    },
+    {
+      "id": "etape5",
+      "name": "Évaluation",
+      "mode": "expert-differenciation",
+      "task_template": "<new_task>\n<mode>expert-differenciation</mode>\n<message>\nAprès avoir mis en place un accompagnement pour des élèves de {{niveau}} rencontrant des difficultés de type {{difficulte}}, je souhaite évaluer son efficacité.\n\nVoici les éléments du dispositif:\n- Observations initiales: {{etape1.result}}\n- Analyse des difficultés: {{etape2.result}}\n- Stratégie définie: {{etape3.result}}\n- Actions mises en œuvre: {{etape4.result}}\n\nPouvez-vous m'aider à:\n1. Mesurer les progrès réalisés\n2. Ajuster les stratégies si nécessaire\n3. Documenter l'évolution des élèves\n</message>\n</new_task>",
+      "completion_template": "<attempt_completion>\n<result>\n[RÉSULTAT DE L'ÉTAPE D'ÉVALUATION]\n</result>\n</attempt_completion>"
+    }
+  ],
+  "output": {
+    "path": "/out/suivi/accompagnement/",
+    "format": "markdown",
+    "template": "# Plan d'accompagnement: Élèves en difficulté - {{niveau}}\n\n## Identification des difficultés\n{{etape1.result}}\n\n## Analyse et causes\n{{etape2.result}}\n\n## Stratégie d'accompagnement\n{{etape3.result}}\n\n## Mise en œuvre en classe\n{{etape4.result}}\n\n## Évaluation et ajustements\n{{etape5.result}}"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "workflow_id": "WF_PROJET_INTER_001",
+  "name": "Conception de projet interdisciplinaire",
+  "description": "Assistance pour la création et la mise en œuvre de projets pédagogiques interdisciplinaires",
+  "inputs": {
+    "niveau": {
+      "description": "Niveau de la classe",
+      "type": "string",
+      "required": true
+    },
+    "thematique": {
+      "description": "Thématique générale du projet",
+      "type": "string",
+      "required": true
+    },
+    "disciplines": {
+      "description": "Disciplines concernées par le projet",
+      "type": "string",
+      "required": true
+    },
+    "duree": {
+      "description": "Durée envisagée du projet (en semaines)",
+      "type": "number",
+      "required": false,
+      "default": 6
+    }
+  },
+  "steps": [
+    {
+      "id": "etape1",
+      "name": "Conception",
+      "mode": "prof-cycle2",
+      "task_template": "<new_task>\n<mode>prof-cycle2</mode>\n<message>\nJe souhaite concevoir un projet interdisciplinaire pour ma classe de {{niveau}} sur la thématique: {{thematique}}.\n\nDisciplines concernées: {{disciplines}}\nDurée envisagée: {{duree}} semaines\n\nPouvez-vous m'aider à:\n1. Définir la thématique précise du projet\n2. Identifier les disciplines et leurs liens\n3. Fixer les objectifs pédagogiques\n</message>\n</new_task>",
+      "completion_template": "<attempt_completion>\n<result>\n[RÉSULTAT DE L'ÉTAPE DE CONCEPTION]\n</result>\n</attempt_completion>"
+    },
+    {
+      "id": "etape2",
+      "name": "Structuration",
+      "mode": "expert-pedagogique",
+      "task_template": "<new_task>\n<mode>expert-pedagogique</mode>\n<message>\nJe dois structurer un projet interdisciplinaire pour une classe de {{niveau}} sur la thématique: {{thematique}}.\n\nVoici la conception initiale:\n{{etape1.result}}\n\nPouvez-vous m'aider à:\n1. Articuler les contenus des différentes disciplines\n2. Séquencer les activités sur {{duree}} semaines\n3. Définir les modalités d'évaluation\n</message>\n</new_task>",
+      "completion_template": "<attempt_completion>\n<result>\n[RÉSULTAT DE L'ÉTAPE DE STRUCTURATION]\n</result>\n</attempt_completion>"
+    },
+    {
+      "id": "etape3",
+      "name": "Validation",
+      "mode": "inspecteur",
+      "task_template": "<new_task>\n<mode>inspecteur</mode>\n<message>\nEn tant qu'inspecteur, je dois valider un projet interdisciplinaire pour une classe de {{niveau}} sur la thématique: {{thematique}}.\n\nVoici les éléments du projet:\n- Conception: {{etape1.result}}\n- Structure pédagogique: {{etape2.result}}\n\nPouvez-vous m'aider à:\n1. Vérifier la conformité aux programmes\n2. Suggérer des améliorations éventuelles\n3. Valider l'approche pédagogique\n</message>\n</new_task>",
+      "completion_template": "<attempt_completion>\n<result>\n[RÉSULTAT DE L'ÉTAPE DE VALIDATION]\n</result>\n</attempt_completion>"
+    },
+    {
+      "id": "etape4",
+      "name": "Mise en œuvre",
+      "mode": "prof-cycle2",
+      "task_template": "<new_task>\n<mode>prof-cycle2</mode>\n<message>\nJe dois maintenant préparer la mise en œuvre concrète d'un projet interdisciplinaire pour ma classe de {{niveau}} sur la thématique: {{thematique}}.\n\nVoici les éléments du projet:\n- Conception: {{etape1.result}}\n- Structure pédagogique: {{etape2.result}}\n- Validation et recommandations: {{etape3.result}}\n\nPouvez-vous m'aider à:\n1. Préparer les ressources nécessaires\n2. Planifier les séances en détail\n3. Organiser le suivi de la progression\n</message>\n</new_task>",
+      "completion_template": "<attempt_completion>\n<result>\n[RÉSULTAT DE L'ÉTAPE DE MISE EN ŒUVRE]\n</result>\n</attempt_completion>"
+    },
+    {
+      "id": "etape5",
+      "name": "Évaluation",
+      "mode": "expert-pedagogique",
+      "task_template": "<new_task>\n<mode>expert-pedagogique</mode>\n<message>\nJe souhaite définir un dispositif d'évaluation pour un projet interdisciplinaire mené avec une classe de {{niveau}} sur la thématique: {{thematique}}.\n\nVoici les éléments du projet:\n- Conception: {{etape1.result}}\n- Structure pédagogique: {{etape2.result}}\n- Validation: {{etape3.result}}\n- Mise en œuvre: {{etape4.result}}\n\nPouvez-vous m'aider à:\n1. Mesurer les acquisitions dans chaque discipline\n2. Analyser la démarche de projet\n3. Documenter les résultats et l'impact\n</message>\n</new_task>",
+      "completion_template": "<attempt_completion>\n<result>\n[RÉSULTAT DE L'ÉTAPE D'ÉVALUATION]\n</result>\n</attempt_completion>"
+    }
+  ],
+  "output": {
+    "path": "/out/pedagogie/projets/interdisciplinaires/",
+    "format": "markdown",
+    "template": "# Projet interdisciplinaire: {{thematique}} - {{niveau}}\n\n## Conception et objectifs\n{{etape1.result}}\n\n## Structure et progression\n{{etape2.result}}\n\n## Validation institutionnelle\n{{etape3.result}}\n\n## Mise en œuvre\n{{etape4.result}}\n\n## Évaluation\n{{etape5.result}}"
+  }
+}

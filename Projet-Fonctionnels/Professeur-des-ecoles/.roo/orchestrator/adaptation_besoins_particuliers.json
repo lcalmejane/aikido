@@ -1,0 +1,64 @@
+{
+  "workflow_id": "WF_BEP_001",
+  "name": "Adaptation aux besoins éducatifs particuliers",
+  "description": "Assistance pour l'adaptation des enseignements aux élèves à besoins éducatifs particuliers",
+  "inputs": {
+    "niveau": {
+      "description": "Niveau de la classe",
+      "type": "string",
+      "required": true
+    },
+    "besoin": {
+      "description": "Type de besoin éducatif particulier",
+      "type": "string",
+      "required": true
+    },
+    "contexte": {
+      "description": "Contexte de la classe et de l'élève",
+      "type": "string",
+      "required": false
+    }
+  },
+  "steps": [
+    {
+      "id": "etape1",
+      "name": "Identification",
+      "mode": "prof-cycle2",
+      "task_template": "<new_task>\n<mode>prof-cycle2</mode>\n<message>\nJ'ai dans ma classe de {{niveau}} un ou plusieurs élèves présentant des besoins éducatifs particuliers de type: {{besoin}}.\n\nContexte: {{contexte}}\n\nPouvez-vous m'aider à:\n1. Observer et documenter précisément ces besoins\n2. Identifier les situations problématiques\n3. Évaluer l'impact sur les apprentissages\n</message>\n</new_task>",
+      "completion_template": "<attempt_completion>\n<result>\n[RÉSULTAT DE L'ÉTAPE D'IDENTIFICATION]\n</result>\n</attempt_completion>"
+    },
+    {
+      "id": "etape2",
+      "name": "Évaluation",
+      "mode": "orthophoniste",
+      "task_template": "<new_task>\n<mode>orthophoniste</mode>\n<message>\nJe dois évaluer les besoins spécifiques d'un élève de {{niveau}} présentant des besoins particuliers de type: {{besoin}}.\n\nVoici les observations réalisées par l'enseignant:\n{{etape1.result}}\n\nPouvez-vous m'aider à:\n1. Réaliser un bilan des troubles ou difficultés\n2. Identifier les impacts précis sur les apprentissages\n3. Mesurer les besoins de compensation\n</message>\n</new_task>",
+      "completion_template": "<attempt_completion>\n<result>\n[RÉSULTAT DE L'ÉTAPE D'ÉVALUATION]\n</result>\n</attempt_completion>"
+    },
+    {
+      "id": "etape3",
+      "name": "Stratégie",
+      "mode": "expert-differenciation",
+      "task_template": "<new_task>\n<mode>expert-differenciation</mode>\n<message>\nJe dois définir une stratégie d'adaptation pour un élève de {{niveau}} présentant des besoins particuliers de type: {{besoin}}.\n\nVoici les éléments dont je dispose:\n- Observations de l'enseignant: {{etape1.result}}\n- Évaluation spécialisée: {{etape2.result}}\n\nPouvez-vous m'aider à:\n1. Définir des adaptations précises\n2. Proposer des outils et supports adaptés\n3. Planifier la mise en œuvre des adaptations\n</message>\n</new_task>",
+      "completion_template": "<attempt_completion>\n<result>\n[RÉSULTAT DE L'ÉTAPE DE STRATÉGIE]\n</result>\n</attempt_completion>"
+    },
+    {
+      "id": "etape4",
+      "name": "Mise en œuvre",
+      "mode": "prof-cycle2",
+      "task_template": "<new_task>\n<mode>prof-cycle2</mode>\n<message>\nJe dois mettre en œuvre des adaptations pour un élève de {{niveau}} présentant des besoins particuliers de type: {{besoin}}.\n\nVoici les éléments à ma disposition:\n- Observations initiales: {{etape1.result}}\n- Évaluation spécialisée: {{etape2.result}}\n- Stratégie d'adaptation: {{etape3.result}}\n\nPouvez-vous m'aider à:\n1. Adapter concrètement mes supports et approches\n2. Modifier mes pratiques pédagogiques\n3. Utiliser efficacement les outils proposés\n</message>\n</new_task>",
+      "completion_template": "<attempt_completion>\n<result>\n[RÉSULTAT DE L'ÉTAPE DE MISE EN ŒUVRE]\n</result>\n</attempt_completion>"
+    },
+    {
+      "id": "etape5",
+      "name": "Suivi",
+      "mode": "expert-differenciation",
+      "task_template": "<new_task>\n<mode>expert-differenciation</mode>\n<message>\nAprès avoir mis en place des adaptations pour un élève de {{niveau}} présentant des besoins particuliers de type {{besoin}}, je souhaite évaluer leur efficacité et ajuster si nécessaire.\n\nVoici les éléments du dispositif:\n- Observations initiales: {{etape1.result}}\n- Évaluation spécialisée: {{etape2.result}}\n- Stratégie définie: {{etape3.result}}\n- Adaptations mises en œuvre: {{etape4.result}}\n\nPouvez-vous m'aider à:\n1. Évaluer l'efficacité des adaptations\n2. Ajuster les dispositifs si nécessaire\n3. Documenter les progrès de l'élève\n</message>\n</new_task>",
+      "completion_template": "<attempt_completion>\n<result>\n[RÉSULTAT DE L'ÉTAPE DE SUIVI]\n</result>\n</attempt_completion>"
+    }
+  ],
+  "output": {
+    "path": "/out/pedagogie/adaptations/",
+    "format": "markdown",
+    "template": "# Plan d'adaptation: {{besoin}} - {{niveau}}\n\n## Identification des besoins\n{{etape1.result}}\n\n## Évaluation spécialisée\n{{etape2.result}}\n\n## Stratégie d'adaptation\n{{etape3.result}}\n\n## Mise en œuvre en classe\n{{etape4.result}}\n\n## Suivi et ajustements\n{{etape5.result}}"
+  }
+}

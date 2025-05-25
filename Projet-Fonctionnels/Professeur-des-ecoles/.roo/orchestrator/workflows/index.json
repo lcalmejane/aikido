@@ -1,0 +1,132 @@
+{
+  "titre": "Index des workflows d'assistance aux professeurs des écoles",
+  "description": "Catalogue des workflows disponibles pour l'orchestration des assistances pédagogiques",
+  "date_creation": "25/05/2025",
+  "categories": {
+    "pedagogie": {
+      "titre": "Workflows pédagogiques",
+      "description": "Assistance à la conception et mise en œuvre d'activités pédagogiques",
+      "workflows": [
+        {
+          "id": "WF_SEQ_001",
+          "nom": "Préparation de séquence pédagogique",
+          "description": "Accompagnement pour la création et l'organisation d'une séquence d'apprentissage",
+          "fichier": "preparation_sequence.json",
+          "inputs": ["matiere", "niveau", "duree", "competences"],
+          "modes_utilises": ["prof-cycle2", "expert-pedagogique", "psychomotricien"]
+        },
+        {
+          "id": "WF_EVAL_001",
+          "nom": "Assistance à l'évaluation des élèves",
+          "description": "Accompagnement pour la création et l'analyse des évaluations",
+          "fichier": "assistance_evaluation.json",
+          "inputs": ["niveau", "matiere", "type_evaluation"],
+          "modes_utilises": ["prof-cycle2", "expert-pedagogique", "expert-differenciation"]
+        },
+        {
+          "id": "WF_PROJET_INTER_001",
+          "nom": "Conception de projet interdisciplinaire",
+          "description": "Assistance pour la création et la mise en œuvre de projets pédagogiques interdisciplinaires",
+          "fichier": "projet_interdisciplinaire.json",
+          "inputs": ["niveau", "thematique", "disciplines", "duree"],
+          "modes_utilises": ["prof-cycle2", "expert-pedagogique", "inspecteur"]
+        }
+      ]
+    },
+    "accompagnement": {
+      "titre": "Workflows d'accompagnement",
+      "description": "Assistance au suivi et à l'accompagnement des élèves",
+      "workflows": [
+        {
+          "id": "WF_DIFF_001",
+          "nom": "Accompagnement des élèves en difficulté",
+          "description": "Assistance pour l'identification et le suivi des élèves en difficulté d'apprentissage",
+          "fichier": "accompagnement_difficultes.json",
+          "inputs": ["niveau", "difficulte", "contexte"],
+          "modes_utilises": ["prof-cycle2", "psychologue-scolaire", "expert-differenciation"]
+        },
+        {
+          "id": "WF_BEP_001",
+          "nom": "Adaptation aux besoins éducatifs particuliers",
+          "description": "Assistance pour l'adaptation des enseignements aux élèves à besoins éducatifs particuliers",
+          "fichier": "adaptation_besoins_particuliers.json",
+          "inputs": ["niveau", "besoin", "contexte"],
+          "modes_utilises": ["prof-cycle2", "orthophoniste", "expert-differenciation"]
+        }
+      ]
+    },
+    "communication": {
+      "titre": "Workflows de communication",
+      "description": "Assistance à la communication avec les différents acteurs éducatifs",
+      "workflows": [
+        {
+          "id": "WF_PARENTS_001",
+          "nom": "Préparation et animation de réunions parents",
+          "description": "Assistance pour l'organisation et l'animation de réunions avec les parents d'élèves",
+          "fichier": "reunion_parents.json",
+          "inputs": ["niveau", "periode", "specificites"],
+          "modes_utilises": ["prof-cycle2", "directeur", "parent"]
+        }
+      ]
+    }
+  },
+  "utilisation": {
+    "description": "Comment utiliser les workflows d'orchestration",
+    "etapes": [
+      {
+        "ordre": 1,
+        "nom": "Sélection",
+        "description": "Choisir le workflow adapté à la tâche à accomplir"
+      },
+      {
+        "ordre": 2,
+        "nom": "Paramétrage",
+        "description": "Définir les valeurs des paramètres d'entrée (inputs)"
+      },
+      {
+        "ordre": 3,
+        "nom": "Exécution",
+        "description": "Lancer le workflow via le mode Orchestrator qui va déléguer les sous-tâches aux modes spécialisés"
+      },
+      {
+        "ordre": 4,
+        "nom": "Suivi",
+        "description": "Suivre l'avancement des étapes et valider les résultats intermédiaires"
+      },
+      {
+        "ordre": 5,
+        "nom": "Finalisation",
+        "description": "Récupérer le résultat final et les livrables générés"
+      }
+    ]
+  },
+  "format_technique": {
+    "description": "Structure technique des fichiers de workflow",
+    "elements": [
+      {
+        "nom": "workflow_id",
+        "description": "Identifiant unique du workflow"
+      },
+      {
+        "nom": "name",
+        "description": "Nom du workflow"
+      },
+      {
+        "nom": "description",
+        "description": "Description détaillée du workflow"
+      },
+      {
+        "nom": "inputs",
+        "description": "Paramètres d'entrée requis pour le workflow"
+      },
+      {
+        "nom": "steps",
+        "description": "Étapes séquentielles du workflow avec les templates de tâches et de complétion"
+      },
+      {
+        "nom": "output",
+        "description": "Format et chemin de sortie des livrables générés"
+      }
+    ]
+  }
+}
