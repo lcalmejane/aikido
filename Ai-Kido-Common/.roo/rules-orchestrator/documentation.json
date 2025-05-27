@@ -1,129 +1,110 @@
 {
-  "title": "Documentation Automatisée",
-  "description": "Génération et maintenance de documentation basée sur les tables de vérité",
-  "version": "1.0.0",
+  "title": "Documentation AI-KIDO via ROO-CODE",
+  "description": "Génération et maintenance de documentation basée sur les tables de vérité AI-KIDO en utilisant exclusivement les modes ROO-CODE",
+  "version": "2.0.0",
   "steps": [
     {
-      "id": "source_selection",
-      "title": "1. Sélection des Sources",
-      "prompt": "[RÔLE] Coordinateur de documentation\n\n[CONTEXTE]\nNous allons créer ou mettre à jour la documentation d'un élément du projet en explorant les tables de vérité existantes.\n\n[TÂCHE]\nSpécifiez ce que vous souhaitez documenter:\n1. Le type d'élément (composant, module, API, processus, etc.)\n2. Le nom ou identifiant de l'élément\n3. Le chemin vers le code source ou les fichiers pertinents (si disponible)\n\nCes informations nous permettront d'explorer les tables de vérité et d'identifier le contexte approprié.\n\n[FORMAT]\nType d'élément: [type]\nNom: [nom]\nChemin source: [chemin]",
+      "id": "element_selection",
+      "title": "1. Sélection de l'Élément à Documenter",
+      "prompt": "[RÔLE] Coordinateur de documentation AI-KIDO\n\n[CONTEXTE]\nNous allons créer ou mettre à jour la documentation d'un élément du projet en nous basant sur les tables de vérité AI-KIDO.\n\n[TÂCHE]\nSpécifiez ce que vous souhaitez documenter :\n\n1. **Type d'élément** (composant, module, API, processus, fonctionnalité, etc.)\n2. **Nom ou identifiant** de l'élément\n3. **Chemin vers le code source** (si disponible)\n4. **Type de documentation** souhaité (technique, utilisateur, API, architecture, etc.)\n5. **Public cible** (développeurs, utilisateurs finaux, architectes, etc.)\n\n[FORMAT]\nDescription structurée de l'élément à documenter avec contexte d'usage.",
+      "mode": "ask",
       "requireUserInput": true,
       "userInputTitle": "Élément à documenter",
-      "next": "tables_exploration"
+      "next": "knowledge_exploration"
     },
     {
-      "id": "tables_exploration",
-      "title": "2. Exploration des Tables de Vérité",
-      "prompt": "[RÔLE] Explorateur de connaissances AI-KIDO\n\n[CONTEXTE]\nÉlément à documenter: {{source_selection}}\n\n[TÂCHE]\nJe vais explorer les tables de vérité dans notre système AI-KIDO à partir du point d'entrée principal (prompts/gen/index.md) pour trouver:\n\n1. Informations techniques et fonctionnelles sur l'élément à documenter\n2. Standards et conventions de documentation applicables\n3. Personas pertinents pour ce type de documentation\n4. Documentation existante à mettre à jour\n5. Structure(s) des tables de vérité où la documentation devra être intégrée\n\nPour chaque information trouvée, j'indiquerai le chemin précis dans l'arborescence des tables de vérité.\n\n[FORMAT]\nRapport d'exploration structuré avec sections pour chaque type d'information trouvée et chemins d'accès aux tables concernées",
-      "next": "persona_identification"
+      "id": "knowledge_exploration",
+      "title": "2. Exploration des Connaissances AI-KIDO",
+      "prompt": "[RÔLE] Explorateur de connaissances AI-KIDO\n\n[CONTEXTE]\nÉlément à documenter: {{element_selection}}\n\n[TÂCHE]\nExplorer les tables de vérité depuis prompts/hard_points/index.md puis prompts/gen/index.md pour collecter toutes les informations pertinentes :\n\n1. **Informations techniques et fonctionnelles** sur l'élément\n2. **Standards de documentation** définis dans le projet\n3. **Patterns et concepts** associés\n4. **Documentation existante** à mettre à jour\n5. **Structure des tables** où intégrer la nouvelle documentation\n6. **Personas pertinents** pour ce type de documentation\n\nPour chaque information trouvée, indiquer le chemin précis dans l'arborescence AI-KIDO.\n\n[FORMAT]\nRapport d'exploration structuré avec sections détaillées et chemins d'accès aux tables concernées.",
+      "mode": "ask",
+      "next": "content_analysis_boomerang"
     },
     {
-      "id": "persona_identification",
-      "title": "3. Identification des Personas",
-      "prompt": "[RÔLE] Spécialiste en personas AI-KIDO\n\n[CONTEXTE]\nÉlément à documenter: {{source_selection}}\nExploration des tables: {{tables_exploration}}\n\n[TÂCHE]\nIdentifier le ou les personas les plus appropriés pour la création de cette documentation en analysant:\n\n1. Les personas existants dans /prompts/gen/personas/\n2. Leurs domaines d'expertise et spécialités\n3. Leur pertinence pour l'élément à documenter\n\nJe sélectionnerai les personas optimaux et expliquerai pourquoi ils sont les mieux adaptés pour cette tâche de documentation spécifique.\n\n[FORMAT]\nListe des personas sélectionnés avec leur chemin dans l'arborescence et justification de leur sélection",
-      "next": "technical_info_extraction"
+      "id": "content_analysis_boomerang",
+      "title": "3. Analyse du Contenu Existant (Boomerang Task)",
+      "prompt": "Délégation au Mode Code ROO-CODE pour analyse du contenu existant.\n\n<new_task>\n<mode>code</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis analyser le contenu existant.\n\nEffectuer une analyse complète :\n\nÉlément: {{element_selection}}\nConnaissances collectées: {{knowledge_exploration}}\n\n1. Analyser le code source de l'élément (si disponible)\n2. Extraire les informations techniques (architecture, interfaces, dépendances)\n3. Identifier les patterns et conventions utilisés\n4. Détecter la documentation existante dans le code (commentaires, docstrings)\n5. Évaluer la complexité et les points clés à documenter\n\nProduire une analyse technique détaillée pour nourrir la documentation.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "structure_planning_boomerang"
     },
     {
-      "id": "technical_info_extraction",
-      "title": "4. Extraction des Informations Techniques",
-      "prompt": "[RÔLE] Expert technique\n\n[CONTEXTE]\nÉlément à documenter: {{source_selection}}\nExploration des tables: {{tables_exploration}}\n\n[TÂCHE]\nExtraire et synthétiser toutes les informations techniques pertinentes disponibles dans les tables de vérité concernant cet élément. Si possible, analyser également le code source référencé.\n\nCette analyse doit couvrir:\n1. Architecture et design\n2. Dépendances et relations\n3. Interfaces et contrats\n4. Contraintes techniques\n5. Patterns utilisés\n\n[FORMAT]\nSynthèse technique structurée avec références explicites aux tables de vérité sources",
-      "next": "functional_info_extraction"
+      "id": "structure_planning_boomerang",
+      "title": "4. Planification Structure (Boomerang Task)",
+      "prompt": "Délégation au Mode Architect ROO-CODE pour planification de la structure documentaire.\n\n<new_task>\n<mode>architect</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis planifier la structure documentaire.\n\nPlanifier la documentation :\n\nÉlément: {{element_selection}}\nConnaissances: {{knowledge_exploration}}\nAnalyse technique: Résultats de l'analyse Code précédente\n\n1. Définir la structure optimale selon les standards AI-KIDO\n2. Organiser les sections selon le public cible\n3. Planifier l'intégration dans les tables de vérité appropriées\n4. Déterminer les liens et références nécessaires\n5. Identifier les personas à utiliser pour chaque section\n\nProduire un plan architectural de la documentation.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "content_generation_boomerang"
     },
     {
-      "id": "functional_info_extraction",
-      "title": "5. Extraction des Informations Fonctionnelles",
-      "prompt": "[RÔLE] Analyste fonctionnel\n\n[CONTEXTE]\nÉlément à documenter: {{source_selection}}\nExploration des tables: {{tables_exploration}}\n\n[TÂCHE]\nExtraire et synthétiser toutes les informations fonctionnelles pertinentes disponibles dans les tables de vérité concernant cet élément:\n\n1. Objectif et cas d'utilisation\n2. Comportements attendus\n3. Règles métier associées\n4. Flux utilisateur impliqués\n5. Exigences non-fonctionnelles\n\n[FORMAT]\nSynthèse fonctionnelle structurée avec références explicites aux tables de vérité sources",
-      "next": "documentation_standards"
+      "id": "content_generation_boomerang",
+      "title": "5. Génération du Contenu (Boomerang Task)",
+      "prompt": "Délégation au Mode Docs ROO-CODE pour génération du contenu documentaire.\n\n<new_task>\n<mode>docs</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis générer la documentation complète.\n\nGénérer la documentation :\n\nÉlément: {{element_selection}}\nStructure planifiée: Résultats de l'architecture précédente\nAnalyse technique: Données du Mode Code\n\n1. Rédiger le contenu selon les standards AI-KIDO identifiés\n2. Structurer selon le plan architectural approuvé\n3. Intégrer les informations techniques de manière claire\n4. Adapter le niveau de détail au public cible\n5. Assurer la cohérence avec la documentation existante\n6. Formater selon les conventions du projet\n\nProduire une documentation complète et professionnelle.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "examples_generation_boomerang"
     },
     {
-      "id": "documentation_standards",
-      "title": "6. Standards de Documentation",
-      "prompt": "[RÔLE] Expert en standards de documentation\n\n[CONTEXTE]\nÉlément à documenter: {{source_selection}}\nExploration des tables: {{tables_exploration}}\n\n[TÂCHE]\nIdentifier et résumer les standards et conventions de documentation applicables à cet élément, selon les tables de vérité du projet:\n\n1. Format et structure recommandés\n2. Niveau de détail attendu\n3. Conventions de nommage\n4. Exemples et illustrations requis\n5. Liens et références à inclure\n\n[FORMAT]\nListe structurée des standards de documentation avec références aux tables de vérité sources",
-      "next": "context_validation"
+      "id": "examples_generation_boomerang",
+      "title": "6. Génération d'Exemples (Boomerang Task)",
+      "prompt": "Délégation au Mode Code ROO-CODE pour génération d'exemples pratiques.\n\n<new_task>\n<mode>code</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis générer des exemples pratiques.\n\nGénérer des exemples :\n\nÉlément: {{element_selection}}\nDocumentation: Résultats de la génération Docs précédente\nStandards: Extraits des tables de vérité AI-KIDO\n\n1. Créer des exemples de code concrets et fonctionnels\n2. Couvrir les cas d'usage principaux identifiés\n3. Suivre les standards de codage du projet\n4. Commenter les exemples pour clarifier chaque étape\n5. Valider la syntaxe et la cohérence\n6. Adapter les exemples au niveau du public cible\n\nProduire des exemples prêts à intégrer dans la documentation.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "visual_elements_boomerang"
     },
     {
-      "id": "context_validation",
-      "title": "7. Validation du Contexte",
-      "prompt": "Voici les informations extraites des tables de vérité pour la documentation de {{source_selection}}:\n\n-- PERSONAS IDENTIFIÉS --\n{{persona_identification}}\n\n-- INFORMATIONS TECHNIQUES --\n{{technical_info_extraction}}\n\n-- INFORMATIONS FONCTIONNELLES --\n{{functional_info_extraction}}\n\n-- STANDARDS DE DOCUMENTATION --\n{{documentation_standards}}\n\nCes informations vous semblent-elles complètes et pertinentes? Souhaitez-vous ajouter, modifier ou retirer certains éléments avant de procéder à la génération de la documentation?\n\nSi tout vous convient, écrivez simplement \"Confirmé\". Sinon, veuillez indiquer vos ajustements.",
-      "requireUserInput": true,
-      "userInputTitle": "Validation ou ajustements du contexte",
-      "next": "doc_type_selection"
+      "id": "visual_elements_boomerang",
+      "title": "7. Éléments Visuels (Boomerang Task)",
+      "prompt": "Délégation au Mode Architect ROO-CODE pour conception d'éléments visuels.\n\n<new_task>\n<mode>architect</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis concevoir les éléments visuels.\n\nConcevoir des éléments visuels :\n\nÉlément: {{element_selection}}\nDocumentation: Contenu généré\nExemples: Code d'exemple créé\n\n1. Diagrammes d'architecture (si pertinents)\n2. Schémas de flux ou de processus\n3. Tableaux récapitulatifs des concepts clés\n4. Diagrammes de séquence ou d'interaction\n5. Représentations visuelles des patterns utilisés\n\nUtiliser la syntaxe Mermaid ou markdown pour les diagrammes.\nAssurer la cohérence visuelle avec les standards du projet.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "integration_planning_boomerang"
     },
     {
-      "id": "doc_type_selection",
-      "title": "8. Sélection du Type de Documentation",
-      "prompt": "Quel type de documentation souhaitez-vous générer pour {{source_selection}}?\n\n1. Documentation technique complète\n2. Guide d'utilisation\n3. Documentation API\n4. Guide d'architecture\n5. Documentation de maintenance\n6. Tout (documentation complète)\n\nVous pouvez également spécifier une combinaison ou un besoin particulier.",
-      "requireUserInput": true,
-      "userInputTitle": "Type de documentation souhaité",
-      "next": "structure_planning"
-    },
-    {
-      "id": "structure_planning",
-      "title": "9. Planification de la Structure",
-      "prompt": "[RÔLE] {{persona_identification}}\n\n[CONTEXTE]\nÉlément à documenter: {{source_selection}}\nType de documentation: {{doc_type_selection}}\nInformations techniques: {{technical_info_extraction}}\nInformations fonctionnelles: {{functional_info_extraction}}\nStandards applicables: {{documentation_standards}}\nAjustements: {{context_validation}}\n\n[TÂCHE]\nÉlaborer une structure détaillée pour la documentation demandée, en tenant compte:\n1. Des standards du projet identifiés dans les tables de vérité\n2. Du type de documentation sélectionné\n3. De la nature de l'élément à documenter\n4. Des tables de vérité où la documentation doit être intégrée\n\nCette structure doit permettre une ventilation efficace dans les tables de vérité appropriées.\n\n[FORMAT]\nPlan de documentation détaillé avec sections et sous-sections, indiquant pour chaque partie dans quelle table de vérité elle devra être intégrée",
-      "next": "structure_validation"
-    },
-    {
-      "id": "structure_validation",
-      "title": "10. Validation de la Structure",
-      "prompt": "Voici la structure proposée pour la documentation de {{source_selection}}:\n\n{{structure_planning}}\n\nCette structure vous convient-elle? Souhaitez-vous y apporter des modifications avant la génération du contenu?\n\nSi tout vous convient, écrivez simplement \"Confirmé\". Sinon, veuillez indiquer vos ajustements.",
-      "requireUserInput": true,
-      "userInputTitle": "Validation/modifications de la structure",
-      "next": "content_generation"
-    },
-    {
-      "id": "content_generation",
-      "title": "11. Génération du Contenu",
-      "prompt": "[RÔLE] {{persona_identification}}\n\n[CONTEXTE]\nÉlément à documenter: {{source_selection}}\nStructure validée: {{structure_validation}}\nInformations techniques: {{technical_info_extraction}}\nInformations fonctionnelles: {{functional_info_extraction}}\n\n[TÂCHE]\nGénérer le contenu documentaire complet selon la structure approuvée. Pour chaque section:\n\n1. Respecter les standards de documentation identifiés\n2. Intégrer les informations techniques et fonctionnelles pertinentes\n3. Inclure des exemples concrets et illustrations quand approprié\n4. Structurer le contenu pour faciliter son intégration ultérieure dans les tables de vérité\n5. Maintenir la cohérence avec la documentation existante\n\n[FORMAT]\nDocumentation formatée selon les standards du projet, structurée selon le plan approuvé, avec indication claire pour chaque section de la table de vérité de destination",
-      "next": "code_examples"
-    },
-    {
-      "id": "code_examples",
-      "title": "12. Exemples de Code",
-      "prompt": "[RÔLE] Développeur technique\n\n[CONTEXTE]\nÉlément documenté: {{source_selection}}\nDocumentation générée: {{content_generation}}\nInformations techniques: {{technical_info_extraction}}\n\n[TÂCHE]\nGénérer des exemples de code pertinents pour illustrer l'utilisation et l'implémentation de l'élément documenté. Ces exemples doivent:\n\n1. Être concrets et applicables\n2. Couvrir les cas d'usage principaux\n3. Suivre les standards de codage du projet\n4. Être commentés pour expliquer chaque étape\n5. S'intégrer naturellement dans la documentation\n\n[FORMAT]\nExemples de code formatés et commentés, prêts à être intégrés aux sections appropriées de la documentation",
-      "next": "visual_elements"
-    },
-    {
-      "id": "visual_elements",
-      "title": "13. Éléments Visuels",
-      "prompt": "[RÔLE] Designer de documentation\n\n[CONTEXTE]\nÉlément documenté: {{source_selection}}\nDocumentation générée: {{content_generation}}\nExemples de code: {{code_examples}}\n\n[TÂCHE]\nConcevoir des éléments visuels pour enrichir la documentation:\n\n1. Diagrammes pertinents (architecture, flux, séquence, etc.)\n2. Schémas conceptuels\n3. Tableaux récapitulatifs\n4. Illustrations des concepts clés\n\nUtiliser la syntaxe Mermaid pour les diagrammes quand approprié.\n\n[FORMAT]\nÉléments visuels au format texte/markdown, prêts à être intégrés dans la documentation",
-      "next": "integration_planning"
-    },
-    {
-      "id": "integration_planning",
-      "title": "14. Plan d'Intégration aux Tables de Vérité",
-      "prompt": "[RÔLE] Architecte de documentation\n\n[CONTEXTE]\nDocumentation complète générée:\n{{content_generation}}\n{{code_examples}}\n{{visual_elements}}\nTables de vérité cibles identifiées dans: {{tables_exploration}}\nStructure initiale: {{structure_planning}}\n\n[TÂCHE]\nPréparer un plan détaillé d'intégration de cette documentation dans les tables de vérité appropriées:\n\n1. Identifier précisément les fichiers à modifier dans l'arborescence des tables de vérité\n2. Préciser pour chaque section de la documentation dans quelle partie de quelle table elle doit être intégrée\n3. Indiquer si des tables existantes doivent être mises à jour ou si de nouvelles tables doivent être créées\n4. Suggérer des modifications de structure si nécessaire pour maintenir la cohérence\n\n[FORMAT]\nPlan d'intégration détaillé avec chemins de fichiers, sections cibles et instructions précises",
+      "id": "integration_planning_boomerang",
+      "title": "8. Planification Intégration (Boomerang Task)",
+      "prompt": "Délégation au Mode Architect ROO-CODE pour planification de l'intégration.\n\n<new_task>\n<mode>architect</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis planifier l'intégration aux tables de vérité.\n\nPlanifier l'intégration :\n\nDocumentation complète générée:\n- Contenu principal (Mode Docs)\n- Exemples de code (Mode Code)\n- Éléments visuels (Mode Architect)\n\nTables de vérité cibles: {{knowledge_exploration}}\n\n1. Identifier les fichiers précis à modifier dans prompts/gen/\n2. Définir l'emplacement de chaque section dans les tables\n3. Planifier les mises à jour de liens et références\n4. Assurer la cohérence avec la structure existante\n5. Prévoir la création de nouvelles tables si nécessaire\n\nProduire un plan d'intégration détaillé avec instructions précises.\n</message>\n</new_task>",
+      "mode": "orchestrator",
       "next": "integration_validation"
     },
     {
       "id": "integration_validation",
-      "title": "15. Validation du Plan d'Intégration",
-      "prompt": "Voici le plan d'intégration de la documentation dans les tables de vérité:\n\n{{integration_planning}}\n\nCe plan vous convient-il? Souhaitez-vous modifier certains aspects de l'intégration?\n\nSi tout vous convient, écrivez simplement \"Confirmé\". Sinon, veuillez indiquer vos ajustements.",
+      "title": "9. Validation du Plan d'Intégration",
+      "prompt": "[RÔLE] Responsable qualité documentation\n\n[CONTEXTE]\nDocumentation complète générée via les Boomerang Tasks ROO-CODE.\nPlan d'intégration: Résultats de la planification architecturale\n\n[TÂCHE]\nValider le plan d'intégration proposé :\n\n1. Vérifier la cohérence avec la structure AI-KIDO existante\n2. S'assurer de la pertinence des emplacements choisis\n3. Contrôler l'alignement avec les standards du projet\n4. Valider la préservation des liens existants\n\nCe plan vous convient-il ? Souhaitez-vous y apporter des modifications ?\n\nSi tout vous convient, écrivez \"Confirmé\". Sinon, indiquez vos ajustements.",
+      "mode": "ask",
       "requireUserInput": true,
       "userInputTitle": "Validation/modifications du plan d'intégration",
-      "next": "documentation_integration"
+      "next": "documentation_integration_boomerang"
     },
     {
-      "id": "documentation_integration",
-      "title": "16. Intégration aux Tables de Vérité",
-      "prompt": "[RÔLE] Intégrateur de documentation\n\n[CONTEXTE]\nDocumentation complète: [Contenu des étapes précédentes]\nPlan d'intégration validé: {{integration_validation}}\n\n[TÂCHE]\nPréparer les modifications exactes à apporter aux tables de vérité selon le plan validé:\n\n1. Pour chaque fichier à modifier, générer le contenu mis à jour complet\n2. Pour les nouveaux fichiers, générer le contenu intégral\n3. Assurer la cohérence des liens et références\n4. Maintenir le formatage et la structure conformes aux standards\n\n[FORMAT]\nPour chaque fichier à modifier ou créer:\n- Chemin complet du fichier\n- Contenu complet mis à jour\n- Brève description des modifications apportées",
-      "next": "documentation_summary"
+      "id": "documentation_integration_boomerang",
+      "title": "10. Intégration Documentation (Boomerang Task)",
+      "prompt": "Délégation au Mode Docs ROO-CODE pour intégration finale.\n\n<new_task>\n<mode>docs</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis effectuer l'intégration finale.\n\nIntégrer la documentation :\n\nDocumentation complète: Tous les éléments générés précédemment\nPlan validé: {{integration_validation}}\n\n1. Préparer les modifications exactes pour chaque fichier de table de vérité\n2. Générer le contenu mis à jour complet pour chaque fichier modifié\n3. Créer les nouveaux fichiers nécessaires avec contenu intégral\n4. Maintenir la cohérence des liens et références\n5. Respecter le formatage et la structure des standards AI-KIDO\n6. Assurer la navigation fluide dans la documentation\n\nPour chaque fichier : indiquer le chemin complet et le contenu mis à jour.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "quality_validation_boomerang"
     },
     {
-      "id": "documentation_summary",
-      "title": "17. Résumé de la Documentation",
-      "prompt": "[RÔLE] Chef de projet documentation\n\n[CONTEXTE]\nProcessus complet de documentation pour {{source_selection}}\n\n[TÂCHE]\nPréparer un résumé concis de la documentation réalisée:\n\n1. Aperçu de l'élément documenté\n2. Tables de vérité mises à jour\n3. Principales améliorations apportées\n4. Suggestions pour maintenance future\n\n[FORMAT]\nRésumé structuré avec points clés et recommandations",
-      "next": "sync_strategy"
+      "id": "quality_validation_boomerang",
+      "title": "11. Validation Qualité (Boomerang Task)",
+      "prompt": "Délégation au Mode Architect ROO-CODE pour validation qualité finale.\n\n<new_task>\n<mode>architect</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis valider la qualité globale.\n\nValider la qualité :\n\nDocumentation intégrée: Résultats de l'intégration finale\nÉlément original: {{element_selection}}\nStandards AI-KIDO: Extraits des Hard Points\n\n1. Vérifier la conformité aux standards de documentation AI-KIDO\n2. Contrôler la cohérence entre toutes les sections\n3. Valider la pertinence des exemples et illustrations\n4. S'assurer de la clarté pour le public cible\n5. Vérifier l'intégration harmonieuse dans les tables de vérité\n6. Évaluer la maintenabilité future\n\nProduire un rapport de qualité avec recommandations d'amélioration.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "maintenance_strategy"
     },
     {
-      "id": "sync_strategy",
-      "title": "18. Stratégie de Synchronisation",
-      "prompt": "[RÔLE] Expert en maintenance documentaire\n\n[CONTEXTE]\nDocumentation intégrée pour: {{source_selection}}\n\n[TÂCHE]\nProposer une stratégie pour maintenir cette documentation synchronisée avec le code source et autres artefacts à l'avenir:\n\n1. Mécanismes de détection des changements nécessitant mise à jour\n2. Processus de validation périodique\n3. Intégration potentielle dans les workflows CI/CD\n4. Responsabilités et fréquence de révision\n\n[FORMAT]\nPlan de maintenance avec points de synchronisation identifiés et processus recommandés",
+      "id": "maintenance_strategy",
+      "title": "12. Stratégie de Maintenance",
+      "prompt": "[RÔLE] Expert en maintenance documentaire AI-KIDO\n\n[CONTEXTE]\nDocumentation intégrée et validée pour: {{element_selection}}\nRapport qualité: Résultats de la validation architecturale\n\n[TÂCHE]\nÉlaborer une stratégie de maintenance pour cette documentation :\n\n1. **Synchronisation automatique** avec le code source\n2. **Points de contrôle** réguliers de cohérence\n3. **Déclencheurs de mise à jour** (changements code, évolution métier)\n4. **Processus de validation** périodique\n5. **Intégration CI/CD** pour maintenance automatique\n6. **Responsabilités** et fréquence de révision\n\n[FORMAT]\nPlan de maintenance structuré avec processus automatisés et points de synchronisation identifiés.",
+      "mode": "ask",
       "requireUserValidation": true
     }
   ],
   "configuration": {
     "validateOnCompletion": true,
-    "rollbackOnError": true
+    "rollbackOnError": true,
+    "generateLogs": true,
+    "hardPointsRequired": true,
+    "aikidoCompliant": true
+  },
+  "metadata": {
+    "methodology": "AI-KIDO",
+    "platform": "ROO-CODE",
+    "workflow_type": "boomerang_tasks",
+    "purpose": "documentation",
+    "version_aikido": "2.0",
+    "created": "2025-01-27"
   }
 }

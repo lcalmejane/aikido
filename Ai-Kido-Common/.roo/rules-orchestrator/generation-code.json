@@ -1,0 +1,89 @@
+{
+  "title": "Génération de Code AI-KIDO via ROO-CODE",
+  "description": "Transforme les tables de vérité AI-KIDO en implémentation concrète en utilisant exclusivement les modes ROO-CODE",
+  "version": "2.0.0",
+  "steps": [
+    {
+      "id": "feature_specification",
+      "title": "1. Spécification de la Fonctionnalité",
+      "prompt": "[RÔLE] Analyste fonctionnel AI-KIDO\n\n[CONTEXTE]\nNous allons générer du code en nous appuyant sur nos tables de vérité AI-KIDO via les modes ROO-CODE.\n\n[TÂCHE]\nVeuillez décrire la fonctionnalité que vous souhaitez implémenter:\n\n1. Nom de la fonctionnalité\n2. Description brève (2-3 phrases)\n3. Contexte métier principal\n4. Mots-clés pour localiser les informations pertinentes dans prompts/gen/\n\n[FORMAT]\nDescription claire et concise avec mots-clés identifiables pour recherche dans les tables de vérité.",
+      "mode": "ask",
+      "requireUserInput": true,
+      "userInputTitle": "Description de la fonctionnalité",
+      "next": "explore_truth_tables"
+    },
+    {
+      "id": "explore_truth_tables",
+      "title": "2. Exploration des Tables de Vérité",
+      "prompt": "[RÔLE] Navigateur de connaissances AI-KIDO\n\n[CONTEXTE]\nFonctionnalité demandée: {{feature_specification}}\n\n[TÂCHE]\nJe vais maintenant explorer les tables de vérité disponibles dans notre système AI-KIDO à partir du point d'entrée principal (prompts/hard_points/index.md puis prompts/gen/index.md) pour identifier toutes les informations pertinentes liées à cette fonctionnalité.\n\nJe vais:\n1. Parcourir la structure des tables de vérité AI-KIDO\n2. Identifier les concepts, techniques et modèles liés à la fonctionnalité\n3. Collecter les informations sur la stack technique\n4. Rassembler les exigences fonctionnelles et contraintes\n\n[FORMAT]\nRapport structuré sur les informations trouvées, organisé par catégories (concepts, techniques, stack, exigences).",
+      "mode": "ask",
+      "next": "architecture_planning"
+    },
+    {
+      "id": "architecture_planning",
+      "title": "3. Planification Architecture",
+      "prompt": "[RÔLE] Architecte Logiciel AI-KIDO\n\n[CONTEXTE]\nFonctionnalité: {{feature_specification}}\nInformations tables: {{explore_truth_tables}}\n\n[TÂCHE]\nÉlaborer un plan architectural détaillé basé sur les tables de vérité AI-KIDO.\n\nCe plan doit inclure:\n1. Structure des composants à générer\n2. Patterns d'implémentation AI-KIDO applicables\n3. Dépendances et relations\n4. Standards techniques à respecter\n5. Points d'attention particuliers\n\n[FORMAT]\nPlan architectural structuré avec sections claires et références aux tables de vérité.",
+      "mode": "architect",
+      "next": "output_selection"
+    },
+    {
+      "id": "output_selection",
+      "title": "4. Sélection du Type de Génération",
+      "prompt": "Quel type de contenu souhaitez-vous générer pour cette fonctionnalité?\n\n1. Code d'implémentation uniquement\n2. Tests unitaires uniquement\n3. Documentation technique uniquement\n4. Code + Tests\n5. Code + Tests + Documentation\n\nVeuillez préciser votre choix en fonction de vos besoins actuels.",
+      "mode": "ask",
+      "requireUserInput": true,
+      "userInputTitle": "Type de contenu à générer",
+      "next": "code_generation_boomerang"
+    },
+    {
+      "id": "code_generation_boomerang",
+      "title": "5. Génération Code (Boomerang Task)",
+      "prompt": "Délégation au Mode Code ROO-CODE pour génération d'implémentation.\n\n<new_task>\n<mode>code</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis prompts/gen/index.md pour accéder aux tables de vérité.\n\nGénérer le code d'implémentation pour: {{feature_specification}}\n\nUtiliser:\n- Plan architectural: {{architecture_planning}}\n- Standards définis dans les tables de vérité AI-KIDO\n- Patterns d'implémentation appropriés\n- Contraintes techniques identifiées\n\nRespecter absolument les Hard Points et standards du projet.\nProduire du code prêt pour la production avec commentaires appropriés.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "tests_generation_boomerang"
+    },
+    {
+      "id": "tests_generation_boomerang",
+      "title": "6. Génération Tests (Boomerang Task)",
+      "prompt": "Délégation au Mode Debug ROO-CODE pour génération de tests.\n\n<new_task>\n<mode>debug</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis analyser le code généré précédemment.\n\nGénérer une suite de tests complète:\n\n1. Tests unitaires couvrant tous les cas fonctionnels\n2. Tests d'intégration pour les interactions\n3. Tests de validation des contraintes métier\n4. Tests des cas limites et d'erreur\n5. Tests de performance si pertinents\n\nUtiliser les frameworks de test définis dans les tables de vérité.\nAssurer une couverture maximale et des assertions robustes.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "documentation_generation_boomerang"
+    },
+    {
+      "id": "documentation_generation_boomerang",
+      "title": "7. Génération Documentation (Boomerang Task)",
+      "prompt": "Délégation au Mode Docs ROO-CODE pour documentation technique.\n\n<new_task>\n<mode>docs</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis analyser le code et tests générés.\n\nGénérer une documentation technique complète:\n\n1. Vue d'ensemble architecturale\n2. Guide d'utilisation avec exemples pratiques\n3. Référence API détaillée\n4. Instructions d'intégration\n5. Notes de déploiement et configuration\n6. Diagrammes explicatifs (format markdown/text)\n\nRespecter les standards de documentation AI-KIDO.\nAssurer la cohérence avec le code implémenté.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "quality_validation_boomerang"
+    },
+    {
+      "id": "quality_validation_boomerang",
+      "title": "8. Validation Qualité (Boomerang Task)",
+      "prompt": "Délégation au Mode Architect ROO-CODE pour validation globale.\n\n<new_task>\n<mode>architect</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis analyser tous les éléments générés.\n\nEffectuer une validation qualité exhaustive:\n\n1. Conformité aux exigences fonctionnelles initiales\n2. Respect des standards et patterns AI-KIDO\n3. Cohérence entre code, tests et documentation\n4. Alignement avec les tables de vérité du projet\n5. Qualité du code et bonnes pratiques\n6. Couverture et pertinence des tests\n7. Clarté et exhaustivité de la documentation\n\nProduire un rapport de validation détaillé avec recommandations.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "final_delivery"
+    },
+    {
+      "id": "final_delivery",
+      "title": "9. Livraison Finale",
+      "prompt": "[RÔLE] Chef de projet AI-KIDO\n\n[CONTEXTE]\nTous les éléments ont été générés via les Boomerang Tasks ROO-CODE spécialisés.\n\n[TÂCHE]\nRassembler le livrable final incluant:\n\n1. **Résumé exécutif** de l'implémentation réalisée\n2. **Code source** généré avec structure claire\n3. **Suite de tests** complète et documentée\n4. **Documentation technique** exhaustive\n5. **Rapport de validation** qualité\n6. **Guide d'intégration** pour l'équipe\n7. **Recommandations** pour maintenance future\n8. **Références** aux tables de vérité utilisées\n\nLe livrable doit être immédiatement utilisable par l'équipe de développement.\n\n[FORMAT]\nLivrable structuré prêt pour intégration au projet.",
+      "mode": "ask",
+      "requireUserValidation": true
+    }
+  ],
+  "configuration": {
+    "validateOnCompletion": true,
+    "rollbackOnError": true,
+    "generateLogs": true,
+    "hardPointsRequired": true,
+    "aikidoCompliant": true
+  },
+  "metadata": {
+    "methodology": "AI-KIDO",
+    "platform": "ROO-CODE",
+    "workflow_type": "boomerang_tasks",
+    "purpose": "code_generation",
+    "version_aikido": "2.0",
+    "created": "2025-01-27"
+  }
+}

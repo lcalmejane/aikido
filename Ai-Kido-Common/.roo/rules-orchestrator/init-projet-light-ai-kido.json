@@ -1,0 +1,98 @@
+{
+  "title": "Initialisation Light Projet AI-KIDO",
+  "description": "Crée automatiquement un projet AI-KIDO en version simplifiée avec fichiers unifiés et personas complets selon la méthodologie ROO-CODE",
+  "version": "2.0.0",
+  "steps": [
+    {
+      "id": "extract_hard_points",
+      "title": "1. Extraction Hard Points",
+      "prompt": "[RÔLE] Ingénieur DevOps ROO-CODE\n\n[CONTEXTE]\nNous allons initialiser un nouveau projet selon la méthodologie AI-KIDO en version light (structure simplifiée).\n\n[TÂCHE]\nExtraire le fichier aikido-hard-points.zip dans le répertoire racine du projet.\nCette archive contient la base de connaissances AI-KIDO complète qui servira pour la version light.\n\nVérifier après extraction:\n- prompts/hard_points/index.md accessible\n- prompts/hard_points/ai-kido.md disponible\n- prompts/hard_points/roo-code/docs/ complet\n\n[FORMAT]\nRépondez avec la confirmation de l'extraction et la liste des fichiers créés.",
+      "mode": "code",
+      "next": "project_brief_light"
+    },
+    {
+      "id": "project_brief_light",
+      "title": "2. Brief du Projet Light",
+      "prompt": "[RÔLE] Expert Méthodologie AI-KIDO\n\n[CONTEXTE]\nRéférencer prompts/hard_points/index.md pour comprendre la structure AI-KIDO light.\n\n[TÂCHE]\nCollecter les informations essentielles pour version light :\n\n1. Nom du projet\n2. Description de l'objectif principal (2-3 phrases)\n3. Domaine métier principal\n4. 3 problématiques prioritaires maximum\n5. Utilisateurs cibles principaux\n\nFormat concis adapté à la structure light AI-KIDO (fichiers unifiés).\n\n[FORMAT]\nRépondez sous forme de texte structuré et concis.",
+      "mode": "ask",
+      "requireUserInput": true,
+      "userInputTitle": "Brief du projet light",
+      "next": "tech_stack_essential"
+    },
+    {
+      "id": "tech_stack_essential",
+      "title": "3. Stack Technique Essentielle",
+      "prompt": "[RÔLE] Architecte Technique\n\n[CONTEXTE]\nUtiliser prompts/hard_points/index.md comme référence et le brief projet light précédent.\n\n[TÂCHE]\nDéfinir la stack technique essentielle pour version light :\n\n1. 2-3 langages principaux maximum\n2. Framework principal frontend/backend\n3. Base de données principale\n4. Infrastructure essentielle\n5. Outils DevOps critiques\n\nConcentrer sur l'essentiel pour éviter la complexité.\n\n[FORMAT]\nListe structurée et concise des technologies essentielles avec justifications.",
+      "mode": "architect",
+      "next": "create_light_structure"
+    },
+    {
+      "id": "create_light_structure",
+      "title": "4. Création Structure Light",
+      "prompt": "[RÔLE] Architecte Système AI-KIDO\n\n[CONTEXTE]\nRéférencer prompts/hard_points/ai-kido.md pour les règles structurelles adaptées à la version light.\n\n[TÂCHE]\nCréer la structure AI-KIDO simplifiée :\n\nStructure light :\n- prompts/gen/concepts.md (fichier unique)\n- prompts/gen/techniques.md (fichier unique)\n- prompts/gen/use_cases.md (fichier unique)\n- prompts/gen/personas/ (répertoire complet maintenu)\n- prompts/gen/index.md (navigation light)\n\n[COMMANDES]\n```bash\nmkdir -p prompts/gen/personas\necho \"/prompts/spec/\" >> .gitignore\n```\n\nRespecter les contraintes Hard Points avec approche concentrée.\n\n[FORMAT]\nStructure créée avec confirmation de chaque fichier unifié.",
+      "mode": "code",
+      "next": "create_unified_concepts"
+    },
+    {
+      "id": "create_unified_concepts",
+      "title": "5. Fichier Concepts Unifié",
+      "prompt": "[RÔLE] Expert en Tables de Vérité AI-KIDO\n\n[CONTEXTE]\nConsulter prompts/hard_points/index.md et utiliser les informations projet/stack collectées.\n\n[TÂCHE]\nCréer le fichier prompts/gen/concepts.md unifié concentrant toute l'essence conceptuelle :\n\nSections concentrées :\n1. Modèle de domaine essentiel\n2. Architecture système principale\n3. Principes techniques fondamentaux\n4. Glossaire métier condensé\n5. Standards de code essentiels\n\nUN SEUL FICHIER concentrant toute la connaissance conceptuelle avec format AI-KIDO strict.\n\n[FORMAT]\nContenu markdown complet du fichier concepts.md unifié.",
+      "mode": "architect",
+      "next": "create_unified_techniques"
+    },
+    {
+      "id": "create_unified_techniques",
+      "title": "6. Fichier Techniques Unifié",
+      "prompt": "[RÔLE] Expert Technique AI-KIDO\n\n[CONTEXTE]\nRéférencer prompts/hard_points/index.md et la stack technique essentielle définie.\n\n[TÂCHE]\nCréer le fichier prompts/gen/techniques.md unifié pour toutes les pratiques :\n\nSections pratiques :\n1. Patterns de conception prioritaires\n2. Pratiques de test essentielles\n3. CI/CD simplifié\n4. Sécurité et performances critiques\n5. API et intégrations principales\n\nUN SEUL FICHIER pour toutes les techniques pratiques avec exemples concrets.\n\n[FORMAT]\nContenu markdown complet du fichier techniques.md unifié.",
+      "mode": "code",
+      "next": "create_unified_usecases"
+    },
+    {
+      "id": "create_unified_usecases",
+      "title": "7. Fichier Cas d'Usage Unifié",
+      "prompt": "[RÔLE] Analyste Métier AI-KIDO\n\n[CONTEXTE]\nConsulter prompts/hard_points/index.md et le domaine métier du projet.\n\n[TÂCHE]\nCréer le fichier prompts/gen/use_cases.md unifié pour tous les cas métier :\n\nSections métier :\n1. Scénarios utilisateurs principaux\n2. Flux de travail critiques\n3. Règles métier essentielles\n4. Intégrations externes prioritaires\n5. Cas d'erreur importants\n\nUN SEUL FICHIER pour tous les cas d'usage métier avec format AI-KIDO.\n\n[FORMAT]\nContenu markdown complet du fichier use_cases.md unifié.",
+      "mode": "ask",
+      "next": "create_complete_personas"
+    },
+    {
+      "id": "create_complete_personas",
+      "title": "8. Personas Complets",
+      "prompt": "[RÔLE] Expert en Conception de Personas AI-KIDO\n\n[CONTEXTE]\nRéférencer prompts/hard_points/index.md et maintenir la richesse des personas malgré la structure light.\n\n[TÂCHE]\nCréer les personas complets (UN FICHIER PAR PERSONA maintenu) :\n\n1. Personas AI-KIDO adaptés au projet light\n2. Configurations ROO-CODE selon prompts/hard_points/roo-code/docs/features/custom-modes.mdx\n3. Modes personnalisés JSON prêts à l'emploi\n4. Documentation d'utilisation des personas\n\nLes personas gardent leur spécialisation complète même en version light.\n\n[FORMAT]\nFichiers personas markdown + configurations JSON ROO-CODE.",
+      "mode": "code",
+      "next": "create_light_index"
+    },
+    {
+      "id": "create_light_index",
+      "title": "9. Index Light",
+      "prompt": "[RÔLE] Architecte Documentation AI-KIDO\n\n[CONTEXTE]\nConsulter prompts/hard_points/index.md et créer la navigation pour structure light.\n\n[TÂCHE]\nCréer l'index de navigation light prompts/gen/index.md :\n\nNavigation simplifiée pointant vers :\n- concepts.md (fichier unifié)\n- techniques.md (fichier unifié)\n- use_cases.md (fichier unifié)\n- personas/ (répertoire complet)\n\nIndex optimisé pour structure concentrée avec instructions d'utilisation light.\n\n[FORMAT]\nContenu markdown complet de l'index light avec navigation efficace.",
+      "mode": "ask",
+      "next": "first_prompt_light"
+    },
+    {
+      "id": "first_prompt_light",
+      "title": "10. Premier Prompt Light",
+      "prompt": "[RÔLE] Expert en Prompting AI-KIDO\n\n[CONTEXTE]\nRéférencer toute la structure light créée depuis prompts/hard_points/index.md.\n\n[TÂCHE]\nGénérer la validation finale du système light :\n\n1. Premier prompt AI-KIDO optimisé pour structure light\n2. Guide d'utilisation structure simplifiée\n3. Exemples d'interactions avec fichiers unifiés\n4. Checklist validation light\n\nDémontrer l'efficacité de la version light concentrée.\n\n[VALIDATION]\n- [ ] Structure Hard Points extraite\n- [ ] 3 fichiers unifiés créés (concepts, techniques, use_cases)\n- [ ] Personas complets maintenus\n- [ ] Index light opérationnel\n- [ ] Premier prompt adapté structure light\n\n[FORMAT]\nPrompts optimisés pour structure light avec documentation d'usage.",
+      "mode": "ask",
+      "requireUserValidation": true
+    }
+  ],
+  "configuration": {
+    "validateOnCompletion": true,
+    "rollbackOnError": true,
+    "generateLogs": true,
+    "lightStructure": true,
+    "unifiedFiles": true,
+    "hardPointsRequired": true,
+    "aikidoCompliant": true
+  },
+  "metadata": {
+    "methodology": "AI-KIDO",
+    "platform": "ROO-CODE",
+    "workflow_type": "boomerang_tasks",
+    "variant": "light_version",
+    "structure": "unified_files_with_full_personas",
+    "base_structure": "hard_points_zip",
+    "version_aikido": "2.0-light",
+    "created": "2025-01-27"
+  }
+}
