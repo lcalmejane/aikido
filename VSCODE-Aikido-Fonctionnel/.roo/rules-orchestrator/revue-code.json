@@ -1,0 +1,94 @@
+{
+  "title": "Revue de Code AI-KIDO via ROO-CODE",
+  "description": "Analyse et amélioration du code basées sur les tables de vérité AI-KIDO en utilisant exclusivement les modes ROO-CODE",
+  "version": "2.0.0",
+  "steps": [
+    {
+      "id": "code_selection",
+      "title": "1. Sélection du Code à Réviser",
+      "prompt": "[RÔLE] Chef d'équipe technique\n\n[CONTEXTE]\nNous allons effectuer une revue de code basée sur nos standards AI-KIDO.\n\n[TÂCHE]\nVeuillez spécifier le code à réviser :\n\n1. Fichier(s) ou module(s) spécifique(s)\n2. Pull Request ou commit particulier\n3. Zone fonctionnelle (ex: API, modèles, services)\n4. Type de revue souhaité (sécurité, performance, architecture, etc.)\n\n[FORMAT]\nDescription claire du périmètre de revue avec contexte.",
+      "mode": "ask",
+      "requireUserInput": true,
+      "userInputTitle": "Code et type de revue",
+      "next": "standards_exploration"
+    },
+    {
+      "id": "standards_exploration",
+      "title": "2. Exploration des Standards AI-KIDO",
+      "prompt": "[RÔLE] Expert en standards AI-KIDO\n\n[CONTEXTE]\nCode à réviser: {{code_selection}}\n\n[TÂCHE]\nExplorer les tables de vérité depuis prompts/hard_points/index.md puis prompts/gen/index.md pour identifier tous les critères de qualité pertinents pour cette revue.\n\nJe vais extraire :\n1. Standards techniques applicables\n2. Patterns architecturaux recommandés\n3. Règles métier à respecter\n4. Contraintes de sécurité et performance\n5. Conventions de nommage et documentation\n\n[FORMAT]\nRéférentiel de qualité structuré basé sur les tables de vérité AI-KIDO.",
+      "mode": "ask",
+      "next": "review_planning"
+    },
+    {
+      "id": "review_planning",
+      "title": "3. Planification de la Revue",
+      "prompt": "[RÔLE] Architecte qualité\n\n[CONTEXTE]\nCode: {{code_selection}}\nStandards: {{standards_exploration}}\n\n[TÂCHE]\nÉlaborer un plan de revue détaillé en définissant :\n\n1. Axes d'analyse prioritaires\n2. Critères d'évaluation spécifiques\n3. Niveaux de criticité des points à vérifier\n4. Modes ROO-CODE à utiliser pour chaque aspect\n5. Ordre d'analyse optimisé\n\n[FORMAT]\nPlan de revue structuré avec assignation des modes ROO-CODE.",
+      "mode": "architect",
+      "next": "code_analysis_boomerang"
+    },
+    {
+      "id": "code_analysis_boomerang",
+      "title": "4. Analyse Code (Boomerang Task)",
+      "prompt": "Délégation au Mode Code ROO-CODE pour analyse technique.\n\n<new_task>\n<mode>code</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis analyser le code spécifié.\n\nEffectuer une analyse technique approfondie :\n\nCode à analyser: {{code_selection}}\nStandards de référence: {{standards_exploration}}\n\n1. Qualité du code (lisibilité, structure, conventions)\n2. Respect des patterns définis dans les tables de vérité\n3. Détection d'anti-patterns ou code smell\n4. Conformité aux standards techniques du projet\n5. Cohérence avec l'architecture existante\n\nProduire un rapport détaillé avec exemples précis et références aux tables de vérité.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "architecture_analysis_boomerang"
+    },
+    {
+      "id": "architecture_analysis_boomerang",
+      "title": "5. Analyse Architecture (Boomerang Task)",
+      "prompt": "Délégation au Mode Architect ROO-CODE pour évaluation architecturale.\n\n<new_task>\n<mode>architect</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis évaluer l'architecture du code.\n\nEffectuer une évaluation architecturale :\n\nCode analysé: {{code_selection}}\nAnalyse technique: Résultats de l'analyse Code précédente\n\n1. Cohérence architecturale globale\n2. Respect des principes SOLID et Clean Architecture\n3. Gestion des dépendances et couplage\n4. Scalabilité et maintenabilité\n5. Alignement avec les patterns AI-KIDO définis\n\nIdentifier les points d'amélioration architecturale avec priorités.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "security_performance_boomerang"
+    },
+    {
+      "id": "security_performance_boomerang",
+      "title": "6. Analyse Sécurité/Performance (Boomerang Task)",
+      "prompt": "Délégation au Mode Debug ROO-CODE pour aspects critiques.\n\n<new_task>\n<mode>debug</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis analyser les aspects critiques.\n\nEffectuer une analyse de sécurité et performance :\n\nCode: {{code_selection}}\nAnalyses précédentes: Code + Architecture\n\n1. Vulnérabilités potentielles de sécurité\n2. Validation et sanitisation des entrées\n3. Gestion des erreurs et exceptions\n4. Points de performance critique\n5. Optimisations possibles\n6. Respect des contraintes définies dans les tables de vérité\n\nProduire des recommandations spécifiques avec niveau de criticité.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "documentation_analysis_boomerang"
+    },
+    {
+      "id": "documentation_analysis_boomerang",
+      "title": "7. Analyse Documentation (Boomerang Task)",
+      "prompt": "Délégation au Mode Docs ROO-CODE pour évaluation documentaire.\n\n<new_task>\n<mode>docs</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis évaluer la documentation.\n\nEffectuer une analyse de la documentation :\n\nCode: {{code_selection}}\nStandards documentation: Extraits des tables de vérité AI-KIDO\n\n1. Qualité des commentaires dans le code\n2. Documentation des API et interfaces\n3. Clarté des noms de variables et fonctions\n4. Documentation technique associée\n5. Exemples d'utilisation et guides\n6. Conformité aux standards de documentation AI-KIDO\n\nFournir des suggestions d'amélioration concrètes.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "synthesis_boomerang"
+    },
+    {
+      "id": "synthesis_boomerang",
+      "title": "8. Synthèse Globale (Boomerang Task)",
+      "prompt": "Délégation au Mode Architect ROO-CODE pour synthèse finale.\n\n<new_task>\n<mode>architect</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis synthétiser toutes les analyses.\n\nEffectuer une synthèse globale des analyses :\n\nAnalyses disponibles :\n- Technique (Mode Code)\n- Architecture (Mode Architect)\n- Sécurité/Performance (Mode Debug)\n- Documentation (Mode Docs)\n\n1. Score global de qualité (sur 10)\n2. Points forts identifiés\n3. Axes d'amélioration prioritaires\n4. Recommandations actionnables classées par impact\n5. Plan d'action suggéré\n6. Conformité aux standards AI-KIDO\n\nProduire un rapport exécutif complet et actionnable.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "improvement_examples"
+    },
+    {
+      "id": "improvement_examples",
+      "title": "9. Génération d'Exemples d'Amélioration",
+      "prompt": "[RÔLE] Expert en refactoring\n\n[CONTEXTE]\nSynthèse complète: Résultats de toutes les analyses Boomerang Tasks\n\n[TÂCHE]\nGénérer des exemples concrets d'amélioration pour les problèmes identifiés :\n\n1. Code avant/après pour les points critiques\n2. Alternatives architecturales recommandées\n3. Patterns de sécurisation spécifiques\n4. Optimisations de performance\n5. Améliorations de documentation\n\nChaque exemple doit référencer les tables de vérité AI-KIDO pertinentes.\n\n[FORMAT]\nExemples pratiques avec explications détaillées et justifications.",
+      "mode": "code",
+      "next": "action_plan"
+    },
+    {
+      "id": "action_plan",
+      "title": "10. Plan d'Action",
+      "prompt": "[RÔLE] Chef de projet technique\n\n[CONTEXTE]\nSynthèse: {{synthesis_boomerang}}\nExemples: {{improvement_examples}}\n\n[TÂCHE]\nÉlaborer un plan d'action détaillé :\n\n1. **Actions immédiates** (criticité haute)\n2. **Améliorations recommandées** (impact moyen terme)\n3. **Optimisations optionnelles** (long terme)\n4. **Estimation d'effort** pour chaque action\n5. **Ordre de priorité** suggéré\n6. **Critères de validation** post-amélioration\n\n[FORMAT]\nPlan structuré avec timeline et ressources nécessaires.",
+      "mode": "architect",
+      "requireUserValidation": true
+    }
+  ],
+  "configuration": {
+    "validateOnCompletion": true,
+    "rollbackOnError": true,
+    "generateLogs": true,
+    "hardPointsRequired": true,
+    "aikidoCompliant": true
+  },
+  "metadata": {
+    "methodology": "AI-KIDO",
+    "platform": "ROO-CODE",
+    "workflow_type": "boomerang_tasks",
+    "purpose": "code_review",
+    "version_aikido": "2.0",
+    "created": "2025-01-27"
+  }
+}

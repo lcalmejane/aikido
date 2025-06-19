@@ -1,0 +1,103 @@
+{
+  "title": "Validation Definition of Ready AI-KIDO via ROO-CODE",
+  "description": "Analyse et validation DoR basées sur les tables de vérité AI-KIDO en utilisant exclusivement les modes ROO-CODE",
+  "version": "2.0.0",
+  "steps": [
+    {
+      "id": "dor_standards_exploration",
+      "title": "1. Exploration des Standards DoR AI-KIDO",
+      "prompt": "[RÔLE] Expert méthodologie Agile AI-KIDO\n\n[CONTEXTE]\nNous devons vérifier la maturité technique des tickets avant leur entrée en sprint selon les standards AI-KIDO.\n\n[TÂCHE]\nExplorer les tables de vérité depuis prompts/hard_points/index.md puis prompts/gen/index.md pour identifier :\n\n1. **Critères DOR standards** définis dans le projet\n2. **Checklist de validation** technique et fonctionnelle\n3. **Seuils de qualité** requis selon le contexte\n4. **Processus de validation** établis dans l'organisation\n5. **Templates et patterns** pour l'amélioration des tickets\n\nSi aucun standard spécifique n'existe, établir une checklist DOR standard basée sur les meilleures pratiques AI-KIDO.\n\n[FORMAT]\nRéférentiel DoR complet avec critères hiérarchisés et références aux tables de vérité.",
+      "mode": "ask",
+      "next": "ticket_input"
+    },
+    {
+      "id": "ticket_input",
+      "title": "2. Ticket à Analyser",
+      "prompt": "[RÔLE] Product Owner / Tech Lead\n\n[CONTEXTE]\nStandards DoR: {{dor_standards_exploration}}\n\n[TÂCHE]\nVeuillez fournir le ticket que vous souhaitez analyser :\n\n1. **Type de ticket** (User Story, Tâche technique, Bug, Spike, etc.)\n2. **Titre** du ticket\n3. **Description** complète\n4. **Critères d'acceptation** (si disponibles)\n5. **Informations techniques** supplémentaires\n6. **Contexte métier** et priorité\n\n[FORMAT]\nDescription complète du ticket avec tous les éléments disponibles.",
+      "mode": "ask",
+      "requireUserInput": true,
+      "userInputTitle": "Description du ticket à analyser",
+      "next": "team_context_collection"
+    },
+    {
+      "id": "team_context_collection",
+      "title": "3. Collecte du Contexte d'Équipe",
+      "prompt": "[RÔLE] Scrum Master AI-KIDO\n\n[CONTEXTE]\nTicket: {{ticket_input}}\nStandards DoR: {{dor_standards_exploration}}\n\n[TÂCHE]\nPour affiner l'analyse DoR, veuillez fournir le contexte d'équipe :\n\n1. **Niveau d'expertise** (junior, mixte, senior)\n2. **Stack technique** principale\n3. **Contraintes organisationnelles** spécifiques\n4. **Défis actuels** (équipe distribuée, nouveaux membres, etc.)\n5. **Standards qualité** particuliers du projet\n\nCes informations permettront d'adapter les critères DoR au contexte réel.\n\n[FORMAT]\nContexte d'équipe structuré (peut être marqué comme 'standard' si contexte générique souhaité).",
+      "mode": "ask",
+      "requireUserInput": true,
+      "userInputTitle": "Contexte d'équipe",
+      "next": "functional_analysis_boomerang"
+    },
+    {
+      "id": "functional_analysis_boomerang",
+      "title": "4. Analyse Fonctionnelle (Boomerang Task)",
+      "prompt": "Délégation au Mode Ask ROO-CODE pour analyse fonctionnelle approfondie.\n\n<new_task>\n<mode>ask</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis analyser les aspects fonctionnels du ticket.\n\nAnalyser la maturité fonctionnelle :\n\nTicket: {{ticket_input}}\nStandards DoR: {{dor_standards_exploration}}\nContexte équipe: {{team_context_collection}}\n\n1. **Clarté des exigences** (description, objectif, valeur métier)\n2. **Complétude des critères d'acceptation** selon standards AI-KIDO\n3. **Identification des cas limites** et scénarios d'erreur\n4. **Définition des impacts utilisateur** et parties prenantes\n5. **Cohérence avec la vision produit** et roadmap\n6. **Testabilité fonctionnelle** des exigences\n\nUtiliser les référentiels qualité des tables de vérité AI-KIDO.\nProduire une évaluation détaillée avec scoring par critère.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "technical_analysis_boomerang"
+    },
+    {
+      "id": "technical_analysis_boomerang",
+      "title": "5. Analyse Technique (Boomerang Task)",
+      "prompt": "Délégation au Mode Code ROO-CODE pour analyse de faisabilité technique.\n\n<new_task>\n<mode>code</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis analyser la faisabilité technique.\n\nAnalyser la maturité technique :\n\nTicket: {{ticket_input}}\nAnalyse fonctionnelle: Résultats de l'analyse précédente\nStandards techniques: Extraits des tables de vérité AI-KIDO\n\n1. **Faisabilité technique** dans la stack existante\n2. **Compatibilité architecturale** avec les patterns du projet\n3. **Identification des dépendances** techniques et fonctionnelles\n4. **Estimation de la complexité** d'implémentation\n5. **Points d'attention techniques** spécifiques\n6. **Besoins en ressources** et contraintes environnementales\n\nÉvaluer selon les standards techniques définis dans les tables de vérité.\nProduire une analyse technique détaillée avec recommandations.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "architectural_validation_boomerang"
+    },
+    {
+      "id": "architectural_validation_boomerang",
+      "title": "6. Validation Architecturale (Boomerang Task)",
+      "prompt": "Délégation au Mode Architect ROO-CODE pour validation architecturale.\n\n<new_task>\n<mode>architect</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis valider l'impact architectural.\n\nValider l'architecture :\n\nTicket: {{ticket_input}}\nAnalyses précédentes: Fonctionnelle + Technique\nPatterns architecturaux: Définis dans les tables de vérité AI-KIDO\n\n1. **Cohérence architecturale** avec l'existant\n2. **Respect des patterns** et principes définis\n3. **Impact sur la scalabilité** et performance\n4. **Gestion des interactions** entre composants\n5. **Alignement avec la roadmap technique**\n6. **Considérations de sécurité** et robustesse\n\nUtiliser les guidelines architecturaux des tables de vérité.\nProduire une validation architecturale avec recommandations d'amélioration.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "risk_assessment_boomerang"
+    },
+    {
+      "id": "risk_assessment_boomerang",
+      "title": "7. Évaluation des Risques (Boomerang Task)",
+      "prompt": "Délégation au Mode Debug ROO-CODE pour identification des risques.\n\n<new_task>\n<mode>debug</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis identifier tous les risques potentiels.\n\nÉvaluer les risques :\n\nTicket: {{ticket_input}}\nAnalyses complètes: Fonctionnelle + Technique + Architecturale\nMatrice de risques: Standards définis dans les tables de vérité\n\n1. **Risques d'implémentation** (complexité, délais)\n2. **Risques techniques** (performance, compatibilité)\n3. **Risques de régression** sur l'existant\n4. **Risques de sécurité** et conformité\n5. **Risques opérationnels** (déploiement, monitoring)\n6. **Risques métier** (impact utilisateur, ROI)\n\nPour chaque risque : probabilité, impact, et stratégies de mitigation.\nProduire une matrice de risques complète avec plans d'action.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "dor_synthesis_boomerang"
+    },
+    {
+      "id": "dor_synthesis_boomerang",
+      "title": "8. Synthèse DoR (Boomerang Task)",
+      "prompt": "Délégation au Mode Architect ROO-CODE pour synthèse globale DoR.\n\n<new_task>\n<mode>architect</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis synthétiser l'évaluation DoR complète.\n\nSynthétiser l'évaluation DoR :\n\nTicket original: {{ticket_input}}\nAnalyses disponibles:\n- Fonctionnelle (Mode Ask)\n- Technique (Mode Code)\n- Architecturale (Mode Architect)\n- Risques (Mode Debug)\n\nStandards DoR: {{dor_standards_exploration}}\n\n1. **Score global DoR** (sur 10 ou selon échelle du projet)\n2. **Conformité par critère** aux standards AI-KIDO\n3. **Points bloquants identifiés** avec criticité\n4. **Évaluation de la maturité** (Prêt/Presque prêt/Non prêt)\n5. **Recommandations prioritaires** pour amélioration\n6. **Impact sur la planification** de sprint\n\nProduire un rapport DoR exécutif avec verdict clair et actionnable.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "improvement_recommendations"
+    },
+    {
+      "id": "improvement_recommendations",
+      "title": "9. Recommandations d'Amélioration",
+      "prompt": "[RÔLE] Coach technique AI-KIDO\n\n[CONTEXTE]\nSynthèse DoR: Résultats de l'évaluation globale\nStandards projet: {{dor_standards_exploration}}\n\n[TÂCHE]\nÉlaborer des recommandations d'amélioration concrètes :\n\n1. **Actions immédiates** pour résoudre les blocages\n2. **Améliorations de contenu** (description, critères d'acceptation)\n3. **Clarifications techniques** nécessaires\n4. **Validations supplémentaires** à effectuer\n5. **Templates et exemples** basés sur les standards AI-KIDO\n6. **Estimation d'effort** pour chaque amélioration\n\n[FORMAT]\nPlan d'amélioration priorisé avec templates concrets et exemples.",
+      "mode": "ask",
+      "next": "ticket_enhancement"
+    },
+    {
+      "id": "ticket_enhancement",
+      "title": "10. Amélioration du Ticket",
+      "prompt": "[RÔLE] Expert rédaction de tickets AI-KIDO\n\n[CONTEXTE]\nTicket original: {{ticket_input}}\nRecommandations: {{improvement_recommendations}}\nStandards DoR: {{dor_standards_exploration}}\n\n[TÂCHE]\nGénérer une version améliorée du ticket qui répond aux critères DoR :\n\n1. **Description enrichie** selon les standards du projet\n2. **Critères d'acceptation complets** avec tous les cas\n3. **Informations techniques** nécessaires\n4. **Définition of Done** spécifique\n5. **Tests d'acceptation** détaillés\n6. **Notes d'implémentation** pour l'équipe\n\nRespecter le format et les conventions définies dans les tables de vérité AI-KIDO.\n\n[FORMAT]\nTicket amélioré complet prêt pour le sprint, formaté selon les standards.",
+      "mode": "ask",
+      "next": "process_recommendations"
+    },
+    {
+      "id": "process_recommendations",
+      "title": "11. Recommandations Processus",
+      "prompt": "[RÔLE] Coach Agile AI-KIDO\n\n[CONTEXTE]\nAnalyse complète du ticket et des écarts identifiés\nStandards DoR: {{dor_standards_exploration}}\n\n[TÂCHE]\nProposer des améliorations au processus de préparation des tickets :\n\n1. **Templates DoR optimisés** basés sur les patterns AI-KIDO\n2. **Checklist de validation** automatisable\n3. **Formation et sensibilisation** de l'équipe\n4. **Outils et automatisations** recommandés\n5. **Rituels d'amélioration** continue\n6. **Métriques de qualité** à suivre\n\n[FORMAT]\nPlan d'amélioration processus avec templates et outils concrets.",
+      "mode": "ask",
+      "requireUserValidation": true
+    }
+  ],
+  "configuration": {
+    "validateOnCompletion": true,
+    "rollbackOnError": true,
+    "generateLogs": true,
+    "hardPointsRequired": true,
+    "aikidoCompliant": true
+  },
+  "metadata": {
+    "methodology": "AI-KIDO",
+    "platform": "ROO-CODE",
+    "workflow_type": "boomerang_tasks",
+    "purpose": "dor_validation",
+    "version_aikido": "2.0",
+    "created": "2025-01-27"
+  }
+}
