@@ -1,0 +1,101 @@
+{
+  "title": "Audit de Sécurité AI-KIDO via ROO-CODE",
+  "description": "Audit complet de sécurité basé sur les tables de vérité AI-KIDO en utilisant exclusivement les modes ROO-CODE",
+  "version": "2.0.0",
+  "steps": [
+    {
+      "id": "security_scope_input",
+      "title": "1. Définition du Périmètre d'Audit Sécurité",
+      "prompt": "[RÔLE] Auditeur sécurité AI-KIDO\n\n[CONTEXTE]\nNous allons réaliser un audit de sécurité complet selon les standards AI-KIDO, OWASP et les meilleures pratiques de cybersécurité.\n\n[TÂCHE]\nVeuillez définir le périmètre de l'audit :\n\n1. **Application à auditer** (nom, version, technologies)\n2. **Fonctionnalités critiques** à sécuriser en priorité\n3. **Chemins du code source** concernés (modules sensibles)\n4. **Assets et données** sensibles à protéger\n5. **Conformité requise** (GDPR, ISO27001, OWASP, sectorielles)\n6. **Niveau de menace** (profil attaquant, motivations)\n\n[FORMAT]\nCahier des charges d'audit avec périmètre et objectifs sécuritaires précis.",
+      "mode": "ask",
+      "requireUserInput": true,
+      "userInputTitle": "Périmètre et objectifs de l'audit sécurité",
+      "next": "security_standards_exploration"
+    },
+    {
+      "id": "security_standards_exploration",
+      "title": "2. Exploration des Standards de Sécurité AI-KIDO",
+      "prompt": "[RÔLE] Expert en cybersécurité AI-KIDO\n\n[CONTEXTE]\nPérimètre d'audit: {{security_scope_input}}\n\n[TÂCHE]\nExplorer les tables de vérité depuis prompts/hard_points/index.md puis prompts/gen/index.md pour identifier :\n\n1. **Standards de sécurité** applicables (OWASP, NIST, ISO27001)\n2. **Référentiels de vulnérabilités** et bases CVE\n3. **Méthodologies d'audit** de sécurité validées\n4. **Outils de scanning** et techniques de test\n5. **Patterns de sécurité** et anti-patterns\n6. **Critères de conformité** réglementaire\n\nPour chaque standard trouvé, indiquer la référence précise dans les tables de vérité.\n\n[FORMAT]\nRéférentiel de sécurité AI-KIDO avec standards et compliance applicables.",
+      "mode": "ask",
+      "next": "threat_modeling_boomerang"
+    },
+    {
+      "id": "threat_modeling_boomerang",
+      "title": "3. Modélisation des Menaces (Boomerang Task)",
+      "prompt": "Délégation au Mode Architect ROO-CODE pour modélisation des menaces et analyse de risques.\n\n<new_task>\n<mode>architect</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis modéliser les menaces sécuritaires.\n\nModéliser les menaces :\n\nPérimètre: {{security_scope_input}}\nStandards: {{security_standards_exploration}}\n\n1. **Architecture de sécurité** actuelle (défense en profondeur)\n2. **Surfaces d'attaque** identifiées (exposition, points d'entrée)\n3. **Threat modeling STRIDE** (Spoofing, Tampering, etc.)\n4. **Acteurs malveillants** (motivations, capacités, TTPs)\n5. **Scénarios d'attaque** probables et impact\n6. **Matrice de risques** (probabilité × impact)\n\nUtiliser les frameworks de threat modeling des tables de vérité AI-KIDO.\nProduire une cartographie complète des menaces avec priorisation.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "static_security_analysis_boomerang"
+    },
+    {
+      "id": "static_security_analysis_boomerang",
+      "title": "4. Analyse Statique de Sécurité (Boomerang Task)",
+      "prompt": "Délégation au Mode Code ROO-CODE pour analyse statique de sécurité du code.\n\n<new_task>\n<mode>code</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis analyser la sécurité du code source.\n\nAnalyser la sécurité du code :\n\nMenaces modélisées: Résultats de la modélisation précédente\nCode source: {{security_scope_input}}\nStandards: Référentiels sécurité des tables de vérité AI-KIDO\n\n1. **Vulnérabilités OWASP Top 10** (injection, XSS, etc.)\n2. **Secrets hardcodés** (clés API, mots de passe)\n3. **Gestion authentification** et autorisation\n4. **Validation d'entrées** et échappement sorties\n5. **Gestion d'erreurs** et exposition d'informations\n6. **Dépendances vulnérables** et CVE associées\n\nUtiliser les règles de sécurité des tables de vérité AI-KIDO.\nProduire un rapport de vulnérabilités avec criticité CVSS.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "dynamic_security_testing_boomerang"
+    },
+    {
+      "id": "dynamic_security_testing_boomerang",
+      "title": "5. Tests Dynamiques de Sécurité (Boomerang Task)",
+      "prompt": "Délégation au Mode Debug ROO-CODE pour tests de sécurité dynamiques.\n\n<new_task>\n<mode>debug</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis effectuer des tests de sécurité dynamiques.\n\nTester dynamiquement :\n\nVulnérabilités statiques: Résultats de l'analyse précédente\nApplication déployée: Environnement de test sécurisé\nMéthodologies: Techniques DAST des tables de vérité AI-KIDO\n\n1. **Tests d'injection** (SQL, NoSQL, LDAP, OS)\n2. **Tests XSS** (reflected, stored, DOM-based)\n3. **Tests d'authentification** (brute force, bypass)\n4. **Tests d'autorisation** (privilege escalation, IDOR)\n5. **Tests de gestion de session** (fixation, hijacking)\n6. **Tests de configuration** (headers sécurité, HTTPS)\n\nUtiliser les outils de test sécurité des tables de vérité.\nProduire des preuves de concept (PoC) pour vulnérabilités confirmées.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "infrastructure_security_boomerang"
+    },
+    {
+      "id": "infrastructure_security_boomerang",
+      "title": "6. Audit Sécurité Infrastructure (Boomerang Task)",
+      "prompt": "Délégation au Mode Architect ROO-CODE pour audit de sécurité infrastructure.\n\n<new_task>\n<mode>architect</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis auditer la sécurité de l'infrastructure.\n\nAuditer l'infrastructure :\n\nTests dynamiques: Vulnérabilités confirmées\nArchitecture système: Cartographie des menaces\nStandards infra: Guidelines sécurité des tables de vérité AI-KIDO\n\n1. **Sécurité réseau** (segmentation, firewall, IDS/IPS)\n2. **Durcissement serveurs** (OS, services, configurations)\n3. **Sécurité conteneurs** (images, runtime, orchestration)\n4. **Chiffrement** (transit, repos, gestion des clés)\n5. **Monitoring sécurité** (logs, SIEM, alertes)\n6. **Sauvegarde et recovery** (intégrité, chiffrement)\n\nUtiliser les benchmarks sécurité des tables de vérité.\nProduire une évaluation de posture sécuritaire infrastructure.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "compliance_assessment_boomerang"
+    },
+    {
+      "id": "compliance_assessment_boomerang",
+      "title": "7. Évaluation de Conformité (Boomerang Task)",
+      "prompt": "Délégation au Mode Docs ROO-CODE pour évaluation de conformité réglementaire.\n\n<new_task>\n<mode>docs</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis évaluer la conformité réglementaire.\n\nÉvaluer la conformité :\n\nAudit infrastructure: Résultats sécurité infrastructure\nExigences conformité: {{security_scope_input}}\nRéférentiels: Standards compliance des tables de vérité AI-KIDO\n\n1. **GDPR compliance** (consentement, droits, breach notification)\n2. **ISO 27001** (SMSI, contrôles, amélioration continue)\n3. **OWASP ASVS** (vérification sécurité applicative)\n4. **Conformité sectorielle** (PCI-DSS, HIPAA, etc.)\n5. **Documentation** et preuves de conformité\n6. **Écarts et actions** correctives requises\n\nUtiliser les checklists de conformité des tables de vérité.\nProduire un rapport de conformité avec plan de mise en conformité.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "risk_assessment"
+    },
+    {
+      "id": "risk_assessment",
+      "title": "8. Évaluation des Risques et Priorisation",
+      "prompt": "[RÔLE] Analyste risques cybersécurité AI-KIDO\n\n[CONTEXTE]\nVulnérabilités identifiées: Analyse statique + dynamique + infrastructure\nConformité évaluée: Écarts réglementaires identifiés\nStandards risques: Méthodologies des tables de vérité AI-KIDO\n\n[TÂCHE]\nÉvaluer et prioriser les risques de sécurité :\n\n1. **Scoring CVSS v3.1** des vulnérabilités techniques\n2. **Impact business** (confidentialité, intégrité, disponibilité)\n3. **Probabilité d'exploitation** (facilité, motivation attaquant)\n4. **Risques réglementaires** (amendes, sanctions, réputation)\n5. **Matrice de risques** (probabilité × impact)\n6. **Priorisation** des corrections selon criticité\n\n[FORMAT]\nÉvaluation de risques avec priorisation et recommandations urgentes.",
+      "mode": "ask",
+      "next": "remediation_strategy_boomerang"
+    },
+    {
+      "id": "remediation_strategy_boomerang",
+      "title": "9. Stratégie de Remédiation (Boomerang Task)",
+      "prompt": "Délégation au Mode Architect ROO-CODE pour conception de la stratégie de remédiation.\n\n<new_task>\n<mode>architect</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis concevoir la stratégie de remédiation sécuritaire.\n\nConcevoir la remédiation :\n\nRisques évalués: {{risk_assessment}}\nStandards remédiation: Patterns de correction des tables de vérité AI-KIDO\n\n1. **Plan de correction** phasé (urgent, court, moyen, long terme)\n2. **Stratégies de mitigation** par type de vulnérabilité\n3. **Architecture sécurisée** cible (défense en profondeur)\n4. **Mesures compensatoires** temporaires si nécessaire\n5. **Estimations d'effort** et ressources requises\n6. **Métriques de validation** post-correction\n\nUtiliser les frameworks de remédiation des tables de vérité.\nProduire un plan stratégique avec timeline et responsabilités.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "security_audit_report_boomerang"
+    },
+    {
+      "id": "security_audit_report_boomerang",
+      "title": "10. Génération Rapport d'Audit Sécurité (Boomerang Task)",
+      "prompt": "Délégation au Mode Docs ROO-CODE pour génération du rapport complet d'audit de sécurité.\n\n<new_task>\n<mode>docs</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis générer le rapport complet d'audit de sécurité.\n\nGénérer le rapport :\n\nStratégie remédiation: Plan de correction complet\nÉvaluation risques: Priorisation et impacts\nTemplates audit: Définis dans les tables de vérité AI-KIDO\n\n1. **Synthèse exécutive** avec posture sécuritaire globale\n2. **Inventaire vulnérabilités** avec CVSS et PoC\n3. **Évaluation conformité** réglementaire détaillée\n4. **Plan de remédiation** avec ROI et timeline\n5. **Recommandations stratégiques** sécurité\n6. **Métriques de suivi** et amélioration continue\n\nRespecter les templates de rapport d'audit sécurité AI-KIDO.\nAssurer la lisibilité pour RSSI, directions et équipes techniques.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "security_governance"
+    },
+    {
+      "id": "security_governance",
+      "title": "11. Gouvernance et Amélioration Continue",
+      "prompt": "[RÔLE] RSSI (Responsable Sécurité des Systèmes d'Information) AI-KIDO\n\n[CONTEXTE]\nRapport d'audit sécurité complet généré\nPlan de remédiation établi avec priorisation\n\n[TÂCHE]\nÉlaborer la gouvernance sécurité et amélioration continue :\n\n1. **Politique de sécurité** mise à jour\n2. **Processus incidents** de sécurité (CERT/CSIRT)\n3. **Formation et sensibilisation** équipes\n4. **Audits récurrents** (fréquence, périmètre)\n5. **Veille sécurité** et threat intelligence\n6. **Métriques et KPI** sécurité pour pilotage\n\n[FORMAT]\nPlan de gouvernance sécurité avec processus et responsabilités.",
+      "mode": "ask",
+      "requireUserValidation": true
+    }
+  ],
+  "configuration": {
+    "validateOnCompletion": true,
+    "rollbackOnError": true,
+    "generateLogs": true,
+    "hardPointsRequired": true,
+    "aikidoCompliant": true
+  },
+  "metadata": {
+    "methodology": "AI-KIDO",
+    "platform": "ROO-CODE",
+    "workflow_type": "boomerang_tasks",
+    "purpose": "security_audit",
+    "version_aikido": "2.0",
+    "created": "2025-01-27"
+  }
+}
