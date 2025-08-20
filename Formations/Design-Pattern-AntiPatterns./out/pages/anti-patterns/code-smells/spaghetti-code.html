@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spaghetti Code - Anti-Pattern | Formation Patterns Développeurs</title>
+    <meta name="description" content="Comprendre et éviter l'anti-pattern Spaghetti Code : causes, conséquences et solutions de refactoring">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/exercises.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <div class="breadcrumb">
+                        <a href="#" onclick="window.formationNav.navigateToAbsolutePage('index.html'); return false;">Formation</a>
+                        <span>→</span>
+                        <a href="../index.html">Anti-Patterns</a>
+                        <span>→</span>
+                        <span>Spaghetti Code</span>
+                    </div>
+                    
+                    <h1 class="page-title">🍝 Spaghetti Code</h1>
+                    <p class="page-subtitle">L'anti-pattern du code enchevêtré et impossible à suivre</p>
+                    
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span>🦨</span>
+                            <span>Code Smell critique</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>⏱️</span>
+                            <span>~30 minutes</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>🎯</span>
+                            <span>Refactoring essentiel</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>🧩</span>
+                            <span>4 biais cognitifs liés</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Définition -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card anti-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="definition-text">
+                            Le <strong>Spaghetti Code</strong> est un anti-pattern caractérisé par une structure de contrôle 
+                            complexe et enchevêtrée, avec des flux d'exécution difficiles à suivre. Le code ressemble à un 
+                            plat de spaghettis où chaque "nouille" (ligne de code) s'entremêle avec les autres, créant un 
+                            ensemble impossible à démêler.
+                        </p>
+
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problèmes Causés</h3>
+                                <ul>
+                                    <li>Flux de contrôle chaotique et imprévisible</li>
+                                    <li>Maintenance extrêmement difficile</li>
+                                    <li>Bugs récurrents et effets de bord</li>
+                                    <li>Impossible à tester unitairement</li>
+                                    <li>Onboarding des nouveaux développeurs ralenti</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solutions Apportées</h3>
+                                <ul>
+                                    <li>Refactoring vers des fonctions courtes</li>
+                                    <li>Séparation des responsabilités</li>
+                                    <li>Utilisation de design patterns</li>
+                                    <li>Tests unitaires pour valider le comportement</li>
+                                    <li>Documentation du flux métier</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert danger">
+                            <strong>⚠️ Attention :</strong> Le Spaghetti Code peut sembler fonctionnel, mais il devient 
+                            rapidement un cauchemar de maintenance et une source constante de bugs.
+                        </div>
+
+                        <h3>Caractéristiques du Spaghetti Code</h3>
+                        <div class="characteristics-grid">
+                            <div class="characteristic-item">
+                                <span class="char-icon">🌀</span>
+                                <div>
+                                    <strong>Flux de contrôle complexe</strong>
+                                    <p>Nombreux goto, break, continue imbriqués</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">🔀</span>
+                                <div>
+                                    <strong>Logique entremêlée</strong>
+                                    <p>Plusieurs responsabilités mélangées</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">🧩</span>
+                                <div>
+                                    <strong>Difficile à comprendre</strong>
+                                    <p>Impossible de suivre le flux d'exécution</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">🐛</span>
+                                <div>
+                                    <strong>Propice aux bugs</strong>
+                                    <p>Effets de bord imprévisibles</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Biais Cognitifs Associés -->
+                <section class="cognitive-bias-section">
+                    <div class="aikido-card biais-cognitif">
+                        <h2>🧠 Biais Cognitifs Associés</h2>
+                        <p class="mb-lg">
+                            Le Spaghetti Code résulte souvent de plusieurs biais cognitifs qui poussent vers des solutions rapides mais désordonnées :
+                        </p>
+
+                        <div class="bias-cards">
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">⚡</span>
+                                    <h4>Biais de Disponibilité</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Je vais juste ajouter cette condition ici, c'est plus rapide !"
+                                </p>
+                                <p class="bias-explanation">
+                                    La tendance à utiliser la solution la plus immédiatement accessible plutôt que 
+                                    de réfléchir à une structure propre.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Ajouter des if/else imbriqués plutôt que de refactorer 
+                                    vers une structure plus claire.
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">✅</span>
+                                    <h4>Biais de Confirmation</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Ça marche, donc c'est bon !"
+                                </p>
+                                <p class="bias-explanation">
+                                    Ignorer les signaux d'alarme (complexité, difficultés de debug) car le code 
+                                    produit le résultat attendu.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Refuser de voir que le code est illisible car 
+                                    "les tests passent".
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">⏰</span>
+                                    <h4>Biais de Pression Temporelle</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Pas le temps de faire propre, il faut livrer !"
+                                </p>
+                                <p class="bias-explanation">
+                                    La pression des délais pousse à prendre des raccourcis qui créent de la dette technique.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Copier-coller du code existant et le modifier 
+                                    "juste pour cette fois".
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">🎯</span>
+                                    <h4>Biais d'Engagement</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "J'ai déjà commencé comme ça, je continue !"
+                                </p>
+                                <p class="bias-explanation">
+                                    Une fois engagé dans une approche désordonnée, la résistance au changement 
+                                    augmente avec l'investissement.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Continuer à ajouter des conditions plutôt que 
+                                    de refactorer vers un pattern plus propre.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exemple de Code Problématique -->
+                <section class="example-section">
+                    <div class="aikido-card">
+                        <h2>💀 Exemple Problématique</h2>
+                        <p class="mb-md">
+                            Voici un exemple typique de Spaghetti Code dans une fonction de traitement de commande :
+                        </p>
+
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="php">
+                                    <span class="tab-icon">🐘</span>
+                                    PHP
+                                </button>
+                                <button class="tab-btn" data-tab="java">
+                                    <span class="tab-icon">☕</span>
+                                    Java
+                                </button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="php">
+                                <pre><code class="language-php">
+<?php
+/**
+ * ❌ ANTI-PATTERN: Spaghetti Code
+ * Fonction de traitement de commande impossible à suivre
+ */
+function processOrder($order, $user, $products, $discounts, $shipping) {
+    $total = 0;
+    $errors = [];
+    $status = 'pending';
+    $shippingCost = 0;
+    $discountAmount = 0;
+    
+    // Validation utilisateur (mélangée avec la logique métier)
+    if (!$user) {
+        $errors[] = 'User required';
+        goto error_handling; // ❌ Flux de contrôle chaotique
+    }
+    
+    if ($user['status'] === 'banned') {
+        if ($user['ban_reason'] === 'fraud') {
+            $errors[] = 'Fraud user';
+            $status = 'rejected';
+            goto cleanup;
+        } elseif ($user['ban_reason'] === 'spam') {
+            if ($user['last_activity'] > time() - 30 * 24 * 60 * 60) {
+                $errors[] = 'Recent spam activity';
+                goto error_handling;
+            } else {
+                // Peut-être autoriser...
+                if ($order['total'] < 50) {
+                    // Commande petite, on accepte
+                    $user['status'] = 'probation';
+                } else {
+                    $errors[] = 'Large order from spam user';
+                    goto error_handling;
+                }
+            }
+        }
+    }
+    
+    // Calcul des produits (logique entremêlée)
+    foreach ($order['items'] as $item) {
+        $product = null;
+        foreach ($products as $p) {
+            if ($p['id'] === $item['product_id']) {
+                $product = $p;
+                break;
+            }
+        }
+        
+        if (!$product) {
+            $errors[] = "Product {$item['product_id']} not found";
+            continue; // ❌ Flux complexe
+        }
+        
+        if ($product['stock'] < $item['quantity']) {
+            if ($product['backorder_allowed']) {
+                if ($user['is_premium']) {
+                    // Premium peut commander en rupture
+                    $item['backorder'] = true;
+                    $item['estimated_delivery'] = $product['restock_date'];
+                } else {
+                    if ($item['quantity'] <= $product['stock'] + $product['incoming_stock']) {
+                        // Stock + incoming suffisant
+                        $item['partial_backorder'] = true;
+                        $item['available_now'] = $product['stock'];
+                        $item['backorder_quantity'] = $item['quantity'] - $product['stock'];
+                    } else {
+                        $errors[] = "Insufficient stock for {$product['name']}";
+                        continue;
+                    }
+                }
+            } else {
+                $errors[] = "Product {$product['name']} out of stock";
+                continue;
+            }
+        }
+        
+        // Calcul prix avec remises (logique complexe imbriquée)
+        $itemPrice = $product['price'] * $item['quantity'];
+        
+        if ($discounts && count($discounts) > 0) {
+            foreach ($discounts as $discount) {
+                if ($discount['type'] === 'percentage') {
+                    if (in_array($product['id'], $discount['applicable_products'])) {
+                        if (isset($discount['min_quantity']) && $item['quantity'] >= $discount['min_quantity']) {
+                            $itemPrice *= (1 - $discount['value'] / 100);
+                            $discountAmount += ($product['price'] * $item['quantity'] * $discount['value'] / 100);
+                        } elseif (!isset($discount['min_quantity'])) {
+                            $itemPrice *= (1 - $discount['value'] / 100);
+                            $discountAmount += ($product['price'] * $item['quantity'] * $discount['value'] / 100);
+                        }
+                    } elseif (in_array($product['category_id'], $discount['category_ids'])) {
+                        // Logique similaire mais légèrement différente...
+                        if (isset($discount['min_amount']) && $itemPrice >= $discount['min_amount']) {
+                            $discountValue = min($itemPrice * $discount['value'] / 100, $discount['max_discount'] ?? PHP_FLOAT_MAX);
+                            $itemPrice -= $discountValue;
+                            $discountAmount += $discountValue;
+                        }
+                    }
+                } elseif ($discount['type'] === 'fixed') {
+                    // Encore une autre logique...
+                    if ($itemPrice >= $discount['min_amount']) {
+                        $itemPrice -= $discount['value'];
+                        $discountAmount += $discount['value'];
+                    }
+                }
+            }
+        }
+        
+        $total += $itemPrice;
+        
+        // Gestion stock (mélangée avec le calcul)
+        if (!isset($item['backorder']) || !$item['backorder']) {
+            $product['stock'] -= $item['quantity'];
+            if ($product['stock'] < $product['low_stock_threshold']) {
+                // Notification stock bas (logique métier dans le calcul)
+                sendLowStockAlert($product);
+                if ($product['auto_reorder'] && $product['supplier']) {
+                    createReorderRequest($product);
+                }
+            }
+        }
+    }
+    
+    // Calcul frais de port (encore plus de conditions imbriquées)
+    if ($shipping) {
+        if ($shipping['method'] === 'standard') {
+            if ($total > 100) {
+                $shippingCost = 0; // Gratuit au-dessus de 100€
+            } elseif ($user['is_premium']) {
+                $shippingCost = 2.99; // Tarif réduit premium
+            } else {
+                $shippingCost = 5.99;
+            }
+        } elseif ($shipping['method'] === 'express') {
+            $shippingCost = 12.99;
+            if ($user['is_premium']) {
+                $shippingCost *= 0.8; // 20% de réduction
+            }
+            
+            // Vérification disponibilité express
+            if (!isExpressAvailable($shipping['address'])) {
+                $errors[] = 'Express shipping not available';
+                goto error_handling;
+            }
+        } elseif ($shipping['method'] === 'pickup') {
+            $shippingCost = 0;
+            if (!isPickupLocationOpen($shipping['pickup_id'])) {
+                $errors[] = 'Pickup location closed';
+                goto error_handling;
+            }
+        }
+    }
+    
+    $total += $shippingCost;
+    
+    // Validation finale (mélangée avec tout le reste)
+    if ($total < 0) {
+        $errors[] = 'Invalid total amount';
+        goto error_handling;
+    }
+    
+    if (isset($user['credit_limit']) && $total > $user['credit_limit']) {
+        if ($user['payment_method'] === 'credit') {
+            $errors[] = 'Credit limit exceeded';
+            goto error_handling;
+        }
+    }
+    
+    // Sauvegarde (logique de persistance mélangée)
+    try {
+        saveOrder($order);
+        updateUserStats($user);
+        logOrderEvent('created', $order['id']);
+    } catch (Exception $e) {
+        $errors[] = 'Database error: ' . $e->getMessage();
+        goto error_handling;
+    }
+    
+    return [
+        'success' => true,
+        'order_id' => $order['id'],
+        'total' => $total,
+        'status' => $status
+    ];
+    
+    error_handling: // ❌ Label goto - flux chaotique
+        logOrderEvent('error', $order['id'], $errors);
+        return [
+            'success' => false,
+            'errors' => $errors
+        ];
+    
+    cleanup: // ❌ Autre label goto
+        cleanupTempData($order['id']);
+        return [
+            'success' => false,
+            'status' => $status,
+            'errors' => $errors
+        ];
+}
+?>
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="java">
+                                <pre><code class="language-java">
+/**
+ * ❌ ANTI-PATTERN: Spaghetti Code
+ * Méthode de traitement de commande impossible à suivre
+ */
+public class OrderProcessor {
+    
+    public OrderResult processOrder(Order order, User user, List<Product> products, 
+                                   List<Discount> discounts, ShippingInfo shipping) {
+        double total = 0;
+        List<String> errors = new ArrayList<>();
+        String status = "pending";
+        double shippingCost = 0;
+        double discountAmount = 0;
+        
+        // Validation utilisateur (mélangée avec la logique métier)
+        if (user == null) {
+            errors.add("User required");
+            return handleError(order, errors); // ❌ Flux de contrôle chaotique
+        }
+        
+        if ("banned".equals(user.getStatus())) {
+            if ("fraud".equals(user.getBanReason())) {
+                errors.add("Fraud user");
+                status = "rejected";
+                return cleanup(order, status, errors);
+            } else if ("spam".equals(user.getBanReason())) {
+                if (user.getLastActivity().after(new Date(System.currentTimeMillis() - 30L * 24 * 60 * 60 * 1000))) {
+                    errors.add("Recent spam activity");
+                    return handleError(order, errors);
+                } else {
+                    // Peut-être autoriser...
+                    if (order.getTotal() < 50) {
+                        user.setStatus("probation");
+                    } else {
+                        errors.add("Large order from spam user");
+                        return handleError(order, errors);
+                    }
+                }
+            }
+        }
+        
+        // Calcul des produits (logique entremêlée)
+        for (OrderItem item : order.getItems()) {
+            Product product = products.stream()
+                .filter(p -> p.getId().equals(item.getProductId()))
+                .findFirst().orElse(null);
+            
+            if (product == null) {
+                errors.add("Product " + item.getProductId() + " not found");
+                continue; // ❌ Flux complexe
+            }
+            
+            if (product.getStock() < item.getQuantity()) {
+                if (product.isBackorderAllowed()) {
+                    if (user.isPremium()) {
+                        item.setBackorder(true);
+                        item.setEstimatedDelivery(product.getRestockDate());
+                    } else {
+                        if (item.getQuantity() <= product.getStock() + product.getIncomingStock()) {
+                            item.setPartialBackorder(true);
+                            item.setAvailableNow(product.getStock());
+                            item.setBackorderQuantity(item.getQuantity() - product.getStock());
+                        } else {
+                            errors.add("Insufficient stock for " + product.getName());
+                            continue;
+                        }
+                    }
+                } else {
+                    errors.add("Product " + product.getName() + " out of stock");
+                    continue;
+                }
+            }
+            
+            // Calcul prix avec remises (logique complexe imbriquée)
+            double itemPrice = product.getPrice() * item.getQuantity();
+            
+            if (discounts != null && !discounts.isEmpty()) {
+                for (Discount discount : discounts) {
+                    if ("percentage".equals(discount.getType())) {
+                        if (discount.getApplicableProducts().contains(product.getId())) {
+                            if (discount.getMinQuantity() != null && item.getQuantity() >= discount.getMinQuantity()) {
+                                itemPrice *= (1 - discount.getValue() / 100.0);
+                                discountAmount += (product.getPrice() * item.getQuantity() * discount.getValue() / 100.0);
+                            } else if (discount.getMinQuantity() == null) {
+                                itemPrice *= (1 - discount.getValue() / 100.0);
+                                discountAmount += (product.getPrice() * item.getQuantity() * discount.getValue() / 100.0);
+                            }
+                        } else if (discount.getCategoryIds().contains(product.getCategoryId())) {
+                            if (discount.getMinAmount() != null && itemPrice >= discount.getMinAmount()) {
+                                double discountValue = Math.min(itemPrice * discount.getValue() / 100.0, 
+                                                               discount.getMaxDiscount() != null ? discount.getMaxDiscount() : Double.MAX_VALUE);
+                                itemPrice -= discountValue;
+                                discountAmount += discountValue;
+                            }
+                        }
+                    } else if ("fixed".equals(discount.getType())) {
+                        if (itemPrice >= discount.getMinAmount()) {
+                            itemPrice -= discount.getValue();
+                            discountAmount += discount.getValue();
+                        }
+                    }
+                }
+            }
+            
+            total += itemPrice;
+            
+            // Gestion stock (mélangée avec le calcul)
+            if (!item.isBackorder()) {
+                product.setStock(product.getStock() - item.getQuantity());
+                if (product.getStock() < product.getLowStockThreshold()) {
+                    sendLowStockAlert(product);
+                    if (product.isAutoReorder() && product.getSupplier() != null) {
+                        createReorderRequest(product);
+                    }
+                }
+            }
+        }
+        
+        // Calcul frais de port (encore plus de conditions imbriquées)
+        if (shipping != null) {
+            switch (shipping.getMethod()) {
+                case "standard":
+                    if (total > 100) {
+                        shippingCost = 0;
+                    } else if (user.isPremium()) {
+                        shippingCost = 2.99;
+                    } else {
+                        shippingCost = 5.99;
+                    }
+                    break;
+                case "express":
+                    shippingCost = 12.99;
+                    if (user.isPremium()) {
+                        shippingCost *= 0.8;
+                    }
+                    if (!isExpressAvailable(shipping.getAddress())) {
+                        errors.add("Express shipping not available");
+                        return handleError(order, errors);
+                    }
+                    break;
+                case "pickup":
+                    shippingCost = 0;
+                    if (!isPickupLocationOpen(shipping.getPickupId())) {
+                        errors.add("Pickup location closed");
+                        return handleError(order, errors);
+                    }
+                    break;
+            }
+        }
+        
+        total += shippingCost;
+        
+        // Validation finale
+        if (total < 0) {
+            errors.add("Invalid total amount");
+            return handleError(order, errors);
+        }
+        
+        if (user.getCreditLimit() != null && total > user.getCreditLimit()) {
+            if ("credit".equals(user.getPaymentMethod())) {
+                errors.add("Credit limit exceeded");
+                return handleError(order, errors);
+            }
+        }
+        
+        // Sauvegarde
+        try {
+            saveOrder(order);
+            updateUserStats(user);
+            logOrderEvent("created", order.getId());
+        } catch (Exception e) {
+            errors.add("Database error: " + e.getMessage());
+            return handleError(order, errors);
+        }
+        
+        return new OrderResult(true, order.getId(), total, status);
+    }
+    
+    // ❌ Méthodes de gestion d'erreur répétitives
+    private OrderResult handleError(Order order, List<String> errors) {
+        logOrderEvent("error", order.getId(), errors);
+        return new OrderResult(false, null, 0, null, errors);
+    }
+    
+    private OrderResult cleanup(Order order, String status, List<String> errors) {
+        cleanupTempData(order.getId());
+        return new OrderResult(false, null, 0, status, errors);
+    }
+}
+</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert danger">
+                            <strong>🚨 Problèmes identifiés :</strong>
+                            <ul>
+                                <li><strong>Flux de contrôle chaotique :</strong> Utilisation de goto et multiples points de sortie</li>
+                                <li><strong>Responsabilités mélangées :</strong> Validation, calcul, persistance dans une seule fonction</li>
+                                <li><strong>Conditions imbriquées :</strong> Plus de 6 niveaux d'imbrication</li>
+                                <li><strong>Logique dupliquée :</strong> Calculs de remises répétés avec variations</li>
+                                <li><strong>Effets de bord :</strong> Modification des objets en cours de traitement</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Solutions et Refactoring -->
+                <section class="solution-section">
+                    <div class="aikido-card solution">
+                        <h2>✅ Solutions et Refactoring</h2>
+                        <p class="mb-md">
+                            Voici comment refactorer le Spaghetti Code en appliquant les principes SOLID et les design patterns appropriés :
+                        </p>
+
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="php-clean">
+                                    <span class="tab-icon">🐘</span>
+                                    PHP Refactorisé
+                                </button>
+                                <button class="tab-btn" data-tab="java-clean">
+                                    <span class="tab-icon">☕</span>
+                                    Java Refactorisé
+                                </button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="php-clean">
+                                <h3>🎯 Approche par Séparation des Responsabilités</h3>
+                                <pre><code class="language-php">
+<?php
+/**
+ * ✅ SOLUTION: Code refactorisé avec séparation des responsabilités
+ */
+
+// 1. Validator pour la validation des données
+class OrderValidator {
+    public function validateUser(User $user): ValidationResult {
+        if (!$user) {
+            return ValidationResult::error('User required');
+        }
+        
+        if ($user->getStatus() === 'banned') {
+            return $this->handleBannedUser($user);
+        }
+        
+        return ValidationResult::success();
+    }
+    
+    private function handleBannedUser(User $user): ValidationResult {
+        if ($user->getBanReason() === 'fraud') {
+            return ValidationResult::error('Fraud user', 'rejected');
+        }
+        
+        if ($user->getBanReason() === 'spam') {
+            return $this->handleSpamUser($user);
+        }
+        
+        return ValidationResult::success();
+    }
+    
+    private function handleSpamUser(User $user): ValidationResult {
+        $thirtyDaysAgo = time() - (30 * 24 * 60 * 60);
+        
+        if ($user->getLastActivity() > $thirtyDaysAgo) {
+            return ValidationResult::error('Recent spam activity');
+        }
+        
+        return ValidationResult::success();
+    }
+}
+
+// 2. Calculator pour les calculs de prix
+class PriceCalculator {
+    private DiscountService $discountService;
+    
+    public function __construct(DiscountService $discountService) {
+        $this->discountService = $discountService;
+    }
+    
+    public function calculateItemPrice(OrderItem $item, Product $product, array $discounts): float {
+        $basePrice = $product->getPrice() * $item->getQuantity();
+        $discountAmount = $this->discountService->calculateDiscount($item, $product, $discounts);
+        
+        return max(0, $basePrice - $discountAmount);
+    }
+}
+
+// 3. Service pour les remises
+class DiscountService {
+    public function calculateDiscount(OrderItem $item, Product $product, array $discounts): float {
+        $totalDiscount = 0;
+        
+        foreach ($discounts as $discount) {
+            $totalDiscount += $this->applyDiscount($discount, $item, $product);
+        }
+        
+        return $totalDiscount;
+    }
+    
+    private function applyDiscount(Discount $discount, OrderItem $item, Product $product): float {
+        if (!$this->isDiscountApplicable($discount, $item, $product)) {
+            return 0;
+        }
+        
+        return match($discount->getType()) {
+            'percentage' => $this->calculatePercentageDiscount($discount, $item, $product),
+            'fixed' => $this->calculateFixedDiscount($discount, $item, $product),
+            default => 0
+        };
+    }
+    
+    private function isDiscountApplicable(Discount $discount, OrderItem $item, Product $product): bool {
+        return in_array($product->getId(), $discount->getApplicableProducts()) ||
+               in_array($product->getCategoryId(), $discount->getCategoryIds());
+    }
+    
+    private function calculatePercentageDiscount(Discount $discount, OrderItem $item, Product $product): float {
+        $basePrice = $product->getPrice() * $item->getQuantity();
+        $discountAmount = $basePrice * ($discount->getValue() / 100);
+        
+        return min($discountAmount, $discount->getMaxDiscount() ?? PHP_FLOAT_MAX);
+    }
+    
+    private function calculateFixedDiscount(Discount $discount, OrderItem $item, Product $product): float {
+        $itemPrice = $product->getPrice() * $item->getQuantity();
+        
+        return $itemPrice >= $discount->getMinAmount() ? $discount->getValue() : 0;
+    }
+}
+
+// 4. Service pour les frais de port
+class ShippingCalculator {
+    public function calculateShippingCost(float $total, User $user, ?ShippingInfo $shipping): float {
+        if (!$shipping) {
+            return 0;
+        }
+        
+        return match($shipping->getMethod()) {
+            'standard' => $this->calculateStandardShipping($total, $user),
+            'express' => $this->calculateExpressShipping($user),
+            'pickup' => 0,
+            default => 0
+        };
+    }
+    
+    private function calculateStandardShipping(float $total, User $user): float {
+        if ($total > 100) {
+            return 0; // Gratuit au-dessus de 100€
+        }
+        
+        return $user->isPremium() ? 2.99 : 5.99;
+    }
+    
+    private function calculateExpressShipping(User $user): float {
+        $cost = 12.99;
+        
+        return $user->isPremium() ? $cost * 0.8 : $cost;
+    }
+}
+
+// 5. Processeur principal simplifié
+class OrderProcessor {
+    private OrderValidator $validator;
+    private PriceCalculator $priceCalculator;
+    private ShippingCalculator $shippingCalculator;
+    private OrderRepository $orderRepository;
+    
+    public function __construct(
+        OrderValidator $validator,
+        PriceCalculator $priceCalculator,
+        ShippingCalculator $shippingCalculator,
+        OrderRepository $orderRepository
+    ) {
+        $this->validator = $validator;
+        $this->priceCalculator = $priceCalculator;
+        $this->shippingCalculator = $shippingCalculator;
+        $this->orderRepository = $orderRepository;
+    }
+    
+    public function processOrder(Order $order, User $user, array $products, array $discounts, ?ShippingInfo $shipping): OrderResult {
+        // 1. Validation
+        $validationResult = $this->validator->validateUser($user);
+        if (!$validationResult->isSuccess()) {
+            return OrderResult::error($validationResult->getErrors());
+        }
+        
+        // 2. Calcul du total
+        $total = $this->calculateOrderTotal($order, $products, $discounts);
+        
+        // 3. Calcul des frais de port
+        $shippingCost = $this->shippingCalculator->calculateShippingCost($total, $user, $shipping);
+        $finalTotal = $total + $shippingCost;
+        
+        // 4. Validation finale
+        if (!$this->validateFinalOrder($finalTotal, $user)) {
+            return OrderResult::error(['Invalid order total or credit limit exceeded']);
+        }
+        
+        // 5. Sauvegarde
+        try {
+            $this->orderRepository->save($order);
+            return OrderResult::success($order->getId(), $finalTotal);
+        } catch (Exception $e) {
+            return OrderResult::error(['Database error: ' . $e->getMessage()]);
+        }
+    }
+    
+    private function calculateOrderTotal(Order $order, array $products, array $discounts): float {
+        $total = 0;
+        
+        foreach ($order->getItems() as $item) {
+            $product = $this->findProduct($products, $item->getProductId());
+            if ($product) {
+                $total += $this->priceCalculator->calculateItemPrice($item, $product, $discounts);
+            }
+        }
+        
+        return $total;
+    }
+    
+    private function findProduct(array $products, string $productId): ?Product {
+        foreach ($products as $product) {
+            if ($product->getId() === $productId) {
+                return $product;
+            }
+        }
+        return null;
+    }
+    
+    private function validateFinalOrder(float $total, User $user): bool {
+        if ($total < 0) {
+            return false;
+        }
+        
+        if ($user->getCreditLimit() && $total > $user->getCreditLimit()) {
+            return $user->getPaymentMethod() !== 'credit';
+        }
+        
+        return true;
+    }
+}
+
+// Classes de support
+class ValidationResult {
+    private bool $success;
+    private array $errors;
+    private ?string $status;
+    
+    private function __construct(bool $success, array $errors = [], ?string $status = null) {
+        $this->success = $success;
+        $this->errors = $errors;
+        $this->status = $status;
+    }
+    
+    public static function success(): self {
+        return new self(true);
+    }
+    
+    public static function error(string $message, ?string $status = null): self {
+        return new self(false, [$message], $status);
+    }
+    
+    public function isSuccess(): bool { return $this->success; }
+    public function getErrors(): array { return $this->errors; }
+    public function getStatus(): ?string { return $this->status; }
+}
+
+class OrderResult {
+    private bool $success;
+    private ?string $orderId;
+    private float $total;
+    private array $errors;
+    
+    private function __construct(bool $success, ?string $orderId = null, float $total = 0, array $errors = []) {
+        $this->success = $success;
+        $this->orderId = $orderId;
+        $this->total = $total;
+        $this->errors = $errors;
+    }
+    
+    public static function success(string $orderId, float $total): self {
+        return new self(true, $orderId, $total);
+    }
+    
+    public static function error(array $errors): self {
+        return new self(false, null, 0, $errors);
+    }
+}
+?>
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="java-clean">
+                                <h3>🎯 Approche avec Design Patterns</h3>
+                                <pre><code class="language-java">
+/**
+ * ✅ SOLUTION: Code refactorisé avec design patterns
+ */
+
+// 1. Strategy Pattern pour les calculs de remises
+public interface DiscountStrategy {
+    double calculateDiscount(OrderItem item, Product product);
+    boolean isApplicable(OrderItem item, Product product);
+}
+
+public class PercentageDiscountStrategy implements DiscountStrategy {
+    private final Discount discount;
+    
+    public PercentageDiscountStrategy(Discount discount) {
+        this.discount = discount;
+    }
+    
+    @Override
+    public double calculateDiscount(OrderItem item, Product product) {
+        if (!isApplicable(item, product)) {
+            return 0;
+        }
+        
+        double basePrice = product.getPrice() * item.getQuantity();
+        double discountAmount = basePrice * (discount.getValue() / 100.0);
+        
+        return Math.min(discountAmount,
+                       discount.getMaxDiscount() != null ? discount.getMaxDiscount() : Double.MAX_VALUE);
+    }
+    
+    @Override
+    public boolean isApplicable(OrderItem item, Product product) {
+        return discount.getApplicableProducts().contains(product.getId()) ||
+               discount.getCategoryIds().contains(product.getCategoryId());
+    }
+}
+
+public class FixedDiscountStrategy implements DiscountStrategy {
+    private final Discount discount;
+    
+    public FixedDiscountStrategy(Discount discount) {
+        this.discount = discount;
+    }
+    
+    @Override
+    public double calculateDiscount(OrderItem item, Product product) {
+        double itemPrice = product.getPrice() * item.getQuantity();
+        
+        return itemPrice >= discount.getMinAmount() ? discount.getValue() : 0;
+    }
+    
+    @Override
+    public boolean isApplicable(OrderItem item, Product product) {
+        return true; // Les remises fixes s'appliquent généralement à tous les produits
+    }
+}
+
+// 2. Chain of Responsibility pour la validation
+public abstract class ValidationHandler {
+    protected ValidationHandler nextHandler;
+    
+    public ValidationHandler setNext(ValidationHandler handler) {
+        this.nextHandler = handler;
+        return handler;
+    }
+    
+    public abstract ValidationResult handle(ValidationRequest request);
+    
+    protected ValidationResult handleNext(ValidationRequest request) {
+        if (nextHandler != null) {
+            return nextHandler.handle(request);
+        }
+        return ValidationResult.success();
+    }
+}
+
+public class UserValidationHandler extends ValidationHandler {
+    @Override
+    public ValidationResult handle(ValidationRequest request) {
+        if (request.getUser() == null) {
+            return ValidationResult.error("User required");
+        }
+        
+        return handleNext(request);
+    }
+}
+
+public class BannedUserValidationHandler extends ValidationHandler {
+    @Override
+    public ValidationResult handle(ValidationRequest request) {
+        User user = request.getUser();
+        
+        if ("banned".equals(user.getStatus())) {
+            if ("fraud".equals(user.getBanReason())) {
+                return ValidationResult.error("Fraud user", "rejected");
+            }
+            
+            if ("spam".equals(user.getBanReason())) {
+                return validateSpamUser(user, request.getOrder());
+            }
+        }
+        
+        return handleNext(request);
+    }
+    
+    private ValidationResult validateSpamUser(User user, Order order) {
+        long thirtyDaysAgo = System.currentTimeMillis() - (30L * 24 * 60 * 60 * 1000);
+        
+        if (user.getLastActivity().getTime() > thirtyDaysAgo) {
+            return ValidationResult.error("Recent spam activity");
+        }
+        
+        if (order.getTotal() >= 50) {
+            return ValidationResult.error("Large order from spam user");
+        }
+        
+        user.setStatus("probation");
+        return ValidationResult.success();
+    }
+}
+
+// 3. Factory pour créer les stratégies de remise
+public class DiscountStrategyFactory {
+    public static DiscountStrategy createStrategy(Discount discount) {
+        return switch (discount.getType()) {
+            case "percentage" -> new PercentageDiscountStrategy(discount);
+            case "fixed" -> new FixedDiscountStrategy(discount);
+            default -> throw new IllegalArgumentException("Unknown discount type: " + discount.getType());
+        };
+    }
+}
+
+// 4. Service principal refactorisé
+@Service
+public class OrderProcessorService {
+    private final ValidationHandler validationChain;
+    private final PriceCalculatorService priceCalculator;
+    private final ShippingCalculatorService shippingCalculator;
+    private final OrderRepository orderRepository;
+    
+    public OrderProcessorService(
+            PriceCalculatorService priceCalculator,
+            ShippingCalculatorService shippingCalculator,
+            OrderRepository orderRepository) {
+        
+        this.priceCalculator = priceCalculator;
+        this.shippingCalculator = shippingCalculator;
+        this.orderRepository = orderRepository;
+        
+        // Configuration de la chaîne de validation
+        this.validationChain = new UserValidationHandler();
+        this.validationChain
+            .setNext(new BannedUserValidationHandler())
+            .setNext(new CreditLimitValidationHandler());
+    }
+    
+    public OrderResult processOrder(Order order, User user, List<Product> products,
+                                   List<Discount> discounts, ShippingInfo shipping) {
+        
+        // 1. Validation avec Chain of Responsibility
+        ValidationRequest validationRequest = new ValidationRequest(order, user);
+        ValidationResult validationResult = validationChain.handle(validationRequest);
+        
+        if (!validationResult.isSuccess()) {
+            return OrderResult.error(validationResult.getErrors());
+        }
+        
+        // 2. Calcul du prix avec Strategy Pattern
+        double total = priceCalculator.calculateOrderTotal(order, products, discounts);
+        
+        // 3. Calcul des frais de port
+        double shippingCost = shippingCalculator.calculateShippingCost(total, user, shipping);
+        double finalTotal = total + shippingCost;
+        
+        // 4. Sauvegarde
+        try {
+            orderRepository.save(order);
+            return OrderResult.success(order.getId(), finalTotal);
+        } catch (Exception e) {
+            return OrderResult.error(List.of("Database error: " + e.getMessage()));
+        }
+    }
+}
+
+@Service
+public class PriceCalculatorService {
+    public double calculateOrderTotal(Order order, List<Product> products, List<Discount> discounts) {
+        return order.getItems().stream()
+            .mapToDouble(item -> calculateItemPrice(item, findProduct(products, item.getProductId()), discounts))
+            .sum();
+    }
+    
+    private double calculateItemPrice(OrderItem item, Product product, List<Discount> discounts) {
+        if (product == null) {
+            return 0;
+        }
+        
+        double basePrice = product.getPrice() * item.getQuantity();
+        double totalDiscount = discounts.stream()
+            .map(DiscountStrategyFactory::createStrategy)
+            .mapToDouble(strategy -> strategy.calculateDiscount(item, product))
+            .sum();
+        
+        return Math.max(0, basePrice - totalDiscount);
+    }
+    
+    private Product findProduct(List<Product> products, String productId) {
+        return products.stream()
+            .filter(p -> p.getId().equals(productId))
+            .findFirst()
+            .orElse(null);
+    }
+}
+
+// Classes de support
+public class ValidationRequest {
+    private final Order order;
+    private final User user;
+    
+    public ValidationRequest(Order order, User user) {
+        this.order = order;
+        this.user = user;
+    }
+    
+    public Order getOrder() { return order; }
+    public User getUser() { return user; }
+}
+
+public class ValidationResult {
+    private final boolean success;
+    private final List<String> errors;
+    private final String status;
+    
+    private ValidationResult(boolean success, List<String> errors, String status) {
+        this.success = success;
+        this.errors = errors != null ? errors : List.of();
+        this.status = status;
+    }
+    
+    public static ValidationResult success() {
+        return new ValidationResult(true, null, null);
+    }
+    
+    public static ValidationResult error(String message) {
+        return new ValidationResult(false, List.of(message), null);
+    }
+    
+    public static ValidationResult error(String message, String status) {
+        return new ValidationResult(false, List.of(message), status);
+    }
+    
+    public boolean isSuccess() { return success; }
+    public List<String> getErrors() { return errors; }
+    public String getStatus() { return status; }
+}
+</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert success">
+                            <strong>✅ Améliorations apportées :</strong>
+                            <ul>
+                                <li><strong>Séparation des responsabilités :</strong> Chaque classe a une responsabilité unique</li>
+                                <li><strong>Design patterns :</strong> Strategy, Chain of Responsibility, Factory</li>
+                                <li><strong>Testabilité :</strong> Chaque composant peut être testé indépendamment</li>
+                                <li><strong>Lisibilité :</strong> Code structuré et facile à comprendre</li>
+                                <li><strong>Maintenabilité :</strong> Modifications localisées et sans impact</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Métriques et Détection -->
+                <section class="metrics-section">
+                    <div class="aikido-card">
+                        <h2>📊 Métriques et Détection</h2>
+                        
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <h4>🔢 Complexité Cyclomatique</h4>
+                                <div class="metric-value danger">CC > 15</div>
+                                <p>Nombre de chemins d'exécution indépendants</p>
+                                <div class="metric-example">
+                                    <strong>Seuils :</strong>
+                                    <ul>
+                                        <li>1-10 : Simple</li>
+                                        <li>11-20 : Complexe</li>
+                                        <li>21+ : Très complexe (Spaghetti)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <h4>📏 Longueur des Méthodes</h4>
+                                <div class="metric-value warning">LOC > 50</div>
+                                <p>Nombre de lignes de code par méthode</p>
+                                <div class="metric-example">
+                                    <strong>Recommandations :</strong>
+                                    <ul>
+                                        <li>< 20 lignes : Idéal</li>
+                                        <li>20-50 lignes : Acceptable</li>
+                                        <li>> 50 lignes : À refactorer</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <h4>🔄 Profondeur d'Imbrication</h4>
+                                <div class="metric-value danger">Depth > 4</div>
+                                <p>Nombre de niveaux de conditions imbriquées</p>
+                                <div class="metric-example">
+                                    <strong>Limites :</strong>
+                                    <ul>
+                                        <li>1-2 niveaux : Bon</li>
+                                        <li>3-4 niveaux : Limite</li>
+                                        <li>5+ niveaux : Spaghetti</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <h4>🎯 Points de Sortie</h4>
+                                <div class="metric-value warning">Exits > 3</div>
+                                <p>Nombre de return/throw dans une méthode</p>
+                                <div class="metric-example">
+                                    <strong>Bonnes pratiques :</strong>
+                                    <ul>
+                                        <li>1 point : Idéal</li>
+                                        <li>2-3 points : Acceptable</li>
+                                        <li>4+ points : Problématique</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3>🔍 Outils de Détection</h3>
+                        <div class="tools-grid">
+                            <div class="tool-item">
+                                <strong>PHP :</strong>
+                                <ul>
+                                    <li>PHPMD (PHP Mess Detector)</li>
+                                    <li>PHPStan</li>
+                                    <li>PHP_CodeSniffer</li>
+                                </ul>
+                            </div>
+                            <div class="tool-item">
+                                <strong>Java :</strong>
+                                <ul>
+                                    <li>SonarQube</li>
+                                    <li>PMD</li>
+                                    <li>Checkstyle</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercice Pratique -->
+                <section class="exercise-section">
+                    <div class="aikido-card exercise">
+                        <h2>🎯 Exercice Pratique</h2>
+                        
+                        <div class="exercise-scenario">
+                            <h3>Scenario : Refactoring d'une Fonction de Validation</h3>
+                            <p>
+                                Vous héritez d'une fonction de validation d'utilisateur qui contient 8 niveaux d'imbrication,
+                                45 lignes de code, et 6 points de sortie différents. La fonction valide l'âge, l'email,
+                                le statut du compte, les permissions, et les restrictions géographiques.
+                            </p>
+                            
+                            <div class="exercise-question">
+                                <h4>Question :</h4>
+                                <p>Quelle approche de refactoring privilégieriez-vous ?</p>
+                                
+                                <div class="exercise-choices">
+                                    <button class="choice-btn" data-choice="extract">
+                                        Extraire des méthodes privées
+                                    </button>
+                                    <button class="choice-btn" data-choice="chain">
+                                        Chain of Responsibility
+                                    </button>
+                                    <button class="choice-btn" data-choice="strategy">
+                                        Strategy Pattern
+                                    </button>
+                                    <button class="choice-btn" data-choice="validator">
+                                        Classes Validator séparées
+                                    </button>
+                                </div>
+                                
+                                <div id="exercise-feedback" class="exercise-feedback hidden">
+                                    <!-- Le feedback sera affiché ici -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Completion Section -->
+                <section class="completion-section">
+                    <div class="aikido-card completion">
+                        <h3 class="completion-content">
+                            <div class="completion-text">
+                                <h3>🎯Avez-vous terminé cette section ?</h3>
+                                <p>Marquez cette page comme terminée pour suivre votre progression dans la formation.</p>
+                            </div>
+                            <button class="aikido-btn primary mark-completed" data-page="spaghetti-code">
+                                Marquer comme Terminé ✓
+                            </button>
+                        </div>
+                        
+                        
+                    </div>
+                </section>
+
+                <!-- Navigation -->
+                <section class="navigation-section">
+                    <div class="nav-buttons">
+                        <a href="../index.html" class="aikido-btn">
+                            ← Retour au catalogue
+                        </a>
+                        <a href="copy-paste-programming.html" class="aikido-btn primary">
+                            Copy-Paste Programming →
+                        </a>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Script pour l'exercice -->
+    <script>
+        document.querySelectorAll('.choice-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const choice = e.target.dataset.choice;
+                const feedback = document.getElementById('exercise-feedback');
+                
+                let feedbackContent = '';
+                
+                switch(choice) {
+                    case 'extract':
+                        feedbackContent = `
+                            <div class="feedback-header correct">
+                                <h4>✅ Bon Début</h4>
+                            </div>
+                            <p>Extraire des méthodes privées est un bon premier pas :</p>
+                            <ul>
+                                <li>Réduit la complexité visuelle</li>
+                                <li>Améliore la lisibilité</li>
+                                <li>Facilite les tests unitaires</li>
+                            </ul>
+                            <p><strong>Mais attention :</strong> Cela peut ne pas résoudre le problème de fond si les responsabilités restent mélangées.</p>
+                        `;
+                        break;
+                    case 'chain':
+                        feedbackContent = `
+                            <div class="feedback-header best">
+                                <h4>🏆 Excellent Choix</h4>
+                            </div>
+                            <p>Chain of Responsibility est parfait pour la validation :</p>
+                            <ul>
+                                <li>Chaque validateur a une responsabilité unique</li>
+                                <li>Facilement extensible (ajouter/retirer des validations)</li>
+                                <li>Testable indépendamment</li>
+                                <li>Respecte le principe Open/Closed</li>
+                            </ul>
+                            <p><strong>Bonus :</strong> Permet de configurer différentes chaînes selon le contexte.</p>
+                        `;
+                        break;
+                    case 'strategy':
+                        feedbackContent = `
+                            <div class="feedback-header partial">
+                                <h4>⚠️ Partiellement Approprié</h4>
+                            </div>
+                            <p>Strategy Pattern peut être utile mais :</p>
+                            <ul>
+                                <li>Plus adapté quand on a différents algorithmes pour la même tâche</li>
+                                <li>La validation est plutôt une séquence d'étapes</li>
+                                <li>Peut créer une complexité inutile ici</li>
+                            </ul>
+                            <p><strong>Meilleur usage :</strong> Pour différents types de validation (email, téléphone, etc.)</p>
+                        `;
+                        break;
+                    case 'validator':
+                        feedbackContent = `
+                            <div class="feedback-header correct">
+                                <h4>✅ Bonne Approche</h4>
+                            </div>
+                            <p>Séparer en classes Validator distinctes est une bonne solution :</p>
+                            <ul>
+                                <li>Séparation claire des responsabilités</li>
+                                <li>Réutilisabilité des validateurs</li>
+                                <li>Tests unitaires simplifiés</li>
+                            </ul>
+                            <p><strong>Conseil :</strong> Combinez avec Chain of Responsibility pour une solution optimale.</p>
+                        `;
+                        break;
+                }
+                
+                feedback.innerHTML = feedbackContent;
+                feedback.classList.remove('hidden');
+                feedback.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>

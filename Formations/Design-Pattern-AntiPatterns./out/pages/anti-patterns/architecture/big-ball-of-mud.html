@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Big Ball of Mud - Anti-Pattern Architecture | Formation Patterns Développeurs</title>
+    <meta name="description" content="Comprendre et éviter l'anti-pattern Big Ball of Mud : système sans structure claire, causes, biais cognitifs et solutions architecturales">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/exercises.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <div class="breadcrumb">
+                        <a href="#" onclick="window.formationNav.navigateToAbsolutePage('index.html'); return false;">Formation</a>
+                        <span>→</span>
+                        <a href="../index.html">Anti-Patterns</a>
+                        <span>→</span>
+                        <span>Big Ball of Mud</span>
+                    </div>
+                    
+                    <h1 class="page-title">🏗️ Big Ball of Mud</h1>
+                    <p class="page-subtitle">L'anti-pattern du système sans structure claire</p>
+                    
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">🏗️</span>
+                            <span class="meta-text">Architecture</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⏱️</span>
+                            <span class="meta-text">~45 minutes</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🎯</span>
+                            <span class="meta-text">Refactoring architectural essentiel</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🧩</span>
+                            <span class="meta-text">6 biais cognitifs liés</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Schéma Mermaid Explicatif -->
+                <section class="mermaid-section">
+                    <div class="aikido-card">
+                        <h2>🧠 Cycle de Formation du Big Ball of Mud</h2>
+                        <div class="mermaid-container">
+                            <div class="mermaid">
+                                graph TD
+                                    A[Nouveau Projet] --> B[Pression Temporelle]
+                                    B --> C{Biais Cognitifs}
+                                    C -->|Pression Temporelle| D[Pas le temps d'architecturer]
+                                    C -->|Dépendance au Chemin| E[On fait comme d'habitude]
+                                    C -->|Normalisation Déviance| F[Ça marche c'est suffisant]
+                                    
+                                    D --> G[Code Sans Structure]
+                                    E --> G
+                                    F --> G
+                                    
+                                    G --> H[Couplage Fort]
+                                    H --> I[Responsabilités Mélangées]
+                                    I --> J[Dette Technique]
+                                    
+                                    J --> K{Nouvelle Fonctionnalité}
+                                    K -->|Fenêtres Cassées| L[Code déjà sale]
+                                    K -->|Coûts Irrécupérables| M[Trop investi pour refaire]
+                                    K -->|Dérive Objectifs| N[Juste une petite modif]
+                                    
+                                    L --> O[Big Ball of Mud]
+                                    M --> O
+                                    N --> O
+                                    
+                                    O --> P[Maintenance Impossible]
+                                    O --> Q[Bugs en Cascade]
+                                    O --> R[Evolution Bloquée]
+                                    
+                                    style A fill:#e1f5fe
+                                    style O fill:#ffebee
+                                    style P fill:#ffcdd2
+                                    style Q fill:#ffcdd2
+                                    style R fill:#ffcdd2
+                            </div>
+                        </div>
+                        <div class="mermaid-explanation">
+                            <p><strong>🔍 Analyse du Cycle :</strong></p>
+                            <ul>
+                                <li><strong>🎯 Déclencheur :</strong> Pression temporelle sur nouveau projet</li>
+                                <li><strong>🧠 Amplification :</strong> Biais cognitifs justifient les raccourcis</li>
+                                <li><strong>🔄 Spirale :</strong> Chaque ajout aggrave la situation</li>
+                                <li><strong>⚠️ Conséquences :</strong> Système ingérable et non-évolutif</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Définition -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card anti-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="definition-text">
+                            Le <strong>Big Ball of Mud</strong> est un anti-pattern architectural qui décrit un système
+                            logiciel sans structure claire, où le code devient un enchevêtrement chaotique de
+                            composants interdépendants, difficile à comprendre, maintenir et faire évoluer.
+                        </p>
+
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problèmes Causés</h3>
+                                <ul>
+                                    <li>Architecture inexistante ou chaotique</li>
+                                    <li>Couplage fort entre tous les composants</li>
+                                    <li>Maintenance extrêmement coûteuse</li>
+                                    <li>Évolution du système quasi-impossible</li>
+                                    <li>Bugs en cascade et effets de bord</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solutions Apportées</h3>
+                                <ul>
+                                    <li>Refactoring vers une architecture layered</li>
+                                    <li>Application des principes SOLID</li>
+                                    <li>Séparation des responsabilités</li>
+                                    <li>Utilisation de design patterns structurants</li>
+                                    <li>Tests d'architecture automatisés</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert danger">
+                            <strong>⚠️ Attention :</strong> Le Big Ball of Mud peut sembler fonctionnel à court terme,
+                            mais il devient rapidement un frein majeur à l'évolution et à la maintenance du système.
+                        </div>
+
+                        <h3>Caractéristiques du Big Ball of Mud</h3>
+                        <div class="characteristics-grid">
+                            <div class="characteristic-item">
+                                <span class="char-icon">🌀</span>
+                                <div>
+                                    <strong>Absence d'architecture</strong>
+                                    <p>Pas de structure organisationnelle claire</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">🔗</span>
+                                <div>
+                                    <strong>Couplage fort</strong>
+                                    <p>Composants étroitement liés et interdépendants</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">🧩</span>
+                                <div>
+                                    <strong>Responsabilités floues</strong>
+                                    <p>Limites entre modules mal définies</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">🏚️</span>
+                                <div>
+                                    <strong>Code legacy</strong>
+                                    <p>Accumulation de code obsolète et patches</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Biais Cognitifs Associés -->
+                <section class="cognitive-bias-section">
+                    <div class="aikido-card biais-cognitif">
+                        <h2>🧠 Biais Cognitifs Associés</h2>
+                        <p class="mb-lg">
+                            Le Big Ball of Mud résulte souvent de plusieurs biais cognitifs qui poussent vers des solutions rapides mais désordonnées :
+                        </p>
+
+                        <div class="bias-cards">
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">🏃‍♂️</span>
+                                    <h4>Biais de Pression Temporelle</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "On n'a pas le temps de bien architecturer, il faut livrer !"
+                                </p>
+                                <p class="bias-explanation">
+                                    La pression pour livrer rapidement pousse à prendre des raccourcis architecturaux
+                                    qui s'accumulent en dette technique.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Ajouter des fonctionnalités directement dans le code existant
+                                    sans refactoring préalable.
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">🔄</span>
+                                    <h4>Biais de Dépendance au Chemin</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "C'est comme ça qu'on a toujours fait, pourquoi changer ?"
+                                </p>
+                                <p class="bias-explanation">
+                                    Tendance à continuer sur la voie existante même si elle n'est plus optimale,
+                                    par habitude ou résistance au changement.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Continuer à utiliser une architecture obsolète car
+                                    "l'équipe la connaît bien".
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">👁️</span>
+                                    <h4>Normalisation de la Déviance</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Ce code fonctionne, même s'il n'est pas parfait"
+                                </p>
+                                <p class="bias-explanation">
+                                    Acceptation progressive de standards de qualité de plus en plus bas,
+                                    jusqu'à ce que le chaos devienne la norme.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Tolérer des violations d'architecture "juste cette fois"
+                                    qui deviennent systématiques.
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">🌊</span>
+                                    <h4>Théorie des Fenêtres Cassées</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Le code est déjà sale, une ligne de plus ne changera rien"
+                                </p>
+                                <p class="bias-explanation">
+                                    Un code mal structuré encourage d'autres développeurs à continuer dans cette voie,
+                                    créant un effet boule de neige.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Ajouter du code de mauvaise qualité dans un module
+                                    déjà problématique plutôt que de le refactorer.
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">💰</span>
+                                    <h4>Biais des Coûts Irrécupérables</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "On a déjà investi trop pour tout recommencer"
+                                </p>
+                                <p class="bias-explanation">
+                                    Refus de refactoriser à cause de l'investissement déjà réalisé dans le code existant,
+                                    même si celui-ci est devenu contre-productif.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Maintenir une architecture défaillante car
+                                    "on a déjà écrit 100 000 lignes de code".
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">🎯</span>
+                                    <h4>Dérive des Objectifs</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Juste une petite fonctionnalité de plus..."
+                                </p>
+                                <p class="bias-explanation">
+                                    Ajout progressif de fonctionnalités sans revoir l'architecture globale,
+                                    jusqu'à ce qu'elle devienne inadaptée aux nouveaux besoins.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Transformer un simple script en application complexe
+                                    sans refactoring architectural.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exemple de Code Problématique -->
+                <section class="example-section">
+                    <div class="aikido-card">
+                        <h2>💀 Exemple Problématique</h2>
+                        <p class="mb-md">
+                            Voici un exemple typique de Big Ball of Mud dans un système de gestion de commandes :
+                        </p>
+
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="php">
+                                    <span class="tab-icon">🐘</span>
+                                    PHP
+                                </button>
+                                <button class="tab-btn" data-tab="java">
+                                    <span class="tab-icon">☕</span>
+                                    Java
+                                </button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="php">
+                                
+                                <div class="code-example">
+                                    <div class="code-header">
+                                        <span class="code-title">UserController.php - Contrôleur Monolithique</span>
+                                        <span class="code-language">PHP</span>
+                                    </div>
+                                    <pre><code class="language-php">
+class UserController {
+    public function handleRequest($request) {
+        // Validation directe dans le contrôleur
+        if (empty($request['email']) || !filter_var($request['email'], FILTER_VALIDATE_EMAIL)) {
+            throw new Exception('Email invalide');
+        }
+        
+        // Logique métier mélangée
+        $user = new User();
+        $user->email = $request['email'];
+        $user->password = md5($request['password']); // Mauvaise pratique de sécurité
+        
+        // Accès direct à la base de données
+        $db = new PDO('mysql:host=localhost;dbname=app', 'user', 'pass');
+        $stmt = $db->prepare('INSERT INTO users (email, password) VALUES (?, ?)');
+        $stmt->execute([$user->email, $user->password]);
+        
+        // Envoi d'email directement dans le contrôleur
+        mail($user->email, 'Bienvenue', 'Votre compte a été créé');
+        
+        // Logging mélangé
+        file_put_contents('app.log', date('Y-m-d H:i:s') . ' - User created: ' . $user->email . "\n", FILE_APPEND);
+        
+        // Génération de la réponse
+        header('Content-Type: application/json');
+        echo json_encode(['status' => 'success', 'user_id' => $db->lastInsertId()]);
+    }
+    
+    public function updateUser($id, $data) {
+        // Code dupliqué pour la validation
+        if (empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            throw new Exception('Email invalide');
+        }
+        
+        // Mélange de logiques différentes
+        $db = new PDO('mysql:host=localhost;dbname=app', 'user', 'pass');
+        
+        // Logique de business rules directement dans le contrôleur
+        $stmt = $db->prepare('SELECT * FROM users WHERE id = ?');
+        $stmt->execute([$id]);
+        $existingUser = $stmt->fetch();
+        
+        if (!$existingUser) {
+            throw new Exception('Utilisateur non trouvé');
+        }
+        
+        // Vérification des permissions mélangée
+        if ($existingUser['role'] === 'admin' && $data['role'] !== 'admin') {
+            // Logique complexe de gestion des rôles
+            $adminCount = $db->query('SELECT COUNT(*) FROM users WHERE role = "admin"')->fetchColumn();
+            if ($adminCount <= 1) {
+                throw new Exception('Impossible de supprimer le dernier admin');
+            }
+        }
+        
+        // Mise à jour avec logique métier
+        $updateFields = [];
+        $params = [];
+        
+        if (isset($data['email'])) {
+            $updateFields[] = 'email = ?';
+            $params[] = $data['email'];
+        }
+        
+        if (isset($data['password'])) {
+            $updateFields[] = 'password = ?';
+            $params[] = md5($data['password']); // Encore la mauvaise pratique
+        }
+        
+        $params[] = $id;
+        $sql = 'UPDATE users SET ' . implode(', ', $updateFields) . ' WHERE id = ?';
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        
+        // Notification conditionnelle
+        if (isset($data['email']) && $data['email'] !== $existingUser['email']) {
+            mail($data['email'], 'Email modifié', 'Votre email a été changé');
+        }
+        
+        return json_encode(['status' => 'updated']);
+    }
+}
+</code></pre>
+                                </div>
+
+                                <div class="code-example">
+                                    <div class="code-header">
+                                        <span class="code-title">OrderService.java - Service Monolithique</span>
+                                        <span class="code-language">Java</span>
+                                    </div>
+                                    <pre><code class="language-java">
+public class OrderService {
+    
+    public void processOrder(OrderRequest request) {
+        // Validation mélangée avec la logique métier
+        if (request.getItems() == null || request.getItems().isEmpty()) {
+            throw new IllegalArgumentException("Commande vide");
+        }
+        
+        // Accès direct aux données
+        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/shop", "user", "pass");
+        
+        try {
+            // Logique de calcul de prix mélangée
+            double total = 0;
+            for (OrderItem item : request.getItems()) {
+                PreparedStatement stmt = conn.prepareStatement("SELECT price FROM products WHERE id = ?");
+                stmt.setLong(1, item.getProductId());
+                ResultSet rs = stmt.executeQuery();
+                
+                if (rs.next()) {
+                    double price = rs.getDouble("price");
+                    
+                    // Logique de remise directement ici
+                    if (item.getQuantity() > 10) {
+                        price *= 0.9; // 10% de remise
+                    }
+                    
+                    // Vérification de stock mélangée
+                    PreparedStatement stockStmt = conn.prepareStatement("SELECT stock FROM inventory WHERE product_id = ?");
+                    stockStmt.setLong(1, item.getProductId());
+                    ResultSet stockRs = stockStmt.executeQuery();
+                    
+                    if (stockRs.next() && stockRs.getInt("stock") < item.getQuantity()) {
+                        throw new RuntimeException("Stock insuffisant pour le produit " + item.getProductId());
+                    }
+                    
+                    total += price * item.getQuantity();
+                }
+            }
+            
+            // Logique de taxes directement dans le service
+            if (request.getCustomerCountry().equals("FR")) {
+                total *= 1.20; // TVA française
+            } else if (request.getCustomerCountry().equals("DE")) {
+                total *= 1.19; // TVA allemande
+            }
+            
+            // Création de la commande avec logique complexe
+            PreparedStatement orderStmt = conn.prepareStatement(
+                "INSERT INTO orders (customer_id, total, status, created_at) VALUES (?, ?, ?, ?)",
+                Statement.RETURN_GENERATED_KEYS
+            );
+            orderStmt.setLong(1, request.getCustomerId());
+            orderStmt.setDouble(2, total);
+            orderStmt.setString(3, "PENDING");
+            orderStmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+            orderStmt.executeUpdate();
+            
+            ResultSet generatedKeys = orderStmt.getGeneratedKeys();
+            long orderId = 0;
+            if (generatedKeys.next()) {
+                orderId = generatedKeys.getLong(1);
+            }
+            
+            // Mise à jour du stock directement ici
+            for (OrderItem item : request.getItems()) {
+                PreparedStatement updateStock = conn.prepareStatement(
+                    "UPDATE inventory SET stock = stock - ? WHERE product_id = ?"
+                );
+                updateStock.setInt(1, item.getQuantity());
+                updateStock.setLong(2, item.getProductId());
+                updateStock.executeUpdate();
+            }
+            
+            // Envoi d'email directement dans le service
+            String customerEmail = getCustomerEmail(conn, request.getCustomerId());
+            sendEmail(customerEmail, "Commande confirmée", "Votre commande #" + orderId + " a été créée");
+            
+            // Logging mélangé
+            System.out.println("Order " + orderId + " created for customer " + request.getCustomerId());
+            
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors du traitement de la commande", e);
+        } finally {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                // Gestion d'erreur silencieuse - mauvaise pratique
+            }
+        }
+    }
+    
+    private String getCustomerEmail(Connection conn, long customerId) {
+        // Encore plus de logique d'accès aux données mélangée
+        try {
+            PreparedStatement stmt = conn.prepareStatement("SELECT email FROM customers WHERE id = ?");
+            stmt.setLong(1, customerId);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() ? rs.getString("email") : null;
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+    
+    private void sendEmail(String to, String subject, String body) {
+        // Logique d'envoi d'email directement dans le service métier
+        // Code d'envoi d'email...
+    }
+}
+</code></pre>
+                                </div>
+
+                                <div class="problems-list">
+                                    <h4>🚨 Problèmes identifiés :</h4>
+                                    <ul>
+                                        <li><strong>Responsabilités multiples :</strong> Validation, logique métier, accès données, notifications</li>
+                                        <li><strong>Couplage fort :</strong> Dépendances directes à la base de données et services externes</li>
+                                        <li><strong>Code dupliqué :</strong> Validation et logique répétées</li>
+                                        <li><strong>Testabilité difficile :</strong> Impossible de tester unitairement</li>
+                                        <li><strong>Évolutivité limitée :</strong> Changements risqués et imprévisibles</li>
+                                        <li><strong>Sécurité compromise :</strong> Mauvaises pratiques (MD5, gestion d'erreurs)</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="tab-content" id="solution">
+                                <h4>🏗️ Architecture Layered avec DDD</h4>
+                                
+                                <div class="code-example">
+                                    <div class="code-header">
+                                        <span class="code-title">UserController.php - Contrôleur Refactorisé</span>
+                                        <span class="code-language">PHP</span>
+                                    </div>
+                                    <pre><code class="language-php">
+class UserController {
+    private UserService $userService;
+    private UserValidator $validator;
+    private ResponseFactory $responseFactory;
+    
+    public function __construct(
+        UserService $userService,
+        UserValidator $validator,
+        ResponseFactory $responseFactory
+    ) {
+        $this->userService = $userService;
+        $this->validator = $validator;
+        $this->responseFactory = $responseFactory;
+    }
+    
+    public function create(CreateUserRequest $request): JsonResponse {
+        try {
+            // Validation déléguée
+            $this->validator->validateCreateRequest($request);
+            
+            // Logique métier déléguée au service
+            $user = $this->userService->createUser($request->toCommand());
+            
+            // Réponse formatée par la factory
+            return $this->responseFactory->success([
+                'user_id' => $user->getId(),
+                'message' => 'Utilisateur créé avec succès'
+            ]);
+            
+        } catch (ValidationException $e) {
+            return $this->responseFactory->validationError($e->getErrors());
+        } catch (DomainException $e) {
+            return $this->responseFactory->domainError($e->getMessage());
+        }
+    }
+    
+    public function update(int $id, UpdateUserRequest $request): JsonResponse {
+        try {
+            $this->validator->validateUpdateRequest($request);
+            
+            $user = $this->userService->updateUser($id, $request->toCommand());
+            
+            return $this->responseFactory->success([
+                'user' => $user->toArray(),
+                'message' => 'Utilisateur mis à jour'
+            ]);
+            
+        } catch (UserNotFoundException $e) {
+            return $this->responseFactory->notFound('Utilisateur non trouvé');
+        } catch (ValidationException $e) {
+            return $this->responseFactory->validationError($e->getErrors());
+        }
+    }
+}
+</code></pre>
+                                </div>
+
+                                <div class="code-example">
+                                    <div class="code-header">
+                                        <span class="code-title">UserService.php - Service Métier</span>
+                                        <span class="code-language">PHP</span>
+                                    </div>
+                                    <pre><code class="language-php">
+class UserService {
+    private UserRepository $userRepository;
+    private PasswordHasher $passwordHasher;
+    private EventDispatcher $eventDispatcher;
+    private Logger $logger;
+    
+    public function __construct(
+        UserRepository $userRepository,
+        PasswordHasher $passwordHasher,
+        EventDispatcher $eventDispatcher,
+        Logger $logger
+    ) {
+        $this->userRepository = $userRepository;
+        $this->passwordHasher = $passwordHasher;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->logger = $logger;
+    }
+    
+    public function createUser(CreateUserCommand $command): User {
+        // Vérification des règles métier
+        if ($this->userRepository->existsByEmail($command->getEmail())) {
+            throw new DomainException('Un utilisateur avec cet email existe déjà');
+        }
+        
+        // Création de l'entité métier
+        $user = User::create(
+            $command->getEmail(),
+            $this->passwordHasher->hash($command->getPassword()),
+            $command->getRole()
+        );
+        
+        // Persistance via le repository
+        $this->userRepository->save($user);
+        
+        // Événement métier
+        $this->eventDispatcher->dispatch(new UserCreatedEvent($user));
+        
+        // Logging
+        $this->logger->info('User created', ['user_id' => $user->getId()]);
+        
+        return $user;
+    }
+    
+    public function updateUser(int $id, UpdateUserCommand $command): User {
+        $user = $this->userRepository->findById($id);
+        
+        if (!$user) {
+            throw new UserNotFoundException("Utilisateur avec l'ID $id non trouvé");
+        }
+        
+        // Application des règles métier
+        if ($command->hasEmailChange()) {
+            $user->changeEmail($command->getEmail());
+            $this->eventDispatcher->dispatch(new UserEmailChangedEvent($user));
+        }
+        
+        if ($command->hasPasswordChange()) {
+            $hashedPassword = $this->passwordHasher->hash($command->getPassword());
+            $user->changePassword($hashedPassword);
+        }
+        
+        
+if ($command->hasRoleChange()) {
+            $user->changeRole($command->getRole());
+        }
+        
+        $this->userRepository->save($user);
+        $this->logger->info('User updated', ['user_id' => $user->getId()]);
+        
+        return $user;
+    }
+}
+</code></pre>
+                                </div>
+
+                                <div class="code-example">
+                                    <div class="code-header">
+                                        <span class="code-title">OrderService.java - Service Refactorisé</span>
+                                        <span class="code-language">Java</span>
+                                    </div>
+                                    <pre><code class="language-java">
+@Service
+public class OrderService {
+    private final OrderRepository orderRepository;
+    private final ProductService productService;
+    private final InventoryService inventoryService;
+    private final PricingService pricingService;
+    private final NotificationService notificationService;
+    private final OrderValidator validator;
+    
+    public OrderService(
+        OrderRepository orderRepository,
+        ProductService productService,
+        InventoryService inventoryService,
+        PricingService pricingService,
+        NotificationService notificationService,
+        OrderValidator validator
+    ) {
+        this.orderRepository = orderRepository;
+        this.productService = productService;
+        this.inventoryService = inventoryService;
+        this.pricingService = pricingService;
+        this.notificationService = notificationService;
+        this.validator = validator;
+    }
+    
+    @Transactional
+    public Order processOrder(CreateOrderCommand command) {
+        // Validation déléguée
+        validator.validate(command);
+        
+        // Vérification de disponibilité
+        inventoryService.checkAvailability(command.getItems());
+        
+        // Calcul du prix via service dédié
+        OrderTotal total = pricingService.calculateTotal(
+            command.getItems(), 
+            command.getCustomerCountry()
+        );
+        
+        // Création de l'entité métier
+        Order order = Order.create(
+            command.getCustomerId(),
+            command.getItems(),
+            total
+        );
+        
+        // Persistance
+        Order savedOrder = orderRepository.save(order);
+        
+        // Mise à jour du stock
+        inventoryService.reserveItems(command.getItems());
+        
+        // Notification asynchrone
+        notificationService.sendOrderConfirmation(savedOrder);
+        
+        return savedOrder;
+    }
+}
+</code></pre>
+                                </div>
+
+                                <div class="code-example">
+                                    <div class="code-header">
+                                        <span class="code-title">Architecture Layers</span>
+                                        <span class="code-language">Structure</span>
+                                    </div>
+                                    <pre><code class="language-text">
+📁 src/
+├── 📁 Presentation/           # Couche de présentation
+│   ├── Controllers/           # Contrôleurs REST/Web
+│   ├── Requests/             # DTOs de requête
+│   ├── Responses/            # DTOs de réponse
+│   └── Middleware/           # Middlewares transversaux
+│
+├── 📁 Application/           # Couche application
+│   ├── Services/             # Services applicatifs
+│   ├── Commands/             # Commandes CQRS
+│   ├── Queries/              # Requêtes CQRS
+│   ├── Handlers/             # Handlers de commandes/requêtes
+│   └── Events/               # Événements applicatifs
+│
+├── 📁 Domain/                # Couche métier
+│   ├── Entities/             # Entités métier
+│   ├── ValueObjects/         # Objets valeur
+│   ├── Repositories/         # Interfaces de repositories
+│   ├── Services/             # Services métier
+│   └── Events/               # Événements métier
+│
+├── 📁 Infrastructure/        # Couche infrastructure
+│   ├── Persistence/          # Implémentations repositories
+│   ├── External/             # Services externes
+│   ├── Messaging/            # Système de messages
+│   └── Configuration/        # Configuration technique
+│
+└── 📁 Shared/                # Code partagé
+    ├── Exceptions/           # Exceptions communes
+    ├── Validators/           # Validateurs
+    └── Utils/                # Utilitaires
+</code></pre>
+                                </div>
+
+                                <div class="benefits-list">
+                                    <h4>✅ Avantages de l'architecture refactorisée :</h4>
+                                    <ul>
+                                        <li><strong>Séparation des responsabilités :</strong> Chaque couche a un rôle défini</li>
+                                        <li><strong>Faible couplage :</strong> Dépendances via interfaces</li>
+                                        <li><strong>Testabilité :</strong> Injection de dépendances et mocks</li>
+                                        <li><strong>Évolutivité :</strong> Modifications localisées</li>
+                                        <li><strong>Réutilisabilité :</strong> Services métier indépendants</li>
+                                        <li><strong>Maintenabilité :</strong> Code organisé et documenté</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Techniques de Refactoring -->
+                <section class="refactoring-section">
+                    <div class="aikido-card refactoring">
+                        <h2>🔧 Techniques de Refactoring</h2>
+                        <p class="mb-md">
+                            Stratégies pour transformer un Big Ball of Mud en architecture structurée :
+                        </p>
+
+                        <div class="techniques-grid">
+                            <div class="technique-card">
+                                <div class="technique-header">
+                                    <span class="technique-icon">🏗️</span>
+                                    <h4>Layered Architecture</h4>
+                                </div>
+                                <div class="technique-description">
+                                    <p>Organiser le code en couches avec responsabilités distinctes</p>
+                                </div>
+                                <div class="technique-steps">
+                                    <strong>Étapes :</strong>
+                                    <ol>
+                                        <li>Identifier les responsabilités actuelles</li>
+                                        <li>Définir les couches (Presentation, Application, Domain, Infrastructure)</li>
+                                        <li>Migrer le code progressivement</li>
+                                        <li>Établir les règles de dépendances</li>
+                                    </ol>
+                                </div>
+                                <div class="technique-benefits">
+                                    <strong>Avantages :</strong> Structure claire, séparation des préoccupations
+                                </div>
+                            </div>
+
+                            <div class="technique-card">
+                                <div class="technique-header">
+                                    <span class="technique-icon">🎯</span>
+                                    <h4>Domain-Driven Design</h4>
+                                </div>
+                                <div class="technique-description">
+                                    <p>Modéliser le système autour du domaine métier</p>
+                                </div>
+                                <div class="technique-steps">
+                                    <strong>Étapes :</strong>
+                                    <ol>
+                                        <li>Identifier les bounded contexts</li>
+                                        <li>Extraire les entités et value objects</li>
+                                        <li>Créer les services métier</li>
+                                        <li>Implémenter les repositories</li>
+                                    </ol>
+                                </div>
+                                <div class="technique-benefits">
+                                    <strong>Avantages :</strong> Logique métier centralisée, modèle expressif
+                                </div>
+                            </div>
+
+                            <div class="technique-card">
+                                <div class="technique-header">
+                                    <span class="technique-icon">🔄</span>
+                                    <h4>Strangler Fig Pattern</h4>
+                                </div>
+                                <div class="technique-description">
+                                    <p>Remplacer progressivement l'ancien système</p>
+                                </div>
+                                <div class="technique-steps">
+                                    <strong>Étapes :</strong>
+                                    <ol>
+                                        <li>Identifier les modules à remplacer</li>
+                                        <li>Créer la nouvelle implémentation</li>
+                                        <li>Router le trafic progressivement</li>
+                                        <li>Supprimer l'ancien code</li>
+                                    </ol>
+                                </div>
+                                <div class="technique-benefits">
+                                    <strong>Avantages :</strong> Migration sans interruption, risque réduit
+                                </div>
+                            </div>
+
+                            <div class="technique-card">
+                                <div class="technique-header">
+                                    <span class="technique-icon">🧩</span>
+                                    <h4>Microservices Decomposition</h4>
+                                </div>
+                                <div class="technique-description">
+                                    <p>Décomposer en services indépendants</p>
+                                </div>
+                                <div class="technique-steps">
+                                    <strong>Étapes :</strong>
+                                    <ol>
+                                        <li>Identifier les bounded contexts</li>
+                                        <li>Extraire les services métier</li>
+                                        <li>Définir les APIs</li>
+                                        <li>Gérer la communication inter-services</li>
+                                    </ol>
+                                </div>
+                                <div class="technique-benefits">
+                                    <strong>Avantages :</strong> Scalabilité, déploiement indépendant
+                                </div>
+                            </div>
+
+                            <div class="technique-card">
+                                <div class="technique-header">
+                                    <span class="technique-icon">🎭</span>
+                                    <h4>Facade Pattern</h4>
+                                </div>
+                                <div class="technique-description">
+                                    <p>Créer une interface simplifiée pour les sous-systèmes complexes</p>
+                                </div>
+                                <div class="technique-steps">
+                                    <strong>Étapes :</strong>
+                                    <ol>
+                                        <li>Identifier les sous-systèmes complexes</li>
+                                        <li>Créer des facades simplifiées</li>
+                                        <li>Encapsuler la complexité</li>
+                                        <li>Refactoriser les clients</li>
+                                    </ol>
+                                </div>
+                                <div class="technique-benefits">
+                                    <strong>Avantages :</strong> Interface simplifiée, couplage réduit
+                                </div>
+                            </div>
+
+                            <div class="technique-card">
+                                <div class="technique-header">
+                                    <span class="technique-icon">📦</span>
+                                    <h4>Modular Monolith</h4>
+                                </div>
+                                <div class="technique-description">
+                                    <p>Organiser en modules bien définis dans un monolithe</p>
+                                </div>
+                                <div class="technique-steps">
+                                    <strong>Étapes :</strong>
+                                    <ol>
+                                        <li>Définir les modules métier</li>
+                                        <li>Établir les interfaces entre modules</li>
+                                        <li>Isoler les données par module</li>
+                                        <li>Contrôler les dépendances</li>
+                                    </ol>
+                                </div>
+                                <div class="technique-benefits">
+                                    <strong>Avantages :</strong> Structure modulaire, déploiement simplifié
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Design Patterns Recommandés -->
+                <section class="patterns-section">
+                    <div class="aikido-card patterns">
+                        <h2>🏗️ Design Patterns Recommandés</h2>
+                        <p class="mb-md">
+                            Patterns essentiels pour structurer une architecture propre :
+                        </p>
+
+                        <div class="patterns-grid">
+                            <div class="pattern-card">
+                                <div class="pattern-header">
+                                    <span class="pattern-icon">🏭</span>
+                                    <h4>Repository Pattern</h4>
+                                </div>
+                                <p class="pattern-description">
+                                    Encapsuler la logique d'accès aux données derrière une interface métier.
+                                </p>
+                                <div class="pattern-example">
+                                    <strong>Exemple :</strong> UserRepository pour gérer la persistance des utilisateurs
+                                </div>
+                                <div class="pattern-benefits">
+                                    <strong>Avantages :</strong> Découplage données/métier, testabilité
+                                </div>
+                            </div>
+
+                            <div class="pattern-card">
+                                <div class="pattern-header">
+                                    <span class="pattern-icon">💉</span>
+                                    <h4>Dependency Injection</h4>
+                                </div>
+                                <p class="pattern-description">
+                                    Inverser les dépendances pour réduire le couplage entre composants.
+                                </p>
+                                <div class="pattern-example">
+                                    <strong>Exemple :</strong> Injection des services via constructeur ou container IoC
+                                </div>
+                                <div class="pattern-benefits">
+                                    <strong>Avantages :</strong> Faible couplage, testabilité, flexibilité
+                                </div>
+                            </div>
+
+                            <div class="pattern-card">
+                                <div class="pattern-header">
+                                    <span class="pattern-icon">🎭</span>
+                                    <h4>Facade Pattern</h4>
+                                </div>
+                                <p class="pattern-description">
+                                    Simplifier l'interface d'un sous-système complexe.
+                                </p>
+                                <div class="pattern-example">
+                                    <strong>Exemple :</strong> OrderFacade pour orchestrer la création de commandes
+                                </div>
+                                <div class="pattern-benefits">
+                                    <strong>Avantages :</strong> Interface simplifiée, encapsulation de la complexité
+                                </div>
+                            </div>
+
+                            <div class="pattern-card">
+                                <div class="pattern-header">
+                                    <span class="pattern-icon">📨</span>
+                                    <h4>Command Pattern</h4>
+                                </div>
+                                <p class="pattern-description">
+                                    Encapsuler les requêtes comme des objets pour découpler émetteur et récepteur.
+                                </p>
+                                <div class="pattern-example">
+                                    <strong>Exemple :</strong> CreateUserCommand avec handler dédié
+                                </div>
+                                <div class="pattern-benefits">
+                                    <strong>Avantages :</strong> Découplage, traçabilité, undo/redo
+                                </div>
+                            </div>
+
+                            <div class="pattern-card">
+                                <div class="pattern-header">
+                                    <span class="pattern-icon">📡</span>
+                                    <h4>Observer Pattern</h4>
+                                </div>
+                                <p class="pattern-description">
+                                    Notifier automatiquement les objets dépendants des changements d'état.
+                                </p>
+                                <div class="pattern-example">
+                                    <strong>Exemple :</strong> Événements métier pour notifications et audit
+                                </div>
+                                <div class="pattern-benefits">
+                                    <strong>Avantages :</strong> Découplage temporel, extensibilité
+                                </div>
+                            </div>
+
+                            <div class="pattern-card">
+                                <div class="pattern-header">
+                                    <span class="pattern-icon">🎯</span>
+                                    <h4>Strategy Pattern</h4>
+                                </div>
+                                <p class="pattern-description">
+                                    Encapsuler les algorithmes et les rendre interchangeables.
+                                </p>
+                                <div class="pattern-example">
+                                    <strong>Exemple :</strong> Stratégies de calcul de prix selon le type de client
+                                </div>
+                                <div class="pattern-benefits">
+                                    <strong>Avantages :</strong> Flexibilité, extensibilité, SRP
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercices Pratiques -->
+                <section class="exercise-section">
+                    <div class="aikido-card exercise">
+                        <h2>🎯 Exercices Pratiques</h2>
+                        <p class="mb-md">
+                            Mettez en pratique la restructuration d'un Big Ball of Mud :
+                        </p>
+
+                        <div class="exercise-list">
+                            <div class="exercise-item">
+                                <div class="exercise-header">
+                                    <span class="exercise-number">1</span>
+                                    <h4>Analyse de Dépendances</h4>
+                                    <span class="exercise-difficulty easy">Facile</span>
+                                </div>
+                                <div class="exercise-content">
+                                    <p><strong>Objectif :</strong> Cartographier les dépendances d'un système existant</p>
+                                    <div class="exercise-steps">
+                                        <h5>Étapes :</h5>
+                                        <ol>
+                                            <li>Utiliser des outils d'analyse statique (PHPDepend, JDepend)</li>
+                                            <li>Créer un graphe de dépendances</li>
+                                            <li>Identifier les cycles de dépendances</li>
+                                            <li>Repérer les composants fortement couplés</li>
+                                        </ol>
+                                    </div>
+                                    <div class="exercise-tip">
+                                        <strong>💡 Astuce :</strong> Utilisez des métriques comme l'afferent/efferent coupling
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="exercise-item">
+                                <div class="exercise-header">
+                                    <span class="exercise-number">2</span>
+                                    <h4>Refactoring en Couches</h4>
+                                    <span class="exercise-difficulty medium">Moyen</span>
+                                </div>
+                                <div class="exercise-content">
+                                    <p><strong>Objectif :</strong> Restructurer un contrôleur monolithique</p>
+                                    <div class="exercise-steps">
+                                        <h5>Étapes :</h5>
+                                        <ol>
+                                            <li>Extraire la logique de validation</li>
+                                            <li>Créer des services métier</li>
+                                            <li>Implémenter des repositories</li>
+                                            <li>Ajouter l'injection de dépendances</li>
+                                        </ol>
+                                    </div>
+                                    <div class="exercise-validation">
+                                        <strong>✅ Validation :</strong> Contrôleur < 50 lignes, responsabilités séparées
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="exercise-item">
+                                <div class="exercise-header">
+                                    <span class="exercise-number">3</span>
+                                    <h4>Architecture Hexagonale</h4>
+                                    <span class="exercise-difficulty hard">Difficile</span>
+                                </div>
+                                <div class="exercise-content">
+                                    <p><strong>Objectif :</strong> Implémenter une architecture hexagonale complète</p>
+                                    <div class="exercise-steps">
+                                        <h5>Étapes :</h5>
+                                        <ol>
+                                            <li>Définir le domaine métier au centre</li>
+                                            <li>Créer les ports (interfaces)</li>
+                                            <li>Implémenter les adaptateurs</li>
+                                            <li>Configurer l'injection de dépendances</li>
+                                        </ol>
+                                    </div>
+                                    <div class="exercise-bonus">
+                                        <strong>🎁 Bonus :</strong> Ajouter des tests d'intégration avec TestContainers
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="exercise-solution">
+                            <details>
+                                <summary>💡 Voir les solutions détaillées</summary>
+                                <div class="solution-content">
+                                    <h4>Solution Exercice 1 : Analyse avec PHPDepend</h4>
+                                    <pre><code class="language-bash">
+# Installation de PHPDepend
+composer require --dev pdepend/pdepend
+
+# Génération du rapport de dépendances
+vendor/bin/pdepend --jdepend-xml=dependencies.xml \
+                   --jdepend-chart=dependencies.svg \
+                   --overview-pyramid=pyramid.svg \
+                   src/
+
+# Analyse des métriques
+# - Afferent Coupling (Ca): nombre de classes qui dépendent de ce package
+# - Efferent Coupling (Ce): nombre de classes dont dépend ce package
+# - Instability (I): Ce / (Ca + Ce) - doit être faible pour les couches stables
+</code></pre>
+
+                                    <h4>Solution Exercice 2 : Structure en Couches</h4>
+                                    <pre><code class="language-php">
+// 1. Couche Présentation
+class UserController {
+    public function __construct(
+        private UserApplicationService $userService,
+        private RequestValidator $validator
+    ) {}
+}
+
+// 2. Couche Application
+class UserApplicationService {
+    public function __construct(
+        private UserDomainService $domainService,
+        private UserRepository $repository
+    ) {}
+}
+
+// 3. Couche Domaine
+class UserDomainService {
+    public function createUser(Email $email, Password $password): User {
+        // Logique métier pure
+    }
+}
+
+// 4. Couche Infrastructure
+class DoctrineUserRepository implements UserRepository {
+    // Implémentation de la persistance
+}
+</code></pre>
+
+                                    <h4>Solution Exercice 3 : Architecture Hexagonale</h4>
+                                    <pre><code class="language-java">
+// Domaine (centre)
+@Entity
+public class Order {
+    // Logique métier pure
+}
+
+// Port (interface)
+public interface OrderRepository {
+    Order save(Order order);
+    Optional<Order> findById(OrderId id);
+}
+
+// Adaptateur (implémentation)
+@Repository
+public class JpaOrderRepository implements OrderRepository {
+    // Implémentation JPA
+}
+
+// Configuration
+@Configuration
+public class OrderConfiguration {
+    @Bean
+    public OrderService orderService(OrderRepository repository) {
+        return new OrderService(repository);
+    }
+}
+</code></pre>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Checklist de Validation -->
+                <section class="checklist-section">
+                    <div class="aikido-card checklist">
+                        <h2>✅ Checklist Anti-Big Ball of Mud</h2>
+                        <p class="mb-md">
+                            Utilisez cette checklist pour éviter et refactoriser les architectures chaotiques :
+                        </p>
+
+                        <div class="checklist-categories">
+                            <div class="checklist-category">
+                                <h4>🏗️ Architecture</h4>
+                                <div class="checklist-items" style="flex-direction: column;">
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Structure en couches bien définies</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Séparation claire des responsabilités</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Dépendances unidirectionnelles entre couches</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Modules avec interfaces bien définies</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="checklist-category">
+                                <h4>🔗 Couplage</h4>
+                                <div class="checklist-items" style="flex-direction: column;">
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Faible couplage entre modules</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Injection de dépendances utilisée</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Pas de dépendances circulaires</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Interfaces pour l'abstraction</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="checklist-category">
+                                <h4>📦 Modularité</h4>
+                                <div class="checklist-items" style="flex-direction: column;">
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Modules cohésifs et autonomes</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>APIs publiques bien documentées</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Encapsulation des détails d'implémentation</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Tests unitaires par module</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="checklist-category">
+                                <h4>🎯 Qualité</h4>
+                                <div class="checklist-items" style="flex-direction: column;">
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Code facilement compréhensible</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Documentation architecture à jour</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Métriques de qualité surveillées</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Refactoring régulier planifié</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Questions à Choix Multiples -->
+                <section class="quiz-section">
+                    <div class="aikido-card quiz">
+                        <h2>🧠 Questions de Réflexion</h2>
+                        <p class="mb-md">
+                            Testez votre compréhension du Big Ball of Mud :
+                        </p>
+
+                        <div class="question-block">
+                            <h4>1. Quelle est la cause principale du Big Ball of Mud ?</h4>
+                            <div class="question-options" style="flex-direction: column;">
+                                <label class="question-option">
+                                    <input type="radio" name="q1" value="a">
+                                    <span>Manque de compétences techniques de l'équipe</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q1" value="b">
+                                    <span>Pression temporelle combinée aux biais cognitifs</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q1" value="c">
+                                    <span>Utilisation de mauvais outils de développement</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q1" value="d">
+                                    <span>Absence de documentation technique</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <h4>2. Quelle technique est la plus efficace pour refactoriser un Big Ball of Mud ?</h4>
+                            <div class="question-options" style="flex-direction: column;">
+                                <label class="question-option">
+                                    <input type="radio" name="q2" value="a">
+                                    <span>Réécriture complète du système</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q2" value="b">
+                                    <span>Strangler Fig Pattern avec migration progressive</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q2" value="c">
+                                    <span>Ajout de commentaires et documentation</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q2" value="d">
+                                    <span>Formation de l'équipe aux bonnes pratiques</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="question-block">
+                            <h4>3. Quel biais cognitif maintient le Big Ball of Mud en place ?</h4>
+                            <div class="question-options" style="flex-direction: column;">
+                                <label class="question-option">
+                                    <input type="radio" name="q3" value="a">
+                                    <span>Biais de confirmation</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q3" value="b">
+                                    <span>Biais des coûts irrécupérables</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q3" value="c">
+                                    <span>Biais d'ancrage</span>
+                                </label>
+                                <label class="question-option">
+                                    <input type="radio" name="q3" value="d">
+                                    <span>Biais de disponibilité</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Marquer comme terminé -->
+                <section class="completion-section slide-in">
+                    <div class="aikido-card completion">
+                        <div class="completion-content">
+                            <div class="completion-icon">📋</div>
+                            <div class="completion-text">
+                                <h3>Avez-vous terminé cette section ?</h3>
+                                <p>Marquez cette page comme terminée pour suivre votre progression dans la formation.</p>
+                            </div>
+                            <button class="aikido-btn primary mark-completed" data-page="big-ball-of-mud">
+                                Marquer comme Terminé ✓
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts de fin de page -->
+    <script>
+        // Initialisation des composants
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion des onglets d'exemples
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // Désactiver tous les onglets
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Activer l'onglet sélectionné
+                    this.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+
+            // Animation des éléments au scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                    }
+                });
+            }, observerOptions);
+
+            // Observer tous les éléments avec animation
+            document.querySelectorAll('.slide-in, .fade-in').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Gestion des checkboxes de la checklist
+            document.querySelectorAll('.checklist-item input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const item = this.closest('.checklist-item');
+                    if (this.checked) {
+                        item.classList.add('completed');
+                    } else {
+                        item.classList.remove('completed');
+                    }
+                    
+                    // Sauvegarder l'état dans localStorage
+                    const checklistId = 'big-ball-of-mud-checklist';
+                    const itemIndex = Array.from(item.parentNode.children).indexOf(item);
+                    const categoryIndex = Array.from(item.closest('.checklist-categories').children).indexOf(item.closest('.checklist-category'));
+                    
+                    let savedState = JSON.parse(localStorage.getItem(checklistId) || '{}');
+                    if (!savedState[categoryIndex]) savedState[categoryIndex] = {};
+                    savedState[categoryIndex][itemIndex] = this.checked;
+                    localStorage.setItem(checklistId, JSON.stringify(savedState));
+                });
+            });
+
+            // Restaurer l'état des checkboxes
+            const savedState = JSON.parse(localStorage.getItem('big-ball-of-mud-checklist') || '{}');
+            document.querySelectorAll('.checklist-category').forEach((category, categoryIndex) => {
+                if (savedState[categoryIndex]) {
+                    category.querySelectorAll('.checklist-item').forEach((item, itemIndex) => {
+                        if (savedState[categoryIndex][itemIndex]) {
+                            const checkbox = item.querySelector('input[type="checkbox"]');
+                            checkbox.checked = true;
+                            item.classList.add('completed');
+                        }
+                    });
+                }
+            });
+
+            // Animation des barres de fréquence
+            const frequencyBars = document.querySelectorAll('.frequency-fill');
+            frequencyBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.transition = 'width 1.5s ease-out';
+                    bar.style.width = width;
+                }, 500);
+            });
+        });
+
+        // Fonction pour marquer le module comme terminé
+        function markAsCompleted(moduleId) {
+            // Sauvegarder la progression
+            let completedModules = JSON.parse(localStorage.getItem('completedModules') || '[]');
+            if (!completedModules.includes(moduleId)) {
+                completedModules.push(moduleId);
+                localStorage.setItem('completedModules', JSON.stringify(completedModules));
+            }
+            
+            // Afficher une notification
+            const notification = document.createElement('div');
+            notification.className = 'completion-notification';
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <span class="notification-icon">🎉</span>
+                    <span class="notification-text">Module Big Ball of Mud terminé !</span>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

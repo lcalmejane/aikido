@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design by Committee - Anti-Pattern | Formation Patterns Développeurs</title>
+    <meta name="description" content="Comprendre et éviter l'anti-pattern Design by Committee : causes, conséquences et solutions de gouvernance">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/exercises.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <div class="breadcrumb">
+                        <a href="#" onclick="window.formationNav.navigateToAbsolutePage('index.html'); return false;">Formation</a>
+                        <span>→</span>
+                        <a href="../index.html">Anti-Patterns</a>
+                        <span>→</span>
+                        <span>Design by Committee</span>
+                    </div>
+                    
+                    <h1 class="page-title">🏛️ Design by Committee</h1>
+                    <p class="page-subtitle">L'anti-pattern de la conception par consensus qui dilue la vision</p>
+                    
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span>👥</span>
+                            <span>Anti-Pattern organisationnel</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>⏱️</span>
+                            <span>~25 minutes</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>🎯</span>
+                            <span>Gouvernance essentielle</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>🧩</span>
+                            <span>5 biais cognitifs liés</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Définition -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card anti-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="definition-text">
+                            Le <strong>Design by Committee</strong> est un anti-pattern de management où les décisions 
+                            de conception sont prises par un groupe nombreux cherchant le consensus, résultant en des 
+                            solutions diluées, incohérentes et souvent médiocres. Chaque membre du comité veut voir 
+                            ses idées intégrées, créant un produit final qui tente de satisfaire tout le monde mais 
+                            ne satisfait personne pleinement.
+                        </p>
+
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problèmes Causés</h3>
+                                <ul>
+                                    <li>Vision produit diluée et incohérente</li>
+                                    <li>Compromis qui affaiblissent la solution</li>
+                                    <li>Processus de décision lent et laborieux</li>
+                                    <li>Architecture complexe et sur-conçue</li>
+                                    <li>Responsabilité diffuse et déresponsabilisation</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solutions Apportées</h3>
+                                <ul>
+                                    <li>Désignation d'un architecte principal</li>
+                                    <li>Processus de décision structuré</li>
+                                    <li>Rôles et responsabilités clairs</li>
+                                    <li>Consultation ciblée des experts</li>
+                                    <li>Vision produit unifiée et documentée</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert danger">
+                            <strong>⚠️ Attention :</strong> Le Design by Committee peut sembler démocratique et inclusif, 
+                            mais il conduit souvent à des solutions médiocres qui ne résolvent aucun problème efficacement.
+                        </div>
+
+                        <h3>Caractéristiques du Design by Committee</h3>
+                        <div class="characteristics-grid">
+                            <div class="characteristic-item">
+                                <span class="char-icon">👥</span>
+                                <div>
+                                    <strong>Trop de décideurs</strong>
+                                    <p>Chacun veut imposer sa vision</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">🤝</span>
+                                <div>
+                                    <strong>Recherche du consensus</strong>
+                                    <p>Compromis qui affaiblissent la solution</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">🎯</span>
+                                <div>
+                                    <strong>Vision diluée</strong>
+                                    <p>Objectifs flous et contradictoires</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">⏳</span>
+                                <div>
+                                    <strong>Décisions lentes</strong>
+                                    <p>Processus interminables de validation</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Workflow Diagram -->
+                <section class="workflow-section">
+                    <div class="aikido-card">
+                        <h2>🔄 Workflow du Design by Committee</h2>
+                        <div class="mermaid-container">
+                            <div class="mermaid">
+                                graph TD
+                                    A[Nouveau Besoin] --> B[Formation du Comite]
+                                    B --> C[Reunion de Cadrage]
+                                    C --> D[Chacun Exprime ses Besoins]
+                                    D --> E[Tentative de Consensus]
+                                    E --> F{Accord Unanime?}
+                                    F -->|Non| G[Nouvelles Reunions]
+                                    G --> H[Compromis Forces]
+                                    H --> I[Solution Diluee]
+                                    F -->|Oui| J[Conception Complexe]
+                                    J --> K[Integration de Tous les Besoins]
+                                    K --> L[Architecture Sur-concue]
+                                    I --> M[Implementation Difficile]
+                                    L --> M
+                                    M --> N[Tests Complexes]
+                                    N --> O[Maintenance Impossible]
+                                    O --> P[Echec du Projet]
+                                    
+                                    style A fill:#e1f5fe
+                                    style B fill:#fff3e0
+                                    style F fill:#fff8e1
+                                    style I fill:#ffebee
+                                    style L fill:#ffebee
+                                    style P fill:#f3e5f5
+                            </div>
+                        </div>
+                        <div class="workflow-explanation">
+                            <h3>📋 Étapes du Processus</h3>
+                            <div class="process-steps">
+                                <div class="step-item">
+                                    <span class="step-number">1</span>
+                                    <div class="step-content">
+                                        <strong>Formation du Comité</strong>
+                                        <p>Rassemblement de tous les stakeholders "pour être inclusif"</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <span class="step-number">2</span>
+                                    <div class="step-content">
+                                        <strong>Expression des Besoins</strong>
+                                        <p>Chaque membre veut voir ses exigences intégrées</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <span class="step-number">3</span>
+                                    <div class="step-content">
+                                        <strong>Recherche de Consensus</strong>
+                                        <p>Tentative de satisfaire tout le monde simultanément</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <span class="step-number">4</span>
+                                    <div class="step-content">
+                                        <strong>Solution Compromise</strong>
+                                        <p>Résultat dilué qui ne satisfait personne pleinement</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Biais Cognitifs Associés -->
+                <section class="cognitive-bias-section">
+                    <div class="aikido-card biais-cognitif">
+                        <h2>🧠 Biais Cognitifs Associés</h2>
+                        <p class="mb-lg">
+                            Le Design by Committee résulte de plusieurs biais cognitifs qui favorisent le consensus au détriment de l'efficacité :
+                        </p>
+
+                        <div class="bias-cards">
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">🤝</span>
+                                    <h4>Biais de Conformité Sociale</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Il faut que tout le monde soit d'accord avant de décider"
+                                </p>
+                                <p class="bias-explanation">
+                                    La tendance à chercher l'approbation du groupe plutôt que de prendre des décisions 
+                                    tranchées mais nécessaires.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Multiplier les réunions de validation jusqu'à obtenir 
+                                    un consensus mou qui satisfait superficiellement chacun.
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">⚖️</span>
+                                    <h4>Biais de Faux Consensus</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Si on intègre l'idée de chacun, ce sera forcément mieux"
+                                </p>
+                                <p class="bias-explanation">
+                                    Croire qu'additionner les idées de tous produit automatiquement une meilleure solution 
+                                    que celle d'un expert unique.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Créer une interface avec 15 fonctionnalités différentes 
+                                    pour satisfaire les demandes de chaque département.
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">🎭</span>
+                                    <h4>Biais de Responsabilité Diffuse</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Ce n'est pas ma faute, c'est une décision collective"
+                                </p>
+                                <p class="bias-explanation">
+                                    Quand la responsabilité est partagée entre tous, personne ne se sent vraiment 
+                                    responsable du résultat final.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Éviter de prendre position sur des choix techniques 
+                                    controversés en les renvoyant au "comité d'architecture".
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">🏛️</span>
+                                    <h4>Biais d'Autorité Distribuée</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Chaque expert doit valider sa partie"
+                                </p>
+                                <p class="bias-explanation">
+                                    Croire qu'il faut l'aval de tous les experts pour légitimer une décision, 
+                                    même quand leurs domaines ne se recoupent pas.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Demander l'avis du DBA sur l'UX et celui du designer 
+                                    sur l'architecture de données.
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">🎯</span>
+                                    <h4>Biais de Compromis</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Trouvons un juste milieu qui convient à tous"
+                                </p>
+                                <p class="bias-explanation">
+                                    Privilégier systématiquement les solutions moyennes qui évitent les conflits 
+                                    plutôt que les solutions optimales mais potentiellement controversées.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Choisir une technologie "neutre" que personne n'aime 
+                                    vraiment plutôt qu'une solution excellente mais clivante.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exemple de Code Problématique -->
+                <section class="example-section">
+                    <div class="aikido-card">
+                        <h2>💀 Exemple Problématique</h2>
+                        <p class="mb-md">
+                            Voici un exemple typique de Design by Committee dans la conception d'une API de gestion d'utilisateurs :
+                        </p>
+
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="php">
+                                    <span class="tab-icon">🐘</span>
+                                    PHP
+                                </button>
+                                <button class="tab-btn" data-tab="java">
+                                    <span class="tab-icon">☕</span>
+                                    Java
+                                </button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="php">
+                                <pre><code class="language-php">
+<?php
+/**
+ * ❌ ANTI-PATTERN: Design by Committee
+ * API utilisateur conçue par un comité de 8 personnes
+ * Chacun a voulu ajouter "sa" fonctionnalité
+ */
+
+// Résultat : Une classe monstre qui tente de tout faire
+class UserManagementAPI {
+    
+    // Demande du Product Owner : "Il faut pouvoir tout faire en une fois"
+    public function createCompleteUser(array $userData): array {
+        // Demande du Security Expert : "Il faut 5 niveaux de validation"
+        $this->validateBasicInfo($userData);
+        $this->validateSecurityRequirements($userData);
+        $this->validateComplianceRules($userData);
+        $this->validateBusinessRules($userData);
+        $this->validateTechnicalConstraints($userData);
+        
+        // Demande du DBA : "Il faut optimiser toutes les requêtes"
+        $this->preloadAllRelatedData();
+        
+        // Demande du Frontend Dev : "Il faut retourner tout ce dont j'ai besoin"
+        $user = $this->createUserWithAllData($userData);
+        
+        // Demande du Mobile Dev : "Il faut une version light aussi"
+        $lightUser = $this->createLightUserVersion($user);
+        
+        // Demande du Analytics Team : "Il faut tracker tout"
+        $this->trackUserCreation($user, 'web');
+        $this->trackUserCreation($user, 'mobile');
+        $this->trackUserCreation($user, 'api');
+        
+        // Demande du Marketing : "Il faut segmenter immédiatement"
+        $this->assignToMarketingSegments($user);
+        
+        // Demande du Support : "Il faut créer le ticket de bienvenue"
+        $this->createWelcomeTicket($user);
+        
+        // Demande du Legal : "Il faut logger pour l'audit"
+        $this->logForCompliance($user, 'creation');
+        
+        return [
+            'user' => $user,              // Pour le web
+            'light_user' => $lightUser,   // Pour le mobile
+            'segments' => $this->getSegments($user), // Pour le marketing
+            'ticket_id' => $this->getTicketId($user), // Pour le support
+            'audit_id' => $this->getAuditId($user),   // Pour le legal
+            'analytics' => $this->getAnalytics($user) // Pour les stats
+        ];
+    }
+    
+    // Demande du Tech Lead : "Il faut une méthode pour chaque cas d'usage"
+    public function createUserForWeb(array $userData): array { /* ... */ }
+    public function createUserForMobile(array $userData): array { /* ... */ }
+    public function createUserForAPI(array $userData): array { /* ... */ }
+    public function createUserForAdmin(array $userData): array { /* ... */ }
+    public function createUserForImport(array $userData): array { /* ... */ }
+    
+    // Demande du Architect : "Il faut supporter tous les formats"
+    public function updateUser($userId, $data, $format = 'json'): array {
+        switch($format) {
+            case 'json':
+                return $this->updateUserFromJSON($userId, $data);
+            case 'xml':
+                return $this->updateUserFromXML($userId, $data);
+            case 'csv':
+                return $this->updateUserFromCSV($userId, $data);
+            case 'yaml':
+                return $this->updateUserFromYAML($userId, $data);
+            case 'form':
+                return $this->updateUserFromForm($userId, $data);
+            default:
+                throw new InvalidArgumentException('Unsupported format');
+        }
+    }
+    
+    // Demande du DevOps : "Il faut des méthodes de monitoring"
+    public function getUserWithHealthCheck($userId): array {
+        $startTime = microtime(true);
+        
+        try {
+            $user = $this->getUser($userId);
+            $this->logPerformance('get_user', microtime(true) - $startTime);
+            return ['user' => $user, 'health' => 'ok'];
+        } catch (Exception $e) {
+            $this->logError('get_user', $e);
+            return ['user' => null, 'health' => 'error', 'error' => $e->getMessage()];
+        }
+    }
+    
+    // Demande du QA : "Il faut des méthodes de test"
+    public function createTestUser($scenario = 'default'): array {
+        $testData = $this->getTestDataForScenario($scenario);
+        return $this->createCompleteUser($testData);
+    }
+    
+    // Demande du Business Analyst : "Il faut des rapports intégrés"
+    public function getUserWithReports($userId): array {
+        $user = $this->getUser($userId);
+        
+        return [
+            'user' => $user,
+            'activity_report' => $this->generateActivityReport($userId),
+            'engagement_report' => $this->generateEngagementReport($userId),
+            'conversion_report' => $this->generateConversionReport($userId),
+            'support_report' => $this->generateSupportReport($userId)
+        ];
+    }
+    
+    // Résultat : 47 méthodes publiques, 156 méthodes privées
+    // Classe de 2847 lignes qui fait absolument tout
+    // Impossible à maintenir, tester ou comprendre
+}
+
+/**
+ * Configuration résultant du Design by Committee
+ * Chaque équipe a ajouté ses paramètres
+ */
+$config = [
+    // Security team
+    'password_min_length' => 12,
+    'password_require_special' => true,
+    'password_require_number' => true,
+    'password_require_uppercase' => true,
+    'password_require_lowercase' => true,
+    'password_history_count' => 5,
+    
+    // UX team
+    'show_password_strength' => true,
+    'show_password_tips' => true,
+    'animate_validation' => true,
+    'use_progressive_disclosure' => true,
+    
+    // Marketing team
+    'track_registration_source' => true,
+    'enable_ab_testing' => true,
+    'collect_marketing_preferences' => true,
+    'auto_subscribe_newsletter' => false, // Compromis avec Legal
+    
+    // Legal team
+    'require_gdpr_consent' => true,
+    'require_terms_acceptance' => true,
+    'log_consent_details' => true,
+    'enable_data_portability' => true,
+    
+    // Performance team
+    'cache_user_data' => true,
+    'preload_related_data' => true,
+    'use_database_sharding' => true,
+    'enable_query_optimization' => true,
+    
+    // Mobile team
+    'support_offline_mode' => true,
+    'enable_push_notifications' => true,
+    'optimize_for_low_bandwidth' => true,
+    
+    // Analytics team
+    'track_all_interactions' => true,
+    'enable_heatmaps' => true,
+    'collect_device_info' => true,
+    
+    // Support team
+    'auto_create_support_ticket' => true,
+    'enable_live_chat' => true,
+    'collect_feedback' => true
+];
+?>
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="java">
+                                <pre><code class="language-java">
+/**
+ * ❌ ANTI-PATTERN: Design by Committee
+ * Service utilisateur conçu par un comité de 10 personnes
+ * Résultat : Une interface qui tente de satisfaire tout le monde
+ */
+
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+    
+    // Injection de 15 services différents pour satisfaire chaque équipe
+    @Autowired private UserService userService;
+    @Autowired private SecurityService securityService;
+    @Autowired private AnalyticsService analyticsService;
+    @Autowired private MarketingService marketingService;
+    @Autowired private SupportService supportService;
+    @Autowired private ComplianceService complianceService;
+    @Autowired private PerformanceService performanceService;
+    @Autowired private NotificationService notificationService;
+    @Autowired private ReportingService reportingService;
+    @Autowired private ValidationService validationService;
+    @Autowired private CacheService cacheService;
+    @Autowired private AuditService auditService;
+    @Autowired private ConfigurationService configService;
+    @Autowired private IntegrationService integrationService;
+    @Autowired private MonitoringService monitoringService;
+    
+    /**
+     * Endpoint "tout-en-un" demandé par le Product Owner
+     * "Il faut une seule API qui fait tout pour simplifier"
+     */
+    @PostMapping("/create-complete")
+    public ResponseEntity<CompleteUserResponse> createCompleteUser(
+            @RequestBody CreateUserRequest request,
+            @RequestParam(defaultValue = "web") String source,
+            @RequestParam(defaultValue = "json") String format,
+            @RequestParam(defaultValue = "full") String profile,
+            @RequestParam(defaultValue = "true") boolean trackAnalytics,
+            @RequestParam(defaultValue = "true") boolean sendNotifications,
+            @RequestParam(defaultValue = "true") boolean createSupportTicket,
+            @RequestParam(defaultValue = "true") boolean assignSegments,
+            @RequestParam(defaultValue = "false") boolean generateReports,
+            @RequestParam(defaultValue = "true") boolean enableCaching,
+            @RequestParam(defaultValue = "true") boolean auditLog,
+            @RequestParam(defaultValue = "false") boolean syncExternalSystems,
+            HttpServletRequest httpRequest) {
+        
+        try {
+            // Validation multi-niveaux demandée par Security
+            ValidationResult basicValidation = validationService.validateBasic(request);
+            ValidationResult securityValidation = securityService.validateSecurity(request);
+            ValidationResult complianceValidation = complianceService.validateCompliance(request);
+            ValidationResult businessValidation = userService.validateBusiness(request);
+            
+            if (!basicValidation.isValid() || !securityValidation.isValid() || 
+                !complianceValidation.isValid() || !businessValidation.isValid()) {
+                return ResponseEntity.badRequest().body(
+                    CompleteUserResponse.error("Validation failed")
+                );
+            }
+            
+            // Création utilisateur avec tous les enrichissements
+            User user = userService.createUser(request);
+            
+            // Analytics demandé par Data Team
+            if (trackAnalytics) {
+                analyticsService.trackUserCreation(user, source);
+                analyticsService.trackConversion(user, "registration");
+                analyticsService.updateFunnel(user, "completed_registration");
+            }
+            
+            // Segmentation demandée par Marketing
+            if (assignSegments) {
+                List<MarketingSegment> segments = marketingService.assignSegments(user);
+                marketingService.triggerWelcomeCampaign(user, segments);
+            }
+            
+            // Support ticket demandé par Customer Success
+            SupportTicket ticket = null;
+            if (createSupportTicket) {
+                ticket = supportService.createWelcomeTicket(user);
+                supportService.assignToOnboardingAgent(ticket);
+            }
+            
+            // Notifications demandées par Product
+            if (sendNotifications) {
+                notificationService.sendWelcomeEmail(user);
+                notificationService.sendSMSVerification(user);
+                notificationService.scheduleOnboardingSequence(user);
+            }
+            
+            // Rapports demandés par Business Intelligence
+            UserReports reports = null;
+            if (generateReports) {
+                reports = reportingService.generateUserReports(user);
+            }
+            
+            // Cache demandé par Performance Team
+            if (enableCaching) {
+                cacheService.cacheUser(user);
+                cacheService.preloadRelatedData(user);
+            }
+            
+            // Audit demandé par Compliance
+            if (auditLog) {
+                auditService.logUserCreation(user, httpRequest);
+                auditService.logDataProcessing(user, "creation");
+            }
+            
+            // Synchronisation externe demandée par Integration Team
+            if (syncExternalSystems) {
+                integrationService.syncWithCRM(user);
+                integrationService.syncWithERP(user);
+                integrationService.syncWithBI(user);
+            }
+            
+            // Monitoring demandé par DevOps
+            monitoringService.recordMetric("user.created", 1);
+            monitoringService.recordLatency("user.creation", System.currentTimeMillis());
+            
+            // Construction de la réponse "complète"
+            CompleteUserResponse response = CompleteUserResponse.builder()
+                .user(user)
+                .profile(profile.equals("light") ? user.toLightProfile() : user.toFullProfile())
+                .segments(assignSegments ? marketingService.getUserSegments(user) : null)
+                .supportTicket(ticket)
+                .reports(reports)
+                .analytics(trackAnalytics ? analyticsService.getUserAnalytics(user) : null)
+                .notifications(sendNotifications ? notificationService.getNotificationStatus(user) : null)
+                .integrationStatus(syncExternalSystems ? integrationService.getSyncStatus(user) : null)
+                .cacheStatus(enableCaching ? cacheService.getCacheStatus(user) : null)
+                .auditTrail(auditLog ? auditService.getAuditTrail(user) : null)
+                .build();
+            
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            // Gestion d'erreur "complète" demandée par tous
+            monitoringService.recordError("user.creation.failed", e);
+            auditService.logError("user_creation", e, httpRequest);
+            return ResponseEntity.status(500).body(
+                CompleteUserResponse.error("Internal server error: " + e.getMessage())
+            );
+        }
+    }
+    
+    /**
+     * Endpoints spécialisés demandés par chaque équipe
+     * "Il faut une API spécifique pour notre cas d'usage"
+     */
+    
+    @PostMapping("/create-for-web")
+    public ResponseEntity<WebUserResponse> createUserForWeb(@RequestBody WebUserRequest request) {
+        // Logique spécifique web avec 47 paramètres
+    }
+    
+    @PostMapping("/create-for-mobile")
+    public ResponseEntity<MobileUserResponse> createUserForMobile(@RequestBody MobileUserRequest request) {
+        // Logique spécifique mobile avec 23 paramètres
+    }
+    
+    @PostMapping("/create-for-admin")
+    public ResponseEntity<AdminUserResponse> createUserForAdmin(@RequestBody AdminUserRequest request) {
+        // Logique spécifique admin avec 67 paramètres
+    }
+    
+    @PostMapping("/create-with-analytics")
+    public ResponseEntity<AnalyticsUserResponse> createUserWithAnalytics(@RequestBody AnalyticsUserRequest request) {
+        // Logique spécifique analytics avec 34 paramètres
+    }
+    
+    @PostMapping("/create-with-marketing")
+    public ResponseEntity<MarketingUserResponse> createUserWithMarketing(@RequestBody MarketingUserRequest request) {
+        // Logique spécifique marketing avec 28 paramètres
+    }
+    
+    // ... 23 autres endpoints spécialisés
+    
+    /**
+     * Configuration demandée par Architecture Committee
+     * "Il faut que tout soit configurable"
+     */
+    @Value("${user.validation.levels:5}")
+    private int validationLevels;
+    
+    @Value("${user.analytics.track-everything:true}")
+    private boolean trackEverything;
+    
+    @Value("${user.marketing.auto-segment:true}")
+    private boolean autoSegment;
+    
+    @Value("${user.support.auto-ticket:true}")
+    private boolean autoCreateTicket;
+    
+    @Value("${user.notifications.send-all:true}")
+    private boolean sendAllNotifications;
+    
+    @Value("${user.cache.preload-everything:true}")
+    private boolean preloadEverything;
+    
+    @Value("${user.audit.log-everything:true}")
+    private boolean logEverything;
+    
+    @Value("${user.integration.sync-all-systems:false}")
+    private boolean syncAllSystems;
+    
+    @Value("${user.performance.optimize-everything:true}")
+    private boolean optimizeEverything;
+    
+    @Value("${user.security.maximum-validation:true}")
+    private boolean maximumValidation;
+    
+    // ... 47 autres propriétés de configuration
+}
+
+/**
+ * Classe de réponse "complète" qui tente de satisfaire tout le monde
+ * Résultat : 23 champs optionnels, sérialisation de 2.3MB par utilisateur
+ */
+@Data
+@Builder
+public class CompleteUserResponse {
+    private User user;                          // Core team
+    private UserProfile profile;               // Frontend team
+    private List<MarketingSegment> segments;   // Marketing team
+    private SupportTicket supportTicket;      // Support team
+    private UserReports reports;              // BI team
+    private AnalyticsData analytics;          // Analytics team
+    private NotificationStatus notifications; // Product team
+    private IntegrationStatus integrationStatus; // Integration team
+    private CacheStatus cacheStatus;          // Performance team
+    private AuditTrail auditTrail;           // Compliance team
+    private MonitoringData monitoring;        // DevOps team
+    private ConfigurationSnapshot config;     // Architecture team
+    private HealthCheckResult health;         // QA team
+    private SecurityAudit security;          // Security team
+    private PerformanceMetrics performance;   // Performance team
+    private ErrorDetails errors;             // Support team
+    private DebugInfo debug;                 // Development team
+    private MetadataCollection metadata;     // Everyone else
+    
+    // Méthode statique pour créer une réponse d'erreur
+    public static CompleteUserResponse error(String message) {
+        return CompleteUserResponse.builder()
+            .errors(ErrorDetails.builder().message(message).build())
+            .build();
+    }
+}
+</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert danger">
+                            <strong>🚨 Problèmes identifiés :</strong>
+                            <ul>
+                                <li><strong>Responsabilités diluées :</strong> Aucune personne n'est vraiment responsable du résultat final</li>
+                                <li><strong>Sur-ingénierie :</strong> Solution complexe pour des besoins simples</li>
+                                <li><strong>Performance dégradée :</strong> Trop de traitements pour chaque opération</li>
+                                <li><strong>Maintenance impossible :</strong> Chaque modification impacte tous les cas d'usage</li>
+                                <li><strong>Tests complexes :</strong> Impossible de tester indépendamment chaque fonctionnalité</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Solutions et Refactoring -->
+                <section class="solution-section">
+                    <div class="aikido-card solution">
+                        <h2>✅ Solutions et Refactoring</h2>
+                        <p class="mb-md">
+                            Voici comment éviter le Design by Committee en appliquant une gouvernance claire et des responsabilités définies :
+                        </p>
+
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="php-clean">
+                                    <span class="tab-icon">🐘</span>
+                                    PHP Refactorisé
+                                </button>
+                                <button class="tab-btn" data-tab="java-clean">
+                                    <span class="tab-icon">☕</span>
+                                    Java Refactorisé
+                                </button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="php-clean">
+                                <h3>🎯 Approche par Responsabilité Unique</h3>
+                                <pre><code class="language-php">
+<?php
+/**
+ * ✅ SOLUTION: Architecture avec responsabilités claires
+ * Un seul architecte principal, consultation ciblée des experts
+ */
+
+// 1. Interface simple et focalisée - décision de l'architecte principal
+interface UserServiceInterface {
+    public function createUser(CreateUserRequest $request): User;
+    public function updateUser(string $userId, UpdateUserRequest $request): User;
+    public function getUser(string $userId): User;
+    public function deleteUser(string $userId): bool;
+}
+
+// 2. Service principal avec responsabilité claire
+class UserService implements UserServiceInterface {
+    private UserRepository $repository;
+    private UserValidator $validator;
+    private EventDispatcher $eventDispatcher;
+    
+    public function __construct(
+        UserRepository $repository,
+        UserValidator $validator,
+        EventDispatcher $eventDispatcher
+    ) {
+        $this->repository = $repository;
+        $this->validator = $validator;
+        $this->eventDispatcher = $eventDispatcher;
+    }
+    
+    public function createUser(CreateUserRequest $request): User {
+        // 1. Validation - responsabilité du service
+        $this->validator->validate($request);
+        
+        // 2. Création - responsabilité du service
+        $user = User::fromRequest($request);
+        $user = $this->repository->save($user);
+        
+        // 3. Événements - les autres services s'abonnent
+        $this->eventDispatcher->dispatch(new UserCreatedEvent($user));
+        
+        return $user;
+    }
+    
+    // Méthodes simples et focalisées
+    public function updateUser(string $userId, UpdateUserRequest $request): User {
+        $user = $this->repository->findById($userId);
+        $this->validator->validateUpdate($request, $user);
+        
+        $user->update($request);
+        $user = $this->repository->save($user);
+        
+        $this->eventDispatcher->dispatch(new UserUpdatedEvent($user));
+        
+        return $user;
+    }
+    
+    public function getUser(string $userId): User {
+        return $this->repository->findById($userId);
+    }
+    
+    public function deleteUser(string $userId): bool {
+        $user = $this->repository->findById($userId);
+        $result = $this->repository->delete($user);
+        
+        if ($result) {
+            $this->eventDispatcher->dispatch(new UserDeletedEvent($user));
+        }
+        
+        return $result;
+    }
+}
+
+// 3. Chaque équipe gère ses préoccupations via des Event Listeners
+class AnalyticsEventListener {
+    public function onUserCreated(UserCreatedEvent $event): void {
+        // Analytics team gère ses propres besoins
+        $this->trackUserCreation($event->getUser());
+    }
+    
+    public function onUserUpdated(UserUpdatedEvent $event): void {
+        $this->trackUserUpdate($event->getUser());
+    }
+}
+
+class MarketingEventListener {
+    public function onUserCreated(UserCreatedEvent $event): void {
+        // Marketing team gère ses propres besoins
+        $this->assignToSegments($event->getUser());
+        $this->triggerWelcomeCampaign($event->getUser());
+    }
+}
+
+class SupportEventListener {
+    public function onUserCreated(UserCreatedEvent $event): void {
+        // Support team gère ses propres besoins
+        $this->createWelcomeTicket($event->getUser());
+    }
+}
+
+// 4. API Controller simple et focalisé
+class UserController {
+    private UserService $userService;
+    
+    public function __construct(UserService $userService) {
+        $this->userService = $userService;
+    }
+    
+    public function create(CreateUserRequest $request): JsonResponse {
+        try {
+            $user = $this->userService->createUser($request);
+            return new JsonResponse(['user' => $user->toArray()], 201);
+        } catch (ValidationException $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 400);
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => 'Internal server error'], 500);
+        }
+    }
+    
+    public function show(string $userId): JsonResponse {
+        try {
+            $user = $this->userService->getUser($userId);
+            return new JsonResponse(['user' => $user->toArray()]);
+        } catch (UserNotFoundException $e) {
+            return new JsonResponse(['error' => 'User not found'], 404);
+        }
+    }
+    
+    public function update(string $userId, UpdateUserRequest $request): JsonResponse {
+        try {
+            $user = $this->userService->updateUser($userId, $request);
+            return new JsonResponse(['user' => $user->toArray()]);
+        } catch (ValidationException $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 400);
+        } catch (UserNotFoundException $e) {
+            return new JsonResponse(['error' => 'User not found'], 404);
+        }
+    }
+    
+    public function delete(string $userId): JsonResponse {
+        try {
+            $this->userService->deleteUser($userId);
+            return new JsonResponse(null, 204);
+        } catch (UserNotFoundException $e) {
+            return new JsonResponse(['error' => 'User not found'], 404);
+        }
+    }
+}
+
+// 5. Configuration simple et ciblée
+class UserConfiguration {
+    // Seules les configurations essentielles
+    public const PASSWORD_MIN_LENGTH = 8;
+    public const MAX_LOGIN_ATTEMPTS = 3;
+    public const SESSION_TIMEOUT = 3600;
+    
+    // Les équipes configurent leurs propres services
+    // Analytics -> AnalyticsConfiguration
+    // Marketing -> MarketingConfiguration
+    // Support -> SupportConfiguration
+}
+
+/**
+ * Processus de décision structuré :
+ *
+ * 1. Architecte Principal : Définit l'interface et l'architecture de base
+ * 2. Consultation Ciblée : Chaque expert valide sa partie spécifique
+ * 3. Implémentation Décentralisée : Chaque équipe implémente ses besoins
+ * 4. Intégration par Événements : Couplage faible entre les services
+ * 5. Responsabilité Claire : Chaque service a un propriétaire identifié
+ */
+?>
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="java-clean">
+                                <h3>🎯 Approche avec Architecture Hexagonale</h3>
+                                <pre><code class="language-java">
+/**
+ * ✅ SOLUTION: Architecture hexagonale avec responsabilités claires
+ * Séparation des préoccupations et gouvernance structurée
+ */
+
+// 1. Domain Layer - Décision de l'architecte principal
+@Entity
+public class User {
+    @Id
+    private String id;
+    private String email;
+    private String name;
+    private LocalDateTime createdAt;
+    private UserStatus status;
+    
+    // Logique métier pure, sans dépendances externes
+    public void activate() {
+        if (this.status == UserStatus.PENDING) {
+            this.status = UserStatus.ACTIVE;
+        } else {
+            throw new IllegalStateException("Cannot activate user in status: " + this.status);
+        }
+    }
+    
+    public void deactivate() {
+        if (this.status == UserStatus.ACTIVE) {
+            this.status = UserStatus.INACTIVE;
+        } else {
+            throw new IllegalStateException("Cannot deactivate user in status: " + this.status);
+        }
+    }
+    
+    public boolean canLogin() {
+        return this.status == UserStatus.ACTIVE;
+    }
+}
+
+// 2. Application Service - Interface simple et focalisée
+@Service
+@Transactional
+public class UserApplicationService {
+    private final UserRepository userRepository;
+    private final UserValidator userValidator;
+    private final ApplicationEventPublisher eventPublisher;
+    
+    public UserApplicationService(
+            UserRepository userRepository,
+            UserValidator userValidator,
+            ApplicationEventPublisher eventPublisher) {
+        this.userRepository = userRepository;
+        this.userValidator = userValidator;
+        this.eventPublisher = eventPublisher;
+    }
+    
+    public User createUser(CreateUserCommand command) {
+        // 1. Validation
+        userValidator.validate(command);
+        
+        // 2. Création
+        User user = new User(
+            UUID.randomUUID().toString(),
+            command.getEmail(),
+            command.getName(),
+            LocalDateTime.now(),
+            UserStatus.PENDING
+        );
+        
+        // 3. Persistance
+        user = userRepository.save(user);
+        
+        // 4. Événement - les autres services s'abonnent
+        eventPublisher.publishEvent(new UserCreatedEvent(user));
+        
+        return user;
+    }
+    
+    public User getUserById(String userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new UserNotFoundException("User not found: " + userId));
+    }
+    
+    public User updateUser(String userId, UpdateUserCommand command) {
+        User user = getUserById(userId);
+        userValidator.validateUpdate(command, user);
+        
+        user.updateFrom(command);
+        user = userRepository.save(user);
+        
+        eventPublisher.publishEvent(new UserUpdatedEvent(user));
+        
+        return user;
+    }
+    
+    public void deleteUser(String userId) {
+        User user = getUserById(userId);
+        userRepository.delete(user);
+        
+        eventPublisher.publishEvent(new UserDeletedEvent(user));
+    }
+}
+
+// 3. Infrastructure - Chaque équipe gère ses préoccupations
+@Component
+public class AnalyticsEventHandler {
+    private final AnalyticsService analyticsService;
+    
+    @EventListener
+    public void handleUserCreated(UserCreatedEvent event) {
+        // Analytics team implémente ses propres besoins
+        analyticsService.trackUserRegistration(event.getUser());
+    }
+    
+    @EventListener
+    public void handleUserUpdated(UserUpdatedEvent event) {
+        analyticsService.trackUserUpdate(event.getUser());
+    }
+}
+
+@Component
+public class MarketingEventHandler {
+    private final MarketingService marketingService;
+    
+    @EventListener
+    public void handleUserCreated(UserCreatedEvent event) {
+        // Marketing team implémente ses propres besoins
+        marketingService.assignToSegments(event.getUser());
+        marketingService.sendWelcomeEmail(event.getUser());
+    }
+}
+
+@Component
+public class SupportEventHandler {
+    private final SupportService supportService;
+    
+    @EventListener
+    public void handleUserCreated(UserCreatedEvent event) {
+        // Support team implémente ses propres besoins
+        supportService.createWelcomeTicket(event.getUser());
+    }
+}
+
+// 4. API Layer - Interface REST simple
+@RestController
+@RequestMapping("/api/users")
+@Validated
+public class UserController {
+    private final UserApplicationService userService;
+    
+    public UserController(UserApplicationService userService) {
+        this.userService = userService;
+    }
+    
+    @PostMapping
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
+        CreateUserCommand command = CreateUserCommand.from(request);
+        User user = userService.createUser(command);
+        
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(UserResponse.from(user));
+    }
+    
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserResponse> getUser(@PathVariable String userId) {
+        User user = userService.getUserById(userId);
+        return ResponseEntity.ok(UserResponse.from(user));
+    }
+    
+    @PutMapping("/{userId}")
+    public ResponseEntity<UserResponse> updateUser(
+            @PathVariable String userId,
+            @Valid @RequestBody UpdateUserRequest request) {
+        
+        UpdateUserCommand command = UpdateUserCommand.from(request);
+        User user = userService.updateUser(userId, command);
+        
+        return ResponseEntity.ok(UserResponse.from(user));
+    }
+    
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String userId) {
+        userService.deleteUser(userId);
+        return ResponseEntity.noContent().build();
+    }
+}
+
+// 5. Configuration par équipe
+@Configuration
+public class UserConfiguration {
+    
+    // Configuration core - décision architecte
+    @Bean
+    public UserValidator userValidator() {
+        return new UserValidator();
+    }
+    
+    @Bean
+    public UserApplicationService userApplicationService(
+            UserRepository userRepository,
+            UserValidator userValidator,
+            ApplicationEventPublisher eventPublisher) {
+        return new UserApplicationService(userRepository, userValidator, eventPublisher);
+    }
+}
+
+@Configuration
+@ConditionalOnProperty(name = "features.analytics.enabled", havingValue = "true")
+public class AnalyticsConfiguration {
+    // Analytics team configure ses propres beans
+    
+    @Bean
+    public AnalyticsService analyticsService() {
+        return new AnalyticsServiceImpl();
+    }
+    
+    @Bean
+    public AnalyticsEventHandler analyticsEventHandler(AnalyticsService analyticsService) {
+        return new AnalyticsEventHandler(analyticsService);
+    }
+}
+
+@Configuration
+@ConditionalOnProperty(name = "features.marketing.enabled", havingValue = "true")
+public class MarketingConfiguration {
+    // Marketing team configure ses propres beans
+    
+    @Bean
+    public MarketingService marketingService() {
+        return new MarketingServiceImpl();
+    }
+    
+    @Bean
+    public MarketingEventHandler marketingEventHandler(MarketingService marketingService) {
+        return new MarketingEventHandler(marketingService);
+    }
+}
+
+/**
+ * Gouvernance structurée :
+ *
+ * 1. Architecte Principal : Définit le domain model et l'application service
+ * 2. Équipes Spécialisées : Implémentent leurs event handlers
+ * 3. Couplage Faible : Communication par événements
+ * 4. Responsabilité Claire : Chaque service a un propriétaire
+ * 5. Configuration Modulaire : Chaque équipe gère sa configuration
+ * 6. Tests Indépendants : Chaque composant peut être testé séparément
+ */
+</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert success">
+                            <strong>✅ Améliorations apportées :</strong>
+                            <ul>
+                                <li><strong>Responsabilité unique :</strong> Chaque service a une responsabilité claire</li>
+                                <li><strong>Couplage faible :</strong> Communication par événements</li>
+                                <li><strong>Gouvernance claire :</strong> Architecte principal + consultation ciblée</li>
+                                <li><strong>Extensibilité :</strong> Nouvelles fonctionnalités sans impact sur l'existant</li>
+                                <li><strong>Testabilité :</strong> Chaque composant peut être testé indépendamment</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Métriques et Détection -->
+                <section class="metrics-section">
+                    <div class="aikido-card">
+                        <h2>📊 Métriques et Détection</h2>
+                        
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <h4>👥 Nombre de Décideurs</h4>
+                                <div class="metric-value danger">> 5 personnes</div>
+                                <p>Nombre de personnes impliquées dans les décisions de conception</p>
+                                <div class="metric-example">
+                                    <strong>Seuils :</strong>
+                                    <ul>
+                                        <li>1-2 personnes : Idéal</li>
+                                        <li>3-5 personnes : Acceptable</li>
+                                        <li>6+ personnes : Design by Committee</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <h4>⏱️ Temps de Décision</h4>
+                                <div class="metric-value warning">> 2 semaines</div>
+                                <p>Durée moyenne pour prendre une décision technique</p>
+                                <div class="metric-example">
+                                    <strong>Recommandations :</strong>
+                                    <ul>
+                                        <li>< 3 jours : Efficace</li>
+                                        <li>3-14 jours : Acceptable</li>
+                                        <li>> 14 jours : Problématique</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <h4>🔄 Nombre de Révisions</h4>
+                                <div class="metric-value danger">> 5 révisions</div>
+                                <p>Nombre de modifications demandées par décision</p>
+                                <div class="metric-example">
+                                    <strong>Limites :</strong>
+                                    <ul>
+                                        <li>1-2 révisions : Normal</li>
+                                        <li>3-5 révisions : Limite</li>
+                                        <li>6+ révisions : Committee</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <h4>📈 Complexité de l'API</h4>
+                                <div class="metric-value warning">> 20 paramètres</div>
+                                <p>Nombre de paramètres par endpoint principal</p>
+                                <div class="metric-example">
+                                    <strong>Bonnes pratiques :</strong>
+                                    <ul>
+                                        <li>< 5 paramètres : Simple</li>
+                                        <li>5-10 paramètres : Acceptable</li>
+                                        <li>10+ paramètres : Sur-conçu</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3>🔍 Signaux d'Alarme</h3>
+                        <div class="warning-signs">
+                            <div class="warning-item">
+                                <span class="warning-icon">🚩</span>
+                                <div>
+                                    <strong>Réunions interminables</strong>
+                                    <p>Plus de 2h pour décider d'un détail technique</p>
+                                </div>
+                            </div>
+                            <div class="warning-item">
+                                <span class="warning-icon">🚩</span>
+                                <div>
+                                    <strong>Compromis systématiques</strong>
+                                    <p>Toutes les décisions sont des "juste milieux"</p>
+                                </div>
+                            </div>
+                            <div class="warning-item">
+                                <span class="warning-icon">🚩</span>
+                                <div>
+                                    <strong>Responsabilité diluée</strong>
+                                    <p>Personne ne se sent responsable du résultat</p>
+                                </div>
+                            </div>
+                            <div class="warning-item">
+                                <span class="warning-icon">🚩</span>
+                                <div>
+                                    <strong>Sur-ingénierie</strong>
+                                    <p>Solutions complexes pour des problèmes simples</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercice Pratique -->
+                <section class="exercise-section">
+                    <div class="aikido-card exercise">
+                        <h2>🎯 Exercice Pratique</h2>
+                        
+                        <div class="exercise-scenario">
+                            <h3>Scenario : Conception d'une API de Notification</h3>
+                            <p>
+                                Votre équipe doit concevoir une API de notification. Le comité inclut : le Product Owner,
+                                le Tech Lead, le Security Expert, l'UX Designer, le Mobile Developer, le Backend Developer,
+                                et le DevOps Engineer. Chacun a des exigences spécifiques et veut que "son" cas d'usage
+                                soit parfaitement supporté.
+                            </p>
+                            
+                            <div class="exercise-question">
+                                <h4>Question :</h4>
+                                <p>Quelle approche de gouvernance adopteriez-vous ?</p>
+                                
+                                <div class="question-options" style="flex-direction: column;">
+                                    <div class="question-option" data-choice="consensus">
+                                        <input type="radio" name="governance-choice" id="choice-consensus" value="consensus">
+                                        <label for="choice-consensus">Rechercher le consensus de tous</label>
+                                    </div>
+                                    <div class="question-option" data-choice="architect">
+                                        <input type="radio" name="governance-choice" id="choice-architect" value="architect">
+                                        <label for="choice-architect">Désigner un architecte principal</label>
+                                    </div>
+                                    <div class="question-option" data-choice="vote">
+                                        <input type="radio" name="governance-choice" id="choice-vote" value="vote">
+                                        <label for="choice-vote">Voter sur chaque décision</label>
+                                    </div>
+                                    <div class="question-option" data-choice="separate">
+                                        <input type="radio" name="governance-choice" id="choice-separate" value="separate">
+                                        <label for="choice-separate">APIs séparées par équipe</label>
+                                    </div>
+                                </div>
+                                
+                                <div id="exercise-feedback" class="exercise-feedback hidden">
+                                    <!-- Le feedback sera affiché ici -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Completion -->
+                <section class="completion-section slide-in">
+                    <div class="aikido-card completion">
+                        <div class="completion-content">
+                            <div class="completion-icon">📋</div>
+                            <div class="completion-text">
+                                <h3>Avez-vous terminé cette section ?</h3>
+                                <p>Marquez cette page comme terminée pour suivre votre progression dans la formation.</p>
+                            </div>
+                            <button class="aikido-btn primary mark-completed" data-page="design-by-committee">
+                                Marquer comme Terminé ✓
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Navigation -->
+                <section class="navigation-section">
+                    <div class="nav-buttons">
+                        <a href="analysis-paralysis.html" class="aikido-btn">
+                            ← Analysis Paralysis
+                        </a>
+                        <a href="magic-pushbutton.html" class="aikido-btn primary">
+                            Magic Pushbutton →
+                        </a>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Script pour l'exercice -->
+    <script>
+        document.querySelectorAll('.question-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                const choice = e.currentTarget.dataset.choice;
+                const feedback = document.getElementById('exercise-feedback');
+                
+                // Sélectionner le radio button
+                const radio = e.currentTarget.querySelector('input[type="radio"]');
+                radio.checked = true;
+                
+                let feedbackContent = '';
+                
+                switch(choice) {
+                    case 'consensus':
+                        feedbackContent = `
+                            <div class="feedback-header incorrect">
+                                <h4>❌ Piège Classique</h4>
+                            </div>
+                            <p>Rechercher le consensus de tous est exactement le Design by Committee :</p>
+                            <ul>
+                                <li>Processus de décision très lent</li>
+                                <li>Compromis qui affaiblissent la solution</li>
+                                <li>Responsabilité diluée</li>
+                                <li>Résultat médiocre qui ne satisfait personne</li>
+                            </ul>
+                            <p><strong>Risque :</strong> API complexe avec 47 paramètres et 12 endpoints différents.</p>
+                        `;
+                        break;
+                    case 'architect':
+                        feedbackContent = `
+                            <div class="feedback-header best">
+                                <h4>🏆 Excellent Choix</h4>
+                            </div>
+                            <p>Désigner un architecte principal est la meilleure approche :</p>
+                            <ul>
+                                <li>Vision cohérente et unifiée</li>
+                                <li>Décisions rapides et tranchées</li>
+                                <li>Consultation ciblée des experts</li>
+                                <li>Responsabilité claire du résultat</li>
+                            </ul>
+                            <p><strong>Processus :</strong> L'architecte conçoit l'API core, puis consulte chaque expert pour valider sa partie spécifique.</p>
+                        `;
+                        break;
+                    case 'vote':
+                        feedbackContent = `
+                            <div class="feedback-header partial">
+                                <h4>⚠️ Approche Risquée</h4>
+                            </div>
+                            <p>Voter sur chaque décision peut fonctionner mais :</p>
+                            <ul>
+                                <li>Risque de décisions incohérentes entre elles</li>
+                                <li>Les experts techniques peuvent être minoritaires</li>
+                                <li>Pas de vision d'ensemble</li>
+                                <li>Processus lent pour chaque détail</li>
+                            </ul>
+                            <p><strong>Alternative :</strong> Vote uniquement sur les orientations majeures, pas sur les détails techniques.</p>
+                        `;
+                        break;
+                    case 'separate':
+                        feedbackContent = `
+                            <div class="feedback-header partial">
+                                <h4>⚠️ Solution de Contournement</h4>
+                            </div>
+                            <p>Créer des APIs séparées évite le conflit mais :</p>
+                            <ul>
+                                <li>Duplication de code et d'effort</li>
+                                <li>Incohérence entre les APIs</li>
+                                <li>Maintenance multipliée</li>
+                                <li>Confusion pour les utilisateurs</li>
+                            </ul>
+                            <p><strong>Quand l'utiliser :</strong> Seulement si les cas d'usage sont vraiment incompatibles.</p>
+                        `;
+                        break;
+                }
+                
+                feedback.innerHTML = feedbackContent;
+                feedback.classList.remove('hidden');
+                feedback.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+    
+    <!-- Styles pour les animations -->
+    <style>
+        .question-options {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .question-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .question-option:hover {
+            border-color: #3b82f6;
+            background-color: #f8fafc;
+        }
+        
+        .question-option input[type="radio"]:checked + label {
+            color: #3b82f6;
+            font-weight: 500;
+        }
+        
+        .question-option:has(input[type="radio"]:checked) {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+    </style>
+</body>
+</html>

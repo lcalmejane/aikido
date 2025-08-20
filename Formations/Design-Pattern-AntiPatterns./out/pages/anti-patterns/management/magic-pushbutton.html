@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magic Pushbutton - Anti-Pattern Management | Formation Patterns Développeurs</title>
+    <meta name="description" content="Comprendre et éviter l'anti-pattern Magic Pushbutton : boutons magiques, causes, biais cognitifs et solutions transparentes">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/exercises.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <div class="breadcrumb">
+                        <a href="#" onclick="window.formationNav.navigateToAbsolutePage('index.html'); return false;">Formation</a>
+                        <span>→</span>
+                        <a href="../index.html">Anti-Patterns</a>
+                        <span>→</span>
+                        <span>Magic Pushbutton</span>
+                    </div>
+                    
+                    <h1 class="page-title">🎯 Magic Pushbutton</h1>
+                    <p class="page-subtitle">L'anti-pattern du bouton magique sans transparence</p>
+                    
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span>👥</span>
+                            <span>Anti-Pattern organisationnel</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>⏱️</span>
+                            <span>~35 minutes</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>🎯</span>
+                            <span>Transparence et contrôle essentiels</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>🧩</span>
+                            <span>3 biais cognitifs liés</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Définition -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card anti-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="definition-text">
+                            Le <strong>Magic Pushbutton</strong> est un anti-pattern de management où une interface 
+                            utilisateur propose un seul bouton qui déclenche des processus complexes et cachés 
+                            sans visibilité sur les actions réellement effectuées.
+                        </p>
+
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problèmes Causés</h3>
+                                <ul>
+                                    <li>Actions critiques déclenchées par un simple clic</li>
+                                    <li>Aucun feedback sur les opérations en cours</li>
+                                    <li>Processus irréversibles sans confirmation</li>
+                                    <li>Logs insuffisants pour tracer les actions</li>
+                                    <li>Effets de bord non documentés</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solutions Apportées</h3>
+                                <ul>
+                                    <li>Command Pattern pour actions atomiques</li>
+                                    <li>Observer Pattern pour feedback temps réel</li>
+                                    <li>Validation préalable des prérequis</li>
+                                    <li>Interface transparente avec plan d'exécution</li>
+                                    <li>Mécanismes de rollback automatique</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert danger">
+                            <strong>⚠️ Attention :</strong> Un bouton qui fait "tout" ne fait souvent rien de bien. 
+                            La simplicité apparente cache une complexité dangereuse.
+                        </div>
+
+                        <h3>Caractéristiques du Magic Pushbutton</h3>
+                        <div class="characteristics-grid">
+                            <div class="characteristic-item">
+                                <span class="char-icon">🎯</span>
+                                <div>
+                                    <strong>Simplicité trompeuse</strong>
+                                    <p>Interface simple cachant une complexité énorme</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">🔒</span>
+                                <div>
+                                    <strong>Boîte noire</strong>
+                                    <p>Aucune visibilité sur les processus internes</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">⚡</span>
+                                <div>
+                                    <strong>Tout ou rien</strong>
+                                    <p>Pas de contrôle granulaire des opérations</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">🚨</span>
+                                <div>
+                                    <strong>Échecs silencieux</strong>
+                                    <p>Erreurs difficiles à diagnostiquer</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Workflow Mermaid -->
+                <section class="workflow-section">
+                    <div class="aikido-card workflow">
+                        <h2>🔄 Workflow du Magic Pushbutton</h2>
+                        <p class="mb-md">
+                            Voici comment le Magic Pushbutton fonctionne et pourquoi il pose problème :
+                        </p>
+
+                        <div class="mermaid">
+graph TD
+    A[👤 Utilisateur clique sur bouton] --> B{🔍 Processus transparent ?}
+    B -->|❌ Non| C[🎯 Magic Pushbutton]
+    B -->|✅ Oui| D[📋 Command Pattern]
+    
+    C --> E[🔒 Actions cachées]
+    C --> F[📵 Pas de feedback]
+    C --> G[💥 Échecs silencieux]
+    C --> H[🔄 Processus irréversible]
+    
+    D --> I[✅ Validation prérequis]
+    D --> J[📊 Feedback temps réel]
+    D --> K[🔄 Rollback possible]
+    D --> L[📝 Logs détaillés]
+    
+    E --> M[❌ Maintenance difficile]
+    F --> M
+    G --> M
+    H --> M
+    
+    I --> N[✅ Interface transparente]
+    J --> N
+    K --> N
+    L --> N
+    
+    style C fill:#ffebee
+    style D fill:#e8f5e8
+    style M fill:#ffcdd2
+    style N fill:#c8e6c9
+                        </div>
+
+                        <div class="workflow-explanation">
+                            <h4>🔍 Points critiques du workflow :</h4>
+                            <ul>
+                                <li><strong>Validation préalable :</strong> Vérifier tous les prérequis avant l'exécution</li>
+                                <li><strong>Feedback continu :</strong> Informer l'utilisateur de chaque étape</li>
+                                <li><strong>Contrôle granulaire :</strong> Permettre l'arrêt et la reprise</li>
+                                <li><strong>Traçabilité complète :</strong> Logger toutes les actions et résultats</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Biais Cognitifs Associés -->
+                <section class="cognitive-bias-section">
+                    <div class="aikido-card biais-cognitif">
+                        <h2>🧠 Biais Cognitifs Associés</h2>
+                        <p class="mb-lg">
+                            Le Magic Pushbutton résulte souvent de biais cognitifs qui sous-estiment la complexité :
+                        </p>
+
+                        <div class="bias-cards">
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">🌟</span>
+                                    <h4>Biais d'Optimisme</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Ça va marcher, c'est simple !"
+                                </p>
+                                <p class="bias-explanation">
+                                    Croyance excessive que les processus complexes vont se dérouler sans problème, 
+                                    sans considérer les risques potentiels d'échec ou d'effets de bord.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Créer un bouton "Deploy All" sans prévoir 
+                                    les cas d'échec en milieu de processus.
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">🎮</span>
+                                    <h4>Illusion de Contrôle</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "J'ai le contrôle avec ce bouton"
+                                </p>
+                                <p class="bias-explanation">
+                                    Sentiment de maîtrise malgré la complexité cachée des processus déclenchés. 
+                                    L'utilisateur croit contrôler alors qu'il ne fait que déclencher.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Bouton "Fix All Issues" qui donne l'impression 
+                                    de résoudre tous les problèmes d'un coup.
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">📊</span>
+                                    <h4>Négligence de la Probabilité de Base</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Ça a marché la dernière fois"
+                                </p>
+                                <p class="bias-explanation">
+                                    Sous-estimation des risques d'échec basée sur des expériences passées limitées, 
+                                    ignorant la complexité croissante des systèmes.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Continuer à utiliser un script de migration 
+                                    "magique" malgré les échecs occasionnels.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exemples de Code -->
+                <section class="examples-section">
+                    <div class="aikido-card examples">
+                        <h2>💻 Exemples de Code</h2>
+                        <p class="mb-md">
+                            Voici des exemples typiques de Magic Pushbutton et leurs alternatives transparentes :
+                        </p>
+
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="problem">❌ Problème</button>
+                                <button class="tab-btn" data-tab="solution">✅ Solution</button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="problem">
+                                <h4>🎯 Magic Pushbutton - Actions Cachées</h4>
+                                
+                                <div class="code-example">
+                                    <div class="code-header">
+                                        <span class="code-title">AdminController.php - Bouton Magique</span>
+                                        <span class="code-language">PHP</span>
+                                    </div>
+                                    <pre><code class="language-php">
+<?php
+// ❌ Anti-Pattern : Magic Pushbutton
+class AdminController
+{
+    public function processAllOrders(): JsonResponse
+    {
+        // Bouton "Process All Orders" - que fait-il exactement ?
+        
+        // Actions cachées sans feedback
+        $this->updateInventory();
+        $this->chargePayments();
+        $this->sendNotifications();
+        $this->generateReports();
+        $this->syncWithERP();
+        $this->updateCustomerProfiles();
+        $this->cleanupTempFiles();
+        
+        // Retour simpliste
+        return response()->json(['status' => 'success']);
+    }
+    
+    private function updateInventory(): void
+    {
+        // Logique complexe cachée - 200 lignes
+        DB::table('inventory')->update(['last_sync' => now()]);
+        
+        // Effets de bord non documentés
+        DB::table('products')
+          ->where('stock', 0)
+          ->update(['status' => 'discontinued']);
+        
+        // Suppression silencieuse de données
+        DB::table('old_inventory_logs')
+          ->where('created_at', '<', now()->subDays(30))
+          ->delete();
+    }
+    
+    private function chargePayments(): void
+    {
+        // Traitement de paiement sans rollback
+        $pendingOrders = Order::where('status', 'pending')->get();
+        
+        foreach ($pendingOrders as $order) {
+            // Charge sans vérification approfondie
+            PaymentGateway::charge($order->total, $order->payment_method);
+            $order->update(['status' => 'charged']);
+            
+            // Effet de bord : modification du crédit client
+            $order->customer->decrement('credit_limit', $order->total);
+        }
+    }
+}
+
+// Usage dans la vue - apparence trompeuse
+?>
+<button onclick="processAllOrders()" class="btn btn-success">
+    Process All Orders ✨
+</button>
+
+<script>
+function processAllOrders() {
+    // Aucune confirmation, aucun feedback
+    fetch('/admin/process-all-orders', {method: 'POST'})
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Done!'); // Feedback minimal
+            }
+        });
+}
+</script>
+</code></pre>
+                                </div>
+
+                                <div class="code-example">
+                                    <div class="code-header">
+                                        <span class="code-title">AdminController.java - Bouton Magique</span>
+                                        <span class="code-language">Java</span>
+                                    </div>
+                                    <pre><code class="language-java">
+// ❌ Anti-Pattern : Magic Pushbutton
+@RestController
+public class AdminController {
+    
+    @PostMapping("/admin/process-all-orders")
+    public ResponseEntity<Map<String, String>> processAllOrders() {
+        // Bouton magique qui fait "tout"
+        
+        try {
+            // Actions cachées sans visibilité
+            updateInventorySystem();
+            processAllPendingPayments();
+            sendBulkNotifications();
+            generateDailyReports();
+            synchronizeWithERP();
+            cleanupOldData();
+            
+            // Retour binaire
+            return ResponseEntity.ok(Map.of("status", "success"));
+            
+        } catch (Exception e) {
+            // Gestion d'erreur simpliste
+            return ResponseEntity.status(500)
+                .body(Map.of("status", "error", "message", "Something went wrong"));
+        }
+    }
+    
+    private void updateInventorySystem() {
+        // Logique complexe cachée
+        List<Product> products = productRepository.findAll();
+        
+        for (Product product : products) {
+            // Modifications silencieuses
+            if (product.getStock() == 0) {
+                product.setStatus("DISCONTINUED");
+                productRepository.save(product);
+            }
+            
+            // Effets de bord non documentés
+            updateProductMetrics(product);
+            notifySuppliers(product);
+        }
+        
+        // Suppression de données sans confirmation
+        cleanupOldInventoryLogs();
+    }
+    
+    private void processAllPendingPayments() {
+        // Traitement massif sans contrôle granulaire
+        List<Order> pendingOrders = orderRepository.findByStatus("PENDING");
+        
+        for (Order order : pendingOrders) {
+            // Charge automatiquement sans validation
+            PaymentResult result = paymentService.charge(
+                order.getTotal(), 
+                order.getPaymentMethod()
+            );
+            
+            if (result.isSuccess()) {
+                order.setStatus("PAID");
+                orderRepository.save(order);
+                
+                // Effet de bord caché
+                updateCustomerCreditLimit(order.getCustomer(), order.getTotal());
+            }
+        }
+    }
+}
+</code></pre>
+                                </div>
+
+                                <div class="problems-list">
+                                    <h4>🚨 Problèmes identifiés :</h4>
+                                    <ul>
+                                        <li><strong>Aucune transparence :</strong> Impossible de savoir ce qui se passe</li>
+                                        <li><strong>Pas de contrôle :</strong> Tout ou rien, pas d'arrêt possible</li>
+                                        <li><strong>Échecs silencieux :</strong> Erreurs difficiles à diagnostiquer</li>
+                                        <li><strong>Effets de bord cachés :</strong> Modifications non documentées</li>
+                                        <li><strong>Pas de rollback :</strong> Impossible d'annuler en cas de problème</li>
+                                        <li><strong>Feedback minimal :</strong> Juste "success" ou "error"</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="tab-content" data-tab="solution">
+                                <h4>🛠️ Command Pattern + Observer Pattern</h4>
+                                
+                                <div class="code-example">
+                                    <div class="code-header">
+                                        <span class="code-title">TransparentOrderProcessor.php - Solution</span>
+                                        <span class="code-language">PHP</span>
+                                    </div>
+                                    <pre><code class="language-php">
+<?php
+// ✅ Solution : Transparence et contrôle
+
+// 1. Command Pattern pour les actions atomiques
+interface CommandInterface
+{
+    public function execute(): CommandResult;
+    public function canExecute(): bool;
+    public function getDescription(): string;
+    public function getEstimatedDuration(): int;
+}
+
+class UpdateInventoryCommand implements CommandInterface
+{
+    private InventoryService $inventoryService;
+    private LoggerInterface $logger;
+    
+    public function canExecute(): bool
+    {
+        return $this->inventoryService->isSystemHealthy() && 
+               !$this->inventoryService->hasOngoingSync();
+    }
+    
+    public function getDescription(): string
+    {
+        return 'Synchronisation de l\'inventaire avec mise à jour des stocks';
+    }
+    
+    public function getEstimatedDuration(): int
+    {
+        return 30; // secondes
+    }
+    
+    public function execute(): CommandResult
+    {
+        $this->logger->info('Starting inventory update command');
+        
+        try {
+            $result = $this->inventoryService->syncInventory();
+            
+            $this->logger->info('Inventory update completed', [
+                'updated_items' => $result->getUpdatedCount(),
+                'discontinued_items' => $result->getDiscontinuedCount()
+            ]);
+            
+            return CommandResult::success([
+                'updated_items' => $result->getUpdatedCount(),
+                'discontinued_items' => $result->getDiscontinuedCount(),
+                'duration' => $result->getDuration()
+            ]);
+            
+        } catch (Exception $e) {
+            $this->logger->error('Inventory update failed', ['error' => $e->getMessage()]);
+            return CommandResult::failure($e->getMessage());
+        }
+    }
+}
+
+// 2. Observer Pattern pour le feedback en temps réel
+interface ProcessObserver
+{
+    public function onCommandStarted(CommandInterface $command): void;
+    public function onCommandCompleted(CommandInterface $command, CommandResult $result): void;
+    public function onCommandFailed(CommandInterface $command, string $error): void;
+    public function onProgressUpdate(string $message, int $percentage): void;
+}
+
+class WebSocketProcessObserver implements ProcessObserver
+{
+    private WebSocketConnection $connection;
+    
+    public function onCommandStarted(CommandInterface $command): void
+    {
+        $this->connection->send([
+            'type' => 'command_started',
+            'command' => $command->getDescription(),
+            'estimated_duration' => $command->getEstimatedDuration()
+        ]);
+    }
+    
+    public function onCommandCompleted(CommandInterface $command, CommandResult $result): void
+    {
+        $this->connection->send([
+            'type' => 'command_completed',
+            'command' => $command->getDescription(),
+            'result' => $result->getData(),
+            'success' => $result->isSuccess()
+        ]);
+    }
+}
+
+// 3. Orchestrateur transparent
+class TransparentOrderProcessor
+{
+    private array $commands = [];
+    private array $observers = [];
+    
+    public function getExecutionPlan(): array
+    {
+        return array_map(function(CommandInterface $command) {
+            return [
+                'description' => $command->getDescription(),
+                'estimated_duration' => $command->getEstimatedDuration(),
+                'can_execute' => $command->canExecute()
+            ];
+        }, $this->commands);
+    }
+    
+    public function executeAll(): ProcessResult
+    {
+        $results = [];
+        $totalCommands = count($this->commands);
+        
+        foreach ($this->commands as $index => $command) {
+            if (!$command->canExecute()) {
+                $error = "Command cannot be executed: " . $command->getDescription();
+                $this->notifyObservers('onCommandFailed', $command, $error);
+                return ProcessResult::failure($error);
+            }
+            
+            $this->notifyObservers('onCommandStarted', $command);
+            
+            $result = $command->execute();
+            $results[] = $result;
+            
+            if ($result->isSuccess()) {
+                $this->notifyObservers('onCommandCompleted', $command, $result);
+            } else {
+                $this->notifyObservers('onCommandFailed', $command, $result->getError());
+                return ProcessResult::failure("Failed at: " . $command->getDescription());
+            }
+            
+            $percentage = (int)(($index + 1) / $totalCommands * 100);
+            $this->notifyObservers('onProgressUpdate', 
+                "Completed " . ($index + 1) . " of $totalCommands commands", 
+                $percentage
+            );
+        }
+        
+        return ProcessResult::success($results);
+    }
+}
+</code></pre>
+                                </div>
+
+                                <div class="code-example">
+                                    <div class="code-header">
+                                        <span class="code-title">TransparentProcessOrchestrator.java - Solution</span>
+                                        <span class="code-language">Java</span>
+                                    </div>
+                                    <pre><code class="language-java">
+// ✅ Solution : Command Pattern + Observer Pattern
+
+// 1. Interface Command avec métadonnées
+public interface Command {
+    CommandResult execute();
+    boolean canExecute();
+    String getDescription();
+    int getEstimatedDurationSeconds();
+    List<String> getPrerequisites();
+}
+
+public class UpdateInventoryCommand implements Command {
+    private final InventoryService inventoryService;
+    private final Logger logger;
+    
+    public UpdateInventoryCommand(InventoryService inventoryService, Logger logger) {
+        this.inventoryService = inventoryService;
+        this.logger = logger;
+    }
+    
+    @Override
+    public boolean canExecute() {
+        return inventoryService.isSystemHealthy() && 
+               !inventoryService.hasOngoingSync();
+    }
+    
+    @Override
+    public String getDescription() {
+        return "Synchronisation de l'inventaire avec mise à jour des stocks";
+    }
+    
+    @Override
+    public int getEstimatedDurationSeconds() {
+        return 30;
+    }
+    
+    @Override
+    public List<String> getPrerequisites() {
+        return List.of("Système d'inventaire disponible", "Aucune synchronisation en cours");
+    }
+    
+    @Override
+    public CommandResult execute() {
+        logger.info("Starting inventory update command");
+        
+        try {
+            InventoryUpdateResult result = inventoryService.syncInventory();
+            
+            logger.info("Inventory update completed - Updated: {}, Discontinued: {}", 
+                       result.getUpdatedCount(), result.getDiscontinuedCount());
+            
+            return CommandResult.success(Map.of(
+                "updated_items", result.getUpdatedCount(),
+                "discontinued_items", result.getDiscontinuedCount(),
+                "duration_ms", result.getDurationMs()
+            ));
+            
+        } catch (Exception e) {
+            logger.error("Inventory update failed", e);
+            return CommandResult.failure(e.getMessage());
+        }
+    }
+}
+
+// 2. Observer pour feedback temps réel
+public interface ProcessObserver {
+    void onCommandStarted(Command command);
+    void onCommandCompleted(Command command, CommandResult result);
+    void onCommandFailed(Command command, String error);
+    void onProgressUpdate(String message, int percentage);
+}
+
+@Component
+public class WebSocketProcessObserver implements ProcessObserver {
+    private final SimpMessagingTemplate messagingTemplate;
+    
+    public WebSocketProcessObserver(SimpMessagingTemplate messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
+    }
+    
+    @Override
+    public void onCommandStarted(Command command) {
+        Map<String, Object> message = Map.of(
+            "type", "command_started",
+            "command", command.getDescription(),
+            "estimated_duration", command.getEstimatedDurationSeconds(),
+            "prerequisites", command.getPrerequisites()
+        );
+        
+        messagingTemplate.convertAndSend("/topic/process-updates", message);
+    }
+    
+    @Override
+    public void onCommandCompleted(Command command, CommandResult result) {
+        Map<String, Object> message = Map.of(
+            "type", "command_completed",
+            "command", command.getDescription(),
+            "result", result.getData(),
+            "success", result.isSuccess()
+        );
+        
+        messagingTemplate.convertAndSend("/topic/process-updates", message);
+    }
+}
+
+// 3. Orchestrateur transparent
+@Service
+public class TransparentProcessOrchestrator {
+    private final List<Command> commands = new ArrayList<>();
+    private final List<ProcessObserver> observers = new ArrayList<>();
+    private final Logger logger = LoggerFactory.getLogger(TransparentProcessOrchestrator.class);
+    
+    public ExecutionPlan getExecutionPlan() {
+        List<CommandInfo> commandInfos = commands.stream()
+            .map(command -> new CommandInfo(
+                command.getDescription(),
+                command.getEstimatedDurationSeconds(),
+                command.canExecute(),
+                command.getPrerequisites()
+            ))
+            .collect(Collectors.toList());
+            
+        int totalEstimatedTime = commands.stream()
+            .mapToInt(Command::getEstimatedDurationSeconds)
+            .sum();
+            
+        return new ExecutionPlan(commandInfos, totalEstimatedTime);
+    }
+    
+    public ProcessResult executeAll() {
+        logger.info("Starting process execution with {} commands", commands.size());
+        
+        List<CommandResult> results = new ArrayList<>();
+        int totalCommands = commands.size();
+        
+        for (int i = 0; i < commands.size(); i++) {
+            Command command = commands.get(i);
+            
+            // Vérification des prérequis
+            if (!command.canExecute()) {
+                String error = "Command cannot be executed: " + command.getDescription();
+                notifyObservers(observer -> observer.onCommandFailed(command, error));
+                return ProcessResult.failure(error);
+            }
+            
+            // Notification de début
+            notifyObservers(observer -> observer.onCommandStarted(command));
+            
+            // Exécution
+            CommandResult result = command.execute();
+            results.add(result);
+            
+            // Notification de résultat
+            if (result.isSuccess()) {
+                notifyObservers(observer -> observer.onCommandCompleted(command, result));
+            } else {
+                notifyObservers(observer -> observer.onCommandFailed(command, result.getError()));
+                return ProcessResult.failure("Failed at: " + command.getDescription());
+            }
+            
+            // Mise à jour du progrès
+            int percentage = (int) (((double) (i + 1) / totalCommands) * 100);
+            String progressMessage = String.format("Completed %d of %d commands", i + 1, totalCommands);
+            notifyObservers(observer -> observer.onProgressUpdate(progressMessage, percentage));
+        }
+        
+        logger.info("Process execution completed successfully");
+        return ProcessResult.success(results);
+    }
+    
+    private void notifyObservers(Consumer<ProcessObserver> notification) {
+        observers.forEach(notification);
+    }
+}
+</code></pre>
+                                </div>
+
+                                <div class="benefits-list">
+                                    <h4>✅ Avantages de la solution :</h4>
+                                    <ul>
+                                        <li><strong>Transparence totale :</strong> Chaque action est visible et tracée</li>
+                                        <li><strong>Contrôle granulaire :</strong> Possibilité d'arrêter à tout moment</li>
+                                        <li><strong>Feedback temps réel :</strong> WebSocket pour les mises à jour</li>
+                                        <li><strong>Validation préalable :</strong> Vérification des prérequis</li>
+                                        <li><strong>Rollback automatique :</strong> Annulation en cas d'échec</li>
+                                        <li><strong>Logs détaillés :</strong> Traçabilité complète</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Solutions et Bonnes Pratiques -->
+                <section class="solutions-section">
+                    <div class="aikido-card solutions">
+                        <h2>🔧 Solutions et Bonnes Pratiques</h2>
+                        <p class="mb-lg">
+                            Stratégies pour éviter le Magic Pushbutton et créer des interfaces transparentes :
+                        </p>
+
+                        <div class="solutions-grid">
+                            <div class="solution-item">
+                                <div class="solution-header">
+                                    <span class="solution-icon">🎯</span>
+                                    <h4>Command Pattern</h4>
+                                </div>
+                                <p class="solution-description">
+                                    Décomposer les actions complexes en commandes atomiques avec métadonnées
+                                    (description, durée estimée, prérequis).
+                                </p>
+                                <div class="solution-example">
+                                    <strong>Implémentation :</strong> Chaque commande est une classe avec
+                                    <code>execute()</code>, <code>canExecute()</code>, <code>getDescription()</code>
+                                </div>
+                            </div>
+
+                            <div class="solution-item">
+                                <div class="solution-header">
+                                    <span class="solution-icon">👁️</span>
+                                    <h4>Observer Pattern</h4>
+                                </div>
+                                <p class="solution-description">
+                                    Implémenter un système de feedback en temps réel via WebSocket
+                                    pour la visibilité des opérations.
+                                </p>
+                                <div class="solution-example">
+                                    <strong>Événements :</strong> <code>onCommandStarted</code>,
+                                    <code>onCommandCompleted</code>, <code>onProgressUpdate</code>
+                                </div>
+                            </div>
+
+                            <div class="solution-item">
+                                <div class="solution-header">
+                                    <span class="solution-icon">✅</span>
+                                    <h4>Validation Préalable</h4>
+                                </div>
+                                <p class="solution-description">
+                                    Vérifier tous les prérequis avant l'exécution et afficher
+                                    un plan d'exécution détaillé.
+                                </p>
+                                <div class="solution-example">
+                                    <strong>Vérifications :</strong> État système, permissions,
+                                    ressources disponibles, dépendances
+                                </div>
+                            </div>
+
+                            <div class="solution-item">
+                                <div class="solution-header">
+                                    <span class="solution-icon">🔄</span>
+                                    <h4>Processus Réversible</h4>
+                                </div>
+                                <p class="solution-description">
+                                    Implémenter des mécanismes de rollback et de sauvegarde
+                                    automatique avant les opérations critiques.
+                                </p>
+                                <div class="solution-example">
+                                    <strong>Stratégies :</strong> Snapshots, transactions,
+                                    commandes d'annulation (Undo Pattern)
+                                </div>
+                            </div>
+
+                            <div class="solution-item">
+                                <div class="solution-header">
+                                    <span class="solution-icon">📊</span>
+                                    <h4>Interface Transparente</h4>
+                                </div>
+                                <p class="solution-description">
+                                    Remplacer le bouton unique par une interface détaillée
+                                    montrant chaque étape et son statut.
+                                </p>
+                                <div class="solution-example">
+                                    <strong>Éléments :</strong> Barre de progression, liste des tâches,
+                                    temps estimé, logs en temps réel
+                                </div>
+                            </div>
+
+                            <div class="solution-item">
+                                <div class="solution-header">
+                                    <span class="solution-icon">🔐</span>
+                                    <h4>Confirmation Obligatoire</h4>
+                                </div>
+                                <p class="solution-description">
+                                    Exiger une confirmation explicite avec saisie de justification
+                                    pour les actions critiques.
+                                </p>
+                                <div class="solution-example">
+                                    <strong>Mécanismes :</strong> Double confirmation, saisie de texte,
+                                    délai de réflexion, validation par un tiers
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Métriques de Détection -->
+                <section class="metrics-section">
+                    <div class="aikido-card metrics">
+                        <h2>📊 Métriques de Détection</h2>
+                        <p class="mb-lg">
+                            Indicateurs pour identifier la présence du Magic Pushbutton dans votre système :
+                        </p>
+
+                        <div class="metrics-grid">
+                            <div class="metric-card technical">
+                                <h4>🔍 Indicateurs Techniques</h4>
+                                <ul class="metric-list">
+                                    <li>
+                                        <span class="metric-label">Complexité cachée :</span>
+                                        Méthodes de plus de 200 lignes déclenchées par un seul endpoint
+                                    </li>
+                                    <li>
+                                        <span class="metric-label">Logs insuffisants :</span>
+                                        Absence de logs détaillés dans les processus critiques
+                                    </li>
+                                    <li>
+                                        <span class="metric-label">Pas de rollback :</span>
+                                        Aucun mécanisme d'annulation pour les opérations destructives
+                                    </li>
+                                    <li>
+                                        <span class="metric-label">Temps imprévisible :</span>
+                                        Variance de temps de réponse > 300%
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="metric-card user">
+                                <h4>👥 Indicateurs Utilisateur</h4>
+                                <ul class="metric-list">
+                                    <li>
+                                        <span class="metric-label">Manque de visibilité :</span>
+                                        Plaintes récurrentes sur l'absence de feedback
+                                    </li>
+                                    <li>
+                                        <span class="metric-label">Erreurs inexpliquées :</span>
+                                        Échecs fréquents sans explication claire
+                                    </li>
+                                    <li>
+                                        <span class="metric-label">Peur d'utiliser :</span>
+                                        Réticence à utiliser certaines fonctionnalités
+                                    </li>
+                                    <li>
+                                        <span class="metric-label">Demandes de status :</span>
+                                        Questions répétées sur l'état des processus
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="metric-card alerts">
+                                <h4>⚡ Seuils d'Alerte</h4>
+                                <div class="alert-levels">
+                                    <div class="alert-level critical">
+                                        <span class="alert-icon">🔴</span>
+                                        <div>
+                                            <strong>Critique :</strong>
+                                            <p>> 5 actions différentes par bouton</p>
+                                        </div>
+                                    </div>
+                                    <div class="alert-level high">
+                                        <span class="alert-icon">🟠</span>
+                                        <div>
+                                            <strong>Élevé :</strong>
+                                            <p>Aucun feedback pendant > 30 secondes</p>
+                                        </div>
+                                    </div>
+                                    <div class="alert-level medium">
+                                        <span class="alert-icon">🟡</span>
+                                        <div>
+                                            <strong>Moyen :</strong>
+                                            <p>Pas de confirmation pour actions destructives</p>
+                                        </div>
+                                    </div>
+                                    <div class="alert-level low">
+                                        <span class="alert-icon">🟢</span>
+                                        <div>
+                                            <strong>Faible :</strong>
+                                            <p>Logs insuffisants (< 1 log/action)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercice Pratique -->
+                <section class="exercise-section">
+                    <div class="aikido-card exercise">
+                        <h2>🎯 Exercice Pratique</h2>
+                        <div class="exercise-header">
+                            <h3>Scénario : Refactoring d'un "Deploy All" Button</h3>
+                            <div class="exercise-meta">
+                                <span class="exercise-duration">⏱️ 45 minutes</span>
+                                <span class="exercise-difficulty">🎯 Intermédiaire</span>
+                            </div>
+                        </div>
+
+                        <div class="exercise-content">
+                            <div class="exercise-context">
+                                <h4>📋 Contexte :</h4>
+                                <p>Votre équipe a un bouton "Deploy All" qui :</p>
+                                <ul>
+                                    <li>Compile 5 microservices</li>
+                                    <li>Exécute les tests unitaires et d'intégration</li>
+                                    <li>Déploie en staging puis production</li>
+                                    <li>Met à jour la documentation</li>
+                                    <li>Notifie les équipes concernées</li>
+                                </ul>
+                            </div>
+
+                            <div class="exercise-problems">
+                                <h4>🚨 Problèmes observés :</h4>
+                                <ul>
+                                    <li>Échecs silencieux en milieu de processus</li>
+                                    <li>Impossible de savoir où ça bloque</li>
+                                    <li>Rollback manuel et fastidieux</li>
+                                    <li>Équipes stressées par l'imprévisibilité</li>
+                                    <li>Déploiements partiels non détectés</li>
+                                </ul>
+                            </div>
+
+                            <div class="exercise-mission">
+                                <h4>🎯 Mission :</h4>
+                                <ol>
+                                    <li><strong>Identifier</strong> les commandes atomiques nécessaires</li>
+                                    <li><strong>Concevoir</strong> l'interface de feedback en temps réel</li>
+                                    <li><strong>Implémenter</strong> les vérifications préalables</li>
+                                    <li><strong>Créer</strong> le système de rollback automatique</li>
+                                    <li><strong>Tester</strong> avec des scénarios d'échec contrôlés</li>
+                                </ol>
+                            </div>
+
+                            <div class="exercise-questions">
+                                <h4>💭 Question pratique :</h4>
+                                <p>Face à un bouton "Deploy All" problématique, quelle est la première étape de refactoring ?</p>
+                                
+                                <div class="question-options" style="flex-direction: column;">
+                                    <div class="question-option" data-choice="commands">
+                                        <input type="radio" name="refactor-choice" id="choice-commands" value="commands">
+                                        <label for="choice-commands">Décomposer en commandes atomiques avec Command Pattern</label>
+                                    </div>
+                                    <div class="question-option" data-choice="ui">
+                                        <input type="radio" name="refactor-choice" id="choice-ui" value="ui">
+                                        <label for="choice-ui">Améliorer l'interface utilisateur avec plus de boutons</label>
+                                    </div>
+                                    <div class="question-option" data-choice="logs">
+                                        <input type="radio" name="refactor-choice" id="choice-logs" value="logs">
+                                        <label for="choice-logs">Ajouter plus de logs dans le processus existant</label>
+                                    </div>
+                                    <div class="question-option" data-choice="tests">
+                                        <input type="radio" name="refactor-choice" id="choice-tests" value="tests">
+                                        <label for="choice-tests">Écrire plus de tests pour le processus actuel</label>
+                                    </div>
+                                </div>
+                                
+                                <div id="exercise-feedback" class="exercise-feedback hidden">
+                                    <!-- Le feedback sera affiché ici -->
+                                </div>
+                                
+                                <div class="questions-grid">
+                                    <div class="question-item">
+                                        <strong>Dépendances :</strong>
+                                        <p>Quelles sont les dépendances entre les étapes de déploiement ?</p>
+                                    </div>
+                                    <div class="question-item">
+                                        <strong>Échecs partiels :</strong>
+                                        <p>Comment gérer un échec au milieu du processus ?</p>
+                                    </div>
+                                    <div class="question-item">
+                                        <strong>Granularité :</strong>
+                                        <p>Quel niveau de détail pour le feedback utilisateur ?</p>
+                                    </div>
+                                    <div class="question-item">
+                                        <strong>Validation :</strong>
+                                        <p>Comment s'assurer que le rollback fonctionne correctement ?</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="exercise-deliverables">
+                                <h4>📦 Livrables attendus :</h4>
+                                <ul>
+                                    <li>Diagramme des commandes et dépendances</li>
+                                    <li>Interface mockup avec feedback temps réel</li>
+                                    <li>Code des commandes atomiques</li>
+                                    <li>Stratégie de rollback documentée</li>
+                                    <li>Plan de test des scénarios d'échec</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Checklist de Vérification -->
+                <section class="checklist-section">
+                    <div class="aikido-card checklist">
+                        <h2>✅ Checklist de Vérification</h2>
+                        <p class="mb-lg">
+                            Liste de contrôle avant de valider une interface d'action complexe :
+                        </p>
+
+                        <div class="checklist-grid">
+                            <div class="checklist-category">
+                                <h4>🔍 Transparence</h4>
+                                <div class="checklist-items">
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Chaque action est clairement décrite
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Durée estimée affichée pour chaque étape
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Prérequis vérifiés et affichés
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Plan d'exécution visible avant lancement
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="checklist-category">
+                                <h4>🔄 Contrôle</h4>
+                                <div class="checklist-items">
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Confirmation obligatoire avec justification
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Possibilité d'annuler pendant l'exécution
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Rollback automatique en cas d'échec
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Sauvegarde automatique avant modifications
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="checklist-category">
+                                <h4>📊 Feedback</h4>
+                                <div class="checklist-items">
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Progression en temps réel
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Logs détaillés accessibles
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Notifications des étapes importantes
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Rapport final avec métriques
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="checklist-category">
+                                <h4>🛡️ Sécurité</h4>
+                                <div class="checklist-items">
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Validation des permissions utilisateur
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Audit trail complet
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Limitation des actions simultanées
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Timeout et gestion des ressources
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Completion -->
+                <section class="completion-section slide-in">
+                    <div class="aikido-card completion">
+                        <div class="completion-content">
+                            <div class="completion-icon">📋</div>
+                            <div class="completion-text">
+                                <h3>Avez-vous terminé cette section ?</h3>
+                                <p>Marquez cette page comme terminée pour suivre votre progression dans la formation.</p>
+                            </div>
+                            <button class="aikido-btn primary mark-completed" data-page="magic-pushbutton">
+                                Marquer comme Terminé ✓
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Navigation -->
+                <nav class="content-navigation">
+                    <div class="nav-links">
+                        <a href="analysis-paralysis.html" class="nav-link prev">
+                            <span class="nav-direction">← Précédent</span>
+                            <span class="nav-title">Analysis Paralysis</span>
+                        </a>
+                        <a href="../index.html" class="nav-link up">
+                            <span class="nav-direction">↑ Retour</span>
+                            <span class="nav-title">Anti-Patterns</span>
+                        </a>
+                        <a href="reinventing-the-wheel.html" class="nav-link next">
+                            <span class="nav-direction">Suivant →</span>
+                            <span class="nav-title">Reinventing the Wheel</span>
+                        </a>
+                    </div>
+                </nav>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts de fin de page -->
+    <script>
+        // Initialisation de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialiser la navigation
+            if (window.formationNav) {
+                window.formationNav.init();
+            }
+            
+            // Initialiser les onglets de code
+            if (window.initCodeTabs) {
+                window.initCodeTabs();
+            }
+            
+            // Initialiser les exercices
+            if (window.initExercises) {
+                window.initExercises();
+            }
+            
+            // Marquer la page comme visitée
+            if (window.trackPageVisit) {
+                window.trackPageVisit('magic-pushbutton');
+            }
+        });
+
+        // Gestion des questions à choix multiples
+        document.querySelectorAll('.question-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                const choice = e.currentTarget.dataset.choice;
+                const feedback = document.getElementById('exercise-feedback');
+                
+                // Sélectionner le radio button
+                const radio = e.currentTarget.querySelector('input[type="radio"]');
+                radio.checked = true;
+                
+                let feedbackContent = '';
+                
+                switch(choice) {
+                    case 'commands':
+                        feedbackContent = `
+                            <div class="feedback-header best">
+                                <h4>🏆 Excellent Choix</h4>
+                            </div>
+                            <p>Décomposer en commandes atomiques avec Command Pattern est la meilleure approche :</p>
+                            <ul>
+                                <li>Chaque action devient une commande indépendante</li>
+                                <li>Validation des prérequis par commande</li>
+                                <li>Feedback granulaire et transparent</li>
+                                <li>Rollback automatique en cas d'échec</li>
+                            </ul>
+                            <p><strong>Étapes suivantes :</strong> Implémenter l'Observer Pattern pour le feedback temps réel.</p>
+                        `;
+                        break;
+                    case 'ui':
+                        feedbackContent = `
+                            <div class="feedback-header partial">
+                                <h4>⚠️ Approche Superficielle</h4>
+                            </div>
+                            <p>Améliorer l'UI sans refactorer le code sous-jacent :</p>
+                            <ul>
+                                <li>Ne résout pas le problème de fond</li>
+                                <li>Complexité cachée reste présente</li>
+                                <li>Risque de créer plus de boutons "magiques"</li>
+                                <li>Maintenance toujours difficile</li>
+                            </ul>
+                            <p><strong>Recommandation :</strong> Commencer par restructurer la logique métier.</p>
+                        `;
+                        break;
+                    case 'logs':
+                        feedbackContent = `
+                            <div class="feedback-header partial">
+                                <h4>⚠️ Solution Incomplète</h4>
+                            </div>
+                            <p>Ajouter des logs améliore le diagnostic mais :</p>
+                            <ul>
+                                <li>Ne résout pas la complexité cachée</li>
+                                <li>Pas de contrôle granulaire</li>
+                                <li>Toujours pas de rollback</li>
+                                <li>Feedback uniquement post-mortem</li>
+                            </ul>
+                            <p><strong>Mieux :</strong> Logs + restructuration avec Command Pattern.</p>
+                        `;
+                        break;
+                    case 'tests':
+                        feedbackContent = `
+                            <div class="feedback-header incorrect">
+                                <h4>❌ Approche Inadéquate</h4>
+                            </div>
+                            <p>Écrire plus de tests pour un processus mal conçu :</p>
+                            <ul>
+                                <li>Tests complexes et fragiles</li>
+                                <li>Ne résout pas l'architecture problématique</li>
+                                <li>Difficile de tester les échecs partiels</li>
+                                <li>Maintenance des tests coûteuse</li>
+                            </ul>
+                            <p><strong>Principe :</strong> Refactorer d'abord, tester ensuite.</p>
+                        `;
+                        break;
+                }
+                
+                feedback.innerHTML = feedbackContent;
+                feedback.classList.remove('hidden');
+                feedback.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+        
+        // JavaScript de completion géré par les scripts standards
+    </script>
+    
+    <!-- Styles pour les animations et composants -->
+    <style>
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        
+        .completion-success {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #10b981;
+            font-weight: 500;
+        }
+        
+        .completion-icon {
+            font-size: 1.2em;
+        }
+        
+        .question-options {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .question-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .question-option:hover {
+            border-color: #3b82f6;
+            background-color: #f8fafc;
+        }
+        
+        .question-option input[type="radio"]:checked + label {
+            color: #3b82f6;
+            font-weight: 500;
+        }
+        
+        .question-option:has(input[type="radio"]:checked) {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        
+        .exercise-feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid #3b82f6;
+            background-color: #f8fafc;
+        }
+        
+        .exercise-feedback.hidden {
+            display: none;
+        }
+        
+        .feedback-header {
+            margin-bottom: 0.5rem;
+        }
+        
+        .feedback-header.best h4 {
+            color: #10b981;
+        }
+        
+        .feedback-header.partial h4 {
+            color: #f59e0b;
+        }
+        
+        .feedback-header.incorrect h4 {
+            color: #ef4444;
+        }
+    </style>
+</body>
+</html>

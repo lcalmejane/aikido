@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golden Hammer - Anti-Pattern Architecture | Formation Patterns Développeurs</title>
+    <meta name="description" content="Comprendre et éviter l'anti-pattern Golden Hammer : sur-utilisation d'une solution familière, causes, biais cognitifs et stratégies pour diversifier l'approche technique">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/exercises.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <div class="breadcrumb">
+                        <a href="#" onclick="window.formationNav.navigateToAbsolutePage('index.html'); return false;">Formation</a>
+                        <span>→</span>
+                        <a href="../index.html">Anti-Patterns</a>
+                        <span>→</span>
+                        <span>Golden Hammer</span>
+                    </div>
+                    
+                    <h1 class="page-title">🔨 Golden Hammer</h1>
+                    <p class="page-subtitle">L'anti-pattern de la solution universelle</p>
+                    
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span>🦨</span>
+                            <span>Anti-pattern architectural critique</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>⏱️</span>
+                            <span>~40 minutes</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>🎯</span>
+                            <span>Diversification technologique essentielle</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>🧩</span>
+                            <span>5 biais cognitifs liés</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Définition -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card anti-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="definition-text">
+                            Le <strong>Golden Hammer</strong> est un anti-pattern qui décrit la tendance à
+                            sur-utiliser une solution, technologie ou approche familière pour résoudre
+                            tous les problèmes, même quand elle n'est pas appropriée ou optimale.
+                        </p>
+
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problèmes Causés</h3>
+                                <ul>
+                                    <li>Sur-utilisation d'une technologie familière</li>
+                                    <li>Solutions inadaptées aux besoins spécifiques</li>
+                                    <li>Performance dégradée dans certains contextes</li>
+                                    <li>Complexité artificielle et contournements</li>
+                                    <li>Résistance à l'adoption de nouvelles technologies</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solutions Apportées</h3>
+                                <ul>
+                                    <li>Architecture polyglotte avec technologies spécialisées</li>
+                                    <li>Évaluation objective des alternatives</li>
+                                    <li>Matrice de décision pour choix technologiques</li>
+                                    <li>Culture d'apprentissage et d'expérimentation</li>
+                                    <li>Veille technologique régulière</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert danger">
+                            <strong>⚠️ Attention :</strong> Le Golden Hammer peut sembler efficace à court terme,
+                            mais il limite l'innovation et peut créer des goulots d'étranglement techniques.
+                        </div>
+
+                        <h3>Caractéristiques du Golden Hammer</h3>
+                        <div class="characteristics-grid">
+                            <div class="characteristic-item">
+                                <span class="char-icon">🔨</span>
+                                <div>
+                                    <strong>Sur-utilisation</strong>
+                                    <p>Application d'une solution à tous les contextes</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">🛡️</span>
+                                <div>
+                                    <strong>Résistance au changement</strong>
+                                    <p>Refus d'explorer d'autres approches</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">🎯</span>
+                                <div>
+                                    <strong>Solutions inadaptées</strong>
+                                    <p>Force l'utilisation même quand inapproprié</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">⚡</span>
+                                <div>
+                                    <strong>Performance dégradée</strong>
+                                    <p>Solutions sous-optimales pour certains cas</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Biais Cognitifs Associés -->
+                <section class="cognitive-bias-section">
+                    <div class="aikido-card biais-cognitif">
+                        <h2>🧠 Biais Cognitifs Associés</h2>
+                        <p class="mb-lg">
+                            Le Golden Hammer résulte souvent de plusieurs biais cognitifs qui poussent vers l'utilisation d'une solution familière :
+                        </p>
+
+                        <div class="bias-cards">
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">🔨</span>
+                                    <h4>Law of the Instrument</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "On utilise toujours cette technologie, pourquoi changer ?"
+                                </p>
+                                <p class="bias-explanation">
+                                    Tendance à sur-utiliser un outil familier pour tous les problèmes,
+                                    même quand il n'est pas optimal pour le contexte spécifique.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Utiliser une base de données relationnelle pour stocker
+                                    des logs, du cache et des documents JSON.
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">🛡️</span>
+                                    <h4>Status Quo Bias</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Ça marche déjà, pourquoi risquer le changement ?"
+                                </p>
+                                <p class="bias-explanation">
+                                    Préférence pour maintenir l'état actuel plutôt que d'explorer de nouvelles options,
+                                    même si elles pourraient être plus appropriées.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Continuer à utiliser une technologie obsolète car
+                                    "l'équipe la connaît bien" malgré ses limitations.
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">⚡</span>
+                                    <h4>Availability Heuristic</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Cette solution a bien marché la dernière fois"
+                                </p>
+                                <p class="bias-explanation">
+                                    Surestimation de la probabilité de succès d'une solution basée sur
+                                    des expériences récentes facilement rappelées de la mémoire.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Choisir une technologie parce qu'elle a fonctionné
+                                    dans un projet précédent, sans analyser le nouveau contexte.
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">🎯</span>
+                                    <h4>Confirmation Bias</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Regardez, cette technologie peut aussi faire ça !"
+                                </p>
+                                <p class="bias-explanation">
+                                    Recherche d'informations qui confirment nos croyances existantes
+                                    sur l'efficacité de notre solution préférée.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Justifier l'utilisation d'un ORM pour l'analytics
+                                    en trouvant des exemples où "ça peut marcher".
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">⏰</span>
+                                    <h4>Biais de Pression Temporelle</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "On n'a pas le temps d'apprendre une nouvelle techno"
+                                </p>
+                                <p class="bias-explanation">
+                                    Sous pression temporelle, tendance à choisir la solution la plus familière
+                                    plutôt que la plus appropriée au problème.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Utiliser SQL pour une recherche full-text complexe
+                                    plutôt que d'évaluer Elasticsearch par manque de temps.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exemples de Code -->
+                <section class="examples-section">
+                    <div class="aikido-card examples">
+                        <h2>💻 Exemples de Code</h2>
+                        <p class="mb-md">
+                            Voici des exemples typiques de Golden Hammer et leurs alternatives appropriées :
+                        </p>
+
+                        <div class="example-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-button active" data-tab="problem">❌ Problème</button>
+                                <button class="tab-button" data-tab="solution">✅ Solution</button>
+                            </div>
+
+                            <div class="tab-content active" id="problem">
+                                <h4>🔨 Sur-utilisation d'une Base de Données Relationnelle</h4>
+                                
+                                <div class="code-example">
+                                    <div class="code-header">
+                                        <span class="code-title">UserService.php - Tout en SQL</span>
+                                        <span class="code-language">PHP</span>
+                                    </div>
+                                    <pre><code class="language-php">
+class UserService {
+    private PDO $db;
+    
+    public function __construct(PDO $db) {
+        $this->db = $db;
+    }
+    
+    // Stockage de sessions en base de données (inadapté)
+    public function storeUserSession($userId, $sessionData) {
+        $stmt = $this->db->prepare('
+            INSERT INTO user_sessions (user_id, session_data, created_at) 
+            VALUES (?, ?, NOW())
+        ');
+        $stmt->execute([$userId, json_encode($sessionData)]);
+    }
+    
+    // Cache en base de données (très lent)
+    public function getCachedUserProfile($userId) {
+        $stmt = $this->db->prepare('
+            SELECT cache_data FROM user_cache 
+            WHERE user_id = ? AND expires_at > NOW()
+        ');
+        $stmt->execute([$userId]);
+        $result = $stmt->fetch();
+        
+        return $result ? json_decode($result['cache_data'], true) : null;
+    }
+    
+    // Stockage de logs en base (problème de performance)
+    public function logUserActivity($userId, $activity) {
+        $stmt = $this->db->prepare('
+            INSERT INTO user_activity_logs (user_id, activity, timestamp) 
+            VALUES (?, ?, NOW())
+        ');
+        $stmt->execute([$userId, json_encode($activity)]);
+    }
+    
+    // Recherche full-text en SQL (limité)
+    public function searchUsers($query) {
+        $stmt = $this->db->prepare('
+            SELECT * FROM users 
+            WHERE MATCH(name, email, bio) AGAINST(? IN NATURAL LANGUAGE MODE)
+        ');
+        $stmt->execute([$query]);
+        return $stmt->fetchAll();
+    }
+    
+    // Stockage de documents JSON complexes (inadapté)
+    public function saveUserPreferences($userId, $preferences) {
+        // Forcer un document JSON complexe dans une colonne TEXT
+        $stmt = $this->db->prepare('
+            UPDATE users SET preferences = ? WHERE id = ?
+        ');
+        $stmt->execute([json_encode($preferences), $userId]);
+    }
+    
+    // File d'attente en base de données (très inefficace)
+    public function queueEmailNotification($userId, $emailData) {
+        $stmt = $this->db->prepare('
+            INSERT INTO email_queue (user_id, email_data, status, created_at) 
+            VALUES (?, ?, "pending", NOW())
+        ');
+        $stmt->execute([$userId, json_encode($emailData)]);
+    }
+    
+    // Traitement de la file d'attente (polling inefficace)
+    public function processEmailQueue() {
+        $stmt = $this->db->prepare('
+            SELECT * FROM email_queue 
+            WHERE status = "pending" 
+            ORDER BY created_at ASC 
+            LIMIT 10
+        ');
+        $stmt->execute();
+        $emails = $stmt->fetchAll();
+        
+        foreach ($emails as $email) {
+            // Traitement synchrone bloquant
+            $this->sendEmail($email);
+            
+            // Mise à jour du statut
+            $updateStmt = $this->db->prepare('
+                UPDATE email_queue SET status = "sent" WHERE id = ?
+            ');
+            $updateStmt->execute([$email['id']]);
+        }
+    }
+}
+</code></pre>
+                                </div>
+
+                                <div class="code-example">
+                                    <div class="code-header">
+                                        <span class="code-title">DataProcessor.java - Tout en ORM</span>
+                                        <span class="code-language">Java</span>
+                                    </div>
+                                    <pre><code class="language-java">
+@Service
+public class DataProcessor {
+    
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
+    private LogRepository logRepository;
+    
+    // Traitement de gros volumes avec ORM (très lent)
+    public void processBulkUserData(List<UserData> userData) {
+        for (UserData data : userData) {
+            // Une requête par utilisateur - N+1 problem
+            User user = userRepository.findById(data.getUserId()).orElse(null);
+            if (user != null) {
+                user.setLastActivity(data.getActivity());
+                user.setScore(calculateScore(data));
+                userRepository.save(user); // Une requête UPDATE par utilisateur
+            }
+        }
+    }
+    
+    // Analyse de données avec ORM (inadapté)
+    public Map<String, Object> generateUserStatistics() {
+        // Récupération de tous les utilisateurs en mémoire
+        List<User> allUsers = userRepository.findAll();
+        
+        Map<String, Object> stats = new HashMap<>();
+        
+        // Calculs en Java au lieu d'utiliser SQL
+        stats.put("totalUsers", allUsers.size());
+        stats.put("averageAge", allUsers.stream()
+            .mapToInt(User::getAge)
+            .average()
+            .orElse(0));
+        
+        // Groupement en Java (très inefficace)
+        Map<String, Long> usersByCountry = allUsers.stream()
+            .collect(Collectors.groupingBy(
+                User::getCountry, 
+                Collectors.counting()
+            ));
+        stats.put("usersByCountry", usersByCountry);
+        
+        return stats;
+    }
+    
+    // Stockage de métriques temps réel avec ORM
+    public void recordMetric(String metricName, double value) {
+        // Création d'une entité pour chaque métrique
+        Metric metric = new Metric();
+        metric.setName(metricName);
+        metric.setValue(value);
+        metric.setTimestamp(Instant.now());
+        
+        // Persistance immédiate (problème de performance)
+        metricRepository.save(metric);
+    }
+    
+    // Recherche complexe forcée en ORM
+    @Query("SELECT u FROM User u WHERE " +
+           "(:name IS NULL OR LOWER(u.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND " +
+           "(:email IS NULL OR LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%'))) AND " +
+           "(:minAge IS NULL OR u.age >= :minAge) AND " +
+           "(:maxAge IS NULL OR u.age <= :maxAge) AND " +
+           "(:country IS NULL OR u.country = :country)")
+    public List<User> searchUsersComplex(
+        @Param("name") String name,
+        @Param("email") String email,
+        @Param("minAge") Integer minAge,
+        @Param("maxAge") Integer maxAge,
+        @Param("country") String country
+    );
+    
+    // Audit trail avec ORM (problème de performance)
+    @EventListener
+    public void handleUserEvent(UserEvent event) {
+        // Création d'une entité pour chaque événement
+        AuditLog auditLog = new AuditLog();
+        auditLog.setUserId(event.getUserId());
+        auditLog.setAction(event.getAction());
+        auditLog.setDetails(event.getDetails());
+        auditLog.setTimestamp(Instant.now());
+        
+        // Persistance synchrone (bloque le thread principal)
+        logRepository.save(auditLog);
+    }
+}
+</code></pre>
+                                </div>
+
+                                <div class="problems-list">
+                                    <h4>🚨 Problèmes identifiés :</h4>
+                                    <ul>
+                                        <li><strong>Performance dégradée :</strong> Utilisation de SQL pour des cas non-relationnels</li>
+                                        <li><strong>Complexité artificielle :</strong> Contournements pour forcer l'utilisation</li>
+                                        <li><strong>Scalabilité limitée :</strong> Solutions inadaptées aux gros volumes</li>
+                                        <li><strong>Maintenance difficile :</strong> Code complexe pour des besoins simples</li>
+                                        <li><strong>Coûts élevés :</strong> Ressources mal utilisées</li>
+                                        <li><strong>Rigidité :</strong> Difficile d'adapter aux nouveaux besoins</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="tab-content" id="solution">
+                                <h4>🛠️ Architecture Polyglotte avec Solutions Spécialisées</h4>
+                                
+                                <div class="code-example">
+                                    <div class="code-header">
+                                        <span class="code-title">UserService.php - Solutions Appropriées</span>
+                                        <span class="code-language">PHP</span>
+                                    </div>
+                                    <pre><code class="language-php">
+class UserService {
+    private PDO $db;                    // Pour données relationnelles
+    private Redis $redis;               // Pour cache et sessions
+    private ElasticsearchClient $es;    // Pour recherche full-text
+    private RabbitMQ $queue;           // Pour files d'attente
+    private MongoClient $mongo;        // Pour documents JSON
+    
+    public function __construct(
+        PDO $db,
+        Redis $redis,
+        ElasticsearchClient $es,
+        RabbitMQ $queue,
+        MongoClient $mongo
+    ) {
+        $this->db = $db;
+        $this->redis = $redis;
+        $this->es = $es;
+        $this->queue = $queue;
+        $this->mongo = $mongo;
+    }
+    
+    // Sessions en Redis (adapté pour données temporaires)
+    public function storeUserSession($userId, $sessionData) {
+        $sessionKey = "session:user:$userId";
+        $this->redis->setex($sessionKey, 3600, json_encode($sessionData));
+    }
+    
+    // Cache en Redis (très rapide)
+    public function getCachedUserProfile($userId) {
+        $cacheKey = "profile:$userId";
+        $cached = $this->redis->get($cacheKey);
+        
+        if ($cached) {
+            return json_decode($cached, true);
+        }
+        
+        // Si pas en cache, récupérer de la DB et mettre en cache
+        $profile = $this->getUserProfileFromDB($userId);
+        $this->redis->setex($cacheKey, 300, json_encode($profile));
+        
+        return $profile;
+    }
+    
+    // Logs asynchrones via queue (non-bloquant)
+    public function logUserActivity($userId, $activity) {
+        $logMessage = [
+            'user_id' => $userId,
+            'activity' => $activity,
+            'timestamp' => time()
+        ];
+        
+        $this->queue->publish('user.activity', json_encode($logMessage));
+    }
+    
+    // Recherche full-text avec Elasticsearch (optimisé)
+    public function searchUsers($query) {
+        $searchParams = [
+            'index' => 'users',
+            'body' => [
+                'query' => [
+                    'multi_match' => [
+                        'query' => $query,
+                        'fields' => ['name^2', 'email', 'bio'],
+                        'fuzziness' => 'AUTO'
+                    ]
+                ],
+                'highlight' => [
+                    'fields' => [
+                        'name' => new \stdClass(),
+                        'bio' => new \stdClass()
+                    ]
+                ]
+            ]
+        ];
+        
+        return $this->es->search($searchParams);
+    }
+    
+    // Documents JSON en MongoDB (adapté)
+    public function saveUserPreferences($userId, $preferences) {
+        $collection = $this->mongo->selectCollection('app', 'user_preferences');
+        
+        $collection->updateOne(
+            ['user_id' => $userId],
+            ['$set' => [
+                'preferences' => $preferences,
+                'updated_at' => new UTCDateTime()
+            ]],
+            ['upsert' => true]
+        );
+    }
+    
+    // File d'attente avec RabbitMQ (efficace)
+    public function queueEmailNotification($userId, $emailData) {
+        $message = [
+            'user_id' => $userId,
+            'email_data' => $emailData,
+            'created_at' => time()
+        ];
+        
+        $this->queue->publish('email.notifications', json_encode($message));
+    }
+    
+    // Données relationnelles en SQL (approprié)
+    public function getUserWithOrders($userId) {
+        $stmt = $this->db->prepare('
+            SELECT u.*, 
+                   COUNT(o.id) as order_count,
+                   SUM(o.total) as total_spent
+            FROM users u
+            LEFT JOIN orders o ON u.id = o.user_id
+            WHERE u.id = ?
+            GROUP BY u.id
+        ');
+        $stmt->execute([$userId]);
+        return $stmt->fetch();
+    }
+}
+</code></pre>
+                                </div>
+
+                                <div class="code-example">
+                                    <div class="code-header">
+                                        <span class="code-title">DataProcessor.java - Solutions Spécialisées</span>
+                                        <span class="code-language">Java</span>
+                                    </div>
+                                    <pre><code class="language-java">
+@Service
+public class DataProcessor {
+    
+    @Autowired
+    private JdbcTemplate jdbcTemplate;  // Pour requêtes SQL optimisées
+    
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;  // Pour cache
+    
+    @Autowired
+    private KafkaTemplate<String, Object> kafkaTemplate;  // Pour streaming
+    
+    @Autowired
+    private InfluxDBTemplate influxDB;  // Pour métriques temps réel
+    
+    // Traitement bulk avec JDBC batch (optimisé)
+    public void processBulkUserData(List<UserData> userData) {
+        String sql = "UPDATE users SET last_activity = ?, score = ? WHERE id = ?";
+        
+        List<Object[]> batchArgs = userData.stream()
+            .map(data -> new Object[]{
+                data.getActivity(),
+                calculateScore(data),
+                data.getUserId()
+            })
+            .collect(Collectors.toList());
+        
+        // Batch update - une seule requête pour tous
+
+        jdbcTemplate.batchUpdate(sql, batchArgs);
+    }
+    
+    // Analyse de données avec SQL natif (optimisé)
+    public Map<String, Object> generateUserStatistics() {
+        Map<String, Object> stats = new HashMap<>();
+        
+        // Utilisation de SQL pour les calculs (beaucoup plus efficace)
+        String sql = """
+            SELECT 
+                COUNT(*) as total_users,
+                AVG(age) as average_age,
+                country,
+                COUNT(*) as users_per_country
+            FROM users 
+            GROUP BY country
+            """;
+        
+        List<Map<String, Object>> results = jdbcTemplate.queryForList(sql);
+        
+        // Traitement minimal en Java
+        stats.put("totalUsers", results.stream().mapToLong(r -> (Long) r.get("total_users")).sum());
+        stats.put("averageAge", results.get(0).get("average_age"));
+        
+        Map<String, Long> usersByCountry = results.stream()
+            .collect(Collectors.toMap(
+                r -> (String) r.get("country"),
+                r -> (Long) r.get("users_per_country")
+            ));
+        stats.put("usersByCountry", usersByCountry);
+        
+        return stats;
+    }
+    
+    // Métriques temps réel avec InfluxDB (adapté)
+    public void recordMetric(String metricName, double value) {
+        Point point = Point.measurement("user_metrics")
+            .tag("metric", metricName)
+            .addField("value", value)
+            .time(Instant.now(), WritePrecision.MS);
+        
+        // Écriture asynchrone optimisée pour les séries temporelles
+        influxDB.writePoint(point);
+    }
+    
+    // Recherche avec Elasticsearch (spécialisé)
+    @Autowired
+    private ElasticsearchRestTemplate elasticsearchTemplate;
+    
+    public List<User> searchUsersComplex(UserSearchCriteria criteria) {
+        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+        
+        if (criteria.getName() != null) {
+            boolQuery.must(QueryBuilders.matchQuery("name", criteria.getName()));
+        }
+        
+        if (criteria.getEmail() != null) {
+            boolQuery.must(QueryBuilders.wildcardQuery("email", "*" + criteria.getEmail() + "*"));
+        }
+        
+        if (criteria.getMinAge() != null || criteria.getMaxAge() != null) {
+            RangeQueryBuilder ageRange = QueryBuilders.rangeQuery("age");
+            if (criteria.getMinAge() != null) ageRange.gte(criteria.getMinAge());
+            if (criteria.getMaxAge() != null) ageRange.lte(criteria.getMaxAge());
+            boolQuery.must(ageRange);
+        }
+        
+        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+            .withQuery(boolQuery)
+            .withPageable(PageRequest.of(0, 100))
+            .build();
+        
+        SearchHits<User> searchHits = elasticsearchTemplate.search(searchQuery, User.class);
+        return searchHits.stream()
+            .map(SearchHit::getContent)
+            .collect(Collectors.toList());
+    }
+    
+    // Audit trail asynchrone avec Kafka (non-bloquant)
+    @EventListener
+    @Async
+    public void handleUserEvent(UserEvent event) {
+        AuditMessage auditMessage = AuditMessage.builder()
+            .userId(event.getUserId())
+            .action(event.getAction())
+            .details(event.getDetails())
+            .timestamp(Instant.now())
+            .build();
+        
+        // Envoi asynchrone vers Kafka
+        kafkaTemplate.send("audit-events", auditMessage);
+    }
+    
+    // Cache distribué avec Redis
+    @Cacheable(value = "user-profiles", key = "#userId")
+    public UserProfile getUserProfile(Long userId) {
+        // Cette méthode sera mise en cache automatiquement
+        return userRepository.findUserProfileById(userId);
+    }
+}
+</code></pre>
+                                </div>
+
+                                <div class="code-example">
+                                    <div class="code-header">
+                                        <span class="code-title">Architecture Polyglotte</span>
+                                        <span class="code-language">Structure</span>
+                                    </div>
+                                    <pre><code class="language-text">
+📁 Microservices Architecture/
+├── 🗄️ PostgreSQL              # Données relationnelles
+│   ├── Users, Orders          # Transactions ACID
+│   ├── Products, Inventory    # Cohérence forte
+│   └── Financial data         # Intégrité critique
+│
+├── 🔴 Redis                   # Cache & Sessions
+│   ├── User sessions          # Données temporaires
+│   ├── Application cache      # Performance
+│   └── Rate limiting          # Contrôle d'accès
+│
+├── 🔍 Elasticsearch          # Recherche full-text
+│   ├── Product catalog        # Recherche facettée
+│   ├── User profiles          # Recherche floue
+│   └── Content indexing       # Analyse textuelle
+│
+├── 📊 InfluxDB               # Métriques temps réel
+│   ├── Application metrics    # Performance monitoring
+│   ├── Business metrics       # Analytics
+│   └── IoT sensor data        # Séries temporelles
+│
+├── 🍃 MongoDB                # Documents JSON
+│   ├── User preferences       # Schéma flexible
+│   ├── Content management     # Documents complexes
+│   └── Configuration          # Données semi-structurées
+│
+├── 🚀 Apache Kafka           # Event streaming
+│   ├── User events            # Event sourcing
+│   ├── Audit trail            # Traçabilité
+│   └── Real-time analytics    # Streaming processing
+│
+└── 📁 File Storage           # Fichiers binaires
+    ├── AWS S3 / MinIO         # Images, documents
+    ├── CDN                    # Distribution globale
+    └── Backup storage         # Archivage
+</code></pre>
+                                </div>
+
+                                <div class="benefits-list">
+                                    <h4>✅ Avantages de l'architecture polyglotte :</h4>
+                                    <ul>
+                                        <li><strong>Performance optimisée :</strong> Chaque technologie pour son usage optimal</li>
+                                        <li><strong>Scalabilité ciblée :</strong> Mise à l'échelle selon les besoins spécifiques</li>
+                                        <li><strong>Résilience :</strong> Isolation des pannes par domaine</li>
+                                        <li><strong>Évolutivité :</strong> Adoption de nouvelles technologies par composant</li>
+                                        <li><strong>Expertise spécialisée :</strong> Équipes expertes par technologie</li>
+                                        <li><strong>Coûts optimisés :</strong> Ressources adaptées aux besoins</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Techniques de Diversification -->
+                <section class="refactoring-section">
+                    <div class="aikido-card refactoring">
+                        <h2>🔧 Techniques de Diversification</h2>
+                        <p class="mb-md">
+                            Stratégies pour éviter le Golden Hammer et diversifier l'approche technique :
+                        </p>
+
+                        <div class="techniques-grid">
+                            <div class="technique-card">
+                                <div class="technique-header">
+                                    <span class="technique-icon">🎯</span>
+                                    <h4>Technology Radar</h4>
+                                </div>
+                                <div class="technique-description">
+                                    <p>Évaluer régulièrement les nouvelles technologies et leur pertinence</p>
+                                </div>
+                                <div class="technique-steps">
+                                    <strong>Étapes :</strong>
+                                    <ol>
+                                        <li>Créer un radar technologique d'équipe</li>
+                                        <li>Catégoriser : Adopt, Trial, Assess, Hold</li>
+                                        <li>Réviser trimestriellement</li>
+                                        <li>Expérimenter avec des POCs</li>
+                                    </ol>
+                                </div>
+                                <div class="technique-benefits">
+                                    <strong>Avantages :</strong> Veille technologique, décisions éclairées
+                                </div>
+                            </div>
+
+                            <div class="technique-card">
+                                <div class="technique-header">
+                                    <span class="technique-icon">🧪</span>
+                                    <h4>Spike Solutions</h4>
+                                </div>
+                                <div class="technique-description">
+                                    <p>Créer des prototypes rapides pour explorer différentes approches</p>
+                                </div>
+                                <div class="technique-steps">
+                                    <strong>Étapes :</strong>
+                                    <ol>
+                                        <li>Identifier le problème technique</li>
+                                        <li>Définir 2-3 approches alternatives</li>
+                                        <li>Implémenter des spikes timeboxés</li>
+                                        <li>Comparer les résultats objectivement</li>
+                                    </ol>
+                                </div>
+                                <div class="technique-benefits">
+                                    <strong>Avantages :</strong> Réduction des risques, apprentissage rapide
+                                </div>
+                            </div>
+
+                            <div class="technique-card">
+                                <div class="technique-header">
+                                    <span class="technique-icon">📊</span>
+                                    <h4>Decision Matrix</h4>
+                                </div>
+                                <div class="technique-description">
+                                    <p>Utiliser une matrice de décision pour évaluer les options objectivement</p>
+                                </div>
+                                <div class="technique-steps">
+                                    <strong>Étapes :</strong>
+                                    <ol>
+                                        <li>Définir les critères d'évaluation</li>
+                                        <li>Pondérer l'importance de chaque critère</li>
+                                        <li>Scorer chaque option</li>
+                                        <li>Calculer le score total pondéré</li>
+                                    </ol>
+                                </div>
+                                <div class="technique-benefits">
+                                    <strong>Avantages :</strong> Décisions objectives, traçabilité
+                                </div>
+                            </div>
+
+                            <div class="technique-card">
+                                <div class="technique-header">
+                                    <span class="technique-icon">🎓</span>
+                                    <h4>Learning Culture</h4>
+                                </div>
+                                <div class="technique-description">
+                                    <p>Encourager l'apprentissage continu et l'expérimentation</p>
+                                </div>
+                                <div class="technique-steps">
+                                    <strong>Étapes :</strong>
+                                    <ol>
+                                        <li>Allouer du temps pour l'apprentissage</li>
+                                        <li>Organiser des tech talks internes</li>
+                                        <li>Participer à des conférences</li>
+                                        <li>Créer des groupes d'étude</li>
+                                    </ol>
+                                </div>
+                                <div class="technique-benefits">
+                                    <strong>Avantages :</strong> Montée en compétences, innovation
+                                </div>
+                            </div>
+
+                            <div class="technique-card">
+                                <div class="technique-header">
+                                    <span class="technique-icon">🔄</span>
+                                    <h4>Strangler Fig Migration</h4>
+                                </div>
+                                <div class="technique-description">
+                                    <p>Migrer progressivement vers de nouvelles technologies</p>
+                                </div>
+                                <div class="technique-steps">
+                                    <strong>Étapes :</strong>
+                                    <ol>
+                                        <li>Identifier les composants à migrer</li>
+                                        <li>Implémenter la nouvelle solution en parallèle</li>
+                                        <li>Router progressivement le trafic</li>
+                                        <li>Supprimer l'ancienne implémentation</li>
+                                    </ol>
+                                </div>
+                                <div class="technique-benefits">
+                                    <strong>Avantages :</strong> Migration sans risque, apprentissage graduel
+                                </div>
+                            </div>
+
+                            <div class="technique-card">
+                                <div class="technique-header">
+                                    <span class="technique-icon">🎪</span>
+                                    <h4>Architecture Review</h4>
+                                </div>
+                                <div class="technique-description">
+                                    <p>Réviser régulièrement les choix architecturaux</p>
+                                </div>
+                                <div class="technique-steps">
+                                    <strong>Étapes :</strong>
+                                    <ol>
+                                        <li>Planifier des revues trimestrielles</li>
+                                        <li>Analyser les métriques de performance</li>
+                                        <li>Identifier les points de douleur</li>
+                                        <li>Proposer des améliorations</li>
+                                    </ol>
+                                </div>
+                                <div class="technique-benefits">
+                                    <strong>Avantages :</strong> Amélioration continue, détection précoce
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Design Patterns Recommandés -->
+                <section class="patterns-section">
+                    <div class="aikido-card patterns">
+                        <h2>🏗️ Design Patterns Recommandés</h2>
+                        <p class="mb-md">
+                            Patterns pour favoriser la diversification et la flexibilité technologique :
+                        </p>
+
+                        <div class="patterns-grid">
+                            <div class="pattern-card">
+                                <div class="pattern-header">
+                                    <span class="pattern-icon">🎯</span>
+                                    <h4>Strategy Pattern</h4>
+                                </div>
+                                <p class="pattern-description">
+                                    Encapsuler différentes implémentations et les rendre interchangeables.
+                                </p>
+                                <div class="pattern-example">
+                                    <strong>Exemple :</strong> Stratégies de stockage (SQL, NoSQL, Cache)
+                                </div>
+                                <div class="pattern-benefits">
+                                    <strong>Avantages :</strong> Flexibilité, testabilité, évolutivité
+                                </div>
+                            </div>
+
+                            <div class="pattern-card">
+                                <div class="pattern-header">
+                                    <span class="pattern-icon">🔌</span>
+                                    <h4>Adapter Pattern</h4>
+                                </div>
+                                <p class="pattern-description">
+                                    Permettre à des interfaces incompatibles de travailler ensemble.
+                                </p>
+                                <div class="pattern-example">
+                                    <strong>Exemple :</strong> Adaptateurs pour différentes APIs externes
+                                </div>
+                                <div class="pattern-benefits">
+                                    <strong>Avantages :</strong> Intégration facilitée, découplage
+                                </div>
+                            </div>
+
+                            <div class="pattern-card">
+                                <div class="pattern-header">
+                                    <span class="pattern-icon">🏭</span>
+                                    <h4>Abstract Factory</h4>
+                                </div>
+                                <p class="pattern-description">
+                                    Créer des familles d'objets liés sans spécifier leurs classes concrètes.
+                                </p>
+                                <div class="pattern-example">
+                                    <strong>Exemple :</strong> Factory pour différents providers de données
+                                </div>
+                                <div class="pattern-benefits">
+                                    <strong>Avantages :</strong> Flexibilité, configuration centralisée
+                                </div>
+                            </div>
+
+                            <div class="pattern-card">
+                                <div class="pattern-header">
+                                    <span class="pattern-icon">🌉</span>
+                                    <h4>Bridge Pattern</h4>
+                                </div>
+                                <p class="pattern-description">
+                                    Séparer l'abstraction de son implémentation pour les faire varier indépendamment.
+                                </p>
+                                <div class="pattern-example">
+                                    <strong>Exemple :</strong> Interface de notification avec différents canaux
+                                </div>
+                                <div class="pattern-benefits">
+                                    <strong>Avantages :</strong> Extensibilité, maintenance simplifiée
+                                </div>
+                            </div>
+
+                            <div class="pattern-card">
+                                <div class="pattern-header">
+                                    <span class="pattern-icon">🎭</span>
+                                    <h4>Facade Pattern</h4>
+                                </div>
+                                <p class="pattern-description">
+                                    Fournir une interface unifiée pour un ensemble de sous-systèmes.
+                                </p>
+                                <div class="pattern-example">
+                                    <strong>Exemple :</strong> Facade pour orchestrer différents services
+                                </div>
+                                <div class="pattern-benefits">
+                                    <strong>Avantages :</strong> Simplicité d'usage, encapsulation
+                                </div>
+                            </div>
+
+                            <div class="pattern-card">
+                                <div class="pattern-header">
+                                    <span class="pattern-icon">🔗</span>
+                                    <h4>Chain of Responsibility</h4>
+                                </div>
+                                <p class="pattern-description">
+                                    Passer des requêtes le long d'une chaîne de handlers potentiels.
+                                </p>
+                                <div class="pattern-example">
+                                    <strong>Exemple :</strong> Pipeline de traitement avec différentes technologies
+                                </div>
+                                <div class="pattern-benefits">
+                                    <strong>Avantages :</strong> Flexibilité, découplage, extensibilité
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercices Pratiques -->
+                <section class="exercise-section">
+                    <div class="aikido-card exercise">
+                        <h2>🎯 Exercices Pratiques</h2>
+                        <p class="mb-md">
+                            Mettez en pratique la diversification technologique :
+                        </p>
+
+                        <div class="exercise-list">
+                            <div class="exercise-item">
+                                <div class="exercise-header">
+                                    <span class="exercise-number">1</span>
+                                    <h4>Audit Technologique</h4>
+                                    <span class="exercise-difficulty easy">Facile</span>
+                                </div>
+                                <div class="exercise-content">
+                                    <p><strong>Objectif :</strong> Identifier les cas de Golden Hammer dans un projet</p>
+                                    <div class="exercise-steps">
+                                        <h5>Étapes :</h5>
+                                        <ol>
+                                            <li>Cartographier les technologies utilisées</li>
+                                            <li>Analyser les cas d'usage de chaque technologie</li>
+                                            <li>Identifier les utilisations inappropriées</li>
+                                            <li>Proposer des alternatives spécialisées</li>
+                                        </ol>
+                                    </div>
+                                    <div class="exercise-tip">
+                                        <strong>💡 Astuce :</strong> Utilisez des métriques de performance pour objectiver l'analyse
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="exercise-item">
+                                <div class="exercise-header">
+                                    <span class="exercise-number">2</span>
+                                    <h4>Matrice de Décision</h4>
+                                    <span class="exercise-difficulty medium">Moyen</span>
+                                </div>
+                                <div class="exercise-content">
+                                    <p><strong>Objectif :</strong> Créer une matrice pour évaluer les choix technologiques</p>
+                                    <div class="exercise-steps">
+                                        <h5>Étapes :</h5>
+                                        <ol>
+                                            <li>Définir les critères d'évaluation (performance, coût, expertise, etc.)</li>
+                                            <li>Pondérer chaque critère selon l'importance</li>
+                                            <li>Évaluer 3-4 technologies alternatives</li>
+                                            <li>Calculer les scores et justifier le choix</li>
+                                        </ol>
+                                    </div>
+                                    <div class="exercise-validation">
+                                        <strong>✅ Validation :</strong> Matrice documentée avec justifications objectives
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="exercise-item">
+                                <div class="exercise-header">
+                                    <span class="exercise-number">3</span>
+                                    <h4>Architecture Polyglotte</h4>
+                                    <span class="exercise-difficulty hard">Difficile</span>
+                                </div>
+                                <div class="exercise-content">
+                                    <p><strong>Objectif :</strong> Implémenter une architecture avec technologies spécialisées</p>
+                                    <div class="exercise-steps">
+                                        <h5>Étapes :</h5>
+                                        <ol>
+                                            <li>Analyser les différents types de données</li>
+                                            <li>Choisir la technologie optimale pour chaque type</li>
+                                            <li>Implémenter les adaptateurs et facades</li>
+                                            <li>Créer des tests de performance comparatifs</li>
+                                        </ol>
+                                    </div>
+                                    <div class="exercise-bonus">
+                                        <strong>🎁 Bonus :</strong> Implémenter un système de monitoring multi-technologie
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="exercise-solution">
+                            <details>
+                                <summary>💡 Voir les solutions détaillées</summary>
+                                <div class="solution-content">
+                                    <h4>Solution Exercice 1 : Template d'Audit</h4>
+                                    <pre><code class="language-markdown">
+# Audit Technologique
+
+## Technologies Actuelles
+- **Base de données :** PostgreSQL (100% des données)
+- **Cache :** Aucun
+- **Recherche :** SQL LIKE queries
+- **Files d'attente :** Polling en base
+
+## Analyse des Cas d'Usage
+
+### Données Relationnelles ✅
+- Users, Orders, Products
+- **Verdict :** Approprié pour PostgreSQL
+
+### Sessions Utilisateur ❌
+- Stockées en base avec TTL manuel
+- **Problème :** Performance, nettoyage complexe
+- **Alternative :** Redis avec expiration automatique
+
+### Recherche Full-text ❌
+- LIKE queries sur texte
+- **Problème :** Performance, pas de scoring
+- **Alternative :** Elasticsearch
+
+### Logs d'Audit ❌
+- Table SQL avec millions de lignes
+- **Problème :** Performance des requêtes
+- **Alternative :** InfluxDB ou ELK Stack
+</code></pre>
+
+                                    <h4>Solution Exercice 2 : Matrice de Décision</h4>
+                                    <pre><code class="language-text">
+Critères d'Évaluation (Cache Layer):
+
+| Critère          | Poids | Redis | Memcached | Hazelcast |
+|------------------|-------|-------|-----------|-----------|
+| Performance      | 30%   | 9     | 8         | 7         |
+| Simplicité       | 20%   | 8     | 9         | 6         |
+| Fonctionnalités  | 25%   | 9     | 5         | 8         |
+| Coût             | 15%   | 8     | 9         | 6         |
+| Expertise équipe | 10%   | 7     | 6         | 4         |
+
+**Score Total :**
+- Redis: (9×0.3) + (8×0.2) + (9×0.25) + (8×0.15) + (7×0.1) = 8.55
+- Memcached: 7.45
+- Hazelcast: 6.85
+
+**Choix :** Redis (meilleur score global)
+</code></pre>
+
+                                    <h4>Solution Exercice 3 : Architecture Polyglotte</h4>
+                                    <pre><code class="language-java">
+@Configuration
+public class DataSourceConfiguration {
+    
+    // SQL pour données relationnelles
+    @Bean
+    @Primary
+    public DataSource primaryDataSource() {
+        return DataSourceBuilder.create()
+            .url("jdbc:postgresql://localhost/app")
+            .build();
+    }
+    
+    // Redis pour cache et sessions
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory() {
+        return new LettuceConnectionFactory("localhost", 6379);
+    }
+    
+    // Elasticsearch pour recherche
+    @Bean
+    public ElasticsearchClient elasticsearchClient() {
+        return ElasticsearchClients.createSimple(
+            HttpHost.create("http://localhost:9200")
+        );
+    }
+    
+    // InfluxDB pour métriques
+    @Bean
+    public InfluxDBClient influxDBClient() {
+        return InfluxDBClientFactory.create(
+            "http://localhost:8086", 
+            "token", 
+            "org", 
+            "bucket"
+        );
+    }
+}
+
+// Service avec technologies spécialisées
+@Service
+public class UserDataService {
+    
+    @Autowired private UserRepository sqlRepository;
+    @Autowired private RedisTemplate<String, Object> cache;
+    @Autowired private ElasticsearchClient searchEngine;
+    @Autowired private InfluxDBClient metricsDB;
+    
+    public User getUser(Long id) {
+        // 1. Vérifier le cache Redis
+        User cached = (User) cache.opsForValue().get("user:" + id);
+        if (cached != null) return cached;
+        
+        // 2. Récupérer de PostgreSQL
+        User user = sqlRepository.findById(id).orElse(null);
+        
+        // 3. Mettre en cache
+        if (user != null) {
+            cache.opsForValue().set("user:" + id, user, Duration.ofMinutes(15));
+        }
+        
+        // 4. Enregistrer métrique d'accès
+        recordMetric("user.access", 1.0);
+        
+        return user;
+    }
+}
+</code></pre>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Checklist de Validation -->
+                <section class="checklist-section">
+                    <div class="aikido-card checklist">
+                        <h2>✅ Checklist Anti-Golden Hammer</h2>
+                        <p class="mb-md">
+                            Utilisez cette checklist pour éviter la sur-utilisation d'une technologie :
+                        </p>
+
+                        <div class="checklist-categories">
+                            <div class="checklist-category">
+                                <h4>🎯 Évaluation des Besoins</h4>
+                                <div class="checklist-items">
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Analyse des exigences spécifiques</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Identification des contraintes techniques</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Évaluation des volumes de données</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Analyse des patterns d'accès</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="checklist-category">
+                                <h4>🔍 Exploration d'Alternatives</h4>
+                                <div class="checklist-items">
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Recherche de solutions spécialisées</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Comparaison objective des options</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Prototypage de solutions alternatives</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Tests de performance comparatifs</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="checklist-category">
+                                <h4>📊 Prise de Décision</h4>
+                                <div class="checklist-items">
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Matrice de décision documentée</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Critères pondérés objectifs</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Justification des choix techniques</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Plan de migration si nécessaire</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="checklist-category">
+                                <h4>🔄 Amélioration Continue</h4>
+                                <div class="checklist-items">
+                                    <label class="
+
+checklist-item">
+                                        <input type="checkbox">
+                                        <span>Veille technologique régulière</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Revues d'architecture trimestrielles</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Métriques de performance surveillées</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Formation continue des équipes</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section de Completion -->
+                <section class="completion-section">
+                    <div class="aikido-card completion">
+                        <div class="completion-content">
+                            <div class="completion-icon">📋</div>
+                            <div class="completion-text">
+                                <h3>Avez-vous terminé cette section ?</h3>
+                                <p>Marquez cette page comme terminée pour suivre votre progression dans la formation.</p>
+                            </div>
+                            <button class="aikido-btn primary mark-completed" data-page="golden-hammer">
+                                Marquer comme Terminé ✓
+                            </button>
+                        </div>
+                        <div class="completion-feedback hidden">
+                            <div class="feedback-content">
+                                <div class="feedback-icon">🎉</div>
+                                <h4>Excellent travail !</h4>
+                                <p>Vous avez terminé l'étude de l'anti-pattern <strong>Golden Hammer</strong>.</p>
+                                <div class="feedback-actions">
+                                    <button class="aikido-btn secondary" onclick="window.formationNav.navigateToAbsolutePage('anti-patterns/index.html')">
+                                        ← Retour aux Anti-Patterns
+                                    </button>
+                                    <button class="aikido-btn primary" onclick="window.formationNav.navigateToAbsolutePage('anti-patterns/architecture/lava-flow.html')">
+                                        Suivant : Lava Flow →
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts de fin de page -->
+    <script>
+        // Initialisation des composants
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion des onglets d'exemples
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // Désactiver tous les onglets
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Activer l'onglet sélectionné
+                    this.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+
+            // Animation des éléments au scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                    }
+                });
+            }, observerOptions);
+
+            // Observer tous les éléments avec animation
+            document.querySelectorAll('.slide-in, .fade-in').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Gestion des checkboxes de la checklist
+            document.querySelectorAll('.checklist-item input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const item = this.closest('.checklist-item');
+                    if (this.checked) {
+                        item.classList.add('completed');
+                    } else {
+                        item.classList.remove('completed');
+                    }
+                    
+                    // Sauvegarder l'état dans localStorage
+                    const checklistId = 'golden-hammer-checklist';
+                    const itemIndex = Array.from(item.parentNode.children).indexOf(item);
+                    const categoryIndex = Array.from(item.closest('.checklist-categories').children).indexOf(item.closest('.checklist-category'));
+                    
+                    let savedState = JSON.parse(localStorage.getItem(checklistId) || '{}');
+                    if (!savedState[categoryIndex]) savedState[categoryIndex] = {};
+                    savedState[categoryIndex][itemIndex] = this.checked;
+                    localStorage.setItem(checklistId, JSON.stringify(savedState));
+                });
+            });
+
+            // Restaurer l'état des checkboxes
+            const savedState = JSON.parse(localStorage.getItem('golden-hammer-checklist') || '{}');
+            document.querySelectorAll('.checklist-category').forEach((category, categoryIndex) => {
+                if (savedState[categoryIndex]) {
+                    category.querySelectorAll('.checklist-item').forEach((item, itemIndex) => {
+                        if (savedState[categoryIndex][itemIndex]) {
+                            const checkbox = item.querySelector('input[type="checkbox"]');
+                            checkbox.checked = true;
+                            item.classList.add('completed');
+                        }
+                    });
+                }
+            });
+
+            // Animation des barres de fréquence
+            const frequencyBars = document.querySelectorAll('.frequency-fill');
+            frequencyBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.transition = 'width 1.5s ease-out';
+                    bar.style.width = width;
+                }, 500);
+            });
+        });
+
+        // Fonction pour marquer le module comme terminé
+        function markAsCompleted(moduleId) {
+            // Sauvegarder la progression
+            let completedModules = JSON.parse(localStorage.getItem('completedModules') || '[]');
+            if (!completedModules.includes(moduleId)) {
+                completedModules.push(moduleId);
+                localStorage.setItem('completedModules', JSON.stringify(completedModules));
+            }
+            
+            // Afficher une notification
+            const notification = document.createElement('div');
+            notification.className = 'completion-notification';
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <span class="notification-icon">🎉</span>
+                    <span class="notification-text">Module Golden Hammer terminé !</span>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

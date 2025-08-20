@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Lock-in - Anti-Pattern Architecture | Formation AI-KIDO</title>
+    <meta name="description" content="Découvrez l'anti-pattern Vendor Lock-in : dépendance excessive aux fournisseurs, causes, biais cognitifs et stratégies de diversification">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/exercises.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <div class="breadcrumb">
+                        <a href="#" onclick="window.formationNav.navigateToAbsolutePage('index.html'); return false;">Formation</a>
+                        <span>→</span>
+                        <a href="../index.html">Anti-Patterns</a>
+                        <span>→</span>
+                        <span>Vendor Lock-in</span>
+                    </div>
+                    
+                    <h1 class="page-title">🔒 Vendor Lock-in</h1>
+                    <p class="page-subtitle">L'anti-pattern de la dépendance excessive</p>
+                    
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span>🦨</span>
+                            <span>Anti-pattern architectural critique</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>⏱️</span>
+                            <span>~40 minutes</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>🎯</span>
+                            <span>Diversification essentielle</span>
+                        </div>
+                        <div class="meta-item">
+                            <span>🧩</span>
+                            <span>6 biais cognitifs liés</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Définition -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card anti-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="definition-text">
+                            Le <strong>Vendor Lock-in</strong> est un anti-pattern qui décrit une dépendance 
+                            excessive à un fournisseur spécifique, rendant difficile ou coûteux le changement 
+                            vers des alternatives, créant une situation de captivité technologique.
+                        </p>
+
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problèmes Causés</h3>
+                                <ul>
+                                    <li>Dépendance totale à un fournisseur unique</li>
+                                    <li>Coût de migration prohibitif</li>
+                                    <li>Perte de pouvoir de négociation</li>
+                                    <li>Vulnérabilité aux changements de politique</li>
+                                    <li>Innovation limitée aux choix du fournisseur</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solutions Apportées</h3>
+                                <ul>
+                                    <li>Architecture multi-cloud portable</li>
+                                    <li>Abstraction des services fournisseurs</li>
+                                    <li>Standards ouverts et interopérables</li>
+                                    <li>Stratégie de diversification progressive</li>
+                                    <li>Gouvernance préventive anti-lock-in</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert danger">
+                            <strong>⚠️ Attention :</strong> Le vendor lock-in peut créer une dépendance stratégique
+                            dangereuse qui limite la liberté technologique et financière de l'organisation.
+                        </div>
+
+                        <h3>Caractéristiques du Vendor Lock-in</h3>
+                        <div class="characteristics-grid">
+                            <div class="characteristic-item">
+                                <span class="char-icon">🔒</span>
+                                <div>
+                                    <strong>Dépendance forte</strong>
+                                    <p>Technologies propriétaires exclusives</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">💰</span>
+                                <div>
+                                    <strong>Coût de sortie élevé</strong>
+                                    <p>Migration complexe et coûteuse</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">⚖️</span>
+                                <div>
+                                    <strong>Négociation affaiblie</strong>
+                                    <p>Pouvoir de négociation réduit</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">🎯</span>
+                                <div>
+                                    <strong>Risque stratégique</strong>
+                                    <p>Vulnérabilité aux changements du fournisseur</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Workflow Mermaid -->
+                <section class="workflow-section">
+                    <div class="aikido-card workflow">
+                        <h2>🔄 Cycle du Vendor Lock-in</h2>
+                        <div class="mermaid">
+                            graph TD
+                                A[Choix Initial du Fournisseur] --> B[Adoption Progressive]
+                                B --> C[Intégration Profonde]
+                                C --> D[Dépendance Critique]
+                                D --> E[Coût de Sortie Élevé]
+                                E --> F[Captivité Technologique]
+                                F --> G[Négociation Affaiblie]
+                                G --> H[Subir les Décisions]
+                                H --> I{Tentative de Sortie?}
+                                I -->|Oui| J[Migration Coûteuse]
+                                I -->|Non| K[Dépendance Renforcée]
+                                J --> L[Liberté Retrouvée]
+                                K --> F
+                                
+                                style A fill:#e3f2fd
+                                style D fill:#fff3e0
+                                style F fill:#ffebee
+                                style L fill:#e8f5e8
+                        </div>
+                        <p class="workflow-description">
+                            Le vendor lock-in s'installe progressivement : un choix initial pratique devient 
+                            une dépendance critique difficile à rompre, créant une spirale de captivité technologique.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Biais Cognitifs Associés -->
+                <section class="cognitive-bias-section">
+                    <div class="aikido-card biais-cognitif">
+                        <h2>🧠 Biais Cognitifs Associés</h2>
+                        <p class="mb-lg">
+                            Le Vendor Lock-in résulte de plusieurs biais cognitifs qui nous poussent vers la dépendance excessive :
+                        </p>
+
+                        <div class="bias-cards">
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">🛡️</span>
+                                    <h4>Status Quo Bias</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "On utilise déjà AWS partout, pourquoi changer ?"
+                                </p>
+                                <p class="bias-explanation">
+                                    Préférence pour maintenir les solutions existantes plutôt que d'explorer 
+                                    des alternatives, même quand elles seraient plus avantageuses.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Continuer avec un fournisseur cloud coûteux
+                                    par habitude plutôt que d'évaluer des alternatives.
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">💰</span>
+                                    <h4>Sunk Cost Fallacy</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "On a déjà investi 2M€ dans Oracle, on ne peut pas changer"
+                                </p>
+                                <p class="bias-explanation">
+                                    Justification des choix futurs par les investissements passés,
+                                    même quand ils ne sont plus optimaux.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Maintenir une solution coûteuse parce qu'on a
+                                    déjà payé les licences et la formation.
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">🎯</span>
+                                    <h4>Convenience Bias</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "C'est plus simple d'utiliser tous les services du même fournisseur"
+                                </p>
+                                <p class="bias-explanation">
+                                    Préférence pour les solutions les plus faciles à court terme,
+                                    sans considérer les conséquences à long terme.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Choisir tous les services AWS par simplicité
+                                    plutôt que d'optimiser chaque service individuellement.
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">👑</span>
+                                    <h4>Authority Bias</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Si Google/Microsoft le fait, c'est forcément bien"
+                                </p>
+                                <p class="bias-explanation">
+                                    Confiance excessive dans les recommandations des leaders du marché
+                                    sans évaluation critique des alternatives.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Adopter une solution uniquement parce qu'elle
+                                    est recommandée par un grand fournisseur reconnu.
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">😰</span>
+                                    <h4>Loss Aversion</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Et si on perd les fonctionnalités spéciales ?"
+                                </p>
+                                <p class="bias-explanation">
+                                    Peur de perdre les avantages actuels en changeant de fournisseur,
+                                    même si les bénéfices du changement sont supérieurs.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Éviter de migrer par peur de perdre des
+                                    fonctionnalités propriétaires peu utilisées.
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">🔍</span>
+                                    <h4>Availability Heuristic</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Je connais une entreprise qui a eu des problèmes en migrant"
+                                </p>
+                                <p class="bias-explanation">
+                                    Surestimation des risques de changement basée sur des exemples
+                                    mémorables plutôt que sur des statistiques objectives.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Éviter toute migration à cause d'un cas
+                                    d'échec médiatisé, ignorant les nombreux succès.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exemples de Code -->
+                <section class="examples-section">
+                    <div class="aikido-card examples">
+                        <h2>💻 Exemples de Code</h2>
+                        <p class="mb-md">
+                            Voici des exemples typiques de Vendor Lock-in et les stratégies de diversification :
+                        </p>
+
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="problem">❌ Problème</button>
+                                <button class="tab-btn" data-tab="solution">✅ Solution</button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="problem">
+                                <h4>🔒 Dépendances Propriétaires Excessives</h4>
+                                
+                                <div class="code-tabs-container">
+                                    <div class="code-tab-buttons">
+                                        <button class="code-tab-button active" data-lang="php">PHP</button>
+                                        <button class="code-tab-button" data-lang="java">Java</button>
+                                    </div>
+                                    
+                                    <div class="code-tab-content active" data-lang="php">
+                                        <div class="code-example">
+                                            <div class="code-header">
+                                                <span class="code-title">AwsLockIn.php - Dépendance AWS Totale</span>
+                                                <span class="code-language">PHP</span>
+                                            </div>
+                                            <pre><code class="language-php">
+<?php
+
+/**
+ * VENDOR LOCK-IN: Dépendance totale à AWS
+ * - Services AWS partout dans le code
+ * - Pas d'abstraction, couplage direct
+ * - Migration vers autre cloud = réécriture complète
+ */
+class AwsLockedApplication {
+    
+    private $s3Client;
+    private $dynamoDb;
+    private $sqs;
+    private $sns;
+    
+    public function __construct() {
+        // Dépendance directe aux SDK AWS
+        $this->s3Client = new Aws\S3\S3Client([
+            'version' => 'latest',
+            'region' => 'us-east-1'
+        ]);
+        
+        $this->dynamoDb = new Aws\DynamoDb\DynamoDbClient([
+            'version' => 'latest',
+            'region' => 'us-east-1'
+        ]);
+    }
+    
+    /**
+     * LOCK-IN: Stockage fichiers couplé à S3
+     */
+    public function uploadFile($fileName, $content) {
+        $result = $this->s3Client->putObject([
+            'Bucket' => 'my-aws-bucket',
+            'Key' => $fileName,
+            'Body' => $content,
+            'ServerSideEncryption' => 'AES256', // Spécifique AWS
+            'StorageClass' => 'STANDARD_IA',    // Spécifique AWS
+        ]);
+        
+        return $result['ObjectURL'];
+    }
+    
+    /**
+     * LOCK-IN: Base NoSQL couplée à DynamoDB
+     */
+    public function saveUser($userData) {
+        // Structure spécifique DynamoDB
+        $item = [
+            'id' => ['S' => $userData['id']],
+            'name' => ['S' => $userData['name']],
+            'email' => ['S' => $userData['email']],
+            'ttl' => ['N' => strval(time() + 3600)]
+        ];
+        
+        $this->dynamoDb->putItem([
+            'TableName' => 'Users',
+            'Item' => $item,
+            'ConditionExpression' => 'attribute_not_exists(id)'
+        ]);
+    }
+}
+</code></pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="code-tab-content" data-lang="java">
+                                        <div class="code-example">
+                                            <div class="code-header">
+                                                <span class="code-title">OracleLockedRepository.java - Dépendance Oracle</span>
+                                                <span class="code-language">Java</span>
+                                            </div>
+                                            <pre><code class="language-java">
+/**
+ * VENDOR LOCK-IN: Dépendance Oracle totale
+ * - Fonctionnalités Oracle spécifiques partout
+ * - Syntaxe SQL propriétaire
+ * - Migration vers autre SGBD = réécriture
+ */
+@Repository
+public class OracleLockedRepository {
+    
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    
+    /**
+     * LOCK-IN: Utilisation de fonctions Oracle spécifiques
+     */
+    public List<Customer> getCustomersWithOracleFeatures() {
+        String sql = """
+            SELECT 
+                c.id,
+                c.name,
+                c.email,
+                -- Fonction Oracle spécifique
+                LISTAGG(o.product_name, ', ') WITHIN GROUP (ORDER BY o.created_date) as products,
+                -- Fonction de fenêtrage Oracle
+                ROW_NUMBER() OVER (PARTITION BY c.region ORDER BY c.total_spent DESC) as region_rank,
+                -- Fonction Oracle pour dates
+                MONTHS_BETWEEN(SYSDATE, c.created_date) as months_since_creation
+            FROM customers c
+            LEFT JOIN orders o ON c.id = o.customer_id
+            WHERE c.created_date >= ADD_MONTHS(SYSDATE, -12)
+            GROUP BY c.id, c.name, c.email, c.region, c.total_spent, c.created_date
+            OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
+        """;
+        
+        return jdbcTemplate.query(sql, new CustomerRowMapper(), offset, limit);
+    }
+    
+    /**
+     * LOCK-IN: Procédures stockées Oracle
+     */
+    public void processOrderWithStoredProcedure(Long orderId) {
+        SimpleJdbcCall jdbcCall = new SimpleJdbcCall(jdbcTemplate)
+            .withSchemaName("ORDER_SCHEMA")
+            .withProcedureName("PROCESS_ORDER_ADVANCED")
+            .declareParameters(
+                new SqlParameter("p_order_id", Types.NUMERIC),
+                new SqlOutParameter("p_result", Types.VARCHAR)
+            );
+        
+        SqlParameterSource params = new MapSqlParameterSource()
+            .addValue("p_order_id", orderId);
+            
+        Map<String, Object> result = jdbcCall.execute(params);
+    }
+}
+</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="problems-list">
+                                    <h4>🚨 Problèmes identifiés :</h4>
+                                    <ul>
+                                        <li><strong>Dépendance totale :</strong> Impossible de changer sans réécriture</li>
+                                        <li><strong>Coût de migration :</strong> Investissement majeur pour sortir</li>
+                                        <li><strong>Perte de contrôle :</strong> Subir les décisions du fournisseur</li>
+                                        <li><strong>Négociation impossible :</strong> Position de faiblesse</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="tab-content" data-tab="solution">
+                                <h4>🌐 Architecture Multi-Cloud et Portable</h4>
+                                
+                                <div class="code-tabs-container">
+                                    <div class="code-tab-buttons">
+                                        <button class="code-tab-button active" data-lang="php">PHP</button>
+                                        <button class="code-tab-button" data-lang="java">Java</button>
+                                    </div>
+                                    
+                                    <div class="code-tab-content active" data-lang="php">
+                                        <div class="code-example">
+                                            <div class="code-header">
+                                                <span class="code-title">CloudAbstraction.php - Abstraction Multi-Cloud</span>
+                                                <span class="code-language">PHP</span>
+                                            </div>
+                                            <pre><code class="language-php">
+<?php
+
+/**
+ * Solution portable avec abstraction des services cloud
+ * - Interface commune pour tous les fournisseurs
+ * - Changement de provider transparent
+ */
+
+interface CloudStorageInterface {
+    public function upload(string $key, string $content): string;
+    public function download(string $key): string;
+    public function delete(string $key): bool;
+}
+
+interface CloudDatabaseInterface {
+    public function save(string $table, array $data): bool;
+    public function find(string $table, string $id): ?array;
+    public function query(string $table, array $conditions): array;
+}
+
+/**
+ * Implémentation AWS avec interface standard
+ */
+class AwsCloudProvider implements CloudStorageInterface, CloudDatabaseInterface {
+    
+    private $s3Client;
+    private $dynamoDb;
+    
+    public function __construct(array $config) {
+        $this->s3Client = new Aws\S3\S3Client($config['s3']);
+        $this->dynamoDb = new Aws\DynamoDb\DynamoDbClient($config['dynamodb']);
+    }
+    
+    public function upload(string $key, string $content): string {
+        $result = $this->s3Client->putObject([
+            'Bucket' => $this->bucket,
+            'Key' => $key,
+            'Body' => $content
+        ]);
+        
+        return $result['ObjectURL'];
+    }
+    
+    public function save(string $table, array $data): bool {
+        $item = [];
+        foreach ($data as $key => $value) {
+            $item[$key] = ['S' => (string)$value];
+        }
+        
+        $this->dynamoDb->putItem([
+            'TableName' => $table,
+            'Item' => $item
+        ]);
+        
+        return true;
+    }
+}
+
+/**
+ * Service applicatif portable
+ */
+class PortableCloudService {
+    
+    private CloudStorageInterface $storage;
+    private CloudDatabaseInterface $database;
+    
+    public function __construct(
+        CloudStorageInterface $storage,
+        CloudDatabaseInterface $database
+    ) {
+        $this->storage = $storage;
+        $this->database = $database;
+    }
+    
+    /**
+     * Logique métier indépendante du fournisseur
+     */
+    public function processDocument(string $documentId, string $content): bool {
+        try {
+            // Stockage portable
+            $url = $this->storage->upload("documents/{$documentId}", $content);
+            
+            // Sauvegarde portable
+            $this->database->save('documents', [
+                'id' => $documentId,
+                'url' => $url,
+                'status' => 'processed'
+            ]);
+            
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+}
+
+/**
+ * Factory pour changement de fournisseur
+ */
+class CloudProviderFactory {
+    
+    public static function create(string $provider, array $config): array {
+        switch ($provider) {
+            case 'aws':
+                return [
+                    new AwsCloudProvider($config['aws']),
+                    new AwsCloudProvider($config['aws'])
+                ];
+            case 'azure':
+                return [
+                    new AzureCloudProvider($config['azure']),
+                    new AzureCloudProvider($config['azure'])
+                ];
+            default:
+                throw new InvalidArgumentException("Unsupported provider");
+        }
+    }
+}
+
+// Configuration flexible
+$provider = $_ENV['CLOUD_PROVIDER'] ?? 'aws';
+[$storage, $database] = CloudProviderFactory::create($provider, $config);
+$service = new PortableCloudService($storage, $database);
+</code></pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="code-tab-content" data-lang="java">
+                                        <div class="code-example">
+                                            <div class="code-header">
+                                                <span class="code-title">PortableRepository.java - JPA Standard</span>
+                                                <span class="code-language">Java</span>
+                                            </div>
+                                            <pre><code class="language-java">
+/**
+ * Solution portable pour éviter le lock-in base de données
+ * - JPA/Hibernate pour l'abstraction
+ * - SQL standard uniquement
+ */
+
+// Interface repository standard
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
+    
+    // Requêtes JPQL portables
+    @Query("SELECT c FROM Customer c WHERE c.email = :email")
+    Optional<Customer> findByEmail(@Param("email") String email);
+    
+    @Query("SELECT c FROM Customer c WHERE c.createdDate >= :since ORDER BY c.totalSpent DESC")
+    List<Customer> findTopCustomersSince(@Param("since") LocalDateTime since, Pageable pageable);
+}
+
+// Entité JPA portable
+@Entity
+@Table(name = "customers")
+public class Customer {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @Column(nullable = false, length = 100)
+    private String name;
+    
+    @Column(nullable = false, unique = true)
+    private String email;
+    
+    @Column(name = "total_spent", precision = 10, scale = 2)
+    private BigDecimal totalSpent;
+    
+    @Column(name = "created_date")
+    private LocalDateTime createdDate;
+    
+    // Relations JPA portables
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<Order> orders = new ArrayList<>();
+    
+    // Constructeurs, getters, setters...
+}
+
+// Service utilisant l'abstraction
+@Service
+@Transactional
+public class CustomerService {
+    
+    private final CustomerRepository customerRepository;
+    
+    public CustomerService(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
+    
+    /**
+     * Logique métier portable entre tous les SGBD
+     */
+    public CustomerSummary getCustomerSummary(String email) {
+        Customer customer = customerRepository.findByEmail(email)
+            .orElseThrow(() -> new CustomerNotFoundException(email));
+        
+        return CustomerSummary.builder()
+            .customerId(customer.getId())
+            .name(customer.getName())
+            .email(customer.getEmail())
+            .totalSpent(customer.getTotalSpent())
+            .build();
+    }
+}
+
+// Configuration multi-SGBD
+@Configuration
+public class DatabaseConfig {
+    
+    @Bean
+    @Primary
+    @ConfigurationProperties("spring.datasource.primary")
+    public DataSource primaryDataSource() {
+        return DataSourceBuilder.create().build();
+    }
+    
+    @Bean
+    public JpaTransactionManager transactionManager(EntityManagerFactory emf) {
+        return new JpaTransactionManager(emf);
+    }
+}
+</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="benefits-list">
+                                    <h4>✅ Améliorations apportées :</h4>
+                                    <ul>
+                                        <li><strong>Abstraction complète :</strong> Interfaces communes pour tous les fournisseurs</li>
+                                        <li><strong>Portabilité totale :</strong> Changement de provider transparent</li>
+                                        <li><strong>Standards ouverts :</strong> Technologies portables (JPA, REST)</li>
+                                        <li><strong>Configuration flexible :</strong> Changement via variables d'environnement</li>
+                                        <li><strong>Négociation facilitée :</strong> Position de force grâce à la portabilité</li>
+                                        <li><strong>Innovation libre :</strong> Choix du meilleur fournisseur selon les besoins</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercices Pratiques -->
+                <section class="exercises-section">
+                    <div class="aikido-card exercises">
+                        <h2>🎯 Exercices Pratiques</h2>
+                        <p class="mb-md">
+                            Mettez en pratique vos connaissances sur la prévention du Vendor Lock-in :
+                        </p>
+
+                        <div class="exercise-grid">
+                            <div class="exercise-item">
+                                <div class="exercise-header">
+                                    <span class="exercise-icon">🔍</span>
+                                    <h4>Audit de Dépendances</h4>
+                                </div>
+                                <div class="exercise-content">
+                                    <p><strong>Objectif :</strong> Identifier les risques de lock-in dans un projet existant</p>
+                                    <div class="exercise-steps">
+                                        <ol>
+                                            <li>Listez tous les services externes utilisés</li>
+                                            <li>Évaluez le niveau de dépendance (1-5)</li>
+                                            <li>Identifiez les alternatives disponibles</li>
+                                            <li>Calculez le coût de migration estimé</li>
+                                            <li>Priorisez les actions de diversification</li>
+                                        </ol>
+                                    </div>
+                                    <div class="exercise-result">
+                                        <strong>Résultat attendu :</strong> Matrice de risques avec plan d'action
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="exercise-item">
+                                <div class="exercise-header">
+                                    <span class="exercise-icon">🏗️</span>
+                                    <h4>Architecture Portable</h4>
+                                </div>
+                                <div class="exercise-content">
+                                    <p><strong>Objectif :</strong> Concevoir une architecture multi-cloud</p>
+                                    <div class="exercise-steps">
+                                        <ol>
+                                            <li>Définissez les interfaces d'abstraction</li>
+                                            <li>Implémentez pour 2 fournisseurs différents</li>
+                                            <li>Créez un système de configuration flexible</li>
+                                            <li>Testez le basculement entre providers</li>
+                                            <li>Documentez la stratégie de portabilité</li>
+                                        </ol>
+                                    </div>
+                                    <div class="exercise-result">
+                                        <strong>Résultat attendu :</strong> Code portable entre fournisseurs
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="exercise-item">
+                                <div class="exercise-header">
+                                    <span class="exercise-icon">⚖️</span>
+                                    <h4>Négociation Stratégique</h4>
+                                </div>
+                                <div class="exercise-content">
+                                    <p><strong>Objectif :</strong> Préparer une négociation avec position de force</p>
+                                    <div class="exercise-steps">
+                                        <ol>
+                                            <li>Analysez votre dépendance actuelle</li>
+                                            <li>Identifiez 3 alternatives crédibles</li>
+                                            <li>Chiffrez les coûts de migration</li>
+                                            <li>Préparez un plan de sortie détaillé</li>
+                                            <li>Négociez avec plusieurs fournisseurs</li>
+                                        </ol>
+                                    </div>
+                                    <div class="exercise-result">
+                                        <strong>Résultat attendu :</strong> Contrat optimisé avec clauses de sortie
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="exercise-challenge">
+                            <h4>🏆 Défi Avancé : Migration Zero-Downtime</h4>
+                            <p>
+                                Concevez et implémentez une stratégie de migration progressive d'un système
+                                entièrement dépendant d'AWS vers une architecture multi-cloud, sans interruption
+                                de service et avec rollback possible à chaque étape.
+                            </p>
+                            <div class="challenge-criteria">
+                                <strong>Critères de réussite :</strong>
+                                <ul>
+                                    <li>Migration par composants avec validation</li>
+                                    <li>Monitoring et alertes durant la transition</li>
+                                    <li>Plan de rollback automatisé</li>
+                                    <li>Tests de charge sur les deux environnements</li>
+                                    <li>Documentation complète du processus</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Checklist de Validation -->
+                <section class="checklist-section">
+                    <div class="aikido-card checklist">
+                        <h2>✅ Checklist de Validation</h2>
+                        <p class="mb-md">
+                            Utilisez cette checklist pour évaluer et prévenir le Vendor Lock-in :
+                        </p>
+
+                        <div class="checklist-categories">
+                            <div class="checklist-category">
+                                <h4>🔍 Évaluation des Risques</h4>
+                                <div class="checklist-items">
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Audit complet des dépendances externes
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Évaluation du coût de migration pour chaque service
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Identification des alternatives viables
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Analyse de la criticité de chaque dépendance
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="checklist-category">
+                                <h4>🏗️ Architecture Préventive</h4>
+                                <div class="checklist-items">
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Interfaces d'abstraction pour services externes
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Configuration externalisée et flexible
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Standards ouverts privilégiés
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Tests de portabilité automatisés
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="checklist-category">
+                                <h4>📋 Gouvernance Contractuelle</h4>
+                                <div class="checklist-items">
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Clauses de sortie négociées dans les contrats
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Accès garanti aux données en cas de résiliation
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Formats d'export standardisés exigés
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Révision périodique des alternatives
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="checklist-category">
+                                <h4>🔄 Stratégie de Diversification</h4>
+                                <div class="checklist-items">
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Plan de migration documenté et testé
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Environnement de test multi-fournisseurs
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Formation équipe sur alternatives
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox" class="checklist-checkbox">
+                                        <span class="checkmark"></span>
+                                        Veille technologique active sur le marché
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="checklist-score">
+                            <div class="score-display">
+                                <span class="score-label">Score de Prévention :</span>
+                                <span class="score-value" id="checklist-score">0/16</span>
+                                <span class="score-percentage" id="checklist-percentage">0%</span>
+                            </div>
+                            <div class="score-feedback" id="score-feedback">
+                                Commencez par cocher les éléments que vous maîtrisez déjà !
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section de Completion -->
+                <section class="completion-section">
+                    <div class="aikido-card completion">
+                        <div class="completion-content">
+                            <div class="completion-icon">📋</div>
+                            <div class="completion-text">
+                                <h3>Avez-vous terminé cette section ?</h3>
+                                <p>Marquez cette page comme terminée pour suivre votre progression dans la formation.</p>
+                            </div>
+                            <button class="aikido-btn primary mark-completed" data-page="vendor-lock-in">
+                                Marquer comme Terminé ✓
+                            </button>
+                        </div>
+                        <div class="completion-feedback hidden">
+                            <div class="feedback-content">
+                                <div class="feedback-icon">🎉</div>
+                                <h4>Excellent travail !</h4>
+                                <p>Vous avez terminé l'étude de l'anti-pattern <strong>Vendor Lock-in</strong>.</p>
+                                <div class="next-suggestions">
+                                    <p>Continuez avec :</p>
+                                    <div class="suggestion-buttons">
+                                        <button class="suggestion-btn" onclick="window.formationNav.navigateToPage('../code-smells/god-object.html')">
+                                            🏛️ God Object
+                                        </button>
+                                        <button class="suggestion-btn" onclick="window.formationNav.navigateToPage('../../design-patterns/structural/adapter.html')">
+                                            🔌 Pattern Adapter
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts de gestion des interactions -->
+    <script>
+        // Le système d'onglets est géré par code-tabs.js
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // Gestion de la checklist
+            const checkboxes = document.querySelectorAll('.checklist-checkbox');
+            const scoreValue = document.getElementById('checklist-score');
+            const scorePercentage = document.getElementById('checklist-percentage');
+            const scoreFeedback = document.getElementById('score-feedback');
+            
+            function updateScore() {
+                const total = checkboxes.length;
+                const checked = document.querySelectorAll('.checklist-checkbox:checked').length;
+                const percentage = Math.round((checked / total) * 100);
+                
+                scoreValue.textContent = `${checked}/${total}`;
+                scorePercentage.textContent = `${percentage}%`;
+                
+                // Feedback basé sur le score
+                if (percentage === 100) {
+                    scoreFeedback.textContent = "🎉 Excellent ! Vous maîtrisez parfaitement la prévention du Vendor Lock-in !";
+                    scoreFeedback.className = "score-feedback excellent";
+                } else if (percentage >= 75) {
+                    scoreFeedback.textContent = "👍 Très bien ! Quelques points à améliorer pour une maîtrise complète.";
+                    scoreFeedback.className = "score-feedback good";
+                } else if (percentage >= 50) {
+                    scoreFeedback.textContent = "📈 Bon début ! Continuez à approfondir vos connaissances.";
+                    scoreFeedback.className = "score-feedback average";
+                } else {
+                    scoreFeedback.textContent = "💪 Vous progressez ! Chaque étape compte dans l'apprentissage.";
+                    scoreFeedback.className = "score-feedback needs-work";
+                }
+            }
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateScore);
+            });
+            
+            // Initialisation du score
+            updateScore();
+        });
+
+        // Fonction de completion de leçon
+        function completeLesson(lessonId) {
+            const completionDate = new Date().toLocaleDateString('fr-FR');
+            
+            // Sauvegarde dans localStorage
+            localStorage.setItem(`lesson_completed_${lessonId}`, completionDate);
+            
+            // Mise à jour de l'interface
+            document.getElementById('complete-lesson').style.display = 'none';
+            document.getElementById('completion-status').style.display = 'flex';
+            document.getElementById('completion-date').textContent = completionDate;
+            
+            // Animation de succès
+            const completionSection = document.querySelector('.completion-section');
+            completionSection.classList.add('lesson-completed');
+            
+            // Notification
+            showNotification('🎉 Leçon terminée avec succès !', 'success');
+        }
+
+        // Vérification du statut de completion au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            const lessonId = 'vendor-lock-in';
+            const completionDate = localStorage.getItem(`lesson_completed_${lessonId}`);
+            
+            if (completionDate) {
+                document.getElementById('complete-lesson').style.display = 'none';
+                document.getElementById('completion-status').style.display = 'flex';
+                document.getElementById('completion-date').textContent = completionDate;
+                document.querySelector('.completion-section').classList.add('lesson-completed');
+            }
+        });
+
+        // Fonction utilitaire pour les notifications
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

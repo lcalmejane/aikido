@@ -1,0 +1,2099 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Long Method - Anti-Pattern | Formation Patterns Développeurs</title>
+    <meta name="description" content="Comprendre et refactoriser l'anti-pattern Long Method : causes, conséquences et techniques de décomposition">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/exercises.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <div class="breadcrumb">
+                        <a href="#" onclick="window.formationNav.navigateToAbsolutePage('index.html'); return false;">Formation</a>
+                        <span>→</span>
+                        <a href="../index.html">Anti-Patterns</a>
+                        <span>→</span>
+                        <span>Long Method</span>
+                    </div>
+                    
+                    <h1 class="page-title">📏 Long Method</h1>
+                    <p class="page-subtitle">L'anti-pattern des méthodes trop longues et complexes</p>
+                    
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">🦨</span>
+                            <span class="meta-text">Code Smells</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⏱️</span>
+                            <span class="meta-text">~25 minutes</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🎯</span>
+                            <span class="meta-text">Refactoring essentiel</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🧩</span>
+                            <span class="meta-text">3 biais cognitifs liés</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Schéma Mermaid explicatif -->
+                <section class="mermaid-section slide-in">
+                    <div class="aikido-card">
+                        <h2>🔄 Processus de Création des Long Methods</h2>
+                        <div class="mermaid-container">
+                            <div class="mermaid">
+                                graph TD
+                                    A[Nouvelle Fonctionnalité] --> B[Développement Initial]
+                                    B --> C[Code Fonctionnel]
+                                    C --> D{Évolution Besoins}
+                                    D -->|Ajout Rapide| E[Juste une ligne]
+                                    D -->|Nouvelle Validation| F[Juste une vérification]
+                                    D -->|Log Supplémentaire| G[Juste un log]
+                                    E --> H[Méthode qui Grandit]
+                                    F --> H
+                                    G --> H
+                                    H --> I{Biais Cognitifs}
+                                    I -->|Focalisation| J[Autant tout faire ici]
+                                    I -->|Commodité| K[Plus simple comme ça]
+                                    I -->|Escalade| L[Déjà 50 lignes continuons]
+                                    J --> M[Long Method Créée]
+                                    K --> M
+                                    L --> M
+                                    M --> N[Problèmes Multiples]
+                                    N --> O[Refactoring Nécessaire]
+                            </div>
+                        </div>
+                        <div class="mermaid-explanation">
+                            <p><strong>Ce diagramme illustre :</strong></p>
+                            <ul>
+                                <li><strong>🎯 Origine :</strong> Développement initial fonctionnel</li>
+                                <li><strong>📈 Croissance :</strong> Ajouts successifs "rapides"</li>
+                                <li><strong>🧠 Biais :</strong> Mécanismes psychologiques qui maintiennent le pattern</li>
+                                <li><strong>❌ Conséquences :</strong> Accumulation de problèmes de maintenance</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Définition -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card anti-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="definition-text">
+                            Une <strong>Long Method</strong> (méthode longue) est une méthode ou fonction qui contient 
+                            trop de lignes de code et/ou trop de responsabilités différentes. Ces méthodes deviennent 
+                            difficiles à comprendre, tester, maintenir et réutiliser.
+                        </p>
+
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problèmes Causés</h3>
+                                <ul>
+                                    <li>Compréhension difficile du code</li>
+                                    <li>Tests complexes et incomplets</li>
+                                    <li>Réutilisation impossible</li>
+                                    <li>Maintenance coûteuse et risquée</li>
+                                    <li>Violation du principe de responsabilité unique</li>
+                                    <li>Debugging compliqué</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solutions Apportées</h3>
+                                <ul>
+                                    <li>Décomposition en méthodes plus petites</li>
+                                    <li>Extraction de méthodes spécialisées</li>
+                                    <li>Séparation des responsabilités</li>
+                                    <li>Amélioration de la lisibilité</li>
+                                    <li>Tests unitaires plus faciles</li>
+                                    <li>Réutilisabilité accrue</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert danger">
+                            <strong>⚠️ Règle d'or :</strong> Si une méthode fait plus d'une chose ou dépasse 
+                            20-30 lignes, elle est probablement trop longue !
+                        </div>
+
+                        <h3>Indicateurs de Long Method</h3>
+                        <div class="characteristics-grid">
+                            <div class="characteristic-item">
+                                <span class="char-icon">📏</span>
+                                <div>
+                                    <strong>Taille excessive</strong>
+                                    <p>Plus de 20-30 lignes de code</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">🔄</span>
+                                <div>
+                                    <strong>Multiples responsabilités</strong>
+                                    <p>Fait plusieurs choses différentes</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">🌀</span>
+                                <div>
+                                    <strong>Complexité cyclomatique</strong>
+                                    <p>Trop de conditions et boucles imbriquées</p>
+                                </div>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="char-icon">📝</span>
+                                <div>
+                                    <strong>Commentaires excessifs</strong>
+                                    <p>Besoin de beaucoup de commentaires explicatifs</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Biais Cognitifs Associés -->
+                <section class="cognitive-bias-section">
+                    <div class="aikido-card biais-cognitif">
+                        <h2>🧠 Biais Cognitifs Associés</h2>
+                        <p class="mb-lg">
+                            Les Long Methods résultent souvent de biais cognitifs qui nous poussent à tout mettre au même endroit :
+                        </p>
+
+                        <div class="bias-cards">
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">🎯</span>
+                                    <h4>Biais de Focalisation</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "Je suis dans cette méthode, autant tout faire ici !"
+                                </p>
+                                <p class="bias-explanation">
+                                    La tendance à se concentrer sur la tâche immédiate sans prendre du recul 
+                                    pour voir la structure globale et les possibilités de décomposition.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Ajouter "juste une petite validation" dans une méthode 
+                                    de traitement, puis "juste un petit log", etc.
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">⚡</span>
+                                    <h4>Biais de Commodité</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "C'est plus simple de tout mettre dans la même fonction !"
+                                </p>
+                                <p class="bias-explanation">
+                                    Préférer la solution apparemment la plus simple à court terme, 
+                                    sans considérer les coûts de maintenance à long terme.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Éviter de créer de nouvelles méthodes car 
+                                    "ça fait plus de fichiers à gérer".
+                                </div>
+                            </div>
+
+                            <div class="bias-card">
+                                <div class="bias-header">
+                                    <span class="bias-icon">🔄</span>
+                                    <h4>Escalade d'Engagement</h4>
+                                </div>
+                                <p class="bias-description">
+                                    <strong>Manifestation :</strong> "J'ai déjà écrit 50 lignes, autant continuer !"
+                                </p>
+                                <p class="bias-explanation">
+                                    Plus on investit de temps dans une méthode, plus on hésite à la refactoriser, 
+                                    même quand elle devient trop complexe.
+                                </p>
+                                <div class="bias-example">
+                                    <strong>Exemple :</strong> Continuer à ajouter du code dans une méthode déjà longue 
+                                    plutôt que de la restructurer.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exemple de Code Problématique -->
+                <section class="example-section">
+                    <div class="aikido-card">
+                        <h2>📏 Exemple Problématique</h2>
+                        <p class="mb-md">
+                            Voici des exemples typiques de Long Methods dans différents contextes :
+                        </p>
+
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="php">
+                                    <span class="tab-icon">🐘</span>
+                                    PHP
+                                </button>
+                                <button class="tab-btn" data-tab="java">
+                                    <span class="tab-icon">☕</span>
+                                    Java
+                                </button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="php">
+                                <pre><code class="language-php">
+<?php
+/**
+ * ❌ ANTI-PATTERN: Long Method avec trop de responsabilités
+ * Méthode de 80+ lignes qui fait tout dans un seul endroit
+ */
+
+class OrderProcessor {
+    
+    // ❌ MÉTHODE MONSTRE - 80+ lignes, multiples responsabilités
+    public function processOrder($orderData) {
+        // Validation des données (responsabilité 1)
+        if (empty($orderData['customer_id'])) {
+            throw new InvalidArgumentException('Customer ID is required');
+        }
+        if (empty($orderData['items']) || !is_array($orderData['items'])) {
+            throw new InvalidArgumentException('Items must be a non-empty array');
+        }
+        foreach ($orderData['items'] as $item) {
+            if (empty($item['product_id']) || empty($item['quantity'])) {
+                throw new InvalidArgumentException('Each item must have product_id and quantity');
+            }
+            if ($item['quantity'] <= 0) {
+                throw new InvalidArgumentException('Quantity must be positive');
+            }
+        }
+        
+        // Récupération des données client (responsabilité 2)
+        $customer = Customer::find($orderData['customer_id']);
+        if (!$customer) {
+            throw new NotFoundException('Customer not found');
+        }
+        if (!$customer->is_active) {
+            throw new BusinessException('Customer account is inactive');
+        }
+        
+        // Vérification du crédit client (responsabilité 3)
+        $customerCredit = $customer->credit_limit;
+        $currentDebt = Order::where('customer_id', $customer->id)
+                           ->where('status', 'pending')
+                           ->sum('total');
+        
+        // Calcul du total de la commande (responsabilité 4)
+        $orderTotal = 0;
+        $processedItems = [];
+        foreach ($orderData['items'] as $item) {
+            $product = Product::find($item['product_id']);
+            if (!$product) {
+                throw new NotFoundException("Product {$item['product_id']} not found");
+            }
+            if (!$product->is_available) {
+                throw new BusinessException("Product {$product->name} is not available");
+            }
+            
+            // Vérification du stock (responsabilité 5)
+            if ($product->stock < $item['quantity']) {
+                throw new BusinessException("Insufficient stock for {$product->name}");
+            }
+            
+            // Calcul des prix avec remises (responsabilité 6)
+            $unitPrice = $product->price;
+            $discount = 0;
+            
+            // Remise quantité
+            if ($item['quantity'] >= 10) {
+                $discount += 0.05; // 5%
+            }
+            if ($item['quantity'] >= 50) {
+                $discount += 0.05; // 5% supplémentaire
+            }
+            
+            // Remise client VIP
+            if ($customer->type === 'vip') {
+                $discount += 0.10; // 10%
+            }
+            
+            // Remise saisonnière
+            $currentMonth = date('n');
+            if (in_array($currentMonth, [11, 12, 1])) { // Nov, Dec, Jan
+                $discount += 0.15; // 15% hiver
+            }
+            
+            $finalPrice = $unitPrice * (1 - $discount);
+            $lineTotal = $finalPrice * $item['quantity'];
+            $orderTotal += $lineTotal;
+            
+            $processedItems[] = [
+                'product_id' => $product->id,
+                'product_name' => $product->name,
+                'quantity' => $item['quantity'],
+                'unit_price' => $unitPrice,
+                'discount' => $discount,
+                'final_price' => $finalPrice,
+                'line_total' => $lineTotal
+            ];
+        }
+        
+        // Calcul des taxes (responsabilité 7)
+        $taxRate = 0.20; // 20% TVA
+        if ($customer->country !== 'FR') {
+            // Logique complexe pour les taxes internationales
+            switch ($customer->country) {
+                case 'DE':
+                    $taxRate = 0.19;
+                    break;
+                case 'ES':
+                    $taxRate = 0.21;
+                    break;
+                case 'IT':
+                    $taxRate = 0.22;
+                    break;
+                default:
+                    $taxRate = 0.25; // Taux par défaut export
+            }
+        }
+        $taxAmount = $orderTotal * $taxRate;
+        
+        // Calcul des frais de livraison (responsabilité 8)
+        $shippingCost = 0;
+        if ($orderTotal < 100) {
+            $shippingCost = 9.99;
+            if ($customer->country !== 'FR') {
+                $shippingCost = 19.99;
+            }
+        }
+        
+        $finalTotal = $orderTotal + $taxAmount + $shippingCost;
+        
+        // Vérification du crédit final (responsabilité 9)
+        if (($currentDebt + $finalTotal) > $customerCredit) {
+            throw new BusinessException('Order exceeds customer credit limit');
+        }
+        
+        // Création de la commande (responsabilité 10)
+        $order = new Order();
+        $order->customer_id = $customer->id;
+        $order->subtotal = $orderTotal;
+        $order->tax_rate = $taxRate;
+        $order->tax_amount = $taxAmount;
+        $order->shipping_cost = $shippingCost;
+        $order->total = $finalTotal;
+        $order->status = 'pending';
+        $order->created_at = now();
+        $order->save();
+        
+        // Création des lignes de commande (responsabilité 11)
+        foreach ($processedItems as $item) {
+            $orderItem = new OrderItem();
+            $orderItem->order_id = $order->id;
+            $orderItem->product_id = $item['product_id'];
+            $orderItem->quantity = $item['quantity'];
+            $orderItem->unit_price = $item['unit_price'];
+            $orderItem->discount = $item['discount'];
+            $orderItem->final_price = $item['final_price'];
+            $orderItem->line_total = $item['line_total'];
+            $orderItem->save();
+            
+            // Mise à jour du stock (responsabilité 12)
+            $product = Product::find($item['product_id']);
+            $product->stock -= $item['quantity'];
+            $product->save();
+        }
+        
+        // Envoi d'email de confirmation (responsabilité 13)
+        $emailData = [
+            'customer_name' => $customer->name,
+            'order_number' => $order->id,
+            'items' => $processedItems,
+            'subtotal' => $orderTotal,
+            'tax_amount' => $taxAmount,
+            'shipping_cost' => $shippingCost,
+            'total' => $finalTotal
+        ];
+        
+        try {
+            Mail::to($customer->email)->send(new OrderConfirmation($emailData));
+        } catch (Exception $e) {
+            // Log l'erreur mais ne fait pas échouer la commande
+            Log::error('Failed to send order confirmation email', [
+                'order_id' => $order->id,
+                'customer_id' => $customer->id,
+                'error' => $e->getMessage()
+            ]);
+        }
+        
+        // Logging et audit (responsabilité 14)
+        Log::info('Order processed successfully', [
+            'order_id' => $order->id,
+            'customer_id' => $customer->id,
+            'total' => $finalTotal,
+            'items_count' => count($processedItems)
+        ]);
+        
+        // Mise à jour des statistiques (responsabilité 15)
+        $customer->total_orders += 1;
+        $customer->total_spent += $finalTotal;
+        $customer->last_order_date = now();
+        $customer->save();
+        
+        return [
+            'success' => true,
+            'order_id' => $order->id,
+            'total' => $finalTotal,
+            'message' => 'Order processed successfully'
+        ];
+    }
+}
+?>
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="java">
+                                <pre><code class="language-java">
+/**
+ * ❌ ANTI-PATTERN: Long Method dans une application Java
+ * Méthode de 100+ lignes avec multiples responsabilités
+ */
+
+@Service
+public class UserRegistrationService {
+    
+    // ❌ MÉTHODE MONSTRE - 100+ lignes, trop de responsabilités
+    public UserRegistrationResult registerUser(UserRegistrationRequest request) {
+        // Validation des données d'entrée (responsabilité 1)
+        if (request.getEmail() == null || request.getEmail().trim().isEmpty()) {
+            throw new ValidationException("Email is required");
+        }
+        if (!request.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            throw new ValidationException("Invalid email format");
+        }
+        if (request.getPassword() == null || request.getPassword().length() < 8) {
+            throw new ValidationException("Password must be at least 8 characters");
+        }
+        if (request.getFirstName() == null || request.getFirstName().trim().isEmpty()) {
+            throw new ValidationException("First name is required");
+        }
+        if (request.getLastName() == null || request.getLastName().trim().isEmpty()) {
+            throw new ValidationException("Last name is required");
+        }
+        if (request.getDateOfBirth() == null) {
+            throw new ValidationException("Date of birth is required");
+        }
+        
+        // Validation de l'âge (responsabilité 2)
+        LocalDate today = LocalDate.now();
+        LocalDate birthDate = request.getDateOfBirth();
+        int age = Period.between(birthDate, today).getYears();
+        if (age < 13) {
+            throw new ValidationException("User must be at least 13 years old");
+        }
+        if (age > 120) {
+            throw new ValidationException("Invalid age");
+        }
+        
+        // Vérification de l'unicité de l'email (responsabilité 3)
+        Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
+        if (existingUser.isPresent()) {
+            throw new BusinessException("Email already registered");
+        }
+        
+        // Validation du mot de passe (responsabilité 4)
+        String password = request.getPassword();
+        boolean hasLowercase = password.matches(".*[a-z].*");
+        boolean hasUppercase = password.matches(".*[A-Z].*");
+        boolean hasDigit = password.matches(".*\\d.*");
+        boolean hasSpecialChar = password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*");
+        
+        int complexityScore = 0;
+        if (hasLowercase) complexityScore++;
+        if (hasUppercase) complexityScore++;
+        if (hasDigit) complexityScore++;
+        if (hasSpecialChar) complexityScore++;
+        
+        if (complexityScore < 3) {
+            throw new ValidationException("Password must contain at least 3 of: lowercase, uppercase, digit, special character");
+        }
+        
+        // Vérification contre les mots de passe communs (responsabilité 5)
+        List<String> commonPasswords = Arrays.asList(
+            "password", "123456", "password123", "admin", "qwerty",
+            "letmein", "welcome", "monkey", "dragon", "master"
+        );
+        if (commonPasswords.contains(password.toLowerCase())) {
+            throw new ValidationException("Password is too common");
+        }
+        
+        // Hashage du mot de passe (responsabilité 6)
+        String salt = generateSalt();
+        String hashedPassword = hashPassword(password, salt);
+        
+        // Génération du nom d'utilisateur (responsabilité 7)
+        String baseUsername = (request.getFirstName() + request.getLastName()).toLowerCase()
+                             .replaceAll("[^a-z0-9]", "");
+        String username = baseUsername;
+        int counter = 1;
+        while (userRepository.findByUsername(username).isPresent()) {
+            username = baseUsername + counter;
+            counter++;
+        }
+        
+        // Détermination du rôle utilisateur (responsabilité 8)
+        UserRole role = UserRole.USER;
+        if (request.getEmail().endsWith("@company.com")) {
+            role = UserRole.EMPLOYEE;
+        }
+        if (request.getEmail().equals("admin@company.com")) {
+            role = UserRole.ADMIN;
+        }
+        
+        // Création de l'utilisateur (responsabilité 9)
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setUsername(username);
+        user.setPasswordHash(hashedPassword);
+        user.setSalt(salt);
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setDateOfBirth(request.getDateOfBirth());
+        user.setRole(role);
+        user.setActive(false); // Nécessite activation par email
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
+        
+        // Génération du token d'activation (responsabilité 10)
+        String activationToken = UUID.randomUUID().toString();
+        user.setActivationToken(activationToken);
+        user.setActivationTokenExpiry(LocalDateTime.now().plusHours(24));
+        
+        // Sauvegarde en base (responsabilité 11)
+        User savedUser = userRepository.save(user);
+        
+        // Création du profil utilisateur (responsabilité 12)
+        UserProfile profile = new UserProfile();
+        profile.setUserId(savedUser.getId());
+        profile.setDisplayName(request.getFirstName() + " " + request.getLastName());
+        profile.setPrivacyLevel(PrivacyLevel.MEDIUM);
+        profile.setNotificationPreferences(getDefaultNotificationPreferences());
+        profile.setCreatedAt(LocalDateTime.now());
+        userProfileRepository.save(profile);
+        
+        // Création des préférences par défaut (responsabilité 13)
+        UserPreferences preferences = new UserPreferences();
+        preferences.setUserId(savedUser.getId());
+        preferences.setLanguage("fr");
+        preferences.setTimezone("Europe/Paris");
+        preferences.setTheme("light");
+        preferences.setEmailNotifications(true);
+        preferences.setPushNotifications(false);
+        userPreferencesRepository.save(preferences);
+        
+        // Envoi de l'email d'activation (responsabilité 14)
+        try {
+            EmailTemplate template = emailTemplateRepository.findByName("user_activation");
+            String emailContent = template.getContent()
+                .replace("{{firstName}}", user.getFirstName())
+                .replace("{{activationLink}}", 
+                    "https://app.example.com/activate?token=" + activationToken);
+            
+            EmailMessage message = new EmailMessage();
+            message.setTo(user.getEmail());
+            message.setSubject("Activate your account");
+            message.setContent(emailContent);
+            message.setContentType("text/html");
+            
+            emailService.sendEmail(message);
+        } catch (Exception e) {
+            // Log l'erreur mais ne fait pas échouer l'inscription
+            logger.error("Failed to send activation email to {}", user.getEmail(), e);
+        }
+        
+        // Logging de l'événement (responsabilité 15)
+        AuditEvent event = new AuditEvent();
+        event.setEventType("USER_REGISTRATION");
+        event.setUserId(savedUser.getId());
+        event.setDetails("User registered: " + user.getEmail());
+        event.setTimestamp(LocalDateTime.now());
+        event.setIpAddress(getCurrentUserIpAddress());
+        auditEventRepository.save(event);
+        
+        // Mise à jour des métriques (responsabilité 16)
+        try {
+            metricsService.incrementCounter("user.registrations.total");
+            metricsService.incrementCounter("user.registrations.by_role." + role.name().toLowerCase());
+            
+            // Calcul de l'âge pour les statistiques
+            String ageGroup;
+            if (age < 18) ageGroup = "minor";
+            else if (age < 25) ageGroup = "young_adult";
+            else if (age < 35) ageGroup = "adult";
+            else if (age < 50) ageGroup = "middle_aged";
+            else ageGroup = "senior";
+            
+            metricsService.incrementCounter("user.registrations.by_age_group." + ageGroup);
+        } catch (Exception e) {
+            logger.warn("Failed to update metrics", e);
+        }
+        
+        // Notification aux administrateurs (responsabilité 17)
+        if (role == UserRole.EMPLOYEE || role == UserRole.ADMIN) {
+            try {
+                List<User> admins = userRepository.findByRole(UserRole.ADMIN);
+                for (User admin : admins) {
+                    NotificationMessage notification = new NotificationMessage();
+                    notification.setUserId(admin.getId());
+                    notification.setTitle("New employee registration");
+                    notification.setMessage("New employee registered: " + user.getEmail());
+                    notification.setType(NotificationType.INFO);
+                    notification.setCreatedAt(LocalDateTime.now());
+                    notificationService.sendNotification(notification);
+                }
+            } catch (Exception e) {
+                logger.warn("Failed to notify admins", e);
+            }
+        }
+        
+        // Retour du résultat (responsabilité 18)
+        UserRegistrationResult result = new UserRegistrationResult();
+        result.setSuccess(true);
+        result.setUserId(savedUser.getId());
+        result.setUsername(username);
+        result.setMessage("Registration successful. Please check your email to activate your account.");
+        result.setActivationRequired(true);
+        
+        return result;
+    }
+    
+    // Méthodes utilitaires (qui devraient être extraites)
+    private String generateSalt() {
+        // Génération de salt...
+        return UUID.randomUUID().toString();
+    }
+    
+    private String hashPassword(String password, String salt) {
+        // Hashage du mot de passe...
+        return password + salt; // Simplifié pour l'exemple
+    }
+    
+    private NotificationPreferences getDefaultNotificationPreferences() {
+        // Préférences par défaut...
+        return new NotificationPreferences();
+    }
+    
+    private String getCurrentUserIpAddress() {
+        // Récupération IP...
+        return "127.0.0.1";
+    }
+}
+</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert danger">
+                            <strong>🚨 Problèmes identifiés :</strong>
+                            <ul>
+                                <li><strong>Trop de responsabilités :</strong> 15+ responsabilités différentes dans une seule méthode</li>
+                                <li><strong>Difficile à comprendre :</strong> Impossible de saisir la logique d'un coup d'œil</li>
+                                <li><strong>Tests impossibles :</strong> Comment tester unitairement chaque partie ?</li>
+                                <li><strong>Maintenance risquée :</strong> Modifier
+
+ une partie peut casser le reste</li>
+                                <li><strong>Réutilisation impossible :</strong> Logique trop spécifique et couplée</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Solutions et Refactoring -->
+                <section class="solution-section">
+                    <div class="aikido-card solution">
+                        <h2>✅ Solutions et Décomposition</h2>
+                        <p class="mb-md">
+                            Voici comment décomposer les Long Methods en méthodes plus petites et spécialisées :
+                        </p>
+
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="php-clean">
+                                    <span class="tab-icon">🐘</span>
+                                    PHP Refactorisé
+                                </button>
+                                <button class="tab-btn" data-tab="java-clean">
+                                    <span class="tab-icon">☕</span>
+                                    Java Refactorisé
+                                </button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="php-clean">
+                                <h3>🎯 Décomposition en Services Spécialisés</h3>
+                                <pre><code class="language-php">
+<?php
+/**
+ * ✅ SOLUTION: Décomposition de la Long Method en services spécialisés
+ * Chaque responsabilité dans sa propre classe/méthode
+ */
+
+// 1. Service de validation des commandes
+class OrderValidator {
+    
+    public function validateOrderData(array $orderData): void {
+        $this->validateCustomerId($orderData);
+        $this->validateItems($orderData);
+    }
+    
+    private function validateCustomerId(array $orderData): void {
+        if (empty($orderData['customer_id'])) {
+            throw new InvalidArgumentException('Customer ID is required');
+        }
+    }
+    
+    private function validateItems(array $orderData): void {
+        if (empty($orderData['items']) || !is_array($orderData['items'])) {
+            throw new InvalidArgumentException('Items must be a non-empty array');
+        }
+        
+        foreach ($orderData['items'] as $item) {
+            $this->validateItem($item);
+        }
+    }
+    
+    private function validateItem(array $item): void {
+        if (empty($item['product_id']) || empty($item['quantity'])) {
+            throw new InvalidArgumentException('Each item must have product_id and quantity');
+        }
+        
+        if ($item['quantity'] <= 0) {
+            throw new InvalidArgumentException('Quantity must be positive');
+        }
+    }
+}
+
+// 2. Service de gestion des clients
+class CustomerService {
+    
+    public function getValidatedCustomer(int $customerId): Customer {
+        $customer = Customer::find($customerId);
+        
+        if (!$customer) {
+            throw new NotFoundException('Customer not found');
+        }
+        
+        if (!$customer->is_active) {
+            throw new BusinessException('Customer account is inactive');
+        }
+        
+        return $customer;
+    }
+    
+    public function checkCreditLimit(Customer $customer, float $orderTotal): void {
+        $currentDebt = $this->getCurrentDebt($customer);
+        
+        if (($currentDebt + $orderTotal) > $customer->credit_limit) {
+            throw new BusinessException('Order exceeds customer credit limit');
+        }
+    }
+    
+    private function getCurrentDebt(Customer $customer): float {
+        return Order::where('customer_id', $customer->id)
+                   ->where('status', 'pending')
+                   ->sum('total');
+    }
+    
+    public function updateCustomerStats(Customer $customer, float $orderTotal): void {
+        $customer->total_orders += 1;
+        $customer->total_spent += $orderTotal;
+        $customer->last_order_date = now();
+        $customer->save();
+    }
+}
+
+// 3. Service de calcul des prix
+class PricingService {
+    
+    public function calculateOrderTotal(array $items, Customer $customer): array {
+        $processedItems = [];
+        $orderTotal = 0;
+        
+        foreach ($items as $item) {
+            $processedItem = $this->processItem($item, $customer);
+            $processedItems[] = $processedItem;
+            $orderTotal += $processedItem['line_total'];
+        }
+        
+        return [
+            'items' => $processedItems,
+            'subtotal' => $orderTotal
+        ];
+    }
+    
+    private function processItem(array $item, Customer $customer): array {
+        $product = $this->getValidatedProduct($item['product_id'], $item['quantity']);
+        $discount = $this->calculateDiscount($item['quantity'], $customer);
+        $finalPrice = $product->price * (1 - $discount);
+        
+        return [
+            'product_id' => $product->id,
+            'product_name' => $product->name,
+            'quantity' => $item['quantity'],
+            'unit_price' => $product->price,
+            'discount' => $discount,
+            'final_price' => $finalPrice,
+            'line_total' => $finalPrice * $item['quantity']
+        ];
+    }
+    
+    private function getValidatedProduct(int $productId, int $quantity): Product {
+        $product = Product::find($productId);
+        
+        if (!$product) {
+            throw new NotFoundException("Product {$productId} not found");
+        }
+        
+        if (!$product->is_available) {
+            throw new BusinessException("Product {$product->name} is not available");
+        }
+        
+        if ($product->stock < $quantity) {
+            throw new BusinessException("Insufficient stock for {$product->name}");
+        }
+        
+        return $product;
+    }
+    
+    private function calculateDiscount(int $quantity, Customer $customer): float {
+        $discount = 0;
+        
+        // Remise quantité
+        if ($quantity >= 10) $discount += 0.05;
+        if ($quantity >= 50) $discount += 0.05;
+        
+        // Remise client VIP
+        if ($customer->type === 'vip') $discount += 0.10;
+        
+        // Remise saisonnière
+        if ($this->isWinterSeason()) $discount += 0.15;
+        
+        return $discount;
+    }
+    
+    private function isWinterSeason(): bool {
+        return in_array(date('n'), [11, 12, 1]);
+    }
+}
+
+// 4. Service de calcul des taxes et frais
+class TaxAndShippingService {
+    
+    public function calculateTaxes(float $orderTotal, Customer $customer): array {
+        $taxRate = $this->getTaxRate($customer->country);
+        $taxAmount = $orderTotal * $taxRate;
+        
+        return [
+            'tax_rate' => $taxRate,
+            'tax_amount' => $taxAmount
+        ];
+    }
+    
+    public function calculateShipping(float $orderTotal, Customer $customer): float {
+        if ($orderTotal >= 100) {
+            return 0; // Livraison gratuite
+        }
+        
+        return $customer->country === 'FR' ? 9.99 : 19.99;
+    }
+    
+    private function getTaxRate(string $country): float {
+        return match($country) {
+            'FR' => 0.20,
+            'DE' => 0.19,
+            'ES' => 0.21,
+            'IT' => 0.22,
+            default => 0.25
+        };
+    }
+}
+
+// 5. Service de gestion des commandes
+class OrderManagementService {
+    
+    public function createOrder(Customer $customer, array $orderData, array $totals): Order {
+        $order = new Order();
+        $order->customer_id = $customer->id;
+        $order->subtotal = $totals['subtotal'];
+        $order->tax_rate = $totals['tax_rate'];
+        $order->tax_amount = $totals['tax_amount'];
+        $order->shipping_cost = $totals['shipping_cost'];
+        $order->total = $totals['final_total'];
+        $order->status = 'pending';
+        $order->created_at = now();
+        $order->save();
+        
+        return $order;
+    }
+    
+    public function createOrderItems(Order $order, array $processedItems): void {
+        foreach ($processedItems as $item) {
+            $orderItem = new OrderItem();
+            $orderItem->order_id = $order->id;
+            $orderItem->product_id = $item['product_id'];
+            $orderItem->quantity = $item['quantity'];
+            $orderItem->unit_price = $item['unit_price'];
+            $orderItem->discount = $item['discount'];
+            $orderItem->final_price = $item['final_price'];
+            $orderItem->line_total = $item['line_total'];
+            $orderItem->save();
+        }
+    }
+    
+    public function updateStock(array $processedItems): void {
+        foreach ($processedItems as $item) {
+            $product = Product::find($item['product_id']);
+            $product->stock -= $item['quantity'];
+            $product->save();
+        }
+    }
+}
+
+// 6. Service de notification
+class NotificationService {
+    
+    public function sendOrderConfirmation(Customer $customer, Order $order, array $orderDetails): void {
+        try {
+            $emailData = $this->prepareEmailData($customer, $order, $orderDetails);
+            Mail::to($customer->email)->send(new OrderConfirmation($emailData));
+        } catch (Exception $e) {
+            Log::error('Failed to send order confirmation email', [
+                'order_id' => $order->id,
+                'customer_id' => $customer->id,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+    
+    private function prepareEmailData(Customer $customer, Order $order, array $orderDetails): array {
+        return [
+            'customer_name' => $customer->name,
+            'order_number' => $order->id,
+            'items' => $orderDetails['items'],
+            'subtotal' => $order->subtotal,
+            'tax_amount' => $order->tax_amount,
+            'shipping_cost' => $order->shipping_cost,
+            'total' => $order->total
+        ];
+    }
+}
+
+// 7. Contrôleur principal refactorisé
+class OrderProcessor {
+    
+    public function __construct(
+        private OrderValidator $validator,
+        private CustomerService $customerService,
+        private PricingService $pricingService,
+        private TaxAndShippingService $taxService,
+        private OrderManagementService $orderService,
+        private NotificationService $notificationService
+    ) {}
+    
+    // ✅ Méthode principale courte et claire
+    public function processOrder(array $orderData): array {
+        // 1. Validation
+        $this->validator->validateOrderData($orderData);
+        
+        // 2. Récupération client
+        $customer = $this->customerService->getValidatedCustomer($orderData['customer_id']);
+        
+        // 3. Calcul des prix
+        $pricing = $this->pricingService->calculateOrderTotal($orderData['items'], $customer);
+        
+        // 4. Calcul taxes et frais
+        $taxes = $this->taxService->calculateTaxes($pricing['subtotal'], $customer);
+        $shippingCost = $this->taxService->calculateShipping($pricing['subtotal'], $customer);
+        
+        $finalTotal = $pricing['subtotal'] + $taxes['tax_amount'] + $shippingCost;
+        
+        // 5. Vérification crédit
+        $this->customerService->checkCreditLimit($customer, $finalTotal);
+        
+        // 6. Création commande
+        $totals = array_merge($pricing, $taxes, [
+            'shipping_cost' => $shippingCost,
+            'final_total' => $finalTotal
+        ]);
+        
+        $order = $this->orderService->createOrder($customer, $orderData, $totals);
+        $this->orderService->createOrderItems($order, $pricing['items']);
+        $this->orderService->updateStock($pricing['items']);
+        
+        // 7. Notifications et finalisation
+        $this->notificationService->sendOrderConfirmation($customer, $order, $pricing);
+        $this->customerService->updateCustomerStats($customer, $finalTotal);
+        
+        // 8. Logging
+        $this->logOrderSuccess($order, $customer, $finalTotal);
+        
+        return [
+            'success' => true,
+            'order_id' => $order->id,
+            'total' => $finalTotal,
+            'message' => 'Order processed successfully'
+        ];
+    }
+    
+    private function logOrderSuccess(Order $order, Customer $customer, float $total): void {
+        Log::info('Order processed successfully', [
+            'order_id' => $order->id,
+            'customer_id' => $customer->id,
+            'total' => $total
+        ]);
+    }
+}
+?>
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="java-clean">
+                                <h3>🎯 Décomposition en Services Java</h3>
+                                <pre><code class="language-java">
+/**
+ * ✅ SOLUTION: Décomposition de la Long Method en services spécialisés
+ * Architecture propre avec séparation des responsabilités
+ */
+
+// 1. Service de validation
+@Component
+public class UserValidationService {
+    
+    public void validateRegistrationRequest(UserRegistrationRequest request) {
+        validateBasicFields(request);
+        validateAge(request.getDateOfBirth());
+        validatePassword(request.getPassword());
+    }
+    
+    private void validateBasicFields(UserRegistrationRequest request) {
+        if (isBlank(request.getEmail()) || !isValidEmail(request.getEmail())) {
+            throw new ValidationException("Valid email is required");
+        }
+        if (isBlank(request.getFirstName())) {
+            throw new ValidationException("First name is required");
+        }
+        if (isBlank(request.getLastName())) {
+            throw new ValidationException("Last name is required");
+        }
+        if (request.getDateOfBirth() == null) {
+            throw new ValidationException("Date of birth is required");
+        }
+    }
+    
+    private void validateAge(LocalDate dateOfBirth) {
+        int age = Period.between(dateOfBirth, LocalDate.now()).getYears();
+        if (age < 13 || age > 120) {
+            throw new ValidationException("Invalid age");
+        }
+    }
+    
+    private void validatePassword(String password) {
+        if (password == null || password.length() < 8) {
+            throw new ValidationException("Password must be at least 8 characters");
+        }
+        
+        if (calculatePasswordComplexity(password) < 3) {
+            throw new ValidationException("Password complexity insufficient");
+        }
+        
+        if (isCommonPassword(password)) {
+            throw new ValidationException("Password is too common");
+        }
+    }
+    
+    private int calculatePasswordComplexity(String password) {
+        int score = 0;
+        if (password.matches(".*[a-z].*")) score++;
+        if (password.matches(".*[A-Z].*")) score++;
+        if (password.matches(".*\\d.*")) score++;
+        if (password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*")) score++;
+        return score;
+    }
+    
+    private boolean isCommonPassword(String password) {
+        Set<String> commonPasswords = Set.of(
+            "password", "123456", "password123", "admin", "qwerty"
+        );
+        return commonPasswords.contains(password.toLowerCase());
+    }
+    
+    private boolean isBlank(String str) {
+        return str == null || str.trim().isEmpty();
+    }
+    
+    private boolean isValidEmail(String email) {
+        return email.matches("^[A-Za-z0-9+_.-]+@(.+)$");
+    }
+}
+
+// 2. Service de sécurité
+@Service
+public class SecurityService {
+    
+    public String hashPassword(String password) {
+        String salt = generateSalt();
+        return hashPasswordWithSalt(password, salt);
+    }
+    
+    public String generateActivationToken() {
+        return UUID.randomUUID().toString();
+    }
+    
+    public LocalDateTime getTokenExpiry() {
+        return LocalDateTime.now().plusHours(24);
+    }
+    
+    private String generateSalt() {
+        return UUID.randomUUID().toString();
+    }
+    
+    private String hashPasswordWithSalt(String password, String salt) {
+        // Implémentation réelle du hashage
+        return password + salt; // Simplifié pour l'exemple
+    }
+}
+
+// 3. Service de gestion des utilisateurs
+@Service
+public class UserManagementService {
+    
+    @Autowired
+    private UserRepository userRepository;
+    
+    public void checkEmailUniqueness(String email) {
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new BusinessException("Email already registered");
+        }
+    }
+    
+    public String generateUniqueUsername(String firstName, String lastName) {
+        String baseUsername = (firstName + lastName).toLowerCase()
+                             .replaceAll("[^a-z0-9]", "");
+        
+        String username = baseUsername;
+        int counter = 1;
+        
+        while (userRepository.findByUsername(username).isPresent()) {
+            username = baseUsername + counter++;
+        }
+        
+        return username;
+    }
+    
+    public UserRole determineUserRole(String email) {
+        if (email.equals("admin@company.com")) {
+            return UserRole.ADMIN;
+        }
+        if (email.endsWith("@company.com")) {
+            return UserRole.EMPLOYEE;
+        }
+        return UserRole.USER;
+    }
+    
+    public User createUser(UserRegistrationRequest request, String username, 
+                          String hashedPassword, UserRole role, String activationToken) {
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setUsername(username);
+        user.setPasswordHash(hashedPassword);
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setDateOfBirth(request.getDateOfBirth());
+        user.setRole(role);
+        user.setActive(false);
+        user.setActivationToken(activationToken);
+        user.setActivationTokenExpiry(LocalDateTime.now().plusHours(24));
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
+        
+        return userRepository.save(user);
+    }
+}
+
+// 4. Service de profil utilisateur
+@Service
+public class UserProfileService {
+    
+    @Autowired
+    private UserProfileRepository userProfileRepository;
+    
+    @Autowired
+    private UserPreferencesRepository userPreferencesRepository;
+    
+    public void createUserProfile(User user) {
+        UserProfile profile = new UserProfile();
+        profile.setUserId(user.getId());
+        profile.setDisplayName(user.getFirstName() + " " + user.getLastName());
+        profile.setPrivacyLevel(PrivacyLevel.MEDIUM);
+        profile.setNotificationPreferences(getDefaultNotificationPreferences());
+        profile.setCreatedAt(LocalDateTime.now());
+        
+        userProfileRepository.save(profile);
+    }
+    
+    public void createUserPreferences(User user) {
+        UserPreferences preferences = new UserPreferences();
+        preferences.setUserId(user.getId());
+        preferences.setLanguage("fr");
+        preferences.setTimezone("Europe/Paris");
+        preferences.setTheme("light");
+        preferences.setEmailNotifications(true);
+        preferences.setPushNotifications(false);
+        
+        userPreferencesRepository.save(preferences);
+    }
+    
+    private NotificationPreferences getDefaultNotificationPreferences() {
+        return new NotificationPreferences();
+    }
+}
+
+// 5. Service de notification
+@Service
+public class NotificationService {
+    
+    @Autowired
+    private EmailService emailService;
+    
+    @Autowired
+    private EmailTemplateRepository emailTemplateRepository;
+    
+    public void sendActivationEmail(User user) {
+        try {
+            EmailTemplate template = emailTemplateRepository.findByName("user_activation");
+            String content = prepareActivationEmailContent(template, user);
+            
+            EmailMessage message = new EmailMessage();
+            message.setTo(user.getEmail());
+            message.setSubject("Activate your account");
+            message.setContent(content);
+            message.setContentType("text/html");
+            
+            emailService.sendEmail(message);
+        } catch (Exception e) {
+            logger.error("Failed to send activation email to {}", user.getEmail(), e);
+        }
+    }
+    
+    public void notifyAdminsOfNewEmployee(User user) {
+        if (user.getRole() == UserRole.EMPLOYEE || user.getRole() == UserRole.ADMIN) {
+            try {
+                List<User> admins = userRepository.findByRole(UserRole.ADMIN);
+                for (User admin : admins) {
+                    sendAdminNotification(admin, user);
+                }
+            } catch (Exception e) {
+                logger.warn("Failed to notify admins", e);
+            }
+        }
+    }
+    
+    private String prepareActivationEmailContent(EmailTemplate template, User user) {
+        return template.getContent()
+            .replace("{{firstName}}", user.getFirstName())
+            .replace("{{activationLink}}", 
+                "https://app.example.com/activate?token=" + user.getActivationToken());
+    }
+    
+    private void sendAdminNotification(User admin, User newUser) {
+        NotificationMessage notification = new NotificationMessage();
+        notification.setUserId(admin.getId());
+        notification.setTitle("New employee registration");
+        notification.setMessage("New employee registered: " + newUser.getEmail());
+        notification.setType(NotificationType.INFO);
+        notification.setCreatedAt(LocalDateTime.now());
+        
+        // Envoyer la notification...
+    }
+}
+
+// 6. Service d'audit et métriques
+@Service
+public class AuditService {
+    
+    @Autowired
+    private AuditEventRepository auditEventRepository;
+    
+    @Autowired
+    private MetricsService metricsService;
+    
+    public void logRegistrationEvent(User user) {
+        AuditEvent event = new AuditEvent();
+        event.setEventType("USER_REGISTRATION");
+        event.setUserId(user.getId());
+        event.setDetails("User registered: " + user.getEmail());
+        event.setTimestamp(LocalDateTime.now());
+        event.setIpAddress(getCurrentUserIpAddress());
+        
+        auditEventRepository.save(event);
+    }
+    
+    public void updateRegistrationMetrics(User user) {
+        try {
+            metricsService.incrementCounter("user.registrations.total");
+            metricsService.incrementCounter("user.registrations.by_role." + 
+                user.getRole().name().toLowerCase());
+            
+            String ageGroup = determineAgeGroup(user.getDateOfBirth());
+            metricsService.incrementCounter("user.registrations.by_age_group." + ageGroup);
+        } catch (Exception e) {
+            logger.warn("Failed to update metrics", e);
+        }
+    }
+    
+    private String determineAgeGroup(LocalDate dateOfBirth) {
+        int age = Period.between(dateOfBirth, LocalDate.now()).getYears();
+        if (age < 18) return "minor";
+        if (age < 25) return "young_adult";
+        if (age < 35) return "adult";
+        if (age < 50) return "middle_aged";
+        return "senior";
+    }
+    
+    private String getCurrentUserIpAddress() {
+        return "127.0.0.1"; // Simplifié
+    }
+}
+
+// 7. Service principal refactorisé
+@Service
+public class UserRegistrationService {
+    
+    @Autowired
+    private UserValidationService validationService;
+    
+    @Autowired
+    private SecurityService securityService;
+    
+    @Autowired
+    private UserManagementService userManagementService;
+    
+    @Autowired
+    private UserProfileService profileService;
+    
+    @Autowired
+    private NotificationService notificationService;
+    
+    @Autowired
+    private AuditService auditService;
+    
+    // ✅ Méthode principale courte et claire
+    public UserRegistrationResult registerUser(UserRegistrationRequest request) {
+        // 1. Validation
+        validationService.validateRegistrationRequest(request);
+        
+        // 2. Vérifications métier
+        userManagementService.checkEmailUniqueness(request.getEmail());
+        
+        // 3. Préparation des données
+        String username = userManagementService.generateUniqueUsername(
+            request.getFirstName(), request.getLastName());
+        String hashedPassword = securityService.hashPassword(request.getPassword());
+        UserRole role = userManagementService.determineUserRole(request.getEmail());
+        String activationToken = securityService.generateActivationToken();
+        
+        // 4. Création utilisateur
+        User user = userManagementService.createUser(
+            request, username, hashedPassword, role, activationToken);
+        
+        // 5. Création profil et préférences
+        profileService.createUserProfile(user);
+        profileService.createUserPreferences(user);
+        
+        // 6. Notifications
+        notificationService.sendActivationEmail(user);
+        notificationService.notifyAdminsOfNewEmployee(user);
+        
+        // 7. Audit et métriques
+        auditService.logRegistrationEvent(user);
+        auditService.updateRegistrationMetrics(user);
+        
+        // 8. Retour du résultat
+        return createSuccessResult(user);
+    }
+    
+    private UserRegistrationResult createSuccessResult(User user) {
+        UserRegistrationResult result = new UserRegistrationResult();
+        result.setSuccess(true);
+        result.setUserId(user.getId());
+        result.setUsername(user.getUsername());
+        result.setMessage("Registration successful. Please check your email to activate your account.");
+        result.setActivationRequired(true);
+        return result;
+    }
+}
+</code></pre>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert success">
+                            <strong>✅ Améliorations apportées :</strong>
+                            <ul>
+                                <li><strong>Responsabilité unique :</strong> Chaque classe/méthode a un rôle précis</li>
+                                <li><strong>Lisibilité :</strong> Code facile à comprendre et suivre</li>
+                                <li><strong>Testabilité :</strong> Chaque service peut être testé indépendamment</li>
+                                <li><strong>Réutilisabilité :</strong> Services réutilisables dans d'autres contextes</li>
+                                <li><strong>Maintenance :</strong> Modifications localisées et sûres</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Techniques de Refactoring -->
+                <section class="refactoring-section">
+                    <div class="aikido-card refactoring">
+                        <h2>🔧 Techniques de Refactoring</h2>
+                        <p class="mb-md">
+                            Voici les principales techniques pour décomposer les Long Methods :
+                        </p>
+
+                        <div class="techniques-grid">
+                            <div class="technique-card">
+                                <div class="technique-header">
+                                    <span class="technique-icon">✂️</span>
+                                    <h4>Extract Method</h4>
+                                </div>
+                                <div class="technique-description">
+                                    <p>Extraire des blocs de code logiques en méthodes séparées</p>
+                                </div>
+                                <div class="technique-example">
+                                    <strong>Avant :</strong>
+                                    <pre><code class="language-php">
+public function process($data) {
+    // Validation (10 lignes)
+    if (empty($data)) { ... }
+    
+    // Traitement (15 lignes)
+    foreach ($data as $item) { ... }
+    
+    // Sauvegarde (8 lignes)
+    $this->save($result);
+}
+</code></pre>
+                                    <strong>Après :</strong>
+                                    <pre><code class="language-php">
+public function process($data) {
+    $this->validateData($data);
+    $result = $this->processData($data);
+    $this->saveResult($result);
+}
+</code></pre>
+                                </div>
+                                <div class="technique-benefits">
+                                    <strong>Avantages :</strong> Clarté, réutilisabilité, tests unitaires
+                                </div>
+                            </div>
+
+                            <div class="technique-card">
+                                <div class="technique-header">
+                                    <span class="technique-icon">🏭</span>
+                                    <h4>Extract Class</h4>
+                                </div>
+                                <div class="technique-description">
+                                    <p>Créer des classes spécialisées pour des responsabilités distinctes</p>
+                                </div>
+                                <div class="technique-example">
+                                    <strong>Principe :</strong>
+                                    <pre><code class="language-java">
+// Avant : tout dans UserService
+class UserService {
+    public void registerUser() {
+        // validation, hashage, email, audit...
+    }
+}
+
+// Après : responsabilités séparées
+class UserValidator { ... }
+class PasswordHasher { ... }
+class EmailService { ... }
+class AuditLogger { ... }
+</code></pre>
+                                </div>
+                                <div class="technique-benefits">
+                                    <strong>Avantages :</strong> SRP, testabilité, maintenance
+                                </div>
+                            </div>
+
+                            <div class="technique-card">
+                                <div class="technique-header">
+                                    <span class="technique-icon">🔄</span>
+                                    <h4>Replace Temp with Query</h4>
+                                </div>
+                                <div class="technique-description">
+                                    <p>Remplacer les variables temporaires par des appels de méthodes</p>
+                                </div>
+                                <div class="technique-example">
+                                    <strong>Avant :</strong>
+                                    <pre><code class="language-php">
+$basePrice = $quantity * $itemPrice;
+$discount = $basePrice * 0.1;
+$total = $basePrice - $discount;
+</code></pre>
+                                    <strong>Après :</strong>
+                                    <pre><code class="language-php">
+$total = $this->calculateTotal();
+
+private function calculateTotal() {
+    return $this->getBasePrice() - $this->getDiscount();
+}
+</code></pre>
+                                </div>
+                                <div class="technique-benefits">
+                                    <strong>Avantages
+
+ :</strong> Expressivité, élimination des variables temporaires
+                                </div>
+                            </div>
+
+                            <div class="technique-card">
+                                <div class="technique-header">
+                                    <span class="technique-icon">📋</span>
+                                    <h4>Introduce Parameter Object</h4>
+                                </div>
+                                <div class="technique-description">
+                                    <p>Regrouper les paramètres liés dans un objet dédié</p>
+                                </div>
+                                <div class="technique-example">
+                                    <strong>Avant :</strong>
+                                    <pre><code class="language-java">
+public void createUser(String firstName, String lastName, 
+                      String email, LocalDate birthDate, 
+                      String address, String phone) { ... }
+</code></pre>
+                                    <strong>Après :</strong>
+                                    <pre><code class="language-java">
+public void createUser(UserData userData) { ... }
+
+class UserData {
+    private String firstName, lastName, email;
+    private LocalDate birthDate;
+    // ...
+}
+</code></pre>
+                                </div>
+                                <div class="technique-benefits">
+                                    <strong>Avantages :</strong> Moins de paramètres, validation centralisée
+                                </div>
+                            </div>
+
+                            <div class="technique-card">
+                                <div class="technique-header">
+                                    <span class="technique-icon">🎯</span>
+                                    <h4>Decompose Conditional</h4>
+                                </div>
+                                <div class="technique-description">
+                                    <p>Extraire les conditions complexes en méthodes expressives</p>
+                                </div>
+                                <div class="technique-example">
+                                    <strong>Avant :</strong>
+                                    <pre><code class="language-php">
+if ($date < $SUMMER_START || $date > $SUMMER_END) {
+    $charge = $quantity * $winterRate + $winterServiceCharge;
+} else {
+    $charge = $quantity * $summerRate;
+}
+</code></pre>
+                                    <strong>Après :</strong>
+                                    <pre><code class="language-php">
+if ($this->isWinter($date)) {
+    $charge = $this->calculateWinterCharge($quantity);
+} else {
+    $charge = $this->calculateSummerCharge($quantity);
+}
+</code></pre>
+                                </div>
+                                <div class="technique-benefits">
+                                    <strong>Avantages :</strong> Lisibilité, intention claire, réutilisabilité
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Design Patterns Recommandés -->
+                <section class="patterns-section">
+                    <div class="aikido-card patterns">
+                        <h2>🏗️ Design Patterns Recommandés</h2>
+                        <p class="mb-md">
+                            Voici les patterns qui aident à éviter et refactoriser les Long Methods :
+                        </p>
+
+                        <div class="patterns-grid">
+                            <div class="pattern-card">
+                                <div class="pattern-header">
+                                    <span class="pattern-icon">🎭</span>
+                                    <h4>Template Method</h4>
+                                </div>
+                                <p class="pattern-description">
+                                    Définir le squelette d'un algorithme en déléguant les étapes spécifiques à des méthodes.
+                                </p>
+                                <div class="pattern-example">
+                                    <strong>Exemple :</strong> Processus de commande avec étapes définies
+                                </div>
+                                <div class="pattern-benefits">
+                                    <strong>Avantages :</strong> Structure claire, étapes réutilisables, extensibilité
+                                </div>
+                            </div>
+
+                            <div class="pattern-card">
+                                <div class="pattern-header">
+                                    <span class="pattern-icon">🔗</span>
+                                    <h4>Chain of Responsibility</h4>
+                                </div>
+                                <p class="pattern-description">
+                                    Décomposer une longue séquence de traitements en chaîne de handlers.
+                                </p>
+                                <div class="pattern-example">
+                                    <strong>Exemple :</strong> Pipeline de validation avec multiple validateurs
+                                </div>
+                                <div class="pattern-benefits">
+                                    <strong>Avantages :</strong> Flexibilité, ajout/suppression facile, SRP
+                                </div>
+                            </div>
+
+                            <div class="pattern-card">
+                                <div class="pattern-header">
+                                    <span class="pattern-icon">🎯</span>
+                                    <h4>Strategy</h4>
+                                </div>
+                                <p class="pattern-description">
+                                    Extraire les algorithmes complexes en stratégies interchangeables.
+                                </p>
+                                <div class="pattern-example">
+                                    <strong>Exemple :</strong> Calculs de prix avec différentes stratégies de remise
+                                </div>
+                                <div class="pattern-benefits">
+                                    <strong>Avantages :</strong> Algorithmes isolés, testabilité, extensibilité
+                                </div>
+                            </div>
+
+                            <div class="pattern-card">
+                                <div class="pattern-header">
+                                    <span class="pattern-icon">🏭</span>
+                                    <h4>Factory Method</h4>
+                                </div>
+                                <p class="pattern-description">
+                                    Déléguer la création d'objets complexes à des factories spécialisées.
+                                </p>
+                                <div class="pattern-example">
+                                    <strong>Exemple :</strong> Factory pour créer différents types d'utilisateurs
+                                </div>
+                                <div class="pattern-benefits">
+                                    <strong>Avantages :</strong> Logique de création centralisée, extensibilité
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercices Pratiques -->
+                <section class="exercise-section">
+                    <div class="aikido-card exercise">
+                        <h2>🎯 Exercices Pratiques</h2>
+                        <p class="mb-md">
+                            Mettez en pratique la décomposition des Long Methods :
+                        </p>
+
+                        <div class="exercise-list">
+                            <div class="exercise-item">
+                                <div class="exercise-header">
+                                    <span class="exercise-number">1</span>
+                                    <h4>Identification des Long Methods</h4>
+                                    <span class="exercise-difficulty easy">Facile</span>
+                                </div>
+                                <div class="exercise-content">
+                                    <p><strong>Objectif :</strong> Détecter les méthodes trop longues dans un projet</p>
+                                    <div class="exercise-steps">
+                                        <h5>Étapes :</h5>
+                                        <ol>
+                                            <li>Analyser le code avec des outils de métriques</li>
+                                            <li>Identifier les méthodes > 20-30 lignes</li>
+                                            <li>Calculer la complexité cyclomatique</li>
+                                            <li>Prioriser par impact et fréquence d'usage</li>
+                                        </ol>
+                                    </div>
+                                    <div class="exercise-tip">
+                                        <strong>💡 Astuce :</strong> Utilisez des outils comme PHPMetrics, SonarQube ou les métriques IDE
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="exercise-item">
+                                <div class="exercise-header">
+                                    <span class="exercise-number">2</span>
+                                    <h4>Refactoring Extract Method</h4>
+                                    <span class="exercise-difficulty medium">Moyen</span>
+                                </div>
+                                <div class="exercise-content">
+                                    <p><strong>Objectif :</strong> Décomposer une Long Method en méthodes plus petites</p>
+                                    <div class="exercise-steps">
+                                        <h5>Étapes :</h5>
+                                        <ol>
+                                            <li>Identifier les blocs logiques dans la méthode</li>
+                                            <li>Extraire chaque bloc en méthode privée</li>
+                                            <li>Donner des noms expressifs aux nouvelles méthodes</li>
+                                            <li>Tester que le comportement reste identique</li>
+                                        </ol>
+                                    </div>
+                                    <div class="exercise-validation">
+                                        <strong>✅ Validation :</strong> Méthode principale < 10 lignes, chaque méthode a une responsabilité
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="exercise-item">
+                                <div class="exercise-header">
+                                    <span class="exercise-number">3</span>
+                                    <h4>Architecture en Services</h4>
+                                    <span class="exercise-difficulty hard">Difficile</span>
+                                </div>
+                                <div class="exercise-content">
+                                    <p><strong>Objectif :</strong> Restructurer en architecture de services</p>
+                                    <div class="exercise-steps">
+                                        <h5>Étapes :</h5>
+                                        <ol>
+                                            <li>Identifier les responsabilités distinctes</li>
+                                            <li>Créer des services spécialisés</li>
+                                            <li>Implémenter l'injection de dépendances</li>
+                                            <li>Créer des tests unitaires pour chaque service</li>
+                                        </ol>
+                                    </div>
+                                    <div class="exercise-bonus">
+                                        <strong>🎁 Bonus :</strong> Implémenter des interfaces pour l'inversion de dépendance
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="exercise-solution">
+                            <details>
+                                <summary>💡 Voir les solutions détaillées</summary>
+                                <div class="solution-content">
+                                    <h4>Solution Exercice 1 : Détection automatique</h4>
+                                    <pre><code class="language-bash">
+# PHPMetrics pour PHP
+phpmetrics --report-html=metrics/ src/
+
+# SonarQube pour analyse complète
+sonar-scanner -Dsonar.projectKey=myproject
+
+# Commande grep simple pour compter les lignes
+find src/ -name "*.php" -exec wc -l {} + | sort -nr
+</code></pre>
+
+                                    <h4>Solution Exercice 2 : Template Extract Method</h4>
+                                    <pre><code class="language-php">
+// Avant : Long Method
+public function processOrder($data) {
+    // 50 lignes de code...
+}
+
+// Après : Décomposition
+public function processOrder($data) {
+    $this->validateOrder($data);
+    $customer = $this->getCustomer($data['customer_id']);
+    $total = $this->calculateTotal($data['items']);
+    $order = $this->createOrder($customer, $total);
+    $this->sendConfirmation($order);
+    return $order;
+}
+</code></pre>
+
+                                    <h4>Solution Exercice 3 : Architecture Services</h4>
+                                    <pre><code class="language-php">
+// Structure de services
+class OrderProcessor {
+    public function __construct(
+        private OrderValidator $validator,
+        private CustomerService $customerService,
+        private PricingService $pricingService,
+        private OrderService $orderService,
+        private NotificationService $notificationService
+    ) {}
+    
+    public function process($data) {
+        $this->validator->validate($data);
+        $customer = $this->customerService->get($data['customer_id']);
+        $total = $this->pricingService->calculate($data['items']);
+        $order = $this->orderService->create($customer, $total);
+        $this->notificationService->send($order);
+        return $order;
+    }
+}
+</code></pre>
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Checklist de Validation -->
+                <section class="checklist-section">
+                    <div class="aikido-card checklist">
+                        <h2>✅ Checklist Anti-Long Method</h2>
+                        <p class="mb-md">
+                            Utilisez cette checklist pour éviter et refactoriser les Long Methods :
+                        </p>
+
+                        <div class="checklist-categories">
+                            <div class="checklist-category">
+                                <h4>📏 Taille et Complexité</h4>
+                                <div class="checklist-items" style="flex-direction: column;">
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Méthodes < 20-30 lignes maximum</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Complexité cyclomatique < 10</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Niveau d'indentation < 4</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Paramètres < 5 par méthode</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="checklist-category">
+                                <h4>🎯 Responsabilité</h4>
+                                <div class="checklist-items" style="flex-direction: column;">
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Une seule responsabilité par méthode</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Nom de méthode expressif et précis</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Pas de commentaires explicatifs nécessaires</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Logique métier séparée de l'infrastructure</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="checklist-category">
+                                <h4>🔧 Refactoring</h4>
+                                <div class="checklist-items" style="flex-direction: column;">
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Extract Method appliqué aux blocs logiques</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Services créés pour responsabilités distinctes</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Conditions complexes extraites en méthodes</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Variables temporaires remplacées par queries</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="checklist-category">
+                                <h4>✅ Qualité</h4>
+                                <div class="checklist-items" style="flex-direction: column;">
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Tests unitaires pour chaque méthode</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Code facilement compréhensible</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Réutilisabilité des composants</span>
+                                    </label>
+                                    <label class="checklist-item">
+                                        <input type="checkbox">
+                                        <span>Maintenance simplifiée</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Marquer comme terminé -->
+                <section class="completion-section slide-in">
+                    <div class="aikido-card completion">
+                        <div class="completion-content">
+                            <div class="completion-icon">📋</div>
+                            <div class="completion-text">
+                                <h3>Avez-vous terminé cette section ?</h3>
+                                <p>Marquez cette page comme terminée pour suivre votre progression dans la formation.</p>
+                            </div>
+                            <button class="aikido-btn primary mark-completed" data-page="long-method">
+                                Marquer comme Terminé ✓
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts de fin de page -->
+    <script>
+        // Initialisation des composants interactifs
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animation des éléments au scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                    }
+                });
+            }, observerOptions);
+
+            // Observer tous les éléments avec animation
+            document.querySelectorAll('.slide-in, .fade-in').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Gestion des checkboxes de la checklist
+            document.querySelectorAll('.checklist-item input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const item = this.closest('.checklist-item');
+                    if (this.checked) {
+                        item.classList.add('completed');
+                    } else {
+                        item.classList.remove('completed');
+                    }
+                    
+                    // Sauvegarder l'état dans localStorage
+                    const checklistId = 'long-method-checklist';
+                    const itemIndex = Array.from(item.parentNode.children).indexOf(item);
+                    const categoryIndex = Array.from(item.closest('.checklist-categories').children).indexOf(item.closest('.checklist-category'));
+                    
+                    let savedState = JSON.parse(localStorage.getItem(checklistId) || '{}');
+                    if (!savedState[categoryIndex]) savedState[categoryIndex] = {};
+                    savedState[categoryIndex][itemIndex] = this.checked;
+                    localStorage.setItem(checklistId, JSON.stringify(savedState));
+                });
+            });
+
+            // Restaurer l'état des checkboxes
+            const savedState = JSON.parse(localStorage.getItem('long-method-checklist') || '{}');
+            document.querySelectorAll('.checklist-category').forEach((category, categoryIndex) => {
+                if (savedState[categoryIndex]) {
+                    category.querySelectorAll('.checklist-item').forEach((item, itemIndex) => {
+                        if (savedState[categoryIndex][itemIndex]) {
+                            const checkbox = item.querySelector('input[type="checkbox"]');
+                            checkbox.checked = true;
+                            item.classList.add('completed');
+                        }
+                    });
+                }
+            });
+        });
+
+        // Fonction pour marquer le module comme terminé
+        function markAsCompleted(moduleId) {
+            // Sauvegarder la progression
+            let completedModules = JSON.parse(localStorage.getItem('completedModules') || '[]');
+            if (!completedModules.includes(moduleId)) {
+                completedModules.push(moduleId);
+                localStorage.setItem('completedModules', JSON.stringify(completedModules));
+            }
+            
+            // Marquer visuellement comme terminé
+            const button = document.querySelector(`[data-page="${moduleId}"]`);
+            if (button) {
+                button.classList.add('completed');
+                button.innerHTML = '✅ Terminé !';
+                button.disabled = true;
+            }
+            
+            // Afficher une notification
+            const notification = document.createElement('div');
+            notification.className = 'completion-notification';
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <span class="notification-icon">🎉</span>
+                    <span class="notification-text">Long Method maîtrisé !</span>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
