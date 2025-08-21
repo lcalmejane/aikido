@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategy Pattern - Formation Patterns Développeurs</title>
+    <meta name="description" content="Le pattern Strategy expliqué avec exemples de code, diagrammes UML et cas d'usage pratiques">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <h1 class="page-title">🎯 Strategy Pattern</h1>
+                    <p class="page-subtitle">Définir une famille d'algorithmes interchangeables</p>
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">🎨</span>
+                            <span class="meta-text">Design Patterns</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⭐</span>
+                            <span class="meta-text">Difficulté: Facile</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⏱️</span>
+                            <span class="meta-text">15 min</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🎭</span>
+                            <span class="meta-text">Comportemental</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Définition et Problème -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card design-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="mb-md">
+                            Le <strong>Strategy</strong> est un pattern comportemental qui définit une famille 
+                            d'algorithmes, les encapsule et les rend interchangeables. Strategy permet à 
+                            l'algorithme de varier indépendamment des clients qui l'utilisent.
+                        </p>
+                        
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problème Résolu</h3>
+                                <ul>
+                                    <li>Conditions multiples (if/else, switch) pour choisir un algorithme</li>
+                                    <li>Code dupliqué pour des variantes d'algorithmes</li>
+                                    <li>Difficulté à ajouter de nouveaux algorithmes</li>
+                                    <li>Violation du principe Ouvert/Fermé</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solution Apportée</h3>
+                                <ul>
+                                    <li>Encapsulation des algorithmes dans des classes séparées</li>
+                                    <li>Interchangeabilité à l'exécution</li>
+                                    <li>Facilité d'ajout de nouvelles stratégies</li>
+                                    <li>Respect du principe de responsabilité unique</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert info">
+                            <strong>💡 Principe clé :</strong> "Favoriser la composition plutôt que l'héritage" - 
+                            les stratégies sont composées plutôt qu'héritées.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Structure UML -->
+                <section class="structure-section">
+                    <div class="aikido-card">
+                        <h2>🏗️ Structure UML</h2>
+                        <div class="uml-diagram">
+                            <div class="uml-class-diagram">
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>&lt;&lt;interface&gt;&gt;<br>Strategy</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ execute(data: any): any</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>ConcreteStrategyA</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ execute(data: any): any</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>ConcreteStrategyB</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ execute(data: any): any</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>Context</strong>
+                                    </div>
+                                    <div class="class-attributes">
+                                        <div class="attribute private">- strategy: Strategy</div>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ setStrategy(strategy: Strategy): void</div>
+                                        <div class="method public">+ executeStrategy(data: any): any</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="structure-explanation">
+                            <h3>Éléments Clés</h3>
+                            <ul>
+                                <li><strong>Strategy</strong> : Interface commune pour toutes les stratégies concrètes</li>
+                                <li><strong>ConcreteStrategy</strong> : Implémentations spécifiques des algorithmes</li>
+                                <li><strong>Context</strong> : Maintient une référence vers une stratégie et délègue le travail</li>
+                                <li><strong>Client</strong> : Crée et configure les stratégies appropriées</li>
+                            </ul>
+                        </div>
+
+                        <!-- Diagramme de flux Mermaid -->
+                        <div class="mt-lg">
+                            <h3>🔄 Flux d'Exécution</h3>
+                            <div class="mermaid">
+                                graph TD
+                                    A[Client choisit une stratégie] --> B[Création de ConcreteStrategy]
+                                    B --> C[Context.setStrategy]
+                                    C --> D[Context stocke la stratégie]
+                                    D --> E[Client appelle Context.executeStrategy]
+                                    E --> F[Context délègue à strategy.execute]
+                                    F --> G[ConcreteStrategy traite les données]
+                                    G --> H[Retour du résultat via Context]
+                                    
+                                    I[Changement de stratégie] --> J[Nouvelle ConcreteStrategy]
+                                    J --> C
+                                    
+                                    style A fill:#e1f5fe
+                                    style C fill:#fff3e0
+                                    style F fill:#ffebee
+                                    style G fill:#e8f5e8
+                                    style H fill:#f3e5f5
+                            </div>
+                            <p class="text-sm text-gray-600 mt-md">
+                                <strong>💡 Point clé :</strong> Le Context délègue le travail à la stratégie courante,
+                                permettant de changer d'algorithme dynamiquement sans modifier le code client.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Implémentations -->
+                <section class="implementations-section">
+                    <h2>💻 Implémentations</h2>
+                    
+                    <div class="aikido-card">
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="typescript">TypeScript</button>
+                                <button class="tab-btn" data-tab="php">PHP</button>
+                                <button class="tab-btn" data-tab="java">Java</button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="typescript">
+                                <h4>Exemple : Système de Paiement</h4>
+                                <pre><code class="language-typescript">
+// Interface Strategy
+interface PaymentStrategy {
+    pay(amount: number): PaymentResult;
+    validate(): boolean;
+}
+
+// Résultat de paiement
+interface PaymentResult {
+    success: boolean;
+    transactionId?: string;
+    message: string;
+    fees?: number;
+}
+
+// ConcreteStrategy : Paiement par Carte de Crédit
+class CreditCardPayment implements PaymentStrategy {
+    private cardNumber: string;
+    private expiryDate: string;
+    private cvv: string;
+    
+    constructor(cardNumber: string, expiryDate: string, cvv: string) {
+        this.cardNumber = cardNumber;
+        this.expiryDate = expiryDate;
+        this.cvv = cvv;
+    }
+    
+    validate(): boolean {
+        // Validation basique de la carte
+        return this.cardNumber.length === 16 && 
+               this.cvv.length === 3 && 
+               this.expiryDate.length === 5;
+    }
+    
+    pay(amount: number): PaymentResult {
+        if (!this.validate()) {
+            return {
+                success: false,
+                message: "Informations de carte invalides"
+            };
+        }
+        
+        // Simulation du traitement de paiement
+        const fees = amount * 0.029; // 2.9% de frais
+        const transactionId = `CC_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        console.log(`Traitement paiement carte: ${amount}€ + ${fees.toFixed(2)}€ de frais`);
+        
+        return {
+            success: true,
+            transactionId,
+            message: `Paiement de ${amount}€ effectué par carte`,
+            fees
+        };
+    }
+}
+
+// ConcreteStrategy : Paiement PayPal
+class PayPalPayment implements PaymentStrategy {
+    private email: string;
+    private password: string;
+    
+    constructor(email: string, password: string) {
+        this.email = email;
+        this.password = password;
+    }
+    
+    validate(): boolean {
+        return this.email.includes('@') && this.password.length >= 6;
+    }
+    
+    pay(amount: number): PaymentResult {
+        if (!this.validate()) {
+            return {
+                success: false,
+                message: "Identifiants PayPal invalides"
+            };
+        }
+        
+        const fees = amount * 0.034; // 3.4% de frais
+        const transactionId = `PP_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        console.log(`Traitement paiement PayPal: ${amount}€ + ${fees.toFixed(2)}€ de frais`);
+        
+        return {
+            success: true,
+            transactionId,
+            message: `Paiement de ${amount}€ effectué via PayPal`,
+            fees
+        };
+    }
+}
+
+// ConcreteStrategy : Paiement par Virement Bancaire
+class BankTransferPayment implements PaymentStrategy {
+    private iban: string;
+    private bic: string;
+    
+    constructor(iban: string, bic: string) {
+        this.iban = iban;
+        this.bic = bic;
+    }
+    
+    validate(): boolean {
+        return this.iban.length >= 15 && this.bic.length >= 8;
+    }
+    
+    pay(amount: number): PaymentResult {
+        if (!this.validate()) {
+            return {
+                success: false,
+                message: "Informations bancaires invalides"
+            };
+        }
+        
+        const fees = 2.50; // Frais fixes
+        const transactionId = `BT_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        console.log(`Traitement virement bancaire: ${amount}€ + ${fees}€ de frais`);
+        
+        return {
+            success: true,
+            transactionId,
+            message: `Virement de ${amount}€ initié (traitement 1-3 jours)`,
+            fees
+        };
+    }
+}
+
+// ConcreteStrategy : Paiement Crypto
+class CryptocurrencyPayment implements PaymentStrategy {
+    private walletAddress: string;
+    private privateKey: string;
+    private currency: string;
+    
+    constructor(walletAddress: string, privateKey: string, currency: string = 'BTC') {
+        this.walletAddress = walletAddress;
+        this.privateKey = privateKey;
+        this.currency = currency;
+    }
+    
+    validate(): boolean {
+        return this.walletAddress.length >= 26 && this.privateKey.length >= 51;
+    }
+    
+    pay(amount: number): PaymentResult {
+        if (!this.validate()) {
+            return {
+                success: false,
+                message: "Informations de wallet invalides"
+            };
+        }
+        
+        const fees = 0.0005; // Frais réseau fixes
+        const transactionId = `CRYPTO_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        console.log(`Traitement paiement ${this.currency}: ${amount}€ + ${fees} ${this.currency} de frais`);
+        
+        return {
+            success: true,
+            transactionId,
+            message: `Paiement de ${amount}€ effectué en ${this.currency}`,
+            fees
+        };
+    }
+}
+
+// Context : Processeur de Paiement
+class PaymentProcessor {
+    private strategy: PaymentStrategy;
+    
+    constructor(strategy: PaymentStrategy) {
+        this.strategy = strategy;
+    }
+    
+    setPaymentStrategy(strategy: PaymentStrategy): void {
+        this.strategy = strategy;
+        console.log(`Stratégie de paiement changée vers: ${strategy.constructor.name}`);
+    }
+    
+    processPayment(amount: number): PaymentResult {
+        console.log(`Traitement d'un paiement de ${amount}€...`);
+        
+        if (amount <= 0) {
+            return {
+                success: false,
+                message: "Montant invalide"
+            };
+        }
+        
+        return this.strategy.pay(amount);
+    }
+    
+    getCurrentStrategy(): string {
+        return this.strategy.constructor.name;
+    }
+}
+
+// Factory pour créer les stratégies
+class PaymentStrategyFactory {
+    static createCreditCard(cardNumber: string, expiryDate: string, cvv: string): PaymentStrategy {
+        return new CreditCardPayment(cardNumber, expiryDate, cvv);
+    }
+    
+    static createPayPal(email: string, password: string): PaymentStrategy {
+        return new PayPalPayment(email, password);
+    }
+    
+    static createBankTransfer(iban: string, bic: string): PaymentStrategy {
+        return new BankTransferPayment(iban, bic);
+    }
+    
+    static createCrypto(walletAddress: string, privateKey: string, currency: string = 'BTC'): PaymentStrategy {
+        return new CryptocurrencyPayment(walletAddress, privateKey, currency);
+    }
+}
+
+// Utilisation
+const processor = new PaymentProcessor(
+    PaymentStrategyFactory.createCreditCard("1234567890123456", "12/25", "123")
+);
+
+// Traitement avec carte de crédit
+let result = processor.processPayment(100);
+console.log(`Résultat: ${result.message}`);
+
+// Changement vers PayPal
+processor.setPaymentStrategy(
+    PaymentStrategyFactory.createPayPal("user@example.com", "password123")
+);
+result = processor.processPayment(50);
+console.log(`Résultat: ${result.message}`);
+
+// Changement vers virement bancaire
+processor.setPaymentStrategy(
+    PaymentStrategyFactory.createBankTransfer("FR1420041010050500013M02606", "CCBPFRPPXXX")
+);
+result = processor.processPayment(200);
+console.log(`Résultat: ${result.message}`);
+
+// Changement vers crypto
+processor.setPaymentStrategy(
+    PaymentStrategyFactory.createCrypto("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa", "5KJvsngHeMpm884wtkJNzQGaCErckhHJBGFsvd3VyK5qMZXj3hS")
+);
+result = processor.processPayment(75);
+console.log(`Résultat: ${result.message}`);
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="php">
+                                <pre><code class="language-php">
+&lt;?php
+
+// Interface Strategy
+interface SortingStrategy {
+    public function sort(array $data): array;
+    public function getName(): string;
+    public function getComplexity(): string;
+}
+
+// ConcreteStrategy : Tri à Bulles
+class BubbleSortStrategy implements SortingStrategy {
+    public function sort(array $data): array {
+        $n = count($data);
+        $comparisons = 0;
+        
+        for ($i = 0; $i < $n - 1; $i++) {
+            for ($j = 0; $j < $n - $i - 1; $j++) {
+                $comparisons++;
+                if ($data[$j] > $data[$j + 1]) {
+                    // Échange
+                    $temp = $data[$j];
+                    $data[$j] = $data[$j + 1];
+                    $data[$j + 1] = $temp;
+                }
+            }
+        }
+        
+        echo "Tri à bulles: {$comparisons} comparaisons\n";
+        return $data;
+    }
+    
+    public function getName(): string {
+        return "Bubble Sort";
+    }
+    
+    public function getComplexity(): string {
+        return "O(n²)";
+    }
+}
+
+// ConcreteStrategy : Tri Rapide
+class QuickSortStrategy implements SortingStrategy {
+    private int $comparisons = 0;
+    
+    public function sort(array $data): array {
+        $this->comparisons = 0;
+        $result = $this->quickSort($data, 0, count($data) - 1);
+        echo "Tri rapide: {$this->comparisons} comparaisons\n";
+        return $result;
+    }
+    
+    private function quickSort(array $arr, int $low, int $high): array {
+        if ($low < $high) {
+            $pi = $this->partition($arr, $low, $high);
+            $arr = $this->quickSort($arr, $low, $pi - 1);
+            $arr = $this->quickSort($arr, $pi + 1, $high);
+        }
+        return $arr;
+    }
+    
+    private function partition(array &$arr, int $low, int $high): int {
+        $pivot = $arr[$high];
+        $i = $low - 1;
+        
+        for ($j = $low; $j <= $high - 1; $j++) {
+            $this->comparisons++;
+            if ($arr[$j] < $pivot) {
+                $i++;
+                $temp = $arr[$i];
+                $arr[$i] = $arr[$j];
+                $arr[$j] = $temp;
+            }
+        }
+        
+        $temp = $arr[$i + 1];
+        $arr[$i + 1] = $arr[$high];
+        $arr[$high] = $temp;
+        
+        return $i + 1;
+    }
+    
+    public function getName(): string {
+        return "Quick Sort";
+    }
+    
+    public function getComplexity(): string {
+        return "O(n log n) moyen, O(n²) pire cas";
+    }
+}
+
+// ConcreteStrategy : Tri par Fusion
+class MergeSortStrategy implements SortingStrategy {
+    private int $comparisons = 0;
+    
+    public function sort(array $data): array {
+        $this->comparisons = 0;
+        $result = $this->mergeSort($data);
+        echo "Tri par fusion: {$this->comparisons} comparaisons\n";
+        return $result;
+    }
+    
+    private function mergeSort(array $arr): array {
+        if (count($arr) <= 1) {
+            return $arr;
+        }
+        
+        $mid = intval(count($arr) / 2);
+        $left = array_slice($arr, 0, $mid);
+        $right = array_slice($arr, $mid);
+        
+        return $this->merge($this->mergeSort($left), $this->mergeSort($right));
+    }
+    
+    private function merge(array $left, array $right): array {
+        $result = [];
+        $i = $j = 0;
+        
+        while ($i < count($left) && $j < count($right)) {
+            $this->comparisons++;
+            if ($left[$i] <= $right[$j]) {
+                $result[] = $left[$i];
+                $i++;
+            } else {
+                $result[] = $right[$j];
+                $j++;
+            }
+        }
+        
+        while ($i < count($left)) {
+            $result[] = $left[$i];
+            $i++;
+        }
+        
+        while ($j < count($right)) {
+            $result[] = $right[$j];
+            $j++;
+        }
+        
+        return $result;
+    }
+    
+    public function getName(): string {
+        return "Merge Sort";
+    }
+    
+    public function getComplexity(): string {
+        return "O(n log n)";
+    }
+}
+
+// ConcreteStrategy : Tri Natif PHP
+class NativeSortStrategy implements SortingStrategy {
+    public function sort(array $data): array {
+        sort($data);
+        echo "Tri natif PHP (Timsort)\n";
+        return $data;
+    }
+    
+    public function getName(): string {
+        return "PHP Native Sort";
+    }
+    
+    public function getComplexity(): string {
+        return "O(n log n)";
+    }
+}
+
+// Context : Sorter
+class DataSorter {
+    private SortingStrategy $strategy;
+    
+    public function __construct(SortingStrategy $strategy) {
+        $this->strategy = $strategy;
+    }
+    
+    public function setStrategy(SortingStrategy $strategy): void {
+        $this->strategy = $strategy;
+        echo "Stratégie changée vers: " . $strategy->getName() . "\n";
+    }
+    
+    public function sortData(array $data): array {
+        echo "Tri de " . count($data) . " éléments avec " . $this->strategy->getName() . "\n";
+        echo "Complexité: " . $this->strategy->getComplexity() . "\n";
+        
+        $startTime = microtime(true);
+        $sortedData = $this->strategy->sort($data);
+        $endTime = microtime(true);
+        
+        $executionTime = ($endTime - $startTime) * 1000;
+        echo "Temps d'exécution: " . number_format($executionTime, 2) . " ms\n\n";
+        
+        return $sortedData;
+    }
+    
+    public function getCurrentStrategy(): string {
+        return $this->strategy->getName();
+    }
+}
+
+// Factory pour les stratégies de tri
+class SortingStrategyFactory {
+    public static function createBubbleSort(): SortingStrategy {
+        return new BubbleSortStrategy();
+    }
+    
+    public static function createQuickSort(): SortingStrategy {
+        return new QuickSortStrategy();
+    }
+    
+    public static function createMergeSort(): SortingStrategy {
+        return new MergeSortStrategy();
+    }
+    
+    public static function createNativeSort(): SortingStrategy {
+        return new NativeSortStrategy();
+    }
+    
+    public static function getBestStrategyForSize(int $size): SortingStrategy {
+        if ($size < 10) {
+            return self::createBubbleSort(); // Simple pour petites données
+        } elseif ($size < 1000) {
+            return self::createQuickSort(); // Efficace pour tailles moyennes
+        } else {
+            return self::createNativeSort(); // Optimisé pour grandes données
+        }
+    }
+}
+
+// Utilisation
+$data = [64, 34, 25, 12, 22, 11, 90, 88, 76, 50, 42];
+echo "Données originales: " . implode(', ', $data) . "\n\n";
+
+$sorter = new DataSorter(SortingStrategyFactory::createBubbleSort());
+
+// Test avec différentes stratégies
+$strategies = [
+    SortingStrategyFactory::createBubbleSort(),
+    SortingStrategyFactory::createQuickSort(),
+    SortingStrategyFactory::createMergeSort(),
+    SortingStrategyFactory::createNativeSort()
+];
+
+foreach ($strategies as $strategy) {
+    $sorter->setStrategy($strategy);
+    $sorted = $sorter->sortData([...$data]); // Copie du tableau
+    echo "Résultat: " . implode(', ', $sorted) . "\n";
+    echo str_repeat('-', 50) . "\n";
+}
+
+// Test avec sélection automatique de stratégie
+echo "Sélection automatique de stratégie:\n";
+$smallData = [3, 1, 4, 1, 5];
+$largeData = range(1, 1000);
+shuffle($largeData);
+
+$sorter->setStrategy(SortingStrategyFactory::getBestStrategyForSize(count($smallData)));
+$sorter->sortData($smallData);
+
+$sorter->setStrategy(SortingStrategyFactory::getBestStrategyForSize(count($largeData)));
+$sorter->sortData(array_slice($largeData, 0, 100)); // Test avec 100 éléments
+
+?&gt;
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="java">
+                                <pre><code class="language-java">
+import java.util.*;
+import java.util.function.Function;
+
+// Interface Strategy
+interface CompressionStrategy {
+    byte[] compress(String data);
+    String decompress(byte[] compressedData);
+    String getName();
+    double getCompressionRatio(String originalData, byte[] compressedData);
+}
+
+// ConcreteStrategy : Compression ZIP
+class ZipCompressionStrategy implements CompressionStrategy {
+    @Override
+    public byte[] compress(String data) {
+        // Simulation de compression ZIP
+        System.out.println("Compression ZIP en cours...");
+        
+        // Simulation simple : on retire les espaces et caractères répétés
+        String compressed = data.replaceAll("\\s+", " ")
+                               .replaceAll("(.)\\1+", "$1");
+        
+        return compressed.getBytes();
+    }
+    
+    @Override
+    public String decompress(byte[] compressedData) {
+        System.out.println("Décompression ZIP en cours...");
+        return new String(compressedData);
+    }
+    
+    @Override
+    public String getName() {
+        return "ZIP Compression";
+    }
+    
+    @Override
+    public double getCompressionRatio(String originalData, byte[] compressedData) {
+        return (double) compressedData.length / originalData.length();
+    }
+}
+
+// ConcreteStrategy : Compression GZIP
+class GzipCompressionStrategy implements CompressionStrategy {
+    @Override
+    public byte[] compress(String data) {
+        System.out.println("Compression GZIP en cours...");
+        
+        // Simulation GZIP : compression plus agressive
+        String compressed = data.toLowerCase()
+                               .replaceAll("[aeiou]", "")
+                               .replaceAll("\\s+", "");
+        
+        return compressed.getBytes();
+    }
+    
+    @Override
+    public String decompress(byte[] compressedData) {
+        System.out.println("Décompression GZIP en cours...");
+        return new String(compressedData) + " [GZIP décompressé]";
+    }
+    
+    @Override
+    public String getName() {
+        return "GZIP Compression";
+    }
+    
+    @Override
+    public double getCompressionRatio(String originalData, byte[] compressedData) {
+        return (double) compressedData.length / originalData.length();
+    }
+}
+
+// ConcreteStrategy : Compression LZ4 (rapide)
+class Lz4CompressionStrategy implements CompressionStrategy {
+    @Override
+    public byte[] compress(String data) {
+        System.out.println("Compression LZ4 (rapide) en cours...");
+        
+        // Simulation LZ4 : compression rapide mais moins efficace
+        String compressed = data.replaceAll("\\s+", "_");
+        
+        return compressed.getBytes();
+    }
+    
+    @Override
+    public String decompress(byte[] compressedData) {
+        System.out.println("Décompression LZ4 en cours...");
+        return new String(compressedData).replace("_", " ");
+    }
+    
+    @Override
+    public String getName() {
+        return "LZ4 Compression";
+    }
+    
+    @Override
+    public double getCompressionRatio(String originalData, byte[] compressedData) {
+        return (double) compressedData.length / originalData.length();
+    }
+}
+
+// ConcreteStrategy : Pas de compression
+class NoCompressionStrategy implements CompressionStrategy {
+    @Override
+    public byte[] compress(String data) {
+        System.out.println("Aucune compression appliquée");
+        return data.getBytes();
+    }
+    
+    @Override
+    public String decompress(byte[] compressedData) {
+        System.out.println("Aucune décompression nécessaire");
+        return new String(compressedData);
+    }
+    
+    @Override
+    public String getName() {
+        return "No Compression";
+    }
+    
+    @Override
+    public double getCompressionRatio(String originalData, byte[] compressedData) {
+        return 1.0; // Aucune compression
+    }
+}
+
+// Context : Gestionnaire de Fichiers
+class FileManager {
+    private CompressionStrategy compressionStrategy;
+    private Map<String, byte[]> storage = new HashMap<>();
+    
+    public FileManager(CompressionStrategy strategy) {
+        this.compressionStrategy = strategy;
+    }
+    
+    public void setCompressionStrategy(CompressionStrategy strategy) {
+        this.compressionStrategy = strategy;
+        System.out.println("Stratégie de compression changée vers: " + strategy.getName());
+    }
+    
+    public void saveFile(String filename, String content) {
+        System.out.println("\n=== Sauvegarde de " + filename + " ===");
+        System.out.println("Taille originale: " + content.length() + " caractères");
+        
+        long startTime = System.nanoTime();
+        byte[] compressedData = compressionStrategy.compress(content);
+        long endTime = System.nanoTime();
+        
+        double compressionTime = (endTime - startTime) / 1_000_000.0; // en ms
+        double ratio = compressionStrategy.getCompressionRatio(content, compressedData);
+        
+        storage.put(filename, compressedData);
+        
+        System.out.println("Taille compressée: " + compressedData.length + " octets");
+        System.out.println("Ratio de compression: " + String.format("%.2f", ratio));
+        System.out.println("Temps de compression: " + String.format("%.2f", compressionTime) + " ms");
+        System.out.println("Économie d'espace: " + String.format("%.1f", (1 - ratio) * 100) + "%");
+    }
+    
+    public String loadFile(String filename) {
+        System.out.println("\n=== Chargement de " + filename + " ===");
+        
+        byte[] compressedData = storage.get(filename);
+        if (compressedData == null) {
+            System.out.println("Fichier non trouvé: " + filename);
+            return null;
+        }
+        
+        long startTime = System.nanoTime();
+        String decompressedContent = compressionStrategy.decompress(compressedData);
+        long endTime = System.nanoTime();
+        
+        double decompressionTime = (endTime - startTime) / 1_000_000.0;
+        System.out.println("Temps de décompression: " + String.format("%.2f", decompressionTime) + " ms");
+        
+        return decompressedContent;
+    }
+    
+    public void showStorageInfo() {
+        System.out.println("\n=== Informations de stockage ===");
+        System.out.println("Stratégie actuelle: " + compressionStrategy.getName());
+        System.out.println("Fichiers stockés: " + storage.size());
+        
+        int totalSize = storage.values().stream()
+                              .mapToInt(data -> data.length)
+                              .sum();
+        System.out.println("Taille totale: " + totalSize + " octets");
+    }
+    
+    public String getCurrentStrategy() {
+        return compressionStrategy.getName();
+    }
+}
+
+// Factory pour les stratégies de compression
+class CompressionStrategyFactory {
+    public static CompressionStrategy createZipStrategy() {
+        return new ZipCompressionStrategy();
+    }
+    
+    public static CompressionStrategy createGzipStrategy() {
+        return new GzipCompressionStrategy();
+    }
+    
+    public static CompressionStrategy createLz4Strategy() {
+        return new Lz4CompressionStrategy();
+    }
+    
+    public static CompressionStrategy createNoCompressionStrategy() {
+        return new NoCompressionStrategy();
+    }
+    
+    public static CompressionStrategy getBestStrategyForContent(String content) {
+        if (content.length() < 100) {
+            return createNoCompressionStrategy(); // Pas de compression pour petits fichiers
+        } else if (content.contains("    ") || content.contains("\n\n")) {
+            return createGzipStrategy(); // Bon pour texte avec répétitions
+        } else if (content.length() > 10000) {
+            return createLz4Strategy(); // Rapide pour gros fichiers
+        } else {
+            return createZipStrategy(); // Équilibré pour taille moyenne
+        }
+    }
+}
+
+// Classe principale pour démonstration
+public class CompressionDemo {
+    public static void main(String[] args) {
+        // Données de test
+        String smallText = "Hello World!";
+        String mediumText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
+                           "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
+                           "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.";
+        String largeText = mediumText.repeat(50); // Texte répétitif
+        
+        // Création du gestionnaire de fichiers
+        FileManager fileManager = new FileManager(
+            CompressionStrategyFactory.createZipStrategy()
+        );
+        
+        // Test avec différentes stratégies
+        CompressionStrategy[] strategies = {
+            CompressionStrategyFactory.createNoCompressionStrategy(),
+            CompressionStrategyFactory.createZipStrategy(),
+            CompressionStrategyFactory.createGzipStrategy(),
+            CompressionStrategyFactory.createLz4Strategy()
+        };
+        
+        System.out.println("=== Test de compression avec différentes stratégies ===");
+        
+        for (CompressionStrategy strategy : strategies) {
+            fileManager.setCompressionStrategy(strategy);
+            
+            // Test avec texte moyen
+            fileManager.saveFile("medium_" + strategy.getName().replace(" ", "_") + ".txt", mediumText);
+            String loaded = fileManager.loadFile("medium_" + strategy.getName().replace(" ", "_") + ".txt");
+            
+            System.out.println("Contenu récupéré: " +
+                (loaded != null ? loaded.substring(0, Math.min(50, loaded.length())) + "..." : "null"));
+            System.out.println(String.join("", Collections.nCopies(60, "-")));
+        }
+        
+        // Test de sélection automatique
+        System.out.println("\n=== Sélection automatique de stratégie ===");
+        
+        String[] testContents = {smallText, mediumText, largeText};
+        String[] filenames = {"small.txt", "medium.txt", "large.txt"};
+        
+        for (int i = 0; i < testContents.length; i++) {
+            CompressionStrategy bestStrategy = CompressionStrategyFactory.getBestStrategyForContent(testContents[i]);
+            fileManager.setCompressionStrategy(bestStrategy);
+            fileManager.saveFile(filenames[i], testContents[i]);
+        }
+        
+        fileManager.showStorageInfo();
+    }
+}
+</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Avantages et Inconvénients -->
+                <section class="pros-cons-section">
+                    <div class="aikido-card">
+                        <h2>⚖️ Avantages et Inconvénients</h2>
+                        
+                        <div class="pros-cons-grid">
+                            <div class="pros-card">
+                                <h3>✅ Avantages</h3>
+                                <ul>
+                                    <li><strong>Flexibilité</strong> : Changement d'algorithme à l'exécution</li>
+                                    <li><strong>Extensibilité</strong> : Ajout facile de nouvelles stratégies</li>
+                                    <li><strong>Principe Ouvert/Fermé</strong> : Ouvert à l'extension, fermé à la modification</li>
+                                    <li><strong>Élimination des conditionnelles</strong> : Remplace les if/else complexes</li>
+                                    <li><strong>Testabilité</strong> : Chaque stratégie peut être testée indépendamment</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="cons-card">
+                                <h3>❌ Inconvénients</h3>
+                                <ul>
+                                    <li><strong>Complexité accrue</strong> : Plus de classes à maintenir</li>
+                                    <li><strong>Connaissance des stratégies</strong> : Le client doit connaître les différences</li>
+                                    <li><strong>Overhead</strong> : Peut être excessif pour des algorithmes simples</li>
+                                    <li><strong>Communication</strong> : Interface commune peut limiter les paramètres</li>
+                                    <li><strong>Nombre d'objets</strong> : Augmentation du nombre d'instances</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Cas d'Usage -->
+                <section class="use-cases-section">
+                    <div class="aikido-card">
+                        <h2>🎯 Cas d'Usage Appropriés</h2>
+                        
+                        <div class="use-cases-grid">
+                            <div class="use-case good">
+                                <h4>✅ Quand l'utiliser</h4>
+                                <ul>
+                                    <li><strong>Algorithmes multiples</strong> : Plusieurs façons de résoudre un problème</li>
+                                    <li><strong>Conditions complexes</strong> : Remplacer de longs if/else ou switch</li>
+                                    <li><strong>Calculs variables</strong> : Tarification, taxation, remises</li>
+                                    <li><strong>Formats multiples</strong> : Export PDF, Excel, CSV</li>
+                                    <li><strong>Validation</strong> : Différentes règles selon le contexte</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="use-case bad">
+                                <h4>❌ Quand l'éviter</h4>
+                                <ul>
+                                    <li><strong>Algorithme unique</strong> : Une seule façon de faire</li>
+                                    <li><strong>Logique simple</strong> : Conditions triviales</li>
+                                    <li><strong>Pas de variation</strong> : Comportement fixe requis</li>
+                                    <li><strong>Performance critique</strong> : Overhead inacceptable</li>
+                                    <li><strong>Couplage nécessaire</strong> : Stratégies interdépendantes</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Alternatives et Patterns Liés -->
+                <section class="alternatives-section">
+                    <div class="aikido-card">
+                        <h2>🔄 Alternatives et Patterns Liés</h2>
+                        
+                        <div class="alternatives-grid">
+                            <div class="alternative-card">
+                                <h4>🏭 Factory Method</h4>
+                                <p>Créer des stratégies via des factories spécialisées</p>
+                                <div class="code-example">
+                                    <code>// Factory pour créer la bonne stratégie
+StrategyFactory.createForContext(context);</code>
+                                </div>
+                            </div>
+                            
+                            <div class="alternative-card">
+                                <h4>🎭 State Pattern</h4>
+                                <p>Changer de comportement selon l'état interne</p>
+                                <div class="code-example">
+                                    <code>// Comportement change avec l'état
+context.setState(newState);</code>
+                                </div>
+                            </div>
+                            
+                            <div class="alternative-card">
+                                <h4>📋 Template Method</h4>
+                                <p>Définir le squelette avec des étapes variables</p>
+                                <div class="code-example">
+                                    <code>// Algorithme avec étapes personnalisables
+template.execute(); // Appelle les hooks</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Biais Cognitifs Liés -->
+                <section class="cognitive-bias-section">
+                    <div class="aikido-card biais-cognitif">
+                        <h2>🧩 Biais Cognitifs Associés</h2>
+                        
+                        <div class="bias-analysis">
+                            <div class="bias-item">
+                                <h4>🔨 Marteau de Maslow</h4>
+                                <p><strong>Manifestation :</strong> "Strategy résout tous les problèmes de choix d'algorithme."</p>
+                                <p><strong>Risque :</strong> Sur-ingénierie avec Strategy même pour des cas simples.</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>⚓ Biais d'Ancrage</h4>
+                                <p><strong>Manifestation :</strong> "J'ai toujours utilisé des if/else, pourquoi changer ?"</p>
+                                <p><strong>Risque :</strong> Résistance à adopter Strategy même quand c'est approprié.</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>🎯 Biais de Disponibilité</h4>
+                                <p><strong>Manifestation :</strong> Choisir Strategy car c'est le pattern le plus connu.</p>
+                                <p><strong>Risque :</strong> Ignorer des alternatives plus simples comme les fonctions lambda.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Anti-Patterns Liés -->
+                <section class="antipatterns-section">
+                    <div class="aikido-card anti-pattern">
+                        <h2>⚠️ Anti-Patterns à Éviter</h2>
+                        
+                        <div class="antipattern-warnings">
+                            <div class="antipattern-warning">
+                                <h4>🏗️ Strategy Explosion</h4>
+                                <p>Créer trop de stratégies pour des variations mineures.</p>
+                                <div class="code-example bad">
+                                    <code>// ❌ Mauvais : Une stratégie par petite variation
+class RedButtonStrategy, BlueButtonStrategy, GreenButtonStrategy...</code>
+                                </div>
+                            </div>
+                            
+                            <div class="antipattern-warning">
+                                <h4>🔗 Leaky Strategy</h4>
+                                <p>Stratégies qui dépendent trop du contexte ou d'autres stratégies.</p>
+                                <div class="code-example bad">
+                                    <code>// ❌ Stratégie qui connaît trop le contexte
+strategy.execute(context.getAllInternalState());</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercice Pratique -->
+                <section class="exercise-section">
+                    <div class="aikido-card exercise">
+                        <h2>🎯 Exercice Pratique</h2>
+                        
+                        <div class="exercise-scenario">
+                            <h3>Scenario : Système de Calcul de Prix</h3>
+                            <p>
+                                Vous développez un e-commerce avec différents types de clients :
+                                particuliers (pas de remise), professionnels (5% de remise),
+                                VIP (10% de remise), et employés (20% de remise).
+                                Le calcul doit aussi tenir compte des promotions saisonnières.
+                            </p>
+                            
+                            <div class="exercise-question">
+                                <h4>Question :</h4>
+                                <p>Comment structureriez-vous ce système de calcul de prix ?</p>
+                                
+                                <div class="choice-options">
+                                    <div class="choice-option" data-choice="strategy">
+                                        🎯 Pattern Strategy avec PricingStrategy
+                                    </div>
+                                    <div class="choice-option" data-choice="ifelse">
+                                        🔀 Conditions if/else dans une méthode
+                                    </div>
+                                    <div class="choice-option" data-choice="inheritance">
+                                        🏗️ Héritage avec classes Customer spécialisées
+                                    </div>
+                                </div>
+                                
+                                <div id="exercise-retours" class="exercise-retours hidden">
+                                    <!-- Le feedback sera affiché ici -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Completion Section -->
+                <section class="completion-section slide-in">
+                    <div class="aikido-card completion">
+                        <div class="completion-content">
+                            <div class="completion-icon">📋</div>
+                            <div class="completion-text">
+                                <h3>Avez-vous terminé cette section ?</h3>
+                                <p>Marquez cette page comme terminée pour suivre votre progression dans la formation.</p>
+                            </div>
+                            <button class="aikido-btn primary mark-completed" data-page="strategy">
+                                Marquer comme Terminé ✓
+                            </button>
+                        </div>
+                        
+                        <div class="completion-feedback hidden">
+                            <div class="feedback-success">
+                                <h4>🎉 Excellent travail !</h4>
+                                <p>Vous avez terminé l'étude du pattern Strategy. Vous comprenez maintenant :</p>
+                                <ul>
+                                    <li>Comment encapsuler des algorithmes interchangeables</li>
+                                    <li>Les avantages de la composition sur l'héritage</li>
+                                    <li>Quand utiliser Strategy vs autres patterns</li>
+                                    <li>Comment éviter les anti-patterns liés</li>
+                                </ul>
+                                <p>Continuez avec les autres patterns comportementaux pour maîtriser la flexibilité du code !</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts pour l'exercice interactif -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion de l'exercice interactif
+            const choiceOptions = document.querySelectorAll('.choice-option');
+            const exerciseRetours = document.getElementById('exercise-retours');
+            
+            const feedbacks = {
+                strategy: {
+                    type: 'success',
+                    title: '✅ Excellente réponse !',
+                    content: `
+                        <p><strong>Le pattern Strategy est parfait pour ce cas !</strong></p>
+                        <ul>
+                            <li><strong>Flexibilité</strong> : Facile d'ajouter de nouveaux types de clients</li>
+                            <li><strong>Séparation</strong> : Chaque logique de pricing est isolée</li>
+                            <li><strong>Testabilité</strong> : Chaque stratégie peut être testée indépendamment</li>
+                            <li><strong>Combinaison</strong> : Peut combiner avec Decorator pour les promotions</li>
+                        </ul>
+                        <div class="code-example">
+                            <code>interface PricingStrategy {
+    calculatePrice(basePrice: number): number;
+}
+
+class VIPPricingStrategy implements PricingStrategy {
+    calculatePrice(basePrice: number): number {
+        return basePrice * 0.9; // 10% de remise
+    }
+}</code>
+                        </div>
+                    `
+                },
+                ifelse: {
+                    type: 'warning',
+                    title: '⚠️ Solution fonctionnelle mais limitée',
+                    content: `
+                        <p><strong>Les conditions if/else fonctionnent mais posent des problèmes :</strong></p>
+                        <ul>
+                            <li><strong>Violation OCP</strong> : Modifier le code pour chaque nouveau type</li>
+                            <li><strong>Complexité</strong> : La méthode devient longue et difficile à maintenir</li>
+                            <li><strong>Tests</strong> : Difficile de tester chaque cas isolément</li>
+                            <li><strong>Duplication</strong> : Logique similaire répétée</li>
+                        </ul>
+                        <div class="code-example bad">
+                            <code>// ❌ Devient vite ingérable
+if (customerType === 'VIP') {
+    price *= 0.9;
+} else if (customerType === 'PRO') {
+    price *= 0.95;
+} // ... et ainsi de suite</code>
+                        </div>
+                        <p><strong>💡 Conseil :</strong> Refactorisez vers Strategy quand vous avez plus de 3-4 conditions.</p>
+                    `
+                },
+                inheritance: {
+                    type: 'error',
+                    title: '❌ Approche problématique',
+                    content: `
+                        <p><strong>L'héritage n'est pas adapté ici :</strong></p>
+                        <ul>
+                            <li><strong>Couplage fort</strong> : Le pricing est lié à la classe Customer</li>
+                            <li><strong>Responsabilité unique</strong> : Customer fait trop de choses</li>
+                            <li><strong>Flexibilité</strong> : Difficile de changer de pricing dynamiquement</li>
+                            <li><strong>Combinaisons</strong> : Comment gérer un VIP temporaire ?</li>
+                        </ul>
+                        <div class="code-example bad">
+                            <code>// ❌ Problématique
+class VIPCustomer extends Customer {
+    calculatePrice() { /* logique VIP */ }
+}
+// Comment faire un VIP temporaire ?</code>
+                        </div>
+                        <p><strong>💡 Principe :</strong> "Favoriser la composition plutôt que l'héritage"</p>
+                    `
+                }
+            };
+            
+            choiceOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Retirer la sélection précédente
+                    choiceOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Sélectionner l'option actuelle
+                    this.classList.add('selected');
+                    
+                    // Afficher le feedback
+                    const choice = this.getAttribute('data-choice');
+                    const feedback = feedbacks[choice];
+                    
+                    exerciseRetours.innerHTML = `
+                        <div class="feedback ${feedback.type}">
+                            <h4>${feedback.title}</h4>
+                            ${feedback.content}
+                        </div>
+                    `;
+                    
+                    exerciseRetours.classList.remove('hidden');
+                });
+            });
+            
+            // Gestion du bouton de completion
+            const markCompletedBtn = document.querySelector('.mark-completed');
+            const completionFeedback = document.querySelector('.completion-feedback');
+            
+            if (markCompletedBtn && completionFeedback) {
+                markCompletedBtn.addEventListener('click', function() {
+                    // Marquer comme terminé (ici on simule, dans un vrai système on sauvegarderait)
+                    this.textContent = 'Terminé ✅';
+                    this.disabled = true;
+                    
+                    // Afficher le feedback de completion
+                    completionFeedback.classList.remove('hidden');
+                    
+                    // Scroll vers le feedback
+                    completionFeedback.scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

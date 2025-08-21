@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Method Pattern - Formation Patterns Développeurs</title>
+    <meta name="description" content="Le pattern Template Method expliqué avec exemples de code, diagrammes UML et cas d'usage pratiques">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <h1 class="page-title">📋 Template Method Pattern</h1>
+                    <p class="page-subtitle">Définir le squelette d'un algorithme en laissant les sous-classes redéfinir certaines étapes</p>
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">🎨</span>
+                            <span class="meta-text">Design Patterns</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⭐</span>
+                            <span class="meta-text">Difficulté: Facile</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⏱️</span>
+                            <span class="meta-text">20 min</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🎭</span>
+                            <span class="meta-text">Comportemental</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Définition et Problème -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card design-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="mb-md">
+                            Le <strong>Template Method</strong> est un pattern comportemental qui définit le squelette 
+                            d'un algorithme dans la classe mère, mais laisse les sous-classes redéfinir certaines 
+                            étapes de l'algorithme sans changer sa structure globale. Il utilise l'héritage pour 
+                            permettre la réutilisation de code tout en offrant de la flexibilité.
+                        </p>
+                        
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problème Résolu</h3>
+                                <ul>
+                                    <li>Duplication de code dans des algorithmes similaires</li>
+                                    <li>Variations d'un même processus métier</li>
+                                    <li>Besoin de contrôler l'ordre d'exécution des étapes</li>
+                                    <li>Code répétitif avec de petites variations</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solution Apportée</h3>
+                                <ul>
+                                    <li>Structure d'algorithme réutilisable</li>
+                                    <li>Points d'extension bien définis</li>
+                                    <li>Contrôle de l'ordre d'exécution</li>
+                                    <li>Réduction de la duplication de code</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert warning">
+                            <strong>⚠️ Attention :</strong> Le Template Method peut créer une hiérarchie rigide 
+                            et complexe. Préférer la composition quand l'héritage devient problématique.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Structure UML -->
+                <section class="structure-section">
+                    <div class="aikido-card">
+                        <h2>🏗️ Structure UML</h2>
+                        <div class="uml-diagram">
+                            <div class="uml-class-diagram">
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>AbstractClass</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ templateMethod(): void</div>
+                                        <div class="method protected">+ step1(): void</div>
+                                        <div class="method protected abstract">+ step2(): void</div>
+                                        <div class="method protected">+ step3(): void</div>
+                                        <div class="method protected">+ hook(): void</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>ConcreteClassA</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method protected">+ step2(): void</div>
+                                        <div class="method protected">+ hook(): void</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>ConcreteClassB</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method protected">+ step2(): void</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="structure-explanation">
+                            <h3>Éléments Clés</h3>
+                            <ul>
+                                <li><strong>AbstractClass</strong> : Définit la méthode template et les étapes de base</li>
+                                <li><strong>templateMethod()</strong> : Méthode finale qui orchestre l'algorithme</li>
+                                <li><strong>Méthodes abstraites</strong> : Étapes que les sous-classes doivent implémenter</li>
+                                <li><strong>Hooks</strong> : Points d'extension optionnels pour les sous-classes</li>
+                            </ul>
+                        </div>
+
+                        <!-- Diagramme de flux Mermaid -->
+                        <div class="mt-lg">
+                            <h3>🔄 Flux d'Exécution</h3>
+                            <div class="mermaid">
+                                graph TD
+                                    A[Client appelle templateMethod] --> B[step1 - implémentation par défaut]
+                                    B --> C[step2 - implémentation spécifique]
+                                    C --> D[step3 - implémentation par défaut]
+                                    D --> E[hook - extension optionnelle]
+                                    E --> F[Fin de l'algorithme]
+                                    
+                                    G[ConcreteClassA] --> H[Redéfinit step2 et hook]
+                                    I[ConcreteClassB] --> J[Redéfinit seulement step2]
+                                    
+                                    style A fill:#e1f5fe
+                                    style C fill:#ffebee
+                                    style E fill:#f3e5f5
+                                    style F fill:#e8f5e8
+                            </div>
+                            <p class="text-sm text-gray-600 mt-md">
+                                <strong>💡 Point clé :</strong> L'ordre des étapes est fixé par la classe abstraite, 
+                                mais le contenu de certaines étapes peut être personnalisé.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Implémentations -->
+                <section class="implementations-section">
+                    <h2>💻 Implémentations</h2>
+                    
+                    <div class="aikido-card">
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="typescript">TypeScript</button>
+                                <button class="tab-btn" data-tab="php">PHP</button>
+                                <button class="tab-btn" data-tab="java">Java</button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="typescript">
+                                <h4>Exemple : Processus de Traitement de Données</h4>
+                                <pre><code class="language-typescript">
+// Classe abstraite définissant le template
+abstract class DataProcessor {
+    // Méthode template - définit l'algorithme
+    public processData(data: any[]): any[] {
+        console.log("🚀 Début du traitement des données");
+        
+        // Étape 1 : Validation (implémentation par défaut)
+        const validatedData = this.validateData(data);
+        
+        // Étape 2 : Transformation (spécifique à chaque sous-classe)
+        const transformedData = this.transformData(validatedData);
+        
+        // Étape 3 : Filtrage (implémentation par défaut)
+        const filteredData = this.filterData(transformedData);
+        
+        // Hook optionnel pour post-traitement
+        const finalData = this.postProcess(filteredData);
+        
+        // Étape 4 : Sauvegarde (implémentation par défaut)
+        this.saveData(finalData);
+        
+        console.log("✅ Traitement terminé");
+        return finalData;
+    }
+    
+    // Étape avec implémentation par défaut
+    protected validateData(data: any[]): any[] {
+        console.log("🔍 Validation des données");
+        return data.filter(item => item !== null && item !== undefined);
+    }
+    
+    // Étape abstraite - doit être implémentée par les sous-classes
+    protected abstract transformData(data: any[]): any[];
+    
+    // Étape avec implémentation par défaut
+    protected filterData(data: any[]): any[] {
+        console.log("🔧 Filtrage des données");
+        return data;
+    }
+    
+    // Hook - peut être redéfini par les sous-classes
+    protected postProcess(data: any[]): any[] {
+        // Implémentation par défaut : ne fait rien
+        return data;
+    }
+    
+    // Étape avec implémentation par défaut
+    protected saveData(data: any[]): void {
+        console.log(`💾 Sauvegarde de ${data.length} éléments`);
+    }
+}
+
+// Processeur pour données utilisateur
+class UserDataProcessor extends DataProcessor {
+    protected transformData(data: any[]): any[] {
+        console.log("👤 Transformation des données utilisateur");
+        return data.map(user => ({
+            id: user.id,
+            name: user.name?.toUpperCase() || 'UNKNOWN',
+            email: user.email?.toLowerCase() || '',
+            createdAt: new Date().toISOString()
+        }));
+    }
+    
+    protected postProcess(data: any[]): any[] {
+        console.log("🔄 Post-traitement : ajout de métadonnées");
+        return data.map(user => ({
+            ...user,
+            processed: true,
+            processedAt: new Date().toISOString()
+        }));
+    }
+    
+    protected filterData(data: any[]): any[] {
+        console.log("🔧 Filtrage : suppression des emails invalides");
+        return data.filter(user => user.email && user.email.includes('@'));
+    }
+}
+
+// Processeur pour données de commande
+class OrderDataProcessor extends DataProcessor {
+    protected transformData(data: any[]): any[] {
+        console.log("🛒 Transformation des données de commande");
+        return data.map(order => ({
+            orderId: order.id,
+            customerId: order.customer_id,
+            total: parseFloat(order.total) || 0,
+            status: order.status || 'pending',
+            items: order.items || [],
+            processedAt: new Date().toISOString()
+        }));
+    }
+    
+    protected validateData(data: any[]): any[] {
+        console.log("🔍 Validation spécifique aux commandes");
+        return super.validateData(data).filter(order => 
+            order.id && order.customer_id && order.total >= 0
+        );
+    }
+}
+
+// Processeur simple sans personnalisation
+class SimpleDataProcessor extends DataProcessor {
+    protected transformData(data: any[]): any[] {
+        console.log("⚡ Transformation simple : ajout d'un timestamp");
+        return data.map(item => ({
+            ...item,
+            timestamp: Date.now()
+        }));
+    }
+}
+
+// Démonstration du Template Method
+function demonstrateTemplateMethod(): void {
+    console.log("=== Démonstration Template Method Pattern ===\n");
+    
+    // Données de test
+    const userData = [
+        { id: 1, name: "john doe", email: "JOHN@EXAMPLE.COM" },
+        { id: 2, name: "jane smith", email: "jane@test.com" },
+        { id: 3, name: null, email: "invalid-email" },
+        { id: 4, name: "bob wilson", email: "bob@company.org" }
+    ];
+    
+    const orderData = [
+        { id: "ORD-001", customer_id: 123, total: "99.99", status: "pending", items: ["item1", "item2"] },
+        { id: "ORD-002", customer_id: 456, total: "149.50", status: "shipped" },
+        { id: null, customer_id: 789, total: "-10", status: "cancelled" }
+    ];
+    
+    console.log("--- Traitement des données utilisateur ---");
+    const userProcessor = new UserDataProcessor();
+    const processedUsers = userProcessor.processData(userData);
+    console.log("Résultat:", processedUsers);
+    
+    console.log("\n--- Traitement des données de commande ---");
+    const orderProcessor = new OrderDataProcessor();
+    const processedOrders = orderProcessor.processData(orderData);
+    console.log("Résultat:", processedOrders);
+    
+    console.log("\n--- Traitement simple ---");
+    const simpleProcessor = new SimpleDataProcessor();
+    const simpleData = [{ name: "test" }, { value: 42 }];
+    const processedSimple = simpleProcessor.processData(simpleData);
+    console.log("Résultat:", processedSimple);
+}
+
+// Exemple avancé : Pipeline de traitement d'images
+abstract class ImageProcessor {
+    public processImage(imagePath: string): string {
+        console.log(`🖼️ Traitement de l'image: ${imagePath}`);
+        
+        // Étapes du pipeline
+        const loadedImage = this.loadImage(imagePath);
+        const processedImage = this.applyFilters(loadedImage);
+        const optimizedImage = this.optimize(processedImage);
+        const outputPath = this.saveImage(optimizedImage);
+        
+        // Hook pour post-traitement
+        this.onProcessingComplete(outputPath);
+        
+        return outputPath;
+    }
+    
+    protected loadImage(path: string): string {
+        console.log("📂 Chargement de l'image");
+        return `loaded_${path}`;
+    }
+    
+    protected abstract applyFilters(image: string): string;
+    
+    protected optimize(image: string): string {
+        console.log("⚡ Optimisation de l'image");
+        return `optimized_${image}`;
+    }
+    
+    protected saveImage(image: string): string {
+        const outputPath = `output_${Date.now()}.jpg`;
+        console.log(`💾 Sauvegarde: ${outputPath}`);
+        return outputPath;
+    }
+    
+    protected onProcessingComplete(outputPath: string): void {
+        // Hook vide par défaut
+    }
+}
+
+class ThumbnailProcessor extends ImageProcessor {
+    protected applyFilters(image: string): string {
+        console.log("🔍 Application des filtres pour miniature");
+        return `thumbnail_${image}`;
+    }
+    
+    protected onProcessingComplete(outputPath: string): void {
+        console.log(`📱 Miniature créée: ${outputPath}`);
+    }
+}
+
+class WatermarkProcessor extends ImageProcessor {
+    protected applyFilters(image: string): string {
+        console.log("🏷️ Ajout du filigrane");
+        return `watermarked_${image}`;
+    }
+    
+    protected optimize(image: string): string {
+        console.log("⚡ Optimisation spéciale pour filigrane");
+        return `special_optimized_${image}`;
+    }
+}
+
+// Démonstration du pipeline d'images
+function demonstrateImageProcessing(): void {
+    console.log("\n=== Pipeline de Traitement d'Images ===\n");
+    
+    const thumbnailProcessor = new ThumbnailProcessor();
+    const watermarkProcessor = new WatermarkProcessor();
+    
+    console.log("--- Création de miniature ---");
+    thumbnailProcessor.processImage("photo.jpg");
+    
+    console.log("\n--- Ajout de filigrane ---");
+    watermarkProcessor.processImage("document.png");
+}
+
+// Exécution des démonstrations
+demonstrateTemplateMethod();
+demonstrateImageProcessing();
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="php">
+                                <pre><code class="language-php">
+&lt;?php
+
+// Classe abstraite pour le traitement de rapports
+abstract class ReportGenerator {
+    // Méthode template
+    public function generateReport(array $data): string {
+        echo "📊 Génération du rapport\n";
+        
+        // Étapes du processus
+        $this->prepareData($data);
+        $header = $this->createHeader();
+        $content = $this->createContent($data);
+        $footer = $this->createFooter();
+        
+        $report = $this->assembleReport($header, $content, $footer);
+        
+        // Hook pour post-traitement
+        $finalReport = $this->postProcess($report);
+        
+        $this->saveReport($finalReport);
+        
+        echo "✅ Rapport généré avec succès\n";
+        return $finalReport;
+    }
+    
+    // Étape avec implémentation par défaut
+    protected function prepareData(array &$data): void {
+        echo "🔄 Préparation des données\n";
+        // Tri par défaut
+        sort($data);
+    }
+    
+    // Étape abstraite - doit être implémentée
+    abstract protected function createContent(array $data): string;
+    
+    // Étapes avec implémentation par défaut
+    protected function createHeader(): string {
+        $date = date('Y-m-d H:i:s');
+        return "=== RAPPORT GÉNÉRÉ LE {$date} ===\n\n";
+    }
+    
+    protected function createFooter(): string {
+        return "\n=== FIN DU RAPPORT ===\n";
+    }
+    
+    protected function assembleReport(string $header, string $content, string $footer): string {
+        return $header . $content . $footer;
+    }
+    
+    // Hook - peut être redéfini
+    protected function postProcess(string $report): string {
+        return $report;
+    }
+    
+    protected function saveReport(string $report): void {
+        $filename = "rapport_" . date('Y-m-d_H-i-s') . ".txt";
+        echo "💾 Sauvegarde du rapport: {$filename}\n";
+        // file_put_contents($filename, $report);
+    }
+}
+
+// Générateur de rapport de ventes
+class SalesReportGenerator extends ReportGenerator {
+    protected function createContent(array $data): string {
+        echo "💰 Création du contenu de vente\n";
+        
+        $content = "RAPPORT DE VENTES\n";
+        $content .= str_repeat("-", 50) . "\n\n";
+        
+        $total = 0;
+        foreach ($data as $sale) {
+            $content .= sprintf(
+                "Produit: %-20s | Quantité: %3d | Prix: %8.2f€\n",
+                $sale['product'],
+                $sale['quantity'],
+                $sale['price']
+            );
+            $total += $sale['quantity'] * $sale['price'];
+        }
+        
+        $content .= str_repeat("-", 50) . "\n";
+        $content .= sprintf("TOTAL: %.2f€\n", $total);
+        
+        return $content;
+    }
+    
+    protected function prepareData(array &$data): void {
+        echo "🔄 Préparation spécifique aux ventes\n";
+        // Tri par prix décroissant
+        usort($data, function($a, $b) {
+            return ($b['price'] * $b['quantity']) <=> ($a['price'] * $a['quantity']);
+        });
+    }
+    
+    protected function postProcess(string $report): string {
+        echo "📈 Post-traitement : ajout de statistiques\n";
+        $stats = "\n--- STATISTIQUES ---\n";
+        $stats .= "Rapport généré automatiquement\n";
+        $stats .= "Nombre de lignes: " . substr_count($report, "\n") . "\n";
+        
+        return $report . $stats;
+    }
+}
+
+// Générateur de rapport d'inventaire
+class InventoryReportGenerator extends ReportGenerator {
+    protected function createContent(array $data): string {
+        echo "📦 Création du contenu d'inventaire\n";
+        
+        $content = "RAPPORT D'INVENTAIRE\n";
+        $content .= str_repeat("=", 50) . "\n\n";
+        
+        $lowStock = [];
+        foreach ($data as $item) {
+            $status = $item['stock'] < 10 ? "⚠️ FAIBLE" : "✅ OK";
+            $content .= sprintf(
+                "%-25s | Stock: %4d | Statut: %s\n",
+                $item['name'],
+                $item['stock'],
+                $status
+            );
+            
+            if ($item['stock'] < 10) {
+                $lowStock[] = $item['name'];
+            }
+        }
+        
+        if (!empty($lowStock)) {
+            $content .= "\n🚨 ARTICLES EN RUPTURE:\n";
+            foreach ($lowStock as $item) {
+                $content .= "- {$item}\n";
+            }
+        }
+        
+        return $content;
+    }
+    
+    protected function createHeader(): string {
+        $date = date('Y-m-d H:i:s');
+        return "📋 INVENTAIRE - {$date}\n" . str_repeat("=", 50) . "\n\n";
+    }
+}
+
+// Générateur simple
+class SimpleReportGenerator extends ReportGenerator {
+    protected function createContent(array $data): string {
+        echo "📄 Création de contenu simple\n";
+        
+        $content = "RAPPORT SIMPLE\n\n";
+        foreach ($data as $index => $item) {
+            $content .= ($index + 1) . ". " . print_r($item, true) . "\n";
+        }
+        
+        return $content;
+    }
+}
+
+// Classe pour démonstration
+class ReportDemo {
+    public static function run(): void {
+        echo "=== Démonstration Template Method - Rapports ===\n\n";
+        
+        // Données de vente
+        $salesData = [
+            ['product' => 'Laptop', 'quantity' => 5, 'price' => 999.99],
+            ['product' => 'Mouse', 'quantity' => 20, 'price' => 25.50],
+            ['product' => 'Keyboard', 'quantity' => 15, 'price' => 75.00],
+            ['product' => 'Monitor', 'quantity' => 8, 'price' => 299.99]
+        ];
+        
+        // Données d'inventaire
+        $inventoryData = [
+            ['name' => 'Laptop Dell', 'stock' => 5],
+            ['name' => 'Souris Logitech', 'stock' => 25],
+            ['name' => 'Clavier Mécanique', 'stock' => 3],
+            ['name' => 'Écran 24"', 'stock' => 12]
+        ];
+        
+        echo "--- Rapport de Ventes ---\n";
+        $salesReport = new SalesReportGenerator();
+        $salesReport->generateReport($salesData);
+        
+        echo "\n--- Rapport d'Inventaire ---\n";
+        $inventoryReport = new InventoryReportGenerator();
+        $inventoryReport->generateReport($inventoryData);
+        
+        echo "\n--- Rapport Simple ---\n";
+        $simpleReport = new SimpleReportGenerator();
+        $simpleData = [
+            ['nom' => 'Test 1', 'valeur' => 100],
+            ['nom' => 'Test 2', 'valeur' => 200]
+        ];
+        $simpleReport->generateReport($simpleData);
+    }
+}
+
+// Exemple avancé : Processus de commande e-commerce
+abstract class OrderProcessor {
+    public function processOrder(array $orderData): bool {
+        echo "🛒 Traitement de la commande #{$orderData['id']}\n";
+        
+        try {
+            // Pipeline de traitement
+            $this->validateOrder($orderData);
+            $this->calculateTotals($orderData);
+            $this->processPayment($orderData);
+            $this->updateInventory($orderData);
+            $this->sendConfirmation($orderData);
+            
+            // Hook pour traitement spécifique
+            $this->onOrderProcessed($orderData);
+            
+            echo "✅ Commande traitée avec succès\n";
+            return true;
+            
+        } catch (Exception $e) {
+            echo "❌ Erreur: " . $e->getMessage() . "\n";
+            $this->handleError($orderData, $e);
+            return false;
+        }
+    }
+    
+    protected function validateOrder(array $orderData): void {
+        echo "🔍 Validation de la commande\n";
+        if (empty($orderData['items'])) {
+            throw new Exception("Commande vide");
+        }
+    }
+    
+    protected function calculateTotals(array &$orderData): void {
+        echo "🧮 Calcul des totaux\n";
+        $total = 0;
+        foreach ($orderData['items'] as $item) {
+            $total += $item['price'] * $item['quantity'];
+        }
+        $orderData['total'] = $total;
+    }
+    
+    // Méthode abstraite - traitement spécifique au type de commande
+    abstract protected function processPayment(array $orderData): void;
+    
+    protected function updateInventory(array $orderData): void {
+        echo "📦 Mise à jour de l'inventaire\n";
+        // Logique de mise à jour
+    }
+    
+    protected function sendConfirmation(array $orderData): void {
+        echo "📧 Envoi de confirmation\n";
+    }
+    
+    // Hook pour traitement spécifique
+    protected function onOrderProcessed(array $orderData): void {
+        // Implémentation par défaut vide
+    }
+    
+    protected function handleError(array $orderData, Exception $e): void {
+        echo "🚨 Gestion d'erreur pour commande #{$orderData['id']}\n";
+    }
+}
+
+// Processeur pour commandes standard
+class StandardOrderProcessor extends OrderProcessor {
+    protected function processPayment(array $orderData): void {
+        echo "💳 Traitement paiement standard (carte)\n";
+        // Simulation du paiement
+        if ($orderData['total'] > 1000) {
+            throw new Exception("Montant trop élevé pour paiement standard");
+        }
+    }
+}
+
+// Processeur pour commandes premium
+class PremiumOrderProcessor extends OrderProcessor {
+    protected function processPayment(array $orderData): void {
+        echo "💎 Traitement paiement premium\n";
+        // Pas de limite de montant
+    }
+    
+    protected function onOrderProcessed(array $orderData): void {
+        echo "🎁 Ajout de bonus premium\n";
+    }
+    
+    protected function sendConfirmation(array $orderData): void {
+        echo "📧 Envoi de confirmation premium avec tracking\n";
+    }
+}
+
+// Démonstration des processeurs de commande
+function demonstrateOrderProcessing(): void {
+    echo "\n=== Traitement de Commandes ===\n\n";
+    
+    $standardOrder = [
+        'id' => 'STD-001',
+        'customer' => 'John Doe',
+        'items' => [
+            ['name' => 'Produit A', 'price' => 50, 'quantity' => 2],
+            ['name' => 'Produit B', 'price' => 30, 'quantity' => 1]
+        ]
+    ];
+    
+    $premiumOrder = [
+        'id' => 'PRM-001',
+        'customer' => 'Jane Smith',
+        'items' => [
+            ['name' => 'Produit Premium', 'price' => 500, 'quantity' => 3]
+        ]
+    ];
+    
+    echo "--- Commande Standard ---\n";
+    $standardProcessor = new StandardOrderProcessor();
+    $standardProcessor->processOrder($standardOrder);
+    
+    echo "\n--- Commande Premium ---\n";
+    $premiumProcessor = new PremiumOrderProcessor();
+    $premiumProcessor->processOrder($premiumOrder);
+}
+
+// Exécution des démonstrations
+ReportDemo::run();
+demonstrateOrderProcessing();
+
+?&gt;
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="java">
+                                <pre><code class="language-java">
+import java.util.*;
+import java.text.SimpleDateFormat;
+
+// Classe abstraite pour algorithme de tri
+abstract class SortAlgorithm {
+    // Méthode template
+    public final void sort(int[] array) {
+        System.out.println("🔄 Début du tri avec " + getAlgorithmName());
+        
+        long startTime = System.currentTimeMillis();
+        
+        // Étapes du processus de tri
+        preprocessArray(array);
+        performSort(array);
+        postprocessArray(array);
+        
+        long endTime = System.currentTimeMillis();
+        
+        System.out.println("✅ Tri terminé en " + (endTime - startTime) + "ms");
+        onSortCompleted(array, endTime - startTime);
+    }
+    
+    // Étape avec implémentation par défaut
+    protected void preprocessArray(int[] array) {
+        System.out.println("🔍 Préparation du tableau (taille: " + array.length + ")");
+        // Validation par défaut
+        if (array.length == 0) {
+            throw new IllegalArgumentException("Tableau vide");
+        }
+    }
+    
+    // Méthode abstraite - algorithme spécifique
+    protected abstract void performSort(int[] array);
+    
+    // Nom de l'algorithme
+    protected abstract String getAlgorithmName();
+    
+    // Étape avec implémentation par défaut
+    protected void postprocessArray(int[] array) {
+        System.out.println("🔍 Vérification du tri");
+        for (int i = 1; i < array.length; i++) {
+            if (array[i] < array[i-1]) {
+                throw new RuntimeException("Erreur de tri détectée");
+            }
+        }
+    }
+    
+    // Hook pour actions post-tri
+    protected void onSortCompleted(int[] array, long duration) {
+        // Implémentation par défaut vide
+    }
+    
+    // Méthode utilitaire
+    protected void swap(int[] array, int i, int j) {
+        int temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+}
+
+// Implémentation Bubble Sort
+class BubbleSort extends SortAlgorithm {
+    @Override
+    protected void performSort(int[] array) {
+        System.out.println("🫧 Exécution du tri à bulles");
+        
+        for (int i = 0; i < array.length - 1; i++) {
+            boolean swapped = false;
+            for (int j = 0; j < array.length - 1 - i; j++) {
+                if (array[j] > array[j + 1]) {
+                    swap(array, j, j + 1);
+                    swapped = true;
+                }
+            }
+            if (!swapped) break; // Optimisation
+        }
+    }
+    
+    @Override
+    protected String getAlgorithmName() {
+        return "Bubble Sort";
+    }
+    
+    @Override
+    protected void onSortCompleted(int[] array, long duration) {
+        System.out.println("📊 Bubble Sort - Complexité: O(n²)");
+    }
+}
+
+// Implémentation Quick Sort
+class QuickSort extends SortAlgorithm {
+    @Override
+    protected void performSort(int[] array) {
+        System.out.println("⚡ Exécution du tri rapide");
+        quickSortRecursive(array, 0, array.length - 1);
+    }
+    
+    private void quickSortRecursive(int[] array, int low, int high) {
+        if (low < high) {
+            int pivotIndex = partition(array, low, high);
+            quickSortRecursive(array, low, pivotIndex - 1);
+            quickSortRecursive(array, pivotIndex + 1, high);
+        }
+    }
+    
+    private int partition(int[] array, int low, int high) {
+        int pivot = array[high];
+        int i = low - 1;
+        
+        for (int j = low; j < high; j++) {
+            if (array[j] <= pivot) {
+                i++;
+                swap(array, i, j);
+            }
+        }
+        swap(array, i + 1, high);
+        return i + 1;
+    }
+    
+    @Override
+    protected String getAlgorithmName() {
+        return "Quick Sort";
+    }
+    
+    @Override
+    protected void preprocessArray(int[] array) {
+        super.preprocessArray(array);
+        System.out.println("🎯 Optimisation pour Quick Sort");
+    }
+    
+    @Override
+    protected void onSortCompleted(int[] array, long duration) {
+        System.out.println("📊 Quick Sort - Complexité moyenne: O(n log n)");
+    }
+}
+
+// Implémentation Selection Sort avec logging
+class SelectionSort extends SortAlgorithm {
+    private int comparisons = 0;
+    
+    @Override
+    protected void performSort(int[] array) {
+        System.out.println("🎯 Exécution du tri par sélection");
+        comparisons = 0;
+        
+        for (int i = 0; i < array.length - 1; i++) {
+            int minIndex = i;
+            for (int j = i + 1; j < array.length; j++) {
+                comparisons++;
+                if (array[j] < array[minIndex]) {
+                    minIndex = j;
+                }
+            }
+            if (minIndex != i) {
+                swap(array, i, minIndex);
+            }
+        }
+    }
+    
+    @Override
+    protected String getAlgorithmName() {
+        return "Selection Sort";
+    }
+    
+    @Override
+    protected void onSortCompleted(int[] array, long duration) {
+        System.out.println("📊 Selection Sort - Comparaisons: " + comparisons);
+        System.out.println("📊 Complexité: O(n²)");
+    }
+}
+
+// Classe de démonstration
+class SortingDemo {
+    public static void main(String[] args) {
+        System.out.println("=== Démonstration Template Method - Algorithmes de Tri ===\n");
+        
+        // Données de test
+        int[] data1 = {64, 34, 25, 12, 22, 11, 90};
+        int[] data2 = Arrays.copyOf(data1, data1.length);
+        int[] data3 = Arrays.copyOf(data1, data1.length);
+        
+        System.out.println("Données initiales: " + Arrays.toString(data1));
+        System.out.println();
+        
+        // Test des différents algorithmes
+        SortAlgorithm bubbleSort = new BubbleSort();
+        bubbleSort.sort(data1);
+        System.out.println("Résultat Bubble: " + Arrays.toString(data1));
+        System.out.println();
+        
+        SortAlgorithm quickSort = new QuickSort();
+        quickSort.sort(data2);
+        System.out.println("Résultat Quick: " + Arrays.toString(data2));
+        System.out.println();
+        
+        SortAlgorithm selectionSort = new SelectionSort();
+        selectionSort.sort(data3);
+        System.out.println("Résultat Selection: " + Arrays.toString(data3));
+        
+        // Test de performance
+        System.out.println("\n=== Test de Performance ===");
+        performanceTest();
+    }
+    
+    private static void performanceTest() {
+        int[] sizes = {100, 1000, 5000};
+        SortAlgorithm[] algorithms = {
+            new BubbleSort(),
+            new QuickSort(),
+            new SelectionSort()
+        };
+        
+        for (int size : sizes) {
+            System.out.println("\nTaille du tableau: " + size);
+            int[] originalData = generateRandomArray(size);
+            
+            for (SortAlgorithm algorithm : algorithms) {
+                int[] testData = Arrays.copyOf(originalData, originalData.length);
+                
+                long startTime = System.currentTimeMillis();
+                algorithm.sort(testData);
+                long duration = System.currentTimeMillis() - startTime;
+                
+                System.out.printf("%-15s: %3dms\n",
+                    algorithm.getAlgorithmName(), duration);
+            }
+        }
+    }
+    
+    private static int[] generateRandomArray(int size) {
+        Random random = new Random();
+        int[] array = new int[size];
+        for (int i = 0; i < size; i++) {
+            array[i] = random.nextInt(1000);
+        }
+        return array;
+    }
+}
+
+// Exemple avancé : Pipeline de traitement de fichiers
+abstract class FileProcessor {
+    public final boolean processFile(String filePath) {
+        System.out.println("📁 Traitement du fichier: " + filePath);
+        
+        try {
+            // Pipeline de traitement
+            validateFile(filePath);
+            String content = readFile(filePath);
+            String processedContent = processContent(content);
+            String outputPath = generateOutputPath(filePath);
+            writeFile(outputPath, processedContent);
+            
+            // Hook pour post-traitement
+            onFileProcessed(filePath, outputPath);
+            
+            System.out.println("✅ Fichier traité avec succès");
+            return true;
+            
+        } catch (Exception e) {
+            System.err.println("❌ Erreur: " + e.getMessage());
+            handleError(filePath, e);
+            return false;
+        }
+    }
+    
+    protected void validateFile(String filePath) {
+        System.out.println("🔍 Validation du fichier");
+        if (filePath == null || filePath.isEmpty()) {
+            throw new IllegalArgumentException("Chemin de fichier invalide");
+        }
+    }
+    
+    protected String readFile(String filePath) {
+        System.out.println("📖 Lecture du fichier");
+        // Simulation de lecture
+        return "Contenu du fichier: " + filePath;
+    }
+    
+    // Méthode abstraite pour traitement spécifique
+    protected abstract String processContent(String content);
+    
+    protected String generateOutputPath(String inputPath) {
+        return "processed_" + inputPath;
+    }
+    
+    protected void writeFile(String outputPath, String content) {
+        System.out.println("💾 Écriture vers: " + outputPath);
+        // Simulation d'écriture
+    }
+    
+    protected void onFileProcessed(String inputPath, String outputPath) {
+        // Hook par défaut vide
+    }
+    
+    protected void handleError(String filePath, Exception e) {
+        System.err.println("🚨 Gestion d'erreur pour: " + filePath);
+    }
+}
+
+// Processeur de logs
+class LogProcessor extends FileProcessor {
+    @Override
+    protected String processContent(String content) {
+        System.out.println("📊 Traitement des logs");
+        
+        // Simulation du traitement des logs
+        String[] lines = content.split("\n");
+        StringBuilder processed = new StringBuilder();
+        
+        processed.append("=== LOG TRAITÉ ===\n");
+        processed.append("Timestamp: ").append(new Date()).append("\n");
+        processed.append("Lignes traitées: ").append(lines.length).append("\n");
+        processed.append("Contenu original:\n").append(content);
+        
+        return processed.toString();
+    }
+    
+    @Override
+    protected void onFileProcessed(String inputPath, String outputPath) {
+        System.out.println("📈 Log traité - Statistiques générées");
+    }
+}
+
+// Processeur de configuration
+class ConfigProcessor extends FileProcessor {
+    @Override
+    protected String processContent(String content) {
+        System.out.println("⚙️ Traitement de configuration");
+        
+        // Simulation du traitement de config
+        return "# Configuration traitée\n" +
+               "processed.timestamp=" + System.currentTimeMillis() + "\n" +
+               "original.content=" + content.replace("\n", "\\n");
+    }
+    
+    @Override
+    protected void validateFile(String filePath) {
+        super.validateFile(filePath);
+        if (!filePath.endsWith(".conf") && !filePath.endsWith(".config")) {
+            throw new IllegalArgumentException("Format de fichier non supporté");
+        }
+    }
+    
+    @Override
+    protected String generateOutputPath(String inputPath) {
+        return inputPath.replace(".conf", "_processed.conf")
+                       .replace(".config", "_processed.config");
+    }
+}
+
+// Démonstration du traitement de fichiers
+class FileProcessingDemo {
+    public static void run() {
+        System.out.println("\n=== Traitement de Fichiers ===\n");
+        
+        FileProcessor logProcessor = new LogProcessor();
+        FileProcessor configProcessor = new ConfigProcessor();
+        
+        // Test des différents processeurs
+        System.out.println("--- Traitement de log ---");
+        logProcessor.processFile("application.log");
+        
+        System.out.println("\n--- Traitement de configuration ---");
+        configProcessor.processFile("app.config");
+        
+        System.out.println("\n--- Test d'erreur ---");
+        configProcessor.processFile("invalid.txt");
+    }
+}
+
+// Point d'entrée principal
+class TemplateMethodDemo {
+    public static void main(String[] args) {
+        // Exécution de toutes les démonstrations
+        SortingDemo.main(args);
+        FileProcessingDemo.run();
+    }
+}
+</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Cas d'Usage -->
+                <section class="use-cases-section">
+                    <div class="aikido-card">
+                        <h2>🎯 Cas d'Usage Typiques</h2>
+                        <div class="use-cases-grid">
+                            <div class="use-case-item">
+                                <h3>🔄 Algorithmes de Tri</h3>
+                                <p>Structure commune pour différents algorithmes (bubble sort, quick sort, merge sort) avec étapes de validation et optimisation</p>
+                            </div>
+                            
+                            <div class="use-case-item">
+                                <h3>📊 Génération de Rapports</h3>
+                                <p>Pipeline de création de rapports avec étapes communes (en-tête, contenu, pied de page) et formats spécifiques</p>
+                            </div>
+                            
+                            <div class="use-case-item">
+                                <h3>🔄 Import/Export de Données</h3>
+                                <p>Processus de traitement de fichiers avec validation, transformation et sauvegarde selon le format</p>
+                            </div>
+                            
+                            <div class="use-case-item">
+                                <h3>🎮 Moteurs de Jeu</h3>
+                                <p>Boucle de jeu avec étapes fixes (input, update, render) et logique spécifique par type de jeu</p>
+                            </div>
+                            
+                            <div class="use-case-item">
+                                <h3>🌐 Frameworks Web</h3>
+                                <p>Pipeline de traitement des requêtes HTTP avec middleware, routage et rendu selon le contrôleur</p>
+                            </div>
+                            
+                            <div class="use-case-item">
+                                <h3>🧪 Tests Automatisés</h3>
+                                <p>Structure de tests avec setup, exécution et cleanup communs, assertions spécifiques par test</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Biais Cognitifs Liés -->
+                <section class="cognitive-bias-section">
+                    <div class="aikido-card biais-cognitif">
+                        <h2>🧩 Biais Cognitifs Associés</h2>
+                        
+                        <div class="bias-analysis">
+                            <div class="bias-item">
+                                <h4>🔄 Biais de Confirmation</h4>
+                                <p>Tendance à forcer l'utilisation du Template Method même quand la composition serait plus appropriée, confirmant notre préférence pour l'héritage.</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>⚓ Biais d'Ancrage</h4>
+                                <p>S'ancrer sur la première structure d'algorithme conçue et avoir du mal à la refactorer quand les besoins évoluent.</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>🎯 Biais de Disponibilité</h4>
+                                <p>Utiliser le Template Method parce qu'on se souvient d'un cas où il était parfait, sans évaluer les alternatives modernes.</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>🏗️ Biais de Planification</h4>
+                                <p>Sous-estimer la complexité de maintenir une hiérarchie d'héritage avec de nombreuses sous-classes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Anti-Patterns Liés -->
+                <section class="antipatterns-section">
+                    <div class="aikido-card anti-pattern">
+                        <h2>⚠️ Anti-Patterns à Éviter</h2>
+                        
+                        <div class="antipattern-warnings">
+                            <div class="antipattern-warning">
+                                <h4>🏗️ Deep Inheritance Hierarchy</h4>
+                                <p>Créer une hiérarchie d'héritage trop profonde avec de nombreux niveaux de Template Methods. Préférer la composition pour plus de flexibilité.</p>
+                            </div>
+                            
+                            <div class="antipattern-warning">
+                                <h4>🔒 Rigid Template</h4>
+                                <p>Template trop rigide qui ne permet pas assez de personnalisation. Ajouter des hooks et des points d'extension appropriés.</p>
+                            </div>
+                            
+                            <div class="antipattern-warning">
+                                <h4>🎭 God Template</h4>
+                                <p>Template Method qui gère trop d'étapes différentes. Diviser en plusieurs templates plus spécialisés.</p>
+                            </div>
+                            
+                            <div class="antipattern-warning">
+                                <h4>🔄 Circular Dependencies</h4>
+                                <p>Sous-classes qui dépendent les unes des autres ou qui modifient l'état de la classe parente de manière imprévisible.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercice Pratique -->
+                <section class="exercise-section">
+                    <div class="aikido-card exercise">
+                        <h2>🎯 Exercice Pratique</h2>
+                        
+                        <div class="exercise-scenario">
+                            <h3>Scenario : Système de Validation de Formulaires</h3>
+                            <p>
+                                Vous devez créer un système de validation pour différents types de formulaires
+                                (inscription, connexion, commande). Chaque formulaire a des étapes communes
+                                mais des règles de validation spécifiques.
+                            </p>
+                            
+                            <div class="exercise-question">
+                                <h4>Question :</h4>
+                                <p>Quelle est la meilleure approche pour implémenter ce système avec le Template Method ?</p>
+                                
+                                <div class="choice-options">
+                                    <div class="choice-option" data-choice="single-class">
+                                        🔄 Une seule classe avec des conditions if/else pour chaque type
+                                    </div>
+                                    <div class="choice-option" data-choice="template-method">
+                                        🎯 Classe abstraite FormValidator avec méthodes template et sous-classes spécialisées
+                                    </div>
+                                    <div class="choice-option" data-choice="strategy-pattern">
+                                        📋 Pattern Strategy avec différentes stratégies de validation
+                                    </div>
+                                </div>
+                                
+                                <div id="exercise-retours" class="exercise-retours hidden">
+                                    <!-- Le feedback sera affiché ici -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Completion -->
+                <section class="completion-section slide-in">
+                    <div class="aikido-card completion">
+                        <div class="completion-content">
+                            <div class="completion-icon">📋</div>
+                            <div class="completion-text">
+                                <h3>Avez-vous terminé cette section ?</h3>
+                                <p>Marquez cette page comme terminée pour suivre votre progression dans la formation.</p>
+                            </div>
+                            <button class="aikido-btn primary mark-completed" data-page="template-method">
+                                Marquer comme Terminé ✓
+                            </button>
+                        </div>
+                        <div class="completion-feedback hidden">
+                            <div class="feedback-success">
+                                <h3>🎉 Félicitations !</h3>
+                                <p>Vous avez terminé l'étude du <strong>Template Method Pattern</strong> !</p>
+                                <p>Ce pattern comportemental vous permet de définir le squelette d'un algorithme en laissant les sous-classes redéfinir certaines étapes sans changer la structure globale.</p>
+                                
+                                <div class="next-steps">
+                                    <h4>📚 Continuez votre apprentissage :</h4>
+                                    <div class="next-links">
+                                        <a href="../visitor.html" class="next-link">
+                                            <span class="link-icon">🎭</span>
+                                            <span class="link-text">Visitor Pattern</span>
+                                        </a>
+                                        <a href="../mediator.html" class="next-link">
+                                            <span class="link-icon">🤝</span>
+                                            <span class="link-text">Mediator Pattern</span>
+                                        </a>
+                                        <a href="../memento.html" class="next-link">
+                                            <span class="link-icon">💾</span>
+                                            <span class="link-text">Memento Pattern</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Gestion des choix de l'exercice
+        document.addEventListener('DOMContentLoaded', function() {
+            const choiceOptions = document.querySelectorAll('.choice-option');
+            const exerciseRetours = document.getElementById('exercise-retours');
+            
+            // Définir les retours pour chaque choix
+            const retours = {
+                'single-class': `
+                    <div class="retour-item">
+                        <h4>🤔 Approche Monolithique</h4>
+                        <p>Cette solution centralise toute la logique dans une seule classe avec des conditions. Problèmes :</p>
+                        <ul>
+                            <li>Violation du principe ouvert/fermé</li>
+                            <li>Code difficile à maintenir et à tester</li>
+                            <li>Couplage fort entre types et validations</li>
+                            <li>Duplication de code pour des validations similaires</li>
+                        </ul>
+                    </div>
+                `,
+                'template-method': `
+                    <div class="retour-item">
+                        <h4>🎯 Excellente Analyse !</h4>
+                        <p>Vous avez identifié la parfaite application du Template Method Pattern. Cette approche :</p>
+                        <ul>
+                            <li><strong>Définit un squelette commun</strong> : étapes de validation standardisées</li>
+                            <li><strong>Permet la personnalisation</strong> : règles spécifiques par type de formulaire</li>
+                            <li><strong>Évite la duplication</strong> : code commun réutilisé</li>
+                            <li><strong>Facilite l'extension</strong> : nouveaux types de formulaires faciles à ajouter</li>
+                            <li><strong>Respecte le principe DRY</strong> : Don't Repeat Yourself</li>
+                        </ul>
+                    </div>
+                `,
+                'strategy-pattern': `
+                    <div class="retour-item">
+                        <h4>📋 Pattern Strategy</h4>
+                        <p>Le Strategy Pattern est une alternative valide mais différente. Comparaison :</p>
+                        <ul>
+                            <li><strong>Strategy</strong> : change l'algorithme complet de validation</li>
+                            <li><strong>Template Method</strong> : garde la structure, change les étapes</li>
+                            <li>Strategy convient quand les algorithmes sont complètement différents</li>
+                            <li>Template Method convient quand la structure est commune</li>
+                        </ul>
+                    </div>
+                `
+            };
+            
+            choiceOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Retirer la sélection précédente
+                    choiceOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Sélectionner l'option cliquée
+                    this.classList.add('selected');
+                    
+                    // Obtenir le choix et afficher le retour correspondant
+                    const choice = this.getAttribute('data-choice');
+                    if (retours[choice]) {
+                        exerciseRetours.innerHTML = retours[choice];
+                        exerciseRetours.classList.remove('hidden');
+                        exerciseRetours.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+            
+            // Gestion du bouton de completion
+            const markCompletedBtn = document.querySelector('.mark-completed');
+            const completionFeedback = document.querySelector('.completion-feedback');
+            
+            if (markCompletedBtn && completionFeedback) {
+                markCompletedBtn.addEventListener('click', function() {
+                    // Marquer comme terminé dans le localStorage
+                    const pageId = this.getAttribute('data-page');
+                    if (pageId) {
+                        localStorage.setItem(`completed_${pageId}`, 'true');
+                        localStorage.setItem(`completed_${pageId}_date`, new Date().toISOString());
+                    }
+                    
+                    // Afficher le feedback
+                    completionFeedback.classList.remove('hidden');
+                    completionFeedback.scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Désactiver le bouton
+                    this.disabled = true;
+                    this.textContent = '✅ Terminé';
+                    this.classList.add('completed');
+                });
+            }
+            
+            // Vérifier si la page est déjà marquée comme terminée
+            const pageId = markCompletedBtn?.getAttribute('data-page');
+            if (pageId && localStorage.getItem(`completed_${pageId}`) === 'true') {
+                markCompletedBtn.disabled = true;
+                markCompletedBtn.textContent = '✅ Terminé';
+                markCompletedBtn.classList.add('completed');
+                completionFeedback?.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

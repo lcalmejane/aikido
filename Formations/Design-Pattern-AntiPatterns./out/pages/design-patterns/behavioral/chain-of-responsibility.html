@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chain of Responsibility Pattern - Formation Patterns Développeurs</title>
+    <meta name="description" content="Le pattern Chain of Responsibility expliqué avec exemples de code, diagrammes UML et cas d'usage pratiques">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <h1 class="page-title">⛓️ Chain of Responsibility Pattern</h1>
+                    <p class="page-subtitle">Faire passer une requête le long d'une chaîne de gestionnaires</p>
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">🎨</span>
+                            <span class="meta-text">Design Patterns</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⭐</span>
+                            <span class="meta-text">Difficulté: Moyen</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⏱️</span>
+                            <span class="meta-text">20 min</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🎭</span>
+                            <span class="meta-text">Comportemental</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Définition et Problème -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card design-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="mb-md">
+                            Le <strong>Chain of Responsibility</strong> est un pattern comportemental qui permet 
+                            de faire passer une requête le long d'une chaîne de gestionnaires potentiels jusqu'à 
+                            ce que l'un d'eux traite la requête.
+                        </p>
+                        
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problème Résolu</h3>
+                                <ul>
+                                    <li>Couplage fort entre expéditeur et récepteur</li>
+                                    <li>Logique de traitement complexe avec multiples conditions</li>
+                                    <li>Difficulté d'ajouter de nouveaux gestionnaires</li>
+                                    <li>Code difficile à maintenir avec de nombreux if/else</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solution Apportée</h3>
+                                <ul>
+                                    <li>Découplage entre expéditeur et récepteurs</li>
+                                    <li>Chaîne de traitement flexible et extensible</li>
+                                    <li>Ajout facile de nouveaux gestionnaires</li>
+                                    <li>Responsabilité unique pour chaque gestionnaire</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert info">
+                            <strong>💡 Analogie :</strong> Comme un système de support client où une demande 
+                            passe du niveau 1 au niveau 2, puis au niveau 3 jusqu'à trouver la personne 
+                            compétente pour la traiter.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Structure UML -->
+                <section class="structure-section">
+                    <div class="aikido-card">
+                        <h2>🏗️ Structure UML</h2>
+                        <div class="uml-diagram">
+                            <div class="uml-class-diagram">
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>Handler</strong>
+                                    </div>
+                                    <div class="class-attributes">
+                                        <div class="attribute protected">+ nextHandler: Handler</div>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ setNext(handler: Handler): Handler</div>
+                                        <div class="method public">+ handle(request: Request): Response</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>ConcreteHandler1</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ handle(request: Request): Response</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>ConcreteHandler2</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ handle(request: Request): Response</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>Client</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ makeRequest(): void</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="structure-explanation">
+                            <h3>Éléments Clés</h3>
+                            <ul>
+                                <li><strong>Handler</strong> : Interface ou classe abstraite définissant la méthode de traitement</li>
+                                <li><strong>ConcreteHandler</strong> : Implémentations concrètes qui traitent les requêtes</li>
+                                <li><strong>Client</strong> : Envoie les requêtes au premier maillon de la chaîne</li>
+                            </ul>
+                        </div>
+
+                        <!-- Diagramme de flux Mermaid -->
+                        <div class="mt-lg">
+                            <h3>🔄 Flux d'Exécution</h3>
+                            <div class="mermaid">
+                                graph TD
+                                    A[Client envoie requête] --> B[Handler1.handle]
+                                    B --> C{Peut traiter?}
+                                    C -->|Oui| D[Traite la requête]
+                                    C -->|Non| E[Passe à Handler2]
+                                    E --> F[Handler2.handle]
+                                    F --> G{Peut traiter?}
+                                    G -->|Oui| H[Traite la requête]
+                                    G -->|Non| I[Passe à Handler3]
+                                    I --> J[Handler3.handle]
+                                    J --> K[Traite ou rejette]
+                                    
+                                    style A fill:#e1f5fe
+                                    style D fill:#e8f5e8
+                                    style H fill:#e8f5e8
+                                    style K fill:#e8f5e8
+                            </div>
+                            <p class="text-sm text-gray-600 mt-md">
+                                <strong>💡 Point clé :</strong> Chaque gestionnaire décide s'il peut traiter 
+                                la requête ou s'il doit la passer au suivant.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Implémentations -->
+                <section class="implementations-section">
+                    <h2>💻 Implémentations</h2>
+                    
+                    <div class="aikido-card">
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="typescript">TypeScript</button>
+                                <button class="tab-btn" data-tab="php">PHP</button>
+                                <button class="tab-btn" data-tab="java">Java</button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="typescript">
+                                <h4>Exemple : Système de Support Client</h4>
+                                <pre><code class="language-typescript">
+// Types pour les requêtes
+enum RequestType {
+    BASIC = 'BASIC',
+    TECHNICAL = 'TECHNICAL',
+    BILLING = 'BILLING',
+    ESCALATION = 'ESCALATION'
+}
+
+interface SupportRequest {
+    id: string;
+    type: RequestType;
+    description: string;
+    priority: number;
+    customerLevel: 'BRONZE' | 'SILVER' | 'GOLD' | 'PLATINUM';
+}
+
+interface SupportResponse {
+    handled: boolean;
+    handlerName: string;
+    response: string;
+    escalated?: boolean;
+}
+
+// Handler abstrait
+abstract class SupportHandler {
+    protected nextHandler: SupportHandler | null = null;
+    
+    setNext(handler: SupportHandler): SupportHandler {
+        this.nextHandler = handler;
+        return handler;
+    }
+    
+    handle(request: SupportRequest): SupportResponse {
+        if (this.canHandle(request)) {
+            return this.processRequest(request);
+        }
+        
+        if (this.nextHandler) {
+            console.log(`${this.getHandlerName()} passe la requête au niveau suivant`);
+            return this.nextHandler.handle(request);
+        }
+        
+        return {
+            handled: false,
+            handlerName: 'Aucun',
+            response: 'Aucun gestionnaire disponible pour traiter cette requête'
+        };
+    }
+    
+    protected abstract canHandle(request: SupportRequest): boolean;
+    protected abstract processRequest(request: SupportRequest): SupportResponse;
+    protected abstract getHandlerName(): string;
+}
+
+// Handler Niveau 1 - Support de base
+class Level1Support extends SupportHandler {
+    protected canHandle(request: SupportRequest): boolean {
+        return request.type === RequestType.BASIC && request.priority <= 2;
+    }
+    
+    protected processRequest(request: SupportRequest): SupportResponse {
+        console.log(`Niveau 1 traite la requête ${request.id}`);
+        return {
+            handled: true,
+            handlerName: 'Support Niveau 1',
+            response: `Problème résolu par consultation de la FAQ. Requête: ${request.description}`
+        };
+    }
+    
+    protected getHandlerName(): string {
+        return 'Support Niveau 1';
+    }
+}
+
+// Handler Niveau 2 - Support technique
+class Level2Support extends SupportHandler {
+    protected canHandle(request: SupportRequest): boolean {
+        return (request.type === RequestType.TECHNICAL || request.type === RequestType.BASIC) 
+               && request.priority <= 4;
+    }
+    
+    protected processRequest(request: SupportRequest): SupportResponse {
+        console.log(`Niveau 2 traite la requête ${request.id}`);
+        return {
+            handled: true,
+            handlerName: 'Support Technique Niveau 2',
+            response: `Problème technique résolu par diagnostic approfondi. Solution personnalisée fournie.`
+        };
+    }
+    
+    protected getHandlerName(): string {
+        return 'Support Technique Niveau 2';
+    }
+}
+
+// Handler Niveau 3 - Support facturation
+class BillingSupport extends SupportHandler {
+    protected canHandle(request: SupportRequest): boolean {
+        return request.type === RequestType.BILLING;
+    }
+    
+    protected processRequest(request: SupportRequest): SupportResponse {
+        console.log(`Support Facturation traite la requête ${request.id}`);
+        return {
+            handled: true,
+            handlerName: 'Support Facturation',
+            response: `Problème de facturation résolu. Ajustement effectué sur le compte.`
+        };
+    }
+    
+    protected getHandlerName(): string {
+        return 'Support Facturation';
+    }
+}
+
+// Handler Niveau 4 - Manager/Escalation
+class ManagerSupport extends SupportHandler {
+    protected canHandle(request: SupportRequest): boolean {
+        return request.priority >= 5 || 
+               request.type === RequestType.ESCALATION ||
+               request.customerLevel === 'PLATINUM';
+    }
+    
+    protected processRequest(request: SupportRequest): SupportResponse {
+        console.log(`Manager traite la requête ${request.id} (escalation)`);
+        return {
+            handled: true,
+            handlerName: 'Manager Support',
+            response: `Requête traitée personnellement par le manager. Solution prioritaire mise en place.`,
+            escalated: true
+        };
+    }
+    
+    protected getHandlerName(): string {
+        return 'Manager Support';
+    }
+}
+
+// Client - Système de tickets
+class SupportTicketSystem {
+    private handlerChain: SupportHandler;
+    
+    constructor() {
+        // Construction de la chaîne
+        const level1 = new Level1Support();
+        const level2 = new Level2Support();
+        const billing = new BillingSupport();
+        const manager = new ManagerSupport();
+        
+        // Chaînage des handlers
+        level1.setNext(level2).setNext(billing).setNext(manager);
+        
+        this.handlerChain = level1;
+    }
+    
+    processTicket(request: SupportRequest): SupportResponse {
+        console.log(`\n=== Traitement du ticket ${request.id} ===`);
+        console.log(`Type: ${request.type}, Priorité: ${request.priority}, Client: ${request.customerLevel}`);
+        console.log(`Description: ${request.description}`);
+        
+        const response = this.handlerChain.handle(request);
+        
+        console.log(`\n--- Résultat ---`);
+        console.log(`Traité par: ${response.handlerName}`);
+        console.log(`Réponse: ${response.response}`);
+        if (response.escalated) {
+            console.log(`⚠️ Requête escaladée`);
+        }
+        
+        return response;
+    }
+}
+
+// Utilisation
+const supportSystem = new SupportTicketSystem();
+
+// Test avec différents types de requêtes
+const requests: SupportRequest[] = [
+    {
+        id: 'T001',
+        type: RequestType.BASIC,
+        description: 'Comment changer mon mot de passe?',
+        priority: 1,
+        customerLevel: 'BRONZE'
+    },
+    {
+        id: 'T002',
+        type: RequestType.TECHNICAL,
+        description: 'Application qui plante au démarrage',
+        priority: 3,
+        customerLevel: 'SILVER'
+    },
+    {
+        id: 'T003',
+        type: RequestType.BILLING,
+        description: 'Facturation incorrecte ce mois-ci',
+        priority: 2,
+        customerLevel: 'GOLD'
+    },
+    {
+        id: 'T004',
+        type: RequestType.ESCALATION,
+        description: 'Problème critique non résolu depuis 3 jours',
+        priority: 5,
+        customerLevel: 'PLATINUM'
+    }
+];
+
+// Traitement des requêtes
+requests.forEach(request => {
+    supportSystem.processTicket(request);
+});
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="php">
+                                <pre><code class="language-php">
+&lt;?php
+
+// Énumération des types de dépenses
+class ExpenseType {
+    const MEAL = 'MEAL';
+    const TRANSPORT = 'TRANSPORT';
+    const ACCOMMODATION = 'ACCOMMODATION';
+    const EQUIPMENT = 'EQUIPMENT';
+    const TRAINING = 'TRAINING';
+}
+
+// Classe pour les demandes de remboursement
+class ExpenseRequest {
+    public $id;
+    public $type;
+    public $amount;
+    public $description;
+    public $employeeLevel;
+    public $receipts;
+    
+    public function __construct($id, $type, $amount, $description, $employeeLevel, $receipts = true) {
+        $this->id = $id;
+        $this->type = $type;
+        $this->amount = $amount;
+        $this->description = $description;
+        $this->employeeLevel = $employeeLevel;
+        $this->receipts = $receipts;
+    }
+}
+
+// Classe pour les réponses d'approbation
+class ApprovalResponse {
+    public $approved;
+    public $approverName;
+    public $comments;
+    public $conditions;
+    
+    public function __construct($approved, $approverName, $comments, $conditions = null) {
+        $this->approved = $approved;
+        $this->approverName = $approverName;
+        $this->comments = $comments;
+        $this->conditions = $conditions;
+    }
+}
+
+// Handler abstrait pour l'approbation
+abstract class ApprovalHandler {
+    protected $nextHandler = null;
+    
+    public function setNext(ApprovalHandler $handler): ApprovalHandler {
+        $this->nextHandler = $handler;
+        return $handler;
+    }
+    
+    public function handle(ExpenseRequest $request): ApprovalResponse {
+        if ($this->canApprove($request)) {
+            return $this->processApproval($request);
+        }
+        
+        if ($this->nextHandler !== null) {
+            echo $this->getApproverName() . " transfère la demande au niveau supérieur\n";
+            return $this->nextHandler->handle($request);
+        }
+        
+        return new ApprovalResponse(
+            false,
+            'Aucun approbateur',
+            'Aucun approbateur disponible pour cette demande'
+        );
+    }
+    
+    protected abstract function canApprove(ExpenseRequest $request): bool;
+    protected abstract function processApproval(ExpenseRequest $request): ApprovalResponse;
+    protected abstract function getApproverName(): string;
+}
+
+// Superviseur - Petites dépenses
+class SupervisorApprover extends ApprovalHandler {
+    protected function canApprove(ExpenseRequest $request): bool {
+        return $request->amount <= 100 && 
+               in_array($request->type, [ExpenseType::MEAL, ExpenseType::TRANSPORT]) &&
+               $request->receipts;
+    }
+    
+    protected function processApproval(ExpenseRequest $request): ApprovalResponse {
+        echo "Superviseur approuve la demande {$request->id}\n";
+        return new ApprovalResponse(
+            true,
+            'Superviseur',
+            'Dépense courante approuvée automatiquement'
+        );
+    }
+    
+    protected function getApproverName(): string {
+        return 'Superviseur';
+    }
+}
+
+// Manager - Dépenses moyennes
+class ManagerApprover extends ApprovalHandler {
+    protected function canApprove(ExpenseRequest $request): bool {
+        return $request->amount <= 500 && $request->receipts;
+    }
+    
+    protected function processApproval(ExpenseRequest $request): ApprovalResponse {
+        echo "Manager approuve la demande {$request->id}\n";
+        
+        $conditions = null;
+        if ($request->amount > 200) {
+            $conditions = 'Justification détaillée requise pour les futures dépenses similaires';
+        }
+        
+        return new ApprovalResponse(
+            true,
+            'Manager',
+            'Dépense approuvée après vérification des justificatifs',
+            $conditions
+        );
+    }
+    
+    protected function getApproverName(): string {
+        return 'Manager';
+    }
+}
+
+// Directeur - Grosses dépenses
+class DirectorApprover extends ApprovalHandler {
+    protected function canApprove(ExpenseRequest $request): bool {
+        return $request->amount <= 2000 && 
+               $request->receipts &&
+               in_array($request->employeeLevel, ['SENIOR', 'LEAD', 'MANAGER']);
+    }
+    
+    protected function processApproval(ExpenseRequest $request): ApprovalResponse {
+        echo "Directeur approuve la demande {$request->id}\n";
+        
+        $conditions = 'Approbation conditionnelle - Suivi budgétaire renforcé';
+        if ($request->type === ExpenseType::TRAINING) {
+            $conditions .= ' - Rapport de formation obligatoire';
+        }
+        
+        return new ApprovalResponse(
+            true,
+            'Directeur',
+            'Dépense exceptionnelle approuvée',
+            $conditions
+        );
+    }
+    
+    protected function getApproverName(): string {
+        return 'Directeur';
+    }
+}
+
+// PDG - Dépenses exceptionnelles
+class CEOApprover extends ApprovalHandler {
+    protected function canApprove(ExpenseRequest $request): bool {
+        return $request->amount <= 10000; // Limite absolue
+    }
+    
+    protected function processApproval(ExpenseRequest $request): ApprovalResponse {
+        echo "PDG approuve personnellement la demande {$request->id}\n";
+        
+        return new ApprovalResponse(
+            true,
+            'PDG',
+            'Dépense stratégique approuvée au plus haut niveau',
+            'Suivi mensuel obligatoire et justification trimestrielle'
+        );
+    }
+    
+    protected function getApproverName(): string {
+        return 'PDG';
+    }
+}
+
+// Système de gestion des dépenses
+class ExpenseApprovalSystem {
+    private $approvalChain;
+    
+    public function __construct() {
+        // Construction de la chaîne d'approbation
+        $supervisor = new SupervisorApprover();
+        $manager = new ManagerApprover();
+        $director = new DirectorApprover();
+        $ceo = new CEOApprover();
+        
+        // Chaînage des approbateurs
+        $supervisor->setNext($manager)->setNext($director)->setNext($ceo);
+        
+        $this->approvalChain = $supervisor;
+    }
+    
+    public function processExpenseRequest(ExpenseRequest $request): ApprovalResponse {
+        echo "\n=== Traitement de la demande {$request->id} ===\n";
+        echo "Type: {$request->type}, Montant: {$request->amount}€\n";
+        echo "Employé: {$request->employeeLevel}, Justificatifs: " . ($request->receipts ? 'Oui' : 'Non') . "\n";
+        echo "Description: {$request->description}\n";
+        
+        $response = $this->approvalChain->handle($request);
+        
+        echo "\n--- Résultat ---\n";
+        echo "Statut: " . ($response->approved ? 'APPROUVÉ' : 'REJETÉ') . "\n";
+        echo "Approbateur: {$response->approverName}\n";
+        echo "Commentaires: {$response->comments}\n";
+        if ($response->conditions) {
+            echo "Conditions: {$response->conditions}\n";
+        }
+        
+        return $response;
+    }
+}
+
+// Utilisation
+$expenseSystem = new ExpenseApprovalSystem();
+
+// Test avec différentes demandes
+$requests = [
+    new ExpenseRequest('E001', ExpenseType::MEAL, 45, 'Déjeuner client', 'JUNIOR', true),
+    new ExpenseRequest('E002', ExpenseType::TRANSPORT, 250, 'Voyage professionnel', 'SENIOR', true),
+    new ExpenseRequest('E003', ExpenseType::EQUIPMENT, 800, 'Nouvel ordinateur portable', 'LEAD', true),
+    new ExpenseRequest('E004', ExpenseType::TRAINING, 3500, 'Formation certifiante', 'MANAGER', true),
+    new ExpenseRequest('E005', ExpenseType::ACCOMMODATION, 150, 'Hôtel sans justificatifs', 'SENIOR', false)
+];
+
+// Traitement des demandes
+foreach ($requests as $request) {
+    $expenseSystem->processExpenseRequest($request);
+}
+
+?&gt;
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="java">
+                                <pre><code class="language-java">
+import java.util.*;
+
+// Énumération des types de logs
+enum LogLevel {
+    DEBUG(1), INFO(2), WARNING(3), ERROR(4), CRITICAL(5);
+    
+    private final int priority;
+    
+    LogLevel(int priority) {
+        this.priority = priority;
+    }
+    
+    public int getPriority() {
+        return priority;
+    }
+}
+
+// Classe pour les messages de log
+class LogMessage {
+    private String id;
+    private LogLevel level;
+    private String message;
+    private String source;
+    private Date timestamp;
+    private Map&lt;String, Object&gt; metadata;
+    
+    public LogMessage(String id, LogLevel level, String message, String source) {
+        this.id = id;
+        this.level = level;
+        this.message = message;
+        this.source = source;
+        this.timestamp = new Date();
+        this.metadata = new HashMap&lt;&gt;();
+    }
+    
+    // Getters
+    public String getId() { return id; }
+    public LogLevel getLevel() { return level; }
+    public String getMessage() { return message; }
+    public String getSource() { return source; }
+    public Date getTimestamp() { return timestamp; }
+    public Map&lt;String, Object&gt; getMetadata() { return metadata; }
+    
+    public void addMetadata(String key, Object value) {
+        metadata.put(key, value);
+    }
+}
+
+// Classe pour les réponses de traitement
+class LogResponse {
+    private boolean handled;
+    private String handlerName;
+    private String action;
+    private List&lt;String&gt; destinations;
+    
+    public LogResponse(boolean handled, String handlerName, String action) {
+        this.handled = handled;
+        this.handlerName = handlerName;
+        this.action = action;
+        this.destinations = new ArrayList&lt;&gt;();
+    }
+    
+    public void addDestination(String destination) {
+        destinations.add(destination);
+    }
+    
+    // Getters
+    public boolean isHandled() { return handled; }
+    public String getHandlerName() { return handlerName; }
+    public String getAction() { return action; }
+    public List&lt;String&gt; getDestinations() { return destinations; }
+}
+
+// Handler abstrait pour les logs
+abstract class LogHandler {
+    protected LogHandler nextHandler;
+    
+    public LogHandler setNext(LogHandler handler) {
+        this.nextHandler = handler;
+        return handler;
+    }
+    
+    public LogResponse handle(LogMessage message) {
+        if (canHandle(message)) {
+            return processLog(message);
+        }
+        
+        if (nextHandler != null) {
+            System.out.println(getHandlerName() + " passe le message au handler suivant");
+            return nextHandler.handle(message);
+        }
+        
+        return new LogResponse(false, "Aucun handler", "Message ignoré");
+    }
+    
+    protected abstract boolean canHandle(LogMessage message);
+    protected abstract LogResponse processLog(LogMessage message);
+    protected abstract String getHandlerName();
+}
+
+// Handler pour les logs de debug
+class DebugLogHandler extends LogHandler {
+    @Override
+    protected boolean canHandle(LogMessage message) {
+        return message.getLevel() == LogLevel.DEBUG;
+    }
+    
+    @Override
+    protected LogResponse processLog(LogMessage message) {
+        System.out.println("Debug Handler traite: " + message.getId());
+        
+        LogResponse response = new LogResponse(true, "Debug Handler", "Écrit dans fichier debug");
+        
+        return response;
+    }
+    
+    @Override
+    protected String getHandlerName() {
+        return "Debug Handler";
+    }
+}
+
+// Handler pour les logs d'information
+class InfoLogHandler extends LogHandler {
+    @Override
+    protected boolean canHandle(LogMessage message) {
+        return message.getLevel() == LogLevel.INFO;
+    }
+    
+    @Override
+    protected LogResponse processLog(LogMessage message) {
+        System.out.println("Info Handler traite: " + message.getId());
+        
+        LogResponse response = new LogResponse(true, "Info Handler", "Écrit dans fichier principal");
+        response.addDestination("application.log");
+        
+        // Simulation d'écriture dans fichier principal
+        System.out.println("[INFO] " + message.getTimestamp() + " - " + 
+                          message.getSource() + ": " + message.getMessage());
+        
+        return response;
+    }
+    
+    @Override
+    protected String getHandlerName() {
+        return "Info Handler";
+    }
+}
+
+// Handler pour les warnings
+class WarningLogHandler extends LogHandler {
+    @Override
+    protected boolean canHandle(LogMessage message) {
+        return message.getLevel() == LogLevel.WARNING;
+    }
+    
+    @Override
+    protected LogResponse processLog(LogMessage message) {
+        System.out.println("Warning Handler traite: " + message.getId());
+        
+        LogResponse response = new LogResponse(true, "Warning Handler", "Écrit dans fichier warnings + notification");
+        response.addDestination("warnings.log");
+        response.addDestination("application.log");
+        
+        // Simulation d'écriture et notification
+        System.out.println("[WARNING] " + message.getTimestamp() + " - " + 
+                          message.getSource() + ": " + message.getMessage());
+        System.out.println("📧 Notification envoyée à l'équipe de développement");
+        
+        return response;
+    }
+    
+    @Override
+    protected String getHandlerName() {
+        return "Warning Handler";
+    }
+}
+
+// Handler pour les erreurs
+class ErrorLogHandler extends LogHandler {
+    @Override
+    protected boolean canHandle(LogMessage message) {
+        return message.getLevel() == LogLevel.ERROR;
+    }
+    
+    @Override
+    protected LogResponse processLog(LogMessage message) {
+        System.out.println("Error Handler traite: " + message.getId());
+        
+        LogResponse response = new LogResponse(true, "Error Handler", "Écrit dans tous les fichiers + alerte");
+        response.addDestination("errors.log");
+        response.addDestination("application.log");
+        response.addDestination("alerts.log");
+        
+        // Simulation d'écriture et alerte
+        System.out.println("[ERROR] " + message.getTimestamp() + " - " + 
+                          message.getSource() + ": " + message.getMessage());
+        System.out.println("🚨 Alerte envoyée aux administrateurs système");
+        
+        return response;
+    }
+    
+    @Override
+    protected String getHandlerName() {
+        return "Error Handler";
+    }
+}
+
+// Handler pour les erreurs critiques
+class CriticalLogHandler extends LogHandler {
+    @Override
+    protected boolean canHandle(LogMessage message) {
+        return message.getLevel() == LogLevel.CRITICAL;
+    }
+    
+    @Override
+    protected LogResponse processLog(LogMessage message) {
+        System.out.println("Critical Handler traite: " + message.getId());
+        
+        LogResponse response = new LogResponse(true, "Critical Handler", "Action d'urgence déclenchée");
+        response.addDestination("critical.log");
+        response.addDestination("application.log");
+        response.addDestination("alerts.log");
+        response.addDestination("emergency_contacts.log");
+        
+        // Simulation d'actions d'urgence
+        System.out.println("[CRITICAL] " + message.getTimestamp() + " - " + 
+                          message.getSource() + ": " + message.getMessage());
+        System.out.println("🚨🚨 ALERTE CRITIQUE - Notification immédiate du responsable technique");
+        System.out.println("📞 Appel automatique des contacts d'urgence");
+        
+        return response;
+    }
+    
+    @Override
+    protected String getHandlerName() {
+        return "Critical Handler";
+    }
+}
+
+// Système de logging
+class LoggingSystem {
+    private LogHandler logChain;
+    
+    public LoggingSystem() {
+        // Construction de la chaîne de handlers
+        LogHandler debugHandler = new DebugLogHandler();
+        LogHandler infoHandler = new InfoLogHandler();
+        LogHandler warningHandler = new WarningLogHandler();
+        LogHandler errorHandler = new ErrorLogHandler();
+        LogHandler criticalHandler = new CriticalLogHandler();
+        
+        // Chaînage des handlers (ordre important)
+        debugHandler.setNext(infoHandler)
+                   .setNext(warningHandler)
+                   .setNext(errorHandler)
+                   .setNext(criticalHandler);
+        
+        this.logChain = debugHandler;
+    }
+    
+    public LogResponse log(LogMessage message) {
+        System.out.println("\n=== Traitement du log " + message.getId() + " ===");
+        System.out.println("Niveau: " + message.getLevel() + " (" + message.getLevel().getPriority() + ")");
+        System.out.println("Source: " + message.getSource());
+        System.out.println("Message: " + message.getMessage());
+        
+        LogResponse response = logChain.handle(message);
+        
+        System.out.println("\n--- Résultat ---");
+        System.out.println("Traité par: " + response.getHandlerName());
+        System.out.println("Action: " + response.getAction());
+        if (!response.getDestinations().isEmpty()) {
+            System.out.println("Destinations: " + String.join(", ", response.getDestinations()));
+        }
+        
+        return response;
+    }
+}
+
+// Utilisation
+public class ChainOfResponsibilityDemo {
+    public static void main(String[] args) {
+        LoggingSystem logger = new LoggingSystem();
+        
+        // Test avec différents niveaux de logs
+        LogMessage[] messages = {
+            new LogMessage("L001", LogLevel.DEBUG, "Variable x = 42", "UserService"),
+            new LogMessage("L002", LogLevel.INFO, "Utilisateur connecté avec succès", "AuthService"),
+            new LogMessage("L003", LogLevel.WARNING, "Tentative de connexion avec mot de passe incorrect", "AuthService"),
+            new LogMessage("L004", LogLevel.ERROR, "Impossible de se connecter à la base de données", "DatabaseService"),
+            new LogMessage("L005", LogLevel.CRITICAL, "Serveur principal hors service", "SystemMonitor")
+        };
+        
+        // Traitement des messages
+        for (LogMessage message : messages) {
+            logger.log(message);
+        }
+        
+        System.out.println("\nDémonstration terminée !");
+    }
+}
+</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Cas d'Usage -->
+                <section class="use-cases-section">
+                    <div class="aikido-card">
+                        <h2>🎯 Cas d'Usage Pratiques</h2>
+                        
+                        <div class="use-case-grid">
+                            <div class="use-case-item">
+                                <div class="use-case-icon">🎧</div>
+                                <h3>Support Client</h3>
+                                <p>Système de tickets avec escalade automatique du niveau 1 au management selon la complexité.</p>
+                                <div class="use-case-example">
+                                    <strong>Exemple :</strong> Zendesk, ServiceNow, Freshdesk
+                                </div>
+                            </div>
+                            
+                            <div class="use-case-item">
+                                <div class="use-case-icon">💰</div>
+                                <h3>Approbation de Dépenses</h3>
+                                <p>Workflow d'approbation avec différents niveaux selon le montant et le type de dépense.</p>
+                                <div class="use-case-example">
+                                    <strong>Exemple :</strong> Systèmes ERP, applications de notes de frais
+                                </div>
+                            </div>
+                            
+                            <div class="use-case-item">
+                                <div class="use-case-icon">📝</div>
+                                <h3>Systèmes de Logging</h3>
+                                <p>Traitement différencié des logs selon leur niveau de criticité (debug, info, warning, error).</p>
+                                <div class="use-case-example">
+                                    <strong>Exemple :</strong> Log4j, Winston, Serilog
+                                </div>
+                            </div>
+                            
+                            <div class="use-case-item">
+                                <div class="use-case-icon">🔒</div>
+                                <h3>Authentification</h3>
+                                <p>Chaîne de méthodes d'authentification (token, session, basic auth, OAuth).</p>
+                                <div class="use-case-example">
+                                    <strong>Exemple :</strong> Middleware d'authentification, systèmes SSO
+                                </div>
+                            </div>
+                            
+                            <div class="use-case-item">
+                                <div class="use-case-icon">🌐</div>
+                                <h3>Middleware HTTP</h3>
+                                <p>Pipeline de traitement des requêtes HTTP avec différents middlewares.</p>
+                                <div class="use-case-example">
+                                    <strong>Exemple :</strong> Express.js, ASP.NET Core, Laravel
+                                </div>
+                            </div>
+                            
+                            <div class="use-case-item">
+                                <div class="use-case-icon">⚡</div>
+                                <h3>Gestion d'Événements</h3>
+                                <p>Propagation d'événements dans une interface utilisateur (event bubbling).</p>
+                                <div class="use-case-example">
+                                    <strong>Exemple :</strong> DOM Events, systèmes d'événements GUI
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="aikido-alert success mt-lg">
+                            <strong>🎯 Conseil :</strong> Utilisez Chain of Responsibility quand vous avez plusieurs 
+                            objets qui peuvent traiter une requête, mais vous ne savez pas à l'avance lequel 
+                            sera capable de la traiter.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Biais Cognitifs -->
+                <section class="cognitive-bias-section">
+                    <div class="aikido-card">
+                        <h2>🧠 Biais Cognitifs Associés</h2>
+                        <p class="section-intro">
+                            Le pattern Chain of Responsibility peut être influencé par plusieurs biais cognitifs lors de sa conception :
+                        </p>
+                        
+                        <div class="bias-analysis">
+                            <div class="bias-item">
+                                <h4>📊 Biais de Hiérarchie</h4>
+                                <p>
+                                    Tendance à reproduire automatiquement les hiérarchies organisationnelles 
+                                    dans le code sans considérer si c'est la meilleure approche technique.
+                                </p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>🔄 Biais de Séquentialité</h4>
+                                <p>
+                                    Supposer que l'ordre de traitement doit toujours être linéaire et fixe, 
+                                    sans considérer des approches plus flexibles ou parallèles.
+                                </p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>⚡ Biais de Performance</h4>
+                                <p>
+                                    Sous-estimer l'impact performance d'une longue chaîne de handlers, 
+                                    surtout quand la plupart des requêtes sont traitées en fin de chaîne.
+                                </p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>🎯 Biais de Responsabilité Unique</h4>
+                                <p>
+                                    Créer trop de handlers avec des responsabilités très spécifiques, 
+                                    menant à une sur-ingénierie et une complexité excessive.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Anti-Patterns -->
+                <section class="antipatterns-section">
+                    <div class="aikido-card">
+                        <h2>⚠️ Anti-Patterns à Éviter</h2>
+                        
+                        <div class="antipattern-warnings">
+                            <div class="antipattern-warning">
+                                <h4>🔗 Chaîne Infinie (Infinite Chain)</h4>
+                                <p>
+                                    <strong>Problème :</strong> Créer une chaîne circulaire ou sans fin 
+                                    qui peut causer des boucles infinies.
+                                </p>
+                                <p>
+                                    <strong>Solution :</strong> Toujours avoir un handler final qui traite 
+                                    ou rejette définitivement la requête.
+                                </p>
+                            </div>
+                            
+                            <div class="antipattern-warning">
+                                <h4>🐌 Chaîne Trop Longue (Overly Long Chain)</h4>
+                                <p>
+                                    <strong>Problème :</strong> Créer une chaîne avec trop de handlers, 
+                                    impactant les performances et la lisibilité.
+                                </p>
+                                <p>
+                                    <strong>Solution :</strong> Regrouper les handlers similaires ou 
+                                    utiliser des stratégies de routage plus efficaces.
+                                </p>
+                            </div>
+                            
+                            <div class="antipattern-warning">
+                                <h4>🔀 Handler Gourmand (Greedy Handler)</h4>
+                                <p>
+                                    <strong>Problème :</strong> Un handler qui traite toutes les requêtes 
+                                    sans laisser la chance aux suivants.
+                                </p>
+                                <p>
+                                    <strong>Solution :</strong> Définir clairement les critères de traitement 
+                                    et respecter le principe de responsabilité unique.
+                                </p>
+                            </div>
+                            
+                            <div class="antipattern-warning">
+                                <h4>🔧 Chaîne Rigide (Rigid Chain)</h4>
+                                <p>
+                                    <strong>Problème :</strong> Chaîne difficile à modifier ou à étendre, 
+                                    avec des dépendances hardcodées.
+                                </p>
+                                <p>
+                                    <strong>Solution :</strong> Utiliser la configuration ou l'injection 
+                                    de dépendances pour construire la chaîne dynamiquement.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercice Interactif -->
+                <section class="exercise-section">
+                    <div class="aikido-card">
+                        <h2>🎯 Exercice Pratique</h2>
+                        <p>
+                            Vous développez un système de validation de formulaires. Comment organiseriez-vous 
+                            la chaîne de validation ?
+                        </p>
+                        
+                        <div class="exercise-choices">
+                            <div class="choice-option" data-choice="sequential">
+                                <h4>📋 Validation Séquentielle</h4>
+                                <p>Chaque validator traite tous les champs puis passe au suivant</p>
+                            </div>
+                            
+                            <div class="choice-option" data-choice="field-based">
+                                <h4>🎯 Validation par Champ</h4>
+                                <p>Une chaîne différente pour chaque champ du formulaire</p>
+                            </div>
+                            
+                            <div class="choice-option" data-choice="priority">
+                                <h4>⚡ Validation par Priorité</h4>
+                                <p>Validators ordonnés par criticité (requis → format → business rules)</p>
+                            </div>
+                            
+                            <div class="choice-option" data-choice="parallel">
+                                <h4>🔄 Validation Parallèle</h4>
+                                <p>Tous les validators s'exécutent en parallèle puis agrègent les résultats</p>
+                            </div>
+                        </div>
+                        
+                        <div id="exercise-retours" class="exercise-retours hidden">
+                            <div class="retour-sequential hidden">
+                                <div class="aikido-alert warning">
+                                    <strong>⚠️ Attention !</strong> Cette approche peut être inefficace car 
+                                    chaque validator doit traiter tous les champs, même ceux qui ne le concernent pas.
+                                    <br><br>
+                                    <strong>Risque :</strong> Performance dégradée et logique de validation complexe.
+                                </div>
+                            </div>
+                            
+                            <div class="retour-field-based hidden">
+                                <div class="aikido-alert info">
+                                    <strong>🤔 Intéressant !</strong> Cette approche est très modulaire mais 
+                                    peut créer beaucoup de chaînes à gérer et maintenir.
+                                    <br><br>
+                                    <strong>Conseil :</strong> Bon pour des formulaires complexes avec des 
+                                    règles très spécifiques par champ.
+                                </div>
+                            </div>
+                            
+                            <div class="retour-priority hidden">
+                                <div class="aikido-alert success">
+                                    <strong>✅ Excellent choix !</strong> L'organisation par priorité permet 
+                                    d'arrêter la validation dès qu'une règle critique échoue.
+                                    <br><br>
+                                    <strong>Avantages :</strong> Performance optimale, feedback utilisateur 
+                                    rapide, logique claire et maintenable.
+                                </div>
+                            </div>
+                            
+                            <div class="retour-parallel hidden">
+                                <div class="aikido-alert error">
+                                    <strong>❌ Attention !</strong> Cette approche ne correspond pas au pattern 
+                                    Chain of Responsibility qui est séquentiel par nature.
+                                    <br><br>
+                                    <strong>Alternative :</strong> Considérez plutôt le pattern Strategy 
+                                    ou Composite pour une validation parallèle.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Completion -->
+                <section class="completion-section slide-in">
+                    <div class="aikido-card completion">
+                        <div class="completion-content">
+                            <div class="completion-icon">📋</div>
+                            <div class="completion-text">
+                                <h3>Avez-vous terminé cette section ?</h3>
+                                <p>Marquez cette page comme terminée pour suivre votre progression dans la formation.</p>
+                            </div>
+                            <button class="aikido-btn primary mark-completed" data-page="chain-of-responsibility">
+                                Marquer comme Terminé ✓
+                            </button>
+                        </div>
+                        <div class="completion-feedback hidden">
+                            <div class="feedback-success">
+                                <div class="feedback-icon">🎉</div>
+                                <div class="feedback-text">
+                                    <h4>Section terminée !</h4>
+                                    <p>Vous maîtrisez maintenant le pattern Chain of Responsibility. Continuez avec les autres patterns comportementaux.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Gestion de l'exercice interactif
+        document.addEventListener('DOMContentLoaded', function() {
+            const choices = document.querySelectorAll('.choice-option');
+            const retours = document.getElementById('exercise-retours');
+            
+            choices.forEach(choice => {
+                choice.addEventListener('click', function() {
+                    // Réinitialiser les choix
+                    choices.forEach(c => c.classList.remove('selected'));
+                    
+                    // Sélectionner le choix actuel
+                    this.classList.add('selected');
+                    
+                    // Afficher le retour correspondant
+                    const choiceType = this.dataset.choice;
+                    const allRetours = retours.querySelectorAll('[class*="retour-"]');
+                    
+                    // Masquer tous les retours
+                    allRetours.forEach(r => r.classList.add('hidden'));
+                    retours.classList.remove('hidden');
+                    
+                    // Afficher le bon retour
+                    const targetRetour = retours.querySelector(`.retour-${choiceType}`);
+                    if (targetRetour) {
+                        targetRetour.classList.remove('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

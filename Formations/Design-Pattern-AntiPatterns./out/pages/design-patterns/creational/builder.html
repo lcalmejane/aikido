@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Builder Pattern - Formation Patterns Développeurs</title>
+    <meta name="description" content="Le pattern Builder expliqué avec exemples de code, diagrammes UML et cas d'usage pratiques">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <h1 class="page-title">🔨 Builder Pattern</h1>
+                    <p class="page-subtitle">Construire des objets complexes étape par étape</p>
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">🎨</span>
+                            <span class="meta-text">Design Patterns</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⭐</span>
+                            <span class="meta-text">Difficulté: Moyen</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⏱️</span>
+                            <span class="meta-text">20 min</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🏭</span>
+                            <span class="meta-text">Création</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Définition et Problème -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card design-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="mb-md">
+                            Le <strong>Builder</strong> est un pattern de création qui permet de construire 
+                            des objets complexes étape par étape. Il sépare la construction d'un objet 
+                            complexe de sa représentation.
+                        </p>
+                        
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problème Résolu</h3>
+                                <ul>
+                                    <li>Éviter les constructeurs avec trop de paramètres</li>
+                                    <li>Créer des objets avec des configurations optionnelles</li>
+                                    <li>Construire des objets complexes de manière lisible</li>
+                                    <li>Valider la cohérence lors de la construction</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solution Apportée</h3>
+                                <ul>
+                                    <li>Construction étape par étape</li>
+                                    <li>Interface fluide et lisible</li>
+                                    <li>Validation centralisée</li>
+                                    <li>Réutilisabilité du processus</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert warning">
+                            <strong>⚠️ Attention :</strong> Le Builder peut être sur-utilisé pour des objets 
+                            simples où un constructeur classique suffirait.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Structure UML -->
+                <section class="structure-section">
+                    <div class="aikido-card">
+                        <h2>🏗️ Structure UML</h2>
+                        <div class="uml-diagram">
+                            <div class="uml-class-diagram">
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>Builder</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method abstract">+ buildPartA(): Builder</div>
+                                        <div class="method abstract">+ buildPartB(): Builder</div>
+                                        <div class="method abstract">+ getResult(): Product</div>
+                                    </div>
+                                </div>
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>ConcreteBuilder</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ buildPartA(): Builder</div>
+                                        <div class="method public">+ buildPartB(): Builder</div>
+                                        <div class="method public">+ getResult(): Product</div>
+                                    </div>
+                                </div>
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>Director</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ construct(): void</div>
+                                    </div>
+                                </div>
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>Product</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ operation(): void</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="structure-explanation">
+                            <h3>Éléments Clés</h3>
+                            <ul>
+                                <li><strong>Builder</strong> : Interface définissant les étapes de construction</li>
+                                <li><strong>ConcreteBuilder</strong> : Implémente les étapes et assemble le produit</li>
+                                <li><strong>Director</strong> : Orchestre la construction selon un ordre spécifique</li>
+                                <li><strong>Product</strong> : Objet complexe résultant de la construction</li>
+                            </ul>
+                        </div>
+
+                        <!-- Diagramme de flux Mermaid -->
+                        <div class="mt-lg">
+                            <h3>🔄 Flux d'Exécution</h3>
+                            <div class="mermaid">
+                                graph TD
+                                    A[Client crée ConcreteBuilder] --> B[Client configure Director]
+                                    B --> C[Director.construct appelle]
+                                    C --> D[Builder.buildPartA]
+                                    D --> E[Builder.buildPartB]
+                                    E --> F[Builder.buildPartC]
+                                    F --> G[Client appelle getResult]
+                                    G --> H[Retour Product assemblé]
+                                    
+                                    style A fill:#e1f5fe
+                                    style C fill:#fff3e0
+                                    style D fill:#e8f5e8
+                                    style E fill:#e8f5e8
+                                    style F fill:#e8f5e8
+                                    style H fill:#f3e5f5
+                            </div>
+                            <p class="text-sm text-gray-600 mt-md">
+                                <strong>💡 Point clé :</strong> Le Director orchestre la construction, 
+                                mais c'est le Builder qui connaît les détails de l'assemblage.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Implémentations -->
+                <section class="implementations-section">
+                    <h2>💻 Implémentations</h2>
+                    
+                    <div class="aikido-card">
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="typescript">TypeScript</button>
+                                <button class="tab-btn" data-tab="php">PHP</button>
+                                <button class="tab-btn" data-tab="java">Java</button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="typescript">
+                                <h4>Exemple : Constructeur de Requêtes SQL</h4>
+                                <pre><code class="language-typescript">
+// Product - La requête SQL complexe
+class SQLQuery {
+    constructor(
+        public readonly select: string[],
+        public readonly from: string,
+        public readonly joins: string[],
+        public readonly where: string[],
+        public readonly orderBy: string[],
+        public readonly limit?: number
+    ) {}
+    
+    public toString(): string {
+        let sql = `SELECT ${this.select.join(', ')} FROM ${this.from}`;
+        
+        if (this.joins.length > 0) {
+            sql += ' ' + this.joins.join(' ');
+        }
+        
+        if (this.where.length > 0) {
+            sql += ' WHERE ' + this.where.join(' AND ');
+        }
+        
+        if (this.orderBy.length > 0) {
+            sql += ' ORDER BY ' + this.orderBy.join(', ');
+        }
+        
+        if (this.limit) {
+            sql += ` LIMIT ${this.limit}`;
+        }
+        
+        return sql;
+    }
+}
+
+// Builder interface
+interface QueryBuilder {
+    select(fields: string[]): QueryBuilder;
+    from(table: string): QueryBuilder;
+    join(table: string, condition: string): QueryBuilder;
+    where(condition: string): QueryBuilder;
+    orderBy(field: string, direction?: 'ASC' | 'DESC'): QueryBuilder;
+    limit(count: number): QueryBuilder;
+    build(): SQLQuery;
+}
+
+// Concrete Builder
+class MySQLQueryBuilder implements QueryBuilder {
+    private selectFields: string[] = [];
+    private fromTable: string = '';
+    private joinClauses: string[] = [];
+    private whereClauses: string[] = [];
+    private orderByClauses: string[] = [];
+    private limitCount?: number;
+    
+    select(fields: string[]): QueryBuilder {
+        this.selectFields = [...fields];
+        return this;
+    }
+    
+    from(table: string): QueryBuilder {
+        this.fromTable = table;
+        return this;
+    }
+    
+    join(table: string, condition: string): QueryBuilder {
+        this.joinClauses.push(`JOIN ${table} ON ${condition}`);
+        return this;
+    }
+    
+    where(condition: string): QueryBuilder {
+        this.whereClauses.push(condition);
+        return this;
+    }
+    
+    orderBy(field: string, direction: 'ASC' | 'DESC' = 'ASC'): QueryBuilder {
+        this.orderByClauses.push(`${field} ${direction}`);
+        return this;
+    }
+    
+    limit(count: number): QueryBuilder {
+        this.limitCount = count;
+        return this;
+    }
+    
+    build(): SQLQuery {
+        if (!this.fromTable) {
+            throw new Error('FROM clause is required');
+        }
+        if (this.selectFields.length === 0) {
+            throw new Error('SELECT fields are required');
+        }
+        
+        return new SQLQuery(
+            this.selectFields,
+            this.fromTable,
+            this.joinClauses,
+            this.whereClauses,
+            this.orderByClauses,
+            this.limitCount
+        );
+    }
+}
+
+// Director (optionnel)
+class QueryDirector {
+    constructor(private builder: QueryBuilder) {}
+    
+    buildUserPostsQuery(userId: number): SQLQuery {
+        return this.builder
+            .select(['p.title', 'p.content', 'u.name as author'])
+            .from('posts p')
+            .join('users u', 'p.user_id = u.id')
+            .where(`u.id = ${userId}`)
+            .where('p.published = 1')
+            .orderBy('p.created_at', 'DESC')
+            .limit(10)
+            .build();
+    }
+}
+
+// Utilisation
+const builder = new MySQLQueryBuilder();
+
+const query = builder
+    .select(['name', 'email'])
+    .from('users')
+    .where('active = 1')
+    .orderBy('name')
+    .build();
+
+console.log(query.toString());
+// SELECT name, email FROM users WHERE active = 1 ORDER BY name ASC
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="php">
+                                <pre><code class="language-php">
+&lt;?php
+
+// Product - Email complexe
+class Email {
+    private string $to;
+    private string $subject;
+    private string $body;
+    private array $attachments = [];
+    private array $headers = [];
+    private string $priority = 'normal';
+    
+    public function __construct(
+        string $to,
+        string $subject,
+        string $body,
+        array $attachments = [],
+        array $headers = [],
+        string $priority = 'normal'
+    ) {
+        $this->to = $to;
+        $this->subject = $subject;
+        $this->body = $body;
+        $this->attachments = $attachments;
+        $this->headers = $headers;
+        $this->priority = $priority;
+    }
+    
+    public function send(): bool {
+        echo "📧 Envoi email à: {$this->to}\n";
+        echo "📋 Sujet: {$this->subject}\n";
+        echo "📄 Corps: " . substr($this->body, 0, 50) . "...\n";
+        echo "📎 Pièces jointes: " . count($this->attachments) . "\n";
+        echo "⚡ Priorité: {$this->priority}\n";
+        return true;
+    }
+}
+
+// Builder interface
+interface EmailBuilder {
+    public function to(string $email): EmailBuilder;
+    public function subject(string $subject): EmailBuilder;
+    public function body(string $body): EmailBuilder;
+    public function attach(string $filePath): EmailBuilder;
+    public function priority(string $level): EmailBuilder;
+    public function build(): Email;
+}
+
+// Concrete Builder
+class HTMLEmailBuilder implements EmailBuilder {
+    private string $to = '';
+    private string $subject = '';
+    private string $body = '';
+    private array $attachments = [];
+    private array $headers = [];
+    private string $priority = 'normal';
+    
+    public function to(string $email): EmailBuilder {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new InvalidArgumentException("Email invalide: {$email}");
+        }
+        $this->to = $email;
+        return $this;
+    }
+    
+    public function subject(string $subject): EmailBuilder {
+        $this->subject = htmlspecialchars($subject);
+        return $this;
+    }
+    
+    public function body(string $body): EmailBuilder {
+        $this->body = $body;
+        $this->headers['Content-Type'] = 'text/html; charset=UTF-8';
+        return $this;
+    }
+    
+    public function attach(string $filePath): EmailBuilder {
+        if (!file_exists($filePath)) {
+            throw new InvalidArgumentException("Fichier introuvable: {$filePath}");
+        }
+        
+        $this->attachments[] = [
+            'path' => $filePath,
+            'name' => basename($filePath),
+            'size' => filesize($filePath)
+        ];
+        return $this;
+    }
+    
+    public function priority(string $level): EmailBuilder {
+        $validPriorities = ['low', 'normal', 'high', 'urgent'];
+        if (!in_array($level, $validPriorities)) {
+            throw new InvalidArgumentException("Priorité invalide: {$level}");
+        }
+        $this->priority = $level;
+        return $this;
+    }
+    
+    public function build(): Email {
+        if (empty($this->to)) {
+            throw new RuntimeException('Destinataire requis');
+        }
+        if (empty($this->subject)) {
+            throw new RuntimeException('Sujet requis');
+        }
+        
+        return new Email(
+            $this->to,
+            $this->subject,
+            $this->body,
+            $this->attachments,
+            $this->headers,
+            $this->priority
+        );
+    }
+}
+
+// Utilisation
+$builder = new HTMLEmailBuilder();
+
+$email = $builder
+    ->to('user@example.com')
+    ->subject('Test Builder Pattern')
+    ->body('&lt;p&gt;Ceci est un test du pattern Builder.&lt;/p&gt;')
+    ->priority('high')
+    ->build();
+
+$email->send();
+
+?&gt;
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="java">
+                                <pre><code class="language-java">
+// Product - Configuration de serveur
+public class ServerConfig {
+    private final String host;
+    private final int port;
+    private final String protocol;
+    private final int maxConnections;
+    private final boolean sslEnabled;
+    private final Map&lt;String, String&gt; properties;
+    
+    public ServerConfig(String host, int port, String protocol, 
+                       int maxConnections, boolean sslEnabled,
+                       Map&lt;String, String&gt; properties) {
+        this.host = host;
+        this.port = port;
+        this.protocol = protocol;
+        this.maxConnections = maxConnections;
+        this.sslEnabled = sslEnabled;
+        this.properties = new HashMap&lt;&gt;(properties);
+    }
+    
+    public void start() {
+        System.out.println("🚀 Démarrage serveur:");
+        System.out.println("📡 " + protocol + "://" + host + ":" + port);
+        System.out.println("🔗 Max connexions: " + maxConnections);
+        System.out.println("🔒 SSL: " + (sslEnabled ? "Activé" : "Désactivé"));
+    }
+    
+    // Getters
+    public String getHost() { return host; }
+    public int getPort() { return port; }
+    public String getProtocol() { return protocol; }
+}
+
+// Builder interface
+public interface ServerConfigBuilder {
+    ServerConfigBuilder host(String host);
+    ServerConfigBuilder port(int port);
+    ServerConfigBuilder protocol(String protocol);
+    ServerConfigBuilder maxConnections(int max);
+    ServerConfigBuilder enableSsl();
+    ServerConfigBuilder property(String key, String value);
+    ServerConfig build();
+}
+
+// Concrete Builder
+public class HttpServerConfigBuilder implements ServerConfigBuilder {
+    private String host = "localhost";
+    private int port = 8080;
+    private String protocol = "HTTP";
+    private int maxConnections = 100;
+    private boolean sslEnabled = false;
+    private Map&lt;String, String&gt; properties = new HashMap&lt;&gt;();
+    
+    @Override
+    public ServerConfigBuilder host(String host) {
+        this.host = host;
+        return this;
+    }
+    
+    @Override
+    public ServerConfigBuilder port(int port) {
+        if (port &lt; 1 || port &gt; 65535) {
+            throw new IllegalArgumentException("Port invalide");
+        }
+        this.port = port;
+        return this;
+    }
+    
+    @Override
+    public ServerConfigBuilder protocol(String protocol) {
+        this.protocol = protocol.toUpperCase();
+        return this;
+    }
+    
+    @Override
+    public ServerConfigBuilder maxConnections(int max) {
+        this.maxConnections = max;
+        return this;
+    }
+    
+    @Override
+    public ServerConfigBuilder enableSsl() {
+        this.sslEnabled = true;
+        this.protocol = "HTTPS";
+        if (this.port == 8080) {
+            this.port = 8443;
+        }
+        return this;
+    }
+    
+    @Override
+    public ServerConfigBuilder property(String key, String value) {
+        this.properties.put(key, value);
+        return this;
+    }
+    
+    @Override
+    public ServerConfig build() {
+        return new ServerConfig(
+            host, port, protocol, maxConnections, 
+            sslEnabled, properties
+        );
+    }
+}
+
+// Utilisation
+ServerConfigBuilder builder = new HttpServerConfigBuilder();
+
+ServerConfig server = builder
+    .host("example.com")
+    .port(443)
+    .enableSsl()
+    .maxConnections(1000)
+    .property("compression", "gzip")
+    .build();
+
+server.start();
+</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Avantages et Inconvénients -->
+                <section class="pros-cons-section">
+                    <div class="aikido-card">
+                        <h2>⚖️ Avantages et Inconvénients</h2>
+                        
+                        <div class="pros-cons-grid">
+                            <div class="pros-card">
+                                <h3>✅ Avantages</h3>
+                                <ul>
+                                    <li><strong>Lisibilité</strong> : Code fluide et expressif</li>
+                                    <li><strong>Flexibilité</strong> : Paramètres optionnels faciles</li>
+                                    <li><strong>Validation</strong> : Contrôle à chaque étape</li>
+                                    <li><strong>Immutabilité</strong> : Objets finaux non modifiables</li>
+                                    <li><strong>Réutilisabilité</strong> : Builders configurables</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="cons-card">
+                                <h3>❌ Inconvénients</h3>
+                                <ul>
+                                    <li><strong>Complexité</strong> : Plus de code à maintenir</li>
+                                    <li><strong>Performance</strong> : Objets intermédiaires créés</li>
+                                    <li><strong>Mémoire</strong> : Builder garde l'état temporaire</li>
+                                    <li><strong>Sur-ingénierie</strong> : Overkill pour objets simples</li>
+                                    <li><strong>Duplication</strong> : Logique répétée entre builders</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Cas d'Usage -->
+                <section class="use-cases-section">
+                    <div class="aikido-card">
+                        <h2>🎯 Cas d'Usage Appropriés</h2>
+                        
+                        <div class="use-cases-grid">
+                            <div class="use-case good">
+                                <h4>✅ Quand l'utiliser</h4>
+                                <ul>
+                                    <li><strong>Configuration complexe</strong> : Serveurs, API clients</li>
+                                    <li><strong>Requêtes</strong> : SQL builders, filtres de recherche</li>
+                                    <li><strong>Documents</strong> : PDF, emails HTML, rapports</li>
+                                    <li><strong>Objets de jeu</strong> : Personnages, véhicules</li>
+                                    <li><strong>Tests</strong> : Test data builders, mocks</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="use-case bad">
+                                <h4>❌ Quand l'éviter</h4>
+                                <ul>
+                                    <li><strong>Objets simples</strong> : Moins de 3-4 paramètres</li>
+                                    <li><strong>Objets immutables</strong> : Quand tous les champs sont requis</li>
+                                    <li><strong>Performance critique</strong> : Quand chaque allocation compte</li>
+                                    <li><strong>API temporaire</strong> : Prototypes ou code jetable</li>
+                                    <li><strong>Équipe inexpérimentée</strong> : Risque de sur-complexification</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Alternatives et Patterns Liés -->
+                <section class="alternatives-section">
+                    <div class="aikido-card">
+                        <h2>🔄 Alternatives et Patterns Liés</h2>
+                        
+                        <div class="alternatives-grid">
+                            <div class="alternative-card">
+                                <h4>🏭 Factory Method</h4>
+                                <p>Pour créer des objets sans exposer la logique de création</p>
+                                <div class="code-example">
+                                    <code>EmailFactory.createWelcomeEmail(user)</code>
+                                </div>
+                            </div>
+                            
+                            <div class="alternative-card">
+                                <h4>🧬 Prototype</h4>
+                                <p>Pour cloner des objets existants avec modifications</p>
+                                <div class="code-example">
+                                    <code>baseConfig.clone().setPort(8080)</code>
+                                </div>
+                            </div>
+                            
+                            <div class="alternative-card">
+                                <h4>📋 Fluent Interface</h4>
+                                <p>Interface fluide sans pattern Builder complet</p>
+                                <div class="code-example">
+                                    <code>new Query().select("*").from("users")</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Biais Cognitifs Liés -->
+                <section class="cognitive-bias-section">
+                    <div class="aikido-card biais-cognitif">
+                        <h2>🧩 Biais Cognitifs Associés</h2>
+                        
+                        <div class="bias-analysis">
+                            <div class="bias-item">
+                                <h4>🔨 Marteau de Maslow</h4>
+                                <p><strong>Manifestation :</strong> "Le Builder rend le code élégant, utilisons-le partout."</p>
+                                <p><strong>Risque :</strong> Sur-utilisation du pattern même pour des objets simples.</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>🎯 Biais de Perfectionnisme</h4>
+                                <p><strong>Manifestation :</strong> Créer des builders avec trop de méthodes de configuration.</p>
+                                <p><strong>Risque :</strong> API surchargée et difficile à utiliser.</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>✅ Biais de Confirmation</h4>
+                                <p><strong>Manifestation :</strong> Ignorer les alternatives plus simples (constructeurs, factory).</p>
+                                <p><strong>Risque :</strong> Solution inadaptée au problème réel.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Anti-Patterns Liés -->
+                <section class="antipatterns-section">
+                    <div class="aikido-card anti-pattern">
+                        <h2>⚠️ Anti-Patterns à Éviter</h2>
+                        
+                        <div class="antipattern-warnings">
+                            <div class="antipattern-warning">
+                                <h4>🏗️ God Builder</h4>
+                                <p>Un Builder qui construit trop de types d'objets différents.</p>
+                                <div class="code-example bad">
+                                    <code>// ❌ Mauvais : Builder qui fait tout
+class UniversalBuilder {
+    // Construit emails, configs, requêtes, etc.
+}</code>
+                                </div>
+                            </div>
+                            
+                            <div class="antipattern-warning">
+                                <h4>🔧 Over-Engineering</h4>
+                                <p>Utiliser le Builder pour des objets simples avec peu de paramètres.</p>
+                                <div class="code-example bad">
+                                    <code>// ❌ Overkill pour un objet simple
+class PersonBuilder {
+    name(String name) { ... }
+    age(int age) { ... }
+    // Seulement 2 champs !
+}</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercice Pratique -->
+                <section class="exercise-section">
+                    <div class="aikido-card exercise">
+                        <h2>🎯 Exercice Pratique</h2>
+                        
+                        <div class="exercise-scenario">
+                            <h3>Scenario : Système de Configuration E-commerce</h3>
+                            <p>
+                                Vous développez une application e-commerce qui doit gérer des configurations complexes 
+                                (paiement, livraison, taxes, promotions). Ces configurations ont de nombreux paramètres 
+                                optionnels et doivent être validées avant utilisation.
+                            </p>
+                            
+                            <div class="exercise-question">
+                                <h4>Question :</h4>
+                                <p>Quelle approche Builder est la plus appropriée pour ce système ?</p>
+                                
+                                <div class="choice-options">
+                                    <div class="choice-
+
+option" data-choice="single">
+                                        🏗️ Un seul Builder monolithique avec toutes les méthodes
+                                    </div>
+                                    <div class="choice-option" data-choice="specialized">
+                                        🎯 Plusieurs Builders spécialisés avec un Director
+                                    </div>
+                                    <div class="choice-option" data-choice="simple">
+                                        ⚡ Un Builder simple avec validation finale
+                                    </div>
+                                    <div class="choice-option" data-choice="constructor">
+                                        📋 Constructeurs avec paramètres optionnels
+                                    </div>
+                                </div>
+                                
+                                <div id="exercise-retours" class="exercise-retours hidden">
+                                    <!-- Le feedback sera affiché ici -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Completion Section -->
+                <section class="completion-section slide-in">
+                    <div class="aikido-card completion">
+                        <div class="completion-content">
+                            <div class="completion-icon">📋</div>
+                            <div class="completion-text">
+                                <h3>Avez-vous terminé cette section ?</h3>
+                                <p>Marquez cette page comme terminée pour suivre votre progression dans la formation.</p>
+                            </div>
+                            <button class="aikido-btn primary mark-completed" data-page="builder">
+                                Marquer comme Terminé ✓
+                            </button>
+                        </div>
+                        
+                        <div class="completion-feedback hidden">
+                            <div class="feedback-success">
+                                <h4>🎉 Excellent travail !</h4>
+                                <p>Vous avez terminé l'étude du pattern Builder. Vous comprenez maintenant :</p>
+                                <ul>
+                                    <li>Comment construire des objets complexes étape par étape</li>
+                                    <li>Les avantages de la séparation construction/représentation</li>
+                                    <li>Quand utiliser le Builder vs d'autres patterns</li>
+                                    <li>Les pièges à éviter lors de l'implémentation</li>
+                                </ul>
+                                <p>Continuez avec le pattern suivant pour approfondir vos connaissances !</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Script pour l'exercice interactif -->
+    <script>
+        // Gestion de l'exercice interactif
+        document.addEventListener('DOMContentLoaded', function() {
+            const choiceOptions = document.querySelectorAll('.choice-option');
+            const exerciseRetours = document.getElementById('exercise-retours');
+            
+            choiceOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Désélectionner toutes les options
+                    choiceOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Sélectionner l'option cliquée
+                    this.classList.add('selected');
+                    
+                    // Afficher le feedback
+                    const choice = this.getAttribute('data-choice');
+                    showBuilderFeedback(choice);
+                });
+            });
+        });
+
+        function showBuilderFeedback(choice) {
+            const exerciseRetours = document.getElementById('exercise-retours');
+            let feedbackContent = '';
+
+            switch(choice) {
+                case 'single':
+                    feedbackContent = `
+                        <div class="feedback-content incorrect">
+                            <div class="feedback-icon">❌</div>
+                            <div class="feedback-text">
+                                <strong>Pas optimal</strong>
+                                <p>Un seul Builder monolithique viole le principe de responsabilité unique et devient difficile à maintenir pour un système complexe comme l'e-commerce.</p>
+                                <p><strong>Problème :</strong> Trop de responsabilités dans une seule classe.</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'specialized':
+                    feedbackContent = `
+                        <div class="feedback-content correct">
+                            <div class="feedback-icon">✅</div>
+                            <div class="feedback-text">
+                                <strong>Excellente réponse !</strong>
+                                <p>Séparer les responsabilités avec des Builders spécialisés (PaymentBuilder, ShippingBuilder, etc.) et un Director est la meilleure approche pour un système complexe.</p>
+                                <p><strong>Avantages :</strong> Séparation des préoccupations, testabilité, réutilisabilité et évolutivité.</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'simple':
+                    feedbackContent = `
+                        <div class="feedback-content partial">
+                            <div class="feedback-icon">⚠️</div>
+                            <div class="feedback-text">
+                                <strong>Partiellement correct</strong>
+                                <p>Cette approche fonctionne pour des cas simples, mais pour un e-commerce avec de nombreuses configurations, elle peut devenir limitée.</p>
+                                <p><strong>Limitation :</strong> Manque de structure pour gérer la complexité croissante.</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'constructor':
+                    feedbackContent = `
+                        <div class="feedback-content incorrect">
+                            <div class="feedback-icon">❌</div>
+                            <div class="feedback-text">
+                                <strong>Incorrect</strong>
+                                <p>Pour un système e-commerce avec de nombreuses options de configuration, les constructeurs deviendraient rapidement ingérables.</p>
+                                <p><strong>Problème :</strong> Trop de paramètres, difficulté de validation et manque de flexibilité.</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+
+            exerciseRetours.innerHTML = feedbackContent;
+            exerciseRetours.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

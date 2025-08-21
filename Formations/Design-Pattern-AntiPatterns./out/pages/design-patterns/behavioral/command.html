@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Pattern - Formation Patterns Développeurs</title>
+    <meta name="description" content="Le pattern Command expliqué avec exemples de code, diagrammes UML et cas d'usage pratiques">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <h1 class="page-title">⚡ Command Pattern</h1>
+                    <p class="page-subtitle">Encapsuler une requête comme un objet</p>
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">🎨</span>
+                            <span class="meta-text">Design Patterns</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⭐</span>
+                            <span class="meta-text">Difficulté: Moyen</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⏱️</span>
+                            <span class="meta-text">20 min</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🎭</span>
+                            <span class="meta-text">Comportemental</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Définition et Problème -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card design-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="mb-md">
+                            Le <strong>Command</strong> est un pattern comportemental qui transforme une requête 
+                            en un objet autonome contenant toutes les informations sur la requête. Cette transformation 
+                            permet de paramétrer les méthodes avec différentes requêtes, de mettre en file d'attente 
+                            ou d'enregistrer les requêtes, et de supporter les opérations d'annulation.
+                        </p>
+                        
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problème Résolu</h3>
+                                <ul>
+                                    <li>Couplage fort entre l'invocateur et le récepteur</li>
+                                    <li>Impossibilité d'annuler ou de rejouer des opérations</li>
+                                    <li>Difficulté à paramétrer des objets avec des requêtes</li>
+                                    <li>Gestion complexe des files d'attente d'opérations</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solution Apportée</h3>
+                                <ul>
+                                    <li>Découplage entre invocateur et récepteur</li>
+                                    <li>Support des opérations undo/redo</li>
+                                    <li>Paramétrage flexible avec des commandes</li>
+                                    <li>Files d'attente et logging des opérations</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert warning">
+                            <strong>⚠️ Attention :</strong> Le pattern Command peut introduire de la complexité 
+                            supplémentaire pour des opérations simples. Évaluez le besoin réel avant de l'implémenter.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Structure UML -->
+                <section class="structure-section">
+                    <div class="aikido-card">
+                        <h2>🏗️ Structure UML</h2>
+                        <div class="uml-diagram">
+                            <div class="uml-class-diagram">
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>&lt;&lt;interface&gt;&gt;<br>Command</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ execute(): void</div>
+                                        <div class="method public">+ undo(): void</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>ConcreteCommand</strong>
+                                    </div>
+                                    <div class="class-attributes">
+                                        <div class="attribute private">- receiver: Receiver</div>
+                                        <div class="attribute private">- parameters: any</div>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ execute(): void</div>
+                                        <div class="method public">+ undo(): void</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>Invoker</strong>
+                                    </div>
+                                    <div class="class-attributes">
+                                        <div class="attribute private">- command: Command</div>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ setCommand(cmd): void</div>
+                                        <div class="method public">+ executeCommand(): void</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>Receiver</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ action(): void</div>
+                                        <div class="method public">+ anotherAction(): void</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="structure-explanation">
+                            <h3>Éléments Clés</h3>
+                            <ul>
+                                <li><strong>Command</strong> : Interface déclarant une méthode pour exécuter une commande</li>
+                                <li><strong>ConcreteCommand</strong> : Implémente Command et définit la liaison entre Receiver et action</li>
+                                <li><strong>Invoker</strong> : Demande à la commande d'exécuter la requête</li>
+                                <li><strong>Receiver</strong> : Sait comment effectuer les opérations associées à une requête</li>
+                            </ul>
+                        </div>
+
+                        <!-- Diagramme de flux Mermaid -->
+                        <div class="mt-lg">
+                            <h3>🔄 Flux d'Exécution</h3>
+                            <div class="mermaid">
+                                graph TD
+                                    A[Client crée ConcreteCommand] --> B[Client configure Receiver]
+                                    B --> C[Client passe Command à Invoker]
+                                    C --> D[Invoker.executeCommand]
+                                    D --> E[Command.execute]
+                                    E --> F[Receiver.action]
+                                    F --> G[Action exécutée]
+                                    
+                                    H[Client demande undo] --> I[Command.undo]
+                                    I --> J[Receiver.undoAction]
+                                    J --> K[Action annulée]
+                                    
+                                    style A fill:#e1f5fe
+                                    style D fill:#fff3e0
+                                    style E fill:#ffebee
+                                    style F fill:#e8f5e8
+                                    style I fill:#f3e5f5
+                            </div>
+                            <p class="text-sm text-gray-600 mt-md">
+                                <strong>💡 Point clé :</strong> L'Invoker ne connaît pas le Receiver, 
+                                il ne fait qu'appeler execute() sur la Command.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Implémentations -->
+                <section class="implementations-section">
+                    <h2>💻 Implémentations</h2>
+                    
+                    <div class="aikido-card">
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="typescript">TypeScript</button>
+                                <button class="tab-btn" data-tab="php">PHP</button>
+                                <button class="tab-btn" data-tab="java">Java</button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="typescript">
+                                <h4>Exemple : Éditeur de Texte avec Undo/Redo</h4>
+                                <pre><code class="language-typescript">
+// Interface Command
+interface Command {
+    execute(): void;
+    undo(): void;
+    getDescription(): string;
+}
+
+// Receiver - L'éditeur de texte
+class TextEditor {
+    private content: string = "";
+    private cursorPosition: number = 0;
+    
+    insertText(text: string, position: number): void {
+        this.content = this.content.slice(0, position) + text + this.content.slice(position);
+        this.cursorPosition = position + text.length;
+        console.log(`📝 Texte inséré: "${text}" à la position ${position}`);
+    }
+    
+    deleteText(startPos: number, length: number): string {
+        const deletedText = this.content.slice(startPos, startPos + length);
+        this.content = this.content.slice(0, startPos) + this.content.slice(startPos + length);
+        this.cursorPosition = startPos;
+        console.log(`🗑️ Texte supprimé: "${deletedText}"`);
+        return deletedText;
+    }
+    
+    getContent(): string {
+        return this.content;
+    }
+}
+
+// Commande concrète pour insérer du texte
+class InsertTextCommand implements Command {
+    private editor: TextEditor;
+    private text: string;
+    private position: number;
+    
+    constructor(editor: TextEditor, text: string, position: number) {
+        this.editor = editor;
+        this.text = text;
+        this.position = position;
+    }
+    
+    execute(): void {
+        this.editor.insertText(this.text, this.position);
+    }
+    
+    undo(): void {
+        this.editor.deleteText(this.position, this.text.length);
+    }
+    
+    getDescription(): string {
+        return `Insérer "${this.text}" à la position ${this.position}`;
+    }
+}
+
+// Commande concrète pour supprimer du texte
+class DeleteTextCommand implements Command {
+    private editor: TextEditor;
+    private startPosition: number;
+    private length: number;
+    private deletedText: string = "";
+    
+    constructor(editor: TextEditor, startPosition: number, length: number) {
+        this.editor = editor;
+        this.startPosition = startPosition;
+        this.length = length;
+    }
+    
+    execute(): void {
+        this.deletedText = this.editor.deleteText(this.startPosition, this.length);
+    }
+    
+    undo(): void {
+        if (this.deletedText) {
+            this.editor.insertText(this.deletedText, this.startPosition);
+        }
+    }
+    
+    getDescription(): string {
+        return `Supprimer ${this.length} caractères à la position ${this.startPosition}`;
+    }
+}
+
+// Invoker - Gestionnaire de commandes avec historique
+class CommandManager {
+    private history: Command[] = [];
+    private currentPosition: number = -1;
+    
+    executeCommand(command: Command): void {
+        console.log(`⚡ Exécution: ${command.getDescription()}`);
+        
+        // Supprimer les commandes après la position actuelle
+        this.history = this.history.slice(0, this.currentPosition + 1);
+        
+        // Exécuter la commande
+        command.execute();
+        
+        // Ajouter à l'historique
+        this.history.push(command);
+        this.currentPosition++;
+    }
+    
+    undo(): boolean {
+        if (this.currentPosition >= 0) {
+            const command = this.history[this.currentPosition];
+            console.log(`↩️ Annulation: ${command.getDescription()}`);
+            command.undo();
+            this.currentPosition--;
+            return true;
+        }
+        console.log("❌ Aucune commande à annuler");
+        return false;
+    }
+    
+    redo(): boolean {
+        if (this.currentPosition < this.history.length - 1) {
+            this.currentPosition++;
+            const command = this.history[this.currentPosition];
+            console.log(`↪️ Rétablissement: ${command.getDescription()}`);
+            command.execute();
+            return true;
+        }
+        console.log("❌ Aucune commande à rétablir");
+        return false;
+    }
+}
+
+// Utilisation
+const editor = new TextEditor();
+const commandManager = new CommandManager();
+
+commandManager.executeCommand(new InsertTextCommand(editor, "Hello", 0));
+commandManager.executeCommand(new InsertTextCommand(editor, " World", 5));
+commandManager.undo();
+commandManager.redo();
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="php">
+                                <pre><code class="language-php">
+&lt;?php
+
+// Interface Command
+interface Command {
+    public function execute(): void;
+    public function undo(): void;
+    public function getDescription(): string;
+}
+
+// Receiver - Système de fichiers
+class FileSystem {
+    private array $files = [];
+    
+    public function createFile(string $path, string $content = ""): void {
+        $this->files[$path] = $content;
+        echo "📄 Fichier créé: {$path}\n";
+    }
+    
+    public function deleteFile(string $path): ?string {
+        if (isset($this->files[$path])) {
+            $content = $this->files[$path];
+            unset($this->files[$path]);
+            echo "🗑️ Fichier supprimé: {$path}\n";
+            return $content;
+        }
+        return null;
+    }
+    
+    public function listFiles(): array {
+        return array_keys($this->files);
+    }
+}
+
+// Commande pour créer un fichier
+class CreateFileCommand implements Command {
+    private FileSystem $fileSystem;
+    private string $path;
+    private string $content;
+    
+    public function __construct(FileSystem $fileSystem, string $path, string $content = "") {
+        $this->fileSystem = $fileSystem;
+        $this->path = $path;
+        $this->content = $content;
+    }
+    
+    public function execute(): void {
+        $this->fileSystem->createFile($this->path, $this->content);
+    }
+    
+    public function undo(): void {
+        $this->fileSystem->deleteFile($this->path);
+    }
+    
+    public function getDescription(): string {
+        return "Créer fichier: {$this->path}";
+    }
+}
+
+// Commande pour supprimer un fichier
+class DeleteFileCommand implements Command {
+    private FileSystem $fileSystem;
+    private string $path;
+    private ?string $backupContent = null;
+    
+    public function __construct(FileSystem $fileSystem, string $path) {
+        $this->fileSystem = $fileSystem;
+        $this->path = $path;
+    }
+    
+    public function execute(): void {
+        $this->backupContent = $this->fileSystem->deleteFile($this->path);
+    }
+    
+    public function undo(): void {
+        if ($this->backupContent !== null) {
+            $this->fileSystem->createFile($this->path, $this->backupContent);
+        }
+    }
+    
+    public function getDescription(): string {
+        return "Supprimer fichier: {$this->path}";
+    }
+}
+
+// Invoker - Gestionnaire de commandes
+class CommandInvoker {
+    private array $history = [];
+    private int $currentPosition = -1;
+    
+    public function executeCommand(Command $command): void {
+        echo "⚡ Exécution: " . $command->getDescription() . "\n";
+        
+        // Supprimer les commandes après la position actuelle
+        $this->history = array_slice($this->history, 0, $this->currentPosition + 1);
+        
+        // Exécuter la commande
+        $command->execute();
+        
+        // Ajouter à l'historique
+        $this->history[] = $command;
+        $this->currentPosition++;
+    }
+    
+    public function undo(): bool {
+        if ($this->currentPosition >= 0) {
+            $command = $this->history[$this->currentPosition];
+            echo "↩️ Annulation: " . $command->getDescription() . "\n";
+            $command->undo();
+            $this->currentPosition--;
+            return true;
+        }
+        echo "❌ Aucune commande à annuler\n";
+        return false;
+    }
+}
+
+// Utilisation
+$fileSystem = new FileSystem();
+$invoker = new CommandInvoker();
+
+$invoker->executeCommand(new CreateFileCommand($fileSystem, "/home/user/document.txt", "Contenu"));
+$invoker->executeCommand(new DeleteFileCommand($fileSystem, "/home/user/document.txt"));
+$invoker->undo();
+
+?&gt;
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="java">
+                                <pre><code class="language-java">
+import java.util.*;
+
+// Interface Command
+interface Command {
+    void execute();
+    void undo();
+    String getDescription();
+}
+
+// Receiver - Système de base de données
+class DatabaseManager {
+    private Map&lt;String, String&gt; records = new HashMap&lt;&gt;();
+    
+    public void insertRecord(String id, String data) {
+        records.put(id, data);
+        System.out.println("📝 Enregistrement inséré: " + id + " = " + data);
+    }
+    
+    public String deleteRecord(String id) {
+        String data = records.remove(id);
+        if (data != null) {
+            System.out.println("🗑️ Enregistrement supprimé: " + id);
+        }
+        return data;
+    }
+    
+    public Set&lt;String&gt; getAllIds() {
+        return records.keySet();
+    }
+}
+
+// Commande pour insérer un enregistrement
+class InsertRecordCommand implements Command {
+    private DatabaseManager database;
+    private String id;
+    private String data;
+    
+    public InsertRecordCommand(DatabaseManager database, String id, String data) {
+        this.database = database;
+        this.id = id;
+        this.data = data;
+    }
+    
+    @Override
+    public void execute() {
+        database.insertRecord(id, data);
+    }
+    
+    @Override
+    public void undo() {
+        database.deleteRecord(id);
+    }
+    
+    @Override
+    public String getDescription() {
+        return "Insérer enregistrement: " + id + " = " + data;
+    }
+}
+
+// Commande pour supprimer un enregistrement
+class DeleteRecordCommand implements Command {
+    private DatabaseManager database;
+    private String id;
+    private String backupData;
+    
+    public DeleteRecordCommand(DatabaseManager database, String id) {
+        this.database = database;
+        this.id = id;
+    }
+    
+    @Override
+    public void execute() {
+        backupData = database.deleteRecord(id);
+    }
+    
+    @Override
+    public void undo() {
+        if (backupData != null) {
+            database.insertRecord(id, backupData);
+        }
+    }
+    
+    @Override
+    public String getDescription() {
+        return "Supprimer enregistrement: " + id;
+    }
+}
+
+// Invoker - Gestionnaire de commandes
+class CommandManager {
+    private List&lt;Command&gt; history = new ArrayList&lt;&gt;();
+    private int currentPosition = -1;
+    
+    public void executeCommand(Command command) {
+        System.out.println("⚡ Exécution: " + command.getDescription());
+        
+        // Supprimer les commandes après la position actuelle
+        if (currentPosition < history.size() - 1) {
+            history.subList(currentPosition + 1, history.size()).clear();
+        }
+        
+        // Exécuter la commande
+        command.execute();
+        
+        // Ajouter à l'historique
+        history.add(command);
+        currentPosition++;
+    }
+    
+    public boolean undo() {
+        if (currentPosition >= 0) {
+            Command command = history.get(currentPosition);
+            System.out.println("↩️ Annulation: " + command.getDescription());
+            command.undo();
+            currentPosition--;
+            return true;
+        }
+        System.out.println("❌ Aucune commande à annuler");
+        return false;
+    }
+}
+
+// Utilisation
+public class CommandPatternDemo {
+    public static void main(String[] args) {
+        DatabaseManager database = new DatabaseManager();
+        CommandManager commandManager = new CommandManager();
+        
+        commandManager.executeCommand(new InsertRecordCommand(database, "user1", "John Doe"));
+        commandManager.executeCommand(new DeleteRecordCommand(database, "user1"));
+        commandManager.undo();
+    }
+}
+</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Avantages et Inconvénients -->
+                <section class="pros-cons-section">
+                    <div class="aikido-card">
+                        <h2>⚖️ Avantages et Inconvénients</h2>
+                        
+                        <div class="pros-cons-grid">
+                            <div class="pros-card">
+                                <h3>✅ Avantages</h3>
+                                <ul>
+                                    <li><strong>Découplage</strong> : Sépare l'invocateur du récepteur</li>
+                                    <li><strong>Undo/Redo</strong> : Support natif des opérations d'annulation</li>
+                                    <li><strong>Logging</strong> : Enregistrement automatique des opérations</li>
+                                    <li><strong>Queuing</strong> : Mise en file d'attente et traitement différé</li>
+                                    <li><strong>Macro commandes</strong> : Composition de commandes complexes</li>
+                                    <li><strong>Extensibilité</strong> : Ajout facile de nouvelles commandes</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="cons-card">
+                                <h3>❌ Inconvénients</h3>
+                                <ul>
+                                    <li><strong>Complexité</strong> : Augmente le nombre de classes</li>
+                                    <li><strong>Mémoire</strong> : Stockage de l'historique des commandes</li>
+                                    <li><strong>Over-engineering</strong> : Peut être excessif pour des opérations simples</li>
+                                    <li><strong>État partagé</strong> : Gestion complexe des dépendances entre commandes</li>
+                                    <li><strong>Performance</strong> : Overhead pour des opérations fréquentes</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Cas d'Usage -->
+                <section class="use-cases-section">
+                    <div class="aikido-card">
+                        <h2>🎯 Cas d'Usage Appropriés</h2>
+                        
+                        <div class="use-cases-grid">
+                            <div class="use-case good">
+                                <h4>✅ Quand l'utiliser</h4>
+                                <ul>
+                                    <li><strong>Éditeurs de texte</strong> : Opérations d'édition avec undo/redo</li>
+                                    <li><strong>Interfaces utilisateur</strong> : Boutons, menus, raccourcis clavier</li>
+                                    <li><strong>Bases de données</strong> : Transactions, rollback, batch operations</li>
+                                    <li><strong>Systèmes de workflow</strong> : Étapes de processus, validation</li>
+                                    <li><strong>Jeux vidéo</strong> : Actions du joueur, système de replay</li>
+                                    <li><strong>Systèmes de queue</strong> : Traitement asynchrone, retry logic</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="use-case bad">
+                                <h4>❌ Quand l'éviter</h4>
+                                <ul>
+                                    <li><strong>Opérations simples</strong> : Quand un appel direct suffit</li>
+                                    <li><strong>Performance critique</strong> : Overhead non acceptable</li>
+                                    <li><strong>Mémoire limitée</strong> : Historique trop coûteux</li>
+                                    <li><strong>Actions irréversibles</strong> : Quand undo n'a pas de sens</li>
+                                    <li><strong>Systèmes temps réel</strong> : Latence inacceptable</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Biais Cognitifs Liés -->
+                <section class="cognitive-bias-section">
+                    <div class="aikido-card biais-cognitif">
+                        <h2>🧩 Biais Cognitifs Associés</h2>
+                        
+                        <div class="bias-analysis">
+                            <div class="bias-item">
+                                <h4>🔨 Marteau de Maslow</h4>
+                                <p><strong>Manifestation :</strong> Utiliser Command pour toutes les actions, même les plus simples.</p>
+                                <p><strong>Risque :</strong> Over-engineering et complexité inutile pour des besoins basiques.</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>📈 Biais de Complexité</h4>
+                                <p><strong>Manifestation :</strong> Préférer une solution complexe car elle semble plus professionnelle.</p>
+                                <p><strong>Risque :</strong> Code difficile à maintenir pour des besoins simples.</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>✅ Biais de Confirmation</h4>
+                                <p><strong>Manifestation :</strong> Ignorer les inconvénients du pattern (mémoire, performance).</p>
+                                <p><strong>Risque :</strong> Implémentation inadaptée au contexte réel.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Anti-Patterns Liés -->
+                <section class="antipatterns-section">
+                    <div class="aikido-card anti-pattern">
+                        <h2>⚠️ Anti-Patterns à Éviter</h2>
+                        
+                        <div class="antipattern-warnings">
+                            <div class="antipattern-warning">
+                                <h4>❌ Command Anémique</h4>
+                                <p>Command qui ne fait que déléguer sans logique métier.</p>
+                                <div class="code-example bad">
+                                    <code>// ❌ Mauvais : Command inutile
+class PrintCommand implements Command {
+    execute() { printer.print(text); }
+}</code>
+                                </div>
+                            </div>
+                            
+                            <div class="antipattern-warning">
+                                <h4>❌ God Command</h4>
+                                <p>Command qui fait trop de choses différentes.</p>
+                                <div class="code-example bad">
+                                    <code>// ❌ Mauvais : Command trop complexe
+class ProcessOrderCommand {
+    execute() {
+        // Validation, calcul, paiement, email, facture...
+    }
+}</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercice Pratique -->
+                <section class="exercise-section">
+                    <div class="aikido-card exercise">
+                        <h2>🎯 Exercice Pratique</h2>
+                        <div class="exercise-scenario">
+                            <h3>Scenario : Système de Gestion de Documents</h3>
+                            <p>
+                                Vous développez un système de gestion de documents avec des opérations comme
+                                créer, modifier, supprimer des documents. Les utilisateurs doivent pouvoir
+                                annuler leurs actions et rejouer des séquences d'opérations.
+                            </p>
+                            
+                            <div class="exercise-question">
+                                <h4>Question :</h4>
+                                <p>Comment implémenteriez-vous ce système en utilisant le pattern Command ?</p>
+                                
+                                <div class="choice-options">
+                                    <div class="choice-option" data-choice="command-pattern">
+                                        ⚡ Pattern Command Complet
+                                    </div>
+                                    <div class="choice-option" data-choice="memento-pattern">
+                                        💾 Pattern Memento
+                                    </div>
+                                    <div class="choice-option" data-choice="event-sourcing">
+                                        📝 Event Sourcing
+                                    </div>
+                                </div>
+                                
+                                <div id="exercise-retours" class="exercise-retours hidden">
+                                    <!-- Le feedback sera affiché ici -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Completion Section -->
+                <section class="completion-section slide-in">
+                    <div class="aikido-card completion">
+                        <div class="completion-content">
+                            <div class="completion-icon">📋</div>
+                            <div class="completion-text">
+                                <h3>Avez-vous terminé cette section ?</h3>
+                                <p>Marquez cette page comme terminée pour suivre votre progression dans la formation.</p>
+                            </div>
+                            <button class="aikido-btn primary mark-completed" data-page="command">
+                                Marquer comme Terminé ✓
+                            </button>
+                        </div>
+                        
+                        <div class="completion-feedback hidden">
+                            <div class="feedback-success">
+                                <h4>🎉 Excellent travail !</h4>
+                                <p>Vous avez terminé l'étude du pattern Command. Vous comprenez maintenant :</p>
+                                <ul>
+                                    <li>Comment encapsuler des requêtes comme des objets</li>
+                                    <li>L'implémentation des opérations undo/redo</li>
+                                    <li>La création de macros et commandes composites</li>
+                                    <li>Les avantages et inconvénients du pattern</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Script pour l'exercice interactif -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion de l'exercice interactif
+            const choiceOptions = document.querySelectorAll('.choice-option');
+            const exerciseRetours = document.getElementById('exercise-retours');
+            
+            const retours = {
+                'command-pattern': {
+                    type: 'success',
+                    title: '🎯 Excellente Approche !',
+                    content: `
+                        <p><strong>Analyse correcte !</strong> Le pattern Command est parfait pour ce cas d'usage :</p>
+                        <ul>
+                            <li><strong>Encapsulation :</strong> Chaque opération devient un objet Command</li>
+                            <li><strong>Undo/Redo :</strong> Chaque commande implémente execute() et undo()</li>
+                            <li><strong>Macros :</strong> Composition de commandes avec MacroCommand</li>
+                            <li><strong>Historique :</strong> CommandManager gère la pile d'undo/redo</li>
+                            <li><strong>Extensibilité :</strong> Ajout facile de nouvelles opérations</li>
+                        </ul>
+                    `
+                },
+                'memento-pattern': {
+                    type: 'warning',
+                    title: '⚠️ Approche Coûteuse',
+                    content: `
+                        <p><strong>Problème identifié :</strong> Le pattern Memento peut être très coûteux :</p>
+                        <ul>
+                            <li><strong>Mémoire :</strong> Sauvegarde complète de l'état à chaque modification</li>
+                            <li><strong>Performance :</strong> Coût élevé pour de gros documents</li>
+                            <li><strong>Complexité :</strong> Gestion des références et de la sérialisation</li>
+                        </ul>
+                        <p><strong>Meilleure approche :</strong> Command pour les opérations granulaires.</p>
+                    `
+                },
+                'event-sourcing': {
+                    type: 'info',
+                    title: '💡 Approche Avancée',
+                    content: `
+                        <p><strong>Analyse :</strong> L'Event Sourcing est puissant mais complexe :</p>
+                        <ul>
+                            <li><strong>Avantages :</strong> Audit trail complet, replay possible</li>
+                            <li><strong>Complexité :</strong> Nécessite une infrastructure dédiée</li>
+                            <li><strong>Overkill :</strong> Trop complexe pour un simple éditeur</li>
+                        </ul>
+                        <p><strong>Recommandation :</strong> Réserver pour des systèmes distribués complexes.</p>
+                    `
+                }
+            };
+            
+            choiceOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Retirer la sélection précédente
+                    choiceOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Sélectionner l'option actuelle
+                    this.classList.add('selected');
+                    
+                    // Afficher le retour correspondant
+                    const choice = this.dataset.choice;
+                    const retour = retours[choice];
+                    
+                    if (retour) {
+                        exerciseRetours.innerHTML = `
+                            <div class="feedback-content ${retour.type}">
+                                <h4>${retour.title}</h4>
+                                ${retour.content}
+                            </div>
+                        `;
+                        exerciseRetours.classList.remove('hidden');
+                        
+                        // Scroll vers le retour
+                        exerciseRetours.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest'
+                        });
+                    }
+                });
+            });
+            
+            // Gestion du bouton de completion
+            const markCompletedBtn = document.querySelector('.mark-completed');
+            const completionFeedback = document.querySelector('.completion-feedback');
+            
+            if (markCompletedBtn && completionFeedback) {
+                markCompletedBtn.addEventListener('click', function() {
+                    // Marquer comme terminé dans le localStorage
+                    const page = this.dataset.page;
+                    localStorage.setItem(`pattern_${page}_completed`, 'true');
+                    
+                    // Afficher le message de succès
+                    this.style.display = 'none';
+                    completionFeedback.classList.remove('hidden');
+                    
+                    // Effet de célébration
+                    completionFeedback.classList.add('celebration');
+                });
+            }
+            
+            // Vérifier si déjà terminé
+            const page = markCompletedBtn?.dataset.page;
+            if (page && localStorage.getItem(`pattern_${page}_completed`) === 'true') {
+                markCompletedBtn.style.display = 'none';
+                completionFeedback.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
+                            

@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dependency Injection Pattern - Formation Patterns Développeurs</title>
+    <meta name="description" content="Le pattern Dependency Injection expliqué avec exemples de code, diagrammes UML et cas d'usage pratiques">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <h1 class="page-title">💉 Dependency Injection Pattern</h1>
+                    <p class="page-subtitle">Inverser le contrôle des dépendances pour une meilleure flexibilité</p>
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">🏗️</span>
+                            <span class="meta-text">Architectural</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⭐</span>
+                            <span class="meta-text">Difficulté: Intermédiaire</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⏱️</span>
+                            <span class="meta-text">25 min</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🔄</span>
+                            <span class="meta-text">Inversion de Contrôle</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Définition et Problème -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card design-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="mb-md">
+                            Le <strong>Dependency Injection</strong> est un pattern architectural qui inverse le contrôle 
+                            en injectant les dépendances depuis l'extérieur. Les classes déclarent leurs besoins sans 
+                            les créer, permettant une flexibilité maximale et des tests simplifiés.
+                        </p>
+                        
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problème Résolu</h3>
+                                <ul>
+                                    <li>Couplage fort entre classes et dépendances</li>
+                                    <li>Tests difficiles avec dépendances réelles</li>
+                                    <li>Modifications en cascade lors de changements</li>
+                                    <li>Instanciation manuelle complexe</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solution Apportée</h3>
+                                <ul>
+                                    <li>Inversion de contrôle des dépendances</li>
+                                    <li>Injection automatique via conteneur DI</li>
+                                    <li>Tests facilités avec mocks et stubs</li>
+                                    <li>Configuration centralisée flexible</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert info">
+                            <strong>💡 Principe clé :</strong> Ne pas créer ses dépendances mais les recevoir de l'extérieur, 
+                            permettant l'inversion de contrôle et une architecture découplée.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Structure UML -->
+                <section class="structure-section">
+                    <div class="aikido-card">
+                        <h2>🏗️ Structure UML</h2>
+                        
+                        <!-- Diagramme de flux Mermaid -->
+                        <div class="mt-lg">
+                            <h3>🔄 Flux d'Injection</h3>
+                            <div class="mermaid">
+                                graph TD
+                                    A[Application démarre] --> B[Configuration du conteneur DI]
+                                    B --> C[Enregistrement des bindings]
+                                    C --> D[Client demande une instance]
+                                    D --> E[Conteneur résout les dépendances]
+                                    E --> F[Création des services requis]
+                                    F --> G[Injection dans le client]
+                                    G --> H[Instance prête à l'usage]
+                                    
+                                    I[Changement de configuration] --> J[Nouveau binding enregistré]
+                                    J --> K[Prochaine résolution utilise nouveau service]
+                                    
+                                    style A fill:#e1f5fe
+                                    style B fill:#fff3e0
+                                    style E fill:#ffebee
+                                    style G fill:#e8f5e8
+                                    style H fill:#f3e5f5
+                            </div>
+                            <p class="text-sm text-gray-600 mt-md">
+                                <strong>💡 Point clé :</strong> Le conteneur DI gère automatiquement la création et l'injection 
+                                des dépendances, permettant une configuration centralisée et flexible.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Implémentations -->
+                <section class="implementations-section">
+                    <h2>💻 Implémentations</h2>
+                    
+                    <div class="aikido-card">
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="typescript">TypeScript</button>
+                                <button class="tab-btn" data-tab="php">PHP</button>
+                                <button class="tab-btn" data-tab="java">Java</button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="typescript">
+                                <h4>Exemple : Système de notification avec DI</h4>
+                                <pre><code class="language-typescript">// Interface pour les services de notification
+interface NotificationService {
+    send(message: string, recipient: string): Promise&lt;boolean&gt;;
+}
+
+// Implémentations concrètes
+class EmailService implements NotificationService {
+    async send(message: string, recipient: string): Promise&lt;boolean&gt; {
+        console.log(`📧 Email envoyé à ${recipient}: ${message}`);
+        return new Promise(resolve => setTimeout(() => resolve(true), 100));
+    }
+}
+
+class SMSService implements NotificationService {
+    async send(message: string, recipient: string): Promise&lt;boolean&gt; {
+        console.log(`📱 SMS envoyé à ${recipient}: ${message}`);
+        return new Promise(resolve => setTimeout(() => resolve(true), 50));
+    }
+}
+
+// Client qui utilise l'injection de dépendance
+class NotificationManager {
+    constructor(
+        private emailService: NotificationService,
+        private smsService: NotificationService
+    ) {}
+
+    async sendWelcomeMessage(userEmail: string, userPhone: string): Promise&lt;void&gt; {
+        const message = "Bienvenue sur notre plateforme !";
+        
+        await Promise.all([
+            this.emailService.send(message, userEmail),
+            this.smsService.send(message, userPhone)
+        ]);
+        
+        console.log("✅ Message de bienvenue envoyé");
+    }
+}
+
+// Conteneur d'injection de dépendance
+class DIContainer {
+    private bindings = new Map&lt;string, any&gt;();
+    private instances = new Map&lt;string, any&gt;();
+
+    bind&lt;T&gt;(token: string, implementation: new (...args: any[]) => T): void {
+        this.bindings.set(token, implementation);
+    }
+
+    resolve&lt;T&gt;(token: string): T {
+        if (this.instances.has(token)) {
+            return this.instances.get(token);
+        }
+
+        const Implementation = this.bindings.get(token);
+        if (!Implementation) {
+            throw new Error(`No binding found for ${token}`);
+        }
+
+        const instance = new Implementation();
+        this.instances.set(token, instance);
+        return instance;
+    }
+
+    createNotificationManager(): NotificationManager {
+        return new NotificationManager(
+            this.resolve&lt;NotificationService&gt;('EmailService'),
+            this.resolve&lt;NotificationService&gt;('SMSService')
+        );
+    }
+}
+
+// Configuration et utilisation
+const container = new DIContainer();
+container.bind('EmailService', EmailService);
+container.bind('SMSService', SMSService);
+
+const notificationManager = container.createNotificationManager();</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="php">
+                                <pre><code class="language-php">&lt;?php
+
+// Interface pour les processeurs de paiement
+interface PaymentProcessor {
+    public function processPayment(float $amount, array $paymentData): bool;
+}
+
+// Implémentations concrètes
+class StripeProcessor implements PaymentProcessor {
+    private string $apiKey;
+    
+    public function __construct(string $apiKey) {
+        $this->apiKey = $apiKey;
+    }
+    
+    public function processPayment(float $amount, array $paymentData): bool {
+        echo "💳 Traitement Stripe: {$amount}€\n";
+        return rand(0, 10) > 1; // 90% de succès
+    }
+}
+
+class PayPalProcessor implements PaymentProcessor {
+    private string $clientId;
+    
+    public function __construct(string $clientId) {
+        $this->clientId = $clientId;
+    }
+    
+    public function processPayment(float $amount, array $paymentData): bool {
+        echo "🅿️ Traitement PayPal: {$amount}€\n";
+        return rand(0, 10) > 2; // 80% de succès
+    }
+}
+
+// Service de paiement utilisant l'injection de dépendance
+class PaymentService {
+    private PaymentProcessor $processor;
+    
+    public function __construct(PaymentProcessor $processor) {
+        $this->processor = $processor;
+    }
+    
+    public function processOrder(array $order): array {
+        $success = $this->processor->processPayment(
+            $order['amount'], 
+            $order['payment_data']
+        );
+        
+        return [
+            'success' => $success,
+            'transaction_id' => $success ? 'txn_' . uniqid() : null,
+            'message' => $success ? 'Paiement réussi' : 'Échec du paiement'
+        ];
+    }
+}
+
+// Conteneur d'injection de dépendance
+class DIContainer {
+    private array $bindings = [];
+    
+    public function bind(string $abstract, callable $concrete): void {
+        $this->bindings[$abstract] = $concrete;
+    }
+    
+    public function resolve(string $abstract) {
+        if (isset($this->bindings[$abstract])) {
+            return $this->bindings[$abstract]();
+        }
+        
+        throw new Exception("No binding found for {$abstract}");
+    }
+}
+
+// Configuration
+$container = new DIContainer();
+
+$container->bind('PaymentProcessor', function() {
+    return new StripeProcessor('sk_test_123456789');
+});
+
+$container->bind('PaymentService', function() use ($container) {
+    return new PaymentService($container->resolve('PaymentProcessor'));
+});
+
+// Utilisation
+$paymentService = $container->resolve('PaymentService');
+
+?&gt;</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="java">
+                                <pre><code class="language-java">// Interface pour les stratégies de cache
+interface CacheStrategy {
+    void put(String key, Object value);
+    Object get(String key);
+    void clear();
+}
+
+// Implémentations concrètes
+class MemoryCache implements CacheStrategy {
+    private final Map&lt;String, Object&gt; cache = new HashMap&lt;&gt;();
+    
+    @Override
+    public void put(String key, Object value) {
+        cache.put(key, value);
+        System.out.println("🧠 Mise en cache mémoire: " + key);
+    }
+    
+    @Override
+    public Object get(String key) {
+        Object value = cache.get(key);
+        System.out.println("🔍 Lecture cache: " + key + 
+                          (value != null ? " (trouvé)" : " (non trouvé)"));
+        return value;
+    }
+    
+    @Override
+    public void clear() {
+        cache.clear();
+        System.out.println("🧹 Cache vidé");
+    }
+}
+
+class RedisCache implements CacheStrategy {
+    private final String host;
+    private final Map&lt;String, Object&gt; mockRedis = new HashMap&lt;&gt;();
+    
+    public RedisCache(String host) {
+        this.host = host;
+        System.out.println("🔗 Connexion Redis: " + host);
+    }
+    
+    @Override
+    public void put(String key, Object value) {
+        mockRedis.put(key, value);
+        System.out.println("📡 Mise en cache Redis: " + key);
+    }
+    
+    @Override
+    public Object get(String key) {
+        Object value = mockRedis.get(key);
+        System.out.println("📡 Lecture Redis: " + key + 
+                          (value != null ? " (trouvé)" : " (non trouvé)"));
+        return value;
+    }
+    
+    @Override
+    public void clear() {
+        mockRedis.clear();
+        System.out.println("📡 Cache Redis vidé");
+    }
+}
+
+// Service utilisant l'injection de dépendance
+class CacheService {
+    private final CacheStrategy cache;
+    
+    public CacheService(CacheStrategy cache) {
+        this.cache = cache;
+    }
+    
+    public void store(String key, Object value) {
+        cache.put(key, value);
+    }
+    
+    public Object retrieve(String key) {
+        return cache.get(key);
+    }
+    
+    public void clearAll() {
+        cache.clear();
+    }
+}
+
+// Conteneur d'injection simple
+class DIContainer {
+    private final Map&lt;Class&lt;?&gt;, Supplier&lt;?&gt;&gt; factories = new HashMap&lt;&gt;();
+    
+    public &lt;T&gt; void register(Class&lt;T&gt; type, Supplier&lt;T&gt; factory) {
+        factories.put(type, factory);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public &lt;T&gt; T resolve(Class&lt;T&gt; type) {
+        Supplier&lt;?&gt; factory = factories.get(type);
+        if (factory == null) {
+            throw new IllegalArgumentException("No factory for " + type.getName());
+        }
+        return (T) factory.get();
+    }
+}
+
+// Utilisation
+public class DIExample {
+    public static void main(String[] args) {
+        DIContainer container = new DIContainer();
+        
+        // Configuration
+        container.register(CacheStrategy.class, () -> new MemoryCache());
+        container.register(CacheService.class, () -> 
+            new CacheService(container.resolve(CacheStrategy.class)));
+        
+        // Utilisation
+        CacheService service = container.resolve(CacheService.class);
+        service.store("user:123", "John Doe");
+        service.retrieve("user:123");
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Avantages et Inconvénients -->
+                <section class="pros-cons-section">
+                    <div class="aikido-card">
+                        <h2>⚖️ Avantages et Inconvénients</h2>
+                        <div class="pros-cons-grid">
+                            <div class="pros-section">
+                                <h3>✅ Avantages</h3>
+                                <ul>
+                                    <li><strong>Faible couplage</strong> : Classes indépendantes de leurs dépendances concrètes</li>
+                                    <li><strong>Testabilité excellente</strong> : Injection de mocks et stubs facilement</li>
+                                    <li><strong>Flexibilité maximale</strong> : Changement d'implémentation sans modification du code</li>
+                                    <li><strong>Principe SOLID</strong> : Respect de l'inversion de dépendance</li>
+                                    <li><strong>Configuration centralisée</strong> : Gestion des dépendances en un point</li>
+                                </ul>
+                            </div>
+                            <div class="cons-section">
+                                <h3>❌ Inconvénients</h3>
+                                <ul>
+                                    <li><strong>Complexité initiale</strong> : Configuration du conteneur DI</li>
+                                    <li><strong>Courbe d'apprentissage</strong> : Concepts d'inversion de contrôle</li>
+                                    <li><strong>Debugging difficile</strong> : Flux d'exécution moins évident</li>
+                                    <li><strong>Performance</strong> : Overhead de résolution des dépendances</li>
+                                    <li><strong>Over-engineering</strong> : Peut être excessif pour des projets simples</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Cas d'usage -->
+                <section class="use-cases-section">
+                    <div class="aikido-card">
+                        <h2>🎯 Cas d'usage recommandés</h2>
+                        <div class="use-cases-grid">
+                            <div class="use-case-item">
+                                <h3>✅ Recommandé pour</h3>
+                                <ul>
+                                    <li>Applications avec nombreuses dépendances inter-services</li>
+                                    <li>Projets nécessitant des tests unitaires extensifs</li>
+                                    <li>Architectures modulaires et extensibles</li>
+                                    <li>Applications avec configurations multiples (dev/prod)</li>
+                                    <li>Systèmes nécessitant le changement d'implémentations</li>
+                                </ul>
+                            </div>
+                            <div class="use-case-item">
+                                <h3>❌ Éviter pour</h3>
+                                <ul>
+                                    <li>Applications simples avec peu de dépendances</li>
+                                    <li>Prototypes rapides ou scripts utilitaires</li>
+                                    <li>Équipes non familières avec les concepts DI</li>
+                                    <li>Applications avec cycle de vie simple des objets</li>
+                                    <li>Projets avec contraintes de performance strictes</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Alternatives -->
+                <section class="alternatives-section">
+                    <div class="aikido-card">
+                        <h2>🔄 Alternatives et variantes</h2>
+                        <div class="alternatives-grid">
+                            <div class="alternative-item">
+                                <h3>🏭 Factory Pattern</h3>
+                                <p>Création d'objets avec leurs dépendances via des factories</p>
+                            </div>
+                            <div class="alternative-item">
+                                <h3>🔍 Service Locator</h3>
+                                <p>Localisation des services via un registre central</p>
+                            </div>
+                            <div class="alternative-item">
+                                <h3>🏗️ Builder Pattern</h3>
+                                <p>Construction d'objets complexes avec injection progressive</p>
+                            </div>
+                            <div class="alternative-item">
+                                <h3>📦 Module Pattern</h3>
+                                <p>Encapsulation des dépendances dans des modules</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Biais cognitifs -->
+                <section class="cognitive-biases-section">
+                    <div class="aikido-card">
+                        <h2>🧠 Biais cognitifs associés</h2>
+                        <div class="cognitive-bias-grid">
+                            <div class="bias-item">
+                                <h3>🔨 Loi de l'instrument</h3>
+                                <p>Utiliser DI partout même quand une simple instanciation suffirait</p>
+                            </div>
+                            <div class="bias-item">
+                                <h3>🏗️ Complexité accidentelle</h3>
+                                <p>Ajouter de la complexité architecturale sans bénéfice réel</p>
+                            </div>
+                            <div class="bias-item">
+                                <h3>✨ Biais de nouveauté</h3>
+                                <p>Attraction pour les frameworks DI modernes et sophistiqués</p>
+                            </div>
+                            <div class="bias-item">
+                                <h3>🎯 Biais de confirmation</h3>
+                                <p>Justifier l'usage de DI en se concentrant sur ses avantages uniquement</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercice interactif -->
+                <section class="exercise-section">
+                    <div class="aikido-card">
+                        <h2>🎮 Exercice pratique</h2>
+                        <div class="exercise-content">
+                            <h3>Scénario : Système de commande e-commerce</h3>
+                            <p>Vous développez un système de traitement de commandes avec les composants suivants :</p>
+                            <ul>
+                                <li>Service de validation des commandes</li>
+                                <li>Service de calcul des prix (avec taxes et remises)</li>
+                                <li>Service de gestion des stocks</li>
+                                <li>Service de notification client</li>
+                                <li>Service de paiement (multiple providers)</li>
+                            </ul>
+
+                            <div class="exercise-question">
+                                <h4>Question : Quel est le principal avantage de l'injection de dépendance dans ce contexte ?</h4>
+                                <div class="exercise-options">
+                                    <label class="exercise-option">
+                                        <input type="radio" name="exercise-question" value="a">
+                                        <span>A) Amélioration des performances du système</span>
+                                    </label>
+                                    <label class="exercise-option">
+                                        <input type="radio" name="exercise-question" value="b">
+                                        <span>B) Facilitation des tests unitaires avec mocks</span>
+                                    </label>
+                                    <label class="exercise-option">
+                                        <input type="radio" name="exercise-question" value="c">
+                                        <span>C) Réduction du nombre de classes nécessaires</span>
+                                    </label>
+                                    <label class="exercise-option">
+                                        <input type="radio" name="exercise-question" value="d">
+                                        <span>D) Simplification de la logique métier</span>
+                                    </label>
+                                </div>
+                                <button onclick="checkExercise()" class="aikido-btn primary">Vérifier la réponse</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Zone de retours -->
+                    <div id="exercise-retours" class="exercise-retours hidden">
+                        <div id="retour-correct" class="feedback-item" style="display: none;">
+                            <div class="feedback-content">
+                                <div class="feedback-header success">
+                                    <span class="feedback-icon">✅</span>
+                                    <span class="feedback-title">Excellente réponse !</span>
+                                </div>
+                                <div class="feedback-body">
+                                    <p>La <strong>facilitation des tests unitaires</strong> est effectivement l'un des principaux avantages de DI. Elle permet :</p>
+                                    <ul>
+                                        <li>Injection de mocks pour isoler les composants testés</li>
+                                        <li>Tests indépendants des services externes (base de données, APIs)</li>
+                                        <li>Simulation de différents scénarios (succès, échecs, timeouts)</li>
+                                        <li>Tests rapides sans dépendances lourdes</li>
+                                    </ul>
+                                    <p>Dans votre système e-commerce, vous pourriez tester le service de commande en injectant des mocks pour le paiement, les stocks, et les notifications, permettant de tester chaque composant isolément.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="retour-incorrect-a" class="feedback-item" style="display: none;">
+                            <div class="feedback-content">
+                                <div class="feedback-header error">
+                                    <span class="feedback-icon">❌</span>
+                                    <span class="feedback-title">Incorrect</span>
+                                </div>
+                                <div class="feedback-body">
+                                    <p>L'injection de dépendance peut en fait introduire un léger overhead de performance à cause de la résolution des dépendances. L'amélioration des performances n'est pas son objectif principal.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="retour-incorrect-c" class="feedback-item" style="display: none;">
+                            <div class="feedback-content">
+                                <div class="feedback-header warning">
+                                    <span class="feedback-icon">🤔</span>
+                                    <span class="feedback-title">Pas tout à fait</span>
+                                </div>
+                                <div class="feedback-body">
+                                    <p>L'injection de dépendance ne réduit pas le nombre de classes. Au contraire, elle encourage souvent la création d'interfaces et peut augmenter le nombre de classes pour une meilleure séparation des responsabilités.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="retour-incorrect-d" class="feedback-item" style="display: none;">
+                            <div class="feedback-content">
+                                <div class="feedback-header warning">
+                                    <span class="feedback-icon">🤔</span>
+                                    <span class="feedback-title">Partiellement correct</span>
+                                </div>
+                                <div class="feedback-body">
+                                    <p>Bien que DI puisse clarifier les dépendances d'une classe, elle ne simplifie pas directement la logique métier. Elle se concentre plutôt sur la gestion des dépendances et l'inversion de contrôle.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section de completion -->
+                <section class="completion-section slide-in">
+                    <div class="aikido-card completion">
+                        <div class="completion-content">
+                            <div class="completion-icon">💉</div>
+                            <h3>Pattern Dependency Injection maîtrisé !</h3>
+                            <p>Vous comprenez maintenant l'inversion de contrôle et l'injection de dépendances.</p>
+                            <button onclick="markAsCompleted('dependency-injection')" class="aikido-btn primary mark-completed" data-page="dependency-injection">
+                                Marquer comme terminé
+                            </button>
+                            <div id="completion-feedback" class="completion-feedback hidden">
+                                <p>✅ Excellent ! Le pattern Dependency Injection est maintenant maîtrisé.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Exercice interactif Dependency Injection
+        function checkExercise() {
+            const selectedOption = document.querySelector('input[name="exercise-question"]:checked');
+            const exerciseRetours = document.getElementById('exercise-retours');
+            
+            if (!selectedOption) {
+                alert('⚠️ Veuillez sélectionner une réponse.');
+                return;
+            }
+
+            // Masquer tous les retours
+            const allFeedbacks = exerciseRetours.querySelectorAll('.feedback-item');
+            allFeedbacks.forEach(feedback => feedback.style.display = 'none');
+
+            // Afficher la zone de retours
+            exerciseRetours.classList.remove('hidden');
+
+            // Afficher le bon retour selon la réponse
+            const answer = selectedOption.value;
+            let targetFeedback;
+
+            switch(answer) {
+                case 'a':
+                    targetFeedback = document.getElementById('retour-incorrect-a');
+                    break;
+                case 'b':
+                    targetFeedback = document.getElementById('retour-correct');
+                    break;
+                case 'c':
+                    targetFeedback = document.getElementById('retour-incorrect-c');
+                    break;
+                case 'd':
+                    targetFeedback = document.getElementById('retour-incorrect-d');
+                    break;
+            }
+
+            if (targetFeedback) {
+                targetFeedback.style.display = 'block';
+            }
+        }
+
+        // Fonction de completion
+        function markAsCompleted(page) {
+            const button = document.querySelector(`[data-page="${page}"]`);
+            const feedback = document.getElementById('completion-feedback');
+            
+            if (button) {
+                button.disabled = true;
+                button.textContent = '✅ Terminé';
+                button.classList.add('completed');
+                
+                feedback.classList.remove('hidden');
+                
+                // Sauvegarder dans localStorage
+                let completedPages = JSON.parse(localStorage.getItem('completedPages') || '[]');
+                if (!completedPages.includes(page)) {
+                    completedPages.push(page);
+                    localStorage.setItem('completedPages', JSON.stringify(completedPages));
+                }
+            }
+        }
+
+        // Vérifier si la page est déjà complétée
+        document.addEventListener('DOMContentLoaded', function() {
+            const completedPages = JSON.parse(localStorage.getItem('completedPages') || '[]');
+            if (completedPages.includes('dependency-injection')) {
+                const button = document.querySelector('[data-page="dependency-injection"]');
+                const feedback = document.getElementById('completion-feedback');
+                if (button) {
+                    button.disabled = true;
+                    button.textContent = '✅ Terminé';
+                    button.classList.add('completed');
+                    feedback.classList.remove('hidden');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

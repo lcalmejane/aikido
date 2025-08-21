@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flyweight Pattern - Formation Patterns Développeurs</title>
+    <meta name="description" content="Le pattern Flyweight expliqué avec exemples de code, diagrammes UML et cas d'usage pratiques">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <h1 class="page-title">🪶 Flyweight Pattern</h1>
+                    <p class="page-subtitle">Optimiser la mémoire en partageant des objets similaires</p>
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">🎨</span>
+                            <span class="meta-text">Design Patterns</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⭐</span>
+                            <span class="meta-text">Difficulté: Difficile</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⏱️</span>
+                            <span class="meta-text">25 min</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🏗️</span>
+                            <span class="meta-text">Structurel</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Définition et Problème -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card design-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="mb-md">
+                            Le <strong>Flyweight</strong> est un pattern structurel qui permet de réduire 
+                            la consommation de mémoire en partageant efficacement de grandes quantités d'objets similaires.
+                        </p>
+                        
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problème Résolu</h3>
+                                <ul>
+                                    <li>Consommation excessive de mémoire avec de nombreux objets</li>
+                                    <li>Objets contenant des données redondantes ou similaires</li>
+                                    <li>Performance dégradée due au manque de mémoire</li>
+                                    <li>Coût de création élevé pour des objets similaires</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solution Apportée</h3>
+                                <ul>
+                                    <li>Partage des données communes (état intrinsèque)</li>
+                                    <li>Externalisation des données variables (état extrinsèque)</li>
+                                    <li>Réduction drastique de l'utilisation mémoire</li>
+                                    <li>Amélioration des performances globales</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert warning">
+                            <strong>⚠️ Attention :</strong> Le Flyweight introduit de la complexité et n'est 
+                            bénéfique que lorsque vous avez un très grand nombre d'objets similaires.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Structure UML -->
+                <section class="structure-section">
+                    <div class="aikido-card">
+                        <h2>🏗️ Structure UML</h2>
+                        <div class="uml-diagram">
+                            <div class="uml-class-diagram">
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>&lt;&lt;interface&gt;&gt;<br>Flyweight</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ operation(extrinsicState): void</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>ConcreteFlyweight</strong>
+                                    </div>
+                                    <div class="class-attributes">
+                                        <div class="attribute private">- intrinsicState: any</div>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ operation(extrinsicState): void</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>FlyweightFactory</strong>
+                                    </div>
+                                    <div class="class-attributes">
+                                        <div class="attribute private">- flyweights: Map&lt;string, Flyweight&gt;</div>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ getFlyweight(key): Flyweight</div>
+                                        <div class="method public">+ getCreatedFlyweights(): number</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>Context</strong>
+                                    </div>
+                                    <div class="class-attributes">
+                                        <div class="attribute private">- flyweight: Flyweight</div>
+                                        <div class="attribute private">- extrinsicState: any</div>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ operation(): void</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="structure-explanation">
+                            <h3>Éléments Clés</h3>
+                            <ul>
+                                <li><strong>Flyweight</strong> : Interface déclarant les méthodes acceptant l'état extrinsèque</li>
+                                <li><strong>ConcreteFlyweight</strong> : Implémente Flyweight et stocke l'état intrinsèque</li>
+                                <li><strong>FlyweightFactory</strong> : Gère et réutilise les instances de flyweight</li>
+                                <li><strong>Context</strong> : Contient l'état extrinsèque et référence un flyweight</li>
+                            </ul>
+                        </div>
+
+                        <!-- Diagramme de flux Mermaid -->
+                        <div class="mt-lg">
+                            <h3>🔄 Flux d'Exécution</h3>
+                            <div class="mermaid">
+                                graph TD
+                                    A[Client demande Flyweight] --> B[FlyweightFactory.getFlyweight]
+                                    B --> C{Flyweight existe ?}
+                                    C -->|Non| D[Créer nouveau Flyweight]
+                                    C -->|Oui| E[Retourner Flyweight existant]
+                                    D --> F[Stocker dans cache]
+                                    F --> G[Retourner Flyweight]
+                                    E --> G
+                                    G --> H[Context utilise Flyweight]
+                                    H --> I[Appel operation avec état extrinsèque]
+                                    I --> J[Flyweight traite avec états combinés]
+                                    
+                                    style A fill:#e1f5fe
+                                    style C fill:#fff3e0
+                                    style D fill:#ffebee
+                                    style E fill:#e8f5e8
+                                    style J fill:#f3e5f5
+                            </div>
+                            <p class="text-sm text-gray-600 mt-md">
+                                <strong>💡 Point clé :</strong> La factory garantit qu'un seul flyweight existe 
+                                par combinaison d'état intrinsèque, maximisant le partage.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Implémentations -->
+                <section class="implementations-section">
+                    <h2>💻 Implémentations</h2>
+                    
+                    <div class="aikido-card">
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="typescript">TypeScript</button>
+                                <button class="tab-btn" data-tab="php">PHP</button>
+                                <button class="tab-btn" data-tab="java">Java</button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="typescript">
+                                <h4>Exemple : Système de Rendu de Particules</h4>
+                                <pre><code class="language-typescript">
+// Interface Flyweight
+interface ParticleFlyweight {
+    render(x: number, y: number, velocity: Vector2D, color: string): void;
+    getType(): string;
+}
+
+interface Vector2D {
+    x: number;
+    y: number;
+}
+
+// Flyweight concret - contient l'état intrinsèque (partagé)
+class ParticleType implements ParticleFlyweight {
+    private sprite: string;
+    private size: number;
+    private mass: number;
+    private shape: string;
+    
+    constructor(sprite: string, size: number, mass: number, shape: string) {
+        this.sprite = sprite;
+        this.size = size;
+        this.mass = mass;
+        this.shape = shape;
+        
+        console.log(`🎨 Création ParticleType: ${sprite} (${shape}, ${size}px, ${mass}kg)`);
+    }
+    
+    render(x: number, y: number, velocity: Vector2D, color: string): void {
+        // Utilise l'état intrinsèque (sprite, size, mass, shape) 
+        // et l'état extrinsèque (x, y, velocity, color)
+        console.log(`🎯 Rendu ${this.sprite} à (${x}, ${y}) - ${color} - v(${velocity.x}, ${velocity.y})`);
+        
+        // Simulation du rendu
+        this.drawSprite(x, y, color);
+        this.applyPhysics(velocity);
+    }
+    
+    getType(): string {
+        return `${this.sprite}_${this.shape}_${this.size}`;
+    }
+    
+    private drawSprite(x: number, y: number, color: string): void {
+        // Rendu du sprite avec les paramètres extrinsèques
+        console.log(`  📐 Dessiner ${this.sprite} (${this.size}px) en ${color} à (${x}, ${y})`);
+    }
+    
+    private applyPhysics(velocity: Vector2D): void {
+        // Calculs physiques utilisant la masse (intrinsèque) et vélocité (extrinsèque)
+        const force = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y) * this.mass;
+        console.log(`  ⚡ Force appliquée: ${force.toFixed(2)}N`);
+    }
+    
+    // Méthodes utilitaires pour l'état intrinsèque
+    getMass(): number { return this.mass; }
+    getSize(): number { return this.size; }
+    getSprite(): string { return this.sprite; }
+}
+
+// Factory pour gérer les Flyweights
+class ParticleTypeFactory {
+    private static flyweights = new Map&lt;string, ParticleFlyweight&gt;();
+    private static creationCount = 0;
+    
+    static getParticleType(sprite: string, size: number, mass: number, shape: string): ParticleFlyweight {
+        const key = `${sprite}_${shape}_${size}_${mass}`;
+        
+        if (!this.flyweights.has(key)) {
+            console.log(`🏭 Factory: Création nouveau flyweight pour ${key}`);
+            this.flyweights.set(key, new ParticleType(sprite, size, mass, shape));
+            this.creationCount++;
+        } else {
+            console.log(`♻️ Factory: Réutilisation flyweight existant pour ${key}`);
+        }
+        
+        return this.flyweights.get(key)!;
+    }
+    
+    static getCreatedFlyweightsCount(): number {
+        return this.flyweights.size;
+    }
+    
+    static getTotalRequestsCount(): number {
+        return this.creationCount;
+    }
+    
+    static getStats(): { created: number; requests: number; efficiency: number } {
+        const created = this.flyweights.size;
+        const requests = this.creationCount;
+        const efficiency = requests > 0 ? ((requests - created) / requests) * 100 : 0;
+        
+        return { created, requests, efficiency };
+    }
+    
+    static reset(): void {
+        this.flyweights.clear();
+        this.creationCount = 0;
+    }
+}
+
+// Context - contient l'état extrinsèque
+class Particle {
+    private x: number;
+    private y: number;
+    private velocity: Vector2D;
+    private color: string;
+    private flyweight: ParticleFlyweight;
+    private id: string;
+    
+    constructor(
+        x: number, 
+        y: number, 
+        velocity: Vector2D, 
+        color: string, 
+        flyweight: ParticleFlyweight
+    ) {
+        this.x = x;
+        this.y = y;
+        this.velocity = velocity;
+        this.color = color;
+        this.flyweight = flyweight;
+        this.id = Math.random().toString(36).substr(2, 9);
+    }
+    
+    update(deltaTime: number): void {
+        // Mise à jour de l'état extrinsèque
+        this.x += this.velocity.x * deltaTime;
+        this.y += this.velocity.y * deltaTime;
+        
+        // Simulation de la gravité
+        this.velocity.y += 9.81 * deltaTime;
+        
+        // Friction
+        this.velocity.x *= 0.99;
+        this.velocity.y *= 0.99;
+    }
+    
+    render(): void {
+        this.flyweight.render(this.x, this.y, this.velocity, this.color);
+    }
+    
+    getPosition(): { x: number; y: number } {
+        return { x: this.x, y: this.y };
+    }
+    
+    getId(): string { return this.id; }
+    getType(): string { return this.flyweight.getType(); }
+}
+
+// Système de particules utilisant le pattern Flyweight
+class ParticleSystem {
+    private particles: Particle[] = [];
+    private particleTypes = [
+        { sprite: 'fire', size: 8, mass: 0.1, shape: 'circle' },
+        { sprite: 'smoke', size: 12, mass: 0.05, shape: 'cloud' },
+        { sprite: 'spark', size: 4, mass: 0.02, shape: 'star' },
+        { sprite: 'ember', size: 6, mass: 0.08, shape: 'circle' },
+        { sprite: 'ash', size: 10, mass: 0.03, shape: 'irregular' }
+    ];
+    
+    private colors = ['red', 'orange', 'yellow', 'white', 'gray'];
+    
+    createParticle(x: number, y: number): Particle {
+        // Sélection aléatoire du type de particule
+        const typeConfig = this.particleTypes[Math.floor(Math.random() * this.particleTypes.length)];
+        const color = this.colors[Math.floor(Math.random() * this.colors.length)];
+        
+        // Obtention du flyweight (partagé)
+        const flyweight = ParticleTypeFactory.getParticleType(
+            typeConfig.sprite,
+            typeConfig.size,
+            typeConfig.mass,
+            typeConfig.shape
+        );
+        
+        // Création de la particule avec état extrinsèque unique
+        const velocity: Vector2D = {
+            x: (Math.random() - 0.5) * 100,
+            y: (Math.random() - 0.5) * 100
+        };
+        
+        const particle = new Particle(x, y, velocity, color, flyweight);
+        this.particles.push(particle);
+        
+        return particle;
+    }
+    
+    createExplosion(centerX: number, centerY: number, particleCount: number): void {
+        console.log(`💥 Création explosion avec ${particleCount} particules à (${centerX}, ${centerY})`);
+        
+        for (let i = 0; i < particleCount; i++) {
+            const angle = (i / particleCount) * 2 * Math.PI;
+            const distance = Math.random() * 50;
+            
+            const x = centerX + Math.cos(angle) * distance;
+            const y = centerY + Math.sin(angle) * distance;
+            
+            this.createParticle(x, y);
+        }
+    }
+    
+    update(deltaTime: number): void {
+        this.particles.forEach(particle => particle.update(deltaTime));
+        
+        // Suppression des particules hors limites
+        this.particles = this.particles.filter(particle => {
+            const pos = particle.getPosition();
+            return pos.x > -100 && pos.x < 1000 && pos.y > -100 && pos.y < 800;
+        });
+    }
+    
+    render(): void {
+        console.log(`🎬 Rendu de ${this.particles.length} particules`);
+        this.particles.forEach(particle => particle.render());
+    }
+    
+    getStats(): {
+        totalParticles: number;
+        flyweightStats: { created: number; requests: number; efficiency: number };
+        memoryEstimate: { withFlyweight: number; withoutFlyweight: number; savings: number };
+    } {
+        const flyweightStats = ParticleTypeFactory.getStats();
+        
+        // Estimation de la mémoire (en bytes)
+        const particleDataSize = 32; // x, y, velocity, color, reference
+        const flyweightDataSize = 64; // sprite, size, mass, shape
+        
+        const withFlyweight = 
+            this.particles.length * particleDataSize + 
+            flyweightStats.created * flyweightDataSize;
+            
+        const withoutFlyweight = 
+            this.particles.length * (particleDataSize + flyweightDataSize);
+        
+        const savings = ((withoutFlyweight - withFlyweight) / withoutFlyweight) * 100;
+        
+        return {
+            totalParticles: this.particles.length,
+            flyweightStats,
+            memoryEstimate: {
+                withFlyweight,
+                withoutFlyweight,
+                savings
+            }
+        };
+    }
+    
+    clear(): void {
+        this.particles = [];
+    }
+}
+
+// Démonstration du système de particules
+function demonstrateParticleSystem(): void {
+    console.log("=== Démonstration Système de Particules avec Flyweight ===\n");
+    
+    const particleSystem = new ParticleSystem();
+    
+    // Création de plusieurs explosions
+    particleSystem.createExplosion(100, 100, 50);
+    particleSystem.createExplosion(200, 150, 75);
+    particleSystem.createExplosion(300, 200, 100);
+    
+    console.log("\n--- Statistiques après création ---");
+    const stats = particleSystem.getStats();
+    console.log(`Particules totales: ${stats.totalParticles}`);
+    console.log(`Flyweights créés: ${stats.flyweightStats.created}`);
+    console.log(`Efficacité: ${stats.flyweightStats.efficiency.toFixed(1)}%`);
+    console.log(`Économie mémoire: ${stats.memoryEstimate.savings.toFixed(1)}%`);
+    
+    // Simulation de quelques frames
+    console.log("\n--- Simulation de rendu ---");
+    for (let frame = 0; frame < 3; frame++) {
+        console.log(`\nFrame ${frame + 1}:`);
+        particleSystem.update(0.016); // 60 FPS
+        if (frame === 0) particleSystem.render(); // Rendu seulement de la première frame
+    }
+    
+    console.log("\n--- Statistiques finales ---");
+    const finalStats = particleSystem.getStats();
+    console.log(`Particules restantes: ${finalStats.totalParticles}`);
+    console.log(`Mémoire avec Flyweight: ${finalStats.memoryEstimate.withFlyweight} bytes`);
+    console.log(`Mémoire sans Flyweight: ${finalStats.memoryEstimate.withoutFlyweight} bytes`);
+    console.log(`Économie: ${finalStats.memoryEstimate.savings.toFixed(1)}%`);
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="php">
+                                <pre><code class="language-php">
+&lt;?php
+
+// Interface Flyweight
+interface CharacterFlyweight {
+    public function render(int $x, int $y, string $font, int $size, string $color): void;
+    public function getCharacter(): string;
+}
+
+// Flyweight concret - contient l'état intrinsèque (le caractère)
+class Character implements CharacterFlyweight {
+    private string $character;
+    private array $bitmap; // Représentation bitmap du caractère
+    
+    public function __construct(string $character) {
+        $this->character = $character;
+        $this->bitmap = $this->generateBitmap($character);
+        
+        echo "🎨 Création Character flyweight: '{$character}'\n";
+    }
+    
+    public function render(int $x, int $y, string $font, int $size, string $color): void {
+        // Utilise l'état intrinsèque (character, bitmap) 
+        // et l'état extrinsèque (x, y, font, size, color)
+        echo "📝 Rendu '{$this->character}' à ({$x}, {$y}) - {$font} {$size}px {$color}\n";
+        
+        $this->drawBitmap($x, $y, $font, $size, $color);
+    }
+    
+    public function getCharacter(): string {
+        return $this->character;
+    }
+    
+    private function generateBitmap(string $character): array {
+        // Simulation de génération de bitmap pour le caractère
+        $bitmap = [];
+        for ($i = 0; $i < 16; $i++) {
+            $bitmap[] = str_repeat(random_int(0, 1) ? '█' : ' ', 8);
+        }
+        
+        echo "  🖼️ Bitmap généré pour '{$character}' (16x8)\n";
+        return $bitmap;
+    }
+    
+    private function drawBitmap(int $x, int $y, string $font, int $size, string $color): void {
+        // Rendu du bitmap avec les paramètres extrinsèques
+        echo "  🎯 Dessiner bitmap à ({$x}, {$y}) avec {$font} {$size}px en {$color}\n";
+        
+        // Simulation d'application des transformations
+        $scale = $size / 12; // Taille de base 12px
+        echo "  📏 Échelle appliquée: {$scale}x\n";
+    }
+    
+    public function getBitmapSize(): int {
+        return count($this->bitmap) * strlen($this->bitmap[0]);
+    }
+}
+
+// Factory pour gérer les Flyweights
+class CharacterFactory {
+    private static array $flyweights = [];
+    private static int $creationCount = 0;
+    
+    public static function getCharacter(string $character): CharacterFlyweight {
+        if (!isset(self::$flyweights[$character])) {
+            echo "🏭 Factory: Création nouveau flyweight pour '{$character}'\n";
+            self::$flyweights[$character] = new Character($character);
+            self::$creationCount++;
+        } else {
+            echo "♻️ Factory: Réutilisation flyweight existant pour '{$character}'\n";
+        }
+        
+        return self::$flyweights[$character];
+    }
+    
+    public static function getCreatedFlyweightsCount(): int {
+        return count(self::$flyweights);
+    }
+    
+    public static function getTotalRequestsCount(): int {
+        return self::$creationCount;
+    }
+    
+    public static function getStats(): array {
+        $created = count(self::$flyweights);
+        $requests = self::$creationCount;
+        $efficiency = $requests > 0 ? (($requests - $created) / $requests) * 100 : 0;
+        
+        return [
+            'created' => $created,
+            'requests' => $requests,
+            'efficiency' => $efficiency
+        ];
+    }
+    
+    public static function listFlyweights(): array {
+        return array_keys(self::$flyweights);
+    }
+    
+    public static function reset(): void {
+        self::$flyweights = [];
+        self::$creationCount = 0;
+    }
+}
+
+// Context - contient l'état extrinsèque
+class TextCharacter {
+    private int $x;
+    private int $y;
+    private string $font;
+    private int $size;
+    private string $color;
+    private CharacterFlyweight $flyweight;
+    
+    public function __construct(
+        int $x, 
+        int $y, 
+        string $font, 
+        int $size, 
+        string $color, 
+        CharacterFlyweight $flyweight
+    ) {
+        $this->x = $x;
+        $this->y = $y;
+        $this->font = $font;
+        $this->size = $size;
+        $this->color = $color;
+        $this->flyweight = $flyweight;
+    }
+    
+    public function render(): void {
+        $this->flyweight->render($this->x, $this->y, $this->font, $this->size, $this->color);
+    }
+    
+    public function move(int $deltaX, int $deltaY): void {
+        $this->x += $deltaX;
+        $this->y += $deltaY;
+    }
+    
+    public function changeStyle(string $font, int $size, string $color): void {
+        $this->font = $font;
+        $this->size = $size;
+        $this->color = $color;
+    }
+    
+    public function getPosition(): array {
+        return ['x' => $this->x, 'y' => $this->y];
+    }
+    
+    public function getCharacter(): string {
+        return $this->flyweight->getCharacter();
+    }
+}
+
+// Éditeur de texte utilisant le pattern Flyweight
+class TextEditor {
+    private array $characters = [];
+    private array $fonts = ['Arial', 'Times', 'Helvetica', 'Courier'];
+    private array $colors = ['black', 'red', 'blue', 'green', 'purple'];
+    
+    public function addText(string $text, int $startX, int $startY, string $font = 'Arial', int $size = 12, string $color = 'black'): void {
+        echo "📄 Ajout du texte: '{$text}' à ({$startX}, {$startY})\n";
+        
+        $currentX = $startX;
+        $currentY = $startY;
+        
+        for ($i = 0; $i < strlen($text); $i++) {
+            $char = $text[$i];
+            
+            if ($char === ' ') {
+                $currentX += $size / 2; // Espacement pour les espaces
+                continue;
+            }
+            
+            if ($char === "\n") {
+                $currentX = $startX;
+                $currentY += $size + 4; // Interligne
+                continue;
+            }
+            
+            // Obtention du flyweight pour le caractère
+            $flyweight = CharacterFactory::getCharacter($char);
+            
+            // Création du contexte avec l'état extrinsèque
+            $textChar = new TextCharacter($currentX, $currentY, $font, $size, $color, $flyweight);
+            $this->characters[] = $textChar;
+            
+            $currentX += $size * 0.6; // Espacement entre caractères
+        }
+    }
+    
+    public function addFormattedText(string $text, int $x, int $y): void {
+        echo "🎨 Ajout de texte formaté avec styles variés\n";
+        
+        $words = explode(' ', $text);
+        $currentX = $x;
+        $currentY = $y;
+        
+        foreach ($words as $word) {
+            // Style aléatoire pour chaque mot
+            $font = $this->fonts[array_rand($this->fonts)];
+            $color = $this->colors[array_rand($this->colors)];
+            $size = rand(10, 16);
+            
+            $this->addText($word . ' ', $currentX, $currentY, $font, $size, $color);
+            $currentX += strlen($word) * $size * 0.6 + $size; // Espacement entre mots
+        }
+    }
+    
+    public function render(): void {
+        echo "🎬 Rendu de " . count($this->characters) . " caractères\n";
+        
+        foreach ($this->characters as $char) {
+            $char->render();
+        }
+    }
+    
+    public function getStats(): array {
+        $flyweightStats = CharacterFactory::getStats();
+        
+        // Estimation de la mémoire (en bytes)
+        $characterDataSize = 48; // x, y, font, size, color, reference
+        $flyweightDataSize = 128; // character, bitmap
+        
+        $withFlyweight =
+            count($this->characters) * $characterDataSize +
+            $flyweightStats['created'] * $flyweightDataSize;
+            
+        $withoutFlyweight =
+            count($this->characters) * ($characterDataSize + $flyweightDataSize);
+        
+        $savings = $withoutFlyweight > 0 ? (($withoutFlyweight - $withFlyweight) / $withoutFlyweight) * 100 : 0;
+        
+        return [
+            'totalCharacters' => count($this->characters),
+            'flyweightStats' => $flyweightStats,
+            'memoryEstimate' => [
+                'withFlyweight' => $withFlyweight,
+                'withoutFlyweight' => $withoutFlyweight,
+                'savings' => $savings
+            ]
+        ];
+    }
+    
+    public function clear(): void {
+        $this->characters = [];
+    }
+    
+    public function getCharacterCount(): int {
+        return count($this->characters);
+    }
+}
+
+// Démonstration de l'éditeur de texte
+function demonstrateTextEditor(): void {
+    echo "=== Démonstration Éditeur de Texte avec Flyweight ===\n\n";
+    
+    $editor = new TextEditor();
+    
+    // Ajout de texte simple
+    $editor->addText("Hello World!", 10, 10, 'Arial', 12, 'black');
+    $editor->addText("Bonjour le monde!", 10, 30, 'Times', 14, 'blue');
+    
+    // Ajout de texte formaté
+    $editor->addFormattedText("Texte avec styles variés pour démonstration", 10, 60);
+    
+    echo "\n--- Statistiques après création ---\n";
+    $stats = $editor->getStats();
+    echo "Caractères totaux: " . $stats['totalCharacters'] . "\n";
+    echo "Flyweights créés: " . $stats['flyweightStats']['created'] . "\n";
+    echo "Efficacité: " . number_format($stats['flyweightStats']['efficiency'], 1) . "%\n";
+    echo "Économie mémoire: " . number_format($stats['memoryEstimate']['savings'], 1) . "%\n";
+    
+    // Rendu du texte
+    echo "\n--- Rendu du texte ---\n";
+    $editor->render();
+    
+    echo "\n--- Flyweights créés ---\n";
+    $flyweights = CharacterFactory::listFlyweights();
+    echo "Caractères uniques: " . implode(', ', $flyweights) . "\n";
+}
+
+// Exécution de la démonstration
+demonstrateTextEditor();
+
+?&gt;
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="java">
+                                <pre><code class="language-java">
+// Interface Flyweight
+interface CharacterFlyweight {
+    void render(int x, int y, String font, int size, String color);
+    String getCharacter();
+}
+
+// Flyweight concret - contient l'état intrinsèque
+class Character implements CharacterFlyweight {
+    private final String character;
+    private final char[][] bitmap;
+    
+    public Character(String character) {
+        this.character = character;
+        this.bitmap = generateBitmap(character);
+        
+        System.out.println("🎨 Création Character flyweight: '" + character + "'");
+    }
+    
+    @Override
+    public void render(int x, int y, String font, int size, String color) {
+        // Utilise l'état intrinsèque (character, bitmap)
+        // et l'état extrinsèque (x, y, font, size, color)
+        System.out.println("📝 Rendu '" + this.character + "' à (" + x + ", " + y + ") - " + font + " " + size + "px " + color);
+        
+        drawBitmap(x, y, font, size, color);
+    }
+    
+    @Override
+    public String getCharacter() {
+        return character;
+    }
+    
+    private char[][] generateBitmap(String character) {
+        // Simulation de génération de bitmap pour le caractère
+        char[][] bitmap = new char[16][8];
+        Random random = new Random();
+        
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j < 8; j++) {
+                bitmap[i][j] = random.nextBoolean() ? '█' : ' ';
+            }
+        }
+        
+        System.out.println("  🖼️ Bitmap généré pour '" + character + "' (16x8)");
+        return bitmap;
+    }
+    
+    private void drawBitmap(int x, int y, String font, int size, String color) {
+        // Rendu du bitmap avec les paramètres extrinsèques
+        System.out.println("  🎯 Dessiner bitmap à (" + x + ", " + y + ") avec " + font + " " + size + "px en " + color);
+        
+        // Simulation d'application des transformations
+        double scale = size / 12.0; // Taille de base 12px
+        System.out.println("  📏 Échelle appliquée: " + scale + "x");
+    }
+    
+    public int getBitmapSize() {
+        return bitmap.length * bitmap[0].length;
+    }
+}
+
+// Factory pour gérer les Flyweights
+class CharacterFactory {
+    private static final Map&lt;String, CharacterFlyweight&gt; flyweights = new HashMap&lt;&gt;();
+    private static int creationCount = 0;
+    
+    public static CharacterFlyweight getCharacter(String character) {
+        if (!flyweights.containsKey(character)) {
+            System.out.println("🏭 Factory: Création nouveau flyweight pour '" + character + "'");
+            flyweights.put(character, new Character(character));
+            creationCount++;
+        } else {
+            System.out.println("♻️ Factory: Réutilisation flyweight existant pour '" + character + "'");
+        }
+        
+        return flyweights.get(character);
+    }
+    
+    public static int getCreatedFlyweightsCount() {
+        return flyweights.size();
+    }
+    
+    public static int getTotalRequestsCount() {
+        return creationCount;
+    }
+    
+    public static Map&lt;String, Object&gt; getStats() {
+        int created = flyweights.size();
+        int requests = creationCount;
+        double efficiency = requests > 0 ? ((double)(requests - created) / requests) * 100 : 0;
+        
+        Map&lt;String, Object&gt; stats = new HashMap&lt;&gt;();
+        stats.put("created", created);
+        stats.put("requests", requests);
+        stats.put("efficiency", efficiency);
+        
+        return stats;
+    }
+    
+    public static Set&lt;String&gt; listFlyweights() {
+        return flyweights.keySet();
+    }
+    
+    public static void reset() {
+        flyweights.clear();
+        creationCount = 0;
+    }
+}
+
+// Context - contient l'état extrinsèque
+class TextCharacter {
+    private int x;
+    private int y;
+    private String font;
+    private int size;
+    private String color;
+    private CharacterFlyweight flyweight;
+    
+    public TextCharacter(int x, int y, String font, int size, String color, CharacterFlyweight flyweight) {
+        this.x = x;
+        this.y = y;
+        this.font = font;
+        this.size = size;
+        this.color = color;
+        this.flyweight = flyweight;
+    }
+    
+    public void render() {
+        flyweight.render(x, y, font, size, color);
+    }
+    
+    public void move(int deltaX, int deltaY) {
+        this.x += deltaX;
+        this.y += deltaY;
+    }
+    
+    public void changeStyle(String font, int size, String color) {
+        this.font = font;
+        this.size = size;
+        this.color = color;
+    }
+    
+    public int[] getPosition() {
+        return new int[]{x, y};
+    }
+    
+    public String getCharacter() {
+        return flyweight.getCharacter();
+    }
+}
+
+// Éditeur de texte utilisant le pattern Flyweight
+class TextEditor {
+    private List&lt;TextCharacter&gt; characters = new ArrayList&lt;&gt;();
+    private String[] fonts = {"Arial", "Times", "Helvetica", "Courier"};
+    private String[] colors = {"black", "red", "blue", "green", "purple"};
+    private Random random = new Random();
+    
+    public void addText(String text, int startX, int startY, String font, int size, String color) {
+        System.out.println("📄 Ajout du texte: '" + text + "' à (" + startX + ", " + startY + ")");
+        
+        int currentX = startX;
+        int currentY = startY;
+        
+        for (int i = 0; i < text.length(); i++) {
+            char ch = text.charAt(i);
+            String charStr = String.valueOf(ch);
+            
+            if (ch == ' ') {
+                currentX += size / 2; // Espacement pour les espaces
+                continue;
+            }
+            
+            if (ch == '\n') {
+                currentX = startX;
+                currentY += size + 4; // Interligne
+                continue;
+            }
+            
+            // Obtention du flyweight pour le caractère
+            CharacterFlyweight flyweight = CharacterFactory.getCharacter(charStr);
+            
+            // Création du contexte avec l'état extrinsèque
+            TextCharacter textChar = new TextCharacter(currentX, currentY, font, size, color, flyweight);
+            characters.add(textChar);
+            
+            currentX += (int)(size * 0.6); // Espacement entre caractères
+        }
+    }
+    
+    public void addFormattedText(String text, int x, int y) {
+        System.out.println("🎨 Ajout de texte formaté avec styles variés");
+        
+        String[] words = text.split(" ");
+        int currentX = x;
+        int currentY = y;
+        
+        for (String word : words) {
+            // Style aléatoire pour chaque mot
+            String font = fonts[random.nextInt(fonts.length)];
+            String color = colors[random.nextInt(colors.length)];
+            int size = 10 + random.nextInt(7); // 10-16
+            
+            addText(word + " ", currentX, currentY, font, size, color);
+            currentX += word.length() * size * 0.6 + size; // Espacement entre mots
+        }
+    }
+    
+    public void render() {
+        System.out.println("🎬 Rendu de " + characters.size() + " caractères");
+        
+        for (TextCharacter character : characters) {
+            character.render();
+        }
+    }
+    
+    public Map&lt;String, Object&gt; getStats() {
+        Map&lt;String, Object&gt; flyweightStats = CharacterFactory.getStats();
+        
+        // Estimation de la mémoire (en bytes)
+        int characterDataSize = 48; // x, y, font, size, color, reference
+        int flyweightDataSize = 128; // character, bitmap
+        
+        int withFlyweight =
+            characters.size() * characterDataSize +
+            (Integer)flyweightStats.get("created") * flyweightDataSize;
+            
+        int withoutFlyweight =
+            characters.size() * (characterDataSize + flyweightDataSize);
+        
+        double savings = withoutFlyweight > 0 ? ((double)(withoutFlyweight - withFlyweight) / withoutFlyweight) * 100 : 0;
+        
+        Map&lt;String, Object&gt; stats = new HashMap&lt;&gt;();
+        stats.put("totalCharacters", characters.size());
+        stats.put("flyweightStats", flyweightStats);
+        
+        Map&lt;String, Object&gt; memoryEstimate = new HashMap&lt;&gt;();
+        memoryEstimate.put("withFlyweight", withFlyweight);
+        memoryEstimate.put("withoutFlyweight", withoutFlyweight);
+        memoryEstimate.put("savings", savings);
+        stats.put("memoryEstimate", memoryEstimate);
+        
+        return stats;
+    }
+    
+    public void clear() {
+        characters.clear();
+    }
+    
+    public int getCharacterCount() {
+        return characters.size();
+    }
+}
+
+// Démonstration de l'éditeur de texte
+public class FlyweightDemo {
+    public static void main(String[] args) {
+        System.out.println("=== Démonstration Éditeur de Texte avec Flyweight ===\n");
+        
+        TextEditor editor = new TextEditor();
+        
+        // Ajout de texte simple
+        editor.addText("Hello World!", 10, 10, "Arial", 12, "black");
+        editor.addText("Bonjour le monde!", 10, 30, "Times", 14, "blue");
+        
+        // Ajout de texte formaté
+        editor.addFormattedText("Texte avec styles variés pour démonstration", 10, 60);
+        
+        System.out.println("\n--- Statistiques après création ---");
+        Map&lt;String, Object&gt; stats = editor.getStats();
+        System.out.println("Caractères totaux: " + stats.get("totalCharacters"));
+        
+        @SuppressWarnings("unchecked")
+        Map&lt;String, Object&gt; flyweightStats = (Map&lt;String, Object&gt;)stats.get("flyweightStats");
+        System.out.println("Flyweights créés: " + flyweightStats.get("created"));
+        System.out.println("Efficacité: " + String.format("%.1f", (Double)flyweightStats.get("efficiency")) + "%");
+        
+        @SuppressWarnings("unchecked")
+        Map&lt;String, Object&gt; memoryEstimate = (Map&lt;String, Object&gt;)stats.get("memoryEstimate");
+        System.out.println("Économie mémoire: " + String.format("%.1f", (Double)memoryEstimate.get("savings")) + "%");
+        
+        // Rendu du texte
+        System.out.println("\n--- Rendu du texte ---");
+        editor.render();
+        
+        System.out.println("\n--- Flyweights créés ---");
+        Set&lt;String&gt; flyweights = CharacterFactory.listFlyweights();
+        System.out.println("Caractères uniques: " + String.join(", ", flyweights));
+    }
+}
+</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Avantages et Inconvénients -->
+                <section class="pros-cons-section">
+                    <div class="aikido-card">
+                        <h2>⚖️ Avantages et Inconvénients</h2>
+                        
+                        <div class="pros-cons-grid">
+                            <div class="pros-card">
+                                <h3>✅ Avantages</h3>
+                                <ul>
+                                    <li><strong>Économie de mémoire</strong> : Réduction drastique de l'utilisation mémoire</li>
+                                    <li><strong>Performance améliorée</strong> : Moins d'allocations et de garbage collection</li>
+                                    <li><strong>Partage efficace</strong> : Réutilisation maximale des objets similaires</li>
+                                    <li><strong>Scalabilité</strong> : Gestion de très grandes quantités d'objets</li>
+                                    <li><strong>Cache naturel</strong> : Les flyweights agissent comme un cache</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="cons-card">
+                                <h3>❌ Inconvénients</h3>
+                                <ul>
+                                    <li><strong>Complexité accrue</strong> : Séparation état intrinsèque/extrinsèque</li>
+                                    <li><strong>Overhead initial</strong> : Coût de mise en place du pattern</li>
+                                    <li><strong>Debugging difficile</strong> : État partagé complique le débogage</li>
+                                    <li><strong>Thread-safety</strong> : Gestion de la concurrence nécessaire</li>
+                                    <li><strong>Cas d'usage limités</strong> : Efficace seulement avec beaucoup d'objets</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Cas d'Usage -->
+                <section class="use-cases-section">
+                    <div class="aikido-card">
+                        <h2>🎯 Cas d'Usage Appropriés</h2>
+                        
+                        <div class="use-cases-grid">
+                            <div class="use-case good">
+                                <h4>✅ Quand l'utiliser</h4>
+                                <ul>
+                                    <li><strong>Systèmes de particules</strong> : Milliers de particules similaires</li>
+                                    <li><strong>Éditeurs de texte</strong> : Caractères avec formatage</li>
+                                    <li><strong>Jeux vidéo</strong> : Sprites, tiles, objets répétitifs</li>
+                                    <li><strong>Interfaces graphiques</strong> : Icônes, boutons similaires</li>
+                                    <li><strong>Données géographiques</strong> : Points d'intérêt similaires</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="use-case bad">
+                                <h4>❌ Quand l'éviter</h4>
+                                <ul>
+                                    <li><strong>Peu d'objets</strong> : Moins de 1000 instances</li>
+                                    <li><strong>Objets très différents</strong> : Peu de données communes</li>
+                                    <li><strong>État principalement extrinsèque</strong> : Peu de partage possible</li>
+                                    <li><strong>Applications simples</strong> : Complexité non justifiée</li>
+                                    <li><strong>Prototypage rapide</strong> : Optimisation prématurée</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Biais Cognitifs -->
+                <section class="cognitive-bias-section">
+                    <div class="aikido-card biais-cognitif">
+                        <h2>🧩 Biais Cognitifs Associés</h2>
+                        
+                        <div class="bias-analysis">
+                            <div class="bias-item">
+                                <h4>🔨 Marteau de Maslow</h4>
+                                <p><strong>Manifestation :</strong> "J'ai appris Flyweight, utilisons-le partout"</p>
+                                <p><strong>Impact :</strong> Application du pattern même avec peu d'objets</p>
+                                <p><strong>Mitigation :</strong> Évaluer chaque cas d'usage individuellement</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>🎯 Biais de Confirmation</h4>
+                                <p><strong>Manifestation :</strong> Ignorer les inconvénients du pattern</p>
+                                <p><strong>Impact :</strong> Implémentation inadaptée au contexte</p>
+                                <p><strong>Mitigation :</strong> Analyser objectivement les trade-offs</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>📊 Négligence de la Fréquence de Base</h4>
+                                <p><strong>Manifestation :</strong> Sous-estimer la rareté des cas nécessitant Flyweight</p>
+                                <p><strong>Impact :</strong> Optimisation inutile dans la plupart des cas</p>
+                                <p><strong>Mitigation :</strong> Mesurer avant d'optimiser</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Anti-Patterns -->
+                <section class="antipatterns-section">
+                    <div class="aikido-card danger">
+                        <h2>🚫 Anti-Patterns Associés</h2>
+                        <p class="section-intro">
+                            Erreurs courantes lors de l'implémentation du pattern Flyweight.
+                        </p>
+                        
+                        <div class="antipattern-grid">
+                            <div class="antipattern-item">
+                                <h4>❌ Flyweight Inutile</h4>
+                                <p><strong>Problème :</strong> Utiliser Flyweight avec peu d'objets ou objets très différents</p>
+                                <div class="code-example bad">
+                                    <pre><code>// ❌ Mauvais : Seulement 3 utilisateurs
+class UserFlyweight {
+    constructor(name, email) {
+        this.name = name;
+        this.email = email;
+    }
+}
+
+const users = [
+    new UserFlyweight("Alice", "alice@example.com"),
+    new UserFlyweight("Bob", "bob@example.com"),
+    new UserFlyweight("Charlie", "charlie@example.com")
+];</code></pre>
+                                </div>
+                                <p><strong>Solution :</strong> Utiliser des objets normaux pour de petites quantités</p>
+                            </div>
+                            
+                            <div class="antipattern-item">
+                                <h4>❌ État Extrinsèque dans Flyweight</h4>
+                                <p><strong>Problème :</strong> Stocker l'état variable dans le flyweight</p>
+                                <div class="code-example bad">
+                                    <pre><code>// ❌ Mauvais : Position stockée dans flyweight
+class ParticleFlyweight {
+    constructor(type) {
+        this.type = type;
+        this.x = 0; // ❌ État extrinsèque !
+        this.y = 0; // ❌ État extrinsèque !
+    }
+}</code></pre>
+                                </div>
+                                <p><strong>Solution :</strong> Séparer clairement état intrinsèque et extrinsèque</p>
+                            </div>
+                            
+                            <div class="antipattern-item">
+                                <h4>❌ Factory Non Thread-Safe</h4>
+                                <p><strong>Problème :</strong> Accès concurrent non protégé à la factory</p>
+                                <div class="code-example bad">
+                                    <pre><code>// ❌ Mauvais : Race condition possible
+class FlyweightFactory {
+    static flyweights = new Map();
+    
+    static getFlyweight(key) {
+        if (!this.flyweights.has(key)) {
+            // ❌ Race condition ici !
+            this.flyweights.set(key, new Flyweight(key));
+        }
+        return this.flyweights.get(key);
+    }
+}</code></pre>
+                                </div>
+                                <p><strong>Solution :</strong> Utiliser des structures thread-safe ou des verrous</p>
+                            </div>
+                            
+                            <div class="antipattern-item">
+                                <h4>❌ Flyweight Mutable</h4>
+                                <p><strong>Problème :</strong> Permettre la modification de l'état intrinsèque</p>
+                                <div class="code-example bad">
+                                    <pre><code>// ❌ Mauvais : Flyweight modifiable
+class CharacterFlyweight {
+    constructor(char) {
+        this.character = char;
+    }
+    
+    // ❌ Permet de modifier l'état partagé !
+    setCharacter(newChar) {
+        this.character = newChar;
+    }
+}</code></pre>
+                                </div>
+                                <p><strong>Solution :</strong> Rendre les flyweights immutables</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercice Interactif -->
+                <section class="exercise-section">
+                    <div class="aikido-card">
+                        <h2>🎯 Exercice Pratique</h2>
+                        <p>
+                            Vous développez un système de rendu pour une application de dessin vectoriel. 
+                            L'application doit afficher des milliers de formes géométriques (cercles, carrés, triangles) 
+                            avec différentes positions, couleurs et tailles.
+                        </p>
+                        
+                        <div class="exercise-question">
+                            <h3>Question :</h3>
+                            <p>
+                                Comment implémenteriez-vous le pattern Flyweight pour optimiser la mémoire 
+                                dans ce système de rendu de formes géométriques ?
+                            </p>
+                        </div>
+                        
+                        <div class="exercise-options">
+                            <div class="choice-option" data-choice="shapes-flyweight">
+                                <div class="choice-header">
+                                    <span class="choice-icon">🎨</span>
+                                    <span class="choice-title">Flyweight par Type de Forme</span>
+                                </div>
+                                <div class="choice-description">
+                                    Créer un flyweight pour chaque type de forme (cercle, carré, triangle) 
+                                    et externaliser position, couleur et taille comme état extrinsèque.
+                                </div>
+                            </div>
+                            
+                            <div class="choice-option" data-choice="color-flyweight">
+                                <div class="choice-header">
+                                    <span class="choice-icon">🌈</span>
+                                    <span class="choice-title">Flyweight par Couleur</span>
+                                </div>
+                                <div class="choice-description">
+                                    Créer un flyweight pour chaque couleur et externaliser 
+                                    le type de forme, position et taille.
+                                </div>
+                            </div>
+                            
+                            <div class="choice-option" data-choice="combined-flyweight">
+                                <div class="choice-header">
+                                    <span class="choice-icon">🔗</span>
+                                    <span class="choice-title">Flyweight Combiné Type+Couleur</span>
+                                </div>
+                                <div class="choice-description">
+                                    Créer un flyweight pour chaque combinaison type-couleur 
+                                    et externaliser seulement position et taille.
+                                </div>
+                            </div>
+                            
+                            <div class="choice-option" data-choice="no-flyweight">
+                                <div class="choice-header">
+                                    <span class="choice-icon">❌</span>
+                                    <span class="choice-title">Pas de Flyweight</span>
+                                </div>
+                                <div class="choice-description">
+                                    Créer un objet complet pour chaque forme avec toutes ses propriétés.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="exercise-retours" class="exercise-retours hidden">
+                            <!-- Les retours seront affichés ici par JavaScript -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Completion Section -->
+                <section class="completion-section slide-in">
+                    <div class="aikido-card completion">
+                        <div class="completion-content">
+                            <div class="completion-icon">📋</div>
+                            <div class="completion-text">
+                                <h3>Avez-vous terminé cette section ?</h3>
+                                <p>Marquez cette page comme terminée pour suivre votre progression dans la formation.</p>
+                            </div>
+                            <button class="aikido-btn primary mark-completed" data-page="flyweight">
+                                Marquer comme Terminé ✓
+                            </button>
+                        </div>
+                        
+                        <div class="completion-feedback hidden">
+                            <div class="feedback-success">
+                                <h4>🎉 Excellent travail !</h4>
+                                <p>Vous avez terminé l'étude du pattern Flyweight. Vous comprenez maintenant :</p>
+                                <ul>
+                                    <li>Comment optimiser la mémoire en partageant l'état intrinsèque</li>
+                                    <li>La séparation entre état intrinsèque et extrinsèque</li>
+                                    <li>L'utilisation d'une factory pour gérer les flyweights</li>
+                                    <li>Les cas d'usage appropriés pour ce pattern</li>
+                                    <li>Les pièges à éviter lors de l'implémentation</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Script pour l'exercice interactif -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion de l'exercice interactif
+            const choiceOptions = document.querySelectorAll('.choice-option');
+            const exerciseRetours = document.getElementById('exercise-retours');
+            
+            const retours = {
+                'shapes-flyweight': {
+                    type: 'success',
+                    title: '🎯 Excellente Approche !',
+                    content: `
+                        <p><strong>Analyse correcte !</strong> Cette approche est optimale pour ce cas d'usage :</p>
+                        <ul>
+                            <li><strong>État intrinsèque :</strong> Type de forme (géométrie, méthodes de rendu)</li>
+                            <li><strong>État extrinsèque :</strong> Position (x, y), couleur, taille</li>
+                            <li><strong>Avantages :</strong> Maximum de partage, minimum de flyweights créés</li>
+                            <li><strong>Économie :</strong> Seulement 3 flyweights pour des milliers de formes</li>
+                        </ul>
+                        <div class="code-example good">
+                            <pre><code>// ✅ Implémentation optimale
+class ShapeFlyweight {
+    constructor(type) {
+                                this.type = type; // État intrinsèque
+    }
+    
+    render(x, y, color, size) {
+        // Utilise état extrinsèque pour le rendu
+        console.log(\`Rendu \${this.type} à (\${x}, \${y}) - \${color} \${size}px\`);
+    }
+}
+
+class ShapeFactory {
+    static flyweights = new Map();
+    
+    static getShape(type) {
+        if (!this.flyweights.has(type)) {
+            this.flyweights.set(type, new ShapeFlyweight(type));
+        }
+        return this.flyweights.get(type);
+    }
+}</code></pre>
+                        </div>
+                    `
+                },
+                'color-flyweight': {
+                    type: 'warning',
+                    title: '⚠️ Approche Sous-Optimale',
+                    content: `
+                        <p><strong>Problème identifié :</strong> Cette approche crée trop de flyweights :</p>
+                        <ul>
+                            <li><strong>Flyweights créés :</strong> Un par couleur (potentiellement des centaines)</li>
+                            <li><strong>État intrinsèque :</strong> Couleur seulement</li>
+                            <li><strong>État extrinsèque :</strong> Type, position, taille</li>
+                            <li><strong>Inconvénient :</strong> Moins d'économie mémoire, logique de rendu complexe</li>
+                        </ul>
+                        <p><strong>Meilleure approche :</strong> Flyweight par type de forme car il y a moins de types que de couleurs.</p>
+                    `
+                },
+                'combined-flyweight': {
+                    type: 'warning',
+                    title: '⚠️ Complexité Excessive',
+                    content: `
+                        <p><strong>Analyse :</strong> Cette approche crée trop de combinaisons :</p>
+                        <ul>
+                            <li><strong>Flyweights créés :</strong> Type × Couleurs (ex: 3 × 50 = 150 flyweights)</li>
+                            <li><strong>Complexité :</strong> Gestion difficile des combinaisons</li>
+                            <li><strong>Maintenance :</strong> Ajout d'une couleur = nouveaux flyweights pour tous les types</li>
+                            <li><strong>Économie :</strong> Réduite par la multiplication des flyweights</li>
+                        </ul>
+                        <p><strong>Principe :</strong> Le Flyweight fonctionne mieux avec peu de variations intrinsèques.</p>
+                    `
+                },
+                'no-flyweight': {
+                    type: 'error',
+                    title: '❌ Gaspillage de Mémoire',
+                    content: `
+                        <p><strong>Problème majeur :</strong> Cette approche ignore complètement l'optimisation :</p>
+                        <ul>
+                            <li><strong>Mémoire :</strong> Chaque forme stocke toutes ses données</li>
+                            <li><strong>Redondance :</strong> Code de rendu dupliqué pour chaque instance</li>
+                            <li><strong>Performance :</strong> Dégradée avec des milliers d'objets</li>
+                            <li><strong>Scalabilité :</strong> Problème critique avec la croissance</li>
+                        </ul>
+                        <p><strong>Impact :</strong> Avec 10 000 cercles, vous stockez 10 000 fois la même logique de rendu !</p>
+                        <p><strong>Solution :</strong> Utiliser le pattern Flyweight pour partager la logique commune.</p>
+                    `
+                }
+            };
+            
+            choiceOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Retirer la sélection précédente
+                    choiceOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Sélectionner l'option actuelle
+                    this.classList.add('selected');
+                    
+                    // Afficher le retour correspondant
+                    const choice = this.dataset.choice;
+                    const retour = retours[choice];
+                    
+                    if (retour) {
+                        exerciseRetours.innerHTML = `
+                            <div class="feedback-content ${retour.type}">
+                                <h4>${retour.title}</h4>
+                                ${retour.content}
+                            </div>
+                        `;
+                        exerciseRetours.classList.remove('hidden');
+                        
+                        // Scroll vers le retour
+                        exerciseRetours.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'nearest' 
+                        });
+                    }
+                });
+            });
+            
+            // Gestion du bouton de completion
+            const markCompletedBtn = document.querySelector('.mark-completed');
+            const completionFeedback = document.querySelector('.completion-feedback');
+            
+            if (markCompletedBtn && completionFeedback) {
+                markCompletedBtn.addEventListener('click', function() {
+                    // Marquer comme terminé dans le localStorage
+                    const page = this.dataset.page;
+                    localStorage.setItem(`page_${page}_completed`, 'true');
+                    
+                    // Afficher le feedback de completion
+                    this.style.display = 'none';
+                    completionFeedback.classList.remove('hidden');
+                    
+                    // Scroll vers le feedback
+                    completionFeedback.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest'
+                    });
+                });
+            }
+            
+            // Vérifier si déjà terminé
+            const page = markCompletedBtn?.dataset.page;
+            if (page && localStorage.getItem(`page_${page}_completed`) === 'true') {
+                markCompletedBtn.style.display = 'none';
+                completionFeedback.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repository Pattern - Formation Patterns Développeurs</title>
+    <meta name="description" content="Le pattern Repository expliqué avec exemples de code, diagrammes UML et cas d'usage pratiques">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <h1 class="page-title">🗄️ Repository Pattern</h1>
+                    <p class="page-subtitle">Encapsuler la logique d'accès aux données</p>
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">🎨</span>
+                            <span class="meta-text">Design Patterns</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⭐</span>
+                            <span class="meta-text">Difficulté: Facile</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⏱️</span>
+                            <span class="meta-text">15 min</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🏗️</span>
+                            <span class="meta-text">Architectural</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Définition et Problème -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card design-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="mb-md">
+                            Le <strong>Repository</strong> est un pattern architectural qui encapsule la logique 
+                            nécessaire pour accéder aux sources de données. Il centralise les fonctionnalités 
+                            communes d'accès aux données, offrant une meilleure maintenabilité et découplant 
+                            l'infrastructure d'accès aux données de la couche métier.
+                        </p>
+                        
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problème Résolu</h3>
+                                <ul>
+                                    <li>Couplage fort entre logique métier et accès aux données</li>
+                                    <li>Duplication de code d'accès aux données</li>
+                                    <li>Difficulté à tester la logique métier</li>
+                                    <li>Changement de source de données complexe</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solution Apportée</h3>
+                                <ul>
+                                    <li>Séparation claire des responsabilités</li>
+                                    <li>Code d'accès centralisé et réutilisable</li>
+                                    <li>Facilite les tests avec des mocks</li>
+                                    <li>Abstraction de la source de données</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert info">
+                            <strong>💡 Analogie :</strong> Comme une bibliothèque qui organise les livres et 
+                            fournit des méthodes pour les rechercher, le Repository organise les données et 
+                            fournit des méthodes pour y accéder.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Structure UML -->
+                <section class="structure-section">
+                    <div class="aikido-card">
+                        <h2>🏗️ Structure UML</h2>
+                        <div class="uml-diagram">
+                            <div class="uml-class-diagram">
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>&lt;&lt;interface&gt;&gt;<br>IUserRepository</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ findById(id: string): User</div>
+                                        <div class="method public">+ findAll(): User[]</div>
+                                        <div class="method public">+ save(user: User): void</div>
+                                        <div class="method public">+ delete(id: string): void</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>DatabaseUserRepository</strong>
+                                    </div>
+                                    <div class="class-attributes">
+                                        <div class="attribute private">- connection: Connection</div>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ findById(id: string): User</div>
+                                        <div class="method public">+ findAll(): User[]</div>
+                                        <div class="method public">+ save(user: User): void</div>
+                                        <div class="method public">+ delete(id: string): void</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>UserService</strong>
+                                    </div>
+                                    <div class="class-attributes">
+                                        <div class="attribute private">- repository: IUserRepository</div>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ createUser(data: UserData): User</div>
+                                        <div class="method public">+ getUserById(id: string): User</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="structure-explanation">
+                            <h3>Éléments Clés</h3>
+                            <ul>
+                                <li><strong>IRepository</strong> : Interface définissant les opérations d'accès aux données</li>
+                                <li><strong>ConcreteRepository</strong> : Implémentation spécifique (base de données, fichier, API)</li>
+                                <li><strong>Entity</strong> : Objet métier manipulé par le repository</li>
+                                <li><strong>Service</strong> : Couche métier utilisant le repository</li>
+                            </ul>
+                        </div>
+
+                        <!-- Diagramme de flux Mermaid -->
+                        <div class="mt-lg">
+                            <h3>🔄 Flux d'Exécution</h3>
+                            <div class="mermaid">
+                                graph TD
+                                    A[Service demande des données] --> B[Repository Interface]
+                                    B --> C[Repository Concret]
+                                    C --> D{Type de source}
+                                    D -->|Base de données| E[Requête SQL]
+                                    D -->|API| F[Appel HTTP]
+                                    D -->|Fichier| G[Lecture fichier]
+                                    E --> H[Mapper vers Entity]
+                                    F --> H
+                                    G --> H
+                                    H --> I[Retourner Entity]
+                                    I --> J[Service traite les données]
+                                    
+                                    style A fill:#e1f5fe
+                                    style B fill:#fff3e0
+                                    style C fill:#ffebee
+                                    style H fill:#e8f5e8
+                                    style I fill:#f3e5f5
+                            </div>
+                            <p class="text-sm text-gray-600 mt-md">
+                                <strong>💡 Point clé :</strong> Le service ne connaît que l'interface, 
+                                permettant de changer d'implémentation sans impact sur la logique métier.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Implémentations -->
+                <section class="implementations-section">
+                    <h2>💻 Implémentations</h2>
+                    
+                    <div class="aikido-card">
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="typescript">TypeScript</button>
+                                <button class="tab-btn" data-tab="php">PHP</button>
+                                <button class="tab-btn" data-tab="java">Java</button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="typescript">
+                                <h4>Exemple : Repository d'Utilisateurs</h4>
+                                <pre><code class="language-typescript">
+// Entité User
+interface User {
+    id: string;
+    name: string;
+    email: string;
+    createdAt: Date;
+}
+
+// Interface du Repository
+interface IUserRepository {
+    findById(id: string): Promise&lt;User | null&gt;;
+    findAll(): Promise&lt;User[]&gt;;
+    findByEmail(email: string): Promise&lt;User | null&gt;;
+    save(user: User): Promise&lt;User&gt;;
+    delete(id: string): Promise&lt;void&gt;;
+}
+
+// Implémentation avec base de données
+class DatabaseUserRepository implements IUserRepository {
+    constructor(private connection: DatabaseConnection) {}
+
+    async findById(id: string): Promise&lt;User | null&gt; {
+        const query = 'SELECT * FROM users WHERE id = ?';
+        const result = await this.connection.query(query, [id]);
+        
+        if (result.length === 0) {
+            return null;
+        }
+        
+        return this.mapRowToUser(result[0]);
+    }
+
+    async findAll(): Promise&lt;User[]&gt; {
+        const query = 'SELECT * FROM users ORDER BY created_at DESC';
+        const results = await this.connection.query(query);
+        
+        return results.map(row =&gt; this.mapRowToUser(row));
+    }
+
+    async findByEmail(email: string): Promise&lt;User | null&gt; {
+        const query = 'SELECT * FROM users WHERE email = ?';
+        const result = await this.connection.query(query, [email]);
+        
+        if (result.length === 0) {
+            return null;
+        }
+        
+        return this.mapRowToUser(result[0]);
+    }
+
+    async save(user: User): Promise&lt;User&gt; {
+        if (user.id) {
+            // Mise à jour
+            const query = 'UPDATE users SET name = ?, email = ? WHERE id = ?';
+            await this.connection.query(query, [user.name, user.email, user.id]);
+        } else {
+            // Création
+            const id = this.generateId();
+            const query = 'INSERT INTO users (id, name, email, created_at) VALUES (?, ?, ?, ?)';
+            await this.connection.query(query, [id, user.name, user.email, new Date()]);
+            user.id = id;
+        }
+        
+        return user;
+    }
+
+    async delete(id: string): Promise&lt;void&gt; {
+        const query = 'DELETE FROM users WHERE id = ?';
+        await this.connection.query(query, [id]);
+    }
+
+    private mapRowToUser(row: any): User {
+        return {
+            id: row.id,
+            name: row.name,
+            email: row.email,
+            createdAt: new Date(row.created_at)
+        };
+    }
+
+    private generateId(): string {
+        return Math.random().toString(36).substr(2, 9);
+    }
+}
+
+// Service utilisant le Repository
+class UserService {
+    constructor(private userRepository: IUserRepository) {}
+
+    async createUser(name: string, email: string): Promise&lt;User&gt; {
+        // Vérifier si l'email existe déjà
+        const existingUser = await this.userRepository.findByEmail(email);
+        if (existingUser) {
+            throw new Error('Un utilisateur avec cet email existe déjà');
+        }
+
+        const user: User = {
+            id: '',
+            name,
+            email,
+            createdAt: new Date()
+        };
+
+        return await this.userRepository.save(user);
+    }
+
+    async getUserById(id: string): Promise&lt;User&gt; {
+        const user = await this.userRepository.findById(id);
+        if (!user) {
+            throw new Error('Utilisateur non trouvé');
+        }
+        return user;
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="php">
+                                <pre><code class="language-php">
+&lt;?php
+
+// Entité User
+class User {
+    public function __construct(
+        public ?string $id = null,
+        public string $name = '',
+        public string $email = '',
+        public ?DateTime $createdAt = null
+    ) {
+        $this->createdAt = $this->createdAt ?? new DateTime();
+    }
+}
+
+// Interface du Repository
+interface UserRepositoryInterface {
+    public function findById(string $id): ?User;
+    public function findAll(): array;
+    public function findByEmail(string $email): ?User;
+    public function save(User $user): User;
+    public function delete(string $id): void;
+}
+
+// Implémentation avec PDO
+class DatabaseUserRepository implements UserRepositoryInterface {
+    private PDO $pdo;
+
+    public function __construct(PDO $pdo) {
+        $this->pdo = $pdo;
+    }
+
+    public function findById(string $id): ?User {
+        $stmt = $this->pdo->prepare('SELECT * FROM users WHERE id = ?');
+        $stmt->execute([$id]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return $row ? $this->mapRowToUser($row) : null;
+    }
+
+    public function findAll(): array {
+        $stmt = $this->pdo->query('SELECT * FROM users ORDER BY created_at DESC');
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        return array_map([$this, 'mapRowToUser'], $rows);
+    }
+
+    public function save(User $user): User {
+        if ($user->id) {
+            // Mise à jour
+            $stmt = $this->pdo->prepare(
+                'UPDATE users SET name = ?, email = ? WHERE id = ?'
+            );
+            $stmt->execute([$user->name, $user->email, $user->id]);
+        } else {
+            // Création
+            $user->id = $this->generateId();
+            $stmt = $this->pdo->prepare(
+                'INSERT INTO users (id, name, email, created_at) VALUES (?, ?, ?, ?)'
+            );
+            $stmt->execute([
+                $user->id, 
+                $user->name, 
+                $user->email, 
+                $user->createdAt->format('Y-m-d H:i:s')
+            ]);
+        }
+        
+        return $user;
+    }
+
+    private function mapRowToUser(array $row): User {
+        return new User(
+            $row['id'],
+            $row['name'],
+            $row['email'],
+            new DateTime($row['created_at'])
+        );
+    }
+
+    private function generateId(): string {
+        return uniqid('user_', true);
+    }
+}
+
+?&gt;
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="java">
+                                <pre><code class="language-java">
+// Interface du Repository
+public interface UserRepository {
+    Optional&lt;User&gt; findById(String id);
+    List&lt;User&gt; findAll();
+    Optional&lt;User&gt; findByEmail(String email);
+    User save(User user);
+    void delete(String id);
+}
+
+// Implémentation avec JPA
+@Repository
+public class JpaUserRepository implements UserRepository {
+    
+    @PersistenceContext
+    private EntityManager entityManager;
+    
+    @Override
+    public Optional&lt;User&gt; findById(String id) {
+        User user = entityManager.find(User.class, id);
+        return Optional.ofNullable(user);
+    }
+    
+    @Override
+    public List&lt;User&gt; findAll() {
+        TypedQuery&lt;User&gt; query = entityManager.createQuery(
+            "SELECT u FROM User u ORDER BY u.createdAt DESC", User.class);
+        return query.getResultList();
+    }
+    
+    @Override
+    @Transactional
+    public User save(User user) {
+        if (user.getId() == null) {
+            user.setId(generateId());
+            entityManager.persist(user);
+        } else {
+            user = entityManager.merge(user);
+        }
+        return user;
+    }
+    
+    private String generateId() {
+        return UUID.randomUUID().toString();
+    }
+}
+
+// Service utilisant le Repository
+@Service
+public class UserService {
+    private final UserRepository userRepository;
+    
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+    
+    public User createUser(String name, String email) {
+        User user = new User();
+        user.setName(name);
+        user.setEmail(email);
+        
+        return userRepository.save(user);
+    }
+}
+</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Avantages et Inconvénients -->
+                <section class="pros-cons-section">
+                    <div class="aikido-card">
+                        <h2>⚖️ Avantages et Inconvénients</h2>
+                        
+                        <div class="pros-cons-grid">
+                            <div class="pros-card">
+                                <h3>✅ Avantages</h3>
+                                <ul>
+                                    <li><strong>Séparation des responsabilités</strong> : Découple la logique métier de l'accès aux données</li>
+                                    <li><strong>Testabilité</strong> : Facilite les tests unitaires avec des mocks</li>
+                                    <li><strong>Flexibilité</strong> : Changement de source de données sans impact</li>
+                                    <li><strong>Réutilisabilité</strong> : Code d'accès centralisé et réutilisable</li>
+                                    <li><strong>Maintenabilité</strong> : Évite la duplication de code</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="cons-card">
+                                <h3>❌ Inconvénients</h3>
+                                <ul>
+                                    <li><strong>Complexité supplémentaire</strong> : Ajoute une couche d'abstraction</li>
+                                    <li><strong>Over-engineering</strong> : Peut être excessif pour des applications simples</li>
+                                    <li><strong>Performance</strong> : Couche supplémentaire peut impacter les performances</li>
+                                    <li><strong>Courbe d'apprentissage</strong> : Nécessite une compréhension des patterns</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Cas d'Usage -->
+                <section class="use-cases-section">
+                    <div class="aikido-card">
+                        <h2>🎯 Cas d'Usage Appropriés</h2>
+                        
+                        <div class="use-cases-grid">
+                            <div class="use-case good">
+                                <h4>✅ Quand l'utiliser</h4>
+                                <ul>
+                                    <li><strong>Applications complexes</strong> : Avec plusieurs sources de données</li>
+                                    <li><strong>Tests unitaires</strong> : Quand la testabilité est importante</li>
+                                    <li><strong>Évolutivité</strong> : Quand la source de données peut changer</li>
+                                    <li><strong>Équipes multiples</strong> : Séparation claire des responsabilités</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="use-case bad">
+                                <h4>❌ Quand l'éviter</h4>
+                                <ul>
+                                    <li><strong>Applications simples</strong> : CRUD basique avec une seule source</li>
+                                    <li><strong>Prototypes rapides</strong> : Quand la rapidité prime sur l'architecture</li>
+                                    <li><strong>Équipe débutante</strong> : Complexité supplémentaire non justifiée</li>
+                                    <li><strong>Performance critique</strong> : Quand chaque milliseconde compte</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Biais Cognitifs Liés -->
+                <section class="cognitive-bias-section">
+                    <div class="aikido-card biais-cognitif">
+                        <h2>🧩 Biais Cognitifs Associés</h2>
+                        
+                        <div class="bias-analysis">
+                            <div class="bias-item">
+                                <h4>🏗️ Biais de l'Architecture Parfaite</h4>
+                                <p><strong>Manifestation :</strong> "Il faut absolument utiliser Repository partout pour avoir une architecture propre."</p>
+                                <p><strong>Risque :</strong> Over-engineering et complexité inutile pour des cas simples.</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>🔮 Biais de Prédiction</h4>
+                                <p><strong>Manifestation :</strong> "On va sûrement changer de base de données, donc utilisons Repository."</p>
+                                <p><strong>Risque :</strong> Optimisation prématurée pour des besoins hypothétiques.</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>📚 Biais du Livre de Patterns</h4>
+                                <p><strong>Manifestation :</strong> Appliquer Repository parce que c'est dans les livres de patterns.</p>
+                                <p><strong>Risque :</strong> Utilisation sans évaluer la pertinence pour le contexte spécifique.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercice Pratique -->
+                <section class="exercise-section">
+                    <div class="aikido-card exercise">
+                        <h2>🎯 Exercice Pratique</h2>
+                        
+                        <div class="exercise-scenario">
+                            <h3>Scenario : Système de Gestion de Tâches</h3>
+                            <p>
+                                Vous développez une application de gestion de tâches. Actuellement, les tâches sont 
+                                stockées dans une base de données MySQL, mais l'équipe envisage de migrer vers MongoDB 
+                                pour de meilleures performances. De plus, vous devez pouvoir tester facilement la 
+                                logique métier sans dépendre de la base de données.
+                            </p>
+                            
+                            <div class="exercise-question">
+                                <h4>Question :</h4>
+                                <p>Comment implémenteriez-vous l'accès aux données pour cette application ?</p>
+                                
+                                <div class="choice-options">
+                                    <div class="choice-option" data-choice="repository">
+                                        🗄️ Utiliser le pattern Repository avec interface
+                                    </div>
+                                    <div class="choice-option" data-choice="direct">
+                                        🔗 Accès direct à la base de données dans les services
+                                    </div>
+                                    <div class="choice-option" data-choice="orm">
+                                        🏢 Utiliser uniquement un ORM comme Hibernate
+                                    </div>
+                                </div>
+                                
+                                <div id="exercise-retours" class="exercise-retours hidden">
+                                    <!-- Le feedback sera affiché ici -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Completion Section -->
+                <section class="completion-section slide-in">
+                    <div class="aikido-card completion">
+                        <div class="completion-content">
+                            <div class="completion-icon">📋</div>
+                            <div class="completion-text">
+                                <h3>Avez-vous terminé cette section ?</h3>
+                                <p>Marquez cette page comme terminée pour suivre votre progression dans la formation.</p>
+                            </div>
+                            <button class="aikido-btn primary mark-completed" data-page="repository">
+                                Marquer comme Terminé ✓
+                            </button>
+                        </div>
+                        
+                        <div class="completion-feedback hidden">
+                            <div class="feedback-success">
+                                <h4>🎉 Excellent travail !</h4>
+                                <p>Vous avez terminé l'étude du pattern Repository. Vous comprenez maintenant :</p>
+                                <ul>
+                                    <li>Comment encapsuler l'accès aux données</li>
+                                    <li>L'importance de la séparation des responsabilités</li>
+                                    <li>Les avantages pour la testabilité et la maintenabilité</li>
+                                    <li>Quand utiliser ce pattern et quand l'éviter</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Gestion de l'exercice interactif
+        document.addEventListener('DOMContentLoaded', function() {
+            const choiceOptions = document.querySelectorAll('.choice-option');
+            const exerciseRetours = document.getElementById('exercise-retours');
+            
+            choiceOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const choice = this.getAttribute('data-choice');
+                    
+                    // Réinitialiser les styles
+                    choiceOptions.forEach(opt => opt.classList.remove('selected', 'correct', 'incorrect'));
+                    
+                    // Marquer le choix sélectionné
+                    this.classList.add('selected');
+                    
+                    let feedback = '';
+                    
+                    switch(choice) {
+                        case 'repository':
+                            this.classList.add('correct');
+                            feedback = `
+                                <div class="feedback-correct">
+                                    <h4>✅ Excellente réponse !</h4>
+                                    <p>Le pattern Repository est parfait ici car :</p>
+                                    <ul>
+                                        <li><strong>Flexibilité :</strong> Permet de changer facilement de MySQL à MongoDB</li>
+                                        <li><strong>Testabilité :</strong> Vous pouvez créer une implémentation en mémoire pour les tests</li>
+                                        <li><strong>Séparation :</strong> La logique métier ne dépend pas de la technologie de stockage</li>
+                                        <li><strong>Évolutivité :</strong> Facilite l'ajout de nouvelles sources de données</li>
+                                    </ul>
+                                    <p>C'est exactement le type de scenario où Repository apporte une vraie valeur.</p>
+                                </div>
+                            `;
+                            break;
+                        case 'direct':
+                            this.classList.add('incorrect');
+                            feedback = `
+                                <div class="feedback-incorrect">
+                                    <h4>❌ Pas optimal</h4>
+                                    <p>L'accès direct pose plusieurs problèmes :</p>
+                                    <ul>
+                                        <li><strong>Couplage fort :</strong> Les services dépendent directement de MySQL</li>
+                                        <li><strong>Migration difficile :</strong> Changer pour MongoDB nécessitera de modifier tous les services</li>
+                                        <li><strong>Tests complexes :</strong> Difficile de tester sans base de données réelle</li>
+                                        <li><strong>Duplication :</strong> Code d'accès répété dans plusieurs services</li>
+                                    </ul>
+                                    <p>Le pattern Repository résoudrait ces problèmes.</p>
+                                </div>
+                            `;
+                            break;
+                        case 'orm':
+                            this.classList.add('incorrect');
+                            feedback = `
+                                <div class="feedback-incorrect">
+                                    <h4>⚠️ Partiellement correct</h4>
+                                    <p>Un ORM seul ne suffit pas :</p>
+                                    <ul>
+                                        <li><strong>Couplage :</strong> Les services restent couplés à l'ORM spécifique</li>
+                                        <li><strong>Migration :</strong> Passer de Hibernate à un autre ORM reste complexe</li>
+                                        <li><strong>Tests :</strong> Toujours difficile de tester sans base de données</li>
+                                    </ul>
+                                    <p>Combiner ORM + Repository offrirait plus de flexibilité.</p>
+                                </div>
+                            `;
+                            break;
+                    }
+                    
+                    exerciseRetours.innerHTML = feedback;
+                    exerciseRetours.classList.remove('hidden');
+                });
+            });
+            
+            // Gestion du bouton de completion
+            const markCompletedBtn = document.querySelector('.mark-completed');
+            const completionFeedback = document.querySelector('.completion-feedback');
+            
+            if (markCompletedBtn && completionFeedback) {
+                markCompletedBtn.addEventListener('click', function() {
+                    // Désactiver le bouton
+                    this.disabled = true;
+                    this.textContent = '✅ Terminé';
+                    this.classList.add('completed');
+                    
+                    // Afficher le feedback
+                    completionFeedback.classList.remove('hidden');
+                    
+                    // Scroll vers le feedback
+                    completionFeedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

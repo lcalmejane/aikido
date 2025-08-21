@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adapter Pattern - Formation Patterns Développeurs</title>
+    <meta name="description" content="Le pattern Adapter expliqué avec exemples de code, diagrammes UML et cas d'usage pratiques">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <h1 class="page-title">🔌 Adapter Pattern</h1>
+                    <p class="page-subtitle">Permettre à des interfaces incompatibles de collaborer</p>
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">🎨</span>
+                            <span class="meta-text">Design Patterns</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⭐</span>
+                            <span class="meta-text">Difficulté: Facile</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⏱️</span>
+                            <span class="meta-text">15 min</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🏗️</span>
+                            <span class="meta-text">Structurel</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Définition et Problème -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card design-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="mb-md">
+                            L'<strong>Adapter</strong> est un pattern structurel qui permet à des objets ayant 
+                            des interfaces incompatibles de collaborer ensemble.
+                        </p>
+                        
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problème Résolu</h3>
+                                <ul>
+                                    <li>Intégrer une bibliothèque tierce avec une interface différente</li>
+                                    <li>Faire collaborer du code legacy avec du code moderne</li>
+                                    <li>Utiliser des services externes avec des formats différents</li>
+                                    <li>Migrer progressivement vers une nouvelle API</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solution Apportée</h3>
+                                <ul>
+                                    <li>Interface unifiée pour le client</li>
+                                    <li>Réutilisation de code existant</li>
+                                    <li>Séparation des préoccupations</li>
+                                    <li>Intégration transparente</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert info">
+                            <strong>💡 Analogie :</strong> Comme un adaptateur électrique qui permet de brancher 
+                            un appareil européen sur une prise américaine, l'Adapter fait le pont entre deux interfaces.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Structure UML -->
+                <section class="structure-section">
+                    <div class="aikido-card">
+                        <h2>🏗️ Structure UML</h2>
+                        <div class="uml-diagram">
+                            <div class="uml-class-diagram">
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>Client</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ useTarget(): void</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>&lt;&lt;interface&gt;&gt;<br>Target</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ request(): void</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>Adapter</strong>
+                                    </div>
+                                    <div class="class-attributes">
+                                        <div class="attribute private">- adaptee: Adaptee</div>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ request(): void</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>Adaptee</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ specificRequest(): void</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="structure-explanation">
+                            <h3>Éléments Clés</h3>
+                            <ul>
+                                <li><strong>Target</strong> : Interface que le client s'attend à utiliser</li>
+                                <li><strong>Adaptee</strong> : Classe existante avec interface incompatible</li>
+                                <li><strong>Adapter</strong> : Implémente Target et délègue à Adaptee</li>
+                                <li><strong>Client</strong> : Utilise Target sans connaître Adaptee</li>
+                            </ul>
+                        </div>
+
+                        <!-- Diagramme de flux Mermaid -->
+                        <div class="mt-lg">
+                            <h3>🔄 Flux d'Exécution</h3>
+                            <div class="mermaid">
+                                graph TD
+                                    A[Client appelle Target.request] --> B[Adapter reçoit l'appel]
+                                    B --> C[Adapter traduit les paramètres]
+                                    C --> D[Adapter appelle Adaptee.specificRequest]
+                                    D --> E[Adaptee traite la demande]
+                                    E --> F[Adaptee retourne le résultat]
+                                    F --> G[Adapter traduit le résultat]
+                                    G --> H[Adapter retourne au Client]
+                                    
+                                    style A fill:#e1f5fe
+                                    style B fill:#fff3e0
+                                    style C fill:#f3e5f5
+                                    style D fill:#e8f5e8
+                                    style G fill:#f3e5f5
+                            </div>
+                            <p class="text-sm text-gray-600 mt-md">
+                                <strong>💡 Point clé :</strong> L'Adapter fait la traduction bidirectionnelle 
+                                entre l'interface attendue et l'interface existante.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Implémentations -->
+                <section class="implementations-section">
+                    <h2>💻 Implémentations</h2>
+                    
+                    <div class="aikido-card">
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="typescript">TypeScript</button>
+                                <button class="tab-btn" data-tab="php">PHP</button>
+                                <button class="tab-btn" data-tab="java">Java</button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="typescript">
+                                <h4>Exemple : Intégration de Services de Paiement</h4>
+                                <pre><code class="language-typescript">
+// Interface cible que notre application utilise
+interface PaymentProcessor {
+    processPayment(amount: number, currency: string, cardToken: string): Promise&lt;PaymentResult&gt;;
+    refundPayment(transactionId: string, amount?: number): Promise&lt;RefundResult&gt;;
+    getTransactionStatus(transactionId: string): Promise&lt;TransactionStatus&gt;;
+}
+
+interface PaymentResult {
+    success: boolean;
+    transactionId: string;
+    message: string;
+    fees?: number;
+}
+
+// Service Stripe existant (Adaptee) - Interface incompatible
+class StripeService {
+    private apiKey: string;
+    
+    constructor(apiKey: string) {
+        this.apiKey = apiKey;
+    }
+    
+    async createCharge(params: {
+        amount: number; // en centimes
+        currency: string;
+        source: string;
+        description?: string;
+    }): Promise&lt;StripeCharge&gt; {
+        console.log(`🔵 Stripe: Création charge ${params.amount} ${params.currency}`);
+        
+        // Simulation appel API Stripe
+        await this.delay(1000);
+        
+        return {
+            id: `ch_${Math.random().toString(36).substr(2, 9)}`,
+            amount: params.amount,
+            currency: params.currency,
+            status: 'succeeded',
+            created: Date.now(),
+            description: params.description || ''
+        };
+    }
+    
+    private delay(ms: number): Promise&lt;void&gt; {
+        return new Promise(resolve =&gt; setTimeout(resolve, ms));
+    }
+}
+
+interface StripeCharge {
+    id: string;
+    amount: number;
+    currency: string;
+    status: string;
+    created: number;
+    description: string;
+}
+
+// Adapter pour Stripe
+class StripeAdapter implements PaymentProcessor {
+    private stripeService: StripeService;
+    
+    constructor(apiKey: string) {
+        this.stripeService = new StripeService(apiKey);
+    }
+    
+    async processPayment(amount: number, currency: string, cardToken: string): Promise&lt;PaymentResult&gt; {
+        try {
+            // Conversion : euros vers centimes pour Stripe
+            const amountInCents = Math.round(amount * 100);
+            
+            const charge = await this.stripeService.createCharge({
+                amount: amountInCents,
+                currency: currency.toLowerCase(),
+                source: cardToken,
+                description: `Paiement ${amount} ${currency.toUpperCase()}`
+            });
+            
+            return {
+                success: charge.status === 'succeeded',
+                transactionId: charge.id,
+                message: charge.status === 'succeeded' ? 'Paiement réussi' : 'Paiement échoué',
+                fees: amountInCents * 0.029 + 30 // Frais Stripe typiques
+            };
+            
+        } catch (error) {
+            return {
+                success: false,
+                transactionId: '',
+                message: `Erreur Stripe: ${error.message}`
+            };
+        }
+    }
+    
+    async refundPayment(transactionId: string, amount?: number): Promise&lt;RefundResult&gt; {
+        // Implémentation du remboursement
+        return {
+            success: true,
+            refundId: `re_${Math.random().toString(36).substr(2, 9)}`,
+            message: 'Remboursement réussi'
+        };
+    }
+    
+    async getTransactionStatus(transactionId: string): Promise&lt;TransactionStatus&gt; {
+        // Implémentation de la vérification de statut
+        return {
+            id: transactionId,
+            status: 'completed',
+            amount: 25.99,
+            currency: 'EUR'
+        };
+    }
+}
+
+// Utilisation unifiée
+async function demonstratePaymentAdapter() {
+    const processor: PaymentProcessor = new StripeAdapter('sk_test_...');
+    
+    const result = await processor.processPayment(25.99, 'EUR', 'card_token_123');
+    console.log(`Paiement: ${result.success ? '✅' : '❌'} ${result.message}`);
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="php">
+                                <pre><code class="language-php">
+&lt;?php
+
+// Interface cible pour notre système de logging
+interface Logger {
+    public function log(string $level, string $message, array $context = []): void;
+    public function info(string $message, array $context = []): void;
+    public function warning(string $message, array $context = []): void;
+    public function error(string $message, array $context = []): void;
+}
+
+// Service de logging legacy (Adaptee) - Interface différente
+class LegacyLogger {
+    private string $logFile;
+    private $handle;
+    
+    public function __construct(string $logFile = 'app.log') {
+        $this->logFile = $logFile;
+        $this->handle = fopen($logFile, 'a');
+    }
+    
+    public function writeLog(string $type, string $msg, string $extra = ''): bool {
+        if (!$this->handle) {
+            return false;
+        }
+        
+        $timestamp = date('d/m/Y H:i:s');
+        $logLine = "[{$timestamp}] [{$type}] {$msg}";
+        
+        if ($extra) {
+            $logLine .= " | Extra: {$extra}";
+        }
+        
+        $logLine .= "\n";
+        
+        fwrite($this->handle, $logLine);
+        fflush($this->handle);
+        
+        echo "📝 Legacy: {$logLine}";
+        
+        return true;
+    }
+    
+    public function logInfo(string $message): void {
+        $this->writeLog('INFO', $message);
+    }
+    
+    public function logWarning(string $message): void {
+        $this->writeLog('WARN', $message);
+    }
+    
+    public function logError(string $message): void {
+        $this->writeLog('ERROR', $message);
+    }
+    
+    public function __destruct() {
+        if ($this->handle) {
+            fclose($this->handle);
+        }
+    }
+}
+
+// Adapter pour le système legacy
+class LegacyLoggerAdapter implements Logger {
+    private LegacyLogger $legacyLogger;
+    
+    public function __construct(string $logFile = 'app.log') {
+        $this->legacyLogger = new LegacyLogger($logFile);
+    }
+    
+    public function log(string $level, string $message, array $context = []): void {
+        $contextString = !empty($context) ? json_encode($context) : '';
+        
+        switch (strtolower($level)) {
+            case 'info':
+                $this->legacyLogger->logInfo($message);
+                break;
+            case 'warning':
+            case 'warn':
+                $this->legacyLogger->logWarning($message);
+                break;
+            case 'error':
+                $this->legacyLogger->logError($message);
+                break;
+            default:
+                // Pour les autres niveaux, utiliser writeLog directement
+                $this->legacyLogger->writeLog(strtoupper($level), $message, $contextString);
+        }
+    }
+    
+    public function info(string $message, array $context = []): void {
+        $this->legacyLogger->logInfo($message);
+        if (!empty($context)) {
+            $this->legacyLogger->writeLog('INFO', 'Context: ' . json_encode($context));
+        }
+    }
+    
+    public function warning(string $message, array $context = []): void {
+        $this->legacyLogger->logWarning($message);
+        if (!empty($context)) {
+            $this->legacyLogger->writeLog('WARN', 'Context: ' . json_encode($context));
+        }
+    }
+    
+    public function error(string $message, array $context = []): void {
+        $this->legacyLogger->logError($message);
+        if (!empty($context)) {
+            $this->legacyLogger->writeLog('ERROR', 'Context: ' . json_encode($context));
+        }
+    }
+}
+
+// Utilisation unifiée
+function demonstrateLoggerAdapter(): void {
+    echo "=== Test Adapter de Logging ===\n\n";
+    
+    $logger = new LegacyLoggerAdapter('legacy.log');
+    
+    $logger->info("Application démarrée", ['version' => '1.0.0']);
+    $logger->warning("Mémoire faible", ['usage' => '85%']);
+    $logger->error("Connexion échouée", ['host' => 'localhost']);
+}
+
+?&gt;
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="java">
+                                <pre><code class="language-java">
+// Interface cible pour notre système de notification
+interface NotificationSender {
+    void sendNotification(String recipient, String subject, String message);
+    boolean isRecipientValid(String recipient);
+    NotificationResult getDeliveryStatus(String notificationId);
+}
+
+class NotificationResult {
+    private final String id;
+    private final boolean delivered;
+    private final String status;
+    
+    public NotificationResult(String id, boolean delivered, String status) {
+        this.id = id;
+        this.delivered = delivered;
+        this.status = status;
+    }
+    
+    public String getId() { return id; }
+    public boolean isDelivered() { return delivered; }
+    public String getStatus() { return status; }
+}
+
+// Service email existant (Adaptee) - Interface spécifique
+class JavaMailService {
+    private String smtpHost;
+    private String username;
+    private String password;
+    
+    public JavaMailService(String smtpHost, String username, String password) {
+        this.smtpHost = smtpHost;
+        this.username = username;
+        this.password = password;
+    }
+    
+    public EmailResult sendEmail(EmailMessage emailMessage) throws EmailException {
+        System.out.println("📧 JavaMail: Envoi email vers " + emailMessage.getToAddress());
+        
+        // Validation de l'adresse email
+        if (!isValidEmailAddress(emailMessage.getToAddress())) {
+            throw new EmailException("Adresse email invalide: " + emailMessage.getToAddress());
+        }
+        
+        // Simulation de l'envoi
+        try {
+            Thread.sleep(500);
+            
+            String messageId = "email_" + System.currentTimeMillis();
+            System.out.println("✅ Email envoyé avec succès - ID: " + messageId);
+            
+            return new EmailResult(messageId, true, "DELIVERED");
+            
+        } catch (InterruptedException e) {
+            throw new EmailException("Erreur lors de l'envoi: " + e.getMessage());
+        }
+    }
+    
+    private boolean isValidEmailAddress(String email) {
+        return email != null && email.contains("@") && email.contains(".");
+    }
+}
+
+// Classes pour JavaMail
+class EmailMessage {
+    private String toAddress;
+    private String subject;
+    private String body;
+    
+    public EmailMessage(String toAddress, String subject, String body) {
+        this.toAddress = toAddress;
+        this.subject = subject;
+        this.body = body;
+    }
+    
+    public String getToAddress() { return toAddress; }
+    public String getSubject() { return subject; }
+    public String getBody() { return body; }
+}
+
+class EmailResult {
+    private final String messageId;
+    private final boolean success;
+    private final String status;
+    
+    public EmailResult(String messageId, boolean success, String status) {
+        this.messageId = messageId;
+        this.success = success;
+        this.status = status;
+    }
+    
+    public String getMessageId() { return messageId; }
+    public boolean isSuccess() { return success; }
+    public String getStatus() { return status; }
+}
+
+class EmailException extends Exception {
+    public EmailException(String message) {
+        super(message);
+    }
+}
+
+// Adapter pour JavaMail
+class EmailNotificationAdapter implements NotificationSender {
+    private JavaMailService emailService;
+    private String fromAddress;
+    
+    public EmailNotificationAdapter(JavaMailService emailService, String fromAddress) {
+        this.emailService = emailService;
+        this.fromAddress = fromAddress;
+    }
+    
+    @Override
+    public void sendNotification(String recipient, String subject, String message) {
+        try {
+            EmailMessage emailMessage = new EmailMessage(recipient, subject, message);
+            EmailResult result = emailService.sendEmail(emailMessage);
+            
+            if (!result.isSuccess()) {
+                throw new RuntimeException("Échec envoi email: " + result.getStatus());
+            }
+            
+        } catch (EmailException e) {
+            throw new RuntimeException("Erreur adapter email: " + e.getMessage(), e);
+        }
+    }
+    
+    @Override
+    public boolean isRecipientValid(String recipient) {
+        return recipient != null && recipient.contains("@") && recipient.contains(".");
+    }
+    
+    @Override
+    public NotificationResult getDeliveryStatus(String notificationId) {
+        // Simulation de vérification de statut
+        return new NotificationResult(notificationId, true, "DELIVERED");
+    }
+}
+
+// Utilisation
+public class NotificationAdapterDemo {
+    public static void main(String[] args) {
+        JavaMailService emailService = new JavaMailService(
+            "smtp.gmail.com", "user@gmail.com", "password"
+        );
+        
+        NotificationSender sender = new EmailNotificationAdapter(
+            emailService, "noreply@myapp.com"
+        );
+        
+        try {
+            sender.sendNotification(
+                "user@example.com",
+                "Test Notification",
+                "Ceci est un message de test"
+            );
+            
+            System.out.println("✅ Notification envoyée avec succès");
+            
+        } catch (Exception e) {
+            System.err.println("❌ Erreur: " + e.getMessage());
+        }
+    }
+}
+</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Avantages et Inconvénients -->
+                <section class="pros-cons-section">
+                    <div class="aikido-card">
+                        <h2>⚖️ Avantages et Inconvénients</h2>
+                        
+                        <div class="pros-cons-grid">
+                            <div class="pros-card">
+                                <h3>✅ Avantages</h3>
+                                <ul>
+                                    <li><strong>Réutilisation de code</strong> : Intégration de code existant sans modification</li>
+                                    <li><strong>Séparation des préoccupations</strong> : Interface client découplée de l'implémentation</li>
+                                    <li><strong>Flexibilité</strong> : Changement d'implémentation transparent</li>
+                                    <li><strong>Compatibilité</strong> : Fait collaborer des systèmes incompatibles</li>
+                                    <li><strong>Migration progressive</strong> : Transition en douceur vers nouvelles APIs</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="cons-card">
+                                <h3>❌ Inconvénients</h3>
+                                <ul>
+                                    <li><strong>Complexité ajoutée</strong> : Couche supplémentaire à maintenir</li>
+                                    <li><strong>Performance</strong> : Indirection et traduction des données</li>
+                                    <li><strong>Perte de fonctionnalités</strong> : Interface cible peut être limitante</li>
+                                    <li><strong>Debugging difficile</strong> : Erreurs peuvent être masquées</li>
+                                    <li><strong>Maintenance</strong> : Évolution des deux interfaces à gérer</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Cas d'Usage -->
+                <section class="use-cases-section">
+                    <div class="aikido-card">
+                        <h2>🎯 Cas d'Usage Appropriés</h2>
+                        
+                        <div class="use-cases-grid">
+                            <div class="use-case good">
+                                <h4>✅ Quand l'utiliser</h4>
+                                <ul>
+                                    <li><strong>Intégration de bibliothèques</strong> : APIs tierces incompatibles</li>
+                                    <li><strong>Code legacy</strong> : Modernisation progressive</li>
+                                    <li><strong>Services externes</strong> : Formats de données différents</li>
+                                    <li><strong>Migration d'API</strong> : Transition vers nouvelle version</li>
+                                    <li><strong>Standardisation</strong> : Interface unifiée pour plusieurs implémentations</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="use-case bad">
+                                <h4>❌ Quand l'éviter</h4>
+                                <ul>
+                                    <li><strong>Interfaces compatibles</strong> : Pas de différence significative</li>
+                                    <li><strong>Performance critique</strong> : Latence inacceptable</li>
+                                    <li><strong>Contrôle total</strong> : Possibilité de modifier l'interface source</li>
+                                    <li><strong>Fonctionnalités riches</strong> : Perte importante de fonctionnalités</li>
+                                    <li><strong>Maintenance complexe</strong> : Évolution rapide des interfaces</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Alternatives et Patterns Liés -->
+                <section class="alternatives-section">
+                    <div class="aikido-card">
+                        <h2>🔄 Alternatives et Patterns Liés</h2>
+                        
+                        <div class="alternatives-grid">
+                            <div class="alternative-card">
+                                <h4>🏗️ Facade Pattern</h4>
+                                <p>Simplifier l'interface au lieu de l'adapter</p>
+                                <div class="code-example">
+                                    <code>// Interface simplifiée pour système complexe
+facade.processOrder(orderData);</code>
+                                </div>
+                            </div>
+                            
+                            <div class="alternative-card">
+                                <h4>🔗 Bridge Pattern</h4>
+                                <p>Séparer abstraction et implémentation</p>
+                                <div class="code-example">
+                                    <code>// Découplage abstraction/implémentation
+new RemoteControl(new SonyTV());</code>
+                                </div>
+                            </div>
+                            
+                            <div class="alternative-card">
+                                <h4>🛡️ Proxy Pattern</h4>
+                                <p>Contrôler l'accès au lieu d'adapter</p>
+                                <div class="code-example">
+                                    <code>// Contrôle d'accès transparent
+new SecurityProxy(realService);</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Biais Cognitifs Liés -->
+                <section class="cognitive-bias-section">
+                    <div class="aikido-card biais-cognitif">
+                        <h2>🧩 Biais Cognitifs Associés</h2>
+                        
+                        <div class="bias-analysis">
+                            <div class="bias-item">
+                                <h4>🔧 Biais de l'Outil</h4>
+                                <p><strong>Manifestation :</strong> "J'ai cette bibliothèque, créons un adapter pour l'utiliser partout."</p>
+                                <p><strong>Risque :</strong> Forcer l'utilisation d'une solution inadaptée via des adapters complexes.</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>💸 Coût Irrécupérable</h4>
+                                <p><strong>Manifestation :</strong> "On a déjà ce code legacy, adaptons-le au lieu de le réécrire."</p>
+                                <p><strong>Risque :</strong> Maintenir du code obsolète par peur de perdre l'investissement initial.</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>🎯 Biais de Simplicité</h4>
+                                <p><strong>Manifestation :</strong> "Un adapter, c'est simple et rapide à implémenter."</p>
+                                <p><strong>Risque :</strong> Sous-estimer la complexité de maintenance à long terme.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Anti-Patterns Liés -->
+                <section class="antipatterns-section">
+                    <div class="aikido-card anti-pattern">
+                        <h2>⚠️ Anti-Patterns à Éviter</h2>
+                        
+                        <div class="antipattern-warnings">
+                            <div class="antipattern-warning">
+                                <h4>🔄 Adapter Chain</h4>
+                                <p>Chaîner plusieurs adapters créant une complexité excessive.</p>
+                                <div class="code-example bad">
+                                    <code>// ❌ Mauvais : Chaîne d'adapters
+new AdapterC(new AdapterB(new AdapterA(legacyService)));</code>
+                                </div>
+                            </div>
+                            
+                            <div class="antipattern-warning">
+                                <h4>🧠 Smart Adapter</h4>
+                                <p>Un adapter qui ajoute trop de logique métier au lieu de juste adapter.</p>
+                                <div class="code-example bad">
+                                    <code>// ❌ Adapter qui fait trop de choses
+class SmartAdapter {
+    // Adaptation + validation + transformation + cache + logging...
+}</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercice Pratique -->
+                <section class="exercise-section">
+                    <div class="aikido-card exercise">
+                        <h2>🎯 Exercice Pratique</h2>
+                        
+                        <div class="exercise-scenario">
+                            <h3>Scenario : Intégration de Services de Géolocalisation</h3>
+                            <p>
+                                Votre application utilise actuellement l'API Google Maps pour la géolocalisation.
+                                Vous voulez ajouter le support d'OpenStreetMap et de MapBox comme alternatives,
+                                chacune ayant une interface différente. Vous voulez que votre code client
+                                reste inchangé quelle que soit l'API utilisée.
+                            </p>
+                            
+                            <div class="exercise-question">
+                                <h4>Question :</h4>
+                                <p>Quelle approche recommandez-vous pour unifier ces trois APIs de géolocalisation ?</p>
+                                
+                                <div class="choice-options">
+                                    <div class="choice-option" data-choice="adapter">
+                                        🔌 Créer des Adapters pour chaque API
+                                    </div>
+                                    <div class="choice-option" data-choice="facade">
+                                        🏗️ Utiliser un Facade unifié
+                                    </div>
+                                    <div class="choice-option" data-choice="strategy">
+                                        🎯 Implémenter le pattern Strategy
+                                    </div>
+                                </div>
+                                
+                                <div id="exercise-retours" class="exercise-retours hidden">
+                                    <!-- Le feedback sera affiché ici -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Completion Section -->
+                <section class="completion-section slide-in">
+                    <div class="aikido-card completion">
+                        <div class="completion-content">
+                            <div class="completion-icon">📋</div>
+                            <div class="completion-text">
+                                <h3>Avez-vous terminé cette section ?</h3>
+                                <p>Marquez cette page comme terminée pour suivre votre progression dans la formation.</p>
+                            </div>
+                            <button class="aikido-btn primary mark-completed" data-page="adapter">
+                                Marquer comme Terminé ✓
+                            </button>
+                        </div>
+                        
+                        <div class="completion-feedback hidden">
+                            <div class="feedback-success">
+                                <h4>🎉 Excellent travail !</h4>
+                                <p>Vous avez terminé l'étude du pattern Adapter. Vous comprenez maintenant :</p>
+                                <ul>
+                                    <li>Comment faire collaborer des interfaces incompatibles</li>
+                                    <li>L'adaptation de services externes et de code legacy</li>
+                                    <li>La traduction bidirectionnelle entre interfaces</li>
+                                    <li>Les avantages et limitations du pattern</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Gestion de l'exercice interactif
+        document.addEventListener('DOMContentLoaded', function() {
+            const choiceOptions = document.querySelectorAll('.choice-option');
+            const exerciseRetours = document.getElementById('exercise-retours');
+            
+            const feedbacks = {
+                adapter: {
+                    type: 'success',
+                    title: '✅ Excellente approche !',
+                    content: `
+                        <p>Les <strong>Adapters</strong> sont parfaits pour ce cas d'usage car :</p>
+                        <ul>
+                            <li><strong>Interfaces incompatibles</strong> : Chaque API a sa propre interface</li>
+                            <li><strong>Code client inchangé</strong> : Interface unifiée transparente</li>
+                            <li><strong>Flexibilité</strong> : Ajout facile de nouvelles APIs</li>
+                            <li><strong>Réutilisation</strong> : Chaque service garde ses spécificités</li>
+                        </ul>
+                        <p>Chaque adapter traduit les appels vers l'API spécifique tout en exposant une interface commune.</p>
+                    `
+                },
+                facade: {
+                    type: 'warning',
+                    title: '⚠️ Approche possible mais limitée',
+                    content: `
+                        <p>Un <strong>Facade</strong> pourrait fonctionner mais :</p>
+                        <ul>
+                            <li><strong>Complexité interne</strong> : Le facade doit gérer toutes les APIs</li>
+                            <li><strong>Couplage fort</strong> : Une seule classe connaît toutes les APIs</li>
+                            <li><strong>Évolutivité</strong> : Difficile d'ajouter de nouvelles APIs</li>
+                            <li><strong>Responsabilité unique</strong> : Violation du principe SRP</li>
+                        </ul>
+                        <p>Les Adapters séparés seraient plus maintenables et flexibles.</p>
+                    `
+                },
+                strategy: {
+                    type: 'info',
+                    title: '💡 Bonne alternative architecturale',
+                    content: `
+                        <p>Le <strong>pattern Strategy</strong> est une excellente alternative :</p>
+                        <ul>
+                            <li><strong>Algorithmes interchangeables</strong> : Chaque API comme stratégie</li>
+                            <li><strong>Runtime switching</strong> : Changement d'API à l'exécution</li>
+                            <li><strong>Extensibilité</strong> : Ajout facile de nouvelles stratégies</li>
+                            <li><strong>Configuration</strong> : Choix d'API par configuration</li>
+                        </ul>
+                        <p>Strategy + Adapter serait la combinaison idéale : Strategy pour le choix, Adapter pour l'interface.</p>
+                    `
+                }
+            };
+            
+            choiceOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Retirer la sélection précédente
+                    choiceOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Sélectionner l'option actuelle
+                    this.classList.add('selected');
+                    
+                    // Afficher le feedback
+                    const choice = this.dataset.choice;
+                    const feedback = feedbacks[choice];
+                    
+                    exerciseRetours.innerHTML = `
+                        <div class="feedback ${feedback.type}">
+                            <h4>${feedback.title}</h4>
+                            ${feedback.content}
+                        </div>
+                    `;
+                    
+                    exerciseRetours.classList.remove('hidden');
+                    exerciseRetours.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

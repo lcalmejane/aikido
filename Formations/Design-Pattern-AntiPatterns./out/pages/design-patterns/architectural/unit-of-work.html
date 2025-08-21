@@ -1,0 +1,2169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit of Work Pattern - Formation Patterns Développeurs</title>
+    <meta name="description" content="Le pattern Unit of Work expliqué avec exemples de code, diagrammes UML et cas d'usage pratiques">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+            <!-- Header -->
+            <header class="page-header fade-in">
+                <h1 class="page-title">📦 Unit of Work Pattern</h1>
+                <p class="page-subtitle">Maintenir une liste des objets affectés par une transaction métier</p>
+                <div class="page-meta">
+                    <div class="meta-item">
+                        <span class="meta-icon">🏗️</span>
+                        <span class="meta-text">Architectural</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-icon">📊</span>
+                        <span class="meta-text">Avancé</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-icon">🔄</span>
+                        <span class="meta-text">Gestion Transactionnelle</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Définition -->
+            <section class="aikido-card slide-in">
+                <div class="card-header">
+                    <h2>📋 Définition</h2>
+                </div>
+                <div class="card-content">
+                    <div class="definition-grid">
+                        <div class="problem-section">
+                            <h3>❌ Problème</h3>
+                            <p>Les opérations métier impliquent souvent plusieurs objets qui doivent être sauvegardés de manière cohérente. Gérer manuellement les transactions et l'ordre des opérations devient complexe et source d'erreurs.</p>
+                        </div>
+                        <div class="solution-section">
+                            <h3>✅ Solution</h3>
+                            <p>Le pattern <strong>Unit of Work</strong> maintient une liste des objets affectés par une transaction métier et coordonne l'écriture des modifications et la résolution des problèmes de concurrence.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Structure UML -->
+            <section class="aikido-card slide-in">
+                <div class="card-header">
+                    <h2>🏗️ Structure UML</h2>
+                </div>
+                <div class="card-content">
+                    <div class="mermaid">
+                        graph TD
+                            A[Service Métier] --> B[Unit of Work]
+                            B --> C{Transaction Active ?}
+                            C -->|Non| D[Démarrer Transaction]
+                            C -->|Oui| E[Enregistrer Opération]
+                            D --> E
+                            E --> F[registerNew/Dirty/Removed]
+                            F --> G[Stocker dans Collections]
+                            G --> H[Commit Demandé ?]
+                            H -->|Non| I[Continuer Opérations]
+                            H -->|Oui| J[Exécuter Insertions]
+                            J --> K[Exécuter Mises à Jour]
+                            K --> L[Exécuter Suppressions]
+                            L --> M[Vider Collections]
+                            M --> N[Transaction Terminée]
+                            I --> E
+                            
+                            style A fill:#e1f5fe
+                            style B fill:#fff3e0
+                            style F fill:#ffebee
+                            style J fill:#e8f5e8
+                            style K fill:#e8f5e8
+                            style L fill:#e8f5e8
+                            style N fill:#f3e5f5
+                    </div>
+                    <p class="text-sm text-gray-600 mt-md">
+                        <strong>💡 Point clé :</strong> Unit of Work coordonne toutes les modifications d'objets métier
+                        et les exécute dans l'ordre optimal lors du commit, garantissant la cohérence transactionnelle.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Implémentations -->
+            <section class="aikido-card slide-in">
+                <div class="card-header">
+                    <h2>💻 Implémentations</h2>
+                </div>
+                <div class="card-content">
+                    <div class="code-tabs">
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" data-tab="typescript">TypeScript</button>
+                            <button class="tab-btn" data-tab="php">PHP</button>
+                            <button class="tab-btn" data-tab="java">Java</button>
+                        </div>
+
+                        <!-- TypeScript Implementation -->
+                        <div class="tab-content active" data-tab="typescript">
+                            <h3>TypeScript - Système de gestion de commandes avec Unit of Work</h3>
+                            <pre><code>// Interface pour les objets de domaine
+interface DomainObject {
+    getId(): string;
+    getVersion(): number;
+    markDirty(): void;
+    isDirty(): boolean;
+}
+
+// Classe de base pour les objets de domaine
+abstract class BaseDomainObject implements DomainObject {
+    protected id: string;
+    protected version: number = 0;
+    protected dirty: boolean = false;
+
+    constructor(id: string) {
+        this.id = id;
+    }
+
+    getId(): string {
+        return this.id;
+    }
+
+    getVersion(): number {
+        return this.version;
+    }
+
+    markDirty(): void {
+        this.dirty = true;
+    }
+
+    isDirty(): boolean {
+        return this.dirty;
+    }
+
+    protected incrementVersion(): void {
+        this.version++;
+        this.dirty = false;
+    }
+}
+
+// Entités métier
+class Order extends BaseDomainObject {
+    private customerId: string;
+    private items: OrderItem[] = [];
+    private status: 'pending' | 'confirmed' | 'shipped' | 'delivered' = 'pending';
+    private totalAmount: number = 0;
+
+    constructor(id: string, customerId: string) {
+        super(id);
+        this.customerId = customerId;
+    }
+
+    addItem(productId: string, quantity: number, price: number): OrderItem {
+        const item = new OrderItem(`${this.id}-${this.items.length + 1}`, this.id, productId, quantity, price);
+        this.items.push(item);
+        this.calculateTotal();
+        this.markDirty();
+        return item;
+    }
+
+    removeItem(itemId: string): boolean {
+        const index = this.items.findIndex(item => item.getId() === itemId);
+        if (index !== -1) {
+            this.items.splice(index, 1);
+            this.calculateTotal();
+            this.markDirty();
+            return true;
+        }
+        return false;
+    }
+
+    updateStatus(newStatus: typeof this.status): void {
+        if (this.status !== newStatus) {
+            this.status = newStatus;
+            this.markDirty();
+        }
+    }
+
+    private calculateTotal(): void {
+        this.totalAmount = this.items.reduce((total, item) => total + item.getSubtotal(), 0);
+    }
+
+    // Getters
+    getCustomerId(): string { return this.customerId; }
+    getItems(): OrderItem[] { return [...this.items]; }
+    getStatus(): string { return this.status; }
+    getTotalAmount(): number { return this.totalAmount; }
+}
+
+class OrderItem extends BaseDomainObject {
+    private orderId: string;
+    private productId: string;
+    private quantity: number;
+    private unitPrice: number;
+
+    constructor(id: string, orderId: string, productId: string, quantity: number, unitPrice: number) {
+        super(id);
+        this.orderId = orderId;
+        this.productId = productId;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+    }
+
+    updateQuantity(newQuantity: number): void {
+        if (this.quantity !== newQuantity) {
+            this.quantity = newQuantity;
+            this.markDirty();
+        }
+    }
+
+    updatePrice(newPrice: number): void {
+        if (this.unitPrice !== newPrice) {
+            this.unitPrice = newPrice;
+            this.markDirty();
+        }
+    }
+
+    getSubtotal(): number {
+        return this.quantity * this.unitPrice;
+    }
+
+    // Getters
+    getOrderId(): string { return this.orderId; }
+    getProductId(): string { return this.productId; }
+    getQuantity(): number { return this.quantity; }
+    getUnitPrice(): number { return this.unitPrice; }
+}
+
+class Customer extends BaseDomainObject {
+    private name: string;
+    private email: string;
+    private address: string;
+
+    constructor(id: string, name: string, email: string, address: string) {
+        super(id);
+        this.name = name;
+        this.email = email;
+        this.address = address;
+    }
+
+    updateInfo(name?: string, email?: string, address?: string): void {
+        let changed = false;
+        
+        if (name && this.name !== name) {
+            this.name = name;
+            changed = true;
+        }
+        
+        if (email && this.email !== email) {
+            this.email = email;
+            changed = true;
+        }
+        
+        if (address && this.address !== address) {
+            this.address = address;
+            changed = true;
+        }
+        
+        if (changed) {
+            this.markDirty();
+        }
+    }
+
+    // Getters
+    getName(): string { return this.name; }
+    getEmail(): string { return this.email; }
+    getAddress(): string { return this.address; }
+}
+
+// Interface pour les mappers
+interface DataMapper<T extends DomainObject> {
+    insert(object: T): Promise<void>;
+    update(object: T): Promise<void>;
+    delete(object: T): Promise<void>;
+    find(id: string): Promise<T | null>;
+}
+
+// Implémentations des mappers (simulation)
+class OrderMapper implements DataMapper<Order> {
+    async insert(order: Order): Promise<void> {
+        console.log(`📦 INSERT Order: ${order.getId()} (Customer: ${order.getCustomerId()}, Total: ${order.getTotalAmount()}€)`);
+        // Simulation d'insertion en base
+        await new Promise(resolve => setTimeout(resolve, 50));
+    }
+
+    async update(order: Order): Promise<void> {
+        console.log(`📦 UPDATE Order: ${order.getId()} (Status: ${order.getStatus()}, Total: ${order.getTotalAmount()}€)`);
+        await new Promise(resolve => setTimeout(resolve, 50));
+    }
+
+    async delete(order: Order): Promise<void> {
+        console.log(`📦 DELETE Order: ${order.getId()}`);
+        await new Promise(resolve => setTimeout(resolve, 50));
+    }
+
+    async find(id: string): Promise<Order | null> {
+        console.log(`📦 FIND Order: ${id}`);
+        return null; // Simulation
+    }
+}
+
+class OrderItemMapper implements DataMapper<OrderItem> {
+    async insert(item: OrderItem): Promise<void> {
+        console.log(`📋 INSERT OrderItem: ${item.getId()} (Product: ${item.getProductId()}, Qty: ${item.getQuantity()})`);
+        await new Promise(resolve => setTimeout(resolve, 30));
+    }
+
+    async update(item: OrderItem): Promise<void> {
+        console.log(`📋 UPDATE OrderItem: ${item.getId()} (Qty: ${item.getQuantity()}, Price: ${item.getUnitPrice()}€)`);
+        await new Promise(resolve => setTimeout(resolve, 30));
+    }
+
+    async delete(item: OrderItem): Promise<void> {
+        console.log(`📋 DELETE OrderItem: ${item.getId()}`);
+        await new Promise(resolve => setTimeout(resolve, 30));
+    }
+
+    async find(id: string): Promise<OrderItem | null> {
+        console.log(`📋 FIND OrderItem: ${id}`);
+        return null;
+    }
+}
+
+class CustomerMapper implements DataMapper<Customer> {
+    async insert(customer: Customer): Promise<void> {
+        console.log(`👤 INSERT Customer: ${customer.getId()} (${customer.getName()}, ${customer.getEmail()})`);
+        await new Promise(resolve => setTimeout(resolve, 40));
+    }
+
+    async update(customer: Customer): Promise<void> {
+        console.log(`👤 UPDATE Customer: ${customer.getId()} (${customer.getName()}, ${customer.getEmail()})`);
+        await new Promise(resolve => setTimeout(resolve, 40));
+    }
+
+    async delete(customer: Customer): Promise<void> {
+        console.log(`👤 DELETE Customer: ${customer.getId()}`);
+        await new Promise(resolve => setTimeout(resolve, 40));
+    }
+
+    async find(id: string): Promise<Customer | null> {
+        console.log(`👤 FIND Customer: ${id}`);
+        return null;
+    }
+}
+
+// Unit of Work
+class UnitOfWork {
+    private newObjects = new Set<DomainObject>();
+    private dirtyObjects = new Set<DomainObject>();
+    private removedObjects = new Set<DomainObject>();
+    private cleanObjects = new Set<DomainObject>();
+    private mappers = new Map<Function, DataMapper<any>>();
+    private inTransaction = false;
+
+    constructor() {
+        // Enregistrement des mappers
+        this.mappers.set(Order, new OrderMapper());
+        this.mappers.set(OrderItem, new OrderItemMapper());
+        this.mappers.set(Customer, new CustomerMapper());
+    }
+
+    registerNew(object: DomainObject): void {
+        if (this.removedObjects.has(object)) {
+            throw new Error(`Objet ${object.getId()} marqué pour suppression, impossible de l'ajouter`);
+        }
+        
+        if (!this.dirtyObjects.has(object) && !this.cleanObjects.has(object)) {
+            this.newObjects.add(object);
+            console.log(`➕ Nouvel objet enregistré: ${object.constructor.name}(${object.getId()})`);
+        }
+    }
+
+    registerDirty(object: DomainObject): void {
+        if (this.removedObjects.has(object)) {
+            throw new Error(`Objet ${object.getId()} marqué pour suppression, impossible de le modifier`);
+        }
+        
+        if (!this.newObjects.has(object) && !this.dirtyObjects.has(object)) {
+            this.dirtyObjects.add(object);
+            console.log(`✏️ Objet modifié enregistré: ${object.constructor.name}(${object.getId()})`);
+        }
+    }
+
+    registerRemoved(object: DomainObject): void {
+        if (this.newObjects.has(object)) {
+            this.newObjects.delete(object);
+        } else {
+            this.dirtyObjects.delete(object);
+            this.cleanObjects.delete(object);
+            this.removedObjects.add(object);
+        }
+        console.log(`🗑️ Objet marqué pour suppression: ${object.constructor.name}(${object.getId()})`);
+    }
+
+    registerClean(object: DomainObject): void {
+        if (!this.newObjects.has(object) && !this.dirtyObjects.has(object) && !this.removedObjects.has(object)) {
+            this.cleanObjects.add(object);
+        }
+    }
+
+    async commit(): Promise<void> {
+        if (this.inTransaction) {
+            throw new Error('Transaction déjà en cours');
+        }
+
+        this.inTransaction = true;
+        console.log('\n🔄 Début de la transaction...');
+
+        try {
+            // 1. Insertions des nouveaux objets
+            for (const obj of this.newObjects) {
+                const mapper = this.getMapper(obj);
+                await mapper.insert(obj);
+            }
+
+            // 2. Mises à jour des objets modifiés
+            for (const obj of this.dirtyObjects) {
+                const mapper = this.getMapper(obj);
+                await mapper.update(obj);
+            }
+
+            // 3. Suppressions des objets supprimés
+            for (const obj of this.removedObjects) {
+                const mapper = this.getMapper(obj);
+                await mapper.delete(obj);
+            }
+
+            // Nettoyage des listes
+            this.newObjects.clear();
+            this.dirtyObjects.clear();
+            this.removedObjects.clear();
+
+            console.log('✅ Transaction commitée avec succès\n');
+        } catch (error) {
+            console.error('❌ Erreur lors du commit, rollback automatique:', error);
+            await this.rollback();
+            throw error;
+        } finally {
+            this.inTransaction = false;
+        }
+    }
+
+    async rollback(): Promise<void> {
+        console.log('🔙 Rollback de la transaction...');
+        
+        // Nettoyage des listes
+        this.newObjects.clear();
+        this.dirtyObjects.clear();
+        this.removedObjects.clear();
+        
+        this.inTransaction = false;
+        console.log('↩️ Rollback terminé\n');
+    }
+
+    isInTransaction(): boolean {
+        return this.inTransaction;
+    }
+
+    private getMapper(object: DomainObject): DataMapper<any> {
+        const mapper = this.mappers.get(object.constructor);
+        if (!mapper) {
+            throw new Error(`Aucun mapper trouvé pour ${object.constructor.name}`);
+        }
+        return mapper;
+    }
+
+    // Méthodes utilitaires pour le debug
+    getStats(): { new: number, dirty: number, removed: number, clean: number } {
+        return {
+            new: this.newObjects.size,
+            dirty: this.dirtyObjects.size,
+            removed: this.removedObjects.size,
+            clean: this.cleanObjects.size
+        };
+    }
+}
+
+// Service métier utilisant Unit of Work
+class OrderService {
+    private unitOfWork: UnitOfWork;
+
+    constructor(unitOfWork: UnitOfWork) {
+        this.unitOfWork = unitOfWork;
+    }
+
+    async createCompleteOrder(customerId: string, customerName: string, customerEmail: string, customerAddress: string): Promise<Order> {
+        // Création du client
+        const customer = new Customer(customerId, customerName, customerEmail, customerAddress);
+        this.unitOfWork.registerNew(customer);
+
+        // Création de la commande
+        const order = new Order(`order-${Date.now()}`, customerId);
+        this.unitOfWork.registerNew(order);
+
+        // Ajout d'articles
+        const item1 = order.addItem('product-1', 2, 29.99);
+        const item2 = order.addItem('product-2', 1, 49.99);
+        
+        this.unitOfWork.registerNew(item1);
+        this.unitOfWork.registerNew(item2);
+
+        return order;
+    }
+
+    async updateOrderStatus(order: Order, newStatus: 'pending' | 'confirmed' | 'shipped' | 'delivered'): Promise<void> {
+        order.updateStatus(newStatus);
+        this.unitOfWork.registerDirty(order);
+    }
+
+    async addItemToOrder(order: Order, productId: string, quantity: number, price: number): Promise<OrderItem> {
+        const item = order.addItem(productId, quantity, price);
+        this.unitOfWork.registerNew(item);
+        this.unitOfWork.registerDirty(order); // La commande est modifiée (total recalculé)
+        return item;
+    }
+
+    async removeItemFromOrder(order: Order, itemId: string): Promise<boolean> {
+        const removed = order.removeItem(itemId);
+        if (removed) {
+            this.unitOfWork.registerDirty(order); // La commande est modifiée
+            // Note: l'item supprimé devrait être marqué pour suppression séparément
+        }
+        return removed;
+    }
+
+    async cancelOrder(order: Order): Promise<void> {
+        // Suppression des items
+        for (const item of order.getItems()) {
+            this.unitOfWork.registerRemoved(item);
+        }
+        
+        // Suppression de la commande
+        this.unitOfWork.registerRemoved(order);
+    }
+}
+
+// Utilisation
+async function demonstrateUnitOfWork() {
+    const unitOfWork = new UnitOfWork();
+    const orderService = new OrderService(unitOfWork);
+
+    console.log('=== Démonstration Unit of Work ===\n');
+
+    try {
+        // Création d'une commande complète
+        console.log('📝 Création d\'une commande complète...');
+        const order = await orderService.createCompleteOrder(
+            'customer-123',
+            'Alice Dupont',
+            'alice@example.com',
+            '123 Rue de la Paix, Paris'
+        );
+
+        console.log(`📊 Stats UoW: ${JSON.stringify(unitOfWork.getStats())}`);
+
+        // Ajout d'un article supplémentaire
+        console.log('\n📝 Ajout d\'un article...');
+        await orderService.addItemToOrder(order, 'product-3', 3, 15.50);
+
+        console.log(`📊 Stats UoW: ${JSON.stringify(unitOfWork.getStats())}`);
+
+        // Mise à jour du statut
+        console.log('\n📝 Mise à jour du statut...');
+        await orderService.updateOrderStatus(order, 'confirmed');
+
+        console.log(`📊 Stats UoW: ${JSON.stringify(unitOfWork.getStats())}`);
+
+        // Commit de toutes les modifications
+        await unitOfWork.commit();
+
+        console.log(`📊 Stats après commit: ${JSON.stringify(unitOfWork.getStats())}`);
+
+    } catch (error) {
+        console.error('Erreur:', error);
+    }
+}
+
+// Exécution de la démonstration
+demonstrateUnitOfWork();</code></pre>
+                        </div>
+
+                        <!-- PHP Implementation -->
+                        <div class="tab-content" data-tab="php">
+                            <h3>PHP - Système de gestion d'articles avec Unit of Work</h3>
+                            <pre><code>&lt;?php
+
+// Interface pour les objets de domaine
+interface DomainObject {
+    public function getId(): string;
+    public function getVersion(): int;
+    public function markDirty(): void;
+    public function isDirty(): bool;
+}
+
+// Classe de base pour les objets de domaine
+abstract class BaseDomainObject implements DomainObject {
+    protected string $id;
+    protected int $version = 0;
+    protected bool $dirty = false;
+
+    public function __construct(string $id) {
+        $this->id = $id;
+    }
+
+    public function getId(): string {
+        return $this->id;
+    }
+
+    public function getVersion(): int {
+        return $this->version;
+    }
+
+    public function markDirty(): void {
+        $this->dirty = true;
+    }
+
+    public function isDirty(): bool {
+        return $this->dirty;
+    }
+
+    protected function incrementVersion(): void {
+        $this->version++;
+        $this->dirty = false;
+    }
+}
+
+// Entités métier
+class Article extends BaseDomainObject {
+    private string $title;
+    private string $content;
+    private string $authorId;
+    private string $status; // draft, published, archived
+    private array $tags = [];
+    private ?DateTime $publishedAt = null;
+
+    public function __construct(string $id, string $title, string $content, string $authorId) {
+        parent::__construct($id);
+        $this->title = $title;
+        $this->content = $content;
+        $this->authorId = $authorId;
+        $this->status = 'draft';
+    }
+
+    public function updateTitle(string $newTitle): void {
+        if ($this->title !== $newTitle) {
+            $this->title = $newTitle;
+            $this->markDirty();
+        }
+    }
+
+    public function updateContent(string $newContent): void {
+        if ($this->content !== $newContent) {
+            $this->content = $newContent;
+            $this->markDirty();
+        }
+    }
+
+    public function publish(): void {
+        if ($this->status !== 'published') {
+            $this->status = 'published';
+            $this->publishedAt = new DateTime();
+            $this->markDirty();
+        }
+    }
+
+    public function archive(): void {
+        if ($this->status !== 'archived') {
+            $this->status = 'archived';
+            $this->markDirty();
+        }
+    }
+
+    public function addTag(string $tag): void {
+        if (!in_array($tag, $this->tags)) {
+            $this->tags[] = $tag;
+            $this->markDirty();
+        }
+    }
+
+    public function removeTag(string $tag): bool {
+        $index = array_search($tag, $this->tags);
+        if ($index !== false) {
+            array_splice($this->tags, $index, 1);
+            $this->markDirty();
+            return true;
+        }
+        return false;
+    }
+
+    // Getters
+    public function getTitle(): string { return $this->title; }
+    public function getContent(): string { return $this->content; }
+    public function getAuthorId(): string { return $this->authorId; }
+    public function getStatus(): string { return $this->status; }
+    public function getTags(): array { return $this->tags; }
+    public function getPublishedAt(): ?DateTime { return $this->publishedAt; }
+}
+
+class Comment extends BaseDomainObject {
+    private string $articleId;
+    private string $authorName;
+    private string $authorEmail;
+    private string $content;
+    private bool $approved = false;
+    private DateTime $createdAt;
+
+    public function __construct(string $id, string $articleId, string $authorName, string $authorEmail, string $content) {
+        parent::__construct($id);
+        $this->articleId = $articleId;
+        $this->authorName = $authorName;
+        $this->authorEmail = $authorEmail;
+        $this->content = $content;
+        $this->createdAt = new DateTime();
+    }
+
+    public function approve(): void {
+        if (!$this->approved) {
+            $this->approved = true;
+            $this->markDirty();
+        }
+    }
+
+    public function updateContent(string $newContent): void {
+        if ($this->content !== $newContent) {
+            $this->content = $newContent;
+            $this->markDirty();
+        }
+    }
+
+    // Getters
+    public function getArticleId(): string { return $this->articleId; }
+    public function getAuthorName(): string { return $this->authorName; }
+    public function getAuthorEmail(): string { return $this->authorEmail; }
+    public function getContent(): string { return $this->content; }
+    public function isApproved(): bool { return $this->approved; }
+    public function getCreatedAt(): DateTime { return $this->createdAt; }
+}
+
+class Author extends BaseDomainObject {
+    private string $name;
+    private string $email;
+    private string $bio;
+    private array $socialLinks = [];
+
+    public function __construct(string $id, string $name, string $email, string $bio = '') {
+        parent::__construct($id);
+        $this->name = $name;
+        $this->email = $email;
+        $this->bio = $bio;
+    }
+
+    public function updateProfile(string $name = null, string $email = null, string $bio = null): void {
+        $changed = false;
+
+        if ($name !== null && $this->name !== $name) {
+            $this->name = $name;
+            $changed = true;
+        }
+
+        if ($email !== null && $this->email !== $email) {
+            $this->email = $email;
+            $changed = true;
+        }
+
+        if ($bio !== null && $this->bio !== $bio) {
+            $this->bio = $bio;
+            $changed = true;
+        }
+
+        if ($changed) {
+            $this->markDirty();
+        }
+    }
+
+    public function addSocialLink(string $platform, string $url): void {
+        if (!isset($this->socialLinks[$platform]) || $this->socialLinks[$platform] !== $url) {
+            $this->socialLinks[$platform] = $url;
+            $this->markDirty();
+        }
+    }
+
+    public function removeSocialLink(string $platform): bool {
+        if (isset($this->socialLinks[$platform])) {
+            unset($this->socialLinks[$platform]);
+            $this->markDirty();
+            return true;
+        }
+        return false;
+    }
+
+    // Getters
+    public function getName(): string { return $this->name; }
+    public function getEmail(): string { return $this->email; }
+    public function getBio(): string { return $this->bio; }
+    public function getSocialLinks(): array { return $this->socialLinks; }
+}
+
+// Interface pour les mappers
+interface DataMapper {
+    public function insert(DomainObject $object): void;
+    public function update(DomainObject $object): void;
+mappers (simulation)
+class ArticleMapper implements DataMapper {
+    public function insert(DomainObject $object): void {
+        if (!$object instanceof Article) {
+            throw new InvalidArgumentException('Expected Article object');
+        }
+        
+        echo "📄 INSERT Article: {$object->getId()} (Title: {$object->getTitle()}, Status: {$object->getStatus()})\n";
+        // Simulation d'insertion en base
+        usleep(50000); // 50ms
+    }
+
+    public function update(DomainObject $object): void {
+        if (!$object instanceof Article) {
+            throw new InvalidArgumentException('Expected Article object');
+        }
+        
+        echo "📄 UPDATE Article: {$object->getId()} (Title: {$object->getTitle()}, Status: {$object->getStatus()})\n";
+        usleep(50000);
+    }
+
+    public function delete(DomainObject $object): void {
+        if (!$object instanceof Article) {
+            throw new InvalidArgumentException('Expected Article object');
+        }
+        
+        echo "📄 DELETE Article: {$object->getId()}\n";
+        usleep(50000);
+    }
+
+    public function find(string $id): ?DomainObject {
+        echo "📄 FIND Article: {$id}\n";
+        return null; // Simulation
+    }
+}
+
+class CommentMapper implements DataMapper {
+    public function insert(DomainObject $object): void {
+        if (!$object instanceof Comment) {
+            throw new InvalidArgumentException('Expected Comment object');
+        }
+        
+        echo "💬 INSERT Comment: {$object->getId()} (Article: {$object->getArticleId()}, Author: {$object->getAuthorName()})\n";
+        usleep(30000);
+    }
+
+    public function update(DomainObject $object): void {
+        if (!$object instanceof Comment) {
+            throw new InvalidArgumentException('Expected Comment object');
+        }
+        
+        echo "💬 UPDATE Comment: {$object->getId()} (Approved: " . ($object->isApproved() ? 'Yes' : 'No') . ")\n";
+        usleep(30000);
+    }
+
+    public function delete(DomainObject $object): void {
+        if (!$object instanceof Comment) {
+            throw new InvalidArgumentException('Expected Comment object');
+        }
+        
+        echo "💬 DELETE Comment: {$object->getId()}\n";
+        usleep(30000);
+    }
+
+    public function find(string $id): ?DomainObject {
+        echo "💬 FIND Comment: {$id}\n";
+        return null;
+    }
+}
+
+class AuthorMapper implements DataMapper {
+    public function insert(DomainObject $object): void {
+        if (!$object instanceof Author) {
+            throw new InvalidArgumentException('Expected Author object');
+        }
+        
+        echo "✍️ INSERT Author: {$object->getId()} ({$object->getName()}, {$object->getEmail()})\n";
+        usleep(40000);
+    }
+
+    public function update(DomainObject $object): void {
+        if (!$object instanceof Author) {
+            throw new InvalidArgumentException('Expected Author object');
+        }
+        
+        echo "✍️ UPDATE Author: {$object->getId()} ({$object->getName()}, {$object->getEmail()})\n";
+        usleep(40000);
+    }
+
+    public function delete(DomainObject $object): void {
+        if (!$object instanceof Author) {
+            throw new InvalidArgumentException('Expected Author object');
+        }
+        
+        echo "✍️ DELETE Author: {$object->getId()}\n";
+        usleep(40000);
+    }
+
+    public function find(string $id): ?DomainObject {
+        echo "✍️ FIND Author: {$id}\n";
+        return null;
+    }
+}
+
+// Unit of Work
+class UnitOfWork {
+    private array $newObjects = [];
+    private array $dirtyObjects = [];
+    private array $removedObjects = [];
+    private array $cleanObjects = [];
+    private array $mappers = [];
+    private bool $inTransaction = false;
+
+    public function __construct() {
+        // Enregistrement des mappers
+        $this->mappers[Article::class] = new ArticleMapper();
+        $this->mappers[Comment::class] = new CommentMapper();
+        $this->mappers[Author::class] = new AuthorMapper();
+    }
+
+    public function registerNew(DomainObject $object): void {
+        $id = $object->getId();
+        
+        if (isset($this->removedObjects[$id])) {
+            throw new InvalidArgumentException("Objet {$id} marqué pour suppression, impossible de l'ajouter");
+        }
+        
+        if (!isset($this->dirtyObjects[$id]) && !isset($this->cleanObjects[$id])) {
+            $this->newObjects[$id] = $object;
+            echo "➕ Nouvel objet enregistré: " . get_class($object) . "({$id})\n";
+        }
+    }
+
+    public function registerDirty(DomainObject $object): void {
+        $id = $object->getId();
+        
+        if (isset($this->removedObjects[$id])) {
+            throw new InvalidArgumentException("Objet {$id} marqué pour suppression, impossible de le modifier");
+        }
+        
+        if (!isset($this->newObjects[$id]) && !isset($this->dirtyObjects[$id])) {
+            $this->dirtyObjects[$id] = $object;
+            echo "✏️ Objet modifié enregistré: " . get_class($object) . "({$id})\n";
+        }
+    }
+
+    public function registerRemoved(DomainObject $object): void {
+        $id = $object->getId();
+        
+        if (isset($this->newObjects[$id])) {
+            unset($this->newObjects[$id]);
+        } else {
+            unset($this->dirtyObjects[$id]);
+            unset($this->cleanObjects[$id]);
+            $this->removedObjects[$id] = $object;
+        }
+        
+        echo "🗑️ Objet marqué pour suppression: " . get_class($object) . "({$id})\n";
+    }
+
+    public function registerClean(DomainObject $object): void {
+        $id = $object->getId();
+        
+        if (!isset($this->newObjects[$id]) && !isset($this->dirtyObjects[$id]) && !isset($this->removedObjects[$id])) {
+            $this->cleanObjects[$id] = $object;
+        }
+    }
+
+    public function commit(): void {
+        if ($this->inTransaction) {
+            throw new RuntimeException('Transaction déjà en cours');
+        }
+
+        $this->inTransaction = true;
+        echo "\n🔄 Début de la transaction...\n";
+
+        try {
+            // 1. Insertions des nouveaux objets
+            foreach ($this->newObjects as $obj) {
+                $mapper = $this->getMapper($obj);
+                $mapper->insert($obj);
+            }
+
+            // 2. Mises à jour des objets modifiés
+            foreach ($this->dirtyObjects as $obj) {
+                $mapper = $this->getMapper($obj);
+                $mapper->update($obj);
+            }
+
+            // 3. Suppressions des objets supprimés
+            foreach ($this->removedObjects as $obj) {
+                $mapper = $this->getMapper($obj);
+                $mapper->delete($obj);
+            }
+
+            // Nettoyage des listes
+            $this->newObjects = [];
+            $this->dirtyObjects = [];
+            $this->removedObjects = [];
+
+            echo "✅ Transaction commitée avec succès\n\n";
+        } catch (Exception $e) {
+            echo "❌ Erreur lors du commit, rollback automatique: {$e->getMessage()}\n";
+            $this->rollback();
+            throw $e;
+        } finally {
+            $this->inTransaction = false;
+        }
+    }
+
+    public function rollback(): void {
+        echo "🔙 Rollback de la transaction...\n";
+        
+        // Nettoyage des listes
+        $this->newObjects = [];
+        $this->dirtyObjects = [];
+        $this->removedObjects = [];
+        
+        $this->inTransaction = false;
+        echo "↩️ Rollback terminé\n\n";
+    }
+
+    public function isInTransaction(): bool {
+        return $this->inTransaction;
+    }
+
+    private function getMapper(DomainObject $object): DataMapper {
+        $className = get_class($object);
+        
+        if (!isset($this->mappers[$className])) {
+            throw new RuntimeException("Aucun mapper trouvé pour {$className}");
+        }
+        
+        return $this->mappers[$className];
+    }
+
+    // Méthodes utilitaires pour le debug
+    public function getStats(): array {
+        return [
+            'new' => count($this->newObjects),
+            'dirty' => count($this->dirtyObjects),
+            'removed' => count($this->removedObjects),
+            'clean' => count($this->cleanObjects)
+        ];
+    }
+}
+
+// Service métier utilisant Unit of Work
+class BlogService {
+    private UnitOfWork $unitOfWork;
+
+    public function __construct(UnitOfWork $unitOfWork) {
+        $this->unitOfWork = $unitOfWork;
+    }
+
+    public function createArticleWithAuthor(string $authorName, string $authorEmail, string $title, string $content): Article {
+        // Création de l'auteur
+        $author = new Author("author-" . uniqid(), $authorName, $authorEmail, "Auteur passionné");
+        $this->unitOfWork->registerNew($author);
+
+        // Création de l'article
+        $article = new Article("article-" . uniqid(), $title, $content, $author->getId());
+        $this->unitOfWork->registerNew($article);
+
+        return $article;
+    }
+
+    public function publishArticle(Article $article): void {
+        $article->publish();
+        $this->unitOfWork->registerDirty($article);
+    }
+
+    public function addCommentToArticle(Article $article, string $authorName, string $authorEmail, string $content): Comment {
+        $comment = new Comment("comment-" . uniqid(), $article->getId(), $authorName, $authorEmail, $content);
+        $this->unitOfWork->registerNew($comment);
+        return $comment;
+    }
+
+    public function approveComment(Comment $comment): void {
+        $comment->approve();
+        $this->unitOfWork->registerDirty($comment);
+    }
+
+    public function deleteArticle(Article $article): void {
+        // Ici, on devrait aussi supprimer les commentaires associés
+        $this->unitOfWork->registerRemoved($article);
+    }
+
+    public function updateArticleContent(Article $article, string $newTitle, string $newContent): void {
+        $article->updateTitle($newTitle);
+        $article->updateContent($newContent);
+        $this->unitOfWork->registerDirty($article);
+    }
+}
+
+// Utilisation
+$unitOfWork = new UnitOfWork();
+$blogService = new BlogService($unitOfWork);
+
+echo "=== Démonstration Unit of Work PHP ===\n\n";
+
+try {
+    // Création d'un article avec auteur
+    echo "📝 Création d'un article avec auteur...\n";
+    $article = $blogService->createArticleWithAuthor(
+        "Marie Curie",
+        "marie@science.com",
+        "Les mystères de la radioactivité",
+        "La radioactivité est un phénomène fascinant..."
+    );
+
+    echo "📊 Stats UoW: " . json_encode($unitOfWork->getStats()) . "\n";
+
+    // Ajout de commentaires
+    echo "\n📝 Ajout de commentaires...\n";
+    $comment1 = $blogService->addCommentToArticle($article, "Pierre Curie", "pierre@science.com", "Excellent article !");
+    $comment2 = $blogService->addCommentToArticle($article, "Albert Einstein", "albert@physics.com", "Très instructif.");
+
+    echo "📊 Stats UoW: " . json_encode($unitOfWork->getStats()) . "\n";
+
+    // Publication de l'article
+    echo "\n📝 Publication de l'article...\n";
+    $blogService->publishArticle($article);
+
+    // Approbation d'un commentaire
+    echo "\n📝 Approbation d'un commentaire...\n";
+    $blogService->approveComment($comment1);
+
+    echo "📊 Stats UoW: " . json_encode($unitOfWork->getStats()) . "\n";
+
+    // Commit de toutes les modifications
+    $unitOfWork->commit();
+
+    echo "📊 Stats après commit: " . json_encode($unitOfWork->getStats()) . "\n";
+
+} catch (Exception $e) {
+    echo "Erreur: " . $e->getMessage() . "\n";
+}
+
+?&gt;</code></pre>
+                        </div>
+
+                        <!-- Java Implementation -->
+                        <div class="tab-content" data-tab="java">
+                            <h3>Java - Système de gestion de projets avec Unit of Work</h3>
+                            <pre><code>import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
+// Interface pour les objets de domaine
+interface DomainObject {
+    String getId();
+    int getVersion();
+    void markDirty();
+    boolean isDirty();
+}
+
+// Classe de base pour les objets de domaine
+abstract class BaseDomainObject implements DomainObject {
+    protected String id;
+    protected int version = 0;
+    protected boolean dirty = false;
+
+    public BaseDomainObject(String id) {
+        this.id = id;
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public int getVersion() {
+        return version;
+    }
+
+    @Override
+    public void markDirty() {
+        this.dirty = true;
+    }
+
+    @Override
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    protected void incrementVersion() {
+        this.version++;
+        this.dirty = false;
+    }
+}
+
+// Entités métier
+class Project extends BaseDomainObject {
+    private String name;
+    private String description;
+    private String managerId;
+    private ProjectStatus status;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private List&lt;Task&gt; tasks = new ArrayList&lt;&gt;();
+
+    public enum ProjectStatus {
+        PLANNING, ACTIVE, ON_HOLD, COMPLETED, CANCELLED
+    }
+
+    public Project(String id, String name, String description, String managerId) {
+        super(id);
+        this.name = name;
+        this.description = description;
+        this.managerId = managerId;
+        this.status = ProjectStatus.PLANNING;
+        this.startDate = LocalDateTime.now();
+    }
+
+    public void updateName(String newName) {
+        if (!Objects.equals(this.name, newName)) {
+            this.name = newName;
+            markDirty();
+        }
+    }
+
+    public void updateDescription(String newDescription) {
+        if (!Objects.equals(this.description, newDescription)) {
+            this.description = newDescription;
+            markDirty();
+        }
+    }
+
+    public void updateStatus(ProjectStatus newStatus) {
+        if (this.status != newStatus) {
+            this.status = newStatus;
+            if (newStatus == ProjectStatus.COMPLETED) {
+                this.endDate = LocalDateTime.now();
+            }
+            markDirty();
+        }
+    }
+
+    public Task addTask(String taskId, String title, String description, String assigneeId) {
+        Task task = new Task(taskId, this.id, title, description, assigneeId);
+        this.tasks.add(task);
+        markDirty();
+        return task;
+    }
+
+    public boolean removeTask(String taskId) {
+        boolean removed = tasks.removeIf(task -&gt; task.getId().equals(taskId));
+        if (removed) {
+            markDirty();
+        }
+        return removed;
+    }
+
+    // Getters
+    public String getName() { return name; }
+    public String getDescription() { return description; }
+    public String getManagerId() { return managerId; }
+    public ProjectStatus getStatus() { return status; }
+    public LocalDateTime getStartDate() { return startDate; }
+    public LocalDateTime getEndDate() { return endDate; }
+    public List&lt;Task&gt; getTasks() { return new ArrayList&lt;&gt;(tasks); }
+}
+
+class Task extends BaseDomainObject {
+    private String projectId;
+    private String title;
+    private String description;
+    private String assigneeId;
+    private TaskStatus status;
+    private int priority; // 1-5, 5 being highest
+    private LocalDateTime createdAt;
+    private LocalDateTime dueDate;
+
+    public enum TaskStatus {
+        TODO, IN_PROGRESS, REVIEW, DONE, BLOCKED
+    }
+
+    public Task(String id, String projectId, String title, String description, String assigneeId) {
+        super(id);
+        this.projectId = projectId;
+        this.title = title;
+        this.description = description;
+        this.assigneeId = assigneeId;
+        this.status = TaskStatus.TODO;
+        this.priority = 3; // Medium priority by default
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public void updateTitle(String newTitle) {
+        if (!Objects.equals(this.title, newTitle)) {
+            this.title = newTitle;
+            markDirty();
+        }
+    }
+
+    public void updateDescription(String newDescription) {
+        if (!Objects.equals(this.description, newDescription)) {
+            this.description = newDescription;
+            markDirty();
+        }
+    }
+
+    public void updateStatus(TaskStatus newStatus) {
+        if (this.status != newStatus) {
+            this.status = newStatus;
+            markDirty();
+        }
+    }
+
+    public void updatePriority(int newPriority) {
+        if (newPriority &lt; 1 || newPriority &gt; 5) {
+            throw new IllegalArgumentException("Priority must be between 1 and 5");
+        }
+        if (this.priority != newPriority) {
+            this.priority = newPriority;
+            markDirty();
+        }
+    }
+
+    public void assignTo(String newAssigneeId) {
+        if (!Objects.equals(this.assigneeId, newAssigneeId)) {
+            this.assigneeId = newAssigneeId;
+            markDirty();
+        }
+    }
+
+    public void setDueDate(LocalDateTime dueDate) {
+        if (!Objects.equals(this.dueDate, dueDate)) {
+            this.dueDate = dueDate;
+            markDirty();
+        }
+    }
+
+    // Getters
+    public String getProjectId() { return projectId; }
+    public String getTitle() { return title; }
+    public String getDescription() { return description; }
+    public String getAssigneeId() { return assigneeId; }
+    public TaskStatus getStatus() { return status; }
+    public int getPriority() { return priority; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDateTime getDueDate() { return dueDate; }
+}
+
+class TeamMember extends BaseDomainObject {
+    private String name;
+    private String email;
+    private String role;
+    private Set&lt;String&gt; skills = new HashSet&lt;&gt;();
+    private boolean active = true;
+
+    public TeamMember(String id, String name, String email, String role) {
+        super(id);
+        this.name = name;
+        this.email = email;
+        this.role = role;
+    }
+
+    public void updateProfile(String name, String email, String role) {
+        boolean changed = false;
+
+        if (name != null && !Objects.equals(this.name, name)) {
+            this.name = name;
+            changed = true;
+        }
+
+        if (email != null && !Objects.equals(this.email, email)) {
+            this.email = email;
+            changed = true;
+        }
+
+        if (role != null && !Objects.equals(this.role, role)) {
+            this.role = role;
+            changed = true;
+        }
+
+        if (changed) {
+            markDirty();
+        }
+    }
+
+    public void addSkill(String skill) {
+        if (skills.add(skill)) {
+            markDirty();
+        }
+    }
+
+    public boolean removeSkill(String skill) {
+        if (skills.remove(skill)) {
+            markDirty();
+            return true;
+        }
+        return false;
+    }
+
+    public void deactivate() {
+        if (active) {
+            active = false;
+            markDirty();
+        }
+    }
+
+    public void activate() {
+        if (!active) {
+            active = true;
+            markDirty();
+        }
+    }
+
+    // Getters
+    public String getName() { return name; }
+    public String getEmail() { return email; }
+    public String getRole() { return role; }
+    public Set&lt;String&gt; getSkills() { return new HashSet&lt;&gt;(skills); }
+    public boolean isActive() { return active; }
+}
+
+// Interface pour les mappers
+interface DataMapper&lt;T extends DomainObject&gt; {
+    void insert(T object) throws Exception;
+    void update(T object) throws Exception;
+    void delete(T object) throws Exception;
+    T find(String id) throws Exception;
+}
+
+// Implémentations des mappers (simulation)
+class ProjectMapper implements DataMapper&lt;Project&gt; {
+    @Override
+    public void insert(Project project) throws Exception {
+        System.out.println("🚀 INSERT Project: " + project.getId() + 
+                         " (Name: " + project.getName() + ", Status: " + project.getStatus() + ")");
+        Thread.sleep(50); // Simulation
+    }
+
+    @Override
+    public void update(Project project) throws Exception {
+        System.out.println("🚀 UPDATE Project: " + project.getId() + 
+                         " (Name: " + project.getName() + ", Status: " + project.getStatus() + ")");
+        Thread.sleep(50);
+    }
+
+    @Override
+    public void delete(Project project) throws Exception {
+        System.out.println("🚀 DELETE Project: " + project.getId());
+        Thread.sleep(50);
+    }
+
+    @Override
+    public Project find(String id) throws Exception {
+        System.out.println("🚀 FIND Project: " + id);
+        return null; // Simulation
+    }
+}
+
+class TaskMapper implements DataMapper&lt;Task&gt; {
+    @Override
+    public void insert(Task task) throws Exception {
+        System.out.println("📋 INSERT Task: " + task.getId() + 
+                         " (Title: " + task.getTitle() + ", Status: " + task.getStatus() + 
+                         ", Priority: " + task.getPriority() + ")");
+        Thread.sleep(30);
+    }
+
+    @Override
+    public void update(Task task) throws Exception {
+        System.out.println("📋 UPDATE Task: " + task.getId() + 
+                         " (Title: " + task.getTitle() + ", Status: " + task.getStatus() + 
+                         ", Priority: " + task.getPriority() + ")");
+        Thread.sleep(30);
+    }
+
+    @Override
+    public void delete(Task task) throws Exception {
+        System.out.println("📋 DELETE Task: " + task.getId());
+        Thread.sleep(30);
+    }
+
+    @Override
+    public Task find(String id) throws Exception {
+        System.out.println("📋 FIND Task: " + id);
+        return null;
+    }
+}
+
+class TeamMemberMapper implements DataMapper&lt;TeamMember&gt; {
+    @Override
+    public void insert(TeamMember member) throws Exception {
+        System.out.println("👥 INSERT TeamMember: " + member.getId() + 
+                         " (Name: " + member.getName() + ", Role: " + member.getRole() + ")");
+        Thread.sleep(40);
+    }
+
+    @Override
+    public void update(TeamMember member) throws Exception {
+        System.out.println("👥 UPDATE TeamMember: " + member.getId() + 
+                         " (Name: " + member.getName() + ", Role: " + member.getRole() + 
+                         ", Active: " + member.isActive() + ")");
+        Thread.sleep(40);
+    }
+
+    @Override
+    public void delete(TeamMember member) throws Exception {
+        System.out.println("👥 DELETE TeamMember: " + member.getId());
+        Thread.sleep(40);
+    }
+
+    @Override
+    public TeamMember find(String id) throws Exception {
+        System.out.println("👥 FIND TeamMember: " + id);
+        return null;
+    }
+}
+
+// Unit of Work
+class UnitOfWork {
+    private final Map&lt;String, DomainObject&gt; newObjects = new ConcurrentHashMap&lt;&gt;();
+    private final Map&lt;String, DomainObject&gt; dirtyObjects = new ConcurrentHashMap&lt;&gt;();
+    private final Map&lt;String, DomainObject&gt; removedObjects = new ConcurrentHashMap&lt;&gt;();
+    private final Map&lt;String, DomainObject&gt; cleanObjects = new ConcurrentHashMap&lt;&gt;();
+    private final Map&lt;Class&lt;?&gt;, DataMapper&lt;?&gt;&gt; mappers = new HashMap&lt;&gt;();
+    private boolean inTransaction = false;
+
+    public UnitOfWork() {
+        // Enregistrement des mappers
+        mappers.put(Project.class, new ProjectMapper());
+        mappers.put(Task.class, new TaskMapper());
+        mappers.put(TeamMember.class, new TeamMemberMapper());
+    }
+
+    public void registerNew(DomainObject object) {
+        String id = object.getId();
+        
+        if (removedObjects.containsKey(id)) {
+            throw new IllegalArgumentException("Objet " + id + " marqué pour suppression, impossible de l'ajouter");
+        }
+        
+        if (!dirtyObjects.containsKey(id) && !cleanObjects.containsKey(id)) {
+            newObjects.put(id, object);
+            System.out.println("➕ Nouvel objet enregistré: " + object.getClass().getSimpleName() + "(" + id + ")");
+        }
+    }
+
+    public void registerDirty(DomainObject object) {
+        String id = object.getId();
+        
+        if (removedObjects.containsKey(id)) {
+            throw new IllegalArgumentException("Objet " + id + " marqué pour suppression, impossible de le modifier");
+        }
+        
+        if (!newObjects.containsKey(id) && !dirtyObjects.containsKey(id)) {
+            dirtyObjects.put(id, object);
+            System.out.println("✏️ Objet modifié enregistré: " + object.getClass().getSimpleName() + "(" + id + ")");
+        }
+    }
+
+    public void registerRemoved(DomainObject object) {
+        String id = object.getId();
+        
+        if (newObjects.containsKey(id)) {
+            newObjects.remove(id);
+        } else {
+            dirtyObjects.remove(id);
+            cleanObjects.remove(id);
+            removedObjects.put(id, object);
+        }
+        
+        System.out.println("🗑️ Objet marqué pour suppression: " + object.getClass().getSimpleName() + "(" + id + ")");
+    }
+
+    public void registerClean(DomainObject object) {
+        String id = object.getId();
+        
+        if (!newObjects.containsKey(id) && !dirtyObjects.containsKey(id) && !removedObjects.containsKey(id)) {
+            cleanObjects.put(id, object);
+        }
+    }
+
+    public void commit() throws Exception {
+        if (inTransaction) {
+            throw new RuntimeException("Transaction déjà en cours");
+        }
+
+        inTransaction = true;
+        System.out.println("\n🔄 Début de la transaction...");
+
+        try {
+            // 1. Insertions des nouveaux objets
+            for (DomainObject obj : newObjects.values()) {
+                DataMapper&lt;DomainObject&gt; mapper = getMapper(obj);
+                mapper.insert(obj);
+            }
+
+            // 2. Mises à jour des objets modifiés
+            for (DomainObject obj : dirtyObjects.values()) {
+                DataMapper&lt;DomainObject&gt; mapper = getMapper(obj);
+                mapper.update(obj);
+            }
+
+            // 3. Suppressions des objets supprimés
+            for (DomainObject obj : removedObjects.values()) {
+                DataMapper&lt;DomainObject&gt; mapper = getMapper(obj);
+                mapper.delete(obj);
+            }
+
+            // Nettoyage des listes
+            newObjects.clear();
+            dirtyObjects.clear();
+            removedObjects.clear();
+
+            System.out.println("✅ Transaction commitée avec succès\n");
+        } catch (Exception e) {
+            System.err.println("❌ Erreur lors du commit, rollback automatique: " + e.getMessage());
+            rollback();
+            throw e;
+        } finally {
+            inTransaction = false;
+        }
+    }
+
+    public void rollback() {
+        System.out.println("🔙 Rollback de la transaction...");
+        
+        // Nettoyage des listes
+        newObjects.clear();
+        dirtyObjects.clear();
+        removedObjects.clear();
+        
+        inTransaction = false;
+        System.out.println("↩️ Rollback terminé\n");
+    }
+
+    public boolean isInTransaction() {
+        return inTransaction;
+    }
+
+    @SuppressWarnings("unchecked")
+    private DataMapper&lt;DomainObject&gt; getMapper(DomainObject object) {
+        DataMapper&lt;?&gt; mapper = mappers.get(object.getClass());
+        if (mapper == null) {
+            throw new RuntimeException("Aucun mapper trouvé pour " + object.getClass().getSimpleName());
+        }
+        return (DataMapper&lt;DomainObject&gt;) mapper;
+    }
+
+    // Méthodes utilitaires pour le debug
+    public Map&lt;String, Integer&gt; getStats() {
+        Map&lt;String, Integer&gt; stats = new HashMap&lt;&gt;();
+        stats.put("new", newObjects.size());
+        stats.put("dirty", dirtyObjects.size());
+        stats.put("removed", removedObjects.size());
+        stats.put("clean", cleanObjects.size());
+        return stats;
+    }
+}
+
+// Service métier utilisant Unit of Work
+class ProjectManagementService {
+    private final UnitOfWork unitOfWork;
+
+    public ProjectManagementService(UnitOfWork unitOfWork) {
+        this.unitOfWork = unitOfWork;
+    }
+
+    public Project createProjectWithTeam(String projectName, String description, String managerId, 
+                                       List&lt;TeamMember&gt; teamMembers) {
+        // Enregistrement des membres de l'équipe
+        for (TeamMember member : teamMembers) {
+            unitOfWork.registerNew(member);
+        }
+
+        // Création du projet
+        Project project = new Project("project-" + System
+    public function delete(DomainObject $object): void;
+    public function find(string $id): ?DomainObject;
+}
+
+// Implémentations des
+
+currentTimeMillis(), projectName, description, managerId);
+        unitOfWork.registerNew(project);
+
+        return project;
+    }
+
+    public Task addTaskToProject(Project project, String title, String description, String assigneeId) {
+        Task task = project.addTask("task-" + System.currentTimeMillis(), title, description, assigneeId);
+        unitOfWork.registerNew(task);
+        unitOfWork.registerDirty(project); // Le projet est modifié
+        return task;
+    }
+
+    public void updateTaskStatus(Task task, Task.TaskStatus newStatus) {
+        task.updateStatus(newStatus);
+        unitOfWork.registerDirty(task);
+    }
+
+    public void assignTaskToMember(Task task, String memberId) {
+        task.assignTo(memberId);
+        unitOfWork.registerDirty(task);
+    }
+
+    public void updateProjectStatus(Project project, Project.ProjectStatus newStatus) {
+        project.updateStatus(newStatus);
+        unitOfWork.registerDirty(project);
+    }
+
+    public void deleteProject(Project project) {
+        // Suppression des tâches associées
+        for (Task task : project.getTasks()) {
+            unitOfWork.registerRemoved(task);
+        }
+        
+        // Suppression du projet
+        unitOfWork.registerRemoved(project);
+    }
+
+    public void addSkillToMember(TeamMember member, String skill) {
+        member.addSkill(skill);
+        unitOfWork.registerDirty(member);
+    }
+}
+
+// Classe principale pour démonstration
+public class UnitOfWorkDemo {
+    public static void main(String[] args) {
+        UnitOfWork unitOfWork = new UnitOfWork();
+        ProjectManagementService projectService = new ProjectManagementService(unitOfWork);
+
+        System.out.println("=== Démonstration Unit of Work Java ===\n");
+
+        try {
+            // Création des membres de l'équipe
+            System.out.println("👥 Création de l'équipe...");
+            List&lt;TeamMember&gt; teamMembers = Arrays.asList(
+                new TeamMember("member-1", "Alice Johnson", "alice@company.com", "Tech Lead"),
+                new TeamMember("member-2", "Bob Smith", "bob@company.com", "Developer"),
+                new TeamMember("member-3", "Carol Davis", "carol@company.com", "Designer")
+            );
+
+            // Ajout de compétences
+            teamMembers.get(0).addSkill("Java");
+            teamMembers.get(0).addSkill("Architecture");
+            teamMembers.get(1).addSkill("JavaScript");
+            teamMembers.get(1).addSkill("React");
+            teamMembers.get(2).addSkill("UI/UX");
+            teamMembers.get(2).addSkill("Figma");
+
+            // Création du projet avec l'équipe
+            Project project = projectService.createProjectWithTeam(
+                "E-commerce Platform",
+                "Développement d'une plateforme e-commerce moderne",
+                "manager-1",
+                teamMembers
+            );
+
+            System.out.println("📊 Stats UoW: " + unitOfWork.getStats());
+
+            // Ajout de tâches
+            System.out.println("\n📋 Ajout de tâches...");
+            Task task1 = projectService.addTaskToProject(project, 
+                "Conception de l'architecture", 
+                "Définir l'architecture technique du système", 
+                "member-1");
+            
+            Task task2 = projectService.addTaskToProject(project, 
+                "Développement du frontend", 
+                "Créer l'interface utilisateur", 
+                "member-2");
+            
+            Task task3 = projectService.addTaskToProject(project, 
+                "Design des maquettes", 
+                "Concevoir les maquettes UI/UX", 
+                "member-3");
+
+            task1.updatePriority(5); // Haute priorité
+            task2.updatePriority(4);
+            task3.updatePriority(3);
+
+            System.out.println("📊 Stats UoW: " + unitOfWork.getStats());
+
+            // Mise à jour des statuts
+            System.out.println("\n🔄 Mise à jour des statuts...");
+            projectService.updateProjectStatus(project, Project.ProjectStatus.ACTIVE);
+            projectService.updateTaskStatus(task1, Task.TaskStatus.IN_PROGRESS);
+            projectService.updateTaskStatus(task3, Task.TaskStatus.DONE);
+
+            // Ajout de compétences
+            System.out.println("\n🎯 Ajout de compétences...");
+            projectService.addSkillToMember(teamMembers.get(1), "Node.js");
+
+            System.out.println("📊 Stats UoW: " + unitOfWork.getStats());
+
+            // Commit de toutes les modifications
+            unitOfWork.commit();
+
+            System.out.println("📊 Stats après commit: " + unitOfWork.getStats());
+
+        } catch (Exception e) {
+            System.err.println("Erreur: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Avantages et Inconvénients -->
+            <section class="aikido-card slide-in">
+                <div class="card-header">
+                    <h2>⚖️ Avantages et Inconvénients</h2>
+                </div>
+                <div class="card-content">
+                    <div class="pros-cons-grid">
+                        <div class="pros-section">
+                            <h3>✅ Avantages</h3>
+                            <ul>
+                                <li><strong>Cohérence transactionnelle</strong> : Garantit l'atomicité des opérations</li>
+                                <li><strong>Optimisation des performances</strong> : Regroupement des opérations de base de données</li>
+                                <li><strong>Gestion centralisée</strong> : Point unique de contrôle des modifications</li>
+                                <li><strong>Ordre des opérations</strong> : Résolution automatique des dépendances</li>
+                                <li><strong>Rollback automatique</strong> : Annulation en cas d'erreur</li>
+                            </ul>
+                        </div>
+                        <div class="cons-section">
+                            <h3>❌ Inconvénients</h3>
+                            <ul>
+                                <li><strong>Complexité accrue</strong> : Architecture plus complexe à maintenir</li>
+                                <li><strong>Consommation mémoire</strong> : Stockage des objets en mémoire</li>
+                                <li><strong>Couplage fort</strong> : Dépendance aux mappers et à l'UoW</li>
+                                <li><strong>Gestion des conflits</strong> : Complexité de la concurrence</li>
+                                <li><strong>Courbe d'apprentissage</strong> : Pattern avancé difficile à maîtriser</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cas d'usage -->
+            <section class="aikido-card slide-in">
+                <div class="card-header">
+                    <h2>🎯 Cas d'usage recommandés</h2>
+                </div>
+                <div class="card-content">
+                    <div class="use-cases-grid">
+                        <div class="use-case-item">
+                            <h3>✅ Recommandé pour</h3>
+                            <ul>
+                                <li>Applications avec transactions métier complexes</li>
+                                <li>Systèmes nécessitant une forte cohérence des données</li>
+                                <li>Opérations impliquant plusieurs entités liées</li>
+                                <li>Applications avec besoins de rollback sophistiqués</li>
+                                <li>Systèmes avec optimisations de performance critiques</li>
+                            </ul>
+                        </div>
+                        <div class="use-case-item">
+                            <h3>❌ Éviter pour</h3>
+                            <ul>
+                                <li>Applications simples avec peu de relations</li>
+                                <li>Systèmes avec contraintes mémoire strictes</li>
+                                <li>Applications nécessitant des transactions longues</li>
+                                <li>Projets avec équipes junior</li>
+                                <li>Systèmes distribués avec microservices</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Alternatives -->
+            <section class="aikido-card slide-in">
+                <div class="card-header">
+                    <h2>🔄 Alternatives et variantes</h2>
+                </div>
+                <div class="card-content">
+                    <div class="alternatives-grid">
+                        <div class="alternative-item">
+                            <h3>🗄️ Repository Pattern</h3>
+                            <p>Encapsulation de la logique d'accès aux données par entité</p>
+                        </div>
+                        <div class="alternative-item">
+                            <h3>🔄 Transaction Script</h3>
+                            <p>Organisation de la logique métier par transaction</p>
+                        </div>
+                        <div class="alternative-item">
+                            <h3>📊 Data Mapper</h3>
+                            <p>Séparation entre objets métier et couche de persistance</p>
+                        </div>
+                        <div class="alternative-item">
+                            <h3>🎭 Active Record</h3>
+                            <p>Objets métier avec logique de persistance intégrée</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Biais cognitifs -->
+            <section class="aikido-card slide-in">
+                <div class="card-header">
+                    <h2>🧠 Biais cognitifs associés</h2>
+                </div>
+                <div class="card-content">
+                    <div class="cognitive-bias-grid">
+                        <div class="bias-item">
+                            <h3>🏗️ Complexité accidentelle</h3>
+                            <p>Ajouter de la complexité sans bénéfice proportionnel</p>
+                        </div>
+                        <div class="bias-item">
+                            <h3>🔨 Loi de l'instrument</h3>
+                            <p>Utiliser Unit of Work pour tous les problèmes de persistance</p>
+                        </div>
+                        <div class="bias-item">
+                            <h3>🎯 Biais de confirmation</h3>
+                            <p>Justifier la complexité par des avantages théoriques</p>
+                        </div>
+                        <div class="bias-item">
+                            <h3>⚡ Optimisation prématurée</h3>
+                            <p>Implémenter UoW sans mesurer les besoins réels</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Exercice interactif -->
+            <section class="exercise-section">
+                <div class="aikido-card exercise">
+                    <h2>🎯 Exercice Pratique</h2>
+                    
+                    <div class="exercise-scenario">
+                        <h3>Scenario : Système de gestion de commandes e-commerce</h3>
+                        <p>
+                            Vous développez un système e-commerce où une commande implique plusieurs opérations critiques :
+                            création de la commande, mise à jour du stock, génération de facture, envoi d'email et
+                            création d'entrées comptables.
+                        </p>
+                        
+                        <div class="exercise-question">
+                            <h4>Question :</h4>
+                            <p>Quel est le principal défi que résout Unit of Work dans ce contexte ?</p>
+                            
+                            <div class="choice-options">
+                                <div class="choice-option" data-choice="performance">
+                                    🚀 Amélioration des performances de lecture
+                                </div>
+                                <div class="choice-option" data-choice="coherence">
+                                    🔒 Garantie de cohérence transactionnelle entre toutes les opérations
+                                </div>
+                                <div class="choice-option" data-choice="simplicite">
+                                    📝 Simplification du code métier
+                                </div>
+                                <div class="choice-option" data-choice="memoire">
+                                    💾 Réduction de la consommation mémoire
+                                </div>
+                            </div>
+                            
+                            <div id="exercise-retours" class="exercise-retours hidden">
+                                <!-- Le feedback sera affiché ici -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Completion Section -->
+            <section class="completion-section slide-in">
+                <div class="aikido-card completion">
+                    <div class="completion-content">
+                        <div class="completion-icon">📦</div>
+                        <div class="completion-text">
+                            <h3>Avez-vous terminé cette section ?</h3>
+                            <p>Marquez cette page comme terminée pour suivre votre progression dans la formation.</p>
+                        </div>
+                        <button class="aikido-btn primary mark-completed" data-page="unit-of-work">
+                            Marquer comme Terminé ✓
+                        </button>
+                    </div>
+                    
+                    <div class="completion-feedback hidden">
+                        <div class="feedback-success">
+                            <h4>🎉 Excellent travail !</h4>
+                            <p>Vous avez terminé l'étude du pattern Unit of Work. Vous comprenez maintenant :</p>
+                            <ul>
+                                <li>Comment coordonner les transactions métier complexes</li>
+                                <li>La gestion optimale des opérations de persistance</li>
+                                <li>Les avantages et inconvénients du pattern</li>
+                                <li>Les alternatives modernes disponibles</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Exercice interactif conforme à la référence Singleton
+        function checkExercise() {
+            const exerciseRetours = document.getElementById('exercise-retours');
+            const selectedChoice = document.querySelector('.choice-option.selected');
+            
+            if (!selectedChoice) {
+                exerciseRetours.innerHTML = `
+                    <div class="feedback-error">
+                        <p>⚠️ Veuillez sélectionner une réponse avant de vérifier.</p>
+                    </div>
+                `;
+                exerciseRetours.classList.remove('hidden');
+                return;
+            }
+            
+            const choice = selectedChoice.dataset.choice;
+            let feedbackContent = '';
+            
+            switch(choice) {
+                case 'performance':
+                    feedbackContent = `
+                        <div class="feedback-error">
+                            <h4>❌ Pas tout à fait</h4>
+                            <p>Unit of Work ne se concentre pas sur les performances de lecture, mais sur la <strong>gestion des écritures</strong> et la cohérence transactionnelle.</p>
+                            <p>💡 <strong>Conseil :</strong> Pensez aux défis de coordination entre plusieurs opérations métier.</p>
+                        </div>
+                    `;
+                    break;
+                case 'coherence':
+                    feedbackContent = `
+                        <div class="feedback-success">
+                            <h4>✅ Excellente réponse !</h4>
+                            <p>La <strong>cohérence transactionnelle</strong> est effectivement le défi principal résolu par Unit of Work :</p>
+                            <ul>
+                                <li><strong>Atomicité</strong> : Toutes les opérations réussissent ou échouent ensemble</li>
+                                <li><strong>Ordre optimal</strong> : Gestion automatique des dépendances (commande → stock → facture)</li>
+                                <li><strong>Rollback automatique</strong> : En cas d'échec, tout est annulé proprement</li>
+                                <li><strong>Optimisation</strong> : Regroupement des écritures en base de données</li>
+                            </ul>
+                            <p>🎯 Sans Unit of Work, si la génération de facture échoue après la création de commande, vous vous retrouvez avec des données incohérentes.</p>
+                        </div>
+                    `;
+                    break;
+                case 'simplicite':
+                    feedbackContent = `
+                        <div class="feedback-warning">
+                            <h4>🤔 Pas vraiment</h4>
+                            <p>Unit of Work peut en fait <strong>complexifier</strong> le code métier en ajoutant une couche d'abstraction supplémentaire.</p>
+                            <p>Son avantage principal est la <strong>cohérence transactionnelle</strong>, pas la simplicité.</p>
+                        </div>
+                    `;
+                    break;
+                case 'memoire':
+                    feedbackContent = `
+                        <div class="feedback-error">
+                            <h4>❌ Incorrect</h4>
+                            <p>Unit of Work <strong>augmente</strong> généralement la consommation mémoire car il maintient des listes d'objets en mémoire pendant toute la durée de la transaction.</p>
+                            <p>💡 Son bénéfice principal concerne la <strong>cohérence des données</strong>.</p>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            exerciseRetours.innerHTML = feedbackContent;
+            exerciseRetours.classList.remove('hidden');
+        }
+        
+        // Gestion des choix d'exercice
+        document.addEventListener('DOMContentLoaded', function() {
+            const choiceOptions = document.querySelectorAll('.choice-option');
+            
+            choiceOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Retirer la sélection précédente
+                    choiceOptions.forEach(opt => opt.classList.remove('selected'));
+                    // Ajouter la sélection à l'option cliquée
+                    this.classList.add('selected');
+                    // Lancer automatiquement la vérification
+                    checkExercise();
+                });
+            });
+            
+            // Gestion du bouton de completion
+            const markCompletedBtn = document.querySelector('.mark-completed');
+            if (markCompletedBtn) {
+                markCompletedBtn.addEventListener('click', function() {
+                    const page = this.dataset.page;
+                    const feedback = document.querySelector('.completion-feedback');
+                    
+                    // Marquer comme terminé
+                    this.disabled = true;
+                    this.textContent = '✅ Terminé';
+                    this.classList.add('completed');
+                    
+                    // Afficher le feedback
+                    if (feedback) {
+                        feedback.classList.remove('hidden');
+                    }
+                    
+                    // Sauvegarder dans localStorage
+                    let completedPages = JSON.parse(localStorage.getItem('completedPages') || '[]');
+                    if (!completedPages.includes(page)) {
+                        completedPages.push(page);
+                        localStorage.setItem('completedPages', JSON.stringify(completedPages));
+                    }
+                });
+            }
+            
+            // Vérifier si déjà complété
+            const completedPages = JSON.parse(localStorage.getItem('completedPages') || '[]');
+            if (completedPages.includes('unit-of-work')) {
+                const button = document.querySelector('[data-page="unit-of-work"]');
+                const feedback = document.querySelector('.completion-feedback');
+                if (button) {
+                    button.disabled = true;
+                    button.textContent = '✅ Terminé';
+                    button.classList.add('completed');
+                    if (feedback) {
+                        feedback.classList.remove('hidden');
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

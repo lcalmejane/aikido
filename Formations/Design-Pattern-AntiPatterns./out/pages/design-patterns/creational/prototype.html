@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototype Pattern - Formation Patterns Développeurs</title>
+    <meta name="description" content="Le pattern Prototype expliqué avec exemples de code, diagrammes UML et cas d'usage pratiques">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <h1 class="page-title">🧬 Prototype Pattern</h1>
+                    <p class="page-subtitle">Créer des objets par clonage d'instances existantes</p>
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">🎨</span>
+                            <span class="meta-text">Design Patterns</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⭐</span>
+                            <span class="meta-text">Difficulté: Moyen</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⏱️</span>
+                            <span class="meta-text">18 min</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🏭</span>
+                            <span class="meta-text">Création</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Définition et Problème -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card design-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="mb-md">
+                            Le <strong>Prototype</strong> est un pattern de création qui permet de créer de nouveaux 
+                            objets en clonant des instances existantes plutôt qu'en les construisant depuis zéro. 
+                            Il est particulièrement utile lorsque la création d'un objet est coûteuse.
+                        </p>
+                        
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problème Résolu</h3>
+                                <ul>
+                                    <li>Éviter la création coûteuse d'objets complexes</li>
+                                    <li>Créer des objets sans connaître leur classe exacte</li>
+                                    <li>Réduire le nombre de sous-classes</li>
+                                    <li>Configurer des objets à l'exécution</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solution Apportée</h3>
+                                <ul>
+                                    <li>Clonage d'instances existantes</li>
+                                    <li>Performance améliorée</li>
+                                    <li>Flexibilité de création</li>
+                                    <li>Registre de prototypes</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert warning">
+                            <strong>⚠️ Attention :</strong> Le clonage profond peut être complexe avec des objets 
+                            contenant des références circulaires ou des ressources externes.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Structure UML -->
+                <section class="structure-section">
+                    <div class="aikido-card">
+                        <h2>🏗️ Structure UML</h2>
+                        <div class="uml-diagram">
+                            <div class="uml-class-diagram">
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>Prototype</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method abstract">+ clone(): Prototype</div>
+                                    </div>
+                                </div>
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>ConcretePrototype</strong>
+                                    </div>
+                                    <div class="class-attributes">
+                                        <div class="attribute private">- data: string</div>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ clone(): ConcretePrototype</div>
+                                        <div class="method public">+ operation(): void</div>
+                                    </div>
+                                </div>
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>Client</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ createObject(): Prototype</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="structure-explanation">
+                            <h3>Éléments Clés</h3>
+                            <ul>
+                                <li><strong>Prototype</strong> : Interface définissant la méthode de clonage</li>
+                                <li><strong>ConcretePrototype</strong> : Implémente le clonage de lui-même</li>
+                                <li><strong>Client</strong> : Crée des objets en clonant des prototypes</li>
+                                <li><strong>Registry</strong> : Optionnel, stocke les prototypes disponibles</li>
+                            </ul>
+                        </div>
+
+                        <!-- Diagramme de flux Mermaid -->
+                        <div class="mt-lg">
+                            <h3>🔄 Flux d'Exécution</h3>
+                            <div class="mermaid">
+                                graph TD
+                                    A[Client demande un objet] --> B[Récupère prototype du registre]
+                                    B --> C[Appelle prototype.clone]
+                                    C --> D[Prototype se clone lui-même]
+                                    D --> E[Retourne nouvelle instance]
+                                    E --> F[Client utilise l'objet cloné]
+                                    
+                                    G[Autre client] --> B
+                                    
+                                    style A fill:#e1f5fe
+                                    style B fill:#fff3e0
+                                    style C fill:#ffebee
+                                    style D fill:#e8f5e8
+                                    style E fill:#f3e5f5
+                            </div>
+                            <p class="text-sm text-gray-600 mt-md">
+                                <strong>💡 Point clé :</strong> Chaque prototype sait comment se cloner, 
+                                permettant la création d'objets sans connaître leur classe concrète.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Implémentations -->
+                <section class="implementations-section">
+                    <h2>💻 Implémentations</h2>
+                    
+                    <div class="aikido-card">
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="typescript">TypeScript</button>
+                                <button class="tab-btn" data-tab="php">PHP</button>
+                                <button class="tab-btn" data-tab="java">Java</button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="typescript">
+                                <h4>Exemple : Système de Documents</h4>
+                                <pre><code class="language-typescript">
+// Interface Prototype
+interface Prototype {
+    clone(): Prototype;
+}
+
+// Prototype concret
+class Document implements Prototype {
+    private title: string;
+    private content: string;
+    private metadata: Map&lt;string, any&gt;;
+
+    constructor(title: string, content: string) {
+        this.title = title;
+        this.content = content;
+        this.metadata = new Map();
+    }
+
+    // Méthode de clonage
+    clone(): Document {
+        const cloned = new Document(this.title, this.content);
+        // Clonage profond des métadonnées
+        cloned.metadata = new Map(this.metadata);
+        return cloned;
+    }
+
+    setTitle(title: string): void {
+        this.title = title;
+    }
+
+    setContent(content: string): void {
+        this.content = content;
+    }
+
+    addMetadata(key: string, value: any): void {
+        this.metadata.set(key, value);
+    }
+
+    getInfo(): string {
+        return `Document: ${this.title} - ${this.content.substring(0, 50)}...`;
+    }
+}
+
+// Registre de prototypes
+class PrototypeRegistry {
+    private prototypes: Map&lt;string, Prototype&gt; = new Map();
+
+    register(name: string, prototype: Prototype): void {
+        this.prototypes.set(name, prototype);
+    }
+
+    create(name: string): Prototype | null {
+        const prototype = this.prototypes.get(name);
+        return prototype ? prototype.clone() : null;
+    }
+
+    getAvailableTypes(): string[] {
+        return Array.from(this.prototypes.keys());
+    }
+}
+
+// Utilisation
+const registry = new PrototypeRegistry();
+
+// Création d'un prototype de base
+const baseDocument = new Document("Template", "Contenu de base");
+baseDocument.addMetadata("author", "AI-KIDO");
+baseDocument.addMetadata("version", "1.0");
+
+// Enregistrement du prototype
+registry.register("document-template", baseDocument);
+
+// Création d'instances par clonage
+const doc1 = registry.create("document-template") as Document;
+doc1.setTitle("Document 1");
+doc1.setContent("Contenu spécifique du document 1");
+
+const doc2 = registry.create("document-template") as Document;
+doc2.setTitle("Document 2");
+doc2.setContent("Contenu spécifique du document 2");
+
+console.log(doc1.getInfo());
+console.log(doc2.getInfo());
+
+// Vérification que les objets sont différents
+console.log(doc1 === doc2); // false
+console.log(doc1 === baseDocument); // false
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="php">
+                                <pre><code class="language-php">
+&lt;?php
+
+// Interface Prototype
+interface Prototype
+{
+    public function clone(): Prototype;
+}
+
+// Prototype concret
+class GameCharacter implements Prototype
+{
+    private string $name;
+    private int $level;
+    private array $equipment;
+    private array $skills;
+
+    public function __construct(string $name, int $level = 1)
+    {
+        $this->name = $name;
+        $this->level = $level;
+        $this->equipment = [];
+        $this->skills = [];
+    }
+
+    // Méthode de clonage
+    public function clone(): GameCharacter
+    {
+        $cloned = new GameCharacter($this->name, $this->level);
+        // Clonage profond des équipements et compétences
+        $cloned->equipment = $this->equipment;
+        $cloned->skills = $this->skills;
+        return $cloned;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function setLevel(int $level): void
+    {
+        $this->level = $level;
+    }
+
+    public function addEquipment(string $item): void
+    {
+        $this->equipment[] = $item;
+    }
+
+    public function addSkill(string $skill): void
+    {
+        $this->skills[] = $skill;
+    }
+
+    public function getInfo(): string
+    {
+        return "Personnage: {$this->name} (Niveau {$this->level}) - " .
+               count($this->equipment) . " équipements, " .
+               count($this->skills) . " compétences";
+    }
+}
+
+// Registre de prototypes
+class CharacterRegistry
+{
+    private array $prototypes = [];
+
+    public function register(string $type, Prototype $prototype): void
+    {
+        $this->prototypes[$type] = $prototype;
+    }
+
+    public function create(string $type): ?Prototype
+    {
+        return isset($this->prototypes[$type]) 
+            ? $this->prototypes[$type]->clone() 
+            : null;
+    }
+}
+
+// Utilisation
+$registry = new CharacterRegistry();
+
+// Création de prototypes de base
+$warrior = new GameCharacter("Guerrier Template", 10);
+$warrior->addEquipment("Épée");
+$warrior->addEquipment("Bouclier");
+$warrior->addSkill("Combat");
+$warrior->addSkill("Défense");
+
+$mage = new GameCharacter("Mage Template", 8);
+$mage->addEquipment("Bâton magique");
+$mage->addEquipment("Robe");
+$mage->addSkill("Magie");
+$mage->addSkill("Guérison");
+
+// Enregistrement des prototypes
+$registry->register("warrior", $warrior);
+$registry->register("mage", $mage);
+
+// Création de personnages par clonage
+$player1 = $registry->create("warrior");
+$player1->setName("Aragorn");
+$player1->setLevel(15);
+
+$player2 = $registry->create("mage");
+$player2->setName("Gandalf");
+$player2->addSkill("Téléportation");
+
+echo $player1->getInfo() . "\n";
+echo $player2->getInfo() . "\n";
+
+?&gt;
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="java">
+                                <pre><code class="language-java">
+import java.util.*;
+
+// Interface Prototype
+interface Prototype {
+    Prototype clone();
+}
+
+// Prototype concret
+class NetworkConnection implements Prototype {
+    private String host;
+    private int port;
+    private String protocol;
+    private Map&lt;String, String&gt; headers;
+    private boolean isConnected;
+
+    public NetworkConnection(String host, int port, String protocol) {
+        this.host = host;
+        this.port = port;
+        this.protocol = protocol;
+        this.headers = new HashMap&lt;&gt;();
+        this.isConnected = false;
+    }
+
+    // Méthode de clonage
+    @Override
+    public NetworkConnection clone() {
+        NetworkConnection cloned = new NetworkConnection(this.host, this.port, this.protocol);
+        // Clonage profond des headers
+        cloned.headers = new HashMap&lt;&gt;(this.headers);
+        cloned.isConnected = false; // Nouvelle connexion non établie
+        return cloned;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public void addHeader(String key, String value) {
+        this.headers.put(key, value);
+    }
+
+    public void connect() {
+        this.isConnected = true;
+        System.out.println("Connexion établie vers " + protocol + "://" + host + ":" + port);
+    }
+
+    public void disconnect() {
+        this.isConnected = false;
+        System.out.println("Connexion fermée");
+    }
+
+    public String getInfo() {
+        return String.format("Connexion %s://%s:%d (%s) - %d headers",
+            protocol, host, port, 
+            isConnected ? "connectée" : "déconnectée",
+            headers.size());
+    }
+
+    // Getters
+    public String getHost() { return host; }
+    public int getPort() { return port; }
+    public String getProtocol() { return protocol; }
+    public boolean isConnected() { return isConnected; }
+}
+
+// Registre de prototypes
+class ConnectionRegistry {
+    private Map&lt;String, Prototype&gt; prototypes = new HashMap&lt;&gt;();
+
+    public void register(String name, Prototype prototype) {
+        prototypes.put(name, prototype);
+    }
+
+    public Prototype create(String name) {
+        Prototype prototype = prototypes.get(name);
+        return prototype != null ? prototype.clone() : null;
+    }
+
+    public Set&lt;String&gt; getAvailableTypes() {
+        return prototypes.keySet();
+    }
+}
+
+// Utilisation
+public class PrototypeExample {
+    public static void main(String[] args) {
+        ConnectionRegistry registry = new ConnectionRegistry();
+
+        // Création de prototypes de base
+        NetworkConnection httpTemplate = new NetworkConnection("api.example.com", 80, "HTTP");
+        httpTemplate.addHeader("User-Agent", "MyApp/1.0");
+        httpTemplate.addHeader("Accept", "application/json");
+
+        NetworkConnection httpsTemplate = new NetworkConnection("secure.example.com", 443, "HTTPS");
+        httpsTemplate.addHeader("User-Agent", "MyApp/1.0");
+        httpsTemplate.addHeader("Accept", "application/json");
+        httpsTemplate.addHeader("Authorization", "Bearer token");
+
+        // Enregistrement des prototypes
+        registry.register("http-api", httpTemplate);
+        registry.register("https-api", httpsTemplate);
+
+        // Création de connexions par clonage
+        NetworkConnection conn1 = (NetworkConnection) registry.create("http-api");
+        conn1.setHost("api1.example.com");
+        conn1.connect();
+
+        NetworkConnection conn2 = (NetworkConnection) registry.create("https-api");
+        conn2.setHost("api2.example.com");
+        conn2.setPort(8443);
+        conn2.connect();
+
+        System.out.println(conn1.getInfo());
+        System.out.println(conn2.getInfo());
+
+        // Vérification que les objets sont différents
+        System.out.println("Objets différents: " + (conn1 != conn2));
+        System.out.println("Objets différents du template: " + (conn1 != httpTemplate));
+    }
+}
+</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Avantages et Inconvénients -->
+                <section class="pros-cons-section">
+                    <div class="aikido-card">
+                        <h2>⚖️ Avantages et Inconvénients</h2>
+                        
+                        <div class="pros-cons-grid">
+                            <div class="pros-card">
+                                <h3>✅ Avantages</h3>
+                                <ul>
+                                    <li><strong>Performance</strong> : Évite la création coûteuse d'objets</li>
+                                    <li><strong>Flexibilité</strong> : Création sans connaître la classe exacte</li>
+                                    <li><strong>Configuration</strong> : Objets pré-configurés réutilisables</li>
+                                    <li><strong>Réduction de classes</strong> : Moins de sous-classes nécessaires</li>
+                                    <li><strong>Runtime</strong> : Ajout/suppression de prototypes à l'exécution</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="cons-card">
+                                <h3>❌ Inconvénients</h3>
+                                <ul>
+                                    <li><strong>Clonage complexe</strong> : Difficile avec références circulaires</li>
+                                    <li><strong>Clonage profond</strong> : Peut être coûteux en mémoire</li>
+                                    <li><strong>Dépendances cachées</strong> : Objets partagés non évidents</li>
+                                    <li><strong>Maintenance</strong> : Gestion du registre de prototypes</li>
+                                    <li><strong>Debugging</strong> : Plus difficile de tracer l'origine des objets</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Cas d'Usage -->
+                <section class="use-cases-section">
+                    <div class="aikido-card">
+                        <h2>🎯 Cas d'Usage Appropriés</h2>
+                        
+                        <div class="use-cases-grid">
+                            <div class="use-case good">
+                                <h4>✅ Quand l'utiliser</h4>
+                                <ul>
+                                    <li><strong>Objets coûteux</strong> : Création nécessitant beaucoup de ressources</li>
+                                    <li><strong>Configuration complexe</strong> : Objets avec beaucoup de paramètres</li>
+                                    <li><strong>Templates</strong> : Modèles pré-configurés à personnaliser</li>
+                                    <li><strong>Objets similaires</strong> : Variations d'un même type d'objet</li>
+                                    <li><strong>Runtime creation</strong> : Types d'objets déterminés à l'exécution</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="use-case bad">
+                                <h4>❌ Quand l'éviter</h4>
+                                <ul>
+                                    <li><strong>Objets simples</strong> : Création rapide et peu coûteuse</li>
+                                    <li><strong>Objets immutables</strong> : Pas de bénéfice du clonage</li>
+                                    <li><strong>Références externes</strong> : Objets avec beaucoup de dépendances</li>
+                                    <li><strong>Singletons</strong> : Quand une seule instance est requise</li>
+                                    <li><strong>Objets avec état critique</strong> : Risque de corruption par clonage</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Alternatives et Patterns Liés -->
+                <section class="alternatives-section">
+                    <div class="aikido-card">
+                        <h2>🔄 Alternatives et Patterns Liés</h2>
+                        
+                        <div class="alternatives-grid">
+                            <div class="alternative-card">
+                                <h4>🏭 Factory Method</h4>
+                                <p>Créer des objets via des méthodes de factory</p>
+                                <div class="code-example">
+                                    <code>DocumentFactory.createReport(type)</code>
+                                </div>
+                            </div>
+                            
+                            <div class="alternative-card">
+                                <h4>🔨 Builder Pattern</h4>
+                                <p>Construire des objets complexes étape par étape</p>
+                                <div class="code-example">
+                                    <code>new DocumentBuilder().title("...").build()</code>
+                                </div>
+                            </div>
+                            
+                            <div class="alternative-card">
+                                <h4>📋 Object Pool</h4>
+                                <p>Réutiliser des objets existants plutôt que les cloner</p>
+                                <div class="code-example">
+                                    <code>ConnectionPool.acquire()</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Biais Cognitifs Liés -->
+                <section class="cognitive-bias-section">
+                    <div class="aikido-card biais-cognitif">
+                        <h2>🧩 Biais Cognitifs Associés</h2>
+                        
+                        <div class="bias-analysis">
+                            <div class="bias-item">
+                                <h4>🔄 Biais de Disponibilité</h4>
+                                <p><strong>Manifestation :</strong> "J'ai un prototype qui marche, utilisons-le partout."</p>
+                                <p><strong>Risque :</strong> Réutilisation excessive sans évaluer si c'est approprié.</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>⚡ Biais de l'Effort Justifié</h4>
+                                <p><strong>Manifestation :</strong> Surestimer la valeur du pattern car il nécessite un effort de mise en place.</p>
+                                <p><strong>Risque :</strong> Utiliser le pattern même quand la création directe serait plus simple.</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>✅ Biais de Confirmation</h4>
+                                <p><strong>Manifestation :</strong> Chercher uniquement les cas où le clonage est bénéfique.</p>
+                                <p><strong>Risque :</strong> Ignorer les situations où d'autres patterns seraient plus appropriés.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Anti-Patterns Liés -->
+                <section class="antipatterns-section">
+                    <div class="aikido-card anti-pattern">
+                        <h2>⚠️ Anti-Patterns à Éviter</h2>
+                        
+                        <div class="antipattern-warnings">
+                            <div class="antipattern-warning">
+                                <h4>🔗 Shallow Clone Trap</h4>
+                                <p>Utiliser un clonage superficiel quand un clonage profond est nécessaire.</p>
+                                <div class="code-example bad">
+                                    <code>// ❌ Clonage superficiel problématique
+clone.references = this.references; // Références partagées !</code>
+                                </div>
+                            </div>
+                            
+                            <div class="antipattern-warning">
+                                <h4>🏭 Prototype Factory Confusion</h4>
+                                <p>Confondre le pattern Prototype avec une simple Factory.</p>
+                                <div class="code-example bad">
+                                    <code>// ❌ Ce n'est pas du Prototype, c'est une Factory
+createDocument(type) { return new Document(type); }</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercice Pratique -->
+                <section class="exercise-section">
+                    <div class="aikido-card exercise">
+                        <h2>🎯 Exercice Pratique</h2>
+                        
+                        <div class="exercise-scenario">
+                            <h3>Scenario : Système de Templates d'Email</h3>
+                            <p>
+                                Vous développez un système d'emailing qui doit gérer différents types de templates 
+                                (newsletter, promotion, notification). Chaque template a une structure complexe avec 
+                                des styles, des sections et des configurations spécifiques.
+                            </p>
+                            
+                            <div class="exercise-question">
+                                <h4>Question :</h4>
+                                <p>Quelle est la principale différence entre le pattern Prototype et une simple copie d'objet ?</p>
+                                
+                                <div class="choice-options">
+                                    <div class="choice-option" data-choice="shallow">
+                                        🔄 Le Prototype utilise toujours un clonage superficiel
+                                    </div>
+                                    <div class="choice-option" data-choice="abstraction">
+                                        🎯 Le Prototype permet de créer des objets sans connaître leur classe concrète
+                                    </div>
+                                    <div class="choice-option" data-choice="performance">
+                                        ⚡ Le Prototype est toujours plus rapide que la copie d'objet
+                                    </div>
+                                    <div class="choice-option" data-choice="immutable">
+                                        🔒 Le Prototype ne fonctionne qu'avec des objets immutables
+                                    </div>
+                                </div>
+                                
+                                <div id="exercise-retours" class="exercise-retours hidden">
+                                    <!-- Le feedback sera affiché ici -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Completion Section -->
+                <section class="completion-section slide-in">
+                    <div class="aikido-card completion">
+                        <div class="completion-content">
+                            <div class="completion-icon">📋</div>
+                            <div class="completion-text">
+                                <h3>Avez-vous terminé cette section ?</h3>
+                                <p>Marquez cette page comme terminée pour suivre votre progression dans la formation.</p>
+                            </div>
+                            <button class="aikido-btn primary mark-completed" data-page="prototype">
+                                Marquer comme Terminé ✓
+                            </button>
+                        </div>
+                        
+                        <div class="completion-feedback hidden">
+
+                            <div class="feedback-success">
+                                <h4>🎉 Excellent travail !</h4>
+                                <p>Vous avez terminé l'étude du pattern Prototype. Vous comprenez maintenant :</p>
+                                <ul>
+                                    <li>Comment créer des objets par clonage d'instances existantes</li>
+                                    <li>Les avantages du clonage vs création directe</li>
+                                    <li>Quand utiliser le Prototype vs d'autres patterns</li>
+                                    <li>Les pièges du clonage profond et superficiel</li>
+                                </ul>
+                                <p>Continuez avec le pattern suivant pour approfondir vos connaissances !</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Script pour l'exercice interactif -->
+    <script>
+        // Gestion de l'exercice interactif
+        document.addEventListener('DOMContentLoaded', function() {
+            const choiceOptions = document.querySelectorAll('.choice-option');
+            const exerciseRetours = document.getElementById('exercise-retours');
+            
+            choiceOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Désélectionner toutes les options
+                    choiceOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Sélectionner l'option cliquée
+                    this.classList.add('selected');
+                    
+                    // Afficher le feedback
+                    const choice = this.getAttribute('data-choice');
+                    showPrototypeFeedback(choice);
+                });
+            });
+        });
+
+        function showPrototypeFeedback(choice) {
+            const exerciseRetours = document.getElementById('exercise-retours');
+            let feedbackContent = '';
+
+            switch(choice) {
+                case 'shallow':
+                    feedbackContent = `
+                        <div class="feedback-content incorrect">
+                            <div class="feedback-icon">❌</div>
+                            <div class="feedback-text">
+                                <strong>Incorrect</strong>
+                                <p>Le Prototype peut utiliser un clonage profond ou superficiel selon les besoins. Ce n'est pas limité au clonage superficiel.</p>
+                                <p><strong>Rappel :</strong> Le type de clonage dépend de la structure de l'objet et des besoins.</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'abstraction':
+                    feedbackContent = `
+                        <div class="feedback-content correct">
+                            <div class="feedback-icon">✅</div>
+                            <div class="feedback-text">
+                                <strong>Excellente réponse !</strong>
+                                <p>Le pattern Prototype permet effectivement de créer des objets sans connaître leur classe concrète. Le client travaille avec l'interface Prototype et peut cloner des objets sans se soucier de leur implémentation spécifique.</p>
+                                <p><strong>Avantage clé :</strong> Abstraction complète du processus de création.</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'performance':
+                    feedbackContent = `
+                        <div class="feedback-content incorrect">
+                            <div class="feedback-icon">❌</div>
+                            <div class="feedback-text">
+                                <strong>Incorrect</strong>
+                                <p>La performance du Prototype dépend de l'implémentation et de la complexité de l'objet à cloner. Ce n'est pas toujours plus rapide.</p>
+                                <p><strong>Nuance :</strong> Le Prototype est avantageux quand la création initiale est coûteuse, pas nécessairement plus rapide.</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'immutable':
+                    feedbackContent = `
+                        <div class="feedback-content incorrect">
+                            <div class="feedback-icon">❌</div>
+                            <div class="feedback-text">
+                                <strong>Incorrect</strong>
+                                <p>Le Prototype fonctionne avec tous types d'objets, mutables ou immutables. L'immutabilité n'est pas une exigence.</p>
+                                <p><strong>Flexibilité :</strong> Le pattern s'adapte à différents types d'objets selon les besoins.</p>
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+
+            exerciseRetours.innerHTML = feedbackContent;
+            exerciseRetours.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

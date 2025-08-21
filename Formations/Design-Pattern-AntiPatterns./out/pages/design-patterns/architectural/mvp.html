@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MVP Pattern - Formation Patterns Développeurs</title>
+    <meta name="description" content="Le pattern MVP (Model-View-Presenter) expliqué avec exemples de code, diagrammes UML et cas d'usage pratiques">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <h1 class="page-title">🎭 MVP Pattern</h1>
+                    <p class="page-subtitle">Séparer la logique de présentation avec un Presenter</p>
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">🏗️</span>
+                            <span class="meta-text">Architectural</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⭐</span>
+                            <span class="meta-text">Difficulté: Intermédiaire</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⏱️</span>
+                            <span class="meta-text">25 min</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🎯</span>
+                            <span class="meta-text">Séparation des responsabilités</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Définition et Problème -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card design-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="mb-md">
+                            Le <strong>MVP (Model-View-Presenter)</strong> est un pattern architectural qui sépare 
+                            la logique de présentation de la logique métier en introduisant un Presenter qui fait 
+                            le lien entre la Vue et le Modèle.
+                        </p>
+                        
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problème Résolu</h3>
+                                <ul>
+                                    <li>Vue trop couplée à la logique métier</li>
+                                    <li>Difficultés pour tester la logique de présentation</li>
+                                    <li>Code de présentation mélangé avec l'interface</li>
+                                    <li>Réutilisation limitée des composants</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solution Apportée</h3>
+                                <ul>
+                                    <li>Séparation claire des responsabilités</li>
+                                    <li>Vue passive et testable</li>
+                                    <li>Presenter contient toute la logique de présentation</li>
+                                    <li>Meilleure testabilité et maintenabilité</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert info">
+                            <strong>💡 Différence avec MVC :</strong> Dans MVP, la Vue ne communique jamais directement 
+                            avec le Modèle. Tout passe par le Presenter qui orchestre les interactions.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Structure UML -->
+                <section class="structure-section">
+                    <div class="aikido-card">
+                        <h2>🏗️ Structure UML</h2>
+                        <div class="uml-diagram">
+                            <div class="uml-class-diagram">
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>Model</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ getData(): Data</div>
+                                        <div class="method public">+ saveData(data: Data): void</div>
+                                        <div class="method public">+ notifyObservers(): void</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>View (Interface)</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ displayData(data: Data): void</div>
+                                        <div class="method public">+ showError(message: string): void</div>
+                                        <div class="method public">+ getUserInput(): UserInput</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>Presenter</strong>
+                                    </div>
+                                    <div class="class-attributes">
+                                        <div class="attribute private">- model: Model</div>
+                                        <div class="attribute private">- view: View</div>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ handleUserAction(): void</div>
+                                        <div class="method public">+ updateView(): void</div>
+                                        <div class="method private">- processData(): void</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="structure-explanation">
+                            <h3>Éléments Clés</h3>
+                            <ul>
+                                <li><strong>Model</strong> : Contient les données et la logique métier</li>
+                                <li><strong>View</strong> : Interface passive qui affiche les données</li>
+                                <li><strong>Presenter</strong> : Orchestre les interactions entre Model et View</li>
+                                <li><strong>Communication unidirectionnelle</strong> : View → Presenter → Model</li>
+                            </ul>
+                        </div>
+
+                        <!-- Diagramme de flux Mermaid -->
+                        <div class="mt-lg">
+                            <h3>🔄 Flux d'Exécution</h3>
+                            <div class="mermaid">
+                                graph TD
+                                    A[User Action sur View] --> B[View notifie Presenter]
+                                    B --> C[Presenter traite l'action]
+                                    C --> D[Presenter interroge Model]
+                                    D --> E[Model retourne données]
+                                    E --> F[Presenter traite les données]
+                                    F --> G[Presenter met à jour View]
+                                    G --> H[View affiche les données]
+                                    
+                                    I[Model change] --> J[Model notifie Presenter]
+                                    J --> K[Presenter met à jour View]
+                                    K --> H
+                                    
+                                    style A fill:#e1f5fe
+                                    style B fill:#fff3e0
+                                    style C fill:#ffebee
+                                    style D fill:#e8f5e8
+                                    style F fill:#f3e5f5
+                                    style G fill:#fce4ec
+                            </div>
+                            <p class="text-sm text-gray-600 mt-md">
+                                <strong>💡 Point clé :</strong> Le Presenter agit comme un médiateur entre la Vue et le Modèle,
+                                centralisant toute la logique de présentation.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Implémentations -->
+                <section class="implementations-section">
+                    <h2>💻 Implémentations</h2>
+                    
+                    <div class="aikido-card">
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="typescript">TypeScript</button>
+                                <button class="tab-btn" data-tab="php">PHP</button>
+                                <button class="tab-btn" data-tab="java">Java</button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="typescript">
+                                <h4>Exemple : Application de Gestion de Contacts</h4>
+                                <pre><code class="language-typescript">
+// Model - Gestion des données
+interface Contact {
+    id: number;
+    name: string;
+    email: string;
+    phone: string;
+}
+
+class ContactModel {
+    private contacts: Contact[] = [];
+    private observers: ContactObserver[] = [];
+    
+    addObserver(observer: ContactObserver): void {
+        this.observers.push(observer);
+    }
+    
+    removeObserver(observer: ContactObserver): void {
+        const index = this.observers.indexOf(observer);
+        if (index > -1) {
+            this.observers.splice(index, 1);
+        }
+    }
+    
+    private notifyObservers(): void {
+        this.observers.forEach(observer => observer.onContactsChanged(this.contacts));
+    }
+    
+    getAllContacts(): Contact[] {
+        return [...this.contacts];
+    }
+    
+    addContact(contact: Omit<Contact, 'id'>): void {
+        const newContact: Contact = {
+            id: Date.now(),
+            ...contact
+        };
+        this.contacts.push(newContact);
+        this.notifyObservers();
+    }
+    
+    updateContact(id: number, updates: Partial<Contact>): void {
+        const index = this.contacts.findIndex(c => c.id === id);
+        if (index !== -1) {
+            this.contacts[index] = { ...this.contacts[index], ...updates };
+            this.notifyObservers();
+        }
+    }
+    
+    deleteContact(id: number): void {
+        this.contacts = this.contacts.filter(c => c.id !== id);
+        this.notifyObservers();
+    }
+    
+    searchContacts(query: string): Contact[] {
+        return this.contacts.filter(contact =>
+            contact.name.toLowerCase().includes(query.toLowerCase()) ||
+            contact.email.toLowerCase().includes(query.toLowerCase())
+        );
+    }
+}
+
+// View Interface
+interface ContactView {
+    displayContacts(contacts: Contact[]): void;
+    displayContact(contact: Contact): void;
+    showError(message: string): void;
+    showSuccess(message: string): void;
+    clearForm(): void;
+    getFormData(): Omit<Contact, 'id'>;
+    setPresenter(presenter: ContactPresenter): void;
+}
+
+// Observer Interface
+interface ContactObserver {
+    onContactsChanged(contacts: Contact[]): void;
+}
+
+// Presenter
+class ContactPresenter implements ContactObserver {
+    private model: ContactModel;
+    private view: ContactView;
+    
+    constructor(model: ContactModel, view: ContactView) {
+        this.model = model;
+        this.view = view;
+        this.view.setPresenter(this);
+        this.model.addObserver(this);
+        this.loadContacts();
+    }
+    
+    // Méthodes appelées par la View
+    onAddContact(): void {
+        try {
+            const formData = this.view.getFormData();
+            
+            if (!this.validateContactData(formData)) {
+                this.view.showError('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+            
+            this.model.addContact(formData);
+            this.view.clearForm();
+            this.view.showSuccess('Contact ajouté avec succès');
+        } catch (error) {
+            this.view.showError('Erreur lors de l\'ajout du contact');
+        }
+    }
+    
+    onDeleteContact(id: number): void {
+        try {
+            this.model.deleteContact(id);
+            this.view.showSuccess('Contact supprimé avec succès');
+        } catch (error) {
+            this.view.showError('Erreur lors de la suppression');
+        }
+    }
+    
+    onSearchContacts(query: string): void {
+        try {
+            const results = this.model.searchContacts(query);
+            this.view.displayContacts(results);
+        } catch (error) {
+            this.view.showError('Erreur lors de la recherche');
+        }
+    }
+    
+    // Observer callback
+    onContactsChanged(contacts: Contact[]): void {
+        this.view.displayContacts(contacts);
+    }
+    
+    private loadContacts(): void {
+        const contacts = this.model.getAllContacts();
+        this.view.displayContacts(contacts);
+    }
+    
+    private validateContactData(data: Omit<Contact, 'id'>): boolean {
+        return !!(data.name && data.email && data.phone);
+    }
+}
+
+// Implémentation concrète de la View (exemple DOM)
+class DOMContactView implements ContactView {
+    private presenter?: ContactPresenter;
+    private contactsList: HTMLElement;
+    private form: HTMLFormElement;
+    private messageDiv: HTMLElement;
+    
+    constructor() {
+        this.contactsList = document.getElementById('contacts-list')!;
+        this.form = document.getElementById('contact-form') as HTMLFormElement;
+        this.messageDiv = document.getElementById('message')!;
+        this.setupEventListeners();
+    }
+    
+    setPresenter(presenter: ContactPresenter): void {
+        this.presenter = presenter;
+    }
+    
+    private setupEventListeners(): void {
+        this.form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.presenter?.onAddContact();
+        });
+        
+        const searchInput = document.getElementById('search') as HTMLInputElement;
+        searchInput.addEventListener('input', (e) => {
+            const query = (e.target as HTMLInputElement).value;
+            this.presenter?.onSearchContacts(query);
+        });
+    }
+    
+    displayContacts(contacts: Contact[]): void {
+        this.contactsList.innerHTML = contacts.map(contact => `
+            <div class="contact-item" data-id="${contact.id}">
+                <h3>${contact.name}</h3>
+                <p>Email: ${contact.email}</p>
+                <p>Téléphone: ${contact.phone}</p>
+                <button onclick="presenter.onDeleteContact(' + contact.id + ')">Supprimer</button>
+            </div>
+        `).join('');
+    }
+    
+    displayContact(contact: Contact): void {
+        // Affichage d'un contact spécifique
+    }
+    
+    showError(message: string): void {
+        this.messageDiv.className = 'message error';
+        this.messageDiv.textContent = message;
+        setTimeout(() => this.clearMessage(), 3000);
+    }
+    
+    showSuccess(message: string): void {
+        this.messageDiv.className = 'message success';
+        this.messageDiv.textContent = message;
+        setTimeout(() => this.clearMessage(), 3000);
+    }
+    
+    clearForm(): void {
+        this.form.reset();
+    }
+    
+    getFormData(): Omit<Contact, 'id'> {
+        const formData = new FormData(this.form);
+        return {
+            name: formData.get('name') as string,
+            email: formData.get('email') as string,
+            phone: formData.get('phone') as string
+        };
+    }
+    
+    private clearMessage(): void {
+        this.messageDiv.textContent = '';
+        this.messageDiv.className = '';
+    }
+}
+
+// Utilisation
+const model = new ContactModel();
+const view = new DOMContactView();
+const presenter = new ContactPresenter(model, view);
+
+// Ajout de données de test
+model.addContact({ name: 'John Doe', email: 'john@example.com', phone: '123-456-7890' });
+model.addContact({ name: 'Jane Smith', email: 'jane@example.com', phone: '098-765-4321' });
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="php">
+                                <pre><code class="language-php">
+&lt;?php
+
+// Model - Gestion des données
+class Contact {
+    public int $id;
+    public string $name;
+    public string $email;
+    public string $phone;
+    
+    public function __construct(int $id, string $name, string $email, string $phone) {
+        $this->id = $id;
+        $this->name = $name;
+        $this->email = $email;
+        $this->phone = $phone;
+    }
+    
+    public function toArray(): array {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'phone' => $this->phone
+        ];
+    }
+}
+
+interface ContactObserver {
+    public function onContactsChanged(array $contacts): void;
+}
+
+class ContactModel {
+    private array $contacts = [];
+    private array $observers = [];
+    private int $nextId = 1;
+    
+    public function addObserver(ContactObserver $observer): void {
+        $this->observers[] = $observer;
+    }
+    
+    public function removeObserver(ContactObserver $observer): void {
+        $key = array_search($observer, $this->observers, true);
+        if ($key !== false) {
+            unset($this->observers[$key]);
+        }
+    }
+    
+    private function notifyObservers(): void {
+        foreach ($this->observers as $observer) {
+            $observer->onContactsChanged($this->contacts);
+        }
+    }
+    
+    public function getAllContacts(): array {
+        return $this->contacts;
+    }
+    
+    public function addContact(string $name, string $email, string $phone): Contact {
+        $contact = new Contact($this->nextId++, $name, $email, $phone);
+        $this->contacts[] = $contact;
+        $this->notifyObservers();
+        return $contact;
+    }
+    
+    public function updateContact(int $id, array $updates): bool {
+        foreach ($this->contacts as $contact) {
+            if ($contact->id === $id) {
+                if (isset($updates['name'])) $contact->name = $updates['name'];
+                if (isset($updates['email'])) $contact->email = $updates['email'];
+                if (isset($updates['phone'])) $contact->phone = $updates['phone'];
+                $this->notifyObservers();
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public function deleteContact(int $id): bool {
+        foreach ($this->contacts as $key => $contact) {
+            if ($contact->id === $id) {
+                unset($this->contacts[$key]);
+                $this->contacts = array_values($this->contacts);
+                $this->notifyObservers();
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public function searchContacts(string $query): array {
+        $query = strtolower($query);
+        return array_filter($this->contacts, function($contact) use ($query) {
+            return strpos(strtolower($contact->name), $query) !== false ||
+                   strpos(strtolower($contact->email), $query) !== false;
+        });
+    }
+}
+
+// View Interface
+interface ContactView {
+    public function displayContacts(array $contacts): void;
+    public function displayContact(Contact $contact): void;
+    public function showError(string $message): void;
+    public function showSuccess(string $message): void;
+    public function clearForm(): void;
+    public function getFormData(): array;
+    public function setPresenter(ContactPresenter $presenter): void;
+}
+
+// Presenter
+class ContactPresenter implements ContactObserver {
+    private ContactModel $model;
+    private ContactView $view;
+    
+    public function __construct(ContactModel $model, ContactView $view) {
+        $this->model = $model;
+        $this->view = $view;
+        $this->view->setPresenter($this);
+        $this->model->addObserver($this);
+        $this->loadContacts();
+    }
+    
+    public function onAddContact(): void {
+        try {
+            $formData = $this->view->getFormData();
+            
+            if (!$this->validateContactData($formData)) {
+                $this->view->showError('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+            
+            $this->model->addContact(
+                $formData['name'],
+                $formData['email'],
+                $formData['phone']
+            );
+            
+            $this->view->clearForm();
+            $this->view->showSuccess('Contact ajouté avec succès');
+        } catch (Exception $e) {
+            $this->view->showError('Erreur lors de l\'ajout du contact: ' . $e->getMessage());
+        }
+    }
+    
+    public function onDeleteContact(int $id): void {
+        try {
+            if ($this->model->deleteContact($id)) {
+                $this->view->showSuccess('Contact supprimé avec succès');
+            } else {
+                $this->view->showError('Contact non trouvé');
+            }
+        } catch (Exception $e) {
+            $this->view->showError('Erreur lors de la suppression: ' . $e->getMessage());
+        }
+    }
+    
+    public function onSearchContacts(string $query): void {
+        try {
+            $results = $this->model->searchContacts($query);
+            $this->view->displayContacts($results);
+        } catch (Exception $e) {
+            $this->view->showError('Erreur lors de la recherche: ' . $e->getMessage());
+        }
+    }
+    
+    public function onContactsChanged(array $contacts): void {
+        $this->view->displayContacts($contacts);
+    }
+    
+    private function loadContacts(): void {
+        $contacts = $this->model->getAllContacts();
+        $this->view->displayContacts($contacts);
+    }
+    
+    private function validateContactData(array $data): bool {
+        return !empty($data['name']) && 
+               !empty($data['email']) && 
+               !empty($data['phone']) &&
+               filter_var($data['email'], FILTER_VALIDATE_EMAIL);
+    }
+}
+
+// Implémentation Web de la View
+class WebContactView implements ContactView {
+    private ?ContactPresenter $presenter = null;
+    private array $messages = [];
+    
+    public function setPresenter(ContactPresenter $presenter): void {
+        $this->presenter = $presenter;
+    }
+    
+    public function displayContacts(array $contacts): void {
+        echo "<div class='contacts-list'>";
+        foreach ($contacts as $contact) {
+            echo "<div class='contact-item'>";
+            echo "<h3>" . htmlspecialchars($contact->name) . "</h3>";
+            echo "<p>Email: " . htmlspecialchars($contact->email) . "</p>";
+            echo "<p>Téléphone: " . htmlspecialchars($contact->phone) . "</p>";
+            echo "<button onclick='deleteContact(" . $contact->id . ")'>Supprimer</button>";
+            echo "</div>";
+        }
+        echo "</div>";
+    }
+    
+    public function displayContact(Contact $contact): void {
+        echo "<div class='contact-detail'>";
+        echo "<h2>" . htmlspecialchars($contact->name) . "</h2>";
+        echo "<p>Email: " . htmlspecialchars($contact->email) . "</p>";
+        echo "<p>Téléphone: " . htmlspecialchars($contact->phone) . "</p>";
+        echo "</div>";
+    }
+    
+    public function showError(string $message): void {
+        $this->messages[] = ['type' => 'error', 'text' => $message];
+        $this->displayMessages();
+    }
+    
+    public function showSuccess(string $message): void {
+        $this->messages[] = ['type' => 'success', 'text' => $message];
+        $this->displayMessages();
+    }
+    
+    public function clearForm(): void {
+        // En contexte web, cela pourrait rediriger ou vider les variables de session
+        $_POST = [];
+    }
+    
+    public function getFormData(): array {
+        return [
+            'name' => $_POST['name'] ?? '',
+            'email' => $_POST['email'] ?? '',
+            'phone' => $_POST['phone'] ?? ''
+        ];
+    }
+    
+    private function displayMessages(): void {
+        foreach ($this->messages as $message) {
+            $class = $message['type'] === 'error' ? 'alert-danger' : 'alert-success';
+            echo "<div class='alert {$class}'>" . htmlspecialchars($message['text']) . "</div>";
+        }
+        $this->messages = [];
+    }
+    
+    public function renderForm(): void {
+        echo "<form method='POST' action='contacts.php'>";
+        echo "<input type='text' name='name' placeholder='Nom' required>";
+        echo "<input type='email' name='email' placeholder='Email' required>";
+        echo "<input type='tel' name='phone' placeholder='Téléphone' required>";
+        echo "<button type='submit' name='action' value='add'>Ajouter Contact</button>";
+        echo "</form>";
+    }
+}
+
+// Utilisation
+$model = new ContactModel();
+$view = new WebContactView();
+$presenter = new ContactPresenter($model, $view);
+
+// Traitement des actions
+if ($_POST['action'] ?? '' === 'add') {
+    $presenter->onAddContact();
+} elseif ($_POST['action'] ?? '' === 'delete') {
+    $presenter->onDeleteContact((int)$_POST['id']);
+}
+
+// Affichage
+$view->renderForm();
+$contacts = $model->getAllContacts();
+$view->displayContacts($contacts);
+
+?&gt;
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="java">
+                                <pre><code class="language-java">
+import java.util.*;
+import java.util.stream.Collectors;
+
+// Model - Entité Contact
+class Contact {
+    private int id;
+    private String name;
+    private String email;
+    private String phone;
+    
+    public Contact(int id, String name, String email, String phone) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+    }
+    
+    // Getters et Setters
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+    
+    @Override
+    public String toString() {
+        return String.format("Contact{id=%d, name='%s', email='%s', phone='%s'}", 
+                           id, name, email, phone);
+    }
+}
+
+// Observer Interface
+interface ContactObserver {
+    void onContactsChanged(List<Contact> contacts);
+}
+
+// Model - Gestion des données
+class ContactModel {
+    private List<Contact> contacts = new ArrayList<>();
+    private List<ContactObserver> observers = new ArrayList<>();
+    private int nextId = 1;
+    
+    public void addObserver(ContactObserver observer) {
+        observers.add(observer);
+    }
+    
+    public void removeObserver(ContactObserver observer) {
+        observers.remove(observer);
+    }
+    
+    private void notifyObservers() {
+        for (ContactObserver observer : observers) {
+            observer.onContactsChanged(new ArrayList<>(contacts));
+        }
+    }
+    
+    public List<Contact> getAllContacts() {
+        return new ArrayList<>(contacts);
+    }
+    
+    public Contact addContact(String name, String email, String phone) {
+        Contact contact = new Contact(nextId++, name, email, phone);
+        contacts.add(contact);
+        notifyObservers();
+        return contact;
+    }
+    
+    public boolean updateContact(int id, String name, String email, String phone) {
+        for (Contact contact : contacts) {
+            if (contact.getId() == id) {
+                if (name != null) contact.setName(name);
+                if (email != null) contact.setEmail(email);
+                if (phone != null) contact.setPhone(phone);
+                notifyObservers();
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean deleteContact(int id) {
+        boolean removed = contacts.removeIf(contact -> contact.getId() == id);
+        if (removed) {
+            notifyObservers();
+        }
+        return removed;
+    }
+    
+    public List<Contact> searchContacts(String query) {
+        String lowerQuery = query.toLowerCase();
+        return contacts.stream()
+                .filter(contact -> 
+                    contact.getName().toLowerCase().contains(lowerQuery) ||
+                    contact.getEmail().toLowerCase().contains(lowerQuery))
+                .collect(Collectors.toList());
+    }
+}
+
+// View Interface
+interface ContactView {
+    void displayContacts(List<Contact> contacts);
+    void displayContact(Contact contact);
+    void showError(String message);
+    void showSuccess(String message);
+    void clearForm();
+    ContactFormData getFormData();
+    void setPresenter(ContactPresenter presenter);
+}
+
+
+// Classe pour les données du formulaire
+class ContactFormData {
+    private String name;
+    private String email;
+    private String phone;
+    
+    public ContactFormData(String name, String email, String phone) {
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+    }
+    
+    public String getName() { return name; }
+    public String getEmail() { return email; }
+    public String getPhone() { return phone; }
+    
+    public boolean isValid() {
+        return name != null && !name.trim().isEmpty() &&
+               email != null && !email.trim().isEmpty() &&
+               phone != null && !phone.trim().isEmpty();
+    }
+}
+
+// Presenter
+class ContactPresenter implements ContactObserver {
+    private ContactModel model;
+    private ContactView view;
+    
+    public ContactPresenter(ContactModel model, ContactView view) {
+        this.model = model;
+        this.view = view;
+        this.view.setPresenter(this);
+        this.model.addObserver(this);
+        loadContacts();
+    }
+    
+    public void onAddContact() {
+        try {
+            ContactFormData formData = view.getFormData();
+            
+            if (!formData.isValid()) {
+                view.showError("Veuillez remplir tous les champs obligatoires");
+                return;
+            }
+            
+            model.addContact(formData.getName(), formData.getEmail(), formData.getPhone());
+            view.clearForm();
+            view.showSuccess("Contact ajouté avec succès");
+        } catch (Exception e) {
+            view.showError("Erreur lors de l'ajout du contact: " + e.getMessage());
+        }
+    }
+    
+    public void onDeleteContact(int id) {
+        try {
+            if (model.deleteContact(id)) {
+                view.showSuccess("Contact supprimé avec succès");
+            } else {
+                view.showError("Contact non trouvé");
+            }
+        } catch (Exception e) {
+            view.showError("Erreur lors de la suppression: " + e.getMessage());
+        }
+    }
+    
+    public void onSearchContacts(String query) {
+        try {
+            List<Contact> results = model.searchContacts(query);
+            view.displayContacts(results);
+        } catch (Exception e) {
+            view.showError("Erreur lors de la recherche: " + e.getMessage());
+        }
+    }
+    
+    @Override
+    public void onContactsChanged(List<Contact> contacts) {
+        view.displayContacts(contacts);
+    }
+    
+    private void loadContacts() {
+        List<Contact> contacts = model.getAllContacts();
+        view.displayContacts(contacts);
+    }
+}
+
+// Implémentation Console de la View
+class ConsoleContactView implements ContactView {
+    private ContactPresenter presenter;
+    private Scanner scanner = new Scanner(System.in);
+    
+    @Override
+    public void setPresenter(ContactPresenter presenter) {
+        this.presenter = presenter;
+    }
+    
+    @Override
+    public void displayContacts(List<Contact> contacts) {
+        System.out.println("\n=== Liste des Contacts ===");
+        if (contacts.isEmpty()) {
+            System.out.println("Aucun contact trouvé.");
+        } else {
+            for (Contact contact : contacts) {
+                System.out.println(contact);
+            }
+        }
+    }
+    
+    @Override
+    public void displayContact(Contact contact) {
+        System.out.println("\n=== Détail du Contact ===");
+        System.out.println(contact);
+    }
+    
+    @Override
+    public void showError(String message) {
+        System.err.println("❌ ERREUR: " + message);
+    }
+    
+    @Override
+    public void showSuccess(String message) {
+        System.out.println("✅ SUCCÈS: " + message);
+    }
+    
+    @Override
+    public void clearForm() {
+        // Pas de formulaire à vider en mode console
+    }
+    
+    @Override
+    public ContactFormData getFormData() {
+        System.out.print("Nom: ");
+        String name = scanner.nextLine();
+        System.out.print("Email: ");
+        String email = scanner.nextLine();
+        System.out.print("Téléphone: ");
+        String phone = scanner.nextLine();
+        
+        return new ContactFormData(name, email, phone);
+    }
+    
+    public void showMenu() {
+        System.out.println("\n=== Gestionnaire de Contacts MVP ===");
+        System.out.println("1. Ajouter un contact");
+        System.out.println("2. Afficher tous les contacts");
+        System.out.println("3. Rechercher des contacts");
+        System.out.println("4. Supprimer un contact");
+        System.out.println("0. Quitter");
+        System.out.print("Votre choix: ");
+    }
+    
+    public void handleUserInput() {
+        while (true) {
+            showMenu();
+            String choice = scanner.nextLine();
+            
+            switch (choice) {
+                case "1":
+                    presenter.onAddContact();
+                    break;
+                case "2":
+                    presenter.onContactsChanged(new ArrayList<>());
+                    break;
+                case "3":
+                    System.out.print("Terme de recherche: ");
+                    String query = scanner.nextLine();
+                    presenter.onSearchContacts(query);
+                    break;
+                case "4":
+                    System.out.print("ID du contact à supprimer: ");
+                    try {
+                        int id = Integer.parseInt(scanner.nextLine());
+                        presenter.onDeleteContact(id);
+                    } catch (NumberFormatException e) {
+                        showError("ID invalide");
+                    }
+                    break;
+                case "0":
+                    System.out.println("Au revoir !");
+                    return;
+                default:
+                    showError("Choix invalide");
+            }
+        }
+    }
+}
+
+// Utilisation
+public class MVPContactApp {
+    public static void main(String[] args) {
+        // Création des composants
+        ContactModel model = new ContactModel();
+        ConsoleContactView view = new ConsoleContactView();
+        ContactPresenter presenter = new ContactPresenter(model, view);
+        
+        // Ajout de données de test
+        model.addContact("John Doe", "john@example.com", "123-456-7890");
+        model.addContact("Jane Smith", "jane@example.com", "098-765-4321");
+        model.addContact("Bob Johnson", "bob@example.com", "555-123-4567");
+        
+        // Démarrage de l'interface utilisateur
+        view.handleUserInput();
+    }
+}
+</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Avantages et Inconvénients -->
+                <section class="pros-cons-section">
+                    <div class="aikido-card">
+                        <h2>⚖️ Avantages et Inconvénients</h2>
+                        
+                        <div class="pros-cons-grid">
+                            <div class="pros-card">
+                                <h3>✅ Avantages</h3>
+                                <ul>
+                                    <li><strong>Séparation claire</strong> : Vue passive, logique dans le Presenter</li>
+                                    <li><strong>Testabilité excellente</strong> : Presenter facilement testable</li>
+                                    <li><strong>Réutilisabilité</strong> : Même Presenter pour différentes vues</li>
+                                    <li><strong>Maintenance facilitée</strong> : Responsabilités bien définies</li>
+                                    <li><strong>Évolutivité</strong> : Ajout facile de nouvelles fonctionnalités</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="cons-card">
+                                <h3>❌ Inconvénients</h3>
+                                <ul>
+                                    <li><strong>Complexité accrue</strong> : Plus de classes et d'interfaces</li>
+                                    <li><strong>Couplage Presenter-Vue</strong> : Interface spécifique requise</li>
+                                    <li><strong>Overhead</strong> : Peut être excessif pour des vues simples</li>
+                                    <li><strong>Courbe d'apprentissage</strong> : Concept plus complexe que MVC</li>
+                                    <li><strong>Duplication potentielle</strong> : Logique similaire entre Presenters</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Cas d'Usage -->
+                <section class="use-cases-section">
+                    <div class="aikido-card">
+                        <h2>🎯 Cas d'Usage Appropriés</h2>
+                        
+                        <div class="use-cases-grid">
+                            <div class="use-case good">
+                                <h4>✅ Quand l'utiliser</h4>
+                                <ul>
+                                    <li><strong>Applications complexes</strong> : Logique de présentation importante</li>
+                                    <li><strong>Tests unitaires critiques</strong> : Besoin de tester la logique UI</li>
+                                    <li><strong>Équipes séparées</strong> : Développeurs UI et logique métier</li>
+                                    <li><strong>Vues multiples</strong> : Même logique, interfaces différentes</li>
+                                    <li><strong>Applications d'entreprise</strong> : Maintenance long terme</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="use-case bad">
+                                <h4>❌ Quand l'éviter</h4>
+                                <ul>
+                                    <li><strong>Applications simples</strong> : Peu de logique de présentation</li>
+                                    <li><strong>Prototypes rapides</strong> : Développement agile requis</li>
+                                    <li><strong>Équipe réduite</strong> : Overhead de structure trop important</li>
+                                    <li><strong>Vues statiques</strong> : Peu d'interactions utilisateur</li>
+                                    <li><strong>Contraintes de performance</strong> : Latence critique</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Alternatives et Patterns Liés -->
+                <section class="alternatives-section">
+                    <div class="aikido-card">
+                        <h2>🔄 Alternatives et Patterns Liés</h2>
+                        
+                        <div class="alternatives-grid">
+                            <div class="alternative-card">
+                                <h4>🎭 MVC Pattern</h4>
+                                <p>Vue communique directement avec le Modèle</p>
+                                <div class="code-example">
+                                    <code>// Vue observe directement le Modèle
+model.addObserver(view);</code>
+                                </div>
+                            </div>
+                            
+                            <div class="alternative-card">
+                                <h4>🎪 MVVM Pattern</h4>
+                                <p>Data binding automatique entre Vue et ViewModel</p>
+                                <div class="code-example">
+                                    <code>// Binding bidirectionnel
+&lt;input [(ngModel)]="viewModel.name"&gt;</code>
+                                </div>
+                            </div>
+                            
+                            <div class="alternative-card">
+                                <h4>🎨 Component Pattern</h4>
+                                <p>Composants autonomes avec état local</p>
+                                <div class="code-example">
+                                    <code>// Composant React avec hooks
+const [contacts, setContacts] = useState([]);</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Biais Cognitifs Liés -->
+                <section class="cognitive-bias-section">
+                    <div class="aikido-card biais-cognitif">
+                        <h2>🧩 Biais Cognitifs Associés</h2>
+                        
+                        <div class="bias-analysis">
+                            <div class="bias-item">
+                                <h4>🔨 Marteau de Maslow</h4>
+                                <p><strong>Manifestation :</strong> "MVP sépare bien les responsabilités, utilisons-le partout."</p>
+                                <p><strong>Risque :</strong> Sur-architecture d'applications simples qui n'en ont pas besoin.</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>⚓ Biais d'Ancrage</h4>
+                                <p><strong>Manifestation :</strong> S'accrocher au premier pattern architectural appris.</p>
+                                <p><strong>Risque :</strong> Ne pas considérer d'autres patterns plus adaptés au contexte.</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>🎯 Biais de Complexité</h4>
+                                <p><strong>Manifestation :</strong> "Plus c'est complexe, plus c'est professionnel."</p>
+                                <p><strong>Risque :</strong> Ajouter des couches d'abstraction inutiles qui compliquent la maintenance.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercice Pratique -->
+                <section class="exercise-section">
+                    <div class="aikido-card exercise">
+                        <h2>🎯 Exercice Pratique</h2>
+                        
+                        <div class="exercise-scenario">
+                            <h3>Scenario : Application de Gestion de Tâches</h3>
+                            <p>
+                                Vous devez développer une application de gestion de tâches avec les fonctionnalités suivantes :
+                                affichage de la liste des tâches, ajout/suppression de tâches, marquage comme terminé,
+                                filtrage par statut. L'application doit supporter à la fois une interface web et mobile.
+                            </p>
+                            
+                            <div class="exercise-question">
+                                <h4>Question :</h4>
+                                <p>Quelle approche architecturale recommandez-vous ?</p>
+                                
+                                <div class="choice-options">
+                                    <div class="choice-option" data-choice="mvp">
+                                        🎭 Utiliser MVP avec Presenter partagé
+                                    </div>
+                                    <div class="choice-option" data-choice="mvc">
+                                        🎪 Utiliser MVC classique
+                                    </div>
+                                    <div class="choice-option" data-choice="simple">
+                                        📱 Architecture simple sans pattern
+                                    </div>
+                                </div>
+                                
+                                <div id="exercise-retours" class="exercise-retours hidden">
+                                    <!-- Le feedback sera affiché ici -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Completion Section -->
+                <section class="completion-section slide-in">
+                    <div class="aikido-card completion">
+                        <div class="completion-content">
+                            <div class="completion-icon">📋</div>
+                            <div class="completion-text">
+                                <h3>Avez-vous terminé cette section ?</h3>
+                                <p>Marquez cette page comme terminée pour suivre votre progression dans la formation.</p>
+                            </div>
+                            <button class="aikido-btn primary mark-completed" data-page="mvp">
+                                Marquer comme Terminé ✓
+                            </button>
+                        </div>
+                        
+                        <div class="completion-feedback hidden">
+                            <div class="feedback-success">
+                                <h4>🎉 Excellent travail !</h4>
+                                <p>Vous avez terminé l'étude du pattern MVP. Vous comprenez maintenant :</p>
+                                <ul>
+                                    <li>Comment séparer la logique de présentation avec un Presenter</li>
+                                    <li>Les différences entre MVP et MVC</li>
+                                    <li>L'importance de la testabilité dans les architectures UI</li>
+                                    <li>Quand utiliser MVP vs d'autres patterns architecturaux</li>
+                                </ul>
+                                <p>Continuez avec les autres patterns architecturaux pour approfondir vos connaissances !</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts pour l'exercice interactif -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion de l'exercice
+            const choiceOptions = document.querySelectorAll('.choice-option');
+            const exerciseRetours = document.getElementById('exercise-retours');
+            
+            const feedbacks = {
+                mvp: {
+                    type: 'success',
+                    title: '✅ Excellent choix !',
+                    content: `
+                        <p><strong>MVP est parfait pour ce cas :</strong></p>
+                        <ul>
+                            <li><strong>Presenter partagé</strong> : Même logique pour web et mobile</li>
+                            <li><strong>Testabilité</strong> : Logique de présentation facilement testable</li>
+                            <li><strong>Séparation claire</strong> : Vues passives, logique centralisée</li>
+                            <li><strong>Maintenance</strong> : Évolutions faciles dans le Presenter</li>
+                        </ul>
+                        <p>Le Presenter peut gérer la logique de filtrage, validation, et communication avec le modèle, 
+                        tandis que chaque vue (web/mobile) implémente l'interface selon ses spécificités.</p>
+                    `
+                },
+                mvc: {
+                    type: 'warning',
+                    title: '⚠️ Possible mais moins optimal',
+                    content: `
+                        <p><strong>MVC pourrait fonctionner mais :</strong></p>
+                        <ul>
+                            <li><strong>Duplication</strong> : Logique répétée entre vues web et mobile</li>
+                            <li><strong>Couplage</strong> : Vues directement liées au modèle</li>
+                            <li><strong>Tests difficiles</strong> : Logique mélangée dans les vues</li>
+                        </ul>
+                        <p>Pour une application multi-plateforme, MVP offre une meilleure séparation 
+                        et réutilisabilité du code.</p>
+                    `
+                },
+                simple: {
+                    type: 'error',
+                    title: '❌ Risqué pour ce projet',
+                    content: `
+                        <p><strong>Architecture simple inadaptée :</strong></p>
+                        <ul>
+                            <li><strong>Complexité croissante</strong> : Difficile à maintenir</li>
+                            <li><strong>Code dupliqué</strong> : Logique répétée entre plateformes</li>
+                            <li><strong>Tests impossibles</strong> : Logique mélangée partout</li>
+                            <li><strong>Évolutivité limitée</strong> : Ajout de fonctionnalités difficile</li>
+                        </ul>
+                        <p>Pour une application avec plusieurs interfaces et logique métier, 
+                        un pattern architectural est essentiel.</p>
+                    `
+                }
+            };
+            
+            choiceOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const choice = this.dataset.choice;
+                    const feedback = feedbacks[choice];
+                    
+                    // Réinitialiser les styles
+                    choiceOptions.forEach(opt => opt.classList.remove('selected', 'correct', 'incorrect'));
+                    
+                    // Marquer la sélection
+                    this.classList.add('selected');
+                    if (feedback.type === 'success') {
+                        this.classList.add('correct');
+                    } else {
+                        this.classList.add('incorrect');
+                    }
+                    
+                    // Afficher le feedback
+                    exerciseRetours.innerHTML = `
+                        <div class="retour ${feedback.type}">
+                            <h4>${feedback.title}</h4>
+                            ${feedback.content}
+                        </div>
+                    `;
+                    exerciseRetours.classList.remove('hidden');
+                });
+            });
+            
+            // Gestion du bouton de completion
+            const markCompletedBtn = document.querySelector('.mark-completed');
+            const completionFeedback = document.querySelector('.completion-feedback');
+            
+            if (markCompletedBtn) {
+                markCompletedBtn.addEventListener('click', function() {
+                    const page = this.dataset.page;
+                    
+                    // Simulation de sauvegarde
+                    this.disabled = true;
+                    this.textContent = '✅ Terminé';
+                    this.classList.add('completed');
+                    
+                    // Afficher le feedback
+                    completionFeedback.classList.remove('hidden');
+                    
+                    // Sauvegarder dans localStorage
+                    const completedPages = JSON.parse(localStorage.getItem('completedPages') || '[]');
+                    if (!completedPages.includes(page)) {
+                        completedPages.push(page);
+                        localStorage.setItem('completedPages', JSON.stringify(completedPages));
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1929 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MVVM Pattern - Formation Patterns Développeurs</title>
+    <meta name="description" content="Le pattern MVVM (Model-View-ViewModel) expliqué avec exemples de code, diagrammes UML et cas d'usage pratiques">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <h1 class="page-title">🎪 MVVM Pattern</h1>
+                    <p class="page-subtitle">Data binding automatique entre Vue et ViewModel</p>
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">🏗️</span>
+                            <span class="meta-text">Architectural</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⭐</span>
+                            <span class="meta-text">Difficulté: Avancé</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⏱️</span>
+                            <span class="meta-text">30 min</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🔗</span>
+                            <span class="meta-text">Data Binding</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Définition et Problème -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card design-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="mb-md">
+                            Le <strong>MVVM (Model-View-ViewModel)</strong> est un pattern architectural qui utilise 
+                            le data binding pour synchroniser automatiquement la Vue avec un ViewModel, éliminant 
+                            le besoin de code de synchronisation manuel.
+                        </p>
+                        
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problème Résolu</h3>
+                                <ul>
+                                    <li>Synchronisation manuelle Vue-Données</li>
+                                    <li>Code répétitif de mise à jour d'interface</li>
+                                    <li>Couplage fort entre Vue et logique</li>
+                                    <li>Gestion complexe des états d'interface</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solution Apportée</h3>
+                                <ul>
+                                    <li>Data binding bidirectionnel automatique</li>
+                                    <li>ViewModel observable et réactif</li>
+                                    <li>Séparation complète Vue-Logique</li>
+                                    <li>Testabilité maximale du ViewModel</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert info">
+                            <strong>💡 Spécificité MVVM :</strong> Le data binding élimine le besoin de code de 
+                            synchronisation explicite. La Vue se met à jour automatiquement quand le ViewModel change.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Structure UML -->
+                <section class="structure-section">
+                    <div class="aikido-card">
+                        <h2>🏗️ Structure UML</h2>
+                        <div class="uml-diagram">
+                            <div class="uml-class-diagram">
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>Model</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ getData(): Data</div>
+                                        <div class="method public">+ saveData(data: Data): void</div>
+                                        <div class="method public">+ validateData(data: Data): boolean</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>View</strong>
+                                    </div>
+                                    <div class="class-attributes">
+                                        <div class="attribute private">- dataBinding: DataBinding</div>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ bindToViewModel(vm: ViewModel): void</div>
+                                        <div class="method public">+ render(): void</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>ViewModel</strong>
+                                    </div>
+                                    <div class="class-attributes">
+                                        <div class="attribute private">- model: Model</div>
+                                        <div class="attribute private">- observableProperties: Observable[]</div>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ getProperty(name: string): Observable</div>
+                                        <div class="method public">+ setProperty(name: string, value: any): void</div>
+                                        <div class="method public">+ executeCommand(cmd: string): void</div>
+                                        <div class="method private">- notifyPropertyChanged(): void</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="structure-explanation">
+                            <h3>Éléments Clés</h3>
+                            <ul>
+                                <li><strong>Model</strong> : Données et logique métier pure</li>
+                                <li><strong>View</strong> : Interface utilisateur avec data binding</li>
+                                <li><strong>ViewModel</strong> : Propriétés observables et commandes</li>
+                                <li><strong>Data Binding</strong> : Synchronisation automatique bidirectionnelle</li>
+                            </ul>
+                        </div>
+
+                        <!-- Diagramme de flux Mermaid -->
+                        <div class="mt-lg">
+                            <h3>🔄 Flux d'Exécution</h3>
+                            <div class="mermaid">
+                                graph TD
+                                    A[User Input dans View] --> B[Data Binding détecte changement]
+                                    B --> C[ViewModel propriété mise à jour]
+                                    C --> D[ViewModel notifie changement]
+                                    D --> E[View se met à jour automatiquement]
+                                    
+                                    F[ViewModel commande exécutée] --> G[ViewModel interroge Model]
+                                    G --> H[Model retourne données]
+                                    H --> I[ViewModel met à jour propriétés]
+                                    I --> J[Data Binding propage changements]
+                                    J --> K[View se rafraîchit automatiquement]
+                                    
+                                    L[Model change externe] --> M[ViewModel observe Model]
+                                    M --> N[ViewModel propriétés mises à jour]
+                                    N --> O[Data Binding synchronise View]
+                                    
+                                    style A fill:#e1f5fe
+                                    style B fill:#fff3e0
+                                    style C fill:#ffebee
+                                    style D fill:#e8f5e8
+                                    style E fill:#f3e5f5
+                                    style J fill:#fce4ec
+                            </div>
+                            <p class="text-sm text-gray-600 mt-md">
+                                <strong>💡 Point clé :</strong> Le data binding automatique élimine le code de synchronisation manuel,
+                                créant une liaison réactive entre Vue et ViewModel.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Implémentations -->
+                <section class="implementations-section">
+                    <h2>💻 Implémentations</h2>
+                    
+                    <div class="aikido-card">
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="typescript">TypeScript</button>
+                                <button class="tab-btn" data-tab="php">PHP</button>
+                                <button class="tab-btn" data-tab="java">Java</button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="typescript">
+                                <h4>Exemple : Application de Gestion de Produits avec Vue.js</h4>
+                                <pre><code class="language-typescript">
+// Model - Entité Produit
+interface Product {
+    id: number;
+    name: string;
+    price: number;
+    category: string;
+    inStock: boolean;
+}
+
+class ProductModel {
+    private products: Product[] = [];
+    private observers: ProductObserver[] = [];
+    
+    addObserver(observer: ProductObserver): void {
+        this.observers.push(observer);
+    }
+    
+    private notifyObservers(): void {
+        this.observers.forEach(observer => observer.onProductsChanged(this.products));
+    }
+    
+    getAllProducts(): Product[] {
+        return [...this.products];
+    }
+    
+    addProduct(product: Omit<Product, 'id'>): Product {
+        const newProduct: Product = {
+            id: Date.now(),
+            ...product
+        };
+        this.products.push(newProduct);
+        this.notifyObservers();
+        return newProduct;
+    }
+    
+    updateProduct(id: number, updates: Partial<Product>): boolean {
+        const index = this.products.findIndex(p => p.id === id);
+        if (index !== -1) {
+            this.products[index] = { ...this.products[index], ...updates };
+            this.notifyObservers();
+            return true;
+        }
+        return false;
+    }
+    
+    deleteProduct(id: number): boolean {
+        const initialLength = this.products.length;
+        this.products = this.products.filter(p => p.id !== id);
+        if (this.products.length < initialLength) {
+            this.notifyObservers();
+            return true;
+        }
+        return false;
+    }
+    
+    searchProducts(query: string): Product[] {
+        return this.products.filter(product =>
+            product.name.toLowerCase().includes(query.toLowerCase()) ||
+            product.category.toLowerCase().includes(query.toLowerCase())
+        );
+    }
+    
+    getProductsByCategory(category: string): Product[] {
+        return this.products.filter(p => p.category === category);
+    }
+}
+
+interface ProductObserver {
+    onProductsChanged(products: Product[]): void;
+}
+
+// ViewModel avec propriétés observables
+class ProductViewModel implements ProductObserver {
+    private model: ProductModel;
+    
+    // Propriétés observables (Vue.js reactive)
+    public products: Product[] = [];
+    public filteredProducts: Product[] = [];
+    public searchQuery: string = '';
+    public selectedCategory: string = 'all';
+    public newProduct: Omit<Product, 'id'> = {
+        name: '',
+        price: 0,
+        category: '',
+        inStock: true
+    };
+    public isLoading: boolean = false;
+    public errorMessage: string = '';
+    public successMessage: string = '';
+    
+    // Propriétés calculées
+    public get categories(): string[] {
+        const cats = [...new Set(this.products.map(p => p.category))];
+        return ['all', ...cats];
+    }
+    
+    public get totalProducts(): number {
+        return this.filteredProducts.length;
+    }
+    
+    public get totalValue(): number {
+        return this.filteredProducts.reduce((sum, p) => sum + p.price, 0);
+    }
+    
+    public get inStockCount(): number {
+        return this.filteredProducts.filter(p => p.inStock).length;
+    }
+    
+    constructor(model: ProductModel) {
+        this.model = model;
+        this.model.addObserver(this);
+        this.loadProducts();
+    }
+    
+    // Commandes (actions)
+    public addProductCommand(): void {
+        if (!this.validateNewProduct()) {
+            this.errorMessage = 'Veuillez remplir tous les champs obligatoires';
+            return;
+        }
+        
+        this.isLoading = true;
+        this.errorMessage = '';
+        
+        try {
+            this.model.addProduct(this.newProduct);
+            this.resetNewProduct();
+            this.successMessage = 'Produit ajouté avec succès';
+            setTimeout(() => this.successMessage = '', 3000);
+        } catch (error) {
+            this.errorMessage = 'Erreur lors de l\'ajout du produit';
+        } finally {
+            this.isLoading = false;
+        }
+    }
+    
+    public deleteProductCommand(id: number): void {
+        if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
+            this.isLoading = true;
+            try {
+                if (this.model.deleteProduct(id)) {
+                    this.successMessage = 'Produit supprimé avec succès';
+                    setTimeout(() => this.successMessage = '', 3000);
+                } else {
+                    this.errorMessage = 'Produit non trouvé';
+                }
+            } catch (error) {
+                this.errorMessage = 'Erreur lors de la suppression';
+            } finally {
+                this.isLoading = false;
+            }
+        }
+    }
+    
+    public toggleStockCommand(id: number): void {
+        const product = this.products.find(p => p.id === id);
+        if (product) {
+            this.model.updateProduct(id, { inStock: !product.inStock });
+        }
+    }
+    
+    public searchCommand(): void {
+        this.applyFilters();
+    }
+    
+    public filterByCategoryCommand(): void {
+        this.applyFilters();
+    }
+    
+    public clearFiltersCommand(): void {
+        this.searchQuery = '';
+        this.selectedCategory = 'all';
+        this.applyFilters();
+    }
+    
+    // Observer callback
+    public onProductsChanged(products: Product[]): void {
+        this.products = products;
+        this.applyFilters();
+    }
+    
+    private loadProducts(): void {
+        this.isLoading = true;
+        try {
+            const products = this.model.getAllProducts();
+            this.onProductsChanged(products);
+        } catch (error) {
+            this.errorMessage = 'Erreur lors du chargement des produits';
+        } finally {
+            this.isLoading = false;
+        }
+    }
+    
+    private applyFilters(): void {
+        let filtered = this.products;
+        
+        // Filtre par recherche
+        if (this.searchQuery.trim()) {
+            filtered = this.model.searchProducts(this.searchQuery);
+        }
+        
+        // Filtre par catégorie
+        if (this.selectedCategory !== 'all') {
+            filtered = filtered.filter(p => p.category === this.selectedCategory);
+        }
+        
+        this.filteredProducts = filtered;
+    }
+    
+    private validateNewProduct(): boolean {
+        return !!(this.newProduct.name.trim() && 
+                 this.newProduct.category.trim() && 
+                 this.newProduct.price > 0);
+    }
+    
+    private resetNewProduct(): void {
+        this.newProduct = {
+            name: '',
+            price: 0,
+            category: '',
+            inStock: true
+        };
+    }
+}
+
+// Vue avec Vue.js (template)
+const ProductView = {
+    template: `
+        <div class="product-manager">
+            <div class="header">
+                <h1>Gestionnaire de Produits MVVM</h1>
+                <div class="stats">
+                    <span>Total: {{ totalProducts }}</span>
+                    <span>En stock: {{ inStockCount }}</span>
+                    <span>Valeur: {{ totalValue }}€</span>
+                </div>
+            </div>
+            
+            <!-- Messages -->
+            <div v-if="errorMessage" class="alert error">{{ errorMessage }}</div>
+            <div v-if="successMessage" class="alert success">{{ successMessage }}</div>
+            
+            <!-- Formulaire d'ajout -->
+            <form @submit.prevent="addProductCommand" class="add-form">
+                <h2>Ajouter un Produit</h2>
+                <input v-model="newProduct.name" placeholder="Nom du produit" required>
+                <input v-model.number="newProduct.price" type="number" placeholder="Prix" min="0" step="0.01" required>
+                <input v-model="newProduct.category" placeholder="Catégorie" required>
+                <label>
+                    <input v-model="newProduct.inStock" type="checkbox"> En stock
+                </label>
+                <button type="submit" :disabled="isLoading">
+                    {{ isLoading ? 'Ajout...' : 'Ajouter' }}
+                </button>
+            </form>
+            
+            <!-- Filtres -->
+            <div class="filters">
+                <input v-model="searchQuery" @input="searchCommand" placeholder="Rechercher...">
+                <select v-model="selectedCategory" @change="filterByCategoryCommand">
+                    <option v-for="cat in categories" :key="cat" :value="cat">
+                        {{ cat === 'all' ? 'Toutes catégories' : cat }}
+                    </option>
+                </select>
+                <button @click="clearFiltersCommand">Effacer filtres</button>
+            </div>
+            
+            <!-- Liste des produits -->
+            <div class="products-grid">
+                <div v-for="product in filteredProducts" :key="product.id" class="product-card">
+                    <h3>{{ product.name }}</h3>
+                    <p>Prix: {{ product.price }}€</p>
+                    <p>Catégorie: {{ product.category }}</p>
+                    <p :class="{ 'in-stock': product.inStock, 'out-of-stock': !product.inStock }">
+                        {{ product.inStock ? 'En stock' : 'Rupture' }}
+                    </p>
+                    <div class="actions">
+                        <button @click="toggleStockCommand(product.id)">
+                            {{ product.inStock ? 'Marquer rupture' : 'Marquer en stock' }}
+                        </button>
+                        <button @click="deleteProductCommand(product.id)" class="delete">
+                            Supprimer
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div v-if="filteredProducts.length === 0" class="no-products">
+                Aucun produit trouvé
+            </div>
+        </div>
+    `,
+    
+    data() {
+        const model = new ProductModel();
+        const viewModel = new ProductViewModel(model);
+        
+        // Données de test
+        model.addProduct({ name: 'Laptop Dell', price: 899.99, category: 'Informatique', inStock: true });
+        model.addProduct({ name: 'Souris Logitech', price: 29.99, category: 'Informatique', inStock: true });
+        model.addProduct({ name: 'Chaise Bureau', price: 199.99, category: 'Mobilier', inStock: false });
+        
+        return viewModel;
+    }
+};
+
+// Montage de l'application Vue.js
+// const { createApp } = Vue;
+// createApp(ProductView).mount('#app');
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="php">
+                                <pre><code class="language-php">
+&lt;?php
+
+// Model - Entité Produit
+class Product {
+    public int $id;
+    public string $name;
+    public float $price;
+    public string $category;
+    public bool $inStock;
+    
+    public function __construct(int $id, string $name, float $price, string $category, bool $inStock = true) {
+        $this->id = $id;
+        $this->name = $name;
+        $this->price = $price;
+        $this->category = $category;
+        $this->inStock = $inStock;
+    }
+    
+    public function toArray(): array {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'price' => $this->price,
+            'category' => $this->category,
+            'inStock' => $this->inStock
+        ];
+    }
+}
+
+interface ProductObserver {
+    public function onProductsChanged(array $products): void;
+}
+
+class ProductModel {
+    private array $products = [];
+    private array $observers = [];
+    private int $nextId = 1;
+    
+    public function addObserver(ProductObserver $observer): void {
+        $this->observers[] = $observer;
+    }
+    
+    private function notifyObservers(): void {
+        foreach ($this->observers as $observer) {
+            $observer->onProductsChanged($this->products);
+        }
+    }
+    
+    public function getAllProducts(): array {
+        return $this->products;
+    }
+    
+    public function addProduct(string $name, float $price, string $category, bool $inStock = true): Product {
+        $product = new Product($this->nextId++, $name, $price, $category, $inStock);
+        $this->products[] = $product;
+        $this->notifyObservers();
+        return $product;
+    }
+    
+    public function updateProduct(int $id, array $updates): bool {
+        foreach ($this->products as $product) {
+            if ($product->id === $id) {
+                if (isset($updates['name'])) $product->name = $updates['name'];
+                if (isset($updates['price'])) $product->price = $updates['price'];
+                if (isset($updates['category'])) $product->category = $updates['category'];
+                if (isset($updates['inStock'])) $product->inStock = $updates['inStock'];
+                $this->notifyObservers();
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public function deleteProduct(int $id): bool {
+        foreach ($this->products as $key => $product) {
+            if ($product->id === $id) {
+                unset($this->products[$key]);
+                $this->products = array_values($this->products);
+                $this->notifyObservers();
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public function searchProducts(string $query): array {
+        $query = strtolower($query);
+        return array_filter($this->products, function($product) use ($query) {
+            return strpos(strtolower($product->name), $query) !== false ||
+                   strpos(strtolower($product->category), $query) !== false;
+        });
+    }
+    
+    public function getProductsByCategory(string $category): array {
+        return array_filter($this->products, function($product) use ($category) {
+            return $product->category === $category;
+        });
+    }
+}
+
+// ViewModel avec propriétés observables simulées
+class ProductViewModel implements ProductObserver {
+    private ProductModel $model;
+    
+    // Propriétés "observables" (simulées avec getters/setters)
+    private array $products = [];
+    private array $filteredProducts = [];
+    private string $searchQuery = '';
+    private string $selectedCategory = 'all';
+    private array $newProduct = [
+        'name' => '',
+        'price' => 0,
+        'category' => '',
+        'inStock' => true
+    ];
+    private bool $isLoading = false;
+    private string $errorMessage = '';
+    private string $successMessage = '';
+    
+    // Callbacks pour simuler le data binding
+    private array $propertyChangeCallbacks = [];
+    
+    public function __construct(ProductModel $model) {
+        $this->model = $model;
+        $this->model->addObserver($this);
+        $this->loadProducts();
+    }
+    
+    // Simulation du data binding avec callbacks
+    public function onPropertyChange(string $property, callable $callback): void {
+        if (!isset($this->propertyChangeCallbacks[$property])) {
+            $this->propertyChangeCallbacks[$property] = [];
+        }
+        $this->propertyChangeCallbacks[$property][] = $callback;
+    }
+    
+    private function notifyPropertyChange(string $property): void {
+        if (isset($this->propertyChangeCallbacks[$property])) {
+            foreach ($this->propertyChangeCallbacks[$property] as $callback) {
+                $callback($this->$property);
+            }
+        }
+    }
+    
+    // Getters et Setters avec notification
+    public function getProducts(): array {
+        return $this->products;
+    }
+    
+    public function getFilteredProducts(): array {
+        return $this->filteredProducts;
+    }
+    
+    public function setSearchQuery(string $query): void {
+        $this->searchQuery = $query;
+        $this->notifyPropertyChange('searchQuery');
+        $this->applyFilters();
+    }
+    
+    public function getSearchQuery(): string {
+        return $this->searchQuery;
+    }
+    
+    public function setSelectedCategory(string $category): void {
+        $this->selectedCategory = $category;
+        $this->notifyPropertyChange('selectedCategory');
+        $this->applyFilters();
+    }
+    
+    public function getSelectedCategory(): string {
+        return $this->selectedCategory;
+    }
+    
+    public function getNewProduct(): array {
+        return $this->newProduct;
+    }
+    
+    public function setNewProductProperty(string $key, $value): void {
+        $this->newProduct[$key] = $value;
+        $this->notifyPropertyChange('newProduct');
+    }
+    
+    public function getErrorMessage(): string {
+        return $this->errorMessage;
+    }
+    
+    public function getSuccessMessage(): string {
+        return $this->successMessage;
+    }
+    
+    public function isLoading(): bool {
+        return $this->isLoading;
+    }
+    
+    // Propriétés calculées
+    public function getCategories(): array {
+        $categories = array_unique(array_map(fn($p) => $p->category, $this->products));
+        return array_merge(['all'], array_values($categories));
+    }
+    
+    public function getTotalProducts(): int {
+        return count($this->filteredProducts);
+    }
+    
+    public function getTotalValue(): float {
+        return array_sum(array_map(fn($p) => $p->price, $this->filteredProducts));
+    }
+    
+    public function getInStockCount(): int {
+        return count(array_filter($this->filteredProducts, fn($p) => $p->inStock));
+    }
+    
+    // Commandes
+    public function addProductCommand(): void {
+        if (!$this->validateNewProduct()) {
+            $this->errorMessage = 'Veuillez remplir tous les champs obligatoires';
+            $this->notifyPropertyChange('errorMessage');
+            return;
+        }
+        
+        $this->isLoading = true;
+        $this->errorMessage = '';
+        $this->notifyPropertyChange('isLoading');
+        $this->notifyPropertyChange('errorMessage');
+        
+        try {
+            $this->model->addProduct(
+                $this->newProduct['name'],
+                $this->newProduct['price'],
+                $this->newProduct['category'],
+                $this->newProduct['inStock']
+            );
+            
+            $this->resetNewProduct();
+            $this->successMessage = 'Produit ajouté avec succès';
+            $this->notifyPropertyChange('successMessage');
+            
+            // Simuler l'effacement du message après 3 secondes
+            // En réalité, cela serait géré par le framework de binding
+        } catch (Exception $e) {
+            $this->errorMessage = 'Erreur lors de l\'ajout du produit: ' . $e->getMessage();
+            $this->notifyPropertyChange('errorMessage');
+        } finally {
+            $this->isLoading = false;
+            $this->notifyPropertyChange('isLoading');
+        }
+    }
+    
+    public function deleteProductCommand(int $id): void {
+        $this->isLoading = true;
+        $this->notifyPropertyChange('isLoading');
+        
+        try {
+            if ($this->model->deleteProduct($id)) {
+                $this->successMessage = 'Produit supprimé avec succès';
+                $this->notifyPropertyChange('successMessage');
+            } else {
+                $this->errorMessage = 'Produit non trouvé';
+                $this->notifyPropertyChange('errorMessage');
+            }
+        } catch (Exception $e) {
+            $this->errorMessage = 'Erreur lors de la suppression: ' . $e->getMessage();
+            $this->notifyPropertyChange('errorMessage');
+        } finally {
+            $this->isLoading = false;
+            $this->notifyPropertyChange('isLoading');
+        }
+    }
+    
+    public function toggleStockCommand(int $id): void {
+        $product = array_filter($this->products,
+
+fn($p) => $p->id === $id);
+        if (!empty($product)) {
+            $product = array_values($product)[0];
+            $this->model->updateProduct($id, ['inStock' => !$product->inStock]);
+        }
+    }
+    
+    public function clearFiltersCommand(): void {
+        $this->searchQuery = '';
+        $this->selectedCategory = 'all';
+        $this->notifyPropertyChange('searchQuery');
+        $this->notifyPropertyChange('selectedCategory');
+        $this->applyFilters();
+    }
+    
+    // Observer callback
+    public function onProductsChanged(array $products): void {
+        $this->products = $products;
+        $this->notifyPropertyChange('products');
+        $this->applyFilters();
+    }
+    
+    private function loadProducts(): void {
+        $this->isLoading = true;
+        $this->notifyPropertyChange('isLoading');
+        
+        try {
+            $products = $this->model->getAllProducts();
+            $this->onProductsChanged($products);
+        } catch (Exception $e) {
+            $this->errorMessage = 'Erreur lors du chargement des produits: ' . $e->getMessage();
+            $this->notifyPropertyChange('errorMessage');
+        } finally {
+            $this->isLoading = false;
+            $this->notifyPropertyChange('isLoading');
+        }
+    }
+    
+    private function applyFilters(): void {
+        $filtered = $this->products;
+        
+        // Filtre par recherche
+        if (!empty(trim($this->searchQuery))) {
+            $filtered = $this->model->searchProducts($this->searchQuery);
+        }
+        
+        // Filtre par catégorie
+        if ($this->selectedCategory !== 'all') {
+            $filtered = array_filter($filtered, fn($p) => $p->category === $this->selectedCategory);
+        }
+        
+        $this->filteredProducts = array_values($filtered);
+        $this->notifyPropertyChange('filteredProducts');
+    }
+    
+    private function validateNewProduct(): bool {
+        return !empty(trim($this->newProduct['name'])) && 
+               !empty(trim($this->newProduct['category'])) && 
+               $this->newProduct['price'] > 0;
+    }
+    
+    private function resetNewProduct(): void {
+        $this->newProduct = [
+            'name' => '',
+            'price' => 0,
+            'category' => '',
+            'inStock' => true
+        ];
+        $this->notifyPropertyChange('newProduct');
+    }
+}
+
+// Vue avec rendu HTML et JavaScript pour simuler le binding
+class ProductView {
+    private ProductViewModel $viewModel;
+    
+    public function __construct(ProductViewModel $viewModel) {
+        $this->viewModel = $viewModel;
+        $this->setupDataBinding();
+    }
+    
+    private function setupDataBinding(): void {
+        // Simulation du data binding avec callbacks
+        $this->viewModel->onPropertyChange('products', [$this, 'updateProductsList']);
+        $this->viewModel->onPropertyChange('filteredProducts', [$this, 'updateProductsList']);
+        $this->viewModel->onPropertyChange('errorMessage', [$this, 'updateMessages']);
+        $this->viewModel->onPropertyChange('successMessage', [$this, 'updateMessages']);
+        $this->viewModel->onPropertyChange('isLoading', [$this, 'updateLoadingState']);
+    }
+    
+    public function render(): string {
+        return "
+        <div class='product-manager'>
+            <div class='header'>
+                <h1>Gestionnaire de Produits MVVM</h1>
+                <div class='stats'>
+                    <span>Total: {$this->viewModel->getTotalProducts()}</span>
+                    <span>En stock: {$this->viewModel->getInStockCount()}</span>
+                    <span>Valeur: {$this->viewModel->getTotalValue()}€</span>
+                </div>
+            </div>
+            
+            {$this->renderMessages()}
+            {$this->renderAddForm()}
+            {$this->renderFilters()}
+            {$this->renderProductsList()}
+        </div>
+        
+        <script>
+            // Simulation du data binding côté client
+            const viewModel = " . json_encode($this->getViewModelState()) . ";
+            
+            function updateProperty(property, value) {
+                // Simulation de la mise à jour bidirectionnelle
+                fetch('update_property.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({property, value})
+                });
+            }
+        </script>
+        ";
+    }
+    
+    private function renderMessages(): string {
+        $html = '';
+        if (!empty($this->viewModel->getErrorMessage())) {
+            $html .= "<div class='alert error'>{$this->viewModel->getErrorMessage()}</div>";
+        }
+        if (!empty($this->viewModel->getSuccessMessage())) {
+            $html .= "<div class='alert success'>{$this->viewModel->getSuccessMessage()}</div>";
+        }
+        return $html;
+    }
+    
+    private function renderAddForm(): string {
+        $newProduct = $this->viewModel->getNewProduct();
+        $disabled = $this->viewModel->isLoading() ? 'disabled' : '';
+        
+        return "
+        <form class='add-form' onsubmit='addProduct(event)'>
+            <h2>Ajouter un Produit</h2>
+            <input name='name' value='{$newProduct['name']}' placeholder='Nom du produit' required>
+            <input name='price' type='number' value='{$newProduct['price']}' placeholder='Prix' min='0' step='0.01' required>
+            <input name='category' value='{$newProduct['category']}' placeholder='Catégorie' required>
+            <label>
+                <input name='inStock' type='checkbox' " . ($newProduct['inStock'] ? 'checked' : '') . "> En stock
+            </label>
+            <button type='submit' $disabled>
+                " . ($this->viewModel->isLoading() ? 'Ajout...' : 'Ajouter') . "
+            </button>
+        </form>";
+    }
+    
+    private function renderFilters(): string {
+        $categories = $this->viewModel->getCategories();
+        $selectedCategory = $this->viewModel->getSelectedCategory();
+        
+        $categoryOptions = '';
+        foreach ($categories as $cat) {
+            $selected = $cat === $selectedCategory ? 'selected' : '';
+            $label = $cat === 'all' ? 'Toutes catégories' : $cat;
+            $categoryOptions .= "<option value='$cat' $selected>$label</option>";
+        }
+        
+        return "
+        <div class='filters'>
+            <input type='text' value='{$this->viewModel->getSearchQuery()}' 
+                   placeholder='Rechercher...' oninput='updateSearch(this.value)'>
+            <select onchange='updateCategory(this.value)'>$categoryOptions</select>
+            <button onclick='clearFilters()'>Effacer filtres</button>
+        </div>";
+    }
+    
+    private function renderProductsList(): string {
+        $products = $this->viewModel->getFilteredProducts();
+        
+        if (empty($products)) {
+            return "<div class='no-products'>Aucun produit trouvé</div>";
+        }
+        
+        $html = "<div class='products-grid'>";
+        foreach ($products as $product) {
+            $stockClass = $product->inStock ? 'in-stock' : 'out-of-stock';
+            $stockText = $product->inStock ? 'En stock' : 'Rupture';
+            $stockAction = $product->inStock ? 'Marquer rupture' : 'Marquer en stock';
+            
+            $html .= "
+            <div class='product-card'>
+                <h3>{$product->name}</h3>
+                <p>Prix: {$product->price}€</p>
+                <p>Catégorie: {$product->category}</p>
+                <p class='$stockClass'>$stockText</p>
+                <div class='actions'>
+                    <button onclick='toggleStock(" . $product->id . ")'>$stockAction</button>
+                    <button onclick='deleteProduct(" . $product->id . ")' class='delete'>Supprimer</button>
+                </div>
+            </div>";
+        }
+        $html .= "</div>";
+        
+        return $html;
+    }
+    
+    private function getViewModelState(): array {
+        return [
+            'products' => array_map(fn($p) => $p->toArray(), $this->viewModel->getProducts()),
+            'filteredProducts' => array_map(fn($p) => $p->toArray(), $this->viewModel->getFilteredProducts()),
+            'searchQuery' => $this->viewModel->getSearchQuery(),
+            'selectedCategory' => $this->viewModel->getSelectedCategory(),
+            'newProduct' => $this->viewModel->getNewProduct(),
+            'isLoading' => $this->viewModel->isLoading(),
+            'errorMessage' => $this->viewModel->getErrorMessage(),
+            'successMessage' => $this->viewModel->getSuccessMessage()
+        ];
+    }
+    
+    // Callbacks pour le data binding
+    public function updateProductsList(): void {
+        // En réalité, cela déclencherait une mise à jour du DOM
+        echo "<script>updateProductsList();</script>";
+    }
+    
+    public function updateMessages(): void {
+        echo "<script>updateMessages();</script>";
+    }
+    
+    public function updateLoadingState(): void {
+        echo "<script>updateLoadingState();</script>";
+    }
+}
+
+// Utilisation
+$model = new ProductModel();
+$viewModel = new ProductViewModel($model);
+$view = new ProductView($viewModel);
+
+// Données de test
+$model->addProduct('Laptop Dell', 899.99, 'Informatique', true);
+$model->addProduct('Souris Logitech', 29.99, 'Informatique', true);
+$model->addProduct('Chaise Bureau', 199.99, 'Mobilier', false);
+
+// Rendu de la vue
+echo $view->render();
+
+?&gt;
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="java">
+                                <pre><code class="language-java">
+import java.util.*;
+import java.util.stream.Collectors;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
+// Model - Entité Produit
+class Product {
+    private int id;
+    private String name;
+    private double price;
+    private String category;
+    private boolean inStock;
+    
+    public Product(int id, String name, double price, String category, boolean inStock) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.category = category;
+        this.inStock = inStock;
+    }
+    
+    // Getters et Setters
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public double getPrice() { return price; }
+    public void setPrice(double price) { this.price = price; }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+    public boolean isInStock() { return inStock; }
+    public void setInStock(boolean inStock) { this.inStock = inStock; }
+    
+    @Override
+    public String toString() {
+        return String.format("Product{id=%d, name='%s', price=%.2f, category='%s', inStock=%s}", 
+                           id, name, price, category, inStock);
+    }
+}
+
+interface ProductObserver {
+    void onProductsChanged(List<Product> products);
+}
+
+// Model
+class ProductModel {
+    private List<Product> products = new ArrayList<>();
+    private List<ProductObserver> observers = new ArrayList<>();
+    private int nextId = 1;
+    
+    public void addObserver(ProductObserver observer) {
+        observers.add(observer);
+    }
+    
+    public void removeObserver(ProductObserver observer) {
+        observers.remove(observer);
+    }
+    
+    private void notifyObservers() {
+        for (ProductObserver observer : observers) {
+            observer.onProductsChanged(new ArrayList<>(products));
+        }
+    }
+    
+    public List<Product> getAllProducts() {
+        return new ArrayList<>(products);
+    }
+    
+    public Product addProduct(String name, double price, String category, boolean inStock) {
+        Product product = new Product(nextId++, name, price, category, inStock);
+        products.add(product);
+        notifyObservers();
+        return product;
+    }
+    
+    public boolean updateProduct(int id, String name, Double price, String category, Boolean inStock) {
+        for (Product product : products) {
+            if (product.getId() == id) {
+                if (name != null) product.setName(name);
+                if (price != null) product.setPrice(price);
+                if (category != null) product.setCategory(category);
+                if (inStock != null) product.setInStock(inStock);
+                notifyObservers();
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean deleteProduct(int id) {
+        boolean removed = products.removeIf(product -> product.getId() == id);
+        if (removed) {
+            notifyObservers();
+        }
+        return removed;
+    }
+    
+    public List<Product> searchProducts(String query) {
+        String lowerQuery = query.toLowerCase();
+        return products.stream()
+                .filter(product -> 
+                    product.getName().toLowerCase().contains(lowerQuery) ||
+                    product.getCategory().toLowerCase().contains(lowerQuery))
+                .collect(Collectors.toList());
+    }
+    
+    public List<Product> getProductsByCategory(String category) {
+        return products.stream()
+                .filter(product -> product.getCategory().equals(category))
+                .collect(Collectors.toList());
+    }
+}
+
+// ViewModel avec PropertyChangeSupport pour simuler le data binding
+class ProductViewModel implements ProductObserver {
+    private ProductModel model;
+    private PropertyChangeSupport propertyChangeSupport;
+    
+    // Propriétés observables
+    private List<Product> products = new ArrayList<>();
+    private List<Product> filteredProducts = new ArrayList<>();
+    private String searchQuery = "";
+    private String selectedCategory = "all";
+    private String newProductName = "";
+    private double newProductPrice = 0.0;
+    private String newProductCategory = "";
+    private boolean newProductInStock = true;
+    private boolean isLoading = false;
+    private String errorMessage = "";
+    private String successMessage = "";
+    
+    public ProductViewModel(ProductModel model) {
+        this.model = model;
+        this.propertyChangeSupport = new PropertyChangeSupport(this);
+        this.model.addObserver(this);
+        loadProducts();
+    }
+    
+    // Méthodes pour le data binding
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.addPropertyChangeListener(listener);
+    }
+    
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertyChangeSupport.removePropertyChangeListener(listener);
+    }
+    
+    // Getters et Setters avec notification de changement
+    public List<Product> getProducts() {
+        return new ArrayList<>(products);
+    }
+    
+    private void setProducts(List<Product> products) {
+        List<Product> oldValue = this.products;
+        this.products = new ArrayList<>(products);
+        propertyChangeSupport.firePropertyChange("products", oldValue, this.products);
+    }
+    
+    public List<Product> getFilteredProducts() {
+        return new ArrayList<>(filteredProducts);
+    }
+    
+    private void setFilteredProducts(List<Product> filteredProducts) {
+        List<Product> oldValue = this.filteredProducts;
+        this.filteredProducts = new ArrayList<>(filteredProducts);
+        propertyChangeSupport.firePropertyChange("filteredProducts", oldValue, this.filteredProducts);
+    }
+    
+    public String getSearchQuery() {
+        return searchQuery;
+    }
+    
+    public void setSearchQuery(String searchQuery) {
+        String oldValue = this.searchQuery;
+        this.searchQuery = searchQuery;
+        propertyChangeSupport.firePropertyChange("searchQuery", oldValue, searchQuery);
+        applyFilters();
+    }
+    
+    public String getSelectedCategory() {
+        return selectedCategory;
+    }
+    
+    public void setSelectedCategory(String selectedCategory) {
+        String oldValue = this.selectedCategory;
+        this.selectedCategory = selectedCategory;
+        propertyChangeSupport.firePropertyChange("selectedCategory", oldValue, selectedCategory);
+        applyFilters();
+    }
+    
+    public String getNewProductName() {
+        return newProductName;
+    }
+    
+    public void setNewProductName(String newProductName) {
+        String oldValue = this.newProductName;
+        this.newProductName = newProductName;
+        propertyChangeSupport.firePropertyChange("newProductName", oldValue, newProductName);
+    }
+    
+    public double getNewProductPrice() {
+        return newProductPrice;
+    }
+    
+    public void setNewProductPrice(double newProductPrice) {
+        double oldValue = this.newProductPrice;
+        this.newProductPrice = newProductPrice;
+        propertyChangeSupport.firePropertyChange("newProductPrice", oldValue, newProductPrice);
+    }
+    
+    public String getNewProductCategory() {
+        return newProductCategory;
+    }
+    
+    public void setNewProductCategory(String newProductCategory) {
+        String oldValue = this.newProductCategory;
+        this.newProductCategory = newProductCategory;
+        propertyChangeSupport.firePropertyChange("newProductCategory", oldValue, newProductCategory);
+    }
+    
+    public boolean isNewProductInStock() {
+        return newProductInStock;
+    }
+    
+    public void setNewProductInStock(boolean newProductInStock) {
+        boolean oldValue = this.newProductInStock;
+        this.newProductInStock = newProductInStock;
+        propertyChangeSupport.firePropertyChange("newProductInStock", oldValue, newProductInStock);
+    }
+    
+    public boolean isLoading() {
+        return isLoading;
+    }
+    
+    private void setLoading(boolean loading) {
+        boolean oldValue = this.isLoading;
+        this.isLoading = loading;
+        propertyChangeSupport.firePropertyChange("isLoading", oldValue, loading);
+    }
+    
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+    
+    private void setErrorMessage(String errorMessage) {
+        String oldValue = this.errorMessage;
+        this.errorMessage = errorMessage;
+        propertyChangeSupport.firePropertyChange("errorMessage", oldValue, errorMessage);
+    }
+    
+    public String getSuccessMessage() {
+        return successMessage;
+    }
+    
+    private void setSuccessMessage(String successMessage) {
+        String oldValue = this.successMessage;
+        this.successMessage = successMessage;
+        propertyChangeSupport.firePropertyChange("successMessage", oldValue, successMessage);
+    }
+    
+    // Propriétés calculées
+    public List<String> getCategories() {
+        Set<String> categories = products.stream()
+                .map(Product::getCategory)
+                .collect(Collectors.toSet());
+        List<String> result = new ArrayList<>();
+        result.add("all");
+        result.addAll(categories);
+        return result;
+    }
+    
+    public int getTotalProducts() {
+        return filteredProducts.size();
+    }
+    
+    public double getTotalValue() {
+        return filteredProducts.stream()
+                .mapToDouble(Product::getPrice)
+                .sum();
+    }
+    
+    public int getInStockCount() {
+        return (int) filteredProducts.stream()
+                .filter(Product::isInStock)
+                .count();
+    }
+    
+    // Commandes
+    public void addProductCommand() {
+        if (!validateNewProduct()) {
+            setErrorMessage("Veuillez remplir tous les champs obligatoires");
+            return;
+        }
+        
+        setLoading(true);
+        setErrorMessage("");
+        
+        try {
+            model.addProduct(newProductName, newProductPrice, newProductCategory, newProductInStock);
+            resetNewProduct();
+            setSuccessMessage("Produit ajouté avec succès");
+            
+            // Simuler l'effacement du message après 3 secondes
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    setSuccessMessage("");
+                }
+            }, 3000);
+            
+        } catch (Exception e) {
+            setErrorMessage("Erreur lors de l'ajout du produit: " + e.getMessage());
+        } finally {
+            setLoading(false);
+        }
+    }
+    
+    public void deleteProductCommand(int id) {
+        setLoading(true);
+        try {
+            if (model.deleteProduct(id)) {
+                setSuccessMessage("Produit supprimé avec succès");
+                Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        setSuccessMessage("");
+                    }
+                }, 3000);
+            } else {
+                setErrorMessage("Produit non trouvé");
+            }
+        } catch (Exception e) {
+            setErrorMessage("Erreur lors de la suppression: " + e.getMessage());
+        } finally {
+            setLoading(false);
+        }
+    }
+    
+    public void toggleStockCommand(int id) {
+        Optional<Product> product = products.stream()
+                .filter(p -> p.getId() == id)
+                .findFirst();
+        
+        if (product.isPresent()) {
+            model.updateProduct(id, null, null, null, !product.get().isInStock());
+        }
+    }
+    
+    public void clearFiltersCommand() {
+        setSearchQuery("");
+        setSelectedCategory("all");
+    }
+    
+    // Observer callback
+    @Override
+    public void onProductsChanged(List<Product> products) {
+        setProducts(products);
+        applyFilters();
+    }
+    
+    private void loadProducts() {
+        setLoading(true);
+        try {
+            List<Product> products = model.getAllProducts();
+            onProductsChanged(products);
+        } catch (Exception e) {
+            setErrorMessage("Erreur lors du chargement des produits: " + e.getMessage());
+        } finally {
+            setLoading(false);
+        }
+    }
+    
+    private void applyFilters() {
+        List<Product> filtered = new ArrayList<>(products);
+        
+        // Filtre par recherche
+        if (!searchQuery.trim().isEmpty()) {
+            filtered = model.searchProducts(searchQuery);
+        }
+        
+        // Filtre par catégorie
+        if (!"all".equals(selectedCategory)) {
+            filtered = filtered.stream()
+                    .filter(product -> product.getCategory().equals(selectedCategory))
+                    .collect(Collectors.toList());
+        }
+        
+        setFilteredProducts(filtered);
+    }
+    
+    private boolean validateNewProduct() {
+        return !newProductName.trim().isEmpty() && 
+               !newProductCategory.trim().isEmpty() && 
+               newProductPrice > 0;
+    }
+    
+    private void resetNewProduct() {
+        setNewProductName("");
+        setNewProductPrice(0.0);
+        setNewProductCategory("");
+        setNewProductInStock(true);
+    }
+}
+
+// Vue Swing avec data binding
+class ProductSwingView extends javax.swing.JFrame {
+    private ProductViewModel viewModel;
+    private javax.swing.JTable productsTable;
+    private javax.swing.table.DefaultTableModel tableModel;
+    private javax.swing.JTextField searchField;
+    private javax.swing.JComboBox<String> categoryCombo;
+    private javax.swing.JTextField nameField;
+    private javax.swing.JTextField priceField;
+    private javax.swing.JTextField categoryField;
+    private javax.swing.JCheckBox stockCheckBox;
+    private javax.swing.JLabel statusLabel;
+    
+    public ProductSwingView(ProductViewModel viewModel) {
+        this.viewModel = viewModel;
+        initComponents();
+        setupDataBinding();
+    }
+    
+    private void initComponents() {
+        setTitle("Gestionnaire de Produits MVVM");
+        setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
+        setLayout(new java.awt.BorderLayout());
+        
+        // Table des produits
+        String[] columns = {"ID", "Nom", "Prix", "Catégorie", "En Stock"};
+        tableModel = new javax.swing.table.DefaultTableModel(columns, 0);
+        productsTable = new javax.swing.JTable(tableModel);
+        add(new javax.swing.JScrollPane(productsTable), java.awt.BorderLayout.CENTER);
+        
+        // Panel de contrôles
+        javax.swing.JPanel controlPanel = new javax.swing.JPanel(new java.awt.GridLayout(0, 1));
+        
+        // Filtres
+        javax.swing.JPanel filterPanel = new javax.swing.JPanel();
+        searchField = new javax.swing.JTextField(20);
+        categoryCombo = new javax.swing.JComboBox<>();
+        filterPanel.add(new javax.swing.JLabel("Recherche:"));
+        filterPanel.add(searchField);
+        filterPanel.add(new javax.swing.JLabel("Catégorie:"));
+        filterPanel.add(categoryCombo);
+        controlPanel.add(filterPanel);
+        
+        // Formulaire d'ajout
+        javax.swing.JPanel formPanel = new javax.swing.JPanel();
+        nameField = new javax.swing.JTextField(10);
+        priceField = new javax.swing.JTextField(10);
+        categoryField = new javax.swing.JTextField(10);
+        stockCheckBox = new javax.swing.JCheckBox("En stock", true);
+        javax.swing.JButton addButton = new javax.swing.JButton("Ajouter");
+        
+        formPanel.add(new javax.swing.JLabel("Nom:"));
+        formPanel.add(nameField);
+        formPanel.add(new javax.swing.JLabel("Prix:"));
+        formPanel.add(priceField);
+        formPanel.add(new javax.swing.JLabel("Catégorie:"));
+        formPanel.add(categoryField);
+        formPanel.add(stockCheckBox);
+        formPanel.add(addButton);
+        controlPanel.add(formPanel);
+        
+        // Status
+        statusLabel = new javax.swing.JLabel(" ");
+        controlPanel.add(statusLabel);
+        
+        add(controlPanel, java.awt.BorderLayout.SOUTH);
+        
+        // Event listeners
+        addButton.addActionListener(e -> viewModel.addProductCommand());
+        searchField.addActionListener(e -> viewModel.setSearchQuery(searchField.getText()));
+        categoryCombo.addActionListener(e -> {
+            String selected = (String) categoryCombo.getSelectedItem();
+            if (selected != null) {
+                viewModel.setSelectedCategory(selected);
+            }
+        });
+        
+        pack();
+    }
+    
+    private void setupDataBinding() {
+        // Binding bidirectionnel simulé avec PropertyChangeListener
+        viewModel.addPropertyChangeListener(evt -> {
+            switch (evt.getPropertyName()) {
+                case "filteredProducts":
+                    updateProductsTable();
+                    break;
+                case "errorMessage":
+                    updateStatusLabel();
+                    break;
+                case "successMessage":
+                    updateStatusLabel();
+                    break;
+                case "isLoading":
+                    updateLoadingState();
+                    break;
+            }
+        });
+        
+        // Binding des champs de formulaire vers le ViewModel
+        nameField.addActionListener(e -> viewModel.setNewProductName(nameField.getText()));
+        priceField.addActionListener(e -> {
+            try {
+                viewModel.setNewProductPrice(Double.parseDouble(priceField.getText()));
+            } catch (NumberFormatException ex) {
+                // Ignorer les valeurs invalides
+            }
+        });
+        categoryField.addActionListener(e -> viewModel.setNewProductCategory(categoryField.getText()));
+        stockCheckBox.addActionListener(e -> viewModel.setNewProductInStock(stockCheckBox.isSelected()));
+        
+        // Initialisation
+        updateProductsTable();
+        updateCategoryCombo();
+    }
+    
+    private void updateProductsTable() {
+        tableModel.setRowCount(0);
+        for (Product product : viewModel.getFilteredProducts()) {
+            Object[] row = {
+                product.getId(),
+                product.getName(),
+                String.format("%.2f€", product.getPrice()),
+                product.getCategory(),
+                product.isInStock() ? "Oui" : "Non"
+            };
+            tableModel.addRow(row);
+        }
+    }
+    
+    private void updateCategoryCombo() {
+        categoryCombo.removeAllItems();
+        for (String category : viewModel.getCategories()) {
+            categoryCombo.addItem(category);
+        }
+    }
+    
+    private void updateStatusLabel() {
+        String error = viewModel.getErrorMessage();
+        String success = viewModel.getSuccessMessage();
+        
+        if (!error.isEmpty()) {
+            statusLabel.setText("Erreur: " + error);
+            statusLabel.setForeground(java.awt.Color.RED);
+        } else if (!success.isEmpty()) {
+            statusLabel.setText(success);
+            statusLabel.setForeground(java.awt.Color.GREEN);
+        } else {
+            statusLabel.setText(" ");
+        }
+    }
+    
+    private void updateLoadingState() {
+        boolean loading = viewModel.isLoading();
+        nameField.setEnabled(!loading);
+        priceField.setEnabled(!loading);
+        categoryField.setEnabled(!loading);
+        stockCheckBox.setEnabled(!loading);
+    }
+}
+
+// Utilisation
+public class MVVMProductApp {
+    public static void main(String[] args) {
+        // Création des composants
+        ProductModel model = new ProductModel();
+        ProductViewModel viewModel = new ProductViewModel(model);
+        
+        // Données de test
+        model.addProduct("Laptop Dell", 899.99, "Informatique", true);
+        model.addProduct("Souris Logitech", 29.99, "Informatique", true);
+        model.addProduct("Chaise Bureau", 199.99, "Mobilier", false);
+        
+        // Interface Swing
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            new ProductSwingView(viewModel).setVisible(true);
+        });
+    }
+}
+</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Avantages et Inconvénients -->
+                <section class="pros-cons-section">
+                    <div class="aikido-card">
+                        <h2>⚖️ Avantages et Inconvénients</h2>
+                        
+                        <div class="pros-cons-grid">
+                            <div class="pros-card">
+                                <h3>✅ Avantages</h3>
+                                <ul>
+                                    <li><strong>Data binding automatique</strong> : Synchronisation transparente Vue-ViewModel</li>
+                                    <li><strong>Testabilité maximale</strong> : ViewModel complètement indépendant de l'UI</li>
+                                    <li><strong>Séparation parfaite</strong> : Aucun couplage entre Vue et
+
+                                    <li><strong>Séparation parfaite</strong> : Aucun couplage entre Vue et logique métier</li>
+                                    <li><strong>Réactivité native</strong> : Mise à jour automatique de l'interface</li>
+                                    <li><strong>Réutilisabilité</strong> : ViewModel indépendant de la technologie d'affichage</li>
+                                </ul>
+
+                                <h3>❌ Inconvénients</h3>
+                                <ul>
+                                    <li><strong>Complexité initiale</strong> : Mise en place du système de binding</li>
+                                    <li><strong>Courbe d'apprentissage</strong> : Concepts de programmation réactive</li>
+                                    <li><strong>Performance</strong> : Overhead du système d'observation</li>
+                                    <li><strong>Debugging complexe</strong> : Flux de données automatisés difficiles à tracer</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Cas d'usage -->
+                <section class="use-cases-section">
+                    <div class="aikido-card slide-in">
+                        <div class="card-header">
+                            <h2>🎯 Cas d'usage recommandés</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="use-cases-grid">
+                                <div class="use-case-item">
+                                    <h3>✅ Recommandé pour</h3>
+                                    <ul>
+                                        <li>Applications avec interfaces complexes et dynamiques</li>
+                                        <li>Formulaires avec validation en temps réel</li>
+                                        <li>Dashboards avec données changeantes</li>
+                                        <li>Applications nécessitant une synchronisation bidirectionnelle</li>
+                                        <li>Projets utilisant des frameworks supportant le data binding</li>
+                                    </ul>
+                                </div>
+                                <div class="use-case-item">
+                                    <h3>❌ Éviter pour</h3>
+                                    <ul>
+                                        <li>Applications simples avec peu d'interactions</li>
+                                        <li>Projets sans framework de data binding</li>
+                                        <li>Équipes non familières avec la programmation réactive</li>
+                                        <li>Applications avec contraintes de performance strictes</li>
+                                        <li>Prototypes rapides ou applications temporaires</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Alternatives -->
+                <section class="alternatives-section">
+                    <div class="aikido-card slide-in">
+                        <div class="card-header">
+                            <h2>🔄 Alternatives et variantes</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="alternatives-grid">
+                                <div class="alternative-item">
+                                    <h3>🎭 MVP (Model-View-Presenter)</h3>
+                                    <p>Séparation similaire mais avec contrôle manuel des mises à jour</p>
+                                </div>
+                                <div class="alternative-item">
+                                    <h3>🏗️ MVC (Model-View-Controller)</h3>
+                                    <p>Architecture plus traditionnelle avec contrôleur central</p>
+                                </div>
+                                <div class="alternative-item">
+                                    <h3>⚛️ Component-Based Architecture</h3>
+                                    <p>Composants autonomes avec état local (React, Vue)</p>
+                                </div>
+                                <div class="alternative-item">
+                                    <h3>🔄 Flux/Redux Pattern</h3>
+                                    <p>Gestion d'état unidirectionnelle pour applications complexes</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Biais cognitifs -->
+                <section class="cognitive-bias-section">
+                    <div class="aikido-card slide-in">
+                        <div class="card-header">
+                            <h2>🧠 Biais cognitifs associés</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="cognitive-bias-grid">
+                                <div class="bias-item">
+                                    <h3>🎯 Biais de confirmation</h3>
+                                    <p>Tendance à privilégier MVVM même quand une solution plus simple suffirait</p>
+                                </div>
+                                <div class="bias-item">
+                                    <h3>🔨 Loi de l'instrument</h3>
+                                    <p>"Quand on a un marteau, tout ressemble à un clou" - Utiliser MVVM partout</p>
+                                </div>
+                                <div class="bias-item">
+                                    <h3>✨ Biais de nouveauté</h3>
+                                    <p>Attraction pour les frameworks modernes avec data binding automatique</p>
+                                </div>
+                                <div class="bias-item">
+                                    <h3>🏗️ Complexité accidentelle</h3>
+                                    <p>Ajouter de la complexité architecturale sans bénéfice réel</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercice interactif -->
+                <section class="exercise-section">
+                    <div class="aikido-card slide-in">
+                        <div class="card-header">
+                            <h2>🎮 Exercice pratique</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="exercise-content">
+                                <h3>Scénario : Application de gestion de commandes</h3>
+                                <p>Vous développez une application de gestion de commandes avec les exigences suivantes :</p>
+                                <ul>
+                                    <li>Formulaire de commande avec validation en temps réel</li>
+                                    <li>Calcul automatique du total lors de modifications</li>
+                                    <li>Synchronisation entre liste des produits et panier</li>
+                                    <li>Mise à jour automatique du stock disponible</li>
+                                </ul>
+
+                                <div class="exercise-question">
+                                    <h4>Question : Quelle est la principale valeur ajoutée de MVVM dans ce contexte ?</h4>
+                                    <div class="exercise-options">
+                                        <label class="exercise-option">
+                                            <input type="radio" name="mvvm-exercise" value="a">
+                                            <span>A) Séparation des responsabilités entre couches</span>
+                                        </label>
+                                        <label class="exercise-option">
+                                            <input type="radio" name="mvvm-exercise" value="b">
+                                            <span>B) Data binding automatique pour synchronisation temps réel</span>
+                                        </label>
+                                        <label class="exercise-option">
+                                            <input type="radio" name="mvvm-exercise" value="c">
+                                            <span>C) Amélioration des performances de l'application</span>
+                                        </label>
+                                        <label class="exercise-option">
+                                            <input type="radio" name="mvvm-exercise" value="d">
+                                            <span>D) Simplification du code de l'interface utilisateur</span>
+                                        </label>
+                                    </div>
+                                    <button onclick="checkMVVMExercise()" class="aikido-btn primary">Vérifier la réponse</button>
+                                    <div id="mvvm-exercise-feedback" class="exercise-feedback" style="display: none;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section de completion -->
+                <section class="completion-section slide-in">
+                        <div class="aikido-card completion">
+                            <div class="completion-content">
+                                <div class="completion-icon">🎪</div>
+                                <h3>Pattern MVVM maîtrisé !</h3>
+                                <p>Vous comprenez maintenant le data binding automatique et la séparation Vue-ViewModel.</p>
+                                <button onclick="markAsCompleted('mvvm')" class="aikido-btn primary mark-completed" data-page="mvvm">
+                                    Marquer comme terminé
+                                </button>
+                                <div id="completion-feedback" class="completion-feedback hidden">
+                                    <p>✅ Excellent ! Le pattern MVVM est maintenant maîtrisé.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+            <script src="../../../js/navigation.js"></script>
+            <script src="../../../js/utils.js"></script>
+            <script src="../../../js/code-tabs.js"></script>
+            <script>
+                // Exercice interactif MVVM
+                function checkMVVMExercise() {
+                    const selectedOption = document.querySelector('input[name="mvvm-exercise"]:checked');
+                    const feedback = document.getElementById('mvvm-exercise-feedback');
+                    
+                    if (!selectedOption) {
+                        feedback.innerHTML = '<p style="color: #e74c3c;">⚠️ Veuillez sélectionner une réponse.</p>';
+                        feedback.style.display = 'block';
+                        return;
+                    }
+
+                    const answer = selectedOption.value;
+                    let feedbackContent = '';
+
+                    switch(answer) {
+                        case 'a':
+                            feedbackContent = `
+                                <p style="color: #f39c12;">🤔 Partiellement correct.</p>
+                                <p>La séparation des responsabilités est importante, mais ce n'est pas la spécificité unique de MVVM. MVC et MVP offrent aussi cette séparation.</p>
+                            `;
+                            break;
+                        case 'b':
+                            feedbackContent = `
+                                <p style="color: #27ae60;">✅ Excellente réponse !</p>
+                                <p>Le <strong>data binding automatique</strong> est effectivement la principale valeur ajoutée de MVVM. Il permet :</p>
+                                <ul>
+                                    <li>Synchronisation automatique entre Vue et ViewModel</li>
+                                    <li>Mise à jour temps réel sans code manuel</li>
+                                    <li>Réactivité native de l'interface</li>
+                                    <li>Élimination du code de synchronisation répétitif</li>
+                                </ul>
+                                <p>Dans votre application de commandes, cela signifie que les totaux se recalculent automatiquement, le stock se met à jour en temps réel, et la validation s'exécute sans intervention manuelle.</p>
+                            `;
+                            break;
+                        case 'c':
+                            feedbackContent = `
+                                <p style="color: #e74c3c;">❌ Incorrect.</p>
+                                <p>MVVM peut en fait introduire un overhead de performance à cause du système d'observation et de binding. L'amélioration des performances n'est pas son objectif principal.</p>
+                            `;
+                            break;
+                        case 'd':
+                            feedbackContent = `
+                                <p style="color: #f39c12;">🤔 Pas tout à fait.</p>
+                                <p>MVVM peut parfois complexifier le code UI initial à cause de la configuration du binding. La simplification vient plutôt de l'élimination du code de synchronisation manuel.</p>
+                            `;
+                            break;
+                    }
+
+                    feedback.innerHTML = feedbackContent;
+                    feedback.style.display = 'block';
+                }
+
+                // Fonction de completion
+                function markAsCompleted(page) {
+                    const button = document.querySelector(`[data-page="${page}"]`);
+                    const feedback = document.getElementById('completion-feedback');
+                    
+                    if (button) {
+                        button.disabled = true;
+                        button.textContent = '✅ Terminé';
+                        button.classList.add('completed');
+                        
+                        feedback.classList.remove('hidden');
+                        
+                        // Sauvegarder dans localStorage
+                        let completedPages = JSON.parse(localStorage.getItem('completedPages') || '[]');
+                        if (!completedPages.includes(page)) {
+                            completedPages.push(page);
+                            localStorage.setItem('completedPages', JSON.stringify(completedPages));
+                        }
+                    }
+                }
+
+                // Vérifier si la page est déjà complétée
+                document.addEventListener('DOMContentLoaded', function() {
+                    const completedPages = JSON.parse(localStorage.getItem('completedPages') || '[]');
+                    if (completedPages.includes('mvvm')) {
+                        const button = document.querySelector('[data-page="mvvm"]');
+                        const feedback = document.getElementById('completion-feedback');
+                        if (button) {
+                            button.disabled = true;
+                            button.textContent = '✅ Terminé';
+                            button.classList.add('completed');
+                            feedback.classList.remove('hidden');
+                        }
+                    }
+                });
+            </script>
+        </body>
+        </html>

@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registry Pattern - Formation Patterns Développeurs</title>
+    <meta name="description" content="Le pattern Registry expliqué avec exemples de code, diagrammes UML et cas d'usage pratiques">
+    
+    <!-- Styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../css/main.css">
+    <link rel="stylesheet" href="../../../css/components.css">
+    
+    <!-- Scripts -->
+    <script src="../../../js/navigation.js" defer></script>
+    <script src="../../../js/utils.js" defer></script>
+    <script src="../../../js/code-tabs.js" defer></script>
+    
+    <!-- Mermaid.js pour les diagrammes de workflow -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#2563eb',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#64748b',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc'
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="aikido-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="aikido-sidebar">
+            <div id="navigation-menu">
+                <!-- Le menu sera généré par navigation.js -->
+            </div>
+        </aside>
+
+        <!-- Contenu Principal -->
+        <main class="aikido-main">
+            <div class="aikido-content">
+                <!-- Header de la page -->
+                <header class="page-header fade-in">
+                    <h1 class="page-title">📋 Registry Pattern</h1>
+                    <p class="page-subtitle">Point d'accès global pour retrouver des objets et services</p>
+                    <div class="page-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">🎨</span>
+                            <span class="meta-text">Design Patterns</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⭐</span>
+                            <span class="meta-text">Difficulté: Facile</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">⏱️</span>
+                            <span class="meta-text">15 min</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🏗️</span>
+                            <span class="meta-text">Architectural</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Définition et Problème -->
+                <section class="definition-section slide-in">
+                    <div class="aikido-card design-pattern">
+                        <h2>🎯 Définition</h2>
+                        <p class="mb-md">
+                            Le <strong>Registry</strong> est un pattern architectural qui fournit un point d'accès 
+                            global pour retrouver des objets et services dans l'application. Il agit comme un annuaire 
+                            centralisé où les composants peuvent s'enregistrer et être retrouvés par d'autres parties 
+                            du système.
+                        </p>
+                        
+                        <div class="problem-solution-grid">
+                            <div class="problem-card">
+                                <h3>❌ Problème Résolu</h3>
+                                <ul>
+                                    <li>Localisation difficile des services dans l'application</li>
+                                    <li>Couplage fort entre composants</li>
+                                    <li>Configuration complexe des dépendances</li>
+                                    <li>Besoin d'accès global à des services</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="solution-card">
+                                <h3>✅ Solution Apportée</h3>
+                                <ul>
+                                    <li>Centralisation de l'enregistrement des services</li>
+                                    <li>Découplage entre composants</li>
+                                    <li>Changement d'implémentation à l'exécution</li>
+                                    <li>Interface simple pour la gestion des services</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="aikido-alert info">
+                            <strong>💡 Analogie :</strong> Comme un annuaire téléphonique qui permet de retrouver 
+                            le numéro d'une personne par son nom, le Registry permet de retrouver un service par son identifiant.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Structure UML -->
+                <section class="structure-section">
+                    <div class="aikido-card">
+                        <h2>🏗️ Structure UML</h2>
+                        <div class="uml-diagram">
+                            <div class="uml-class-diagram">
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>Registry</strong>
+                                    </div>
+                                    <div class="class-attributes">
+                                        <div class="attribute private">- services: Map&lt;string, any&gt;</div>
+                                        <div class="attribute private">- instance: Registry</div>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method private">- constructor()</div>
+                                        <div class="method public">+ getInstance(): Registry</div>
+                                        <div class="method public">+ register(name: string, service: any): void</div>
+                                        <div class="method public">+ get(name: string): any</div>
+                                        <div class="method public">+ has(name: string): boolean</div>
+                                        <div class="method public">+ unregister(name: string): void</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>ServiceA</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ methodA(): void</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="uml-class">
+                                    <div class="class-header">
+                                        <strong>Client</strong>
+                                    </div>
+                                    <div class="class-methods">
+                                        <div class="method public">+ useServices(): void</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="structure-explanation">
+                            <h3>Éléments Clés</h3>
+                            <ul>
+                                <li><strong>Registry</strong> : Classe centrale gérant l'enregistrement et la récupération</li>
+                                <li><strong>services</strong> : Collection stockant les services par nom</li>
+                                <li><strong>register()</strong> : Méthode pour enregistrer un service</li>
+                                <li><strong>get()</strong> : Méthode pour récupérer un service par nom</li>
+                            </ul>
+                        </div>
+
+                        <!-- Diagramme de flux Mermaid -->
+                        <div class="mt-lg">
+                            <h3>🔄 Flux d'Exécution</h3>
+                            <div class="mermaid">
+                                graph TD
+                                    A[Application démarre] --> B[Services s'enregistrent]
+                                    B --> C[Registry stocke les services]
+                                    C --> D[Client demande un service]
+                                    D --> E[Registry.get nom]
+                                    E --> F{Service existe ?}
+                                    F -->|Oui| G[Retourner le service]
+                                    F -->|Non| H[Retourner null/undefined]
+                                    G --> I[Client utilise le service]
+                                    H --> J[Client gère l'absence]
+                                    
+                                    K[Nouveau service] --> L[Registry.register nom, service]
+                                    L --> C
+                                    
+                                    style A fill:#e1f5fe
+                                    style B fill:#fff3e0
+                                    style C fill:#ffebee
+                                    style G fill:#e8f5e8
+                                    style I fill:#f3e5f5
+                            </div>
+                            <p class="text-sm text-gray-600 mt-md">
+                                <strong>💡 Point clé :</strong> Le Registry centralise l'accès aux services, 
+                                permettant aux clients de les retrouver par nom sans connaître leur implémentation.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Implémentations -->
+                <section class="implementations-section">
+                    <h2>💻 Implémentations</h2>
+                    
+                    <div class="aikido-card">
+                        <div class="code-tabs">
+                            <div class="tab-buttons">
+                                <button class="tab-btn active" data-tab="typescript">TypeScript</button>
+                                <button class="tab-btn" data-tab="php">PHP</button>
+                                <button class="tab-btn" data-tab="java">Java</button>
+                            </div>
+
+                            <div class="tab-content active" data-tab="typescript">
+                                <h4>Exemple : Registry de Services</h4>
+                                <pre><code class="language-typescript">
+// Registry simple
+class Registry {
+    private static instance: Registry;
+    private services: Map&lt;string, any&gt; = new Map();
+
+    private constructor() {}
+
+    static getInstance(): Registry {
+        if (!Registry.instance) {
+            Registry.instance = new Registry();
+        }
+        return Registry.instance;
+    }
+
+    register&lt;T&gt;(name: string, service: T): void {
+        this.services.set(name, service);
+    }
+
+    get&lt;T&gt;(name: string): T | undefined {
+        return this.services.get(name) as T;
+    }
+
+    has(name: string): boolean {
+        return this.services.has(name);
+    }
+
+    unregister(name: string): void {
+        this.services.delete(name);
+    }
+
+    clear(): void {
+        this.services.clear();
+    }
+
+    getAll(): Map&lt;string, any&gt; {
+        return new Map(this.services);
+    }
+}
+
+// Registry avec types et factory
+interface ServiceFactory&lt;T&gt; {
+    create(): T;
+}
+
+class TypedRegistry {
+    private static instance: TypedRegistry;
+    private services: Map&lt;string, any&gt; = new Map();
+    private factories: Map&lt;string, ServiceFactory&lt;any&gt;&gt; = new Map();
+
+    private constructor() {}
+
+    static getInstance(): TypedRegistry {
+        if (!TypedRegistry.instance) {
+            TypedRegistry.instance = new TypedRegistry();
+        }
+        return TypedRegistry.instance;
+    }
+
+    // Enregistrer une instance
+    registerInstance&lt;T&gt;(name: string, service: T): void {
+        this.services.set(name, service);
+    }
+
+    // Enregistrer une factory
+    registerFactory&lt;T&gt;(name: string, factory: ServiceFactory&lt;T&gt;): void {
+        this.factories.set(name, factory);
+    }
+
+    // Récupérer un service (instance ou création via factory)
+    get&lt;T&gt;(name: string): T | undefined {
+        // D'abord chercher une instance existante
+        if (this.services.has(name)) {
+            return this.services.get(name) as T;
+        }
+
+        // Sinon utiliser la factory si disponible
+        if (this.factories.has(name)) {
+            const factory = this.factories.get(name)!;
+            const instance = factory.create();
+            this.services.set(name, instance); // Cache l'instance
+            return instance as T;
+        }
+
+        return undefined;
+    }
+
+    // Récupérer une nouvelle instance via factory (sans cache)
+    create&lt;T&gt;(name: string): T | undefined {
+        if (this.factories.has(name)) {
+            const factory = this.factories.get(name)!;
+            return factory.create() as T;
+        }
+        return undefined;
+    }
+}
+
+// Exemples de services
+interface Logger {
+    log(message: string): void;
+}
+
+class ConsoleLogger implements Logger {
+    log(message: string): void {
+        console.log(`[LOG] ${new Date().toISOString()}: ${message}`);
+    }
+}
+
+class FileLogger implements Logger {
+    constructor(private filename: string) {}
+
+    log(message: string): void {
+        // Simulation d'écriture dans un fichier
+        console.log(`[FILE:${this.filename}] ${message}`);
+    }
+}
+
+// Service utilisant le Registry
+class UserService {
+    private logger: Logger;
+
+    constructor() {
+        const registry = TypedRegistry.getInstance();
+        this.logger = registry.get&lt;Logger&gt;('logger')!;
+    }
+
+    async createUser(name: string, email: string): Promise&lt;void&gt; {
+        this.logger.log(`Creating user: ${name}`);
+        
+        try {
+            // Logique de création d'utilisateur
+            this.logger.log(`User ${name} created successfully`);
+        } catch (error) {
+            this.logger.log(`Error creating user: ${error}`);
+            throw error;
+        }
+    }
+}
+
+// Configuration de l'application
+function configureServices(): void {
+    const registry = TypedRegistry.getInstance();
+    
+    // Configuration selon l'environnement
+    if (process.env.NODE_ENV === 'production') {
+        registry.registerInstance('logger', new FileLogger('production.log'));
+    } else {
+        registry.registerInstance('logger', new ConsoleLogger());
+    }
+}
+
+// Initialisation
+configureServices();
+const userService = new UserService();
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="php">
+                                <pre><code class="language-php">
+&lt;?php
+
+// Registry simple
+class Registry {
+    private static $instance = null;
+    private $services = [];
+
+    private function __construct() {}
+
+    // Empêcher le clonage
+    private function __clone() {}
+
+    // Empêcher la désérialisation
+    public function __wakeup() {
+        throw new Exception("Impossible de désérialiser un Singleton");
+    }
+
+    public static function getInstance(): Registry {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    public function register(string $name, $service): void {
+        $this->services[$name] = $service;
+    }
+
+    public function get(string $name) {
+        return $this->services[$name] ?? null;
+    }
+
+    public function has(string $name): bool {
+        return isset($this->services[$name]);
+    }
+
+    public function unregister(string $name): void {
+        unset($this->services[$name]);
+    }
+
+    public function clear(): void {
+        $this->services = [];
+    }
+
+    public function getAll(): array {
+        return $this->services;
+    }
+}
+
+// Interface pour les factories
+interface ServiceFactory {
+    public function create();
+}
+
+// Registry avec support des factories
+class TypedRegistry {
+    private static $instance = null;
+    private $services = [];
+    private $factories = [];
+
+    private function __construct() {}
+
+    public static function getInstance(): TypedRegistry {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
+    public function registerInstance(string $name, $service): void {
+        $this->services[$name] = $service;
+    }
+
+    public function registerFactory(string $name, ServiceFactory $factory): void {
+        $this->factories[$name] = $factory;
+    }
+
+    public function get(string $name) {
+        // Chercher une instance existante
+        if (isset($this->services[$name])) {
+            return $this->services[$name];
+        }
+
+        // Utiliser la factory si disponible
+        if (isset($this->factories[$name])) {
+            $factory = $this->factories[$name];
+            $instance = $factory->create();
+            $this->services[$name] = $instance; // Cache l'instance
+            return $instance;
+        }
+
+        return null;
+    }
+}
+
+// Exemples de services
+interface Logger {
+    public function log(string $message): void;
+}
+
+class ConsoleLogger implements Logger {
+    public function log(string $message): void {
+        echo "[LOG] " . date('Y-m-d H:i:s') . ": {$message}" . PHP_EOL;
+    }
+}
+
+class FileLogger implements Logger {
+    private string $filename;
+
+    public function __construct(string $filename) {
+        $this->filename = $filename;
+    }
+
+    public function log(string $message): void {
+        $timestamp = date('Y-m-d H:i:s');
+        $logEntry = "[{$timestamp}] {$message}" . PHP_EOL;
+        file_put_contents($this->filename, $logEntry, FILE_APPEND | LOCK_EX);
+    }
+}
+
+// Service utilisant le Registry
+class UserService {
+    private Logger $logger;
+
+    public function __construct() {
+        $registry = TypedRegistry::getInstance();
+        $this->logger = $registry->get('logger');
+        
+        if (!$this->logger) {
+            throw new RuntimeException('Logger service not found in registry');
+        }
+    }
+
+    public function createUser(string $name, string $email): void {
+        $this->logger->log("Creating user: {$name}");
+        
+        try {
+            // Logique de création d'utilisateur
+            $this->logger->log("User {$name} created successfully");
+        } catch (Exception $e) {
+            $this->logger->log("Error creating user: " . $e->getMessage());
+            throw $e;
+        }
+    }
+}
+
+// Configuration de l'application
+function configureServices(): void {
+    $registry = TypedRegistry::getInstance();
+    
+    // Configuration selon l'environnement
+    if ($_ENV['APP_ENV'] === 'production') {
+        $registry->registerInstance('logger', new FileLogger('production.log'));
+    } else {
+        $registry->registerInstance('logger', new ConsoleLogger());
+    }
+}
+
+// Initialisation
+configureServices();
+$userService = new UserService();
+
+?&gt;
+</code></pre>
+                            </div>
+
+                            <div class="tab-content" data-tab="java">
+                                <pre><code class="language-java">
+// Registry simple
+public class Registry {
+    private static Registry instance;
+    private Map&lt;String, Object&gt; services = new HashMap&lt;&gt;();
+
+    private Registry() {}
+
+    public static synchronized Registry getInstance() {
+        if (instance == null) {
+            instance = new Registry();
+        }
+        return instance;
+    }
+
+    public &lt;T&gt; void register(String name, T service) {
+        services.put(name, service);
+    }
+
+    @SuppressWarnings("unchecked")
+    public &lt;T&gt; T get(String name, Class&lt;T&gt; type) {
+        Object service = services.get(name);
+        if (service != null && type.isInstance(service)) {
+            return (T) service;
+        }
+        return null;
+    }
+
+    public boolean has(String name) {
+        return services.containsKey(name);
+    }
+
+    public void unregister(String name) {
+        services.remove(name);
+    }
+
+    public void clear() {
+        services.clear();
+    }
+}
+
+// Interface pour les factories
+public interface ServiceFactory&lt;T&gt; {
+    T create();
+}
+
+// Registry avec support des factories
+public class TypedRegistry {
+    private static TypedRegistry instance;
+    private Map&lt;String, Object&gt; services = new HashMap&lt;&gt;();
+    private Map&lt;String, ServiceFactory&lt;?&gt;&gt; factories = new HashMap&lt;&gt;();
+
+    private TypedRegistry() {}
+
+    public static synchronized TypedRegistry getInstance() {
+        if (instance == null) {
+            instance = new TypedRegistry();
+        }
+        return instance;
+    }
+
+    public &lt;T&gt; void registerInstance(String name, T service) {
+        services.put(name, service);
+    }
+
+    public &lt;T&gt; void registerFactory(String name, ServiceFactory&lt;T&gt; factory) {
+        factories.put(name, factory);
+    }
+
+    @SuppressWarnings("unchecked")
+    public &lt;T&gt; T get(String name, Class&lt;T&gt; type) {
+        // Chercher une instance existante
+        Object service = services.get(name);
+        if (service != null && type.isInstance(service)) {
+            return (T) service;
+        }
+
+        // Utiliser la factory si disponible
+        ServiceFactory&lt;?&gt; factory = factories.get(name);
+        if (factory != null) {
+            Object instance = factory.create();
+            if (type.isInstance(instance)) {
+                services.put(name, instance); // Cache l'instance
+                return (T) instance;
+            }
+        }
+
+        return null;
+    }
+}
+
+// Exemples de services
+public interface Logger {
+    void log(String message);
+}
+
+public class ConsoleLogger implements Logger {
+    @Override
+    public void log(String message) {
+        System.out.println("[LOG] " + LocalDateTime.now() + ": " + message);
+    }
+}
+
+public class FileLogger implements Logger {
+    private String filename;
+
+    public FileLogger(String filename) {
+        this.filename = filename;
+    }
+
+    @Override
+    public void log(String message) {
+        try (FileWriter writer = new FileWriter(filename, true)) {
+            writer.write("[" + LocalDateTime.now() + "] " + message + "\n");
+        } catch (IOException e) {
+            System.err.println("Error writing to log file: " + e.getMessage());
+        }
+    }
+}
+
+// Service utilisant le Registry
+public class UserService {
+    private Logger logger;
+
+    public UserService() {
+        TypedRegistry registry = TypedRegistry.getInstance();
+        this.logger = registry.get("logger", Logger.class);
+        
+        if (this.logger == null) {
+            throw new RuntimeException("Logger service not found in registry");
+        }
+    }
+
+    public void createUser(String name, String email) {
+        logger.log("Creating user: " + name);
+        
+        try {
+            // Logique de création d'utilisateur
+            logger.log("User " + name + " created successfully");
+        } catch (Exception e) {
+            logger.log("Error creating user: " + e.getMessage());
+            throw e;
+        }
+    }
+}
+
+// Configuration de l'application
+public class ServiceConfiguration {
+    public static void configureServices() {
+        TypedRegistry registry = TypedRegistry.getInstance();
+        
+        // Configuration selon l'environnement
+        String env = System.getProperty("app.env", "development");
+        if ("production".equals(env)) {
+            registry.registerInstance("logger", new FileLogger("production.log"));
+        } else {
+            registry.registerInstance("logger", new ConsoleLogger());
+        }
+    }
+}
+
+// Utilisation
+public class Application {
+    public static void main(String[] args) {
+        ServiceConfiguration.configureServices();
+        UserService userService = new UserService();
+        userService.createUser("John Doe", "john@example.com");
+    }
+}
+</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Avantages et Inconvénients -->
+                <section class="pros-cons-section">
+                    <div class="aikido-card">
+                        <h2>⚖️ Avantages et Inconvénients</h2>
+                        
+                        <div class="pros-cons-grid">
+                            <div class="pros-card">
+                                <h3>✅ Avantages</h3>
+                                <ul>
+                                    <li><strong>Centralisation</strong> : Point unique pour enregistrer et retrouver des services</li>
+                                    <li><strong>Découplage</strong> : Les composants ne se connaissent pas directement</li>
+                                    <li><strong>Flexibilité</strong> : Changement d'implémentation à l'exécution</li>
+                                    <li><strong>Simplicité</strong> : Interface simple pour la gestion des services</li>
+                                    <li><strong>Configuration</strong> : Facilite la configuration selon l'environnement</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="cons-card">
+                                <h3>❌ Inconvénients</h3>
+                                <ul>
+                                    <li><strong>État global</strong> : Peut créer des dépendances cachées</li>
+                                    <li><strong>Tests difficiles</strong> : État partagé complique les tests</li>
+                                    <li><strong>Couplage au Registry</strong> : Tous les composants dépendent du Registry</li>
+                                    <li><strong>Erreurs à l'exécution</strong> : Services manquants détectés tardivement</li>
+                                    <li><strong>Thread-safety</strong> : Nécessite une gestion de la concurrence</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Cas d'Usage -->
+                <section class="use-cases-section">
+                    <div class="aikido-card">
+                        <h2>🎯 Cas d'Usage Appropriés</h2>
+                        
+                        <div class="use-cases-grid">
+                            <div class="use-case good">
+                                <h4>✅ Quand l'utiliser</h4>
+                                <ul>
+                                    <li><strong>Configuration de services</strong> : Différents services selon l'environnement</li>
+                                    <li><strong>Plugin system</strong> : Enregistrement dynamique d'extensions</li>
+                                    <li><strong>Tests unitaires</strong> : Remplacement facile par des mocks</li>
+                                    <li><strong>Inversion de contrôle simple</strong> : Alternative légère à un conteneur IoC</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="use-case bad">
+                                <h4>❌ Quand l'éviter</h4>
+                                <ul>
+                                    <li><strong>Applications simples</strong> : Complexité non justifiée</li>
+                                    <li><strong>Dépendances explicites</strong> : Quand l'injection directe est préférable</li>
+                                    <li><strong>Performance critique</strong> : Lookup dynamique peut être coûteux</li>
+                                    <li><strong>Type safety importante</strong> : Perte de vérification à la compilation</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Biais Cognitifs Liés -->
+                <section class="cognitive-bias-section">
+                    <div class="aikido-card biais-cognitif">
+                        <h2>🧩 Biais Cognitifs Associés</h2>
+                        
+                        <div class="bias-analysis">
+                            <div class="bias-item">
+                                <h4>🌐 Biais de l'État Global</h4>
+                                <p><strong>Manifestation :</strong> "Le Registry est pratique, mettons tout dedans !"</p>
+                                <p><strong>Risque :</strong> Abuser du Registry comme variable globale, créant des dépendances cachées difficiles à tracer.</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>🔧 Biais de la Solution Universelle</h4>
+                                <p><strong>Manifestation :</strong> Vouloir tout mettre dans le Registry, même les objets qui n'ont pas besoin d'être partagés.</p>
+                                <p><strong>Risque :</strong> Complexité inutile et perte de clarté dans les dépendances.</p>
+                            </div>
+                            
+                            <div class="bias-item">
+                                <h4>🎯 Biais de Simplicité Apparente</h4>
+                                <p><strong>Manifestation :</strong> "C'est plus simple qu'un conteneur IoC complet."</p>
+                                <p><strong>Risque :</strong> Sous-estimer les problèmes de maintenance et de testabilité à long terme.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exercice Pratique -->
+                <section class="exercise-section">
+                    <div class="aikido-card exercise">
+                        <h2>🎯 Exercice Pratique</h2>
+                        
+                        <div class="exercise-scenario">
+                            <h3>Scenario : Système de Plugins</h3>
+                            <p>
+                                Vous développez une application modulaire où différents plugins peuvent s'enregistrer 
+                                dynamiquement. Ces plugins fournissent des fonctionnalités comme l'authentification, 
+                                la notification, ou le stockage. L'application doit pouvoir découvrir et utiliser 
+                                ces plugins sans les connaître à l'avance.
+                            </p>
+                            
+                            <div class="exercise-question">
+                                <h4>Question :</h4>
+                                <p>Comment organiseriez-vous la découverte et l'utilisation de ces plugins ?</p>
+                                
+                                <div class="choice-options">
+                                    <div class="choice-option" data-choice="registry">
+                                        📋 Utiliser un Registry pour enregistrer les plugins
+                                    </div>
+                                    <div class="choice-option" data-choice="singleton">
+                                        👑 Créer un Singleton pour chaque type de plugin
+                                    </div>
+                                    <div class="choice-option" data-choice="static">
+                                        📊 Utiliser des classes statiques pour chaque plugin
+                                    </div>
+                                </div>
+                                
+                                <div id="exercise-retours" class="exercise-retours hidden">
+                                    <div class="feedback-registry" style="display: none;">
+                                        <h4>✅ Excellente réponse !</h4>
+                                        <p>Le Registry est parfait pour ce cas d'usage car :</p>
+                                        <ul>
+                                            <li><strong>Découverte dynamique</strong> : Les plugins peuvent s'enregistrer à l'exécution</li>
+                                            <li><strong>Découplage</strong> : L'application ne connaît pas les plugins à l'avance</li>
+                                            <li><strong>Flexibilité</strong> : Ajout/suppression de plugins sans modification du code</li>
+                                            <li><strong>Interface uniforme</strong> : Tous les plugins sont accessibles de la même manière</li>
+                                        </ul>
+                                        <div class="code-example">
+                                            <pre><code>// Plugin s'enregistre lui-même
+PluginRegistry.register('auth', new OAuth2Plugin());
+PluginRegistry.register('storage', new S3Plugin());
+
+// Application utilise les plugins
+const authPlugin = PluginRegistry.get('auth');
+const storagePlugin = PluginRegistry.get('storage');</code></pre>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="feedback-singleton" style="display: none;">
+                                        <h4>⚠️ Pas optimal</h4>
+                                        <p>Un Singleton par plugin pose plusieurs problèmes :</p>
+                                        <ul>
+                                            <li><strong>Rigidité</strong> : Impossible d'avoir plusieurs instances du même type</li>
+                                            <li><strong>Couplage</strong> : L'application doit connaître chaque Singleton</li>
+                                            <li><strong>Tests difficiles</strong> : État global partagé</li>
+                                            <li><strong>Pas de découverte</strong> : Les plugins doivent être connus à l'avance</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="feedback-static" style="display: none;">
+                                        <h4>❌ Mauvaise approche</h4>
+                                        <p>Les classes statiques ne conviennent pas car :</p>
+                                        <ul>
+                                            <li><strong>Pas d'interface commune</strong> : Chaque plugin a sa propre API</li>
+                                            <li><strong>Couplage fort</strong> : L'application doit importer chaque classe</li>
+                                            <li><strong>Pas de polymorphisme</strong> : Impossible de traiter les plugins uniformément</li>
+                                            <li><strong>Configuration difficile</strong> : Pas de point central de gestion</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section de Completion -->
+                <section class="completion-section slide-in">
+                    <div class="aikido-card completion">
+                        <div class="completion-content">
+                            <div class="completion-icon">📋</div>
+                            <h3>Pattern Registry Maîtrisé !</h3>
+                            <p>Vous avez appris à utiliser le Registry pour centraliser l'accès aux services et objets partagés.</p>
+                            <button class="aikido-btn primary mark-completed" data-page="registry">
+                                Marquer comme terminé
+                            </button>
+                            <div class="completion-feedback hidden">
+                                <p>✅ Excellent ! Le Registry est maintenant dans votre boîte à outils architecturale.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts pour l'exercice -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion de l'exercice
+            const choiceOptions = document.querySelectorAll('.choice-option');
+            const exerciseFeedback = document.getElementById('exercise-retours');
+            
+            choiceOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Retirer la sélection précédente
+                    choiceOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Sélectionner l'option cliquée
+                    this.classList.add('selected');
+                    
+                    // Afficher le feedback correspondant
+                    const choice = this.getAttribute('data-choice');
+                    showFeedback(choice);
+                });
+            });
+            
+            function showFeedback(choice) {
+                const exerciseRetours = document.getElementById('exercise-retours');
+                
+                // Cacher tous les feedbacks
+                const allFeedbacks = exerciseRetours.querySelectorAll('[class^="feedback-"]');
+                allFeedbacks.forEach(feedback => feedback.style.display = 'none');
+                
+                // Afficher le feedback correspondant
+                const targetFeedback = exerciseRetours.querySelector(`.feedback-${choice}`);
+                if (targetFeedback) {
+                    targetFeedback.style.display = 'block';
+                    exerciseRetours.classList.remove('hidden');
+                }
+            }
+            
+            // Gestion du bouton de completion
+            const markCompletedBtn = document.querySelector('.mark-completed');
+            const completionFeedback = document.querySelector('.completion-feedback');
+            
+            if (markCompletedBtn && completionFeedback) {
+                markCompletedBtn.addEventListener('click', function() {
+                    this.disabled = true;
+                    this.textContent = '✅ Terminé';
+                    this.classList.add('completed');
+                    
+                    completionFeedback.classList.remove('hidden');
+                    
+                    // Sauvegarder la progression
+                    const pageName = this.getAttribute('data-page');
+                    if (pageName) {
+                        localStorage.setItem(`completed_${pageName}`, 'true');
+                    }
+                });
+                
+                // Vérifier si déjà complété
+                const pageName = markCompletedBtn.getAttribute('data-page');
+                if (pageName && localStorage.getItem(`completed_${pageName}`) === 'true') {
+                    markCompletedBtn.disabled = true;
+                    markCompletedBtn.textContent = '✅ Terminé';
+                    markCompletedBtn.classList.add('completed');
+                    completionFeedback.classList.remove('hidden');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
