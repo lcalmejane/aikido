@@ -1,0 +1,101 @@
+{
+  "title": "Résolution de Bug AI-KIDO via ROO-CODE",
+  "description": "Résolution méthodique de bugs basée sur les tables de vérité AI-KIDO en utilisant exclusivement les modes ROO-CODE",
+  "version": "2.0.0",
+  "steps": [
+    {
+      "id": "bug_description_input",
+      "title": "1. Description du Bug",
+      "prompt": "[RÔLE] Analyste de bugs AI-KIDO\n\n[CONTEXTE]\nNous allons résoudre un bug en utilisant une approche méthodique basée sur les standards AI-KIDO et les bonnes pratiques de debugging.\n\n[TÂCHE]\nVeuillez fournir les informations sur le bug à résoudre :\n\n1. **Description du bug** (symptômes observés, comportement attendu vs réel)\n2. **Contexte de reproduction** (étapes pour reproduire, environnement)\n3. **Code source concerné** (chemins des fichiers, modules suspects)\n4. **Logs et traces d'erreur** (messages d'erreur, stack traces)\n5. **Impact utilisateur** (criticité, nombre d'utilisateurs affectés)\n6. **Tentatives précédentes** (corrections essayées, investigations menées)\n\n[FORMAT]\nRapport structuré du bug avec toutes les informations disponibles.",
+      "mode": "ask",
+      "requireUserInput": true,
+      "userInputTitle": "Informations sur le bug à résoudre",
+      "next": "debugging_standards_exploration"
+    },
+    {
+      "id": "debugging_standards_exploration",
+      "title": "2. Exploration des Standards de Debugging AI-KIDO",
+      "prompt": "[RÔLE] Expert en debugging AI-KIDO\n\n[CONTEXTE]\nBug à résoudre: {{bug_description_input}}\n\n[TÂCHE]\nExplorer les tables de vérité depuis prompts/hard_points/index.md puis prompts/gen/index.md pour identifier :\n\n1. **Méthodologies de debugging** recommandées pour ce type de bug\n2. **Standards de qualité** pour les corrections\n3. **Processus de validation** des corrections\n4. **Patterns de bugs** connus et leurs solutions\n5. **Outils et techniques** de diagnostic validés\n6. **Critères de prévention** de régressions\n\nPour chaque standard trouvé, indiquer la référence précise dans les tables de vérité.\n\n[FORMAT]\nGuide de résolution AI-KIDO avec méthodologies et standards applicables.",
+      "mode": "ask",
+      "next": "bug_reproduction_boomerang"
+    },
+    {
+      "id": "bug_reproduction_boomerang",
+      "title": "3. Reproduction du Bug (Boomerang Task)",
+      "prompt": "Délégation au Mode Debug ROO-CODE pour reproduction et analyse initiale.\n\n<new_task>\n<mode>debug</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis reproduire et analyser le bug.\n\nReproduire le bug :\n\nDescription du bug: {{bug_description_input}}\nStandards debugging: {{debugging_standards_exploration}}\n\n1. **Reproduction contrôlée** du bug avec étapes précises\n2. **Collecte d'informations** (logs, stack traces, état système)\n3. **Isolation du problème** (identification des composants impliqués)\n4. **Caractérisation** (conditions nécessaires, fréquence, patterns)\n5. **Impact analysis** (données corrompues, effets de bord)\n6. **Urgence et priorisation** selon standards AI-KIDO\n\nUtiliser les méthodologies de debugging des tables de vérité.\nProduire un rapport de reproduction avec éléments factuels.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "code_analysis_boomerang"
+    },
+    {
+      "id": "code_analysis_boomerang",
+      "title": "4. Analyse du Code (Boomerang Task)",
+      "prompt": "Délégation au Mode Code ROO-CODE pour analyse approfondie du code défaillant.\n\n<new_task>\n<mode>code</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis analyser le code lié au bug.\n\nAnalyser le code :\n\nReproduction du bug: Résultats de la reproduction précédente\nCode source: {{bug_description_input}}\nStandards techniques: Extraits des tables de vérité AI-KIDO\n\n1. **Analyse statique** du code suspect (complexité, patterns, smells)\n2. **Traçage des flux** d'exécution problématiques\n3. **Identification des causes** potentielles (logique, données, configuration)\n4. **Analyse des dépendances** et interactions\n5. **Vérification des assumptions** et contrats\n6. **Détection d'anti-patterns** selon standards AI-KIDO\n\nUtiliser les grilles d'analyse technique des tables de vérité.\nProduire une cartographie technique du problème avec hypothèses.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "root_cause_analysis_boomerang"
+    },
+    {
+      "id": "root_cause_analysis_boomerang",
+      "title": "5. Analyse Cause Racine (Boomerang Task)",
+      "prompt": "Délégation au Mode Debug ROO-CODE pour identification de la cause racine.\n\n<new_task>\n<mode>debug</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis identifier la cause racine du bug.\n\nIdentifier la cause racine :\n\nAnalyse code: Résultats de l'analyse précédente\nReproduction: Éléments factuels de reproduction\nMéthodologies: Définies dans les tables de vérité AI-KIDO\n\n1. **Investigation approfondie** (breakpoints, logging, tracing)\n2. **Analyse des données** (valeurs incorrectes, corruptions)\n3. **Vérification des hypothèses** formulées\n4. **Tests d'isolation** (composant par composant)\n5. **Validation de la cause** (preuves reproductibles)\n6. **Analyse d'impact** (étendue du problème)\n\nUtiliser les techniques d'investigation des tables de vérité.\nProduire un diagnostic précis avec preuves à l'appui.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "architecture_impact_boomerang"
+    },
+    {
+      "id": "architecture_impact_boomerang",
+      "title": "6. Analyse d'Impact Architectural (Boomerang Task)",
+      "prompt": "Délégation au Mode Architect ROO-CODE pour évaluation de l'impact architectural.\n\n<new_task>\n<mode>architect</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis analyser l'impact architectural du bug et de sa correction.\n\nAnalyser l'impact architectural :\n\nCause racine: Diagnostic précis établi\nAnalyse code: Cartographie technique complète\nPrincipes architecturaux: Définis dans les tables de vérité AI-KIDO\n\n1. **Impact sur l'architecture** globale du système\n2. **Zones à risque** pour la correction\n3. **Dépendances** affectées par le changement\n4. **Stratégies de correction** (refactoring, patch, contournement)\n5. **Validation de cohérence** avec les patterns existants\n6. **Plan de migration** si nécessaire\n\nUtiliser les guidelines architecturaux des tables de vérité.\nProduire une stratégie de correction avec analyse de risques.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "solution_design_boomerang"
+    },
+    {
+      "id": "solution_design_boomerang",
+      "title": "7. Conception de la Solution (Boomerang Task)",
+      "prompt": "Délégation au Mode Architect ROO-CODE pour conception de la solution de correction.\n\n<new_task>\n<mode>architect</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis concevoir la solution de correction.\n\nConcevoir la solution :\n\nStratégie de correction: Analyse d'impact précédente\nCause racine: Diagnostic établi\nStandards solutions: Définis dans les tables de vérité AI-KIDO\n\n1. **Design de la correction** (approche technique choisie)\n2. **Alternatives évaluées** (avantages/inconvénients)\n3. **Plan d'implémentation** détaillé\n4. **Stratégie de tests** pour validation\n5. **Mesures préventives** pour éviter récidive\n6. **Rollback plan** en cas de problème\n\nUtiliser les patterns de correction des tables de vérité AI-KIDO.\nProduire un plan de correction complet et sécurisé.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "implementation_boomerang"
+    },
+    {
+      "id": "implementation_boomerang",
+      "title": "8. Implémentation de la Correction (Boomerang Task)",
+      "prompt": "Délégation au Mode Code ROO-CODE pour implémentation de la correction.\n\n<new_task>\n<mode>code</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis implémenter la correction du bug.\n\nImplémenter la correction :\n\nPlan de correction: Design complet de la solution\nStandards code: Définis dans les tables de vérité AI-KIDO\n\n1. **Implémentation** de la correction selon le plan\n2. **Respect des standards** de codage du projet\n3. **Optimisation** et clean code\n4. **Gestion d'erreurs** renforcée\n5. **Logging** pour observabilité future\n6. **Documentation inline** des changements critiques\n\nRespecter les conventions et patterns établis.\nProduire du code de qualité production avec correction validée.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "testing_validation_boomerang"
+    },
+    {
+      "id": "testing_validation_boomerang",
+      "title": "9. Tests et Validation (Boomerang Task)",
+      "prompt": "Délégation au Mode Debug ROO-CODE pour validation complète de la correction.\n\n<new_task>\n<mode>debug</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis valider la correction par des tests complets.\n\nValider la correction :\n\nCorrection implémentée: Code corrigé selon le plan\nStratégie de tests: Définie dans le plan de correction\nStandards tests: Définis dans les tables de vérité AI-KIDO\n\n1. **Tests de régression** (non-régression des fonctionnalités)\n2. **Tests spécifiques** au bug corrigé\n3. **Tests d'intégration** (impact sur le système)\n4. **Tests de performance** (pas de dégradation)\n5. **Tests de cas limites** (robustesse)\n6. **Validation manuelle** sur scénarios critiques\n\nUtiliser les frameworks de test des tables de vérité.\nProduire un rapport de validation avec couverture complète.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "documentation_resolution_boomerang"
+    },
+    {
+      "id": "documentation_resolution_boomerang",
+      "title": "10. Documentation de la Résolution (Boomerang Task)",
+      "prompt": "Délégation au Mode Docs ROO-CODE pour documentation complète de la résolution.\n\n<new_task>\n<mode>docs</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis documenter la résolution complète du bug.\n\nDocumenter la résolution :\n\nRésolution complète: Tous les éléments précédents\nValidation: Tests et validation réalisés\nTemplates documentation: Définis dans les tables de vérité AI-KIDO\n\n1. **Rapport de résolution** détaillé\n2. **Documentation technique** des changements\n3. **Guide de prévention** pour l'équipe\n4. **Lessons learned** et amélioration processus\n5. **Mise à jour documentation** projet si nécessaire\n6. **Communication** aux parties prenantes\n\nRespecter les templates de documentation AI-KIDO.\nAssurer la traçabilité et le partage de connaissance.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "prevention_analysis"
+    },
+    {
+      "id": "prevention_analysis",
+      "title": "11. Analyse de Prévention",
+      "prompt": "[RÔLE] Expert en amélioration continue AI-KIDO\n\n[CONTEXTE]\nBug résolu avec documentation complète\nProcessus de résolution terminé avec succès\n\n[TÂCHE]\nAnalyser les moyens de prévention future :\n\n1. **Amélioration des processus** (détection précoce, prévention)\n2. **Évolution des standards** (coding guidelines, architecture)\n3. **Formation équipe** (patterns à éviter, bonnes pratiques)\n4. **Outillage** (tests automatisés, monitoring, alertes)\n5. **Documentation** (guides, checklists, patterns)\n6. **Métriques** de suivi et amélioration continue\n\n[FORMAT]\nPlan d'amélioration avec actions concrètes et timeline.",
+      "mode": "ask",
+      "requireUserValidation": true
+    }
+  ],
+  "configuration": {
+    "validateOnCompletion": true,
+    "rollbackOnError": true,
+    "generateLogs": true,
+    "hardPointsRequired": true,
+    "aikidoCompliant": true
+  },
+  "metadata": {
+    "methodology": "AI-KIDO",
+    "platform": "ROO-CODE",
+    "workflow_type": "boomerang_tasks",
+    "purpose": "bug_resolution",
+    "version_aikido": "2.0",
+    "created": "2025-01-27"
+  }
+}

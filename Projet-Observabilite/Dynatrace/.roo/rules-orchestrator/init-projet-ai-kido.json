@@ -1,0 +1,87 @@
+{
+  "title": "Initialisation Complète Projet AI-KIDO",
+  "description": "Crée automatiquement un projet AI-KIDO avec structure Hard Points, tables de vérité et personas selon la méthodologie officielle ROO-CODE",
+  "version": "2.0.0",
+  "steps": [
+    {
+      "id": "extract_hard_points",
+      "title": "1. Extraction Hard Points",
+      "prompt": "[RÔLE] Ingénieur DevOps ROO-CODE\n\n[CONTEXTE]\nNous allons initialiser un nouveau projet selon la méthodologie AI-KIDO officielle en utilisant les standards ROO-CODE.\n\n[TÂCHE]\nExtraire le fichier aikido-hard-points.zip dans le répertoire racine du projet.\nCette archive contient:\n- prompts/hard_points/index.md (point d'entrée principal)\n- prompts/hard_points/ai-kido.md (guide AI-KIDO complet)\n- prompts/hard_points/roo-code/ (documentation ROO-CODE)\n\nAprès extraction, vérifier que la structure est correcte et que tous les fichiers sont présents.\n\n[FORMAT]\nRépondez avec la confirmation de l'extraction et la liste des fichiers créés.",
+      "mode": "code",
+      "next": "project_brief"
+    },
+    {
+      "id": "project_brief",
+      "title": "2. Brief du Projet",
+      "prompt": "[RÔLE] Expert Méthodologie AI-KIDO\n\n[CONTEXTE]\nRéférencer prompts/hard_points/index.md pour comprendre la structure AI-KIDO.\n\n[TÂCHE]\nCollecter les informations suivantes pour le nouveau projet:\n\n1. Nom du projet\n2. Description de l'objectif principal (2-3 phrases)\n3. Domaine métier (finance, santé, e-commerce, etc.)\n4. Problématiques principales à résoudre\n5. Utilisateurs cibles\n\nUtiliser le format structuré AI-KIDO en consultant les Tables de Vérité appropriées depuis prompts/hard_points/.\n\n[FORMAT]\nRépondez sous forme de texte structuré par points.",
+      "mode": "ask",
+      "requireUserInput": true,
+      "userInputTitle": "Brief du projet",
+      "next": "tech_stack"
+    },
+    {
+      "id": "tech_stack",
+      "title": "3. Stack Technique",
+      "prompt": "[RÔLE] Architecte Technique\n\n[CONTEXTE]\nEn utilisant prompts/hard_points/index.md comme référence et le brief projet précédent.\n\n[TÂCHE]\nDéfinir la stack technique optimale pour ce projet:\n\n1. Langages de programmation recommandés\n2. Frameworks frontend/backend adaptés\n3. Architecture base de données\n4. Infrastructure/Cloud strategy\n5. Outils DevOps essentiels\n6. Technologies spécifiques au domaine\n\nRéférencer les standards ROO-CODE depuis prompts/hard_points/roo-code/docs/ pour les recommandations.\n\n[FORMAT]\nRépondez sous forme de liste structurée avec justifications.",
+      "mode": "architect",
+      "next": "create_structure"
+    },
+    {
+      "id": "create_structure",
+      "title": "4. Création Structure AI-KIDO",
+      "prompt": "[RÔLE] Architecte Système AI-KIDO\n\n[CONTEXTE]\nRéférencer prompts/hard_points/ai-kido.md pour les règles structurelles.\n\n[TÂCHE]\nCréer la structure complète AI-KIDO:\n\n1. Structure répertoires: prompts/gen/{concepts,techniques,personas,use_cases}\n2. Fichier prompts/gen/index.md adapté au projet\n3. Index secondaires pour chaque sous-répertoire\n4. Configuration .gitignore pour /prompts/spec/\n\nRespecter absolument les contraintes des Hard Points.\n\n[COMMANDES]\n```bash\nmkdir -p prompts/gen/{concepts,techniques,personas,use_cases}\necho \"/prompts/spec/\" >> .gitignore\n```\n\n[FORMAT]\nStructure créée avec confirmation de chaque étape.",
+      "mode": "code",
+      "next": "create_truth_tables"
+    },
+    {
+      "id": "create_truth_tables",
+      "title": "5. Tables de Vérité Fondamentales",
+      "prompt": "[RÔLE] Expert en Tables de Vérité AI-KIDO\n\n[CONTEXTE]\nConsulter prompts/hard_points/index.md et utiliser les informations projet/stack collectées.\n\n[TÂCHE]\nCréer les Tables de Vérité fundamentales:\n\n1. Modèle de domaine (domain_model.md)\n2. Architecture système (system_architecture.md)\n3. Principes techniques (technical_principles.md)\n4. Glossaire métier (business_glossary.md)\n5. Standards de code (code_standards.md)\n\nChaque table doit suivre le format AI-KIDO strict avec métadonnées, relations et exemples.\n\n[FORMAT]\nContenu markdown complet pour chaque table, clairement structuré.",
+      "mode": "architect",
+      "next": "create_personas"
+    },
+    {
+      "id": "create_personas",
+      "title": "6. Personas Spécialisés",
+      "prompt": "[RÔLE] Expert en Conception de Personas AI-KIDO\n\n[CONTEXTE]\nRéférencer prompts/hard_points/index.md et les Tables de Vérité créées précédemment.\n\n[TÂCHE]\nGénérer les personas AI-KIDO et leurs configurations ROO-CODE:\n\n1. Personas AI-KIDO adaptés au projet\n2. Configurations ROO-CODE correspondantes selon prompts/hard_points/roo-code/docs/features/custom-modes.mdx\n3. Modes personnalisés JSON prêts à l'emploi\n4. Documentation d'utilisation des personas\n\nAssurer la compatibilité avec les standards ROO-CODE.\n\n[FORMAT]\nFichiers personas markdown + configurations JSON ROO-CODE.",
+      "mode": "code",
+      "next": "improvement_rules"
+    },
+    {
+      "id": "improvement_rules",
+      "title": "7. Règles d'Amélioration Continue",
+      "prompt": "[RÔLE] Expert en Amélioration Continue AI-KIDO\n\n[CONTEXTE]\nConsulter prompts/hard_points/ai-kido.md pour les principes de maintenance.\n\n[TÂCHE]\nCréer les règles de gouvernance AI-KIDO:\n\n1. Règles d'amélioration continue (improvement_rules.md)\n2. Mécanismes d'optimisation (optimization_rules.md)\n3. Processus de validation et convergence\n4. Critères de promotion en Hard Points\n\nIntégrer les spécificités ROO-CODE pour workflows automatisés.\n\n[FORMAT]\nFichiers de règles complets avec procédures actionables.",
+      "mode": "architect",
+      "next": "first_prompt"
+    },
+    {
+      "id": "first_prompt",
+      "title": "8. Premier Prompt AI-KIDO",
+      "prompt": "[RÔLE] Expert en Prompting AI-KIDO\n\n[CONTEXTE]\nConsulter toute la structure créée depuis prompts/hard_points/index.md.\n\n[TÂCHE]\nGénérer la validation finale du système:\n\n1. Premier prompt complet AI-KIDO\n2. Prompt de vérification système\n3. Guide d'utilisation pour l'équipe\n4. Exemples d'interactions types\n\nValider la cohérence avec tous les Hard Points établis.\n\n[FORMAT]\nPrompts prêts à l'emploi avec documentation d'usage.",
+      "mode": "ask",
+      "next": "final_validation"
+    },
+    {
+      "id": "final_validation",
+      "title": "9. Validation Finale",
+      "prompt": "[RÔLE] Chef de Projet AI-KIDO\n\n[CONTEXTE]\nL'ensemble du processus d'initialisation AI-KIDO est maintenant terminé.\n\n[TÂCHE]\nProduire un résumé complet et valider le système:\n\n1. Vue d'ensemble de la structure mise en place\n2. Inventaire complet des fichiers et tables de vérité\n3. Guide d'utilisation du système\n4. Checklist de validation finale\n5. Recommandations pour les prochaines étapes\n\n[VALIDATION]\n- [ ] Structure Hard Points extraite\n- [ ] Structure prompts/gen/ créée\n- [ ] Tables de Vérité opérationnelles\n- [ ] Personas ROO-CODE configurés\n- [ ] Règles d'amélioration établies\n- [ ] Premier prompt testé\n\n[FORMAT]\nRapport final structuré avec checklist de validation.",
+      "mode": "ask",
+      "requireUserValidation": true
+    }
+  ],
+  "configuration": {
+    "validateOnCompletion": true,
+    "rollbackOnError": true,
+    "generateLogs": true,
+    "hardPointsRequired": true,
+    "aikidoCompliant": true
+  },
+  "metadata": {
+    "methodology": "AI-KIDO",
+    "platform": "ROO-CODE",
+    "workflow_type": "boomerang_tasks",
+    "base_structure": "hard_points_zip",
+    "version_aikido": "2.0",
+    "created": "2025-01-27"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "title": "Tests Unitaires AI-KIDO via ROO-CODE",
+  "description": "Création et validation de tests unitaires basées sur les tables de vérité AI-KIDO en utilisant exclusivement les modes ROO-CODE",
+  "version": "2.0.0",
+  "steps": [
+    {
+      "id": "code_selection",
+      "title": "1. Sélection du Code à Tester",
+      "prompt": "[RÔLE] Ingénieur QA AI-KIDO\n\n[CONTEXTE]\nNous allons créer une suite de tests unitaires complète en nous basant sur les standards de qualité AI-KIDO.\n\n[TÂCHE]\nVeuillez spécifier le code que vous souhaitez tester :\n\n1. **Fichier(s) source** ou module(s) à tester\n2. **Type de composant** (service, classe, fonction, module)\n3. **Contexte fonctionnel** (métier, technique, utilitaire)\n4. **Niveau de couverture** souhaité (standard, exhaustif, critique uniquement)\n5. **Contraintes particulières** (performance, sécurité, etc.)\n6. **Framework de test** préféré (Jest, Mocha, Vitest, etc.)\n\n[FORMAT]\nDescription structurée du code à tester avec contexte et exigences.",
+      "mode": "ask",
+      "requireUserInput": true,
+      "userInputTitle": "Code à tester et exigences",
+      "next": "testing_standards_exploration"
+    },
+    {
+      "id": "testing_standards_exploration",
+      "title": "2. Exploration des Standards de Tests AI-KIDO",
+      "prompt": "[RÔLE] Expert en tests AI-KIDO\n\n[CONTEXTE]\nCode à tester: {{code_selection}}\n\n[TÂCHE]\nExplorer les tables de vérité depuis prompts/hard_points/index.md puis prompts/gen/index.md pour identifier :\n\n1. **Standards de tests** définis dans le projet\n2. **Patterns de tests** recommandés\n3. **Métriques de couverture** requises\n4. **Stratégies de mocking** validées\n5. **Conventions de nommage** pour les tests\n6. **Frameworks et outils** autorisés\n\nPour chaque standard trouvé, indiquer la référence précise dans les tables de vérité.\n\n[FORMAT]\nRéférentiel de tests AI-KIDO avec standards et patterns applicables.",
+      "mode": "ask",
+      "next": "code_analysis_boomerang"
+    },
+    {
+      "id": "code_analysis_boomerang",
+      "title": "3. Analyse du Code Source (Boomerang Task)",
+      "prompt": "Délégation au Mode Code ROO-CODE pour analyse approfondie du code.\n\n<new_task>\n<mode>code</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis analyser le code source à tester.\n\nAnalyser le code :\n\nCode cible: {{code_selection}}\nStandards tests: {{testing_standards_exploration}}\n\n1. **Structure et architecture** du code\n2. **Points d'entrée** et interfaces publiques\n3. **Dépendances** externes et internes\n4. **Complexité cyclomatique** et chemins d'exécution\n5. **Cas limites** et conditions d'erreur\n6. **Points critiques** nécessitant tests prioritaires\n\nIdentifier tous les aspects testables selon les standards AI-KIDO.\nProduire une cartographie complète des éléments à tester.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "test_strategy_boomerang"
+    },
+    {
+      "id": "test_strategy_boomerang",
+      "title": "4. Stratégie de Tests (Boomerang Task)",
+      "prompt": "Délégation au Mode Architect ROO-CODE pour élaboration de la stratégie de tests.\n\n<new_task>\n<mode>architect</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis élaborer la stratégie de tests.\n\nConcevoir la stratégie :\n\nAnalyse du code: Résultats de l'analyse précédente\nStandards AI-KIDO: {{testing_standards_exploration}}\n\n1. **Architecture de tests** (structure, organisation)\n2. **Catégorisation des tests** (happy path, edge cases, errors)\n3. **Stratégie de mocking** et isolation\n4. **Priorisation des tests** par criticité\n5. **Objectifs de couverture** par type de test\n6. **Plan d'exécution** et automatisation\n\nUtiliser les patterns de tests validés dans les tables de vérité AI-KIDO.\nProduire un plan de tests structuré et priorisé.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "test_generation_boomerang"
+    },
+    {
+      "id": "test_generation_boomerang",
+      "title": "5. Génération des Tests (Boomerang Task)",
+      "prompt": "Délégation au Mode Code ROO-CODE pour génération des tests unitaires.\n\n<new_task>\n<mode>code</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis générer les tests unitaires.\n\nGénérer les tests :\n\nStratégie de tests: Résultats de la stratégie précédente\nCode source: {{code_selection}}\nStandards: Extraits des tables de vérité AI-KIDO\n\n1. **Tests du chemin nominal** (happy path)\n2. **Tests des cas limites** (boundary conditions)\n3. **Tests d'erreur** et exceptions\n4. **Tests d'intégration** avec dépendances\n5. **Mocks et stubs** appropriés\n6. **Data builders** et fixtures\n\nRespecter les conventions de nommage et structure AI-KIDO.\nProduire du code de test complet, documenté et maintenable.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "coverage_analysis_boomerang"
+    },
+    {
+      "id": "coverage_analysis_boomerang",
+      "title": "6. Analyse de Couverture (Boomerang Task)",
+      "prompt": "Délégation au Mode Debug ROO-CODE pour analyse de couverture.\n\n<new_task>\n<mode>debug</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis analyser la couverture de tests.\n\nAnalyser la couverture :\n\nTests générés: Résultats de la génération précédente\nCode source: {{code_selection}}\nObjectifs couverture: Définis dans les standards AI-KIDO\n\n1. **Couverture des statements** (lignes de code)\n2. **Couverture des branches** (conditions logiques)\n3. **Couverture des fonctions** (points d'entrée)\n4. **Couverture des chemins** (flux d'exécution)\n5. **Identification des gaps** non couverts\n6. **Validation des cas critiques** selon standards\n\nUtiliser les métriques de qualité des tables de vérité AI-KIDO.\nProduire un rapport de couverture avec recommandations d'amélioration.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "edge_cases_analysis_boomerang"
+    },
+    {
+      "id": "edge_cases_analysis_boomerang",
+      "title": "7. Analyse des Cas Limites (Boomerang Task)",
+      "prompt": "Délégation au Mode Debug ROO-CODE pour identification des cas limites.\n\n<new_task>\n<mode>debug</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis identifier tous les cas limites.\n\nAnalyser les cas limites :\n\nCouverture actuelle: Résultats de l'analyse précédente\nCode et tests: Éléments générés précédemment\nStandards robustesse: Définis dans les tables de vérité AI-KIDO\n\n1. **Cas limites fonctionnels** (valeurs extrêmes, vides)\n2. **Cas limites techniques** (timeouts, mémoire, réseau)\n3. **Scénarios d'erreur** non couverts\n4. **Conditions de race** et concurrence\n5. **États incohérents** du système\n6. **Tests de performance** critique\n\nIdentifier les scénarios manquants selon les standards de robustesse.\nProposer des tests additionnels pour combler les lacunes.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "test_optimization_boomerang"
+    },
+    {
+      "id": "test_optimization_boomerang",
+      "title": "8. Optimisation des Tests (Boomerang Task)",
+      "prompt": "Délégation au Mode Code ROO-CODE pour optimisation de la suite de tests.\n\n<new_task>\n<mode>code</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis optimiser la suite de tests.\n\nOptimiser les tests :\n\nSuite de tests complète: Tous les tests générés précédemment\nAnalyse cas limites: Résultats de l'analyse précédente\nStandards performance: Définis dans les tables de vérité AI-KIDO\n\n1. **Refactoring des tests** (DRY, réutilisabilité)\n2. **Optimisation des mocks** et fixtures\n3. **Amélioration des performances** d'exécution\n4. **Parallélisation** possible des tests\n5. **Simplification** de la maintenance\n6. **Documentation** des tests complexes\n\nRespecter les best practices de tests des tables de vérité AI-KIDO.\nProduire une suite de tests optimisée et maintenable.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "documentation_tests_boomerang"
+    },
+    {
+      "id": "documentation_tests_boomerang",
+      "title": "9. Documentation des Tests (Boomerang Task)",
+      "prompt": "Délégation au Mode Docs ROO-CODE pour documentation complète.\n\n<new_task>\n<mode>docs</mode>\n<message>\nRéférencer prompts/hard_points/index.md puis documenter la suite de tests.\n\nDocumenter les tests :\n\nSuite optimisée: Tests finalisés et optimisés\nStratégie: Plan de tests complet\nStandards documentation: Définis dans les tables de vérité AI-KIDO\n\n1. **Guide d'exécution** des tests\n2. **Documentation des mocks** et fixtures\n3. **Explication des cas complexes**\n4. **Guide de maintenance** des tests\n5. **Rapport de couverture** final\n6. **Recommandations** pour l'équipe\n\nRespecter les templates de documentation AI-KIDO.\nAssurer la clarté pour les futurs mainteneurs.\n</message>\n</new_task>",
+      "mode": "orchestrator",
+      "next": "automation_setup"
+    },
+    {
+      "id": "automation_setup",
+      "title": "10. Configuration de l'Automatisation",
+      "prompt": "[RÔLE] DevOps AI-KIDO\n\n[CONTEXTE]\nSuite de tests complète documentée\nStandards automatisation: {{testing_standards_exploration}}\n\n[TÂCHE]\nConfigurer l'automatisation des tests :\n\n1. **Scripts d'exécution** (npm/yarn scripts)\n2. **Configuration CI/CD** pour exécution automatique\n3. **Seuils de couverture** et critères de qualité\n4. **Reporting automatique** des résultats\n5. **Intégration** avec les outils de qualité\n6. **Notifications** en cas d'échec\n\n[FORMAT]\nConfiguration complète prête pour intégration au pipeline de développement.",
+      "mode": "ask",
+      "requireUserValidation": true
+    }
+  ],
+  "configuration": {
+    "validateOnCompletion": true,
+    "rollbackOnError": true,
+    "generateLogs": true,
+    "hardPointsRequired": true,
+    "aikidoCompliant": true
+  },
+  "metadata": {
+    "methodology": "AI-KIDO",
+    "platform": "ROO-CODE",
+    "workflow_type": "boomerang_tasks",
+    "purpose": "unit_testing",
+    "version_aikido": "2.0",
+    "created": "2025-01-27"
+  }
+}
