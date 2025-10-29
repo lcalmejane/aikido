@@ -19,6 +19,39 @@ strictement utiles à la compréhension de la demande.
 
 ## RÈGLES FONDAMENTALES D'UTILISATION
 
+### Règles Architecturales des Tables de Vérités
+1. **🌳 Arborescence Documentaire**: Parcours d'arbre récursif depuis `/prompts/gen/index.md`
+2. **📊 Séparation Théorie/Pratique**: `concepts/` + `personas/` (théorie) vs `techniques/` + `use_cases/` (pratique)
+3. **🔄 Introspection**: Les règles de gestion font partie d'elles-mêmes (ce fichier)
+4. **📏 Contrainte 500 Lignes**: Chunk size = file size pour optimisation LLM
+5. **✂️ Split Automatique**: Division intelligente avec liens préservés si > 500 lignes
+6. **🔗 Liens Bidirectionnels**: Chaînage A ↔ B systématique
+7. **⚖️ Arbre Équilibré**: Facteur 3-7 enfants/parent, profondeur ≤ 4 niveaux
+8. **🏗️ Architecture Bicéphale**: `gen/` (meuble) vs `hard_points/` (rigide)
+9. **👥 Agents Spécialistes**: Personas pour optimisation requêtes LLM
+10. **🎭 Agent Orchestrateur**: Coordination des agents spécialistes
+11. **🗜️ Densité Sémantique**: Information maximale, mots minimaux
+12. **📈 Schémas Mermaid**: Compression visuelle pour densité sémantique
+13. **🔍 Indexation Vectorielle**: Mode RAG local du workspace
+14. **🔄 Amélioration Continue**: Évolution automatique selon besoins et LLM
+
+### Règles d'Auto-Alimentation
+1. **Signal Utilisateur**: Dès signalement d'erreur → création règle préventive
+2. **Auto-Détection**: 2+ erreurs similaires → auto-alimentation proactive
+3. **Seuils**: Immédiat (critique), Rapide (majeur 2x), Standard (mineur 3x)
+4. **Intégration**: Placement automatique dans répertoire approprié + mise à jour index
+
+### Règles de Capitalisation des Analyses
+1. **Génération Obligatoire**: Tous les modes d'analyse DOIVENT générer des fichiers dans les Tables de Vérités
+2. **Préférence Modes Productifs**: Privilégier les modes qui créent des fichiers (Code, Architect, Debug) vs mode Ask
+3. **Sauvegarde Systématique**: Chaque analyse → fichier dans `/prompts/gen/` selon le type :
+   - Analyse conceptuelle → `/concepts/`
+   - Analyse technique → `/techniques/`
+   - Analyse de cas → `/use_cases/`
+   - Définition de rôle → `/personas/`
+4. **Traçabilité**: Horodatage et versioning des analyses sauvegardées
+5. **Réutilisation**: Consulter les analyses existantes avant d'en créer de nouvelles
+
 ### Règles de Création et Maintenance
 1. **Règle de l'Existant**: Toujours vérifier l'existence avant de créer
 2. **Règle de la Structure**: Consulter systématiquement l'arborescence `/prompts/gen/`
