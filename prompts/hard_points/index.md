@@ -26,6 +26,7 @@
 ## Hard Points Disponibles
 
 - [`ai-kido.md`](ai-kido.md) : **Guide complet AI-KIDO** - Toutes les règles architecturales, auto-alimentation, agents, amélioration continue
+- [`gestion-logs-aikido.md`](gestion-logs-aikido.md) : **Gestion des Logs AI‑KIDO** - Règles strictes pour la traçabilité, switching automatique de mode, emplacement et format des logs
 
 ## Exemple de configuration .roomodes
 

@@ -1,2 +1,3 @@
 # Ignorer tous les fichiers .DS_Store quelle que soit leur profondeur
 **/.DS_Store
+./prompts/spec
