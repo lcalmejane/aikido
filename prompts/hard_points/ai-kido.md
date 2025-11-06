@@ -1,12 +1,13 @@
 # AI-KIDO - Guide Pratique pour LLM
 
 > **Version**: 1.0-LLM | **Usage**: Référence directe pour interactions LLM
-> 
+>
 > Ce document contient les règles et structures essentielles d'AI-KIDO pour usage par les LLMs.
 
 ## CONFIGURATION ROO-CODE
 
 **PRÉ-PROMPT OBLIGATOIRE POUR ROO-CODE**:
+
 ```
 Sauf pour le Mode "Orchestrator",
 Après analyse de la question et avant d'y répondre, 
@@ -20,6 +21,7 @@ strictement utiles à la compréhension de la demande.
 ## RÈGLES FONDAMENTALES D'UTILISATION
 
 ### Règles Architecturales des Tables de Vérités
+
 1. **🌳 Arborescence Documentaire**: Parcours d'arbre récursif depuis `/prompts/gen/index.md`
 2. **📊 Séparation Théorie/Pratique**: `concepts/` + `personas/` (théorie) vs `techniques/` + `use_cases/` (pratique)
 3. **🔄 Introspection**: Les règles de gestion font partie d'elles-mêmes (ce fichier)
@@ -36,12 +38,14 @@ strictement utiles à la compréhension de la demande.
 14. **🔄 Amélioration Continue**: Évolution automatique selon besoins et LLM
 
 ### Règles d'Auto-Alimentation
+
 1. **Signal Utilisateur**: Dès signalement d'erreur → création règle préventive
 2. **Auto-Détection**: 2+ erreurs similaires → auto-alimentation proactive
 3. **Seuils**: Immédiat (critique), Rapide (majeur 2x), Standard (mineur 3x)
 4. **Intégration**: Placement automatique dans répertoire approprié + mise à jour index
 
 ### Règles de Capitalisation des Analyses
+
 1. **Génération Obligatoire**: Tous les modes d'analyse DOIVENT générer des fichiers dans les Tables de Vérités
 2. **Préférence Modes Productifs**: Privilégier les modes qui créent des fichiers (Code, Architect, Debug) vs mode Ask
 3. **Sauvegarde Systématique**: Chaque analyse → fichier dans `/prompts/gen/` selon le type :
@@ -53,6 +57,7 @@ strictement utiles à la compréhension de la demande.
 5. **Réutilisation**: Consulter les analyses existantes avant d'en créer de nouvelles
 
 ### Règles de Création et Maintenance
+
 1. **Règle de l'Existant**: Toujours vérifier l'existence avant de créer
 2. **Règle de la Structure**: Consulter systématiquement l'arborescence `/prompts/gen/`
 3. **Règle de Densité**: Maximiser la pertinence par mot utilisé
@@ -61,6 +66,7 @@ strictement utiles à la compréhension de la demande.
 6. **Règle de Traçabilité**: Documenter toutes les décisions importantes
 
 ### Règles d'Interaction
+
 1. **Règle du Contexte**: Toujours consulter les Tables de vérité pertinentes
 2. **Règle de Spécificité**: Être précis dans l'analyse des demandes
 3. **Règle de Validation**: Vérifier la cohérence avec les standards établis
@@ -77,7 +83,12 @@ strictement utiles à la compréhension de la demande.
 │   ├── personas/               # Prompts par rôle
 │   └── use_cases/              # Applications par contexte
 ├── hard_points/                # Vérités immuables - PRIORITÉ ABSOLUE
+│   ├── index.md                # Point d'entrée des hard points
+│   ├── concepts/               # Concepts fondamentaux validés
+│   ├── techniques/             # Méthodes pratiques validées
+│   └── use_cases/              # cas d'usage validés
 └── spec/                       # Espaces personnels - IGNORER sauf activation explicite
+    └── logs/                   # Logs des questions
 ```
 
 **RÈGLE CRITIQUE**: Consulter `/prompts/gen/index.md` en premier pour tout contexte projet.
@@ -108,6 +119,7 @@ strictement utiles à la compréhension de la demande.
 ```
 
 **CONTRAINTES DE QUALITÉ**:
+
 - Format standardisé: Markdown avec métadonnées obligatoires
 - Longueur maximale: 500 lignes par fichier
 - Densité sémantique: Information maximale, mots minimaux
@@ -133,6 +145,27 @@ strictement utiles à la compréhension de la demande.
 [Critères de qualité selon les standards établis]
 ```
 
+## LOGS
+
+**FEATURE_PLIPPING**: Ne Logger les questions que si la fonctionnalité est activée LLM_TRACIBILITY=TRUE dans le fichier /prompts/gen/index.md .
+
+**FORMAT LOGS**:
+
+```markdown
+# DATE: YYYY-MM-DD HH-MM-SS
+## PROMPT [Mode utilisé]
+[Question de l'utilisateur]
+
+```
+
+**RÈGLE CRITIQUE**: Si le dossier `/prompts/spec/` existe et avant l'analyse de la question et avant d'y répondre
+
+**TRATEMENT OBLIGATOIRE**:
+
+1. Vérifier que la fonctionnalité LLM_TRACIBILITY=TRUE est activée
+2. Si Créer le fichier `/prompts/spec/logs/prompts.log` si il n'existe pas
+3. Logger en fin de fichier `/prompts/spec/logs/prompts.log` la question de l'utilisateur
+
 ## PERSONAS DISPONIBLES
 
 | Persona | Responsabilité | Usage |
@@ -151,11 +184,13 @@ strictement utiles à la compréhension de la demande.
 **DÉFINITION**: Vérités immuables qui ne peuvent être remises en question.
 
 **TRAITEMENT OBLIGATOIRE**:
+
 1. Vérifier existence de hard_points pour le domaine concerné
 2. Respecter ABSOLUMENT toutes les contraintes listées
 3. En cas de conflit: hard_points > tables de vérité > demande utilisateur
 
 **FORMAT HARD POINT**:
+
 ```markdown
 # Hard Point: [Nom de la Décision]
 > Promu le: YYYY-MM-DD | Validé par: [Autorité]
@@ -173,12 +208,14 @@ strictement utiles à la compréhension de la demande.
 ## MÉCANISMES DE VALIDATION
 
 ### Validation Obligatoire
+
 1. **Cohérence avec Tables de vérité**: Vérifier que la réponse respecte les standards établis
 2. **Respect des Hard Points**: Aucune violation des contraintes immuables
 3. **Conformité Persona**: La réponse correspond au rôle assigné
 4. **Traçabilité**: Références claires aux sources consultées
 
 ### Signaux d'Alerte à Détecter
+
 - Contradictions entre éléments de réponse
 - Écarts par rapport aux standards établis
 - Manque de contexte pour les décisions techniques
@@ -187,23 +224,26 @@ strictement utiles à la compréhension de la demande.
 ## PATTERNS D'OPTIMISATION
 
 ### Optimisation Tokens
+
 - Référencer les tables existantes au lieu de répéter l'information
 - Utiliser la structure hiérarchique pour navigation efficace
 - Prioriser la densité sémantique dans les réponses
 
 ### Réutilisation
+
 - Consulter l'existant avant création
 - Adapter plutôt que recréer
 - Maintenir la cohérence avec l'écosystème établi
 
 ## WORKFLOW STANDARD LLM
 
-1. **ANALYSE**: Identifier le domaine et le type de demande
-2. **CONSULTATION**: Vérifier `/prompts/gen/index.md` et tables pertinentes
-3. **HARD POINTS**: Contrôler les contraintes immuables
-4. **PERSONA**: Adopter le persona approprié
-5. **RÉPONSE**: Générer selon les standards établis
-6. **VALIDATION**: Vérifier cohérence et traçabilité
+1. **LOGS**: Log la question si LLM_TRACIBILITY=TRUE
+2. **ANALYSE**: Identifier le domaine et le type de demande
+3. **CONSULTATION**: Vérifier `/prompts/gen/index.md` et tables pertinentes
+4. **HARD POINTS**: Contrôler les contraintes immuables
+5. **PERSONA**: Adopter le persona approprié
+6. **RÉPONSE**: Générer selon les standards établis
+7. **VALIDATION**: Vérifier cohérence et traçabilité
 
 **SPÉCIFICITÉ ROO-CODE**: Le parcours récursif depuis `/prompts/gen/index.md` doit être effectué automatiquement avant toute réponse (sauf mode Orchestrator).
 
@@ -219,11 +259,13 @@ strictement utiles à la compréhension de la demande.
 ## GESTION DES ERREURS
 
 ### Erreurs à Corriger Automatiquement
+
 - Incohérences avec les tables de vérité existantes
 - Non-respect des formats standard
 - Références incorrectes ou manquantes
 
 ### Erreurs à Signaler
+
 - Conflits avec les Hard Points
 - Demandes nécessitant création de nouvelles tables de vérité
 - Besoins d'expertise non couverte par les personas existants
