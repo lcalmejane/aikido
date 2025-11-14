@@ -166,9 +166,11 @@ strictement utiles à la compréhension de la demande.
 2. Si Créer le fichier `/prompts/spec/logs/prompts.log` si il n'existe pas
 3. Logger en fin de fichier `/prompts/spec/logs/prompts.log` la question de l'utilisateur
 
-## PERSONAS DISPONIBLES
+## EXEMPLES DE PERSONAS
 
-| Persona | Responsabilité | Usage |
+> **Note** : Ces personas sont des exemples illustratifs. AI-KIDO est adaptable à différents contextes (fonctionnel, technique, code, documentation, etc.) et ne requiert pas la création obligatoire de ces personas spécifiques.
+
+| Persona (Exemple) | Responsabilité | Usage Illustratif |
 |---------|---------------|-------|
 | **Architecte** | Structure et décisions techniques majeures | Architecture, design patterns |
 | **Développeur Backend** | Logique serveur et robustesse | APIs, bases de données, services |
@@ -177,7 +179,147 @@ strictement utiles à la compréhension de la demande.
 | **QA Engineer** | Qualité et détection de problèmes | Tests, validation, debugging |
 | **DevOps Engineer** | Automatisation et continuité | CI/CD, infrastructure, monitoring |
 
-**UTILISATION**: Référencer toujours le persona approprié et consulter `/prompts/gen/personas/[nom_persona].md`
+**UTILISATION**: Adapter les personas selon le contexte spécifique du projet. Consulter `/prompts/gen/personas/` pour les personas définis dans votre contexte.
+
+## TAXONOMIE DES PERSONAS AI-KIDO
+
+### Organisation Taxonomique Hiérarchique
+
+La structure des personas dans AI-KIDO suit une taxonomie hiérarchique inspirée des systèmes biologiques, où les personas sont organisés en plusieurs niveaux de spécialisation :
+
+```
+Niveau 1: Catégorie fondamentale
+└── Niveau 2: Famille fonctionnelle
+    └── Niveau 3: Persona spécifique
+        └── Niveau 4: Spécialisation contextuelle
+```
+
+Cette organisation permet une granularité progressive et facilite la réutilisation des caractéristiques partagées.
+
+### Structure Taxonomique Détaillée
+
+#### Niveau 1 : Catégories Fondamentales
+
+- **🏗️ CONCEPTION** : Personas orientés architecture et design
+- **⚙️ DÉVELOPPEMENT** : Personas orientés implémentation technique
+- **🔒 SÉCURITÉ** : Personas orientés protection et conformité
+- **🔍 QUALITÉ** : Personas orientés validation et amélioration
+- **🚀 DÉPLOIEMENT** : Personas orientés infrastructure et livraison
+
+#### Niveau 2 : Familles Fonctionnelles
+
+**CONCEPTION** :
+- Architecture Système
+- Design Interface
+- Modélisation Données
+
+**DÉVELOPPEMENT** :
+- Backend Services
+- Frontend Applications
+- Intégration Systèmes
+
+**SÉCURITÉ** :
+- Audit Sécurité
+- Conformité Réglementaire
+- Gestion Risques
+
+**QUALITÉ** :
+- Tests Automatisés
+- Validation Fonctionnelle
+- Performance Optimisation
+
+**DÉPLOIEMENT** :
+- Infrastructure Cloud
+- CI/CD Pipeline
+- Monitoring Opérationnel
+
+#### Niveau 3 : Personas Spécifiques
+
+Chaque famille fonctionnelle contient des personas spécialisés avec des responsabilités définies :
+
+```markdown
+[Catégorie] > [Famille] > [Persona Spécifique]
+CONCEPTION > Architecture Système > Architecte Solutions
+DÉVELOPPEMENT > Backend Services > Développeur API REST
+SÉCURITÉ > Audit Sécurité > Expert Sécurité Applications
+QUALITÉ > Tests Automatisés > QA Engineer
+DÉPLOIEMENT > Infrastructure Cloud > DevOps Engineer
+```
+
+#### Niveau 4 : Spécialisations Contextuelles
+
+Adaptations des personas selon le contexte projet :
+
+- **Domaine Métier** : Finance, Santé, E-commerce, etc.
+- **Technologie** : React, Node.js, Python, Kubernetes, etc.
+- **Échelle** : Startup, PME, Enterprise
+- **Contraintes** : Temps, Budget, Conformité
+
+### Règles de Développement des Personas
+
+#### Règles de Création
+
+1. **Héritage Taxonomique** : Chaque persona hérite des caractéristiques de ses niveaux parents
+2. **Spécialisation Progressive** : Chaque niveau ajoute des spécificités sans contredire les niveaux supérieurs
+3. **Cohérence Horizontale** : Les personas d'un même niveau doivent être cohérents entre eux
+4. **Complétude Verticale** : Chaque branche taxonomique doit couvrir tous les aspects nécessaires
+
+#### Format Standard de Persona
+
+```markdown
+# [Nom du Persona]
+> Taxonomie: [Catégorie] > [Famille] > [Spécifique] > [Contextuel]
+> Version: X.Y | Date: YYYY-MM-DD
+
+## Identité
+- **Rôle principal** : [Responsabilité centrale]
+- **Domaine d'expertise** : [Champ de compétences]
+- **Niveau hiérarchique** : [Position dans la taxonomie]
+
+## Caractéristiques héritées
+[Traits provenant des niveaux taxonomiques supérieurs]
+
+## Spécialisations
+[Traits spécifiques à ce persona]
+
+## Contextes d'application
+[Situations où ce persona est optimal]
+
+## Relations taxonomiques
+- **Parent** : [Famille fonctionnelle]
+- **Enfants** : [Spécialisations contextuelles]
+- **Pairs** : [Autres personas du même niveau]
+```
+
+#### Règles de Maintenance
+
+1. **Évolution Contrôlée** : Modifications uniquement par versioning
+2. **Impact Analysis** : Évaluer l'impact sur les personas enfants
+3. **Rétrocompatibilité** : Préserver la compatibilité avec les versions antérieures
+4. **Documentation** : Tracer toutes les modifications taxonomiques
+
+### Utilisation Pratique
+
+#### Sélection de Persona
+
+1. **Identifier la catégorie** : Quel type d'activité ?
+2. **Préciser la famille** : Quelle fonction spécifique ?
+3. **Choisir le persona** : Quel niveau de spécialisation ?
+4. **Adapter au contexte** : Quelles contraintes particulières ?
+
+#### Exemple de Sélection
+
+```
+Besoin : Développer une API sécurisée pour une fintech
+↓
+Catégorie : DÉVELOPPEMENT (implémentation technique)
+↓
+Famille : Backend Services (services côté serveur)
+↓
+Persona : Développeur API REST (spécialiste APIs)
+↓
+Contexte : Finance + Sécurité renforcée + Conformité RGPD
+```
 
 ## HARD POINTS - PRIORITÉ ABSOLUE
 
