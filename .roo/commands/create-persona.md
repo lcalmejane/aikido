@@ -1,44 +1,23 @@
 ---
-description: "Créer un nouveau persona AI-KIDO avec architecture simplifiée"
+description: "Créer un nouveau persona AI-KIDO interactivement"
 ---
 
-# Commande Create-Persona 
+# Commande Create-Persona
 
-Cette commande permet de créer rapidement un nouveau persona AI-KIDO avec seulement 3 questions essentielles.
+Crée directement un nouveau persona AI-KIDO et surtout pas un script ou autre commande SH. en posant 3 questions essentielles et en générant tous les fichiers nécessaires.
 
-## Flux simplifié
+## Exécution
 
-### 1. Collecte des informations (3 questions optimisées)
-
-**Question 1 : Identité du persona**
+Poser la **Question 1 : Identité du persona**
 ```
 Entrez le nom et la spécialisation du persona :
 Format : Nom | Spécialisation
 Exemple : "Arthur Architect | Architecture logicielle"
 ```
 
-**Question 2 : Rôle et contexte**
-```
-Décrivez en format libre :
-- Description du rôle
-- Domaines d'expertise
-- Contextes d'utilisation
-
-Entrez la description complète :
-```
-
-**Question 3 : Permissions**
-```
-Quelles permissions sont nécessaires ?
-Choisir parmi : read, edit, browser, command
-Entrez les permissions (séparées par des virgules) :
-```
-
-### 1.1 Génération automatique
-
-Après la Question 1, le système génère automatiquement :
-- **Slug** : Conversion automatique du nom en format slug (ex: "Arthur Architect" → "arthur-architect")
-- **Emoji** : Sélection automatique basée sur la spécialisation :
+Générer automatiquement le **slug** et l'**emoji** :
+- **Slug** : Conversion du nom en format slug (ex: "Arthur Architect" → "arthur-architect")
+- **Emoji** : Sélection basée sur la spécialisation :
   - Architecture → 🏗️
   - Développement → 💻
   - Sécurité → 🔒
@@ -49,22 +28,26 @@ Après la Question 1, le système génère automatiquement :
   - Mobile → 📱
   - Par défaut → 🤖
 
-### 2. Validation et génération
+Poser la **Question 2 : Rôle et contexte**
+```
+Décrivez en format libre :
+- Description du rôle
+- Domaines d'expertise
+- Contextes d'utilisation
 
-#### 2.1 Génération du slug
-- Convertir le nom en slug (minuscules, espaces → tirets, caractères spéciaux supprimés)
-- Exemple : "Arthur Architect" → "arthur-architect"
+Entrez la description complète :
+```
 
-#### 2.2 Validation d'unicité
-- Vérifier l'unicité du slug généré dans `.roomodes` existant
-- Si conflit, proposer des alternatives : [slug]-v2, [slug]-alt, etc.
+Poser la **Question 3 : Permissions**
+```
+Quelles permissions sont nécessaires ?
+Choisir parmi : read, edit, browser, command
+Entrez les permissions (séparées par des virgules) :
+```
 
-### 3. Création des fichiers
+Valider l'unicité du slug dans `.roomodes` existant. Si conflit, proposer des alternatives : [slug]-v2, [slug]-alt, etc.
 
-#### 3.1 Créer le fichier persona
-
-Créer `prompts/gen/personas/[slug].md` :
-
+Créer le fichier `prompts/gen/personas/[slug].md` :
 ```markdown
 # [emoji] [nom] - [spécialisation]
 
@@ -87,9 +70,7 @@ Créer `prompts/gen/personas/[slug].md` :
 *Persona créé le [date] via create-persona*
 ```
 
-#### 3.2 Mettre à jour .roomodes
-
-Si `.roomodes` n'existe pas, le créer :
+Créer ou mettre à jour `.roomodes` :
 ```yaml
 customModes:
   - slug: [slug]
@@ -102,49 +83,9 @@ customModes:
       [permissions en format liste YAML]
 ```
 
-Si `.roomodes` existe, ajouter le nouveau mode à la liste `customModes`.
+Créer ou mettre à jour `AGENTS.md` avec la nouvelle section persona.
 
-#### 3.3 Créer ou mettre à jour AGENTS.md (format standard)
-
-Si le fichier `AGENTS.md` n'existe pas à la racine, le créer avec le **format standard AGENTS.md** :
-
-```markdown
-# AI-KIDO Agents
-
-Ce fichier guide les agents de codage IA pour travailler efficacement avec le système AI-KIDO.
-
-## Vue d'ensemble du projet
-
-AI-KIDO est un système de gestion des connaissances et de création de personas pour l'IA, basé sur une taxonomie hiérarchique et des Tables de Vérités.
-
-## Structure du projet
-
-- `prompts/gen/` : Base de connaissances collective (concepts, techniques, personas, cas d'usage)
-- `prompts/hard_points/` : Vérités immuables (priorité absolue)
-- `.roo/commands/` : Commandes personnalisées pour la gestion du système
-
-## Personas disponibles
-
-### [emoji] [nom] - [spécialisation]
-
-**Rôle** : [description du rôle]
-
-**Spécialisation** : [spécialisation]
-
-**Contextes d'utilisation** : [contextes d'utilisation]
-
-**Permissions** : [permissions]
-
----
-
-*Fichier généré automatiquement par le système AI-KIDO - Format standard AGENTS.md*
-```
-
-Si le fichier existe, ajouter la nouvelle section persona dans la section "Personas disponibles".
-
-### 4. Confirmation
-
-Afficher le message de succès :
+Afficher le message de confirmation :
 ```
 ✅ Persona "[nom]" créé avec succès !
 
@@ -158,10 +99,9 @@ Utilisez le slug "[slug]" pour activer ce persona.
 
 ## Gestion des erreurs
 
-- **Slug généré existant** : Proposer automatiquement [slug]-v2, [slug]-alt, etc.
-- **Permissions invalides** : Redemander avec liste des permissions valides
-- **Format nom/spécialisation incorrect** : Redemander avec exemple du format requis (Nom | Spécialisation)
-- **Génération emoji échouée** : Utiliser l'emoji par défaut 🤖
+- **Slug existant** : Proposer [slug]-v2, [slug]-alt, etc.
+- **Permissions invalides** : Redemander avec liste valide
+- **Format incorrect** : Redemander avec exemple
+- **Emoji échoué** : Utiliser 🤖 par défaut
 
 ---
-
