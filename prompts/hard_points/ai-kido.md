@@ -36,6 +36,7 @@ strictement utiles à la compréhension de la demande.
 12. **📈 Schémas Mermaid**: Compression visuelle pour densité sémantique
 13. **🔍 Indexation Vectorielle**: Mode RAG local du workspace
 14. **🔄 Amélioration Continue**: Évolution automatique selon besoins et LLM
+15. **👨‍💼 Répartition par Rôles Humains**: Sous-répertoires assignés aux membres de l'équipe pour faciliter la collaboration Git
 
 ### Règles d'Auto-Alimentation
 
@@ -79,9 +80,18 @@ strictement utiles à la compréhension de la demande.
 ├── gen/                        # Connaissances collectives - TOUJOURS CONSULTER
 │   ├── index.md                # Point d'entrée principal
 │   ├── concepts/               # Concepts fondamentaux
+│   │   ├── architecture/       # Responsable: Architecte Lead
+│   │   ├── business/           # Responsable: Product Owner
+│   │   └── security/           # Responsable: Security Officer
 │   ├── techniques/             # Méthodes pratiques
+│   │   ├── backend/            # Responsable: Tech Lead Backend
+│   │   ├── frontend/           # Responsable: Tech Lead Frontend
+│   │   └── devops/             # Responsable: DevOps Lead
 │   ├── personas/               # Prompts par rôle
 │   └── use_cases/              # Applications par contexte
+│       ├── user-stories/       # Responsable: Product Owner
+│       ├── technical/          # Responsable: Tech Lead
+│       └── operational/        # Responsable: DevOps Lead
 ├── hard_points/                # Vérités immuables - PRIORITÉ ABSOLUE
 │   ├── index.md                # Point d'entrée des hard points
 │   ├── concepts/               # Concepts fondamentaux validés
@@ -92,6 +102,36 @@ strictement utiles à la compréhension de la demande.
 ```
 
 **RÈGLE CRITIQUE**: Consulter `/prompts/gen/index.md` en premier pour tout contexte projet.
+
+### Règles de Répartition par Rôles Humains
+
+1. **Assignation de Responsabilité**: Chaque sous-répertoire de `concepts/`, `techniques/`, et `use_cases/` DOIT avoir un responsable humain désigné
+2. **Cycle de Vie Git**: Les responsables gèrent les MR/PR pour leur domaine de responsabilité
+3. **Cohérence Transversale**: Un responsable "Architecte AI-KIDO" supervise la cohérence globale
+4. **Matrice RACI des Sous-Répertoires**:
+   - **R** (Responsable): Membre de l'équipe assigné au sous-répertoire
+   - **A** (Approbateur): Architecte AI-KIDO pour validation de cohérence
+   - **C** (Consulté): Autres responsables pour impacts transversaux
+   - **I** (Informé): Toute l'équipe via notifications Git
+
+**Exemple de Répartition**:
+```
+concepts/
+├── architecture/     # R: Architecte Lead, A: AI-KIDO Architect
+├── business/         # R: Product Owner, A: AI-KIDO Architect
+├── security/         # R: Security Officer, A: AI-KIDO Architect
+└── glossaire/        # R: Tech Writer, A: AI-KIDO Architect
+
+techniques/
+├── backend/          # R: Tech Lead Backend, A: AI-KIDO Architect
+├── frontend/         # R: Tech Lead Frontend, A: AI-KIDO Architect
+└── devops/           # R: DevOps Lead, A: AI-KIDO Architect
+
+use_cases/
+├── user-stories/     # R: Product Owner, A: AI-KIDO Architect
+├── technical/        # R: Tech Lead, A: AI-KIDO Architect
+└── operational/      # R: DevOps Lead, A: AI-KIDO Architect
+```
 
 ## FORMAT STANDARD DES TABLES DE VÉRITÉ
 

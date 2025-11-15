@@ -8,28 +8,77 @@ Initialise la memory bank AI-KIDO en créant directement les fichiers de base da
 
 ## Exécution
 
-### Phase 1 : Vérification des Documents Existants
+### Phase 1 : Vérification des Sources Existantes
 
-Poser la **Question 1 : Documents sources**
+Poser la **Question 1 : Sources d'analyse**
 ```
-Existe-t-il des documents spécifiques dans le répertoire hard-points que je dois analyser pour extraire les informations du projet ?
+Quelles sources voulez-vous analyser pour initialiser AI-KIDO ?
 
-Si OUI, précisez les chemins des documents à analyser (séparés par des virgules) :
+Options disponibles :
+1. Documents hard-points uniquement
+2. Sources projet existantes uniquement (src/, docs/, etc.)
+3. Analyse combinée hard-points + sources projet
+4. Initialisation manuelle (sans analyse automatique)
+
+Votre choix (1/2/3/4) :
+```
+
+**Si choix 1** : Demander les documents hard-points spécifiques
+```
+Précisez les chemins des documents hard-points à analyser (séparés par des virgules) :
 Exemple : hard-points/architecture.md, hard-points/concepts/glossaire.md
 
-Si NON, tapez 'non' pour une initialisation manuelle.
+Si vide, analyser tous les documents hard-points automatiquement.
 ```
 
-**Si OUI** : Analyser uniquement les documents spécifiés par l'utilisateur dans `/prompts/hard_points/` et extraire :
+**Si choix 2** : Scanner le workspace pour détecter les sources projet
+```
+🔍 DÉTECTION AUTOMATIQUE DES SOURCES PROJET :
+
+Répertoires détectés dans le workspace :
+[Liste automatique : src/, docs/, lib/, components/, config/, etc.]
+
+Voulez-vous analyser tous ces répertoires ? (o/n)
+Si non, sélectionnez les répertoires à analyser :
+```
+
+**Si choix 3** : Combiner hard-points + sources projet automatiquement
+
+**Si choix 4** : Passer directement à l'interrogation manuelle (Phase 2)
+
+#### Extraction Automatique (choix 1, 2 ou 3)
+
+**A. Analyse des Documents Hard-points** :
 - Contexte projet
 - Architecture générale
 - Stack technique
 - Terminologie métier
 - Contraintes et règles
 
-**Si NON** : Passer à l'interrogation manuelle (Phase 2)
+**B. Analyse des Sources Projet** :
+- Stack technique détectée (package.json, requirements.txt, etc.)
+- Architecture de code (structure des répertoires, patterns)
+- Technologies utilisées (frameworks, bibliothèques)
+- Configuration et environnement
+- Documentation existante (README, docs/)
 
-### Phase 2 : Collecte des Informations Projet
+### Phase 2 : Synthèse Automatique (si analyse effectuée)
+
+**Présenter la synthèse des informations détectées** :
+```
+📊 SYNTHÈSE DE L'ANALYSE AUTOMATIQUE :
+
+Contexte projet détecté :
+- Nom probable : [Basé sur package.json, README, etc.]
+- Domaine métier : [Inféré des termes métier trouvés]
+- Stack technique : [Technologies détectées]
+- Architecture : [Patterns architecturaux identifiés]
+
+Cette synthèse est-elle correcte ? (o/n)
+Si non, quels éléments corriger ?
+```
+
+### Phase 3 : Collecte des Informations Projet (si initialisation manuelle ou corrections)
 
 Poser la **Question 2 : Contexte projet**
 ```
@@ -64,14 +113,14 @@ Quelle est votre stack technique ?
 Entrez la stack complète :
 ```
 
-### Phase 3 : Génération des Use Cases de Base
+### Phase 4 : Génération des Use Cases de Base
 
 Générer automatiquement **3-5 use cases fondamentaux** basés sur :
 - Le domaine métier identifié
 - L'architecture décrite
 - Les patterns courants du domaine
 
-### Phase 4 : Vérification et Factorisation des Informations Existantes
+### Phase 5 : Vérification et Factorisation des Informations Existantes
 
 **Avant toute génération**, analyser le contenu existant dans `/prompts/gen/` :
 
@@ -110,7 +159,7 @@ Générer automatiquement **3-5 use cases fondamentaux** basés sur :
    - Ajouter les nouvelles sections manquantes
    - Mettre à jour les versions et dates
 
-### Phase 5 : Création de la Structure AI-KIDO
+### Phase 6 : Création de la Structure AI-KIDO
 
 #### 6.1 Génération du Glossaire Projet (si documents hard-points disponibles)
 
@@ -225,48 +274,106 @@ Cas d'usage de base du projet [Nom].
 *Généré automatiquement par init-aikido le [DATE]*
 ```
 
-### Phase 5 : Taxonomies et Hiérarchies par Rôles
+### Phase 7 : Répartition par Rôles Humains (Règle AI-KIDO 15)
 
-#### 5.1 Identification des Rôles Projet
+#### 7.1 Identification des Rôles Projet
 
-Générer automatiquement les rôles selon le contexte :
+Générer automatiquement les rôles selon le contexte et **créer les sous-répertoires correspondants** :
 - **Domaine Finance** : Architecte Solutions, Développeur Backend Sécurisé, Expert Conformité, QA Sécurité
 - **Domaine E-commerce** : Architecte Microservices, Développeur Frontend UX, Expert Performance, DevOps Scalabilité
 - **Domaine Santé** : Architecte Sécurité, Développeur Conformité RGPD, Expert Audit, QA Validation Métier
 
-#### 5.2 Matrice RACI par Concept/Technique
+#### 7.2 Création de la Structure par Rôles
+
+**Créer les sous-répertoires spécialisés** dans `/prompts/gen/` selon la règle 15 :
+```
+/prompts/gen/concepts/roles/
+├── architecte-solutions/
+├── developpeur-backend/
+├── expert-conformite/
+└── qa-securite/
+
+/prompts/gen/techniques/roles/
+├── architecte-solutions/
+├── developpeur-backend/
+├── expert-conformite/
+└── qa-securite/
+
+/prompts/gen/use_cases/roles/
+├── architecte-solutions/
+├── developpeur-backend/
+├── expert-conformite/
+└── qa-securite/
+```
+
+#### 7.3 Assignation des Responsabilités par Sous-répertoire
+
+**Répartir les concepts/techniques/use_cases** selon les responsabilités :
+- **Architecte Solutions** : Architecture système, patterns de conception, décisions techniques
+- **Développeur Backend** : Implémentation, APIs, performance, sécurité applicative
+- **Expert Conformité** : Réglementations, audits, validation métier, documentation légale
+- **QA Sécurité** : Tests sécurisés, validation, contrôles qualité, procédures de test
+
+#### 7.4 Matrice RACI par Concept/Technique
 
 Créer `/prompts/gen/concepts/matrice-raci.md` :
 ```markdown
-# Matrice RACI - Responsabilités par Rôle
+# Matrice RACI - Responsabilités par Rôle (Règle AI-KIDO 15)
 > Version: 1.0 | Date: [DATE] | Statut: Initial
 
 ## Vue d'ensemble
-Attribution des responsabilités selon les rôles identifiés.
+Attribution des responsabilités selon les rôles identifiés et répartition par sous-répertoires.
 
-## Concepts Fondamentaux
+## Structure des Sous-répertoires par Rôle
 
-| Concept | [Rôle 1] | [Rôle 2] | [Rôle 3] | [Rôle 4] |
-|---------|----------|----------|----------|----------|
+### Concepts (`/prompts/gen/concepts/roles/`)
+- `architecte-solutions/` : Architecture, patterns, décisions techniques
+- `developpeur-backend/` : Implémentation, APIs, performance
+- `expert-conformite/` : Réglementations, audits, validation métier
+- `qa-securite/` : Tests, validation, contrôles qualité
+
+### Techniques (`/prompts/gen/techniques/roles/`)
+- `architecte-solutions/` : Techniques architecturales, design patterns
+- `developpeur-backend/` : Techniques de développement, optimisation
+- `expert-conformite/` : Techniques d'audit, validation réglementaire
+- `qa-securite/` : Techniques de test, sécurisation
+
+### Use Cases (`/prompts/gen/use_cases/roles/`)
+- `architecte-solutions/` : Cas d'usage architecturaux, décisions de conception
+- `developpeur-backend/` : Cas d'usage d'implémentation, résolution de problèmes
+- `expert-conformite/` : Cas d'usage de conformité, validation métier
+- `qa-securite/` : Cas d'usage de test, validation sécurisée
+
+## Matrice RACI par Concept/Technique
+
+| Concept/Technique | Architecte | Développeur | Expert Conformité | QA Sécurité |
+|-------------------|------------|-------------|-------------------|-------------|
 | Architecture Système | R | A | C | I |
-| Sécurité | C | R | A | I |
-| Performance | I | C | R | A |
-
-## Techniques Pratiques
-
-| Technique | [Rôle 1] | [Rôle 2] | [Rôle 3] | [Rôle 4] |
-|-----------|----------|----------|----------|----------|
-| Développement API | A | R | C | I |
-| Tests Automatisés | I | C | R | A |
-| Déploiement | C | I | A | R |
+| Sécurité Applicative | C | R | A | R |
+| Performance | A | R | C | C |
+| Conformité Réglementaire | C | I | R | A |
+| Tests Automatisés | I | C | C | R |
+| Déploiement | A | R | C | C |
 
 **Légende** : R=Responsable, A=Approbateur, C=Consulté, I=Informé
 
+## Règles de Collaboration Git
+
+### Assignation par Sous-répertoire
+- Chaque rôle est **responsable principal** de son sous-répertoire
+- Les MR/PR touchant un sous-répertoire doivent être **approuvées par le rôle responsable**
+- Les modifications transversales nécessitent **validation de tous les rôles concernés**
+
+### Workflow de Validation
+1. **Création** : Le rôle responsable crée le contenu dans son sous-répertoire
+2. **Review** : Les rôles "Consulté" et "Approbateur" valident
+3. **Merge** : Le rôle "Approbateur" final valide la fusion
+
 ---
-*Généré automatiquement par init-aikido le [DATE]*
+*Généré automatiquement par init-aikido le [DATE] - Règle AI-KIDO 15 appliquée*
 ```
 
-### Phase 6 : Mise à Jour de l'Indexation Générale AI-KIDO
+### Phase 8 : Mise à Jour de l'Indexation Générale AI-KIDO
 
 #### 6.1 Mise à Jour des Index Sectoriels
 
@@ -359,9 +466,12 @@ Index mis à jour :
 ## Gestion des Erreurs
 
 - **Documents spécifiés introuvables** : Lister les fichiers manquants et proposer mode manuel
+- **Sources projet inaccessibles** : Lister les répertoires non accessibles et continuer avec les sources disponibles
 - **Documents hard-points illisibles** : Passer en mode manuel avec avertissement
 - **Chemins invalides** : Redemander avec exemples de chemins corrects
 - **Informations incomplètes** : Redemander les éléments manquants
+- **Analyse automatique échouée** : Basculer en mode manuel avec les informations partielles
+- **Stack technique non détectée** : Demander saisie manuelle
 - **Conflits d'informations** : Interroger l'utilisateur pour résoudre les contradictions
 - **Conflits de fichiers** : Proposer sauvegarde avec suffixe temporel
 - **Erreur génération Mermaid** : Créer structure textuelle de fallback
