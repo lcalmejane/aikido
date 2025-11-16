@@ -1,438 +1,308 @@
 ---
-description: "Créer ou mettre à jour le glossaire projet AI-KIDO à partir des documents hard_points"
+description: "Créer ou mettre à jour le glossaire métier du projet en cours à partir des termes spécifiques et confus nécessitant une définition particulière"
 ---
 
 # Commande Init-Glossaire
 
-Crée ou met à jour directement le glossaire projet AI-KIDO en analysant les documents existants dans [`/prompts/hard_points/`](../prompts/hard_points/) et en l'intégrant dans la hiérarchie des concepts existants.
+Crée ou met à jour le glossaire métier du projet en cours en se concentrant uniquement sur les termes métier spécifiques, confus ou particuliers qui nécessitent une définition claire. **Exclut les termes génériques AI-KIDO et roo-code.**
 
 ## Exécution
 
 ### Phase 1 : Détection du Glossaire Existant
 
-**Vérifier l'existence d'un glossaire** dans [`/prompts/gen/concepts/`](../prompts/gen/concepts/) :
+**Vérifier l'existence d'un glossaire métier** dans [`/prompts/gen/concepts/`](../prompts/gen/concepts/) :
 - Scanner tous les fichiers `.md` pour détecter un glossaire existant
-- Patterns de détection : `glossaire*.md`, `*glossary*.md`, `terminologie*.md`
+- Patterns de détection : `glossaire-metier*.md`, `*glossary*.md`, `terminologie-metier*.md`
 - Si trouvé : Mode **MISE À JOUR**
 - Si absent : Mode **CRÉATION**
 
-### Phase 2 : Sélection des Sources d'Analyse
+### Phase 2 : Analyse Automatique des Sources Projet
 
-Poser la **Question 1 : Sources d'analyse**
-```
-Quelles sources voulez-vous analyser pour le glossaire ?
+**Analyser automatiquement les sources du projet en cours** :
+- Scanner le workspace pour détecter les sources projet (src/, docs/, lib/, components/, etc.)
+- **EXCLURE** automatiquement :
+  - Tous les fichiers dans `/prompts/hard_points/ai-kido.md`
+  - Tous les fichiers dans `/prompts/hard_points/roo-code/`
+  - Les termes génériques de la méthode AI-KIDO
+  - Les personas, rôles et informations IDE
+- **INCLURE** uniquement :
+  - Les termes métier spécifiques au domaine du projet
+  - Les concepts confus nécessitant une définition particulière
+  - Les hard_points métier spécifiques (hors AI-KIDO/roo-code)
 
-Options disponibles :
-1. Analyse automatique de tous les documents hard_points
-2. Analyse automatique des sources projet existantes (src/, docs/, etc.)
-3. Analyse combinée hard_points + sources projet
-4. Sélection manuelle de documents spécifiques
-5. Analyse complète + saisie manuelle complémentaire
+### Phase 3 : Extraction Terminologique Métier
 
-Votre choix (1/2/3/4/5) :
-```
+#### 3.1 Filtrage Intelligent des Termes
 
-**Si choix 1** : Analyser automatiquement tous les fichiers `.md/.mdx` dans [`/prompts/hard_points/`](../prompts/hard_points/) récursivement
+**Critères d'inclusion** (termes à GARDER) :
+- Termes métier spécifiques au domaine du projet
+- Concepts confus ou ambigus nécessitant clarification
+- Acronymes métier non standards
+- Processus métier particuliers
+- Règles business complexes
+- Terminologie technique spécifique au projet (non générique)
 
-**Si choix 2** : Scanner le workspace pour détecter les sources projet
-```
-🔍 DÉTECTION AUTOMATIQUE DES SOURCES PROJET :
+**Critères d'exclusion** (termes à IGNORER) :
+- Tous les termes de la méthode AI-KIDO
+- Tous les termes roo-code
+- Personas et rôles génériques
+- Informations IDE et outils de développement
+- Technologies standards bien connues
+- Patterns architecturaux classiques
+- Termes de développement usuels
 
-Répertoires détectés dans le workspace :
-[Liste automatique des répertoires trouvés : src/, docs/, lib/, components/, etc.]
-
-Voulez-vous analyser tous ces répertoires ? (o/n)
-Si non, sélectionnez les répertoires à analyser :
-```
-
-**Si choix 3** : Combiner hard_points + sources projet automatiquement
-
-**Si choix 4** : Poser la question de sélection manuelle
-```
-Listez les chemins des documents à analyser (séparés par des virgules) :
-Exemple : hard_points/ai-kido.md, src/components/README.md, docs/architecture.md
-
-Sources disponibles :
-[Liste automatique des fichiers .md/.mdx/.js/.ts/.py/.java etc. trouvés]
-
-Votre sélection :
-```
-
-**Si choix 5** : Combiner analyse automatique complète + saisie manuelle
-
-### Phase 3 : Analyse et Extraction Terminologique
-
-#### 3.1 Analyse Automatique des Documents
-
-Pour chaque document sélectionné :
+#### 3.2 Analyse Ciblée des Documents
 
 **A. Analyse des Documents Markdown (.md/.mdx)** :
-1. **Extraction des termes techniques** :
-   - Mots en `code` ou **gras**
-   - Acronymes (mots en MAJUSCULES)
-   - Termes métier spécifiques au domaine
-   - Noms de technologies, frameworks, outils
+1. **Extraction des termes métier uniquement** :
+   - Mots en `code` ou **gras** liés au domaine métier
+   - Acronymes métier spécifiques (non techniques génériques)
+   - Terminologie métier complexe ou confuse
+   - Processus business particuliers
 
-2. **Extraction des définitions** :
-   - Phrases contenant "est", "signifie", "désigne"
-   - Sections "Définition", "Glossaire", "Terminologie"
-   - Descriptions entre parenthèses ou tirets
+2. **Extraction des définitions métier** :
+   - Définitions de concepts métier
+   - Règles business spécifiques
+   - Processus métier particuliers
+   - Terminologie domaine-spécifique
 
-**B. Analyse des Sources Code (.js/.ts/.py/.java/.go/.rs/.php/.rb/.cs/.cpp/.c/.h)** :
-1. **Extraction des éléments techniques** :
-   - Noms de classes, interfaces, types
-   - Noms de fonctions/méthodes principales
-   - Constantes et énumérations
-   - Imports/modules utilisés
-   - Commentaires de documentation (JSDoc, docstrings, etc.)
+**B. Analyse des Sources Code (focus métier)** :
+1. **Extraction des éléments métier** :
+   - Noms de classes/interfaces métier
+   - Énumérations de valeurs métier
+   - Constantes métier
+   - Commentaires expliquant la logique métier
 
-2. **Extraction des patterns architecturaux** :
-   - Design patterns détectés
-   - Structures de données personnalisées
-   - APIs et endpoints
-   - Configuration et variables d'environnement
+2. **Exclusion automatique** :
+   - Frameworks et bibliothèques standards
+   - Patterns techniques génériques
+   - Configuration technique standard
+   - APIs techniques génériques
 
-**C. Analyse des Fichiers de Configuration** :
-1. **Technologies détectées** :
-   - `package.json` → Stack Node.js/npm
-   - `requirements.txt` → Stack Python
-   - `Cargo.toml` → Stack Rust
-   - `pom.xml` → Stack Java/Maven
-   - `Dockerfile` → Containerisation
-   - `docker-compose.yml` → Orchestration
+#### 3.3 Validation et Nettoyage
 
-2. **Dépendances et outils** :
-   - Frameworks utilisés
-   - Bibliothèques tierces
-   - Outils de build et CI/CD
-
-3. **Catégorisation automatique** :
-   - **Concepts métier** : Termes liés au domaine d'application
-   - **Concepts techniques** : Technologies, architectures, patterns
-   - **Acronymes** : Sigles et abréviations
-   - **Outils** : Logiciels, frameworks, bibliothèques
-   - **Processus** : Méthodes, workflows, procédures
-   - **Architecture** : Composants, services, modules détectés
-
-#### 3.2 Résolution des Conflits et Doublons
-
-**Détecter les définitions multiples** :
+**Validation automatique des termes extraits** :
 ```
-⚠️ CONFLIT DÉTECTÉ pour le terme "[TERME]" :
+📊 TERMES MÉTIER DÉTECTÉS :
 
-Définition 1 (dans [fichier1]) : [définition1]
-Définition 2 (dans [fichier2]) : [définition2]
+Termes métier spécifiques : [NOMBRE]
+Concepts confus identifiés : [NOMBRE]
+Acronymes métier : [NOMBRE]
+Processus business : [NOMBRE]
 
-Quelle définition conserver ?
-1. Définition 1
-2. Définition 2  
-3. Fusionner les deux
-4. Créer une définition personnalisée
+⚠️ TERMES EXCLUS (AI-KIDO/roo-code) : [NOMBRE]
 
-Votre choix :
+Continuer avec ces termes ? (o/n)
+Si non, ajustez les critères de filtrage :
 ```
 
-### Phase 4 : Détection Automatique du Contexte Projet (si sources projet analysées)
+### Phase 4 : Détection du Contexte Métier
 
-**Analyse du contexte technique** :
+**Analyse du domaine métier** :
 ```
-📊 ANALYSE DU CONTEXTE PROJET DÉTECTÉ :
+📊 ANALYSE DU DOMAINE MÉTIER DÉTECTÉ :
 
-Stack technique identifiée :
-- Frontend : [Technologies détectées]
-- Backend : [Technologies détectées]
-- Base de données : [Technologies détectées]
-- Infrastructure : [Outils détectés]
+Domaine principal : [Basé sur les termes métier extraits]
+Sous-domaines identifiés : [Liste des sous-domaines]
+Complexité terminologique : [Évaluation]
 
-Domaine métier probable : [Basé sur les termes métier extraits]
-Architecture détectée : [Patterns architecturaux identifiés]
+Termes nécessitant définition particulière :
+- [Liste des termes confus ou ambigus]
 
-Cette analyse est-elle correcte ? (o/n)
-Si non, précisez les corrections :
+Cette analyse correspond-elle au projet ? (o/n)
+Si non, précisez le domaine métier :
 ```
 
-### Phase 5 : Saisie Manuelle Complémentaire (si choix 5)
+### Phase 5 : Saisie Manuelle Complémentaire
 
-Poser la **Question 2 : Termes complémentaires**
+**Question optionnelle : Termes métier supplémentaires**
 ```
-Souhaitez-vous ajouter des termes spécifiques non détectés automatiquement ?
+Souhaitez-vous ajouter des termes métier spécifiques non détectés automatiquement ?
 
-Format : Terme | Catégorie | Définition
-Exemple : "API Gateway | Technique | Point d'entrée unique pour toutes les requêtes API"
+Format : Terme | Définition | Contexte d'usage
+Exemple : "Parcours apprenant | Séquence pédagogique personnalisée | Utilisé dans les modules d'évaluation"
 
-Entrez les termes (un par ligne, ou 'fin' pour terminer) :
-```
-
-### Phase 6 : Répartition par Rôles Humains (Règle AI-KIDO 15)
-
-#### 6.1 Identification des Rôles pour le Glossaire
-
-**Analyser le contexte projet** pour identifier les rôles responsables du glossaire :
-- **Architecte Solutions** : Terminologie architecturale, patterns, décisions techniques
-- **Expert Métier** : Terminologie métier, processus, règles business
-- **Développeur Lead** : Terminologie technique, outils, frameworks
-- **Documentation Manager** : Cohérence terminologique, maintenance du glossaire
-
-#### 6.2 Création de la Structure par Rôles
-
-**Créer les sous-répertoires spécialisés** dans `/prompts/gen/concepts/` :
-```
-/prompts/gen/concepts/glossaire/
-├── architecture/          # Responsable: Architecte Solutions
-├── metier/                # Responsable: Expert Métier
-├── technique/             # Responsable: Développeur Lead
-└── transverse/            # Responsable: Documentation Manager
+Entrez les termes métier (un par ligne, ou 'fin' pour terminer) :
 ```
 
-#### 6.3 Répartition des Termes par Responsabilité
+### Phase 6 : Génération du Glossaire Métier Unifié
 
-**Assigner automatiquement les termes** selon leur catégorie :
-- **architecture/** : Patterns, composants, services, architecture système
-- **metier/** : Processus business, règles métier, domaine fonctionnel
-- **technique/** : Technologies, frameworks, outils, APIs
-- **transverse/** : Acronymes, abréviations, termes communs
+#### 6.1 Mode CRÉATION - Nouveau Glossaire
 
-### Phase 7 : Génération/Mise à Jour du Glossaire
+**Créer le glossaire métier principal** [`/prompts/gen/concepts/glossaire-metier.md`](../prompts/gen/concepts/glossaire-metier.md) :
 
-#### 7.1 Mode CRÉATION - Nouveau Glossaire
-
-**A. Créer le glossaire principal** [`/prompts/gen/concepts/glossaire-projet.md`](../prompts/gen/concepts/glossaire-projet.md) :
 ```markdown
-# 📚 Glossaire Projet AI-KIDO (Règle 15 - Répartition par Rôles)
-> Version: 1.0 | Date: [DATE] | Statut: Initial | Sources: [LISTE_SOURCES]
+# 📚 Glossaire Métier du Projet
+> Version: 1.0 | Date: [DATE] | Domaine: [DOMAINE_DETECTE]
 
 ## Vue d'ensemble
-Terminologie et concepts clés extraits des documents hard_points du projet AI-KIDO.
-**Structure organisée par responsabilités selon la règle AI-KIDO 15.**
+Terminologie métier spécifique au projet, concentrée sur les termes confus, ambigus ou particuliers nécessitant une définition claire.
 
-## Structure par Rôles
+**Exclusions** : Termes AI-KIDO, roo-code, personas, rôles génériques, technologies standards.
 
-### 🏗️ Terminologie Architecture
-**Responsable** : Architecte Solutions
-**Localisation** : [`glossaire/architecture/`](glossaire/architecture/)
-- Patterns architecturaux, composants système, services
-- [Lien vers sous-glossaire architecture]
+## Termes Métier
 
-### 💼 Terminologie Métier
-**Responsable** : Expert Métier
-**Localisation** : [`glossaire/metier/`](glossaire/metier/)
-- Processus business, règles métier, domaine fonctionnel
-- [Lien vers sous-glossaire métier]
+### A
 
-### ⚙️ Terminologie Technique
-**Responsable** : Développeur Lead
-**Localisation** : [`glossaire/technique/`](glossaire/technique/)
-- Technologies, frameworks, outils, APIs
-- [Lien vers sous-glossaire technique]
+**[Terme A]**
+- **Définition** : [Définition claire et précise]
+- **Contexte** : [Où et comment ce terme est utilisé]
+- **Exemple** : [Exemple concret d'usage]
+- **Voir aussi** : [Liens vers termes connexes]
 
-### 🔄 Terminologie Transverse
-**Responsable** : Documentation Manager
-**Localisation** : [`glossaire/transverse/`](glossaire/transverse/)
-- Acronymes, abréviations, termes communs
-- [Lien vers sous-glossaire transverse]
+### B
 
-## Index Alphabétique Global
-[Index complet de tous les termes avec renvois vers les sous-glossaires]
+[Continue alphabétiquement...]
 
-## Matrice de Responsabilités
+## Index par Catégorie
 
-| Catégorie | Architecte | Expert Métier | Dev Lead | Doc Manager |
-|-----------|------------|---------------|----------|-------------|
-| Architecture | R | C | C | I |
-| Métier | C | R | I | C |
-| Technique | C | I | R | C |
-| Transverse | I | C | C | R |
+### Processus Métier
+- [Liste des termes liés aux processus]
 
-**Légende** : R=Responsable, A=Approbateur, C=Consulté, I=Informé
+### Règles Business
+- [Liste des termes liés aux règles métier]
 
-## Relations Conceptuelles
-```mermaid
-graph TD
-    A[Architecture] --> T[Technique]
-    M[Métier] --> A
-    T --> TR[Transverse]
-    M --> TR
-    A --> TR
-```
+### Concepts Domaine
+- [Liste des concepts spécifiques au domaine]
+
+### Acronymes Métier
+- [Liste des acronymes métier non standards]
+
+## Termes Confus Clarifiés
+
+Cette section liste les termes qui prêtent souvent à confusion :
+
+**[Terme Confus 1]** vs **[Terme Confus 2]**
+- **Différence** : [Explication claire de la différence]
+- **Usage** : [Quand utiliser l'un ou l'autre]
 
 ---
-*Glossaire généré automatiquement par init-glossaire le [DATE] - Règle AI-KIDO 15 appliquée*
-*Sources analysées : [NOMBRE] documents hard_points*
+*Glossaire généré automatiquement par init-glossaire le [DATE]*
+*Sources analysées : [NOMBRE] fichiers projet (hors AI-KIDO/roo-code)*
+*Termes métier identifiés : [NOMBRE]*
 ```
 
-**B. Créer les sous-glossaires spécialisés** :
+#### 6.2 Gestion de la Taille (Règle 500 lignes)
 
-**Architecture** [`/prompts/gen/concepts/glossaire/architecture/index.md`](../prompts/gen/concepts/glossaire/architecture/index.md) :
-```markdown
-# 🏗️ Glossaire Architecture
-> Responsable: Architecte Solutions | Version: 1.0 | Date: [DATE]
+**Si le glossaire dépasse 500 lignes** :
+1. **Créer un glossaire principal** [`glossaire-metier.md`](../prompts/gen/concepts/glossaire-metier.md) avec index
+2. **Créer des fichiers par catégorie** :
+   - [`glossaire-metier-processus.md`](../prompts/gen/concepts/glossaire-metier-processus.md)
+   - [`glossaire-metier-regles.md`](../prompts/gen/concepts/glossaire-metier-regles.md)
+   - [`glossaire-metier-concepts.md`](../prompts/gen/concepts/glossaire-metier-concepts.md)
+   - [`glossaire-metier-acronymes.md`](../prompts/gen/concepts/glossaire-metier-acronymes.md)
 
-[Termes architecturaux extraits et organisés]
-```
+#### 6.3 Mode MISE À JOUR - Glossaire Existant
 
-**Métier** [`/prompts/gen/concepts/glossaire/metier/index.md`](../prompts/gen/concepts/glossaire/metier/index.md) :
-```markdown
-# 💼 Glossaire Métier
-> Responsable: Expert Métier | Version: 1.0 | Date: [DATE]
-
-[Termes métier extraits et organisés]
-```
-
-**Technique** [`/prompts/gen/concepts/glossaire/technique/index.md`](../prompts/gen/concepts/glossaire/technique/index.md) :
-```markdown
-# ⚙️ Glossaire Technique
-> Responsable: Développeur Lead | Version: 1.0 | Date: [DATE]
-
-[Termes techniques extraits et organisés]
-```
-
-**Transverse** [`/prompts/gen/concepts/glossaire/transverse/index.md`](../prompts/gen/concepts/glossaire/transverse/index.md) :
-```markdown
-# 🔄 Glossaire Transverse
-> Responsable: Documentation Manager | Version: 1.0 | Date: [DATE]
-
-[Acronymes et termes communs extraits et organisés]
-```
-
-#### 5.2 Mode MISE À JOUR - Glossaire Existant
-
-**Analyser le glossaire existant** :
-1. Extraire les termes déjà définis
-2. Identifier les nouveaux termes à ajouter
-3. Détecter les définitions à mettre à jour
+**Analyser le glossaire métier existant** :
+1. Extraire les termes métier déjà définis
+2. Identifier les nouveaux termes métier à ajouter
+3. Détecter les définitions métier à mettre à jour
 4. Préserver la structure existante
 
 **Stratégie de mise à jour** :
 ```
-📊 ANALYSE DU GLOSSAIRE EXISTANT :
+📊 ANALYSE DU GLOSSAIRE MÉTIER EXISTANT :
 
-Termes existants : [NOMBRE]
-Nouveaux termes détectés : [NOMBRE]
+Termes métier existants : [NOMBRE]
+Nouveaux termes métier détectés : [NOMBRE]
 Définitions à mettre à jour : [NOMBRE]
-Conflits potentiels : [NOMBRE]
+Termes AI-KIDO/roo-code supprimés : [NOMBRE]
 
 Stratégie de mise à jour :
-✅ Ajouter [X] nouveaux termes
-✅ Mettre à jour [Y] définitions existantes
-✅ Résoudre [Z] conflits
-✅ Préserver la structure existante
+✅ Ajouter [X] nouveaux termes métier
+✅ Mettre à jour [Y] définitions métier existantes
+✅ Supprimer [Z] termes non-métier
+✅ Préserver la structure métier
 
 Continuer ? (o/n) :
 ```
 
-### Phase 7 : Mise à Jour de l'Indexation AI-KIDO
+### Phase 7 : Mise à Jour de l'Indexation
 
-#### 6.1 Mise à Jour de l'Index Concepts
+#### 7.1 Mise à Jour de l'Index Concepts
 
 Mettre à jour [`/prompts/gen/concepts/index.md`](../prompts/gen/concepts/index.md) :
 ```markdown
 ## Fichiers Disponibles
 
 - [`guideline-prompts.md`](guideline-prompts.md) : Guidelines pour la création de prompts efficaces
-- [`glossaire-projet.md`](glossaire-projet.md) : Glossaire terminologique du projet AI-KIDO
+- [`glossaire-metier.md`](glossaire-metier.md) : Glossaire métier du projet (termes spécifiques et confus)
 ```
 
-#### 6.2 Mise à Jour de l'Index Principal
+#### 7.2 Mise à Jour de l'Index Principal
 
 Mettre à jour [`/prompts/gen/index.md`](../prompts/gen/index.md) avec référence au glossaire :
 ```markdown
 ## Structure
 
-- [`concepts/`](concepts/index.md) : Concepts fondamentaux (incluant glossaire projet)
-```
-
-#### 6.3 Création/Mise à Jour du Fichier AGENTS.md
-
-Créer ou mettre à jour [`AGENTS.md`](../AGENTS.md) à la racine avec section glossaire :
-
-```markdown
-# AI Agents Configuration
-
-## Knowledge Base Components
-
-### Glossaire Projet
-- **Location**: [`prompts/gen/concepts/glossaire-projet.md`](prompts/gen/concepts/glossaire-projet.md)
-- **Terms Count**: [NOMBRE] termes définis
-- **Categories**: Métier, Technique, Acronymes, Outils, Processus
-- **Last Updated**: [DATE]
-- **Sources**: [NOMBRE] documents hard_points analysés
-
-### Terminology Usage Guidelines
-- Agents MUST use terminology as defined in the project glossary
-- When encountering undefined terms, agents SHOULD suggest adding them to the glossary
-- Consistency in terminology usage across all agent interactions
-
----
-*Updated by init-glossaire on [DATE]*
+- [`concepts/`](concepts/index.md) : Concepts fondamentaux (incluant glossaire métier)
 ```
 
 ## Messages de Confirmation
 
 ### Succès - Mode Création
 ```
-✅ Glossaire projet AI-KIDO créé avec succès !
+✅ Glossaire métier du projet créé avec succès !
 
-Fichier créé :
-- /prompts/gen/concepts/glossaire-projet.md
+Fichier(s) créé(s) :
+- /prompts/gen/concepts/glossaire-metier.md
+[+ fichiers supplémentaires si > 500 lignes]
 
 Statistiques :
-- [X] termes métier
-- [Y] termes techniques  
-- [Z] acronymes
-- [W] outils/technologies
-- [V] processus/méthodes
+- [X] termes métier spécifiques
+- [Y] concepts confus clarifiés
+- [Z] acronymes métier
+- [W] processus business
+- [V] règles métier
 
 Sources analysées :
-- Hard points : [NOMBRE] documents
-- Sources projet : [NOMBRE] fichiers code + [NOMBRE] fichiers config
+- Sources projet : [NOMBRE] fichiers analysés
 - Répertoires scannés : [LISTE_REPERTOIRES]
+- Termes AI-KIDO/roo-code exclus : [NOMBRE]
 
 Index mis à jour :
 - /prompts/gen/concepts/index.md
 - /prompts/gen/index.md
-- AGENTS.md (créé/mis à jour)
 
-🎯 Glossaire prêt pour utilisation par les agents AI-KIDO !
+🎯 Glossaire métier prêt pour clarifier la terminologie du projet !
 ```
 
 ### Succès - Mode Mise à Jour
 ```
-✅ Glossaire projet AI-KIDO mis à jour avec succès !
+✅ Glossaire métier du projet mis à jour avec succès !
 
 Modifications apportées :
-- [X] nouveaux termes ajoutés
-- [Y] définitions mises à jour
-- [Z] conflits résolus
+- [X] nouveaux termes métier ajoutés
+- [Y] définitions métier mises à jour
+- [Z] termes non-métier supprimés
 
 Statistiques finales :
-- [TOTAL] termes au total
+- [TOTAL] termes métier au total
 - [NOUVELLES_SOURCES] nouvelles sources analysées
 
-🔄 Glossaire enrichi et synchronisé !
+🔄 Glossaire métier enrichi et nettoyé !
 ```
 
 ## Gestion des Erreurs
 
-- **Documents hard_points introuvables** : Lister les fichiers manquants et proposer sélection alternative
 - **Sources projet inaccessibles** : Lister les répertoires non accessibles et continuer avec les sources disponibles
 - **Glossaire existant corrompu** : Proposer sauvegarde et recréation
-- **Conflits de définitions non résolus** : Créer section "Définitions en conflit" pour résolution ultérieure
+- **Aucun terme métier détecté** : Proposer saisie manuelle ou ajustement des critères
 - **Extraction terminologique échouée** : Passer en mode saisie manuelle
-- **Analyse code échouée** : Continuer avec analyse documents uniquement
-- **Stack technique non détectée** : Demander saisie manuelle du contexte technique
-- **Erreur génération Mermaid** : Créer index textuel de fallback
+- **Domaine métier non détecté** : Demander saisie manuelle du contexte métier
+- **Conflits de définitions métier** : Créer section "Définitions en conflit" pour résolution ultérieure
 - **Permissions insuffisantes** : Proposer création dans répertoire temporaire
 
 ## Règles AI-KIDO Respectées
 
-- ✅ Analyse des documents hard_points existants
+- ✅ Focus exclusif sur les termes métier du projet
+- ✅ Exclusion des termes AI-KIDO et roo-code génériques
 - ✅ Intégration dans la hiérarchie [`/prompts/gen/concepts/`](../prompts/gen/concepts/)
 - ✅ Mise à jour des index généraux
 - ✅ Format Markdown avec métadonnées
-- ✅ Liens vers sources originales
-- ✅ Diagramme Mermaid pour relations conceptuelles
 - ✅ Contrainte 500 lignes par fichier (pagination si nécessaire)
-- ✅ Mise à jour automatique d'AGENTS.md
 - ✅ Préservation de l'existant en mode mise à jour
+- ✅ Concentration sur les termes confus et spécifiques
 
 ---
