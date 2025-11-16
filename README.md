@@ -104,9 +104,33 @@ Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ
 3. **Adaptation contextuelle** (Spécifique) → Domaine métier et contraintes
 4. **Intégration taxonomique** (Global) → Cohérence avec la hiérarchie
 
-### Phase 4 : Optimisation de la Memory Bank
+### Phase 4 : Compilation d'Agents Spécialisés
 
-#### 4.1 Construction Itérative de la Base de Connaissances
+#### 4.1 [`compile-agent-from-use`](.roo/commands/compile-agent-from-use.md) - Agents Optimisés
+**Objectif** : Compiler des agents AI-KIDO spécialisés prêts pour déploiement autonome
+
+**Processus interactif** :
+1. **Sélection du mode** (Fonctionnel) → 4 options : cas existant, commande, use-case, manuel
+2. **Analyse ciblée** (Technique) → Lecture uniquement des fichiers nécessaires
+3. **Optimisation sémantique** (Spécifique) → Compression, hiérarchisation, validation orale
+4. **Versioning SEMVER** (Global) → Calcul automatique des versions selon les changements
+
+**Modes disponibles** :
+- **📋 Cas existant** : Modifier un agent déjà compilé
+- **⚡ Commande** : Créer depuis une commande `.roo` existante
+- **🎯 Use-case** : Partir d'un cas d'usage AI-KIDO spécifique
+- **✋ Manuel** : Configuration complète étape par étape
+
+**Résultat** : Agent compilé dans `/out/agents/agent-[usage]-vX.Y.Z.md` avec :
+- Prompt système optimisé pour ChatGPT
+- Personas consultants intégrés
+- Techniques avancées de reformulation
+- Workflow opérationnel step-by-step
+- Métriques de qualité (densité sémantique, cohérence, facilité orale)
+
+### Phase 5 : Optimisation de la Memory Bank
+
+#### 5.1 Construction Itérative de la Base de Connaissances
 
 **Alternance Fonctionnel ↔ Technique** :
 - **Itération Fonctionnelle** : Focus sur les besoins métier, use cases, workflows
@@ -151,6 +175,11 @@ Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ
    - Agents spécialisés selon la taxonomie AI-KIDO
    - Adaptation au contexte projet
    - Intégration dans la hiérarchie des rôles
+
+6. **[`compile-agent-from-use`](.roo/commands/compile-agent-from-use.md)** - Compilation d'agents spécialisés
+   - Création interactive d'agents AI-KIDO optimisés
+   - 4 modes : cas existant, commande, use-case, manuel
+   - Versioning SEMVER automatique et optimisation sémantique
 
 ### 🔧 Commandes de Maintenance
 
@@ -358,9 +387,11 @@ Les **hard points** dans `/prompts/hard_points/` constituent des vérités immua
 ### Commandes Disponibles
 
 Toutes les commandes sont documentées dans [`.roo/commands/`](.roo/commands/) :
-- Commandes d'initialisation : `init-*`
-- Commandes de maintenance : `maj-*`, `analyse-*`  
-- Commandes de traçabilité : `log*`
+- **Commandes d'initialisation** : `init-aikido`, `init-glossaire`, `init-raci-aikido`
+- **Commandes d'analyse** : `analyse-project`, `analyse-aikido`
+- **Commandes de création** : `create-persona`, `compile-agent-from-use`
+- **Commandes de maintenance** : `maj-aikido`
+- **Commandes de traçabilité** : `logllmon`, `logllmoff`
 
 ## 🎓 Philosophie et Avantages
 
