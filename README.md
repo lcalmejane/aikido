@@ -104,33 +104,9 @@ Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ
 3. **Adaptation contextuelle** (Spécifique) → Domaine métier et contraintes
 4. **Intégration taxonomique** (Global) → Cohérence avec la hiérarchie
 
-### Phase 4 : Compilation d'Agents Spécialisés
+### Phase 4 : Optimisation de la Memory Bank
 
-#### 4.1 [`compile-agent-from-use`](.roo/commands/compile-agent-from-use.md) - Agents Optimisés
-**Objectif** : Compiler des agents AI-KIDO spécialisés prêts pour déploiement autonome
-
-**Processus interactif** :
-1. **Sélection du mode** (Fonctionnel) → 4 options : cas existant, commande, use-case, manuel
-2. **Analyse ciblée** (Technique) → Lecture uniquement des fichiers nécessaires
-3. **Optimisation sémantique** (Spécifique) → Compression, hiérarchisation, validation orale
-4. **Versioning SEMVER** (Global) → Calcul automatique des versions selon les changements
-
-**Modes disponibles** :
-- **📋 Cas existant** : Modifier un agent déjà compilé
-- **⚡ Commande** : Créer depuis une commande `.roo` existante
-- **🎯 Use-case** : Partir d'un cas d'usage AI-KIDO spécifique
-- **✋ Manuel** : Configuration complète étape par étape
-
-**Résultat** : Agent compilé dans `/out/agents/agent-[usage]-vX.Y.Z.md` avec :
-- Prompt système optimisé pour ChatGPT
-- Personas consultants intégrés
-- Techniques avancées de reformulation
-- Workflow opérationnel step-by-step
-- Métriques de qualité (densité sémantique, cohérence, facilité orale)
-
-### Phase 5 : Optimisation de la Memory Bank
-
-#### 5.1 Construction Itérative de la Base de Connaissances
+#### 4.1 Construction Itérative de la Base de Connaissances
 
 **Alternance Fonctionnel ↔ Technique** :
 - **Itération Fonctionnelle** : Focus sur les besoins métier, use cases, workflows
@@ -176,11 +152,6 @@ Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ
    - Adaptation au contexte projet
    - Intégration dans la hiérarchie des rôles
 
-6. **[`compile-agent-from-use`](.roo/commands/compile-agent-from-use.md)** - Compilation d'agents spécialisés
-   - Création interactive d'agents AI-KIDO optimisés
-   - 4 modes : cas existant, commande, use-case, manuel
-   - Versioning SEMVER automatique et optimisation sémantique
-
 ### 🔧 Commandes de Maintenance
 
 #### [`maj-aikido`](.roo/commands/maj-aikido.md) - Synchronisation et Optimisation
@@ -210,7 +181,7 @@ Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ
 - Active `LLM_TRACIBILITY=TRUE` dans `/prompts/gen/index.md`
 - Démarre l'enregistrement des interactions dans `/prompts/spec/logs/prompts.log`
 
-#### [`logllmoff`](.roo/commands/logllmoff.md) - Désactivation des Logs  
+#### [`logllmoff`](.roo/commands/logllmoff.md) - Désactivation des Logs
 - Désactive `LLM_TRACIBILITY=FALSE` dans `/prompts/gen/index.md`
 - Arrête l'enregistrement des interactions
 
@@ -223,6 +194,32 @@ Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ
 ```
 
 **⚠️ Règle critique** : Les logs sont **TOUJOURS** stockés dans `/prompts/spec/logs/prompts.log`, jamais à la racine du projet.
+
+### 🚀 Commandes d'Export et Utilisation Externe
+
+#### [`compile-agent-from-use`](.roo/commands/compile-agent-from-use.md) - Compilation d'Agents Autonomes
+**Objectif** : Exporter la memory bank AI-KIDO vers des agents autonomes pour utilisation externe (ChatGPT, Microsoft Copilot, MCP, etc.)
+
+**Processus interactif** :
+1. **Sélection du mode** → 4 options : cas existant, commande, use-case, manuel
+2. **Analyse ciblée** → Lecture uniquement des fichiers nécessaires
+3. **Optimisation sémantique** → Compression, hiérarchisation, validation orale
+4. **Versioning SEMVER** → Calcul automatique des versions selon les changements
+
+**Modes disponibles** :
+- **📋 Cas existant** : Modifier un agent déjà compilé
+- **⚡ Commande** : Créer depuis une commande `.roo` existante
+- **🎯 Use-case** : Partir d'un cas d'usage AI-KIDO spécifique
+- **✋ Manuel** : Configuration complète étape par étape
+
+**Résultat** : Agent compilé dans `/out/agents/agent-[usage]-vX.Y.Z.md` avec :
+- Prompt système optimisé pour usage externe
+- Personas consultants intégrés
+- Techniques avancées de reformulation
+- Workflow opérationnel step-by-step
+- Métriques de qualité (densité sémantique, cohérence, facilité orale)
+
+**Cas d'usage** : Déploiement sur ChatGPT, intégration MCP, agents Microsoft Copilot, ou tout autre contexte externe à Roo-Code/VSCode.
 
 ## 🧠 Construction de la Memory Bank
 
