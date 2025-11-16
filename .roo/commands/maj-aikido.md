@@ -1,3 +1,7 @@
+---
+description: " Synchroniser les hard_points AI-KIDO et optimiser la memory bank lors des rebase git"
+---
+
 # Commande AI-KIDO : Mise à Jour et Synchronisation
 
 > **Objectif** : Synchroniser les hard_points AI-KIDO et optimiser la memory bank lors des rebase git

@@ -1,4 +1,7 @@
-# Commande AI-KIDO : Analyse et Audit Hebdomadaire
+---
+description: "Audit complet des tables de vérités AI-KIDO pour détecter dérivations, incohérences et liens cassés"
+---
+# Commande Analyse-Aikido
 
 > **Objectif** : Audit complet des tables de vérités AI-KIDO pour détecter dérivations, incohérences et liens cassés
 >
@@ -22,6 +25,7 @@ mkdir -p /prompts/spec/analysis-states/
 ```
 
 **Créer le fichier d'état** `/prompts/spec/analysis-states/state-[TIMESTAMP].json` :
+
 ```json
 {
   "timestamp": "YYYY-MM-DD HH:MM:SS",
@@ -58,6 +62,7 @@ mkdir -p /prompts/spec/analysis-states/
 ### 1.2 Chargement de l'État Précédent
 
 **Si état précédent existe**, charger le dernier fichier d'état pour comparaison :
+
 ```markdown
 📊 ÉTAT PRÉCÉDENT DÉTECTÉ
 
@@ -101,6 +106,7 @@ Répartition par rôles (Règle 15) :
 #### B. Validation des Contraintes d'Équilibrage
 
 **Vérifier les contraintes** selon règle 7 (lignes 31) :
+
 - **Facteur d'équilibrage** : 3-7 enfants par parent
 - **Profondeur maximale** : ≤ 4 niveaux
 - **Contrainte 500 lignes** : Aucun fichier > 500 lignes
@@ -131,6 +137,7 @@ find /prompts/gen -name "*.md" -exec wc -l {} \; | awk '$1 > 500 {print "❌ " $
 ```
 
 **Détecter les non-conformités** :
+
 - ❌ Métadonnées manquantes (Version, Date, Statut)
 - ❌ Sections obligatoires absentes
 - ❌ Format de titre incorrect
@@ -141,22 +148,27 @@ find /prompts/gen -name "*.md" -exec wc -l {} \; | awk '$1 > 500 {print "❌ " $
 **Vérifier l'application** de chaque règle dans les fichiers :
 
 ##### Règle 1 : Arborescence Documentaire
+
 - ✅ Parcours récursif depuis `/prompts/gen/index.md`
 - ✅ Navigation hiérarchique cohérente
 
 ##### Règle 2 : Séparation Théorie/Pratique
+
 - ✅ `concepts/` + `personas/` (théorie)
 - ✅ `techniques/` + `use_cases/` (pratique)
 
 ##### Règle 4 : Contrainte 500 Lignes
+
 - ✅ Aucun fichier > 500 lignes
 - ❌ Fichiers à diviser : [LISTE]
 
 ##### Règle 6 : Liens Bidirectionnels
+
 - ✅ Chaînage A ↔ B systématique
 - ❌ Liens orphelins détectés : [LISTE]
 
 ##### Règle 15 : Répartition par Rôles Humains
+
 - ✅ Sous-répertoires par rôle créés
 - ✅ Responsabilités assignées selon RACI
 - ❌ Rôles non assignés : [LISTE]
@@ -166,12 +178,14 @@ find /prompts/gen -name "*.md" -exec wc -l {} \; | awk '$1 > 500 {print "❌ " $
 #### A. Analyse des Références Internes
 
 **Scanner tous les liens** dans les fichiers .md :
+
 ```bash
 # Extraction automatique des liens markdown
 grep -r "\[.*\](.*)" /prompts/gen/ /prompts/hard_points/ | grep -v "http"
 ```
 
 **Vérifier l'existence** des fichiers référencés :
+
 ```markdown
 🔗 AUDIT DES LIENS INTERNES
 
@@ -188,6 +202,7 @@ Liens cassés détectés :
 #### B. Validation des Liens Bidirectionnels
 
 **Vérifier la réciprocité** des liens selon règle 6 :
+
 ```markdown
 🔄 AUDIT BIDIRECTIONNALITÉ
 
@@ -207,6 +222,7 @@ Actions requises :
 #### A. Analyse du Glossaire vs Usage
 
 **Comparer les définitions** entre :
+
 - [`/prompts/gen/concepts/glossaire-projet.md`](../prompts/gen/concepts/glossaire-projet.md) (si existant)
 - Usage dans les autres fichiers de la base
 
@@ -228,6 +244,7 @@ Termes manquants (utilisés mais non définis) : [LISTE]
 #### B. Cohérence des Acronymes et Abréviations
 
 **Vérifier l'usage uniforme** des acronymes :
+
 ```markdown
 🔤 AUDIT DES ACRONYMES
 
@@ -262,6 +279,7 @@ Composants architecturaux vs Use cases :
 #### B. Cohérence des Diagrammes Mermaid
 
 **Valider la syntaxe et cohérence** des schémas :
+
 ```bash
 # Validation syntaxique des diagrammes Mermaid
 grep -A 20 "```mermaid" /prompts/gen/**/*.md | mermaid-cli validate
@@ -272,6 +290,7 @@ grep -A 20 "```mermaid" /prompts/gen/**/*.md | mermaid-cli validate
 #### A. Cohérence des Versions
 
 **Vérifier la cohérence** des métadonnées de version :
+
 ```markdown
 📊 AUDIT DES VERSIONS
 
@@ -288,6 +307,7 @@ Incohérences de versioning :
 #### B. Cohérence des Dates
 
 **Vérifier la chronologie** des modifications :
+
 ```markdown
 📅 AUDIT CHRONOLOGIQUE
 
@@ -324,16 +344,19 @@ Incohérences persistantes : [NOMBRE]
 **Identifier les changements significatifs** :
 
 #### A. Dérivations Structurelles
+
 - Nouveaux répertoires non conformes à la règle 15
 - Suppression de répertoires obligatoires
 - Modification de la hiérarchie sans validation
 
 #### B. Dérivations Conceptuelles
+
 - Redéfinition de termes du glossaire sans versioning
 - Modification d'architecture sans mise à jour des use cases
 - Changement de stack technique sans impact sur les concepts
 
 #### C. Dérivations de Processus
+
 - Non-respect des règles RACI dans les nouveaux fichiers
 - Création de contenu sans assignation de responsabilité
 - Modification de hard_points sans validation
@@ -359,6 +382,7 @@ Dérivations de Processus :
 ### 5.1 Corrections Automatiques Proposées
 
 #### A. Liens Cassés
+
 ```markdown
 🔧 CORRECTIONS AUTOMATIQUES PROPOSÉES
 
@@ -374,6 +398,7 @@ Appliquer les corrections automatiques ? (o/n)
 ```
 
 #### B. Format Standard
+
 ```markdown
 📋 CORRECTIONS DE FORMAT
 
@@ -532,6 +557,7 @@ Corrections manuelles appliquées :
 #### B. Mise à Jour des Index
 
 **Mettre à jour automatiquement** tous les fichiers d'index :
+
 - `/prompts/gen/index.md`
 - `/prompts/gen/concepts/index.md`
 - `/prompts/gen/techniques/index.md`
@@ -750,6 +776,7 @@ Prochaine analyse recommandée : [DATE]
 ---
 
 **RÈGLES APPLIQUÉES** :
+
 - ✅ **Audit complet** : Vérification de toutes les règles AI-KIDO (1-15)
 - ✅ **Cohérence AGENTS.md** : Synchronisation avec personas, RACI et contexte projet
 - ✅ **Détection proactive** : Identification des dérivations avant qu'elles ne s'aggravent
