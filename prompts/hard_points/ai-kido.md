@@ -1,6 +1,6 @@
 # AI-KIDO - Guide Pratique pour LLM
 
-> **Version**: 1.0-LLM | **Usage**: Référence directe pour interactions LLM
+> **Version**: 1.1-LLM | **Usage**: Référence directe pour interactions LLM
 >
 > Ce document contient les règles et structures essentielles d'AI-KIDO pour usage par les LLMs.
 
@@ -37,6 +37,9 @@ strictement utiles à la compréhension de la demande.
 13. **🔍 Indexation Vectorielle**: Mode RAG local du workspace
 14. **🔄 Amélioration Continue**: Évolution automatique selon besoins et LLM
 15. **👨‍💼 Répartition par Rôles Humains**: Sous-répertoires assignés aux membres de l'équipe pour faciliter la collaboration Git
+16. **🤖 Conformité AGENTS.md**: Synchronisation obligatoire avec la norme AGENTS.md pour interopérabilité LLM
+17. **🔄 Bidirectionnalité Agents-Personas**: Correspondance 1:1 entre agents AGENTS.md et personas AI-KIDO
+18. **📋 Structure Standard AGENTS.md**: Respect du format canonique (Project Context, Available Agents, Agent Interaction Matrix, Usage Guidelines)
 
 ### Règles d'Auto-Alimentation
 
@@ -115,6 +118,7 @@ strictement utiles à la compréhension de la demande.
    - **I** (Informé): Toute l'équipe via notifications Git
 
 **Exemple de Répartition**:
+
 ```
 concepts/
 ├── architecture/     # R: Architecte Lead, A: AI-KIDO Architect
@@ -206,6 +210,129 @@ use_cases/
 2. Si Créer le fichier `/prompts/spec/logs/prompts.log` si il n'existe pas
 3. Logger en fin de fichier `/prompts/spec/logs/prompts.log` la question de l'utilisateur
 
+## RÈGLES DE CONFORMITÉ AGENTS.MD
+
+### Règle 16 : Interface AGENTS.md pour Memory Bank Complète
+
+**PRINCIPE** : Le fichier `AGENTS.md` sert d'**interface standardisée** exposant toute la memory bank AI-KIDO selon la norme LLM, y integrant entre autres les personas.
+
+**ARCHITECTURE PAR LIENS** :
+1. **Index externe** : `AGENTS.md` = **miroir** de `/prompts/gen/index.md` au format norme LLM
+2. **Navigation par liens** : Références exclusives vers `/prompts/gen/` sans duplication de contenu
+3. **Synchronisation bidirectionnelle** : Cohérence automatique avec `/prompts/gen/index.md`
+4. **Interface standardisée** : Point d'entrée conforme norme AGENTS.md pour interopérabilité
+
+### Règle 17 : Synchronisation AGENTS.md ↔ /prompts/gen/index.md
+
+**PRINCIPE** : AGENTS.md = **équivalent externe** de `/prompts/gen/index.md` avec liens vers la memory bank, jamais de recopie de contenu.
+
+**SYNCHRONISATION BIDIRECTIONNELLE** :
+1. **Project Context** : **Liens** vers `/prompts/gen/index.md` et `/prompts/gen/concepts/architecture-systeme.md`
+2. **Available Agents** : **Références** vers `/prompts/gen/concepts/`, `/prompts/gen/techniques/`, `/prompts/gen/use_cases/`, `/prompts/gen/personas/`
+3. **Agent Categories** : **Navigation** vers taxonomie AI-KIDO via liens relatifs
+4. **Knowledge Base** : **Pointeurs** exclusifs vers fichiers sources, aucune duplication
+
+### Règle 18 : Structure AGENTS.md par Liens
+
+**PRINCIPE** : AGENTS.md = **index externe** avec liens exclusifs vers `/prompts/gen/`, aucune duplication de contenu.
+
+**STRUCTURE OBLIGATOIRE** :
+```markdown
+# AI Agents Configuration
+
+## Project Context
+- **Project Name**: [Lien vers /prompts/gen/index.md]
+- **Domain**: [Lien vers /prompts/gen/concepts/]
+- **Architecture**: [Lien vers /prompts/gen/concepts/architecture-systeme.md]
+- **Tech Stack**: [Lien vers /prompts/gen/techniques/stack-technique.md]
+
+## Available Agents
+
+### Concept Specialists
+[Liens vers /prompts/gen/concepts/*.md - expertise conceptuelle]
+
+### Technical Specialists  
+[Liens vers /prompts/gen/techniques/*.md - expertise technique]
+
+### Domain Experts
+[Liens vers /prompts/gen/use_cases/*.md - expertise métier]
+
+### Role-Based Agents
+[Liens vers /prompts/gen/personas/*.md - rôles spécialisés]
+
+## Agent Interaction Matrix
+[Liens vers matrice-raci.md et spécifications RACI]
+
+## Usage Guidelines
+[Liens vers /prompts/gen/use_cases/index.md et documentation RACI]
+```
+
+**CONTRAINTES DE LIAISON** :
+- **Liens exclusifs** : Aucune recopie de contenu, que des références
+- **Synchronisation index** : Cohérence avec `/prompts/gen/index.md`
+- **Navigation externe** : Interface pour outils LLM vers memory bank AI-KIDO
+- **Mise à jour automatique** : Liens mis à jour lors de changements dans `/prompts/gen/`
+
+### Règles de Synchronisation AGENTS.md ↔ AI-KIDO
+
+#### Synchronisation du Contexte Projet
+1. **Project Name** : Extrait automatiquement de `/prompts/gen/index.md`
+2. **Domain** : Inféré du contexte métier dans `/prompts/gen/concepts/`
+3. **Architecture** : Référence `/prompts/gen/concepts/architecture-systeme.md`
+4. **Tech Stack** : Référence `/prompts/gen/techniques/stack-technique.md`
+
+#### Synchronisation des Agents
+1. **Available Agents** : Générés depuis `/prompts/gen/personas/`
+2. **Catégorisation** : Selon taxonomie AI-KIDO (CONCEPTION, DÉVELOPPEMENT, SÉCURITÉ, QUALITÉ, DÉPLOIEMENT)
+3. **Spécialisations** : Adaptées au contexte projet détecté
+4. **Responsabilités** : Alignées avec spécifications RACI si disponibles
+
+#### Synchronisation de la Matrice d'Interaction
+1. **Agent Type** : Catégorie taxonomique AI-KIDO
+2. **Primary Role** : Rôle principal du persona correspondant
+3. **Interaction Context** : Contextes d'usage depuis `/prompts/gen/use_cases/`
+4. **Knowledge Base** : Références aux tables de vérités pertinentes
+
+#### Synchronisation des Guidelines
+1. **When to Use Each Agent** : Basé sur `/prompts/gen/use_cases/`
+2. **Agent Coordination** : Selon spécifications RACI organisationnelles
+3. **Best Practices** : Extraites des `/prompts/gen/techniques/`
+4. **Domain-Specific Guidelines** : Adaptées au domaine métier
+
+### Validation de Conformité AGENTS.md
+
+#### Validation Structurelle
+- ✅ Présence des 4 sections obligatoires
+- ✅ Format Markdown standard
+- ✅ Métadonnées de version présentes
+- ✅ Liens vers documentation AI-KIDO
+
+#### Validation de Cohérence
+- ✅ Contexte projet synchronisé avec AI-KIDO
+- ✅ Agents mappés avec personas existants
+- ✅ Taxonomie AI-KIDO respectée
+- ✅ Spécifications RACI alignées
+
+#### Validation de Qualité
+- ✅ Descriptions d'agents complètes et précises
+- ✅ Matrice d'interaction renseignée
+- ✅ Guidelines d'usage documentées
+- ✅ Références aux sources AI-KIDO
+
+### Processus de Maintenance AGENTS.md
+
+#### Mise à Jour Automatique
+1. **Déclencheurs** : Modification de personas, contexte, ou RACI
+2. **Synchronisation** : Mise à jour automatique des sections concernées
+3. **Validation** : Vérification de conformité post-mise à jour
+4. **Notification** : Alerte en cas d'incohérence détectée
+
+#### Audit Périodique
+1. **Fréquence** : Inclus dans l'audit hebdomadaire AI-KIDO
+2. **Métriques** : Score de conformité AGENTS.md
+3. **Corrections** : Propositions automatiques de corrections
+4. **Reporting** : Inclusion dans rapports d'audit AI-KIDO
+
 ## EXEMPLES DE PERSONAS
 
 > **Note** : Ces personas sont des exemples illustratifs. AI-KIDO est adaptable à différents contextes (fonctionnel, technique, code, documentation, etc.) et ne requiert pas la création obligatoire de ces personas spécifiques.
@@ -249,26 +376,31 @@ Cette organisation permet une granularité progressive et facilite la réutilisa
 #### Niveau 2 : Familles Fonctionnelles
 
 **CONCEPTION** :
+
 - Architecture Système
 - Design Interface
 - Modélisation Données
 
 **DÉVELOPPEMENT** :
+
 - Backend Services
 - Frontend Applications
 - Intégration Systèmes
 
 **SÉCURITÉ** :
+
 - Audit Sécurité
 - Conformité Réglementaire
 - Gestion Risques
 
 **QUALITÉ** :
+
 - Tests Automatisés
 - Validation Fonctionnelle
 - Performance Optimisation
 
 **DÉPLOIEMENT** :
+
 - Infrastructure Cloud
 - CI/CD Pipeline
 - Monitoring Opérationnel
@@ -423,9 +555,11 @@ Contexte : Finance + Sécurité renforcée + Conformité RGPD
 2. **ANALYSE**: Identifier le domaine et le type de demande
 3. **CONSULTATION**: Vérifier `/prompts/gen/index.md` et tables pertinentes
 4. **HARD POINTS**: Contrôler les contraintes immuables
-5. **PERSONA**: Adopter le persona approprié
-6. **RÉPONSE**: Générer selon les standards établis
-7. **VALIDATION**: Vérifier cohérence et traçabilité
+5. **AGENTS.md**: Consulter le registre central des agents disponibles
+6. **PERSONA**: Adopter le persona mappé depuis AGENTS.md
+7. **RÉPONSE**: Générer selon les standards établis
+8. **VALIDATION**: Vérifier cohérence et traçabilité
+9. **SYNC AGENTS.md**: Mettre à jour AGENTS.md si modification de personas
 
 **SPÉCIFICITÉ ROO-CODE**: Le parcours récursif depuis `/prompts/gen/index.md` doit être effectué automatiquement avant toute réponse (sauf mode Orchestrator).
 
@@ -458,6 +592,8 @@ Contexte : Finance + Sécurité renforcée + Conformité RGPD
 - **Traçabilité**: Présence de références aux sources consultées
 - **Cohérence**: Absence de contradictions internes
 - **Densité**: Rapport information utile / tokens utilisés
+- **Synchronisation AGENTS.md**: % de conformité personas ↔ agents centralisés
+- **Interopérabilité**: Compatibilité avec outils LLM standard via AGENTS.md
 
 ---
 
