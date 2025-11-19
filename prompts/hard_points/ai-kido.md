@@ -39,6 +39,7 @@ strictement utiles à la compréhension de la demande.
 15. **👨‍💼 Répartition par Rôles Humains**: Sous-répertoires assignés aux membres de l'équipe
 16. **🤖 Conformité AGENTS.md**: Synchronisation obligatoire avec la norme AGENTS.md
 17. **🔄 Bidirectionnalité Agents-Personas**: Correspondance 1:1 entre agents AGENTS.md et personas AI-KIDO
+18. **⚙️ Commandes Roo**: Les commandes sont définies dans [`.roo/commands/`](.roo/commands/) et ne doivent pas être référencées dans [`index.md`](../gen/index.md) mais doivent être référencées dans [`AGENTS.md`](AGENTS.md)
 
 ### Règles d'Auto-Alimentation
 

@@ -41,7 +41,7 @@ AI‑KIDO repose sur 18 règles fondamentales qui garantissent :
 
 ### Phase 1 : Initialisation de la Base
 
-#### 1.1 [`init-aikido`](.roo/commands/init-aikido.md) - Fondations du Projet
+#### 1.1 `init-aikido` - Fondations du Projet
 **Objectif** : Créer la structure de base de la memory bank
 
 **Processus itératif** :
@@ -52,7 +52,7 @@ AI‑KIDO repose sur 18 règles fondamentales qui garantissent :
 
 **Résultat** : Structure `/prompts/gen/` initialisée avec les fichiers de base
 
-#### 1.2 [`init-glossaire`](.roo/commands/init-glossaire.md) - Terminologie Métier
+#### 1.2 `init-glossaire` - Terminologie Métier
 **Objectif** : Clarifier la terminologie spécifique au projet
 
 **Processus itératif** :
@@ -63,7 +63,7 @@ AI‑KIDO repose sur 18 règles fondamentales qui garantissent :
 
 **Résultat** : Glossaire métier dans `/prompts/gen/concepts/glossaire-metier.md`
 
-#### 1.3 [`init-raci-aikido`](.roo/commands/init-raci-aikido.md) - Organisation d'Équipe
+#### 1.3 `init-raci-aikido` - Organisation d'Équipe
 **Objectif** : Définir la matrice RACI et la répartition par rôles
 
 **Processus itératif** :
@@ -76,7 +76,7 @@ AI‑KIDO repose sur 18 règles fondamentales qui garantissent :
 
 ### Phase 2 : Analyse et Enrichissement
 
-#### 2.1 [`analyse-project`](.roo/commands/analyse-project.md) - Analyse Contextuelle
+#### 2.1 `analyse-project` - Analyse Contextuelle
 **Objectif** : Analyser le projet existant pour enrichir la memory bank
 
 **Processus itératif** :
@@ -87,7 +87,7 @@ AI‑KIDO repose sur 18 règles fondamentales qui garantissent :
 
 ### Phase 3 : Création des Personas
 
-#### 3.1 [`create-persona`](.roo/commands/create-persona.md) - Agents Spécialisés
+#### 3.1 `create-persona` - Agents Spécialisés
 **Objectif** : Créer des personas adaptés au contexte projet
 
 **Taxonomie hiérarchique** :
@@ -127,34 +127,34 @@ Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ
 
 ### 🏗️ Commandes d'Initialisation (Ordre Recommandé)
 
-1. **[`init-aikido`](.roo/commands/init-aikido.md)** - Initialisation de la memory bank
+1. **`init-aikido`** - Initialisation de la memory bank
    - Crée la structure de base dans `/prompts/gen/`
    - Analyse automatique des sources projet
    - Génération des concepts et techniques fondamentaux
 
-2. **[`init-glossaire`](.roo/commands/init-glossaire.md)** - Création du glossaire métier
+2. **`init-glossaire`** - Création du glossaire métier
    - Extraction des termes métier spécifiques et confus
    - Exclusion automatique des termes AI-KIDO génériques
    - Organisation par catégories (processus, règles, concepts, acronymes)
 
-3. **[`init-raci-aikido`](.roo/commands/init-raci-aikido.md)** - Matrice RACI et organisation
+3. **`init-raci-aikido`** - Matrice RACI et organisation
    - Définition des rôles d'équipe
    - Création de la matrice RACI (Responsable/Approbateur/Consulté/Informé)
    - Génération des sous-répertoires par rôles
 
-4. **[`analyse-project`](.roo/commands/analyse-project.md)** - Analyse contextuelle
+4. **`analyse-project`** - Analyse contextuelle
    - Scan du projet existant
    - Enrichissement de la memory bank
    - Détection des patterns et bonnes pratiques
 
-5. **[`create-persona`](.roo/commands/create-persona.md)** - Création des personas
+5. **`create-persona`** - Création des personas
    - Agents spécialisés selon la taxonomie AI-KIDO
    - Adaptation au contexte projet
    - Intégration dans la hiérarchie des rôles
 
 ### 🔧 Commandes de Maintenance
 
-#### [`maj-aikido`](.roo/commands/maj-aikido.md) - Synchronisation et Optimisation
+#### `maj-aikido` - Synchronisation et Optimisation
 **Objectif** : Maintenir la cohérence de la memory bank lors des évolutions
 
 **Processus** :
@@ -164,7 +164,7 @@ Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ
 4. **Diagnostic de cohérence** → Audit structurel et liens bidirectionnels
 5. **Optimisation** → Correction des incohérences et amélioration de la structure
 
-#### [`analyse-aikido`](.roo/commands/analyse-aikido.md) - Audit et Redressage
+#### `analyse-aikido` - Audit et Redressage
 **Objectif** : Audit complet avec corrections automatiques selon les 18 règles
 
 **Processus** :
@@ -177,11 +177,11 @@ Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ
 
 ### 📊 Commandes de Traçabilité
 
-#### [`logllmon`](.roo/commands/logllmon.md) - Activation des Logs
+#### `logllmon` - Activation des Logs
 - Active `LLM_TRACIBILITY=TRUE` dans `/prompts/gen/index.md`
 - Démarre l'enregistrement des interactions dans `/prompts/spec/logs/prompts.log`
 
-#### [`logllmoff`](.roo/commands/logllmoff.md) - Désactivation des Logs
+#### `logllmoff` - Désactivation des Logs
 - Désactive `LLM_TRACIBILITY=FALSE` dans `/prompts/gen/index.md`
 - Arrête l'enregistrement des interactions
 
@@ -197,7 +197,7 @@ Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ
 
 ### 🚀 Commandes d'Export et Utilisation Externe
 
-#### [`compile-agent-from-use`](.roo/commands/compile-agent-from-use.md) - Compilation d'Agents Autonomes
+#### `compile-agent-from-use` - Compilation d'Agents Autonomes
 **Objectif** : Exporter la memory bank AI-KIDO vers des agents autonomes pour utilisation externe (ChatGPT, Microsoft Copilot, MCP, etc.)
 
 **Processus interactif** :
