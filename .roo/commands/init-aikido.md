@@ -4,19 +4,31 @@ description: "Initialiser la memory bank AI-KIDO avec les éléments fondamentau
 
 # Commande Init-Aikido
 
-Initialise la memory bank AI-KIDO en créant directement les fichiers de base dans `/prompts/gen/` selon les règles aikido. Cette commande ne crée pas de personas mais structure les concepts et techniques fondamentaux du projet.
+**IMPORTANT** : Cette commande doit être exécutée DIRECTEMENT par le LLM.
+- ❌ NE PAS créer de script bash/shell
+- ❌ NE PAS proposer de code à exécuter
+- ✅ UTILISER les outils Roo-Code DIRECTEMENT (ask_followup_question, write_to_file, apply_diff, read_file)
+- ✅ POSER les questions à l'utilisateur avec ask_followup_question
+- ✅ CRÉER les fichiers avec write_to_file
+- ✅ MODIFIER les fichiers existants avec apply_diff
 
-## Exécution
+Cette commande initialise la memory bank AI-KIDO en créant directement les fichiers de base dans `/prompts/gen/` selon les règles aikido. Cette commande ne crée pas de personas mais structure les concepts et techniques fondamentaux du projet.
+
+## Exécution IMMÉDIATE
 
 ### Phase 0 : Choix du Mode AI-KIDO
 
-**PREMIÈRE ÉTAPE OBLIGATOIRE** : Vérifier si AI-KIDO est déjà initialisé en testant l'existence de `/prompts/gen/index.md`.
+**PREMIÈRE ÉTAPE OBLIGATOIRE** : Utiliser l'outil `read_file` pour vérifier si AI-KIDO est déjà initialisé en testant l'existence de `/prompts/gen/index.md`.
 
-**Si AI-KIDO n'est PAS initialisé**, poser la **Question 0 : Mode AI-KIDO**
+**Si AI-KIDO n'est PAS initialisé**, utiliser l'outil `ask_followup_question` pour poser la **Question 0 : Mode AI-KIDO**
+
+**Question** : "Quel mode AI-KIDO souhaitez-vous initialiser ?"
+
+**Détails** :
 ```
 🎯 INITIALISATION AI-KIDO
 
-Quel mode AI-KIDO souhaitez-vous initialiser ?
+Choisissez le mode AI-KIDO :
 
 1. Mode STANDARD
    - Structure complète multi-agents
@@ -34,10 +46,13 @@ Quel mode AI-KIDO souhaitez-vous initialiser ?
    - Fichiers unifiés privilégiés
    - Recommandé pour : solo/petites équipes, prototypes, POCs
 
-Votre choix (1/2) :
 ```
 
-**Si AI-KIDO est DÉJÀ initialisé**, détecter le mode actuel :
+**Suggestions à proposer** :
+- "Mode STANDARD (structure complète, 6-12 personas, équipes 4+)"
+- "Mode LIGHT (structure minimale, 3-5 personas, solo/petites équipes)"
+
+**Si AI-KIDO est DÉJÀ initialisé**, utiliser `read_file` pour détecter le mode actuel :
 - Lire `/prompts/gen/index.md` pour identifier le mode (présence de référence à `ai-kido-light.md` ou `ai-kido.md`)
 - Afficher le mode détecté et continuer avec ce mode
 - Ne PAS proposer de changement de mode (nécessite une migration explicite)
@@ -51,9 +66,13 @@ Poursuite de l'initialisation en mode [STANDARD/LIGHT]...
 
 ### Phase 1 : Vérification des Sources Existantes
 
-Poser la **Question 1 : Sources d'analyse**
+Utiliser l'outil `ask_followup_question` pour poser la **Question 1 : Sources d'analyse**
+
+**Question** : "Quelles sources voulez-vous analyser pour initialiser AI-KIDO ?"
+
+**Détails** :
 ```
-Quelles sources voulez-vous analyser pour initialiser AI-KIDO ?
+Sources disponibles :
 
 Options disponibles :
 1. Documents hard-points uniquement
@@ -61,10 +80,15 @@ Options disponibles :
 3. Analyse combinée hard-points + sources projet
 4. Initialisation manuelle (sans analyse automatique)
 
-Votre choix (1/2/3/4) :
 ```
 
-**Si choix 1** : Demander les documents hard-points spécifiques
+**Suggestions à proposer** :
+- "Documents hard-points uniquement"
+- "Sources projet existantes uniquement (src/, docs/)"
+- "Analyse combinée hard-points + sources projet"
+- "Initialisation manuelle (sans analyse automatique)"
+
+**Si choix 1** : Utiliser `ask_followup_question` pour demander les documents hard-points spécifiques
 ```
 Précisez les chemins des documents hard-points à analyser (séparés par des virgules) :
 Exemple : hard-points/architecture.md, hard-points/concepts/glossaire.md
@@ -72,7 +96,7 @@ Exemple : hard-points/architecture.md, hard-points/concepts/glossaire.md
 Si vide, analyser tous les documents hard-points automatiquement.
 ```
 
-**Si choix 2** : Scanner le workspace pour détecter les sources projet
+**Si choix 2** : Utiliser `list_files` pour scanner le workspace et détecter les sources projet
 ```
 🔍 DÉTECTION AUTOMATIQUE DES SOURCES PROJET :
 
@@ -89,14 +113,16 @@ Si non, sélectionnez les répertoires à analyser :
 
 #### Extraction Automatique (choix 1, 2 ou 3)
 
-**A. Analyse des Documents Hard-points** :
+Utiliser les outils `read_file`, `search_files`, et `codebase_search` pour l'extraction.
+
+**A. Analyse des Documents Hard-points** (avec `read_file`) :
 - Contexte projet
 - Architecture générale
 - Stack technique
 - Terminologie métier
 - Contraintes et règles
 
-**B. Analyse des Sources Projet** :
+**B. Analyse des Sources Projet** (avec `list_files`, `codebase_search`, `read_file`) :
 - Stack technique détectée (package.json, requirements.txt, etc.)
 - Architecture de code (structure des répertoires, patterns)
 - Technologies utilisées (frameworks, bibliothèques)
@@ -105,7 +131,7 @@ Si non, sélectionnez les répertoires à analyser :
 
 ### Phase 2 : Synthèse Automatique (si analyse effectuée)
 
-**Présenter la synthèse des informations détectées** :
+Utiliser l'outil `ask_followup_question` pour **présenter la synthèse des informations détectées** :
 ```
 📊 SYNTHÈSE DE L'ANALYSE AUTOMATIQUE :
 
@@ -121,7 +147,7 @@ Si non, quels éléments corriger ?
 
 ### Phase 3 : Collecte des Informations Projet (si initialisation manuelle ou corrections)
 
-Poser la **Question 2 : Contexte projet**
+Utiliser l'outil `ask_followup_question` pour poser la **Question 2 : Contexte projet**
 ```
 Décrivez le contexte de votre projet :
 - Nom du projet
@@ -132,7 +158,7 @@ Décrivez le contexte de votre projet :
 Entrez la description complète :
 ```
 
-Poser la **Question 3 : Architecture générale**
+Utiliser l'outil `ask_followup_question` pour poser la **Question 3 : Architecture générale**
 ```
 Décrivez l'architecture générale selon le modèle C1 :
 - Users : Qui sont les utilisateurs finaux ?
@@ -142,7 +168,7 @@ Décrivez l'architecture générale selon le modèle C1 :
 Format libre, soyez précis sur les interactions :
 ```
 
-Poser la **Question 4 : Stack technique cible**
+Utiliser l'outil `ask_followup_question` pour poser la **Question 4 : Stack technique cible**
 ```
 Quelle est votre stack technique ?
 - Frontend : Framework/technologie
@@ -170,9 +196,9 @@ Générer automatiquement **3 use cases critiques maximum** basés sur :
 
 ### Phase 5 : Vérification et Factorisation des Informations Existantes
 
-**Avant toute génération**, analyser le contenu existant dans `/prompts/gen/` :
+**Avant toute génération**, utiliser `list_files` et `read_file` pour analyser le contenu existant dans `/prompts/gen/` :
 
-1. **Scanner les fichiers existants** :
+1. **Scanner les fichiers existants** (avec `list_files`) :
    - `/prompts/gen/concepts/` (tous les .md)
    - `/prompts/gen/techniques/` (tous les .md)
    - `/prompts/gen/use_cases/` (tous les .md)
@@ -187,7 +213,7 @@ Générer automatiquement **3 use cases critiques maximum** basés sur :
    - Comparer les nouvelles informations avec l'existant
    - Identifier les conflits de définitions, d'architecture, de stack
 
-4. **Résolution des conflits** :
+4. **Résolution des conflits** (avec `ask_followup_question`) :
    ```
    ⚠️ CONFLIT DÉTECTÉ dans [fichier existant] :
    
@@ -215,7 +241,7 @@ Générer automatiquement **3 use cases critiques maximum** basés sur :
 
 ##### 6.1 Génération du Glossaire Projet (si documents hard-points disponibles)
 
-Créer `/prompts/gen/concepts/glossaire-projet.md` :
+Utiliser l'outil `write_to_file` pour créer `/prompts/gen/concepts/glossaire-projet.md` :
 ```markdown
 # Glossaire Projet - [Nom du Projet]
 > Version: 1.0 | Date: [DATE] | Statut: Initial
@@ -244,7 +270,7 @@ graph TD
 
 ##### 6.2 Architecture Système
 
-Créer `/prompts/gen/concepts/architecture-systeme.md` :
+Utiliser l'outil `write_to_file` pour créer `/prompts/gen/concepts/architecture-systeme.md` :
 ```markdown
 # Architecture Système - [Nom du Projet]
 > Version: 1.0 | Date: [DATE] | Statut: Initial
@@ -277,7 +303,7 @@ C4Context
 
 ##### 6.3 Stack Technique
 
-Créer `/prompts/gen/techniques/stack-technique.md` :
+Utiliser l'outil `write_to_file` pour créer `/prompts/gen/techniques/stack-technique.md` :
 ```markdown
 # Stack Technique - [Nom du Projet]
 > Version: 1.0 | Date: [DATE] | Statut: Initial
@@ -312,7 +338,7 @@ graph TB
 
 ##### 6.4 Use Cases Fondamentaux
 
-Créer `/prompts/gen/use_cases/use-cases-fondamentaux.md` :
+Utiliser l'outil `write_to_file` pour créer `/prompts/gen/use_cases/use-cases-fondamentaux.md` :
 ```markdown
 # Use Cases Fondamentaux - [Nom du Projet]
 > Version: 1.0 | Date: [DATE] | Statut: Initial
@@ -330,7 +356,7 @@ Cas d'usage de base du projet [Nom].
 
 ##### 6.1 Fichier Unifié Concepts
 
-Créer `/prompts/gen/concepts/core-concepts.md` :
+Utiliser l'outil `write_to_file` pour créer `/prompts/gen/concepts/core-concepts.md` :
 ```markdown
 # Concepts Fondamentaux - [Nom du Projet] (Mode Light)
 > Version: 1.0 | Date: [DATE] | Statut: Initial | Mode: LIGHT
@@ -370,7 +396,7 @@ C4Context
 
 ##### 6.2 Fichier Unifié Techniques
 
-Créer `/prompts/gen/techniques/core-techniques.md` :
+Utiliser l'outil `write_to_file` pour créer `/prompts/gen/techniques/core-techniques.md` :
 ```markdown
 # Techniques Pratiques - [Nom du Projet] (Mode Light)
 > Version: 1.0 | Date: [DATE] | Statut: Initial | Mode: LIGHT
@@ -418,7 +444,7 @@ graph TB
 
 ##### 6.3 Use Cases Critiques (3 maximum)
 
-Créer `/prompts/gen/use_cases/use-cases-critiques.md` :
+Utiliser l'outil `write_to_file` pour créer `/prompts/gen/use_cases/use-cases-critiques.md` :
 ```markdown
 # Use Cases Critiques - [Nom du Projet] (Mode Light)
 > Version: 1.0 | Date: [DATE] | Statut: Initial | Mode: LIGHT
@@ -484,7 +510,7 @@ Générer automatiquement les rôles selon le contexte et **créer les sous-rép
 
 #### 7.4 Matrice RACI par Concept/Technique
 
-Créer `/prompts/gen/concepts/matrice-raci.md` :
+Utiliser l'outil `write_to_file` pour créer `/prompts/gen/concepts/matrice-raci.md` :
 ```markdown
 # Matrice RACI - Responsabilités par Rôle (Règle AI-KIDO 15)
 > Version: 1.0 | Date: [DATE] | Statut: Initial
@@ -540,7 +566,7 @@ Attribution des responsabilités selon les rôles identifiés et répartition pa
 ---
 #### 7.5 RACI Minimal ou Absent (Mode LIGHT)
 
-**Poser la question** :
+Utiliser l'outil `ask_followup_question` pour **poser la question** :
 ```
 🎯 GESTION DES RÔLES EN MODE LIGHT
 
@@ -563,7 +589,7 @@ Votre choix (1/2) :
 
 **Si choix 1 (Acteur unique)** : Ne pas créer de matrice RACI
 
-**Si choix 2 (RACI minimal)** : Créer `/prompts/gen/concepts/matrice-raci-light.md` :
+**Si choix 2 (RACI minimal)** : Utiliser `write_to_file` pour créer `/prompts/gen/concepts/matrice-raci-light.md` :
 ```markdown
 # Matrice RACI Minimale - [Nom du Projet] (Mode Light)
 > Version: 1.0 | Date: [DATE] | Statut: Initial | Mode: LIGHT
@@ -599,14 +625,14 @@ Attribution minimale des responsabilités en mode Light (2-3 rôles maximum).
 
 #### 6.1 Mise à Jour des Index Sectoriels
 
-Mettre à jour automatiquement avec les nouveaux fichiers créés :
+Utiliser l'outil `apply_diff` pour mettre à jour automatiquement avec les nouveaux fichiers créés :
 - `/prompts/gen/concepts/index.md` : Ajouter références aux nouveaux concepts
 - `/prompts/gen/techniques/index.md` : Ajouter références aux nouvelles techniques
 - `/prompts/gen/use_cases/index.md` : Ajouter références aux nouveaux use cases
 
 #### 8.2 Mise à Jour de l'Index Principal
 
-Mettre à jour `/prompts/gen/index.md` avec :
+Utiliser l'outil `apply_diff` ou `write_to_file` pour mettre à jour `/prompts/gen/index.md` avec :
 - **Mode AI-KIDO** : Référence à `ai-kido.md` (STANDARD) ou `ai-kido-light.md` (LIGHT)
 - Nouveau contexte projet identifié
 - Domaine métier ajouté
@@ -643,7 +669,7 @@ Mettre à jour `/prompts/gen/index.md` avec :
 
 **Si AIKIDO_MODE = STANDARD** :
 
-Créer ou mettre à jour `AGENTS.md` à la racine du projet selon la norme Claude :
+Utiliser l'outil `write_to_file` ou `apply_diff` pour créer ou mettre à jour `AGENTS.md` à la racine du projet selon la norme Claude :
 
 ```markdown
 # AI Agents Configuration - Mode STANDARD
@@ -688,7 +714,7 @@ Créer ou mettre à jour `AGENTS.md` à la racine du projet selon la norme Claud
 
 **Si AIKIDO_MODE = LIGHT** :
 
-Créer ou mettre à jour `AGENTS.md` à la racine du projet selon la norme Claude :
+Utiliser l'outil `write_to_file` ou `apply_diff` pour créer ou mettre à jour `AGENTS.md` à la racine du projet selon la norme Claude :
 
 ```markdown
 # AI Agents Configuration - Mode LIGHT
@@ -736,7 +762,7 @@ Si le système supporte l'indexation vectorielle :
 
 **Si AIKIDO_MODE = STANDARD** :
 
-Afficher le message de succès :
+Utiliser l'outil `attempt_completion` pour afficher le message de succès :
 ```
 ✅ Memory bank AI-KIDO initialisée avec succès en mode STANDARD !
 
@@ -760,7 +786,7 @@ Index mis à jour :
 
 **Si AIKIDO_MODE = LIGHT** :
 
-Afficher le message de succès :
+Utiliser l'outil `attempt_completion` pour afficher le message de succès :
 ```
 ✅ Memory bank AI-KIDO initialisée avec succès en mode LIGHT !
 

@@ -4,7 +4,13 @@ description: "Créer un nouveau persona AI-KIDO interactivement"
 
 # Commande Create-Persona
 
-Crée directement un nouveau persona AI-KIDO et surtout pas un script ou autre commande SH. en posant 3 questions essentielles et en générant tous les fichiers nécessaires.
+**IMPORTANT** : Cette commande doit être exécutée DIRECTEMENT par le LLM.
+- ❌ NE PAS créer de script bash/shell
+- ❌ NE PAS proposer de code à exécuter
+- ✅ POSER les questions à l'utilisateur IMMÉDIATEMENT
+- ✅ CRÉER les fichiers DIRECTEMENT avec write_to_file
+
+Cette commande crée un nouveau persona AI-KIDO en posant 3 questions essentielles et en générant tous les fichiers nécessaires.
 
 ## Concept fondamental
 
@@ -16,14 +22,23 @@ Crée directement un nouveau persona AI-KIDO et surtout pas un script ou autre c
 
 Le fichier persona sert à **prompter le LLM** pour qu'il adopte complètement l'identité, les compétences et le mode de pensée de l'expert représenté. C'est un système prompt qui transforme le LLM en cet agent spécialisé.
 
-## Exécution
+## Exécution IMMÉDIATE
 
-Poser la **Question 1 : Identité du persona**
-```
-Entrez le nom et la spécialisation du persona :
-Format : Nom | Spécialisation
-Exemple : "Arthur Architect | Architecture logicielle"
-```
+### Étape 1 : Poser la Question 1 avec ask_followup_question
+
+Utiliser l'outil `ask_followup_question` pour demander :
+
+**Question** : "Entrez le nom et la spécialisation du persona"
+
+**Format attendu** : `Nom | Spécialisation`
+
+**Exemple** : "Arthur Architect | Architecture logicielle"
+
+Suggestions à proposer :
+- "Data Scientist | Analyse de données et ML"
+- "Security Expert | Sécurité applicative et infrastructure"
+- "DevOps Engineer | CI/CD et automatisation"
+- "Frontend Developer | Interfaces utilisateur modernes"
 
 Générer automatiquement le **slug** et l'**emoji** :
 - **Slug** : Conversion du nom en format slug (ex: "Arthur Architect" → "arthur-architect")
@@ -38,38 +53,45 @@ Générer automatiquement le **slug** et l'**emoji** :
   - Mobile → 📱
   - Par défaut → 🤖
 
-Poser la **Question 2 : Compétences et mode de pensée**
-```
-Décrivez l'agent LLM que vous voulez créer :
+### Étape 2 : Poser la Question 2 avec ask_followup_question
 
-1. COMPÉTENCES TECHNIQUES :
-   - Technologies, frameworks, outils maîtrisés
-   - Méthodologies et pratiques
-   - Domaines d'expertise spécifiques
+Utiliser l'outil `ask_followup_question` pour demander :
 
-2. FAÇON DE PENSER :
-   - Comment cet expert aborde-t-il les problèmes ?
-   - Quelles sont ses priorités (performance, sécurité, maintenabilité...) ?
-   - Quel est son processus de raisonnement ?
+**Question** : "Décrivez l'agent LLM que vous voulez créer (compétences, façon de penser, style)"
 
-3. STYLE DE COMMUNICATION :
-   - Comment s'exprime cet expert ?
-   - Niveau de détail dans les explications
-   - Ton et approche pédagogique
+**Détails attendus** :
+1. COMPÉTENCES TECHNIQUES : Technologies, frameworks, outils, méthodologies
+2. FAÇON DE PENSER : Approche des problèmes, priorités, processus de raisonnement
+3. STYLE DE COMMUNICATION : Expression, pédagogie, niveau de détail
 
-Entrez la description complète :
-```
+Suggestions à proposer :
+- "Expert en architecture microservices avec focus sur la scalabilité et la résilience"
+- "Spécialiste sécurité avec approche défensive et analyse de risques systématique"
+- "Développeur full-stack pragmatique privilégiant la simplicité et la maintenabilité"
 
-Poser la **Question 3 : Permissions**
-```
-Quelles permissions sont nécessaires ?
-Choisir parmi : read, edit, browser, command
-Entrez les permissions (séparées par des virgules) :
-```
+### Étape 3 : Poser la Question 3 avec ask_followup_question
 
-Valider l'unicité du slug dans `.roomodes` existant. Si conflit, proposer des alternatives : [slug]-v2, [slug]-alt, etc.
+Utiliser l'outil `ask_followup_question` pour demander :
 
-Créer le fichier `prompts/gen/personas/[slug].md` :
+**Question** : "Quelles permissions sont nécessaires pour cet agent ?"
+
+**Options** : read, edit, browser, command
+
+Suggestions à proposer :
+- "read, edit (lecture et modification de fichiers)"
+- "read, edit, command (+ exécution de commandes)"
+- "read, edit, browser, command (toutes permissions)"
+- "read (lecture seule)"
+
+### Étape 4 : Générer automatiquement le slug et l'emoji
+
+Après avoir reçu les 3 réponses :
+1. Valider l'unicité du slug dans `.roomodes` existant
+2. Si conflit, proposer des alternatives : [slug]-v2, [slug]-alt, etc.
+
+### Étape 5 : Créer les fichiers avec write_to_file
+
+Utiliser l'outil `write_to_file` pour créer `prompts/gen/personas/[slug].md` :
 ```markdown
 # [emoji] [nom] - [spécialisation]
 
@@ -131,7 +153,9 @@ Ce persona sert à prompter le LLM pour qu'il incarne complètement cet expert, 
 *Agent LLM créé le [date] via create-persona*
 ```
 
-Créer ou mettre à jour `.roomodes` :
+### Étape 6 : Mettre à jour .roomodes avec apply_diff ou write_to_file
+
+Utiliser l'outil `apply_diff` ou `write_to_file` pour mettre à jour `.roomodes` :
 ```yaml
 customModes:
   - slug: [slug]
@@ -153,9 +177,13 @@ customModes:
       [permissions en format liste YAML]
 ```
 
-Créer ou mettre à jour `AGENTS.md` avec la nouvelle section persona.
+### Étape 7 : Mettre à jour AGENTS.md avec apply_diff ou write_to_file
 
-Afficher le message de confirmation :
+Utiliser l'outil `apply_diff` ou `write_to_file` pour mettre à jour `AGENTS.md` avec la nouvelle section persona.
+
+### Étape 8 : Confirmer la création avec attempt_completion
+
+Utiliser l'outil `attempt_completion` pour afficher le message de confirmation :
 ```
 ✅ Agent LLM "[nom]" créé avec succès !
 
