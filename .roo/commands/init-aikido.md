@@ -8,6 +8,47 @@ Initialise la memory bank AI-KIDO en créant directement les fichiers de base da
 
 ## Exécution
 
+### Phase 0 : Choix du Mode AI-KIDO
+
+**PREMIÈRE ÉTAPE OBLIGATOIRE** : Vérifier si AI-KIDO est déjà initialisé en testant l'existence de `/prompts/gen/index.md`.
+
+**Si AI-KIDO n'est PAS initialisé**, poser la **Question 0 : Mode AI-KIDO**
+```
+🎯 INITIALISATION AI-KIDO
+
+Quel mode AI-KIDO souhaitez-vous initialiser ?
+
+1. Mode STANDARD
+   - Structure complète multi-agents
+   - 6-12 personas spécialisés
+   - 8-15 use cases
+   - RACI complet multi-acteurs
+   - Fichiers multiples par domaine
+   - Recommandé pour : équipes 4+, projets complexes
+
+2. Mode LIGHT
+   - Structure minimale agent unitaire
+   - 3-5 personas maximum
+   - 3-5 use cases maximum
+   - RACI optionnel (acteur unique ou minimal)
+   - Fichiers unifiés privilégiés
+   - Recommandé pour : solo/petites équipes, prototypes, POCs
+
+Votre choix (1/2) :
+```
+
+**Si AI-KIDO est DÉJÀ initialisé**, détecter le mode actuel :
+- Lire `/prompts/gen/index.md` pour identifier le mode (présence de référence à `ai-kido-light.md` ou `ai-kido.md`)
+- Afficher le mode détecté et continuer avec ce mode
+- Ne PAS proposer de changement de mode (nécessite une migration explicite)
+
+```
+ℹ️ AI-KIDO déjà initialisé en mode [STANDARD/LIGHT]
+Poursuite de l'initialisation en mode [STANDARD/LIGHT]...
+```
+
+**Stocker le mode choisi** pour toutes les phases suivantes : `AIKIDO_MODE = [STANDARD|LIGHT]`
+
 ### Phase 1 : Vérification des Sources Existantes
 
 Poser la **Question 1 : Sources d'analyse**
@@ -115,10 +156,17 @@ Entrez la stack complète :
 
 ### Phase 4 : Génération des Use Cases de Base
 
+**Si AIKIDO_MODE = STANDARD** :
 Générer automatiquement **3-5 use cases fondamentaux** basés sur :
 - Le domaine métier identifié
 - L'architecture décrite
 - Les patterns courants du domaine
+
+**Si AIKIDO_MODE = LIGHT** :
+Générer automatiquement **3 use cases critiques maximum** basés sur :
+- Les 80% des besoins réels identifiés
+- Les patterns principaux du domaine
+- Les scénarios de référence pour cas similaires
 
 ### Phase 5 : Vérification et Factorisation des Informations Existantes
 
@@ -161,7 +209,11 @@ Générer automatiquement **3-5 use cases fondamentaux** basés sur :
 
 ### Phase 6 : Création de la Structure AI-KIDO
 
-#### 6.1 Génération du Glossaire Projet (si documents hard-points disponibles)
+**ADAPTATION SELON LE MODE** :
+
+#### Mode STANDARD : Structure Complète
+
+##### 6.1 Génération du Glossaire Projet (si documents hard-points disponibles)
 
 Créer `/prompts/gen/concepts/glossaire-projet.md` :
 ```markdown
@@ -190,7 +242,7 @@ graph TD
 *Généré automatiquement par init-aikido le [DATE]*
 ```
 
-#### 6.2 Architecture Système
+##### 6.2 Architecture Système
 
 Créer `/prompts/gen/concepts/architecture-systeme.md` :
 ```markdown
@@ -223,7 +275,7 @@ C4Context
 *Généré automatiquement par init-aikido le [DATE]*
 ```
 
-#### 6.3 Stack Technique
+##### 6.3 Stack Technique
 
 Créer `/prompts/gen/techniques/stack-technique.md` :
 ```markdown
@@ -258,7 +310,7 @@ graph TB
 *Généré automatiquement par init-aikido le [DATE]*
 ```
 
-#### 6.4 Use Cases Fondamentaux
+##### 6.4 Use Cases Fondamentaux
 
 Créer `/prompts/gen/use_cases/use-cases-fondamentaux.md` :
 ```markdown
@@ -274,7 +326,123 @@ Cas d'usage de base du projet [Nom].
 *Généré automatiquement par init-aikido le [DATE]*
 ```
 
+#### Mode LIGHT : Structure Minimale
+
+##### 6.1 Fichier Unifié Concepts
+
+Créer `/prompts/gen/concepts/core-concepts.md` :
+```markdown
+# Concepts Fondamentaux - [Nom du Projet] (Mode Light)
+> Version: 1.0 | Date: [DATE] | Statut: Initial | Mode: LIGHT
+
+## Vue d'ensemble
+Vision globale du projet [Nom] en mode AI-KIDO Light.
+
+[Description concise en 2-3 paragraphes maximum]
+
+## Concepts Clés
+
+### Concept 1: [Nom]
+[Description ultra-dense avec schéma Mermaid si pertinent]
+
+### Concept 2: [Nom]
+[Description ultra-dense avec schéma Mermaid si pertinent]
+
+### Concept 3: [Nom]
+[Description ultra-dense avec schéma Mermaid si pertinent]
+
+## Glossaire Essentiel
+[Uniquement les 10-15 termes les plus critiques]
+
+## Architecture Système
+```mermaid
+C4Context
+    title Contexte Système [Nom]
+    [Diagramme C1 simplifié]
+```
+
+## Relations et Dépendances
+[Schéma Mermaid de synthèse]
+
+---
+*Généré automatiquement par init-aikido le [DATE] - Mode LIGHT*
+```
+
+##### 6.2 Fichier Unifié Techniques
+
+Créer `/prompts/gen/techniques/core-techniques.md` :
+```markdown
+# Techniques Pratiques - [Nom du Projet] (Mode Light)
+> Version: 1.0 | Date: [DATE] | Statut: Initial | Mode: LIGHT
+
+## Vue d'ensemble
+Approche technique globale du projet [Nom] en mode AI-KIDO Light.
+
+[Description en 2-3 paragraphes]
+
+## Techniques Essentielles
+
+### Technique 1: [Nom]
+[Méthode + exemple concret en format ultra-dense]
+
+### Technique 2: [Nom]
+[Méthode + exemple concret en format ultra-dense]
+
+### Technique 3: [Nom]
+[Méthode + exemple concret en format ultra-dense]
+
+## Stack Technique
+```mermaid
+graph TB
+    [Diagramme simplifié de la stack]
+```
+
+### Frontend
+[Technologies frontend essentielles]
+
+### Backend
+[Technologies backend essentielles]
+
+### Données
+[Base de données et stockage]
+
+### Infrastructure
+[Cloud, déploiement, monitoring]
+
+## Patterns et Best Practices
+[Liste condensée des patterns critiques]
+
+---
+*Généré automatiquement par init-aikido le [DATE] - Mode LIGHT*
+```
+
+##### 6.3 Use Cases Critiques (3 maximum)
+
+Créer `/prompts/gen/use_cases/use-cases-critiques.md` :
+```markdown
+# Use Cases Critiques - [Nom du Projet] (Mode Light)
+> Version: 1.0 | Date: [DATE] | Statut: Initial | Mode: LIGHT
+
+## Vue d'ensemble
+Les 3 cas d'usage critiques couvrant 80% des besoins du projet [Nom].
+
+## Use Case 1: [Nom]
+[Description ultra-dense du cas critique principal]
+
+## Use Case 2: [Nom]
+[Description ultra-dense du deuxième cas critique]
+
+## Use Case 3: [Nom]
+[Description ultra-dense du troisième cas critique]
+
+---
+*Généré automatiquement par init-aikido le [DATE] - Mode LIGHT*
+```
+
 ### Phase 7 : Répartition par Rôles Humains (Règle AI-KIDO 15)
+
+**Si AIKIDO_MODE = STANDARD** : Appliquer la répartition complète par rôles
+**Si AIKIDO_MODE = LIGHT** : RACI optionnel ou minimal (voir Phase 7.5)
 
 #### 7.1 Identification des Rôles Projet
 
@@ -370,6 +538,60 @@ Attribution des responsabilités selon les rôles identifiés et répartition pa
 3. **Merge** : Le rôle "Approbateur" final valide la fusion
 
 ---
+#### 7.5 RACI Minimal ou Absent (Mode LIGHT)
+
+**Poser la question** :
+```
+🎯 GESTION DES RÔLES EN MODE LIGHT
+
+Le mode Light privilégie un acteur unique ou un RACI minimal.
+
+Quelle approche souhaitez-vous ?
+
+1. Acteur unique (pas de RACI)
+   - Un seul responsable pour tout
+   - Approche "solo developer"
+   - Pas de matrice RACI nécessaire
+
+2. RACI minimal (2-3 rôles maximum)
+   - Dev + Lead + Ops (exemple)
+   - Matrice simplifiée
+   - Responsabilités claires mais limitées
+
+Votre choix (1/2) :
+```
+
+**Si choix 1 (Acteur unique)** : Ne pas créer de matrice RACI
+
+**Si choix 2 (RACI minimal)** : Créer `/prompts/gen/concepts/matrice-raci-light.md` :
+```markdown
+# Matrice RACI Minimale - [Nom du Projet] (Mode Light)
+> Version: 1.0 | Date: [DATE] | Statut: Initial | Mode: LIGHT
+
+## Vue d'ensemble
+Attribution minimale des responsabilités en mode Light (2-3 rôles maximum).
+
+## Rôles Identifiés
+- **Dev** : Développement et implémentation
+- **Lead** : Architecture et validation
+- **Ops** : Déploiement et infrastructure (optionnel)
+
+## Matrice RACI Minimale
+
+| Tâche | Dev | Lead | Ops |
+|-------|-----|------|-----|
+| Architecture | C | R/A | I |
+| Développement | R/A | C | I |
+| Déploiement | C | C | R/A |
+| Sécurité | R | A | C |
+| Tests | R/A | C | I |
+
+**Légende** : R=Responsable, A=Approbateur, C=Consulté, I=Informé
+
+---
+*Généré automatiquement par init-aikido le [DATE] - Mode LIGHT*
+```
+
 *Généré automatiquement par init-aikido le [DATE] - Règle AI-KIDO 15 appliquée*
 ```
 
@@ -382,23 +604,54 @@ Mettre à jour automatiquement avec les nouveaux fichiers créés :
 - `/prompts/gen/techniques/index.md` : Ajouter références aux nouvelles techniques
 - `/prompts/gen/use_cases/index.md` : Ajouter références aux nouveaux use cases
 
-#### 6.2 Mise à Jour de l'Index Principal
+#### 8.2 Mise à Jour de l'Index Principal
 
 Mettre à jour `/prompts/gen/index.md` avec :
+- **Mode AI-KIDO** : Référence à `ai-kido.md` (STANDARD) ou `ai-kido-light.md` (LIGHT)
 - Nouveau contexte projet identifié
 - Domaine métier ajouté
 - Stack technique référencée
 - Liens vers les nouveaux fichiers créés
 
-#### 6.3 Création/Mise à Jour du Fichier AGENTS.md
+**Format pour Mode STANDARD** :
+```markdown
+# Index Principal - [Nom du Projet]
+> Version: 1.0 | Date: [DATE] | Mode: STANDARD
+
+## Configuration AI-KIDO
+- **Mode**: STANDARD (Structure complète multi-agents)
+- **Référence**: [ai-kido.md](../hard_points/ai-kido.md)
+- **RACI**: Complet multi-acteurs
+
+[Reste du contenu...]
+```
+
+**Format pour Mode LIGHT** :
+```markdown
+# Index Principal - [Nom du Projet]
+> Version: 1.0 | Date: [DATE] | Mode: LIGHT
+
+## Configuration AI-KIDO
+- **Mode**: LIGHT (Structure minimale agent unitaire)
+- **Référence**: [ai-kido-light.md](../hard_points/ai-kido-light.md)
+- **RACI**: [Acteur unique / Minimal 2-3 rôles]
+
+[Reste du contenu...]
+```
+
+#### 8.3 Création/Mise à Jour du Fichier AGENTS.md
+
+**Si AIKIDO_MODE = STANDARD** :
 
 Créer ou mettre à jour `AGENTS.md` à la racine du projet selon la norme Claude :
 
 ```markdown
-# AI Agents Configuration
+# AI Agents Configuration - Mode STANDARD
 
 ## Project Context
 - **Project Name**: [Nom du Projet]
+- **AI-KIDO Mode**: STANDARD
+- **Reference**: [prompts/hard_points/ai-kido.md](prompts/hard_points/ai-kido.md)
 - **Domain**: [Domaine Métier]
 - **Architecture**: [Type d'architecture identifié]
 - **Tech Stack**: [Stack technique principale]
@@ -406,7 +659,7 @@ Créer ou mettre à jour `AGENTS.md` à la racine du projet selon la norme Claud
 ## Available Agents
 
 ### Concept Specialists
-[Liste des agents spécialisés dans les concepts identifiés]
+[Liste des agents spécialisés dans les concepts identifiés - 6-12 agents]
 
 ### Technical Specialists
 [Liste des agents spécialisés dans les techniques identifiées]
@@ -430,7 +683,46 @@ Créer ou mettre à jour `AGENTS.md` à la racine du projet selon la norme Claud
 [Règles de coordination entre agents selon la matrice RACI]
 
 ---
-*Generated by init-aikido on [DATE]*
+*Generated by init-aikido on [DATE] - Mode STANDARD*
+```
+
+**Si AIKIDO_MODE = LIGHT** :
+
+Créer ou mettre à jour `AGENTS.md` à la racine du projet selon la norme Claude :
+
+```markdown
+# AI Agents Configuration - Mode LIGHT
+
+## Project Context
+- **Project Name**: [Nom du Projet]
+- **AI-KIDO Mode**: LIGHT (Agent Unitaire / Multi-agents Minimal)
+- **Reference**: [prompts/hard_points/ai-kido-light.md](prompts/hard_points/ai-kido-light.md)
+- **Domain**: [Domaine Métier]
+- **Architecture**: [Lien vers /prompts/gen/concepts/core-concepts.md]
+- **Tech Stack**: [Lien vers /prompts/gen/techniques/core-techniques.md]
+
+## Available Agents (3-5 Maximum)
+
+### Agent 1: [Nom]
+[Lien vers /prompts/gen/personas/agent-1.md]
+**Responsabilités**: [Liste des domaines couverts - polyvalent]
+
+### Agent 2: [Nom]
+[Lien vers /prompts/gen/personas/agent-2.md]
+**Responsabilités**: [Liste des domaines couverts - polyvalent]
+
+### Agent 3: [Nom]
+[Lien vers /prompts/gen/personas/agent-3.md]
+**Responsabilités**: [Liste des domaines couverts - polyvalent]
+
+## Agent Interaction (Optionnel en Light)
+[Matrice RACI minimale si applicable, sinon "Agent Unitaire"]
+
+## Usage Guidelines
+[Lien vers /prompts/gen/use_cases/use-cases-critiques.md - 3 cas maximum]
+
+---
+*Generated by init-aikido on [DATE] - Mode LIGHT*
 ```
 
 #### 6.4 Indexation Vectorielle (si supportée)
@@ -442,9 +734,11 @@ Si le système supporte l'indexation vectorielle :
 
 ## Messages de Confirmation
 
+**Si AIKIDO_MODE = STANDARD** :
+
 Afficher le message de succès :
 ```
-✅ Memory bank AI-KIDO initialisée avec succès !
+✅ Memory bank AI-KIDO initialisée avec succès en mode STANDARD !
 
 Fichiers créés :
 - /prompts/gen/concepts/glossaire-projet.md (si documents hard-points)
@@ -452,15 +746,40 @@ Fichiers créés :
 - /prompts/gen/concepts/matrice-raci.md
 - /prompts/gen/techniques/stack-technique.md
 - /prompts/gen/use_cases/use-cases-fondamentaux.md
-- AGENTS.md (créé/mis à jour)
+- AGENTS.md (créé/mis à jour - Mode STANDARD)
 
 Index mis à jour :
-- /prompts/gen/index.md (index principal)
+- /prompts/gen/index.md (index principal - référence ai-kido.md)
 - /prompts/gen/concepts/index.md
 - /prompts/gen/techniques/index.md
 - /prompts/gen/use_cases/index.md
 
-🎯 Base AI-KIDO prête pour la suite du développement !
+🎯 Base AI-KIDO STANDARD prête pour la suite du développement !
+   Structure complète multi-agents avec 6-12 personas et RACI complet.
+```
+
+**Si AIKIDO_MODE = LIGHT** :
+
+Afficher le message de succès :
+```
+✅ Memory bank AI-KIDO initialisée avec succès en mode LIGHT !
+
+Fichiers créés :
+- /prompts/gen/concepts/core-concepts.md (fichier unifié)
+- /prompts/gen/techniques/core-techniques.md (fichier unifié)
+- /prompts/gen/use_cases/use-cases-critiques.md (3 cas maximum)
+- /prompts/gen/concepts/matrice-raci-light.md (si RACI minimal choisi)
+- AGENTS.md (créé/mis à jour - Mode LIGHT)
+
+Index mis à jour :
+- /prompts/gen/index.md (index principal - référence ai-kido-light.md)
+- /prompts/gen/concepts/index.md
+- /prompts/gen/techniques/index.md
+- /prompts/gen/use_cases/index.md
+
+🎯 Base AI-KIDO LIGHT prête pour la suite du développement !
+   Structure minimale avec 3-5 personas maximum et fichiers unifiés.
+   Approche agent unitaire privilégiée.
 ```
 
 ## Gestion des Erreurs
