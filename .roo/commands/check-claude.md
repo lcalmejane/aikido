@@ -433,6 +433,118 @@ Appliquer ces corrections ? (o/n) :
 
 **Si accepté**, mettre à jour [`AGENTS.md`](../../AGENTS.md) automatiquement.
 
+### Phase 5bis : Génération des Fichiers Agents Individuels
+
+#### 5bis.1 Création du Répertoire .claude/agents/
+
+**Objectif** : Créer des fichiers agents individuels pour que la commande `/agents` de Claude Code les reconnaisse
+
+**Créer le répertoire** si inexistant :
+```bash
+mkdir -p .claude/agents/
+```
+
+#### 5bis.2 Génération des Fichiers Agents
+
+**Pour chaque persona dans `/prompts/gen/personas/`** :
+
+1. **Extraire les métadonnées** :
+   - Slug du persona depuis le nom de fichier (ex: `expert-fonctionnel-ba.md` → `expert-fonctionnel-ba`)
+   - Description depuis `.roomodes` ou première ligne du fichier persona
+   - Contenu intégral du fichier persona
+
+2. **Créer** un fichier `.claude/agents/[nom-agent].md` avec la structure suivante :
+
+```markdown
+---
+name: [nom-agent]
+description: [Description courte sur une seule ligne depuis .roomodes ou fichier persona]
+---
+
+[Contenu complet du persona chargé depuis prompts/gen/personas/[nom-agent].md]
+```
+
+**IMPORTANT** : Le fichier agent doit :
+- Avoir un front-matter YAML simple avec `name` et `description` (description sur **une seule ligne**)
+- Charger **intégralement** le contenu du fichier persona depuis `/prompts/gen/personas/`
+- La description doit finir par `\n` (un seul retour à la ligne après les `---` de fermeture du front-matter)
+
+**Algorithme de génération** :
+1. Scanner tous les fichiers `.md` dans `/prompts/gen/personas/` (sauf `index.md`)
+2. Pour chaque fichier persona :
+   - Extraire le slug depuis le nom de fichier
+   - Extraire la description depuis `.roomodes` (si disponible) ou depuis le titre du fichier
+   - Lire le contenu intégral du fichier persona
+3. Créer le fichier agent `.claude/agents/[slug].md` avec :
+   - Front-matter YAML (name + description sur 1 ligne)
+   - Un saut de ligne unique après `---`
+   - Le contenu intégral du persona
+
+**Exemple concret** :
+```markdown
+---
+name: expert-fonctionnel
+description: Expert Fonctionnel - Méta-persona avec compétences transversales (analyse métier, facilitation, RGAA, SEO, Opquast, Analytics)
+---
+
+# Méta-Persona : Expert Fonctionnel
+> Version: 2.0 | Date: 2025-10-07 | Statut: MÉTA-PERSONA AI-KIDO ACTIF
+
+## Vue d'ensemble
+**Persona chapeau des "Experts Fonctionnels"** regroupant les compétences...
+
+[... reste du contenu du fichier prompts/gen/personas/expert-fonctionnel.md ...]
+```
+
+3. **Validation** :
+- ✅ Un fichier par persona dans `.claude/agents/`
+- ✅ Front-matter YAML valide avec `name` et `description` sur 1 ligne
+- ✅ Description termine par `\n` (un seul retour à la ligne)
+- ✅ Contenu intégral du persona chargé depuis `/prompts/gen/personas/`
+- ✅ Synchronisation 1:1 avec les fichiers dans `/prompts/gen/personas/`
+
+#### 5bis.3 Vérification de la Détection et Synchronisation
+
+**Vérifier la cohérence** entre :
+1. `/prompts/gen/personas/*.md` (source de vérité)
+2. `.roomodes` (configuration Roo-Code)
+3. `AGENTS.md` (interface standardisée)
+4. `.claude/agents/*.md` (fichiers agents pour Claude Code)
+
+**Matrice de synchronisation** :
+
+| Persona | /prompts/gen/personas/ | .roomodes | AGENTS.md | .claude/agents/ |
+|---------|------------------------|-----------|-----------|-----------------|
+| expert-fonctionnel | ✅ | ✅ | ✅ | ✅ |
+| expert-fonctionnel-ba | ✅ | ✅ | ✅ | ✅ |
+| expert-fonctionnel-po | ✅ | ✅ | ✅ | ✅ |
+| expert-fonctionnel-consultant | ✅ | ✅ | ✅ | ✅ |
+
+**Alertes si désynchronisation** :
+- ⚠️ Persona dans /prompts/gen/personas/ mais absent de .claude/agents/
+- ⚠️ Agent dans .claude/agents/ mais fichier persona introuvable
+- ⚠️ Incohérence description entre .roomodes et fichier agent
+
+**Afficher le résultat** :
+
+```
+🔧 GÉNÉRATION .CLAUDE/AGENTS/
+
+Fichiers agents créés : [NOMBRE]
+- expert-fonctionnel.md : ✅
+- expert-fonctionnel-ba.md : ✅
+- expert-fonctionnel-po.md : ✅
+- expert-fonctionnel-consultant.md : ✅
+
+Répertoire : .claude/agents/
+Validation YAML : [✅ Valide / ❌ Erreur]
+Synchronisation avec /prompts/gen/personas/ : [✅ 100% / ⚠️ Désynchronisé]
+
+💡 Les agents sont maintenant disponibles via la commande /agents dans Claude Code
+```
+
+**Note importante** : Ces fichiers chargent **intégralement** le contenu des personas depuis `/prompts/gen/personas/`, assurant que l'agent dispose du contexte complet du persona lors de son activation.
+
 ### Phase 6 : Génération du Rapport Final
 
 #### 6.1 Rapport de Synthèse
@@ -500,9 +612,10 @@ Appliquer ces corrections ? (o/n) :
 1. ✅ Analyse complète de la Memory Bank
 2. ✅ Mise à jour du fichier CLAUDE.md
 3. [✅/❌] Synchronisation AGENTS.md
-4. ✅ Génération de la matrice de correspondance
-5. ✅ Mise à jour des diagrammes
-6. ✅ Actualisation des statistiques
+4. ✅ Génération des fichiers agents individuels dans .claude/agents/
+5. ✅ Génération de la matrice de correspondance
+6. ✅ Mise à jour des diagrammes
+7. ✅ Actualisation des statistiques
 
 ## Recommandations
 
@@ -552,10 +665,17 @@ Appliquer ces corrections ? (o/n) :
 ✅ Analyse CLAUDE.md terminée avec succès !
 
 Fichiers mis à jour :
-- CLAUDE.md (sections 10, 11, 13 actualisées)
+- CLAUDE.md (sections actualisées)
 - AGENTS.md (synchronisé si nécessaire)
+- .claude/agents/*.md (fichiers agents générés depuis personas)
 - /prompts/spec/check-claude-[DATE].md (rapport créé)
 - /prompts/gen/index.md (référence ajoutée)
+
+Fichiers agents créés dans .claude/agents/ :
+- expert-fonctionnel.md ✅
+- expert-fonctionnel-ba.md ✅
+- expert-fonctionnel-po.md ✅
+- expert-fonctionnel-consultant.md ✅
 
 Statistiques :
 - Concepts : [NOMBRE]
