@@ -449,12 +449,17 @@ mkdir -p .claude/agents/
 
 **Pour chaque persona dans `/prompts/gen/personas/`** :
 
-1. **Extraire les métadonnées** :
+1. **Vérifier l'existence** :
+   - Vérifier si `.claude/agents/[slug].md` existe déjà
+   - Si existe, comparer la description du front-matter avec celle du persona source
+   - Si identique et structure conforme, **IGNORER** (ne pas recréer)
+   - Si différente ou structure incorrecte, **METTRE À JOUR**
+
+2. **Extraire les métadonnées** (seulement si fichier à créer/mettre à jour) :
    - Slug du persona depuis le nom de fichier (ex: `expert-fonctionnel-ba.md` → `expert-fonctionnel-ba`)
    - Description depuis `.roomodes` ou première ligne du fichier persona
-   - Contenu intégral du fichier persona
 
-2. **Créer** un fichier `.claude/agents/[nom-agent].md` avec la structure suivante :
+3. **Créer/Mettre à jour** un fichier `.claude/agents/[nom-agent].md` avec la structure suivante :
 
 ```markdown
 ---
@@ -462,13 +467,22 @@ name: [nom-agent]
 description: [Description courte sur une seule ligne depuis .roomodes ou fichier persona]
 ---
 
-[Contenu complet du persona chargé depuis prompts/gen/personas/[nom-agent].md]
+# Agent [nom-agent]
+
+Cet agent exécute le persona complet depuis `/prompts/gen/personas/[nom-agent].md`.
+
+**EXÉCUTION** : Je vais maintenant charger et activer le persona complet.
+
+\`\`\`
+Chargement de /prompts/gen/personas/[nom-agent].md et activation du persona...
+\`\`\`
 ```
 
 **IMPORTANT** : Le fichier agent doit :
 - Avoir un front-matter YAML simple avec `name` et `description` (description sur **une seule ligne**)
-- Charger **intégralement** le contenu du fichier persona depuis `/prompts/gen/personas/`
-- La description doit finir par `\n` (un seul retour à la ligne après les `---` de fermeture du front-matter)
+- **NE PAS dupliquer le contenu** - seulement référencer dynamiquement `/prompts/gen/personas/[nom-agent].md`
+- Instruire Claude Code de lire et activer le fichier persona source
+- La description doit finir par `\n\n` (deux retours à la ligne après les `---` de fermeture du front-matter)
 
 **Algorithme de génération (scan dynamique)** :
 1. **Scanner dynamiquement** tous les fichiers `.md` dans `/prompts/gen/personas/` (sauf `index.md`)
@@ -476,14 +490,19 @@ description: [Description courte sur une seule ligne depuis .roomodes ou fichier
    - Ne pas partir d'une liste figée ou prédéfinie
 2. Pour chaque fichier persona détecté :
    - Extraire le slug depuis le nom de fichier (ex: `expert-ba.md` → `expert-ba`)
+   - **Vérifier si `.claude/agents/[slug].md` existe déjà**
+   - Si existe, lire le front-matter pour comparer la description
+   - Si identique et structure conforme, **PASSER AU SUIVANT** (ne pas recréer)
+3. Pour les fichiers à créer/mettre à jour uniquement :
    - Extraire la description depuis `.roomodes` (si disponible) ou depuis le titre du fichier
-   - Lire le contenu intégral du fichier persona
-3. Créer le fichier agent `.claude/agents/[slug].md` avec :
-   - Front-matter YAML (name + description sur 1 ligne)
-   - Un saut de ligne unique après `---`
-   - Le contenu intégral du persona
+   - Créer/Écraser le fichier agent `.claude/agents/[slug].md` avec :
+     - Front-matter YAML (name + description sur 1 ligne)
+     - Deux sauts de ligne après `---`
+     - Instructions pour charger dynamiquement le persona (PAS le contenu intégral)
 
-**Important** : La liste des personas n'est PAS codée en dur. Elle est découverte à chaque exécution.
+**Important** :
+- La liste des personas n'est PAS codée en dur. Elle est découverte à chaque exécution.
+- Les fichiers agents existants et synchronisés ne sont PAS recréés (optimisation).
 
 **Exemple concret** :
 ```markdown
@@ -492,20 +511,22 @@ name: expert-fonctionnel
 description: Expert Fonctionnel - Méta-persona avec compétences transversales (analyse métier, facilitation, RGAA, SEO, Opquast, Analytics)
 ---
 
-# Méta-Persona : Expert Fonctionnel
-> Version: 2.0 | Date: 2025-10-07 | Statut: MÉTA-PERSONA AI-KIDO ACTIF
+# Agent expert-fonctionnel
 
-## Vue d'ensemble
-**Persona chapeau des "Experts Fonctionnels"** regroupant les compétences...
+Cet agent exécute le persona complet depuis `/prompts/gen/personas/expert-fonctionnel.md`.
 
-[... reste du contenu du fichier prompts/gen/personas/expert-fonctionnel.md ...]
+**EXÉCUTION** : Je vais maintenant charger et activer le persona complet.
+
+\`\`\`
+Chargement de /prompts/gen/personas/expert-fonctionnel.md et activation du persona...
+\`\`\`
 ```
 
 3. **Validation** :
 - ✅ Un fichier par persona dans `.claude/agents/`
 - ✅ Front-matter YAML valide avec `name` et `description` sur 1 ligne
-- ✅ Description termine par `\n` (un seul retour à la ligne)
-- ✅ Contenu intégral du persona chargé depuis `/prompts/gen/personas/`
+- ✅ Description termine par `\n\n` (deux retours à la ligne)
+- ✅ **Référence dynamique** vers `/prompts/gen/personas/` (pas de duplication)
 - ✅ Synchronisation 1:1 avec les fichiers dans `/prompts/gen/personas/`
 
 #### 5bis.3 Vérification de la Détection et Synchronisation
@@ -545,11 +566,17 @@ Exemple de format :
 
 Scanner /prompts/gen/personas/ : [NOMBRE] fichier(s) détecté(s)
 
-Fichiers agents créés : [NOMBRE]
-[Liste dynamique générée depuis le scan]
-- [persona-1].md : ✅
-- [persona-2].md : ✅
+Fichiers agents analysés :
+- [persona-1].md : ✅ Synchronisé (non modifié)
+- [persona-2].md : 🔄 Créé
+- [persona-3].md : 🔄 Mis à jour (description modifiée)
 - ...
+
+Statistiques :
+- Déjà synchronisés (ignorés) : [NOMBRE]
+- Créés : [NOMBRE]
+- Mis à jour : [NOMBRE]
+- Total : [NOMBRE]
 
 Répertoire : .claude/agents/
 Validation YAML : [✅ Valide / ❌ Erreur]
@@ -558,7 +585,7 @@ Synchronisation avec /prompts/gen/personas/ : [✅ 100% / ⚠️ Désynchronisé
 💡 Les agents sont maintenant disponibles via la commande /agents dans Claude Code
 ```
 
-**Note importante** : Ces fichiers chargent **intégralement** le contenu des personas depuis `/prompts/gen/personas/`, assurant que l'agent dispose du contexte complet du persona lors de son activation.
+**Note importante** : Ces fichiers **référencent dynamiquement** les personas depuis `/prompts/gen/personas/`, instruisant Claude Code de charger le fichier persona au moment de l'activation, évitant toute duplication de contenu (conforme à la Règle 16).
 
 ### Phase 5ter : Génération des Fichiers Commands Individuels
 
@@ -575,11 +602,17 @@ mkdir -p .claude/commands/
 
 **Pour chaque commande dans `.roo/commands/`** :
 
-1. **Extraire les métadonnées** :
+1. **Vérifier l'existence** :
+   - Vérifier si `.claude/commands/[nom].md` existe déjà
+   - Si existe, comparer la description du front-matter avec celle du fichier source
+   - Si identique et structure conforme, **IGNORER** (ne pas recréer)
+   - Si différente ou structure incorrecte, **METTRE À JOUR**
+
+2. **Extraire les métadonnées** (seulement si fichier à créer/mettre à jour) :
    - Nom de la commande depuis le nom de fichier (ex: `check-claude.md` → `check-claude`)
    - Description depuis le front-matter YAML `description` du fichier `.roo/commands/*.md`
 
-2. **Créer** un fichier `.claude/commands/[nom-commande].md` avec la structure suivante :
+3. **Créer/Mettre à jour** un fichier `.claude/commands/[nom-commande].md` avec la structure suivante :
 
 ```markdown
 ---
@@ -609,12 +642,14 @@ Lecture de .roo/commands/[nom-commande].md et exécution des instructions...
    - Utiliser Glob ou Find pour lister les fichiers au moment de l'exécution
    - Ne JAMAIS partir d'une liste figée ou prédéfinie
 
-2. **Pour chaque fichier détecté**, extraire :
-   - Le nom du fichier (ex: `analyse-aikido.md`)
-   - Le nom de la commande (ex: `analyse-aikido`)
-   - La description depuis le front-matter YAML du fichier source
+2. **Pour chaque fichier détecté** :
+   - Extraire le nom du fichier (ex: `analyse-aikido.md`)
+   - Extraire le nom de la commande (ex: `analyse-aikido`)
+   - **Vérifier si `.claude/commands/[nom].md` existe déjà**
+   - Si existe, lire le front-matter pour comparer la description
+   - Si identique et structure conforme, **PASSER AU SUIVANT** (ne pas recréer)
 
-3. **Créer le fichier `.claude/commands/[nom].md` en respectant EXACTEMENT ce template** :
+3. **Pour les fichiers à créer/mettre à jour uniquement**, créer le fichier `.claude/commands/[nom].md` en respectant EXACTEMENT ce template :
 
 ```
 ---
@@ -639,8 +674,11 @@ Lecture de .roo/commands/[nom-fichier].md et exécution des instructions...
 - ✅ Conserver la structure, les titres, le texte exact
 - ❌ NE JAMAIS dupliquer le contenu du fichier source
 - ❌ NE JAMAIS modifier le template ou ajouter du contenu supplémentaire
+- ❌ NE PAS recréer les fichiers déjà synchronisés (vérifier avant création)
 
-**Important** : La liste des commandes est découverte dynamiquement à chaque exécution.
+**Important** :
+- La liste des commandes est découverte dynamiquement à chaque exécution
+- Les fichiers commandes existants et synchronisés ne sont PAS recréés (optimisation)
 
 **Exemple concret** :
 
@@ -669,12 +707,13 @@ Lecture de .roo/commands/analyse-aikido.md et exécution des instructions...
 \`\`\`
 ```
 
-3. **Validation** :
+4. **Validation** :
 - ✅ Un fichier par commande dans `.claude/commands/`
 - ✅ Front-matter YAML valide avec `description` sur 1 ligne
-- ✅ Description termine par `\n` (un seul retour à la ligne)
-- ✅ Contenu intégral de la commande chargé depuis `.roo/commands/`
+- ✅ Description termine par `\n\n` (deux retours à la ligne)
+- ✅ **Référence dynamique** vers `.roo/commands/` (pas de duplication)
 - ✅ Synchronisation 1:1 avec les fichiers dans `.roo/commands/`
+- ✅ Fichiers déjà synchronisés non recréés
 
 #### 5ter.3 Vérification de la Détection et Synchronisation
 
@@ -708,11 +747,17 @@ Exemple de format :
 
 Scanner .roo/commands/ : [NOMBRE] fichier(s) détecté(s)
 
-Fichiers commandes créés : [NOMBRE]
-[Liste dynamique générée depuis le scan]
-- [commande-1].md : ✅
-- [commande-2].md : ✅
+Fichiers commandes analysés :
+- [commande-1].md : ✅ Synchronisé (non modifié)
+- [commande-2].md : 🔄 Créé
+- [commande-3].md : 🔄 Mis à jour (description modifiée)
 - ...
+
+Statistiques :
+- Déjà synchronisés (ignorés) : [NOMBRE]
+- Créés : [NOMBRE]
+- Mis à jour : [NOMBRE]
+- Total : [NOMBRE]
 
 Répertoire : .claude/commands/
 Validation YAML : [✅ Valide / ❌ Erreur]
@@ -851,19 +896,19 @@ Fichiers mis à jour :
 - /prompts/spec/check-claude-[DATE].md (rapport créé)
 - /prompts/gen/index.md (référence ajoutée)
 
-Fichiers agents créés dans .claude/agents/ :
+Fichiers agents dans .claude/agents/ :
 [Liste dynamique générée depuis /prompts/gen/personas/]
 - Nombre total : [NOMBRE] fichier(s)
-- [persona-1].md ✅
-- [persona-2].md ✅
-- ...
+- Déjà synchronisés (ignorés) : [NOMBRE]
+- Créés : [NOMBRE]
+- Mis à jour : [NOMBRE]
 
-Fichiers commandes créés dans .claude/commands/ :
+Fichiers commandes dans .claude/commands/ :
 [Liste dynamique générée depuis .roo/commands/]
 - Nombre total : [NOMBRE] fichier(s)
-- [commande-1].md ✅
-- [commande-2].md ✅
-- ...
+- Déjà synchronisés (ignorés) : [NOMBRE]
+- Créés : [NOMBRE]
+- Mis à jour : [NOMBRE]
 
 Statistiques :
 - Concepts : [NOMBRE]
