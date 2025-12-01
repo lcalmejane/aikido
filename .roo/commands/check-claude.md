@@ -4,16 +4,17 @@ description: "Analyse et met à jour le fichier CLAUDE.md en fonction de la Memo
 
 # Commande Check-Claude
 
-Analyse l'état actuel de la Memory Bank AI-KIDO et met à jour le fichier [`CLAUDE.md`](../../CLAUDE.md) pour refléter le mapping réel entre votre structure et la norme CLAUDE.md.
+Analyse l'état actuel de la Memory Bank AI-KIDO et met à jour le fichier [`CLAUDE.md`](../../CLAUDE.md) pour refléter le mapping réel entre votre structure et la norme CLAUDE.md. Génère également les fichiers de mapping pour Claude Code (`.claude/agents/` et `.claude/commands/`).
 
 ## Objectif
 
 Maintenir la synchronisation entre :
 - La structure réelle de votre Memory Bank dans `/prompts/gen/`
-- Les personas dans `/prompts/gen/personas/`
-- Les commandes dans `.roo/commands/`
+- Les personas dans `/prompts/gen/personas/` → `.claude/agents/`
+- Les commandes dans `.roo/commands/` → `.claude/commands/`
 - Le fichier `AGENTS.md`
 - La documentation de mapping dans `CLAUDE.md`
+- La compatibilité avec Claude Code (via fichiers `.claude/`)
 
 ## Exécution
 
@@ -469,16 +470,20 @@ description: [Description courte sur une seule ligne depuis .roomodes ou fichier
 - Charger **intégralement** le contenu du fichier persona depuis `/prompts/gen/personas/`
 - La description doit finir par `\n` (un seul retour à la ligne après les `---` de fermeture du front-matter)
 
-**Algorithme de génération** :
-1. Scanner tous les fichiers `.md` dans `/prompts/gen/personas/` (sauf `index.md`)
-2. Pour chaque fichier persona :
-   - Extraire le slug depuis le nom de fichier
+**Algorithme de génération (scan dynamique)** :
+1. **Scanner dynamiquement** tous les fichiers `.md` dans `/prompts/gen/personas/` (sauf `index.md`)
+   - Utiliser `find` ou `glob` pour lister les fichiers au moment de l'exécution
+   - Ne pas partir d'une liste figée ou prédéfinie
+2. Pour chaque fichier persona détecté :
+   - Extraire le slug depuis le nom de fichier (ex: `expert-ba.md` → `expert-ba`)
    - Extraire la description depuis `.roomodes` (si disponible) ou depuis le titre du fichier
    - Lire le contenu intégral du fichier persona
 3. Créer le fichier agent `.claude/agents/[slug].md` avec :
    - Front-matter YAML (name + description sur 1 ligne)
    - Un saut de ligne unique après `---`
    - Le contenu intégral du persona
+
+**Important** : La liste des personas n'est PAS codée en dur. Elle est découverte à chaque exécution.
 
 **Exemple concret** :
 ```markdown
@@ -513,12 +518,20 @@ description: Expert Fonctionnel - Méta-persona avec compétences transversales 
 
 **Matrice de synchronisation** :
 
+**Scanner dynamiquement** :
+1. Lister tous les fichiers `.md` dans `/prompts/gen/personas/` (sauf `index.md`)
+2. Pour chaque fichier détecté, vérifier la présence dans :
+   - `.roomodes` (si le fichier existe)
+   - `AGENTS.md` (si le fichier existe)
+   - `.claude/agents/`
+3. Générer une matrice avec les résultats
+
+Exemple de format :
 | Persona | /prompts/gen/personas/ | .roomodes | AGENTS.md | .claude/agents/ |
 |---------|------------------------|-----------|-----------|-----------------|
-| expert-fonctionnel | ✅ | ✅ | ✅ | ✅ |
-| expert-fonctionnel-ba | ✅ | ✅ | ✅ | ✅ |
-| expert-fonctionnel-po | ✅ | ✅ | ✅ | ✅ |
-| expert-fonctionnel-consultant | ✅ | ✅ | ✅ | ✅ |
+| [nom-1] | ✅ | [✅/❌/N/A] | [✅/❌/N/A] | [✅/❌] |
+| [nom-2] | ✅ | [✅/❌/N/A] | [✅/❌/N/A] | [✅/❌] |
+| ... | ... | ... | ... | ... |
 
 **Alertes si désynchronisation** :
 - ⚠️ Persona dans /prompts/gen/personas/ mais absent de .claude/agents/
@@ -530,11 +543,13 @@ description: Expert Fonctionnel - Méta-persona avec compétences transversales 
 ```
 🔧 GÉNÉRATION .CLAUDE/AGENTS/
 
+Scanner /prompts/gen/personas/ : [NOMBRE] fichier(s) détecté(s)
+
 Fichiers agents créés : [NOMBRE]
-- expert-fonctionnel.md : ✅
-- expert-fonctionnel-ba.md : ✅
-- expert-fonctionnel-po.md : ✅
-- expert-fonctionnel-consultant.md : ✅
+[Liste dynamique générée depuis le scan]
+- [persona-1].md : ✅
+- [persona-2].md : ✅
+- ...
 
 Répertoire : .claude/agents/
 Validation YAML : [✅ Valide / ❌ Erreur]
@@ -544,6 +559,133 @@ Synchronisation avec /prompts/gen/personas/ : [✅ 100% / ⚠️ Désynchronisé
 ```
 
 **Note importante** : Ces fichiers chargent **intégralement** le contenu des personas depuis `/prompts/gen/personas/`, assurant que l'agent dispose du contexte complet du persona lors de son activation.
+
+### Phase 5ter : Génération des Fichiers Commands Individuels
+
+#### 5ter.1 Création du Répertoire .claude/commands/
+
+**Objectif** : Créer des fichiers de commandes pour que Claude Code les reconnaisse via la commande `/list`
+
+**Créer le répertoire** si inexistant :
+```bash
+mkdir -p .claude/commands/
+```
+
+#### 5ter.2 Génération des Fichiers Commands
+
+**Pour chaque commande dans `.roo/commands/`** :
+
+1. **Extraire les métadonnées** :
+   - Nom de la commande depuis le nom de fichier (ex: `check-claude.md` → `check-claude`)
+   - Description depuis le front-matter YAML `description` du fichier `.roo/commands/*.md`
+
+2. **Créer** un fichier `.claude/commands/[nom-commande].md` avec la structure suivante :
+
+```markdown
+---
+description: [Description courte sur une seule ligne depuis .roo/commands/[nom-commande].md]
+---
+
+[Référence complète vers le fichier .roo/commands/[nom-commande].md]
+```
+
+**IMPORTANT** : Le fichier commande doit :
+- Avoir un front-matter YAML simple avec `description` (description sur **une seule ligne**)
+- La description doit finir par `\n` (un seul retour à la ligne après les `---` de fermeture du front-matter)
+- Référencer **intégralement** le contenu du fichier commande depuis `.roo/commands/`
+
+**Algorithme de génération (scan dynamique)** :
+1. **Scanner dynamiquement** tous les fichiers `.md` dans `.roo/commands/`
+   - Utiliser `find` ou `glob` pour lister les fichiers au moment de l'exécution
+   - Ne pas partir d'une liste figée ou prédéfinie
+2. Pour chaque fichier commande détecté :
+   - Extraire le nom depuis le nom de fichier (ex: `check-claude.md` → `check-claude`)
+   - Lire le front-matter YAML et extraire la `description`
+   - Lire le contenu intégral du fichier commande
+3. Créer le fichier commande `.claude/commands/[nom].md` avec :
+   - Front-matter YAML (`description` sur 1 ligne)
+   - Un saut de ligne unique après `---`
+   - Le contenu intégral de la commande depuis `.roo/commands/[nom].md`
+
+**Important** : La liste des commandes n'est PAS codée en dur. Elle est découverte à chaque exécution.
+
+**Exemple concret** :
+
+Pour le fichier `.roo/commands/check-claude.md` :
+```markdown
+---
+description: Analyse et met à jour le fichier CLAUDE.md en fonction de la Memory Bank AI-KIDO et des concepts CLAUDE.md
+---
+
+# Commande Check-Claude
+
+Analyse l'état actuel de la Memory Bank AI-KIDO et met à jour le fichier [`CLAUDE.md`](../../CLAUDE.md) pour refléter le mapping réel entre votre structure et la norme CLAUDE.md.
+
+[... reste du contenu du fichier .roo/commands/check-claude.md ...]
+```
+
+Génère le fichier `.claude/commands/check-claude.md` :
+```markdown
+---
+description: Analyse et met à jour le fichier CLAUDE.md en fonction de la Memory Bank AI-KIDO et des concepts CLAUDE.md
+---
+
+[Contenu complet chargé depuis .roo/commands/check-claude.md]
+```
+
+3. **Validation** :
+- ✅ Un fichier par commande dans `.claude/commands/`
+- ✅ Front-matter YAML valide avec `description` sur 1 ligne
+- ✅ Description termine par `\n` (un seul retour à la ligne)
+- ✅ Contenu intégral de la commande chargé depuis `.roo/commands/`
+- ✅ Synchronisation 1:1 avec les fichiers dans `.roo/commands/`
+
+#### 5ter.3 Vérification de la Détection et Synchronisation
+
+**Vérifier la cohérence** entre :
+1. `.roo/commands/*.md` (source de vérité)
+2. `.claude/commands/*.md` (fichiers commandes pour Claude Code)
+
+**Matrice de synchronisation** :
+
+**Scanner dynamiquement** :
+1. Lister tous les fichiers `.md` dans `.roo/commands/`
+2. Pour chaque fichier détecté, vérifier la présence dans `.claude/commands/`
+3. Générer une matrice avec les résultats
+
+Exemple de format :
+| Commande | .roo/commands/ | .claude/commands/ |
+|----------|----------------|-------------------|
+| [commande-1] | ✅ | [✅/❌] |
+| [commande-2] | ✅ | [✅/❌] |
+| ... | ... | ... |
+
+**Alertes si désynchronisation** :
+- ⚠️ Commande dans .roo/commands/ mais absente de .claude/commands/
+- ⚠️ Commande dans .claude/commands/ mais fichier source introuvable
+- ⚠️ Incohérence description entre les deux fichiers
+
+**Afficher le résultat** :
+
+```
+🔧 GÉNÉRATION .CLAUDE/COMMANDS/
+
+Scanner .roo/commands/ : [NOMBRE] fichier(s) détecté(s)
+
+Fichiers commandes créés : [NOMBRE]
+[Liste dynamique générée depuis le scan]
+- [commande-1].md : ✅
+- [commande-2].md : ✅
+- ...
+
+Répertoire : .claude/commands/
+Validation YAML : [✅ Valide / ❌ Erreur]
+Synchronisation avec .roo/commands/ : [✅ 100% / ⚠️ Désynchronisé]
+
+💡 Les commandes sont maintenant disponibles via la commande /list dans Claude Code
+```
+
+**Note importante** : Ces fichiers référencent **intégralement** le contenu des commandes depuis `.roo/commands/`, assurant que Claude Code dispose du contexte complet de la commande lors de son exécution.
 
 ### Phase 6 : Génération du Rapport Final
 
@@ -613,9 +755,10 @@ Synchronisation avec /prompts/gen/personas/ : [✅ 100% / ⚠️ Désynchronisé
 2. ✅ Mise à jour du fichier CLAUDE.md
 3. [✅/❌] Synchronisation AGENTS.md
 4. ✅ Génération des fichiers agents individuels dans .claude/agents/
-5. ✅ Génération de la matrice de correspondance
-6. ✅ Mise à jour des diagrammes
-7. ✅ Actualisation des statistiques
+5. ✅ Génération des fichiers commandes individuels dans .claude/commands/
+6. ✅ Génération de la matrice de correspondance
+7. ✅ Mise à jour des diagrammes
+8. ✅ Actualisation des statistiques
 
 ## Recommandations
 
@@ -668,14 +811,23 @@ Fichiers mis à jour :
 - CLAUDE.md (sections actualisées)
 - AGENTS.md (synchronisé si nécessaire)
 - .claude/agents/*.md (fichiers agents générés depuis personas)
+- .claude/commands/*.md (fichiers commandes générés depuis .roo/commands/)
 - /prompts/spec/check-claude-[DATE].md (rapport créé)
 - /prompts/gen/index.md (référence ajoutée)
 
 Fichiers agents créés dans .claude/agents/ :
-- expert-fonctionnel.md ✅
-- expert-fonctionnel-ba.md ✅
-- expert-fonctionnel-po.md ✅
-- expert-fonctionnel-consultant.md ✅
+[Liste dynamique générée depuis /prompts/gen/personas/]
+- Nombre total : [NOMBRE] fichier(s)
+- [persona-1].md ✅
+- [persona-2].md ✅
+- ...
+
+Fichiers commandes créés dans .claude/commands/ :
+[Liste dynamique générée depuis .roo/commands/]
+- Nombre total : [NOMBRE] fichier(s)
+- [commande-1].md ✅
+- [commande-2].md ✅
+- ...
 
 Statistiques :
 - Concepts : [NOMBRE]
@@ -759,6 +911,9 @@ Affiche tous les détails de l'analyse en temps réel.
 - ✅ Génération de rapport dans /prompts/spec/
 - ✅ Mise à jour des index
 - ✅ Synchronisation AGENTS.md selon règles 16-18
+- ✅ Génération des fichiers .claude/agents/ depuis personas
+- ✅ Génération des fichiers .claude/commands/ depuis .roo/commands/
+- ✅ Mapping complet pour compatibilité Claude Code
 - ✅ Format Markdown avec métadonnées
 - ✅ Diagrammes Mermaid pour visualisation
 - ✅ Traçabilité des modifications
