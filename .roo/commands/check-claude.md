@@ -586,51 +586,86 @@ mkdir -p .claude/commands/
 description: [Description courte sur une seule ligne depuis .roo/commands/[nom-commande].md]
 ---
 
-[Référence complète vers le fichier .roo/commands/[nom-commande].md]
+# Commande [nom-commande]
+
+Cette commande exécute le fichier de commande complet depuis `.roo/commands/[nom-commande].md`.
+
+**EXÉCUTION** : Je vais maintenant lire et exécuter la commande complète.
+
+\`\`\`
+Lecture de .roo/commands/[nom-commande].md et exécution des instructions...
+\`\`\`
 ```
 
 **IMPORTANT** : Le fichier commande doit :
 - Avoir un front-matter YAML simple avec `description` (description sur **une seule ligne**)
 - La description doit finir par `\n` (un seul retour à la ligne après les `---` de fermeture du front-matter)
-- Référencer **intégralement** le contenu du fichier commande depuis `.roo/commands/`
+- **NE PAS dupliquer le contenu** - seulement référencer dynamiquement `.roo/commands/[nom-commande].md`
+- Instruire Claude Code de lire et exécuter le fichier source
 
-**Algorithme de génération (scan dynamique)** :
+**Instructions de génération (scan dynamique)** :
+
 1. **Scanner dynamiquement** tous les fichiers `.md` dans `.roo/commands/`
-   - Utiliser `find` ou `glob` pour lister les fichiers au moment de l'exécution
-   - Ne pas partir d'une liste figée ou prédéfinie
-2. Pour chaque fichier commande détecté :
-   - Extraire le nom depuis le nom de fichier (ex: `check-claude.md` → `check-claude`)
-   - Lire le front-matter YAML et extraire la `description`
-   - Lire le contenu intégral du fichier commande
-3. Créer le fichier commande `.claude/commands/[nom].md` avec :
-   - Front-matter YAML (`description` sur 1 ligne)
-   - Un saut de ligne unique après `---`
-   - Le contenu intégral de la commande depuis `.roo/commands/[nom].md`
+   - Utiliser Glob ou Find pour lister les fichiers au moment de l'exécution
+   - Ne JAMAIS partir d'une liste figée ou prédéfinie
 
-**Important** : La liste des commandes n'est PAS codée en dur. Elle est découverte à chaque exécution.
+2. **Pour chaque fichier détecté**, extraire :
+   - Le nom du fichier (ex: `analyse-aikido.md`)
+   - Le nom de la commande (ex: `analyse-aikido`)
+   - La description depuis le front-matter YAML du fichier source
+
+3. **Créer le fichier `.claude/commands/[nom].md` en respectant EXACTEMENT ce template** :
+
+```
+---
+description: [DESCRIPTION_EXTRAITE_DU_FICHIER_SOURCE]
+---
+
+# Commande [nom-de-la-commande]
+
+Cette commande exécute le fichier de commande complet depuis `.roo/commands/[nom-fichier].md`.
+
+**EXÉCUTION** : Je vais maintenant lire et exécuter la commande complète.
+
+```
+Lecture de .roo/commands/[nom-fichier].md et exécution des instructions...
+```
+```
+
+**RÈGLES STRICTES** :
+- ✅ Respecter EXACTEMENT le template ci-dessus
+- ✅ Remplacer uniquement les placeholders entre crochets
+- ✅ Conserver la structure, les titres, le texte exact
+- ❌ NE JAMAIS dupliquer le contenu du fichier source
+- ❌ NE JAMAIS modifier le template ou ajouter du contenu supplémentaire
+
+**Important** : La liste des commandes est découverte dynamiquement à chaque exécution.
 
 **Exemple concret** :
 
-Pour le fichier `.roo/commands/check-claude.md` :
+Pour le fichier `.roo/commands/analyse-aikido.md` avec description :
 ```markdown
 ---
-description: Analyse et met à jour le fichier CLAUDE.md en fonction de la Memory Bank AI-KIDO et des concepts CLAUDE.md
+description: "Audit complet des tables de vérités AI-KIDO pour détecter dérivations, incohérences et liens cassés"
 ---
-
-# Commande Check-Claude
-
-Analyse l'état actuel de la Memory Bank AI-KIDO et met à jour le fichier [`CLAUDE.md`](../../CLAUDE.md) pour refléter le mapping réel entre votre structure et la norme CLAUDE.md.
-
-[... reste du contenu du fichier .roo/commands/check-claude.md ...]
+[... contenu complet ...]
 ```
 
-Génère le fichier `.claude/commands/check-claude.md` :
+Génère le fichier `.claude/commands/analyse-aikido.md` :
 ```markdown
 ---
-description: Analyse et met à jour le fichier CLAUDE.md en fonction de la Memory Bank AI-KIDO et des concepts CLAUDE.md
+description: "Audit complet des tables de vérités AI-KIDO pour détecter dérivations, incohérences et liens cassés"
 ---
 
-[Contenu complet chargé depuis .roo/commands/check-claude.md]
+# Commande analyse-aikido
+
+Cette commande exécute le fichier de commande complet depuis `.roo/commands/analyse-aikido.md`.
+
+**EXÉCUTION** : Je vais maintenant lire et exécuter la commande complète.
+
+\`\`\`
+Lecture de .roo/commands/analyse-aikido.md et exécution des instructions...
+\`\`\`
 ```
 
 3. **Validation** :
@@ -685,7 +720,7 @@ Synchronisation avec .roo/commands/ : [✅ 100% / ⚠️ Désynchronisé]
 💡 Les commandes sont maintenant disponibles via la commande /list dans Claude Code
 ```
 
-**Note importante** : Ces fichiers référencent **intégralement** le contenu des commandes depuis `.roo/commands/`, assurant que Claude Code dispose du contexte complet de la commande lors de son exécution.
+**Note importante** : Ces fichiers **ne dupliquent pas le contenu** mais instruisent Claude Code de lire et exécuter dynamiquement le fichier source `.roo/commands/[nom].md`, évitant toute désynchronisation.
 
 ### Phase 6 : Génération du Rapport Final
 
