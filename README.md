@@ -303,7 +303,13 @@ Cette commande va :
 - ✅ Créer un rapport détaillé dans `/prompts/spec/check-claude-[DATE].md`
 - ✅ Afficher les métriques de conformité aux règles AI-KIDO
 
-#### 2️⃣ **Vérifier la Détection des Commandes**
+**⚠️ IMPORTANT** : Après l'exécution de cette commande, vous devez **relancer Claude Code** pour que les nouvelles commandes et agents soient détectés. Les fichiers `.claude/` sont chargés au démarrage de Claude Code.
+
+#### 2️⃣ **Relancer Claude Code**
+
+Fermez et rouvrez Claude Code (ou rechargez la fenêtre) pour que les fichiers générés soient pris en compte.
+
+#### 3️⃣ **Vérifier la Détection des Commandes**
 
 Tapez `/` dans Claude Code pour vérifier que les commandes AI-KIDO sont disponibles :
 
@@ -322,7 +328,7 @@ Vous devriez voir apparaître les commandes suivantes :
 - `/logllmon` / `/logllmoff` - Gestion de la traçabilité
 - `/maj-aikido` - Synchronisation après rebase
 
-#### 3️⃣ **Vérifier la Détection des Agents** (si présents)
+#### 4️⃣ **Vérifier la Détection des Agents** (si présents)
 
 Si la base contient déjà des personas, vérifiez leur disponibilité :
 
@@ -332,7 +338,7 @@ Si la base contient déjà des personas, vérifiez leur disponibilité :
 
 Les agents disponibles apparaîtront dans la liste Claude Code, directement générés depuis `/prompts/gen/personas/`.
 
-#### 4️⃣ **Vérifier l'État de la Base**
+#### 5️⃣ **Vérifier l'État de la Base**
 
 Consultez le fichier `CLAUDE.md` section 12 pour voir :
 - 📊 L'inventaire complet (concepts, techniques, personas, use cases, commandes)
@@ -340,7 +346,7 @@ Consultez le fichier `CLAUDE.md` section 12 pour voir :
 - ⚠️ Les écarts détectés et recommandations
 - 🎯 Le workflow recommandé pour peupler la Memory Bank
 
-#### 5️⃣ **Peupler la Base (si bootstrap vide)**
+#### 6️⃣ **Peupler la Base (si bootstrap vide)**
 
 Si la base est vide (bootstrap), suivez le workflow recommandé dans `CLAUDE.md` section 12.5 :
 
