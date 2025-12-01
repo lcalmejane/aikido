@@ -154,6 +154,19 @@ Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ
 
 ### 🔧 Commandes de Maintenance
 
+#### `check-claude` - Synchronisation CLAUDE.md et Compatibilité Claude Code
+**Objectif** : Vérifier l'état de la Memory Bank et générer les fichiers de compatibilité Claude Code
+
+**Processus** :
+1. **Analyse complète** → Scan dynamique des concepts, techniques, personas, use cases, commandes
+2. **Détection des écarts** → Violations des règles AI-KIDO et incohérences
+3. **Génération .claude/agents/** → Mapping automatique depuis `/prompts/gen/personas/`
+4. **Génération .claude/commands/** → Mapping automatique depuis `.roo/commands/`
+5. **Mise à jour CLAUDE.md** → Section 12 avec état actuel et statistiques
+6. **Rapport détaillé** → Création dans `/prompts/spec/check-claude-[DATE].md`
+
+**Résultat** : Base 100% compatible Claude Code avec commandes et agents détectés automatiquement
+
 #### `maj-aikido` - Synchronisation et Optimisation
 **Objectif** : Maintenir la cohérence de la memory bank lors des évolutions
 
@@ -267,6 +280,89 @@ Le fichier `AGENTS.md` sert d'**interface standardisée** exposant la memory ban
 - **Liens exclusifs** : Aucune duplication de contenu, que des références
 - **Correspondance 1:1** : Chaque agent AGENTS.md ↔ persona AI-KIDO
 - **Mise à jour automatique** : Synchronisation lors des changements dans `/prompts/gen/`
+
+## 🚀 Démarrage Rapide avec Claude Code
+
+### Prendre en Main une Base AI-KIDO Bootstrap
+
+Si vous récupérez un dépôt AI-KIDO bootstrap (structure vide), suivez ces étapes pour le rendre opérationnel sous Claude Code :
+
+#### 1️⃣ **Vérifier et Initialiser la Base**
+
+Lancez la commande suivante dans Claude Code :
+
+```
+Exécute le fichier .roo/commands/check-claude.md pour vérifier l'état de la Memory Bank AI-KIDO et générer les fichiers de compatibilité Claude Code
+```
+
+Cette commande va :
+- ✅ Analyser l'état actuel de la Memory Bank (bootstrap ou peuplée)
+- ✅ Mettre à jour le fichier `CLAUDE.md` avec les statistiques actuelles
+- ✅ Générer automatiquement les fichiers `.claude/agents/*.md` depuis `/prompts/gen/personas/`
+- ✅ Générer automatiquement les fichiers `.claude/commands/*.md` depuis `.roo/commands/`
+- ✅ Créer un rapport détaillé dans `/prompts/spec/check-claude-[DATE].md`
+- ✅ Afficher les métriques de conformité aux règles AI-KIDO
+
+#### 2️⃣ **Vérifier la Détection des Commandes**
+
+Tapez `/` dans Claude Code pour vérifier que les commandes AI-KIDO sont disponibles :
+
+```
+/list
+```
+
+Vous devriez voir apparaître les commandes suivantes :
+- `/analyse-aikido` - Audit complet de la Memory Bank
+- `/analyse-project` - Analyse des sources projet
+- `/check-claude` - Synchronisation CLAUDE.md et fichiers .claude/
+- `/create-persona` - Création de nouveau persona
+- `/init-aikido` - Initialisation Memory Bank
+- `/init-glossaire` - Création glossaire métier
+- `/init-raci-aikido` - Initialisation matrice RACI
+- `/logllmon` / `/logllmoff` - Gestion de la traçabilité
+- `/maj-aikido` - Synchronisation après rebase
+
+#### 3️⃣ **Vérifier la Détection des Agents** (si présents)
+
+Si la base contient déjà des personas, vérifiez leur disponibilité :
+
+```
+/agents
+```
+
+Les agents disponibles apparaîtront dans la liste Claude Code, directement générés depuis `/prompts/gen/personas/`.
+
+#### 4️⃣ **Vérifier l'État de la Base**
+
+Consultez le fichier `CLAUDE.md` section 12 pour voir :
+- 📊 L'inventaire complet (concepts, techniques, personas, use cases, commandes)
+- 📈 Les métriques de qualité et conformité
+- ⚠️ Les écarts détectés et recommandations
+- 🎯 Le workflow recommandé pour peupler la Memory Bank
+
+#### 5️⃣ **Peupler la Base (si bootstrap vide)**
+
+Si la base est vide (bootstrap), suivez le workflow recommandé dans `CLAUDE.md` section 12.5 :
+
+```bash
+/analyse-project    # Analyser le projet existant
+/init-aikido        # Initialiser la Memory Bank
+/create-persona     # Créer des personas spécialisés
+/init-glossaire     # Créer le glossaire métier
+/analyse-aikido     # Vérifier la cohérence
+/check-claude       # Synchroniser CLAUDE.md
+```
+
+#### ✅ **Base Opérationnelle**
+
+Après ces étapes, votre base AI-KIDO est **100% compatible Claude Code** :
+- 🤖 Commandes disponibles via `/`
+- 👥 Agents disponibles via `/agents`
+- 📚 Memory Bank accessible depuis `/prompts/gen/index.md`
+- 🔒 Hard Points prioritaires dans `/prompts/hard_points/`
+- 📊 Documentation synchronisée dans `CLAUDE.md`
+
+---
 
 ## 🎯 Workflow Standard d'Utilisation
 
@@ -387,7 +483,7 @@ Toutes les commandes sont documentées dans [`.roo/commands/`](.roo/commands/) :
 - **Commandes d'initialisation** : `init-aikido`, `init-glossaire`, `init-raci-aikido`
 - **Commandes d'analyse** : `analyse-project`, `analyse-aikido`
 - **Commandes de création** : `create-persona`, `compile-agent-from-use`
-- **Commandes de maintenance** : `maj-aikido`
+- **Commandes de maintenance** : `check-claude`, `maj-aikido`
 - **Commandes de traçabilité** : `logllmon`, `logllmoff`
 
 ## 🎓 Philosophie et Avantages
@@ -414,4 +510,9 @@ Toutes les commandes sont documentées dans [`.roo/commands/`](.roo/commands/) :
 
 **🎯 AI-KIDO transforme votre projet en une memory bank intelligente, évolutive et collaborative, optimisée pour l'ère de l'IA.**
 
-Pour commencer, lancez simplement : `init-aikido`
+Pour démarrer avec un bootstrap AI-KIDO sous Claude Code :
+```
+Exécute le fichier .roo/commands/check-claude.md pour vérifier l'état de la Memory Bank AI-KIDO et générer les fichiers de compatibilité Claude Code
+```
+
+Pour initialiser un nouveau projet : `/init-aikido`
