@@ -599,7 +599,7 @@ Lecture de .roo/commands/[nom-commande].md et exécution des instructions...
 
 **IMPORTANT** : Le fichier commande doit :
 - Avoir un front-matter YAML simple avec `description` (description sur **une seule ligne**)
-- La description doit finir par `\n` (un seul retour à la ligne après les `---` de fermeture du front-matter)
+- La description doit se terminer par `\n\n` (deux retours à la ligne après les `---` de fermeture du front-matter)
 - **NE PAS dupliquer le contenu** - seulement référencer dynamiquement `.roo/commands/[nom-commande].md`
 - Instruire Claude Code de lire et exécuter le fichier source
 
@@ -620,7 +620,7 @@ Lecture de .roo/commands/[nom-commande].md et exécution des instructions...
 ---
 description: [DESCRIPTION_EXTRAITE_DU_FICHIER_SOURCE]
 ---
-
+[LIGNE_VIDE_ICI]
 # Commande [nom-de-la-commande]
 
 Cette commande exécute le fichier de commande complet depuis `.roo/commands/[nom-fichier].md`.
@@ -634,6 +634,7 @@ Lecture de .roo/commands/[nom-fichier].md et exécution des instructions...
 
 **RÈGLES STRICTES** :
 - ✅ Respecter EXACTEMENT le template ci-dessus
+- ✅ La description doit se terminer par `\n\n` (deux retours à la ligne après les `---` de fermeture)
 - ✅ Remplacer uniquement les placeholders entre crochets
 - ✅ Conserver la structure, les titres, le texte exact
 - ❌ NE JAMAIS dupliquer le contenu du fichier source
