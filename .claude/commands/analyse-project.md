@@ -1,13 +1,17 @@
 ---
-description: Analyser les sources projet existantes pour alimenter et mettre à jour les tables de vérités AI-KIDO
+description: "Analyser les sources projet existantes pour alimenter et mettre à jour les tables de vérités AI-KIDO"
 ---
 
-# Commande analyse-project
+---
+description: "Vérifie la cohérence entre documentation AI-KIDO et code source, détecte l'obsolescence et propose des redressements automatiques"
+---
 
-Cette commande exécute le fichier de commande complet depuis `.roo/commands/analyse-project.md`.
+# Commande check-truth
+
+Cette commande exécute le fichier de commande complet depuis `prompts/hard_points/commands/analyse-project.md`.
 
 **EXÉCUTION** : Je vais maintenant lire et exécuter la commande complète.
 
 ```
-Lecture de .roo/commands/analyse-project.md et exécution des instructions...
+Lecture de prompts/hard_points/commands/analyse-project.md et exécution des instructions...
 ```

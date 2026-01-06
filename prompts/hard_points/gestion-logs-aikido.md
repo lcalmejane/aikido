@@ -5,7 +5,7 @@
 Règles strictes pour la gestion des logs dans l'écosystème AI‑KIDO, incluant l'emplacement, le format et les procédures de test.
 
 ## Définitions clés
-- **LLM_TRACIBILITY** : Variable de contrôle dans `/prompts/gen/index.md`
+- **LLM_TRACIBILITY** : Variable de contrôle dans `/prompts/index.md`
 - **Logs AI‑KIDO** : Fichiers de traçabilité des interactions LLM
 - **Structure obligatoire** : `/prompts/spec/logs/prompts.log`
 
@@ -20,12 +20,12 @@ Règles strictes pour la gestion des logs dans l'écosystème AI‑KIDO, incluan
 
 1. **Vérification de l'activation**
    ```bash
-   # Vérifier dans /prompts/gen/index.md
-   grep "LLM_TRACIBILITY=TRUE" prompts/gen/index.md
+   # Vérifier dans /prompts/index.md
+   grep "LLM_TRACIBILITY=TRUE" prompts/index.md
    ```
 
 2. **Activation du logger**
-   - Modifier `/prompts/gen/index.md`
+   - Modifier `/prompts/index.md`
    - Section : `### Fonctionnalité de Traçabilité des Logs`
    - Variable : `LLM_TRACIBILITY=TRUE`
 
@@ -56,8 +56,8 @@ Règles strictes pour la gestion des logs dans l'écosystème AI‑KIDO, incluan
 ```
 
 ### Commandes de Contrôle
-- **Activation** : Commande `logllmon` (voir `.roo/commands/logllmon.md`)
-- **Désactivation** : Commande `logllmoff` (voir `.roo/commands/logllmoff.md`)
+- **Activation** : Commande `logllmon` (voir `prompts/hard_points/commands/logllmon.md`)
+- **Désactivation** : Commande `logllmoff` (voir `prompts/hard_points/commands/logllmoff.md`)
 
 ### 🔄 Règle de Changement de Mode pour Logs - AUTOMATIQUE
 **DÉCLENCHEMENT AUTOMATIQUE :** Dès qu'une interaction utilisateur est détectée et que `LLM_TRACIBILITY=TRUE` :
@@ -96,10 +96,10 @@ touch logs/trace.md
 ## Relations et dépendances
 
 ### Fichiers Liés
-- [`/prompts/gen/index.md`](../index.md) : Configuration `LLM_TRACIBILITY`
+- [`/prompts/index.md`](../../index.md) : Configuration `LLM_TRACIBILITY`
 - [`/prompts/hard_points/ai-kido.md`](../../hard_points/ai-kido.md) : Règles fondamentales
-- [`.roo/commands/logllmon.md`](../../.roo/commands/logllmon.md) : Activation
-- [`.roo/commands/logllmoff.md`](../../.roo/commands/logllmoff.md) : Désactivation
+- [`prompts/hard_points/commands/logllmon.md`](../../prompts/hard_points/commands/logllmon.md) : Activation
+- [`prompts/hard_points/commands/logllmoff.md`](../../prompts/hard_points/commands/logllmoff.md) : Désactivation
 
 ### Règles de Validation
 1. **Avant création** : Toujours consulter `/prompts/hard_points/ai-kido.md`

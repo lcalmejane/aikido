@@ -1,3 +1,29 @@
+---
+version: "1.0"
+date: "2025-12-09"
+type: "concept"
+category: "prompts"
+truth_source: "AI-KIDO Memory Bank - Concepts"
+last_check:
+  date: "2025-12-09"
+  status: "✅"
+  validator: "agent-aikido-doc-header"
+  sources_hash: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  notes: "Header créé selon standards AI-KIDO V1.3"
+cross_refs:
+  technique: "../techniques/guideline-prompts.md"
+  hard_points: "../../hard_points/ai-kido.md"
+source_refs:
+  - type: "internal"
+    path: "/prompts/gen/techniques/guideline-prompts.md"
+    relation: "implementation"
+  - type: "rule"
+    path: "/prompts/hard_points/ai-kido.md"
+    section: "Règle 11"
+    topic: "Densité sémantique"
+tags: ["guidelines", "prompts", "best-practices", "llm-optimization"]
+---
+
 # Guidelines pour la Création de Prompts Efficaces
 
 ## Principes Fondamentaux
@@ -119,6 +145,16 @@
 - Pertinence du contenu généré
 - Respect des contraintes spécifiées
 - Adéquation avec les objectifs métier
+
+## Relations et Dépendances
+
+**Technique pratique associée** : [`/prompts/gen/techniques/guideline-prompts.md`](../techniques/guideline-prompts.md)
+- Patterns de formulation avec exemples concrets
+- Workflows d'optimisation étape par étape
+- Templates réutilisables pour code review, documentation, refactoring
+
+**Voir aussi** :
+- Hard Points AI-KIDO : [`/prompts/hard_points/ai-kido.md`](../../hard_points/ai-kido.md) (Règle 11 : Densité sémantique)
 
 ---
 
