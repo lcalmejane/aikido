@@ -1,3 +1,9 @@
 # Ignorer tous les fichiers .DS_Store quelle que soit leur profondeur
 **/.DS_Store
 prompts/spec/
+spec/
+prompts/hard_points/system/structure/indices
+prompts/hard_points/system/structure/index.json
+prompts/hard_points/system/structure/index.json
+prompts/hard_points/system/confluence/.env
+prompts/hard_points/system/jira/.env

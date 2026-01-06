@@ -1,38 +1,29 @@
-# AI-KIDO Knowledge Base
+# AI-KIDO Gen - Tables de Vérités Évolutives
 
-Ce fichier constitue le point d'entrée principal des **Tables de Vérités** du projet AI‑KIDO. Il référence les différents répertoires contenant les concepts, techniques, personas, cas d'usage, ainsi que les hard points (vérités immuables) et les spécifications personnelles.
+> **Point d'entrée** : [`/prompts/index.md`](../index.md) | **Version** : 1.3
 
-## Système des Tables de Vérités
+Ce répertoire contient les **Tables de Vérités évolutives** du projet AI-KIDO. Pour le point d'entrée principal unifié, consultez [`/prompts/index.md`](../index.md).
 
-Les **Tables de Vérités** constituent notre système de mémoire arborescente permettant de capitaliser et structurer les connaissances AI‑KIDO de manière hiérarchique et interconnectée.
+## 📚 Navigation
 
-### Fonctionnalité de Traçabilité des Logs
+### Concepts Fondamentaux
+- [Index Concepts](concepts/index.md) - Théorie et fondations
 
-LLM_TRACIBILITY=TRUE , Attention garde bien cette donnée pour savoir si la traçabilité est activée ou non.
-**Si la traçabilité est activée, lire la doc dans** [`../hard_points/gestion-logs-aikido.md`](../hard_points/gestion-logs-aikido.md)
+### Techniques Pratiques
+- [Index Techniques](techniques/index.md) - Méthodes et implémentations
 
-**🚨 RÈGLE AUTOMATIQUE DE LOGGING :**
-Dès qu'une interaction utilisateur est détectée et que `LLM_TRACIBILITY=TRUE`, le système doit :
-1. Basculer automatiquement en Mode CODE (si nécessaire)
-2. Écrire immédiatement dans `/prompts/spec/logs/prompts.log`
-3. Revenir au mode d'origine pour traiter la demande
-Cette séquence s'exécute AVANT toute autre opération.
+### Personas & Agents
+- [Index Personas](personas/index.md) - Agents LLM spécialisés
 
-### ⚠️ RÈGLES PRIORITAIRES - AI-KIDO
+### Cas d'Usage
+- [Index Use Cases](use_cases/index.md) - Applications concrètes
 
-**[AI-KIDO - Guide Complet](../hard_points/ai-kido.md)** - PRIORITÉ ABSOLUE
+## 🔗 Liens Importants
 
-- **Architecture** : Arborescence, séparation théorie/pratique, introspection, 500 lignes max
-- **Auto-Alimentation** : Déclenchement automatique sur erreur, seuils adaptatifs
-- **Agents** : Spécialistes + orchestrateur, densité sémantique, indexation vectorielle
-- **Amélioration Continue** : Évolution automatique selon besoins et LLM
-- **Logs** : Traçabilité conditionnelle, format markdown, stockage structuré
+- **Point d'entrée principal** : [`/prompts/index.md`](../index.md)
+- **Hard Points** : [`/prompts/hard_points/`](../hard_points/) (Vérités immuables)
+- **Règles AI-KIDO** : [`/prompts/hard_points/ai-kido.md`](../hard_points/ai-kido.md)
 
-## Structure
+---
 
-- [`concepts/`](concepts/index.md) : Concepts fondamentaux
-- [`techniques/`](techniques/index.md) : Méthodes pratiques
-- [`personas/`](personas/index.md) : Prompts par rôle
-- [`use_cases/`](use_cases/index.md) : Applications par contexte
-- [`hard_points/`](../hard_points/index.md) : Vérités immuables – Priorité absolue
-- [`spec/`](../spec/index.md) : Espace personnel – Ignoré sauf activation explicite
+*Navigateur interne du répertoire /prompts/gen/ - V1.3*

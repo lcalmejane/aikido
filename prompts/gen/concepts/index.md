@@ -5,4 +5,5 @@ Ajoutez ici les fichiers Markdown détaillant chaque concept (architecture, séc
 
 ## Fichiers Disponibles
 
+- [`analyse-projet.md`](analyse-projet.md) : Concept d'analyse de projet pour synchronisation Memory Bank avec réalité code/docs/config
 - [`guideline-prompts.md`](guideline-prompts.md) : Guidelines pour la création de prompts efficaces
