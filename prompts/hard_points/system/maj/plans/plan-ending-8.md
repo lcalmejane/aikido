@@ -114,34 +114,57 @@ Ce script copie les mappings `.claude/agents/` depuis TARGET vers SOURCE.
 
 ### 3️⃣ Phase 3 : Déploiement Fichiers Racine (NON BLOQUANT)
 
-**Action : Copier les fichiers racine de documentation depuis TARGET vers SOURCE**
+**Action : Déployer et régénérer les fichiers racine depuis TARGET vers SOURCE**
 
 ```bash
 ROOT_FILES_DEPLOYED=$(bash prompts/hard_points/system/maj/scripts/ending-8-deploy-root-files.sh "$TARGET" "$SOURCE")
 ```
 
-Ce script copie les fichiers racine essentiels depuis TARGET vers SOURCE.
+Ce script déploie les fichiers racine essentiels depuis TARGET vers SOURCE avec logique intelligente.
 
-- **Fonction** : Copie fichiers racine avec backup automatique si existants dans SOURCE
+- **Fonction** : Copie, fusion ou régénération selon le type de fichier
 - **Retour** : Nombre de fichiers déployés (format: "X")
 - **Exit code** : 0 (toujours, non bloquant)
 
-**Fichiers copiés** (si présents dans TARGET) :
+**Stratégie par type de fichier** :
 
-- `AGENTS.md`
-- `CLAUDE.md`
-- `commands_list.md`
-- `agents_list.md`
-- `skills_list.md`
-- `.roomodes` (optionnel)
+**A. Fichiers à REMPLACER** (copie simple avec backup) :
+- `AGENTS.md` - Documentation standard des agents
+- `CLAUDE.md` - Documentation standard Claude
+
+**B. Fichiers à FUSIONNER** (fusion intelligente) :
+- `.roomodes` - Configuration Roo (préserve modes spécifiques au projet)
+- `README.md` - Documentation projet (préserve sections spécifiques au projet)
+
+**C. Fichiers à RÉGÉNÉRER** (scan Memory Bank + fusion) :
+- `agents_list.md` - Liste des agents (scan `/prompts/hard_points/agents/` + TARGET)
+- `commands_list.md` - Liste des commandes (scan `/prompts/hard_points/commands/` + TARGET)
+- `skills_list.md` - Liste des skills (scan `/prompts/hard_points/system/*/SKILL.md` + TARGET)
 
 **Détails du script** :
 
-1. Pour chaque fichier dans la liste :
+1. **Pour fichiers à REMPLACER** :
    - Vérifier existence dans TARGET
    - Si existe dans SOURCE : créer backup `.bak.YYYYMMDD-HHMMSS`
    - Copier de TARGET → SOURCE
-2. Compter et afficher résultats
+
+2. **Pour fichiers à FUSIONNER** :
+   - Lire version TARGET et version SOURCE
+   - Identifier sections spécifiques au projet dans SOURCE
+   - Fusionner intelligemment en préservant contexte projet
+   - Créer backup avant fusion
+   - Écrire fichier fusionné dans SOURCE
+
+3. **Pour fichiers à RÉGÉNÉRER** :
+   - Scanner la Memory Bank actuelle de SOURCE (`/prompts/hard_points/`)
+   - Scanner la version TARGET pour nouveaux éléments
+   - Fusionner les deux listes (SOURCE + TARGET)
+   - Dédupliquer et trier
+   - Créer backup de l'ancien fichier
+   - Générer nouveau fichier complet et à jour dans SOURCE
+   - **Garantie** : Le fichier correspond EXACTEMENT au contenu de la Memory Bank
+
+4. Compter et afficher résultats par catégorie
 
 ---
 
@@ -260,19 +283,20 @@ echo ""
 
 ## 📤 Sorties Produites
 
-| Fichier/Répertoire | Description |
-|--------------------|-------------|
-| `$SOURCE/.roo/commands/*.md` | Mappings commandes Roo (depuis TARGET) |
-| `$SOURCE/.claude/commands/*.md` | Mappings commandes Claude (depuis TARGET) |
-| `$SOURCE/.claude/agents/*.md` | Mappings agents Claude (depuis TARGET) |
-| `$SOURCE/AGENTS.md` | Documentation agents (depuis TARGET) |
-| `$SOURCE/CLAUDE.md` | Documentation Claude (depuis TARGET) |
-| `$SOURCE/commands_list.md` | Liste des commandes (depuis TARGET) |
-| `$SOURCE/agents_list.md` | Liste des agents (depuis TARGET) |
-| `$SOURCE/skills_list.md` | Liste des skills (depuis TARGET) |
-| `$SOURCE/.roomodes` | Configuration Roo (depuis TARGET, optionnel) |
-| `$SOURCE/prompts/spec/logs/phase-8.log` | Log de déploiement |
-| `*.bak.YYYYMMDD-HHMMSS` | Backups des fichiers écrasés dans SOURCE |
+| Fichier/Répertoire | Description | Stratégie |
+|--------------------|-------------|-----------|
+| `$SOURCE/.roo/commands/*.md` | Mappings commandes Roo | Copie depuis TARGET |
+| `$SOURCE/.claude/commands/*.md` | Mappings commandes Claude | Copie depuis TARGET |
+| `$SOURCE/.claude/agents/*.md` | Mappings agents Claude | Copie depuis TARGET |
+| `$SOURCE/AGENTS.md` | Documentation agents | **REMPLACÉ** depuis TARGET |
+| `$SOURCE/CLAUDE.md` | Documentation Claude | **REMPLACÉ** depuis TARGET |
+| `$SOURCE/commands_list.md` | Liste des commandes | **RÉGÉNÉRÉ** (scan SOURCE + TARGET) |
+| `$SOURCE/agents_list.md` | Liste des agents | **RÉGÉNÉRÉ** (scan SOURCE + TARGET) |
+| `$SOURCE/skills_list.md` | Liste des skills | **RÉGÉNÉRÉ** (scan SOURCE + TARGET) |
+| `$SOURCE/.roomodes` | Configuration Roo | **FUSIONNÉ** (SOURCE + TARGET) |
+| `$SOURCE/README.md` | Documentation projet | **FUSIONNÉ** (SOURCE + TARGET) |
+| `$SOURCE/prompts/spec/logs/phase-8.log` | Log de déploiement | Généré |
+| `*.bak.YYYYMMDD-HHMMSS` | Backups des fichiers écrasés | Créés automatiquement |
 
 ---
 

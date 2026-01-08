@@ -248,31 +248,63 @@ Prêt pour l'orchestration des plans...
 
 ## 🔄 ORCHESTRATION DES PLANS
 
+### ⚠️ RÈGLE CRITIQUE D'ORCHESTRATION
+
+**INTERDICTION ABSOLUE** : Le LLM ne doit JAMAIS résumer, simplifier ou sauter des étapes des plans.
+
+**OBLIGATION ABSOLUE** : Pour chaque plan, le LLM DOIT :
+
+1. **Créer une sub-task dédiée** via switch de mode (orchestrator ou code selon le contexte)
+2. **Lire le plan complet** via Read tool
+3. **Exécuter TOUTES les phases** du plan dans l'ordre exact
+4. **Appeler TOUS les scripts** mentionnés dans le plan (pas de résumé)
+5. **Vérifier TOUTES les conditions** de succès avant de passer au plan suivant
+6. **Journaliser chaque action** effectuée
+
+**Format d'exécution obligatoire** :
+```
+Pour chaque plan X :
+  1. Switch mode orchestrator/code
+  2. Read plan X complet
+  3. Exécuter phase 1 du plan X
+  4. Exécuter phase 2 du plan X
+  5. ...
+  6. Exécuter phase N du plan X
+  7. Vérifier succès complet
+  8. Passer au plan suivant
+```
+
 ### Phase 1 : Exécution plan-beginning
 
-**Action : Lire et exécuter le plan d'initialisation**
+**Action : Créer une sub-task dédiée pour exécuter le plan d'initialisation**
 
 1. **Localiser le plan** : `prompts/hard_points/system/maj/plans/plan-beginning.md`
 
 2. **Vérifier son existence** :
    - Si fichier introuvable → Afficher erreur et EXIT 1
 
-3. **Afficher bannière** :
+3. **Créer une sub-task orchestrator** avec le message :
+```
+Exécuter INTÉGRALEMENT le plan-beginning.md :
+- Lire le fichier prompts/hard_points/system/maj/plans/plan-beginning.md
+- Exécuter TOUTES les phases dans l'ordre exact
+- Appeler TOUS les scripts mentionnés
+- Ne RIEN résumer, ne RIEN sauter
+- Vérifier toutes les conditions de succès
+- Journaliser chaque action
+```
+
+4. **Afficher bannière** :
 ```
 ═══════════════════════════════════════════════════════════════
-📋 EXÉCUTION : plan-beginning.md
+📋 EXÉCUTION : plan-beginning.md (SUB-TASK DÉDIÉE)
 ═══════════════════════════════════════════════════════════════
 ```
 
-4. **Lire le plan** et exécuter **chaque prompt d'action** séquentiellement :
-   - Phase 1.1 : Vérification backup initial
-   - Phase 1.2 : Création backup de vérification (BLOQUANT)
-   - Phase 2 : Chargement contexte (détection versions - BLOQUANT)
-   - Phase 3 : Export variables (`$MAJ_CURRENT_VERSION`, `$MAJ_TARGET_VERSION`)
-   - Phase 4 : Log de démarrage
-   - Phase 5 : Génération structure initiale JSON
-
-5. **Stocker les variables exportées** pour usage dans les plans suivants
+5. **Attendre la fin de la sub-task** et récupérer :
+   - Variables exportées : `$MAJ_CURRENT_VERSION`, `$MAJ_TARGET_VERSION`
+   - Statut de succès de chaque phase
+   - Logs d'exécution
 
 6. **Vérifier les conditions de succès** du plan :
    - Si phase BLOQUANTE échoue → EXIT 1
@@ -280,7 +312,7 @@ Prêt pour l'orchestration des plans...
 
 ### Phase 2 : Sélection & Exécution Plan de Version
 
-**Action : Sélectionner et exécuter le plan de version selon $MAJ_TARGET_VERSION**
+**Action : Créer une sub-task dédiée pour exécuter le plan de version**
 
 1. **Extraire le numéro de version** :
    - Depuis `$MAJ_TARGET_VERSION`, extraire `X.X.X` (retirer le suffixe `-LLM` ou `-STANDARD`)
@@ -295,9 +327,18 @@ Prêt pour l'orchestration des plans...
      - Afficher `⚠️  Aucun plan spécifique pour version $VERSION_NUMBER`
      - Passer directement à la Phase 3 (plans ending)
    - Si fichier existe :
+     - **Créer une sub-task orchestrator** avec le message :
+```
+Exécuter INTÉGRALEMENT le plan-V${VERSION_NUMBER}.0.md :
+- Lire le fichier ${PLAN_VERSION}
+- Exécuter TOUTES les phases dans l'ordre exact
+- Appeler TOUS les scripts mentionnés
+- Ne RIEN résumer, ne RIEN sauter
+- Vérifier toutes les conditions de succès
+- Journaliser chaque action
+```
      - Afficher bannière avec nom du plan
-     - Lire le plan
-     - Exécuter **chaque phase** du plan séquentiellement
+     - Attendre la fin de la sub-task
 
 4. **Gestion des erreurs** :
    - Si phase BLOQUANTE échoue → Lancer `plan-ending-10.md` (diagnostic erreurs)
@@ -305,18 +346,37 @@ Prêt pour l'orchestration des plans...
 
 ### Phase 3 : Chaînage Plans Ending (0→8)
 
-**Action : Exécuter les plans ending dans l'ordre strict 0→1→2→3→4→5→6→7→8**
+**Action : Créer une sub-task dédiée pour CHAQUE plan ending dans l'ordre strict 0→1→2→3→4→5→6→7→8**
 
-Pour **chaque plan ending** dans l'ordre :
+**RÈGLE CRITIQUE** : Chaque plan ending DOIT être exécuté dans une sub-task séparée.
+
+Pour **chaque plan ending** dans l'ordre (N = 0 à 8) :
 
 1. **Localiser le plan** : `prompts/hard_points/system/maj/plans/plan-ending-${N}.md`
 
 2. **Vérifier l'existence** :
    - Si introuvable → Warning + passer au suivant
 
-3. **Afficher bannière** avec numéro du plan
+3. **Créer une sub-task orchestrator/code** avec le message :
+```
+Exécuter INTÉGRALEMENT le plan-ending-${N}.md :
+- Lire le fichier prompts/hard_points/system/maj/plans/plan-ending-${N}.md
+- Exécuter TOUTES les phases dans l'ordre exact
+- Appeler TOUS les scripts mentionnés (ne pas résumer)
+- Vérifier toutes les entrées requises (fichiers, variables)
+- Vérifier toutes les conditions de succès
+- Journaliser chaque action effectuée
+- Ne RIEN résumer, ne RIEN sauter
+```
 
-4. **Lire le plan** et exécuter ses actions :
+4. **Afficher bannière** avec numéro du plan :
+```
+═══════════════════════════════════════════════════════════════
+📋 EXÉCUTION : plan-ending-${N}.md (SUB-TASK DÉDIÉE)
+═══════════════════════════════════════════════════════════════
+```
+
+5. **Contexte des plans ending** (pour information uniquement) :
    - **plan-ending-0** : Fusion intelligente TARGET → SOURCE (contenu prompts/)
    - **plan-ending-1** : Détection changements (génération rapport diff)
    - **plan-ending-2** : Analyse rapport + préparation MAJ index
@@ -327,15 +387,17 @@ Pour **chaque plan ending** dans l'ordre :
    - **plan-ending-7** : Peuplement (proposition gaps via agent-aikido-bank-populate)
    - **plan-ending-8** : Déploiement mappings et config TARGET → SOURCE (.roo/, .claude/, fichiers racine)
 
-5. **Pour chaque plan** :
-   - Vérifier les **entrées requises** (fichiers, variables)
-   - Exécuter **chaque phase** séquentiellement
-   - Vérifier les **conditions de succès**
-   - Journaliser les résultats
+6. **Attendre la fin de la sub-task** et récupérer :
+   - Statut de succès de chaque phase du plan
+   - Fichiers générés
+   - Variables exportées
+   - Logs d'exécution
 
-6. **Gestion des erreurs** :
+7. **Gestion des erreurs** :
    - Plan **BLOQUANT** échoue → Lancer `plan-ending-10.md` (diagnostic)
    - Plan **NON BLOQUANT** échoue → Warning + continuer au suivant
+
+8. **Passer au plan ending suivant** (N+1) et répéter les étapes 1-7
 
 ---
 
@@ -438,17 +500,50 @@ Si une erreur critique survient à **n'importe quelle étape** :
 
 Quand tu exécutes cette commande :
 
-1. **NE PAS copier/coller** les actions des plans dans ton exécution
-2. **LIRE chaque plan** (via Read tool) et exécuter ses prompts d'action
-3. **SUIVRE l'ordre** strictement : beginning → version → ending-0 → ending-1 → ... → ending-7
-4. **VÉRIFIER les conditions** de succès de chaque plan avant de continuer
-5. **UTILISER les scripts techniques** (4 scripts autorisés) quand spécifié dans les plans :
-   - `detect-project-type.sh`
-   - `sync-files.sh`
-   - `sync-directories.sh`
-   - `validate-structure.sh`
-6. **JOURNALISER** chaque étape importante
-7. **EXPORTER les variables** entre les plans pour maintenir le contexte
+1. **OBLIGATION ABSOLUE : CRÉER DES SUB-TASKS**
+   - **CHAQUE plan** (beginning, version, ending-0 à ending-8) DOIT être exécuté dans une **sub-task dédiée**
+   - Utiliser `switch_mode` vers orchestrator ou code selon le contexte
+   - Ne JAMAIS exécuter plusieurs plans dans la même sub-task
+   - Ne JAMAIS exécuter un plan directement sans sub-task
+
+2. **INTERDICTION ABSOLUE : RÉSUMER OU SAUTER**
+   - NE JAMAIS résumer les actions d'un plan
+   - NE JAMAIS sauter une phase d'un plan
+   - NE JAMAIS dire "j'ai exécuté les phases X à Y" sans les avoir réellement exécutées
+   - TOUJOURS lire le plan complet via Read tool
+   - TOUJOURS exécuter chaque phase séquentiellement
+
+3. **OBLIGATION : APPELER TOUS LES SCRIPTS**
+   - Quand un plan mentionne un script, l'appeler via `execute_command`
+   - Ne JAMAIS résumer l'appel d'un script par "j'ai vérifié..."
+   - Scripts autorisés dans les plans :
+     - `detect-project-type.sh`
+     - `sync-files.sh`
+     - `sync-directories.sh`
+     - `validate-structure.sh`
+     - Tous les scripts dans `prompts/hard_points/system/maj/scripts/`
+
+4. **OBLIGATION : SUIVRE L'ORDRE STRICT**
+   - Ordre obligatoire : beginning → version (si existe) → ending-0 → ending-1 → ... → ending-8
+   - Ne JAMAIS inverser l'ordre
+   - Ne JAMAIS paralléliser les plans
+   - Attendre la fin complète d'un plan avant de passer au suivant
+
+5. **OBLIGATION : VÉRIFIER LES CONDITIONS DE SUCCÈS**
+   - Après chaque phase d'un plan, vérifier son succès
+   - Si phase BLOQUANTE échoue → Arrêter et lancer plan-ending-10.md
+   - Si phase NON BLOQUANTE échoue → Logger warning et continuer
+
+6. **OBLIGATION : JOURNALISER CHAQUE ACTION**
+   - Logger chaque phase exécutée
+   - Logger chaque script appelé
+   - Logger chaque fichier généré
+   - Logger chaque variable exportée
+
+7. **OBLIGATION : MAINTENIR LE CONTEXTE**
+   - Exporter les variables entre les plans
+   - Transmettre les résultats d'un plan au suivant
+   - Conserver les logs de toutes les phases
 
 ### Avantages de cette Architecture
 
