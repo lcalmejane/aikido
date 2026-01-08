@@ -1,10 +1,10 @@
-# Plan Ending-0 – Fusion Intelligente SOURCE → TARGET
+# Plan Ending-0 – Fusion Intelligente TARGET → SOURCE
 
 > **Type** : ending | **Ordre** : 0 | **Bloquant** : NON (avec fallback)
 
 ## 🎯 Objectif
 
-Fusionner intelligemment les fichiers modifiés ou ajoutés de la SOURCE externe (TARGET) vers le projet actuel (SOURCE), en préservant le contexte projet tout en adoptant le nouveau formalisme.
+Fusionner intelligemment les fichiers modifiés ou ajoutés du dépôt externe (TARGET) vers le projet actuel (SOURCE), en préservant le contexte projet tout en adoptant le nouveau formalisme.
 
 Ce plan utilise **agent-aikido-fusion** pour une fusion intelligente, avec fallback manuel si LLM insuffisant.
 

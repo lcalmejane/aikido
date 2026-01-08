@@ -92,11 +92,11 @@ Critères de succès
 ### 3. Plans Ending (`plan-ending-{N}.md`)
 
 **Rôle** : Phases finales communes à toutes les migrations
-**Ordre d'exécution** : 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7
+**Ordre d'exécution** : 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 
 | Plan | Phase | Rôle |
 |------|-------|------|
-| **ending-0** | Fusion | Fusion intelligente SOURCE → TARGET avec agent-aikido-fusion |
+| **ending-0** | Fusion | Fusion intelligente TARGET → SOURCE (contenu prompts/) |
 | **ending-1** | Détection | Génération rapport différences post-rebase |
 | **ending-2** | Analyse | Analyse rapport + préparation mise à jour index |
 | **ending-3** | Index | Mise à jour index généraux (mono/multi) |
@@ -104,6 +104,7 @@ Critères de succès
 | **ending-5** | Optimisation | Nettoyage fichiers temporaires |
 | **ending-6** | Validation finale | Vérification conformité AI-KIDO |
 | **ending-7** | Peuplement | Proposition peuplement gaps (agent-aikido-bank-populate) |
+| **ending-8** | Déploiement | Déploiement mappings et config TARGET → SOURCE (.roo/, .claude/, fichiers racine) |
 
 ---
 
@@ -133,7 +134,7 @@ Critères de succès
                      │
                      ▼
           ┌──────────────────────┐
-          │  plan-ending-0.md    │  ← Fusion SOURCE → TARGET
+          │  plan-ending-0.md    │  ← Fusion TARGET → SOURCE (prompts/)
           └──────────┬───────────┘
                      │
                      ▼
@@ -169,6 +170,11 @@ Critères de succès
                      ▼
           ┌──────────────────────┐
           │  plan-ending-7.md    │  ← Peuplement gaps
+          └──────────┬───────────┘
+                     │
+                     ▼
+          ┌──────────────────────┐
+          │  plan-ending-8.md    │  ← Déploiement mappings
           └──────────┬───────────┘
                      │
                      ▼

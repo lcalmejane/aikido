@@ -303,9 +303,9 @@ Prêt pour l'orchestration des plans...
    - Si phase BLOQUANTE échoue → Lancer `plan-ending-10.md` (diagnostic erreurs)
    - Si succès → Continuer Phase 3
 
-### Phase 3 : Chaînage Plans Ending (0→7)
+### Phase 3 : Chaînage Plans Ending (0→8)
 
-**Action : Exécuter les plans ending dans l'ordre strict 0→1→2→3→4→5→6→7**
+**Action : Exécuter les plans ending dans l'ordre strict 0→1→2→3→4→5→6→7→8**
 
 Pour **chaque plan ending** dans l'ordre :
 
@@ -317,7 +317,7 @@ Pour **chaque plan ending** dans l'ordre :
 3. **Afficher bannière** avec numéro du plan
 
 4. **Lire le plan** et exécuter ses actions :
-   - **plan-ending-0** : Fusion intelligente SOURCE → TARGET
+   - **plan-ending-0** : Fusion intelligente TARGET → SOURCE (contenu prompts/)
    - **plan-ending-1** : Détection changements (génération rapport diff)
    - **plan-ending-2** : Analyse rapport + préparation MAJ index
    - **plan-ending-3** : Mise à jour index généraux (mono/multi)
@@ -325,6 +325,7 @@ Pour **chaque plan ending** dans l'ordre :
    - **plan-ending-5** : Optimisation (nettoyage fichiers temporaires)
    - **plan-ending-6** : Validation finale (conformité AI-KIDO)
    - **plan-ending-7** : Peuplement (proposition gaps via agent-aikido-bank-populate)
+   - **plan-ending-8** : Déploiement mappings et config TARGET → SOURCE (.roo/, .claude/, fichiers racine)
 
 5. **Pour chaque plan** :
    - Vérifier les **entrées requises** (fichiers, variables)
@@ -362,7 +363,7 @@ Pour **chaque plan ending** dans l'ordre :
 📋 PLANS EXÉCUTÉS :
   ✅ plan-beginning.md
   ✅ plan-V${VERSION_NUMBER}.0.md (si applicable)
-  ✅ plan-ending-0.md → plan-ending-7.md
+  ✅ plan-ending-0.md → plan-ending-8.md
 
 📂 FICHIERS GÉNÉRÉS :
   - Logs : prompts/spec/logs/maj-aikido-*.log
