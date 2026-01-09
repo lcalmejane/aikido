@@ -220,7 +220,7 @@ customModes:
       **SORTIES** : - Status synchronisation (✅ synced | 📤 pushed | 📥 pulled | 📊 report generated | ⚠️ conflict) - KPI calculés par sprint (vélocité, burndown, temps, tickets, qualité) - Rapports HTML interactifs générés avec Chart.js - Métadonnées JSON mises à jour (sprint-data.json, tickets.json, kpi-metrics.json) - Logs détaillés des opérations - Structure hiérarchique EPICS → FEATURES → TICKETS
       **Stratégie** : Last-Write-Wins (local plus récent → push, JIRA plus récent → pull). Calcul KPI avec JQ obligatoire. Génération rapports HTML autonomes.
     whenToUse: |-
-      ✅ UTILISEZ quand : - Synchroniser Memory Bank avec JIRA Cloud bidirectionnellement - Calculer KPI Agile (vélocité, burndown, temps, qualité) - Générer rapports HTML interactifs de sprint avec graphiques - Analyser métriques sprint avec JQ - Gérer structure hiérarchique EPICS/FEATURES/TICKETS - Tester connexion API JIRA - Initialiser projet JIRA dans Memory Bank - Importer projet complet JIRA (épics, features, tickets, sprints)
+      ✅ UTILISEZ quand : - Toute commande jira-* - Synchroniser Memory Bank avec JIRA Cloud bidirectionnellement - Calculer KPI Agile (vélocité, burndown, temps, qualité) - Générer rapports HTML interactifs de sprint avec graphiques - Analyser métriques sprint avec JQ - Gérer structure hiérarchique EPICS/FEATURES/TICKETS - Tester connexion API JIRA - Initialiser projet JIRA dans Memory Bank - Importer projet complet JIRA (épics, features, tickets, sprints)
       ❌ N'UTILISEZ PAS quand : - Pas de compte JIRA Cloud - Pas besoin synchronisation externe - Travail purement local sans métriques - Pas besoin de rapports interactifs
     groups:
       - read
