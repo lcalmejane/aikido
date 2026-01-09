@@ -1048,7 +1048,7 @@ Le **Skill JIRA** fournit une synchronisation bidirectionnelle complète entre l
 **Processus** :
 
 1. **Validation projet** → Vérification existence projet JIRA
-2. **Création structure** → Génération arborescence `prompts/gen/use_cases/Jira/`
+2. **Création structure** → Génération arborescence `prompts/gen/use_cases/jira/`
 3. **Configuration metadata** → Initialisation fichiers JSON (project-info.json)
 4. **Documentation** → Création README.md avec instructions utilisation
 
@@ -1089,7 +1089,7 @@ Le **Skill JIRA** fournit une synchronisation bidirectionnelle complète entre l
 
 **Performance** : 15-30s par sprint + génération rapport
 
-**Résultat** : Rapports HTML dans `prompts/gen/use_cases/Jira/[Sprints]/SPRINT-[ID]/report.html`
+**Résultat** : Rapports HTML dans `prompts/gen/use_cases/jira/[Sprints]/SPRINT-[ID]/report.html`
 
 ---
 
@@ -1142,7 +1142,7 @@ Le **Skill JIRA** fournit une synchronisation bidirectionnelle complète entre l
 
 **Agents utilisés** : 1 agent (agent-aikido-jira)
 
-**Résultat** : Fichier `prompts/gen/use_cases/Jira/[General]/project-info.json` à jour
+**Résultat** : Fichier `prompts/gen/use_cases/jira/[General]/project-info.json` à jour
 
 ---
 
@@ -1166,7 +1166,7 @@ Le **Skill JIRA** fournit une synchronisation bidirectionnelle complète entre l
 
 **Agents utilisés** : 1 agent (agent-aikido-jira)
 
-**Résultat** : Structure complète dans `prompts/gen/use_cases/Jira/[EPICS]/EPIC-[KEY]/`
+**Résultat** : Structure complète dans `prompts/gen/use_cases/jira/[EPICS]/EPIC-[KEY]/`
 
 ---
 
@@ -1243,14 +1243,14 @@ Le **Skill JIRA** fournit une synchronisation bidirectionnelle complète entre l
 
 **Agents utilisés** : 1 agent (agent-aikido-jira)
 
-**Résultat** : Vue backlog dans `prompts/gen/use_cases/Jira/[Backlog]/backlog.html`
+**Résultat** : Vue backlog dans `prompts/gen/use_cases/jira/[Backlog]/backlog.html`
 
 ---
 
 **Architecture des Données JIRA** :
 
 ```
-prompts/gen/use_cases/Jira/
+prompts/gen/use_cases/jira/
 ├── [General]/
 │   └── project-info.json              # Métadonnées projet
 ├── [Sprints]/
@@ -2071,7 +2071,7 @@ fi
 **Architecture données** :
 
 ```
-prompts/gen/use_cases/Jira/
+prompts/gen/use_cases/jira/
 ├── [General]/project-info.json
 ├── [Sprints]/SPRINT-001/
 │   ├── sprint-data.json

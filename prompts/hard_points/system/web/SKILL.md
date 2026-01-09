@@ -21,14 +21,25 @@ Le **Skill Web** d’AI‑KIDO gère les interactions avec le Web : téléchar
 - **Bibliothèques Bash/Python** : `curl`, `wget`, `beautifulsoup4`
 - **Skills similaires** : [`analyse`](prompts/hard_points/system/analyse/SKILL.md:1), [`search`](prompts/hard_points/system/search/SKILL.md:1)
 
+## Commandes disponibles
+
+- [`/download-site`](commands/download-site.md) : Télécharge un site web et convertit son contenu en Markdown
+
 ## Utilisation
+
+### Via commande
+```bash
+/download-site https://example.com 2
+```
+
+### Via invocation programmatique
 ```python
 result = invoke_skill("web", {
     "url": "https://example.com",
     "format": "json"   # ou "text"
 })
 ```
-Le Skill s’active automatiquement lorsqu’une requête contient une URL ou lorsqu’un agent invoque explicitement `invoke_skill("web", …)`.
+Le Skill s'active automatiquement lorsqu'une requête contient une URL ou lorsqu'un agent invoque explicitement `invoke_skill("web", …)`.
 
 ## Remarques
 - **Stateless** : aucune donnée persistante n’est conservée entre les appels.
