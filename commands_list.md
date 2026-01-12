@@ -12,6 +12,7 @@
 - **confluence-sync** : Synchronise un fichier ou répertoire avec Confluence (bidirectionnel) ([`confluence-sync.md`](prompts/hard_points/system/confluence/commands/confluence-sync.md:2))
 - **confluence-test** : Teste la connexion à l'API Confluence Cloud ([`confluence-test.md`](prompts/hard_points/system/confluence/commands/confluence-test.md:2))
 - **confluence-tree** : Affiche l'arborescence des pages Confluence d'un espace ([`confluence-tree.md`](prompts/hard_points/system/confluence/commands/confluence-tree.md:2))
+- **confluence-search** : Recherche du contenu Confluence via CQL et retourne le JSON condensé ou détaillé ([`confluence-search.md`](prompts/hard_points/system/confluence/commands/confluence-search.md:2))
 - **create-analyse-plan** : Guide interactif pour créer un plan d'analyse AI‑KIDO ([`create-analyse-plan.md`](prompts/hard_points/commands/create-analyse-plan.md:2))
 - **create-command** : Guide interactif pour créer des commandes AI‑KIDO ([`create-command.md`](prompts/hard_points/commands/create-command.md:2))
 - **create-persona** : Créer un nouveau persona ou agent AI‑KIDO interactivement (anthropomorphique ou technique) ([`create-persona.md`](prompts/hard_points/commands/create-persona.md:2))
