@@ -54,9 +54,9 @@ mkdir -p "$TEMP_DIR"
 # Construction de l'option --accept-regex basée sur le préfixe calculé
 wget_opts="--accept-regex=^${PREFIX}"
 echo "Début du téléchargement avec wget..."
-wget -r -l "$DEPTH" -k -E -np -P "$TEMP_DIR" -R "jpg,jpeg,gif,png,css,js,ico,svg,woff,woff2,ttf,eot" "$wget_opts" "$URL" || echo "wget a rencontré des erreurs mais le script continue"
+wget -r –spider -l "$DEPTH" -k -E  -P "$TEMP_DIR" -R "jpg,jpeg,gif,png,css,js,ico,svg,woff,woff2,ttf,eot" "$wget_opts" "$URL" || echo "wget a rencontré des erreurs mais le script continue"
 echo "Fin du téléchargement avec wget."
-echo "Creation du répertoire cible : $TARGET_DIR"
+echo "Creation du répertoire cible : $TARGET_DIR"
 # Création du répertoire cible s'il n'existe pas
 mkdir -p "$TARGET_DIR"
 
@@ -64,20 +64,20 @@ mkdir -p "$TARGET_DIR"
 echo "Conversion des fichiers HTML en Markdown..."
 # Compter le nombre de fichiers HTML à convertir
 html_count=$(find "$TEMP_DIR" -name "*.html" -type f | wc -l)
-echo "Nombre de fichiers HTML à convertir : $html_count"
+echo "Nombre de fichiers HTML à convertir : $html_count"
 
 # Vérifier si pandoc est disponible
 if ! command -v pandoc >/dev/null 2>&1; then
-  echo "Erreur : pandoc n'est pas installé ou introuvable dans le PATH."
-  echo "Installation recommandée :"
-  echo "  macOS : brew install pandoc"
-  echo "  Linux (apt) : sudo apt-get update && sudo apt-get install -y pandoc"
-  echo "  Linux (yum) : sudo yum install -y pandoc"
+  echo "Erreur : pandoc n'est pas installé ou introuvable dans le PATH."
+  echo "Installation recommandée :"
+  echo "  macOS : brew install pandoc"
+  echo "  Linux (apt) : sudo apt-get update && sudo apt-get install -y pandoc"
+  echo "  Linux (yum) : sudo yum install -y pandoc"
   exit 1
 fi
 
 find "$TEMP_DIR" -name "*.html" -type f | while read -r html_file; do
-  echo "Traitement de : $html_file"
+  echo "Traitement de : $html_file"
   # Calculer le chemin relatif du fichier par rapport au répertoire temporaire
   relative_path="${html_file#"$TEMP_DIR"/}"
   # Créer le chemin du fichier Markdown dans le répertoire cible
@@ -90,11 +90,11 @@ find "$TEMP_DIR" -name "*.html" -type f | while read -r html_file; do
   if pandoc --from html --to markdown_strict-raw_html --extract-media="./${md_file%.*}_media" -o "$md_file" "$html_file"; then
     echo "Converti : $relative_path -> ${relative_path%.html}.md"
   else
-    echo "Erreur lors de la conversion de : $relative_path"
+    echo "Erreur lors de la conversion de : $relative_path"
   fi
 done
 
 # Supprimer le répertoire temporaire
 rm -rf "$TEMP_DIR"
 
-echo "Téléchargement et conversion terminés : $TARGET_DIR"
+echo "Téléchargement et conversion terminés : $TARGET_DIR"
