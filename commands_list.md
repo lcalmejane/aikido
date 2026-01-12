@@ -21,7 +21,6 @@
 - **init-glossaire** : Créer un glossaire métier ventilé par domaines/personas experts dans la Memory Bank AI‑KIDO, optimisé pour la recherche sémantique ([`init-glossaire.md`](prompts/hard_points/commands/init-glossaire.md:2))
 - **init-raci-aikido** : Initialiser la matrice RACI et les spécifications d'équipe AI‑KIDO pour définir la hiérarchie des sous‑répertoires par rôles ([`init-raci-aikido.md`](prompts/hard_points/commands/init-raci-aikido.md:2))
 - **jira-export-ticket** : Exporte un ticket de la Memory Bank vers JIRA (création ou mise à jour) ([`jira-export-ticket.md`](prompts/hard_points/system/jira/commands/jira-export-ticket.md:2))
-- **jira-generate-report** : Génère un rapport HTML interactif pour un sprint spécifique ([`jira-generate-report.md`](prompts/hard_points/system/jira/commands/jira-generate-report.md:2))
 - **jira-import-full** : Import complet d'un projet JIRA (épics, features, tickets, sprints) ([`jira-import-full.md`](prompts/hard_points/system/jira/commands/jira-import-full.md:2))
 - **jira-init** : Initialise un projet JIRA dans la Memory Bank AI-KIDO ([`jira-init.md`](prompts/hard_points/system/jira/commands/jira-init.md:2))
 - **jira-search** : Rechercher des tickets JIRA avec JQL et afficher des statistiques détaillées ([`jira-search.md`](prompts/hard_points/system/jira/commands/jira-search.md:2))

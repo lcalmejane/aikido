@@ -92,7 +92,6 @@ V1.2.0 (Nov 2025) ──────→ V1.3.0 (Déc 2025) ──────→
   - `jira-sync-project` : Synchronisation métadonnées générales projet
   - `jira-sync-epic` : Synchronisation epic complet avec hiérarchie
   - `jira-import-full` : Import complet projet (épics, features, tickets, sprints)
-  - `jira-generate-report` : Génération rapport HTML interactif pour sprint
   - `jira-sync-backlog` : Synchronisation backlog + vue HTML gestion
 - **Fonctionnalités** :
   - Calcul automatique KPI Agile (vélocité, burndown, temps, qualité) avec JQ

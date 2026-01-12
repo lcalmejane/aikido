@@ -295,7 +295,6 @@ find . -name "*.bak.*" -type f
 │   │       │   │   ├── jira-sync-project.md
 │   │       │   │   ├── jira-sync-epic.md
 │   │       │   │   ├── jira-import-full.md
-│   │       │   │   ├── jira-generate-report.md
 │   │       │   │   └── jira-sync-backlog.md
 │   │       │   ├── scripts/      # Scripts bash JIRA (API, KPI JQ)
 │   │       │   │   ├── lib/      # Bibliothèques communes
@@ -1197,15 +1196,6 @@ Le **Skill JIRA** fournit une synchronisation bidirectionnelle complète entre l
 
 ---
 
-##### `jira-generate-report` - Génération Rapport Sprint 🆕
-
-**Objectif** : Générer (ou régénérer) un rapport HTML interactif pour un sprint spécifique
-
-**Syntaxe** :
-
-```bash
-/jira-generate-report [SPRINT_ID]
-```
 
 **Processus** :
 
@@ -2428,7 +2418,7 @@ Toutes les commandes sont documentées dans [`prompts/hard_points/commands/`](pr
 - **Commandes de maintenance** : `check-claude`, `check-truth` 🆕, `maj-aikido`, `validate-search-plan` 🆕, `validate-analyse-plan` 🆕
 - **Commandes d'indexation** : `reindex-projet` 🆕, `clean-index` 🆕
 - **Commandes de synchronisation externe - Confluence** : `confluence-test` 🆕, `confluence-init` 🆕, `confluence-create-page` 🆕, `confluence-import-page` 🆕, `confluence-sync` 🆕, `confluence-tree` 🆕
-- **Commandes de synchronisation externe - JIRA** : `jira-test` 🆕, `jira-init` 🆕, `jira-sync-sprints` 🆕, `jira-sync-tickets` 🆕, `jira-sync-project` 🆕, `jira-sync-epic` 🆕, `jira-import-full` 🆕, `jira-generate-report` 🆕, `jira-sync-backlog` 🆕
+- **Commandes de synchronisation externe - JIRA** : `jira-test` 🆕, `jira-init` 🆕, `jira-sync-sprints` 🆕, `jira-sync-tickets` 🆕, `jira-sync-project` 🆕, `jira-sync-epic` 🆕, `jira-import-full` 🆕, `jira-sync-backlog` 🆕
 - **Commandes de traçabilité** : `logllmon`, `logllmoff`
 
 ## 🎓 Philosophie et Avantages
