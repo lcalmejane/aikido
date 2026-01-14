@@ -19,12 +19,12 @@
 | 🔧 **agent-aikido-update-controller** | [agent-aikido-update-controller.md](prompts/hard_points/agents/agent-aikido-update-controller.md) | Contrôle les mises à jour du système AI‑KIDO, sauvegarde, validation, exécution des plans de mise à jour et roll‑back. |
 | 🔄 **agent-aikido-confluence** | [agent-aikido-confluence.md](prompts/hard_points/system/confluence/agents/agent-aikido-confluence.md) | Synchronisation bidirectionnelle Memory Bank ↔ Confluence Cloud |
 | 📊 **agent-aikido-jira** 🆕 | [agent-aikido-jira.md](prompts/hard_points/system/jira/agents/agent-aikido-jira.md) | Synchronisation bidirectionnelle, analyse métriques JIRA et génération rapports interactifs |
+| 🤖 **agent-aikido-helper** | [agent-aikido-helper.md](prompts/hard_points/agents/agent-aikido-helper.md) | Assistant pédagogique pour répondre aux questions d'usage AI‑KIDO |
 
 ## 👥 Available Agents Personas Experts
 
 |Agent / Persona | Description | Lien |
 |---------|-------------|------|
-
 
 ## Utilisations des Agents
 
@@ -90,7 +90,7 @@
 
 ### agent-aikido-fusion
 - Mises à jour externes (`/maj-aikido --update`)
-- Fusion préservant contexte projet + adoptant nouveau formalisme
+- Fusion préservant contexte projet + adopter nouveau formalisme
 
 ### agent-aikido-confluence
 - Synchronisation bidirectionnelle Memory Bank ↔ Confluence
