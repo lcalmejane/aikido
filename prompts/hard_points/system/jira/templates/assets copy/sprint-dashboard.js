@@ -294,7 +294,7 @@ function createDataQualityCard(dataQuality) {
     card.innerHTML = `
         <h3>📋 Qualité Remplissage</h3>
         <div class="kpi-value">${ticketsComplete}/${dataQuality.total_tickets}</div>
-        <div class="kpi-label">tickets complets (SP + Temps)</div>
+        <div class="kpi-label">tickets complets (SP + Temps) après redressage</div>
         <div class="kpi-percent ${getPercentClass(qualityScore)}">${qualityScore}% qualité</div>
         ${ticketsIncomplete > 0 ? `<div class="kpi-detail" style="color: var(--danger-color);">❌ ${ticketsIncomplete} sans estimation</div>` : ''}
     `;
