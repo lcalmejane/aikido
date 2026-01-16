@@ -204,8 +204,6 @@ find . -name "*.bak.*" -type f
 │   │   ├── techniques/            # 🔧 Méthodes pratiques (application)
 │   │   ├── personas/              # 👤 Personas métier (rôles humains/experts)
 │   │   └── use_cases/             # 💼 Applications concrètes par contexte
-│   │       ├── Confluence/        # 📄 Use cases Confluence
-│   │       └── Jira/              # 📊 Use cases JIRA (sprints, epics, tickets)
 │   │
 │   ├── hard_points/               # 🔒 Vérités Immuables (PRIORITÉ ABSOLUE)
 │   │   ├── index.md              # 📋 Index hard points
@@ -264,39 +262,17 @@ find . -name "*.bak.*" -type f
 │   │       │   ├── README.md
 │   │       │   └── plans/        # Plans d'analyse (architecturale, technique, etc.)
 │   │       │
-│   │       ├── confluence/       # 📄 Skill Confluence (sync bidirectionnelle)
 │   │       │   ├── SKILL.md
 │   │       │   ├── README.md
 │   │       │   ├── .env.example
 │   │       │   ├── agents/
-│   │       │   │   └── agent-aikido-confluence.md
-│   │       │   ├── commands/     # 6 commandes Confluence
-│   │       │   │   ├── confluence-test.md
-│   │       │   │   ├── confluence-init.md
-│   │       │   │   ├── confluence-create-page.md
-│   │       │   │   ├── confluence-import-page.md
-│   │       │   │   ├── confluence-sync.md
-│   │       │   │   └── confluence-tree.md
-│   │       │   └── scripts/      # Scripts bash Confluence
 │   │       │
-│   │       ├── jira/             # 📊 Skill JIRA (sync + KPI Agile + rapports)
 │   │       │   ├── SKILL.md
 │   │       │   ├── README.md
 │   │       │   ├── ARCHITECTURE.md
 │   │       │   ├── install-aikido.md
 │   │       │   ├── .env.example
 │   │       │   ├── agents/
-│   │       │   │   └── agent-aikido-jira.md
-│   │       │   ├── commands/     # 9 commandes JIRA
-│   │       │   │   ├── jira-test.md
-│   │       │   │   ├── jira-init.md
-│   │       │   │   ├── jira-sync-sprints.md
-│   │       │   │   ├── jira-sync-tickets.md
-│   │       │   │   ├── jira-sync-project.md
-│   │       │   │   ├── jira-sync-epic.md
-│   │       │   │   ├── jira-import-full.md
-│   │       │   │   └── jira-sync-backlog.md
-│   │       │   ├── scripts/      # Scripts bash JIRA (API, KPI JQ)
 │   │       │   │   ├── lib/      # Bibliothèques communes
 │   │       │   │   └── *.sh      # Scripts sync, calcul KPI, génération rapports
 │   │       │   ├── templates/    # Templates HTML/JS rapports
@@ -336,8 +312,6 @@ find . -name "*.bak.*" -type f
 ├── .roo/                         # 🔧 Configuration Roo-Code
 │   ├── commands/                 # Wrappers commandes (33 fichiers .md)
 │   │   ├── init-aikido.md
-│   │   ├── confluence-*.md       # 6 commandes Confluence
-│   │   ├── jira-*.md             # 9 commandes JIRA
 │   │   └── ...                   # Autres commandes AI-KIDO
 │   └── .roomodes                 # Configuration agents personnalisés
 │
@@ -347,8 +321,6 @@ find . -name "*.bak.*" -type f
 │   │   └── ...                   # Personas projet convertis
 │   └── commands/                 # Mapping commandes (33 fichiers .md)
 │       ├── init-aikido.md
-│       ├── confluence-*.md       # 6 commandes Confluence
-│       ├── jira-*.md             # 9 commandes JIRA
 │       └── ...                   # Autres commandes AI-KIDO
 │
 ├── AGENTS.md                     # 🤖 Interface standardisée Memory Bank
@@ -373,7 +345,6 @@ find . -name "*.bak.*" -type f
 - ⚙️ **Fonctions système** : Opérations automatisées AI-KIDO
 - 🔒 **Immuable** : Partie core du système AI-KIDO
 - 🚀 **Usage** : Exécution automatique de tâches
-- **Exemples** : validator, explore-bank, fusion, confluence, jira
 
 **Résumé** :
 - **Personas** = Qui (rôles humains) → `/gen/personas/`
@@ -386,8 +357,6 @@ Les **Skills** (`/prompts/hard_points/system/`) regroupent des capacités foncti
 | Skill | Description | Agents | Commandes | Scripts |
 |-------|-------------|--------|-----------|---------|
 | **analyse** | Plans d'analyse projet | 0 | 2 | Plans markdown |
-| **confluence** | Sync bidirectionnelle Confluence Cloud | 1 | 6 | Bash + pandoc |
-| **jira** | Sync + KPI Agile + rapports HTML | 1 | 9 | Bash + JQ |
 | **search** | Plans recherche code tech-aware | 0 | 2 | Plans markdown |
 | **structure** | Index JSON projet + cache 24h | 1 | 2 | Bash + JQ |
 | **web** | Téléchargement sites web | 0 | 0 | Bash + wget |
@@ -446,8 +415,6 @@ Les **Skills** (`/prompts/hard_points/system/`) regroupent des capacités foncti
 │   │   └── system/               # ⚙️ SYSTÈME AI-KIDO (Skills partagés)
 │   │       ├── Skills.md
 │   │       ├── analyse/          # Skill Analyse
-│   │       ├── confluence/       # Skill Confluence
-│   │       ├── jira/             # Skill JIRA
 │   │       ├── search/           # Skill Search
 │   │       ├── structure/        # Skill Structure
 │   │       ├── web/              # Skill Web
@@ -858,14 +825,11 @@ Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ
 
 ### 🔄 Commandes de Synchronisation Externe
 
-#### `confluence-test` - Test de Connexion Confluence Cloud 🆕
 
-**Objectif** : Tester la connexion à l'API Confluence Cloud et valider les credentials
 
 **Syntaxe** :
 
 ```bash
-/confluence-test
 ```
 
 **Processus** :
@@ -875,108 +839,77 @@ Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ
 3. **Liste espaces** → Récupération espaces accessibles
 4. **Rapport détaillé** → Statut connexion, permissions, diagnostics
 
-**Agents utilisés** : 1 agent (agent-aikido-confluence)
 
-**Prérequis** : Configuration `.env` dans `prompts/hard_points/system/confluence/`
 
-#### `confluence-init` - Initialisation Métadonnées Confluence 🆕
 
-**Objectif** : Initialiser un fichier Markdown avec les métadonnées Confluence YAML
 
 **Syntaxe** :
 
 ```bash
-/confluence-init [fichier.md]
 ```
 
 **Processus** :
 
-1. **Création header YAML** → Ajout métadonnées Confluence (space, parent_id, title)
 2. **Configuration sync** → Paramètres synchronisation (strategy, auto_sync)
 3. **Préservation contenu** → Intégration header sans modifier le contenu existant
 
-**Agents utilisés** : 1 agent (agent-aikido-confluence)
 
-**Résultat** : Fichier prêt pour synchronisation Confluence
 
-#### `confluence-create-page` - Création Page Confluence 🆕
 
-**Objectif** : Créer une nouvelle page Confluence depuis un fichier Markdown local
 
 **Syntaxe** :
 
 ```bash
-/confluence-create-page [fichier.md]
 ```
 
 **Processus** :
 
 1. **Validation fichier** → Vérification métadonnées YAML
 2. **Conversion Markdown → Storage Format** → Transformation via pandoc
-3. **Upload Confluence** → Création page avec title, space, parent
-4. **Mise à jour métadonnées** → Ajout confluence_page_id, last_sync
 
-**Agents utilisés** : 1 agent (agent-aikido-confluence)
 
-**Résultat** : Page créée sur Confluence avec lien bidirectionnel fichier ↔ page
 
-#### `confluence-import-page` - Import Page Confluence 🆕
 
-**Objectif** : Importer une page Confluence existante vers un fichier Markdown local
 
 **Syntaxe** :
 
 ```bash
-/confluence-import-page [page-id] [fichier-destination.md]
 ```
 
 **Processus** :
 
-1. **Récupération page** → Download depuis Confluence API
 2. **Conversion Storage Format → Markdown** → Transformation via pandoc
 3. **Extraction métadonnées** → Space, parent, version, last_modified
 4. **Création fichier local** → Génération Markdown avec header YAML
 
-**Agents utilisés** : 1 agent (agent-aikido-confluence)
 
-**Résultat** : Fichier local synchronisé avec page Confluence
 
-#### `confluence-sync` - Synchronisation Bidirectionnelle 🆕
 
-**Objectif** : Synchroniser fichier ou répertoire avec Confluence (bidirectionnel last-write-wins)
 
 **Syntaxe** :
 
 ```bash
-/confluence-sync [fichier-ou-repertoire]
-/confluence-sync [fichier-ou-repertoire] --strategy manual
 ```
 
 **Processus** :
 
-1. **Analyse timestamps** → Comparaison local vs Confluence (last_modified)
 2. **Détection direction** → Détermination push/pull selon last-write-wins
 3. **Conversion format** → Markdown ↔ Storage Format selon direction
 4. **Synchronisation** → Upload ou download selon stratégie
-5. **Mise à jour métadonnées** → Refresh confluence_last_sync, version
 
 **Stratégies disponibles** :
 
 - **last-write-wins** (défaut) : Synchronisation automatique selon timestamps
 - **manual** : Confirmation utilisateur avant chaque opération
 
-**Agents utilisés** : 1 agent (agent-aikido-confluence)
 
 **Résultat** : Fichiers synchronisés avec résolution automatique des conflits
 
-#### `confluence-tree` - Arborescence Confluence 🆕
 
-**Objectif** : Afficher l'arborescence des pages Confluence d'un espace
 
 **Syntaxe** :
 
 ```bash
-/confluence-tree [SPACE_KEY]
 ```
 
 **Processus** :
@@ -985,93 +918,66 @@ Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ
 2. **Construction arbre** → Visualisation arborescente avec indentation
 3. **Métadonnées** → ID, title, version, last_modified pour chaque page
 
-**Agents utilisés** : 1 agent (agent-aikido-confluence)
 
-**Résultat** : Arborescence visuelle complète de l'espace Confluence
 
-#### Skill JIRA - Synchronisation & Analyse JIRA Cloud 🆕
 
-Le **Skill JIRA** fournit une synchronisation bidirectionnelle complète entre la Memory Bank AI-KIDO et JIRA Cloud, avec calcul automatique de KPI Agile et génération de rapports HTML interactifs.
 
 **Fonctionnalités principales** :
 
-- 📊 **Synchronisation bidirectionnelle** : Memory Bank ↔ JIRA Cloud (last-write-wins)
 - 📈 **Calcul KPI Agile** : Vélocité, burndown, temps, qualité (via JQ obligatoire)
 - 📑 **Rapports HTML interactifs** : Chart.js, tableaux triables, graphiques temps réel
 - 🗂️ **Structure hiérarchique** : EPICS → FEATURES → TICKETS
 - ⚡ **Performance optimisée** : <2,500 tokens par sprint (50 tickets), 15-30s sync + rapport
 
-**Agent utilisé** : `agent-aikido-jira` (1 agent)
 
 **Prérequis** :
-- Compte JIRA Cloud avec API token
-- Configuration `.env` : JIRA_URL, JIRA_USER, JIRA_API_TOKEN, JIRA_PROJECT_KEY
 - **JQ obligatoire** : `brew install jq` (macOS) / `apt install jq` (Linux)
 - Curl et bash 4.0+
 
 ---
 
-##### `jira-test` - Test de Connexion JIRA Cloud 🆕
 
-**Objectif** : Tester la connexion à l'API JIRA Cloud et valider les credentials
 
 **Syntaxe** :
 
 ```bash
-/jira-test
 ```
 
 **Processus** :
 
-1. **Validation credentials** → Lecture variables environnement (JIRA_URL, JIRA_USER, JIRA_API_TOKEN)
 2. **Test connexion API** → Vérification accès REST API v3
 3. **Récupération informations** → User info, projet accessible
 4. **Rapport détaillé** → Statut connexion, permissions, diagnostics
 
-**Agents utilisés** : 1 agent (agent-aikido-jira)
 
-**Résultat** : Confirmation connexion JIRA valide avec informations utilisateur
 
 ---
 
-##### `jira-init` - Initialisation Projet JIRA 🆕
 
-**Objectif** : Initialiser la structure Memory Bank pour un projet JIRA
 
 **Syntaxe** :
 
 ```bash
-/jira-init [PROJECT_KEY]
 ```
 
 **Processus** :
 
-1. **Validation projet** → Vérification existence projet JIRA
-2. **Création structure** → Génération arborescence `prompts/gen/use_cases/jira/`
 3. **Configuration metadata** → Initialisation fichiers JSON (project-info.json)
 4. **Documentation** → Création README.md avec instructions utilisation
 
-**Agents utilisés** : 1 agent (agent-aikido-jira)
 
-**Résultat** : Structure complète prête pour synchronisation JIRA
 
 ---
 
-##### `jira-sync-sprints` - Synchronisation Sprints JIRA 🆕
 
-**Objectif** : Synchroniser les sprints JIRA et générer les rapports HTML interactifs avec KPI
 
 **Syntaxe** :
 
 ```bash
-/jira-sync-sprints
-/jira-sync-sprints [SPRINT_ID]
-/jira-sync-sprints --all
 ```
 
 **Processus** :
 
-1. **Récupération sprints** → Liste sprints actifs/fermés depuis JIRA
 2. **Synchronisation tickets** → Download tickets par sprint avec métadonnées
 3. **Calcul KPI avec JQ** → Vélocité, burndown, temps, qualité, completion rate
 4. **Génération rapports HTML** → Dashboard interactif avec Chart.js, tableaux triables
@@ -1084,52 +990,39 @@ Le **Skill JIRA** fournit une synchronisation bidirectionnelle complète entre l
 - **Tickets** : Total / Completed / In Progress / Todo / Blocked
 - **Qualité** : Bugs trouvés/résolus, taux défaut %
 
-**Agents utilisés** : 1 agent (agent-aikido-jira)
 
 **Performance** : 15-30s par sprint + génération rapport
 
-**Résultat** : Rapports HTML dans `prompts/gen/use_cases/jira/[Sprints]/SPRINT-[ID]/report.html`
 
 ---
 
-##### `jira-sync-tickets` - Synchronisation Bidirectionnelle Tickets 🆕
 
-**Objectif** : Synchroniser les tickets JIRA bidirectionnellement (last-write-wins)
 
 **Syntaxe** :
 
 ```bash
-/jira-sync-tickets [TICKET_KEY]          # Ticket unique
-/jira-sync-tickets --sprint [SPRINT_ID]  # Tous tickets d'un sprint
-/jira-sync-tickets --all                 # Tous tickets du projet
 ```
 
 **Processus** :
 
-1. **Analyse timestamps** → Comparaison local vs JIRA (last_modified UTC)
 2. **Détection direction** → Détermination push/pull selon last-write-wins
 3. **Synchronisation** → Upload ou download selon stratégie
-4. **Mise à jour métadonnées** → Refresh jira.last_updated, status, assignee
 5. **Résolution conflits** → Automatique via timestamps ou manuelle
 
 **Stratégies** :
 - **last-write-wins** (défaut) : Automatique selon timestamps
 - **manual** : Confirmation utilisateur avant chaque opération
 
-**Agents utilisés** : 1 agent (agent-aikido-jira)
 
 **Résultat** : Tickets synchronisés avec résolution automatique des conflits
 
 ---
 
-##### `jira-sync-project` - Synchronisation Données Projet 🆕
 
-**Objectif** : Synchroniser les données générales d'un projet JIRA (metadata, configuration)
 
 **Syntaxe** :
 
 ```bash
-/jira-sync-project [PROJECT_KEY]
 ```
 
 **Processus** :
@@ -1139,20 +1032,15 @@ Le **Skill JIRA** fournit une synchronisation bidirectionnelle complète entre l
 3. **Statistiques** → Compteurs tickets, sprints, epics
 4. **Mise à jour local** → project-info.json avec toutes les métadonnées
 
-**Agents utilisés** : 1 agent (agent-aikido-jira)
 
-**Résultat** : Fichier `prompts/gen/use_cases/jira/[General]/project-info.json` à jour
 
 ---
 
-##### `jira-sync-epic` - Synchronisation Epic JIRA 🆕
 
-**Objectif** : Synchroniser un epic JIRA complet avec sa hiérarchie (features + tickets)
 
 **Syntaxe** :
 
 ```bash
-/jira-sync-epic [EPIC_KEY]
 ```
 
 **Processus** :
@@ -1163,20 +1051,15 @@ Le **Skill JIRA** fournit une synchronisation bidirectionnelle complète entre l
 4. **Synchronisation complète** → Tous les éléments avec métadonnées
 5. **Génération arborescence** → Fichiers JSON structurés
 
-**Agents utilisés** : 1 agent (agent-aikido-jira)
 
-**Résultat** : Structure complète dans `prompts/gen/use_cases/jira/[EPICS]/EPIC-[KEY]/`
 
 ---
 
-##### `jira-import-full` - Import Complet Projet JIRA 🆕
 
-**Objectif** : Importer un projet JIRA complet (épics, features, tickets, sprints)
 
 **Syntaxe** :
 
 ```bash
-/jira-import-full [PROJECT_KEY]
 ```
 
 **Processus** :
@@ -1188,11 +1071,9 @@ Le **Skill JIRA** fournit une synchronisation bidirectionnelle complète entre l
 5. **Import sprints** → Tous les sprints avec tickets associés
 6. **Génération rapports** → Rapports HTML pour chaque sprint
 
-**Agents utilisés** : 1 agent (agent-aikido-jira)
 
 **Performance** : Variable selon taille projet (peut prendre plusieurs minutes pour gros projets)
 
-**Résultat** : Memory Bank complètement peuplée avec tout le contenu JIRA
 
 ---
 
@@ -1205,7 +1086,6 @@ Le **Skill JIRA** fournit une synchronisation bidirectionnelle complète entre l
 4. **Tableaux interactifs** → Tri, filtrage, recherche (vanilla JS)
 5. **Assets** → CSS/JS inclus (autonome, pas de serveur requis)
 
-**Agents utilisés** : 1 agent (agent-aikido-jira)
 
 **Performance** : <10s génération rapport
 
@@ -1213,14 +1093,11 @@ Le **Skill JIRA** fournit une synchronisation bidirectionnelle complète entre l
 
 ---
 
-##### `jira-sync-backlog` - Synchronisation Backlog JIRA 🆕
 
-**Objectif** : Synchroniser les tickets du backlog JIRA et générer une vue HTML de gestion
 
 **Syntaxe** :
 
 ```bash
-/jira-sync-backlog [BOARD_ID]
 ```
 
 **Processus** :
@@ -1231,16 +1108,12 @@ Le **Skill JIRA** fournit une synchronisation bidirectionnelle complète entre l
 4. **Génération vue HTML** → Tableau interactif de gestion backlog
 5. **Statistiques** → Compteurs par priorité, type, status
 
-**Agents utilisés** : 1 agent (agent-aikido-jira)
 
-**Résultat** : Vue backlog dans `prompts/gen/use_cases/jira/[Backlog]/backlog.html`
 
 ---
 
-**Architecture des Données JIRA** :
 
 ```
-prompts/gen/use_cases/jira/
 ├── [General]/
 │   └── project-info.json              # Métadonnées projet
 ├── [Sprints]/
@@ -1276,13 +1149,8 @@ prompts/gen/use_cases/jira/
 
 **Configuration** :
 
-Créer fichier `.env` dans `prompts/hard_points/system/jira/` :
 
 ```bash
-JIRA_URL="https://your-domain.atlassian.net"
-JIRA_USER="your-email@example.com"
-JIRA_API_TOKEN="your-api-token-here"
-JIRA_PROJECT_KEY="PROJ"
 ```
 
 **Générer API Token** : https://id.atlassian.com/manage-profile/security/api-tokens
@@ -1958,68 +1826,45 @@ fi
 
 **Bénéfice** : Mise à jour sûre avec zéro perte d'information, adoption progressive des évolutions AI-KIDO
 
-#### 13. **agent-aikido-confluence** 🔄 (Synchronisateur Confluence Cloud)
 
-**Spécialisation** : Synchronisation bidirectionnelle Memory Bank AI-KIDO ↔ Confluence Cloud avec gestion métadonnées YAML et stratégie last-write-wins
 
 **Quand l'utiliser** :
 
-- Synchroniser Memory Bank avec Confluence Cloud (push/pull)
-- Créer nouvelles pages Confluence depuis fichiers Markdown locaux
-- Importer pages Confluence existantes vers fichiers locaux
-- Tester connexion API Confluence et valider credentials
-- Visualiser arborescence complète d'un espace Confluence
 - Gérer métadonnées YAML de synchronisation (page_id, last_sync, version)
 
 **Capabilities** :
 
 - **Synchronisation bidirectionnelle** : Last-write-wins (timestamps) ou manuelle
-- **Conversion formats** : Markdown ↔ Confluence Storage Format (via pandoc)
-- **Gestion métadonnées** : YAML frontmatter avec confluence_page_id, last_sync, space, parent_id
 - **Mapping hiérarchique** : `index.md`/`README.md` = page parente automatique
 - **Attachments intelligents** : Cache MD5, upload uniquement si modifié
 - **Mode interactif** : Gestion pages orphelines avec confirmation utilisateur
-- **API REST v2** : Confluence Cloud API complète
 
 **Operations disponibles** :
 
-- **test** : Vérifier connexion Confluence API
 - **init** : Initialiser header YAML dans fichier Markdown
-- **create** : Créer nouvelle page Confluence depuis Markdown local
-- **import** : Importer page Confluence vers fichier Markdown local
 - **sync** : Synchronisation bidirectionnelle (last-write-wins ou manual)
-- **tree** : Afficher arborescence espace Confluence
 
 **Performance** :
 
 - **Sync time** : 2-5s par page (conversion + API)
-- **Strategy** : Last-write-wins (compare local modified vs Confluence version)
 - **Conflict resolution** : Automatique (timestamps) ou manuelle
 - **Tokens** : <2,000 par fichier
 
 **Prérequis** :
 
-- Confluence Cloud account avec API token
 - Configuration `.env` : CONFLUENCE_URL, CONFLUENCE_USER, CONFLUENCE_TOKEN
 - Pandoc installé (`brew install pandoc`)
 
 **Conformité** : ✅ 520 lignes (respecte contrainte 1000 lignes extended - agent technique)
 
-**Intégration** : Appelé via commandes `/confluence-*` ou directement comme agent spécialisé
 
-#### 14. **agent-aikido-jira** 📊 (Synchronisateur & Analyseur JIRA Cloud)
 
-**Spécialisation** : Synchronisation bidirectionnelle Memory Bank AI-KIDO ↔ JIRA Cloud avec calcul automatique de KPI Agile et génération de rapports HTML interactifs
 
 **Quand l'utiliser** :
 
-- Synchroniser Memory Bank avec JIRA Cloud (push/pull bidirectionnel)
 - Calculer KPI Agile pour analyse de sprints (vélocité, burndown, temps, qualité)
 - Générer rapports HTML interactifs avec Chart.js et tableaux triables
-- Importer projet JIRA complet (épics, features, tickets, sprints)
 - Analyser métriques sprint avec JQ (calcul performant)
-- Tester connexion API JIRA et valider credentials
-- Initialiser structure Memory Bank pour projet JIRA
 - Gérer structure hiérarchique EPICS → FEATURES → TICKETS
 
 **Capabilities** :
@@ -2028,13 +1873,10 @@ fi
 - **Calcul KPI Agile** : Vélocité (SP committed vs completed, moyenne 3 sprints), Burndown (idéal vs actuel, tracking quotidien), Temps (estimé vs passé vs restant, efficacité %), Tickets (Total/Completed/In Progress/Todo/Blocked), Qualité (bugs trouvés/résolus, taux défaut %)
 - **Rapports HTML interactifs** : Dashboard 4 KPI cards, graphiques Chart.js (burndown, distribution), tableaux triables/filtrables (vanilla JS), autonome (données JSON local)
 - **Structure hiérarchique** : EPICS → FEATURES → TICKETS avec métadonnées complètes
-- **API REST v3** : JIRA Cloud API complète avec gestion erreurs
 - **JQ obligatoire** : Calcul KPI ultra-performant (<1s pour 1000 lignes JSON)
 
 **Operations disponibles** :
 
-- **test** : Vérifier connexion JIRA API et credentials
-- **init** : Initialiser structure Memory Bank pour projet JIRA
 - **sync-sprints** : Synchroniser sprints + générer rapports HTML avec KPI
 - **sync-tickets** : Synchronisation bidirectionnelle tickets (unique/sprint/all)
 - **sync-project** : Synchroniser métadonnées générales projet
@@ -2047,21 +1889,17 @@ fi
 
 - **Sync time** : 15-30s par sprint (50 tickets) + génération rapport
 - **Tokens** : <2,500 per sprint
-- **Strategy** : Last-write-wins (compare local modified vs JIRA updated)
 - **Conflict resolution** : Automatique (timestamps) ou manuelle
 - **KPI calculation** : JQ-based (<1s for 1000 lines JSON)
 
 **Prérequis** :
 
-- JIRA Cloud account avec API token
-- Configuration `.env` : JIRA_URL, JIRA_USER, JIRA_API_TOKEN, JIRA_PROJECT_KEY
 - **JQ obligatoire** : `brew install jq` (macOS) / `apt install jq` (Linux)
 - Curl et bash 4.0+
 
 **Architecture données** :
 
 ```
-prompts/gen/use_cases/jira/
 ├── [General]/project-info.json
 ├── [Sprints]/SPRINT-001/
 │   ├── sprint-data.json
@@ -2076,7 +1914,6 @@ prompts/gen/use_cases/jira/
 
 **Conformité** : ✅ 580 lignes (respecte contrainte 1000 lignes extended - agent technique)
 
-**Intégration** : Appelé via commandes `/jira-*` ou directement comme agent spécialisé
 
 ### 🎯 Roadmap Agents AI-KIDO
 
@@ -2090,8 +1927,6 @@ prompts/gen/use_cases/jira/
 
 **Nouveaux agents créés récemment** :
 
-- ✅ **agent-aikido-jira** : Synchronisateur & Analyseur JIRA Cloud avec KPI Agile et rapports HTML (~580 lignes) 🆕
-- ✅ **agent-aikido-confluence** : Synchronisateur Confluence Cloud bidirectionnel (~520 lignes) 🆕
 - ✅ **agent-aikido-explore-code** : Recherche code source avec métadonnées structurées (~650 lignes)
 - ✅ **agent-aikido-explore-all** : Orchestrateur recherche parallèle bank+code (~150 lignes)
 
@@ -2417,8 +2252,6 @@ Toutes les commandes sont documentées dans [`prompts/hard_points/commands/`](pr
 - **Commandes de création** : `create-persona`, `create-command` 🆕, `create-search-plan` 🆕, `create-analyse-plan` 🆕, `compile-agent-from-use`
 - **Commandes de maintenance** : `check-claude`, `check-truth` 🆕, `maj-aikido`, `validate-search-plan` 🆕, `validate-analyse-plan` 🆕
 - **Commandes d'indexation** : `reindex-projet` 🆕, `clean-index` 🆕
-- **Commandes de synchronisation externe - Confluence** : `confluence-test` 🆕, `confluence-init` 🆕, `confluence-create-page` 🆕, `confluence-import-page` 🆕, `confluence-sync` 🆕, `confluence-tree` 🆕
-- **Commandes de synchronisation externe - JIRA** : `jira-test` 🆕, `jira-init` 🆕, `jira-sync-sprints` 🆕, `jira-sync-tickets` 🆕, `jira-sync-project` 🆕, `jira-sync-epic` 🆕, `jira-import-full` 🆕, `jira-sync-backlog` 🆕
 - **Commandes de traçabilité** : `logllmon`, `logllmoff`
 
 ## 🎓 Philosophie et Avantages

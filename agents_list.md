@@ -17,8 +17,6 @@
 | 📑 **agent-aikido-indexer** | [agent-aikido-maj-md-index.md](prompts/hard_points/agents/agent-aikido-maj-md-index.md) | MAJ automatique index.md + AGENTS.md |
 | 🔀 **agent-aikido-fusion** | [agent-aikido-fusion.md](prompts/hard_points/agents/agent-aikido-fusion.md) | Fusion intelligente de fichiers lors mises à jour AI‑KIDO |
 | 🔧 **agent-aikido-update-controller** | [agent-aikido-update-controller.md](prompts/hard_points/agents/agent-aikido-update-controller.md) | Contrôle les mises à jour du système AI‑KIDO, sauvegarde, validation, exécution des plans de mise à jour et roll‑back. |
-| 🔄 **agent-aikido-confluence** | [agent-aikido-confluence.md](prompts/hard_points/system/confluence/agents/agent-aikido-confluence.md) | Synchronisation bidirectionnelle Memory Bank ↔ Confluence Cloud |
-| 📊 **agent-aikido-jira** 🆕 | [agent-aikido-jira.md](prompts/hard_points/system/jira/agents/agent-aikido-jira.md) | Synchronisation bidirectionnelle, analyse métriques JIRA et génération rapports interactifs |
 | 🤖 **agent-aikido-helper** | [agent-aikido-helper.md](prompts/hard_points/agents/agent-aikido-helper.md) | Assistant pédagogique pour répondre aux questions d'usage AI‑KIDO |
 
 ## 👥 Available Agents Personas Experts
@@ -92,19 +90,6 @@
 - Mises à jour externes (`/maj-aikido --update`)
 - Fusion préservant contexte projet + adopter nouveau formalisme
 
-### agent-aikido-confluence
-- Synchronisation bidirectionnelle Memory Bank ↔ Confluence
-- Gestion métadonnées YAML dans documents
-- Stratégie last-write-wins
-- Conversion Markdown ↔ Confluence Storage Format
-
-### agent-aikido-jira
-- ✅ Synchronisation bidirectionnelle Memory Bank ↔ JIRA Cloud
-- ✅ Calcul KPI Agile (vélocité, burndown, temps, qualité) avec JQ
-- ✅ Génération rapports HTML interactifs (Chart.js, tableaux triables)
-- ✅ Analyse JSON performante avec JQ obligatoire
-- ✅ Structure hiérarchique EPICS → FEATURES → TICKETS
-- ❌ NE PAS UTILISER: Pas de compte JIRA Cloud, pas besoin sync externe, travail purement local
 
 ## Workflows Principaux
 

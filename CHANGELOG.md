@@ -11,7 +11,6 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/lang/fr/).
 
 | Version | Date | Agents | Commandes | Skills | Lignes Code | README | Highlights |
 |---------|------|--------|-----------|--------|-------------|---------|-----------|
-| **1.3.1** | 2026-01-06 | 14 | 33 | **7 (5+2)** | ~56K | 2,464 | 🆕 Skills Confluence + JIRA |
 | **1.3.0** | 2025-12-19 | 14 | 33 | **5** | ~56K | 2,464 | 🎯 Centralisation + 5 Skills de base |
 | **1.2.0** | 2025-11-15 | 6 | 10 | 0 | ~6K | 524 | 🌱 Base AI-KIDO |
 
@@ -23,17 +22,10 @@ V1.2.0 (Nov 2025) ──────→ V1.3.0 (Déc 2025) ──────→
   10 commandes              33 commandes (+23)       33 commandes
   0 skill                   5 skills (+5)            7 skills (+2)
   ~6K lignes                ~56K lignes (+933%)      ~56K lignes
-  Base                      Centralisation           Confluence + JIRA
+  Base                      Centralisation           Fixs
 ```
 
 ### Changements Majeurs par Version
-
-**V1.3.1 (2026-01-06)** :
-- 🆕 **Skill Confluence** (5 jan) : Synchronisation bidirectionnelle Confluence Cloud + 6 commandes
-- 🆕 **Skill JIRA** (6 jan) : Synchronisation Cloud + KPI Agile + Rapports HTML + 9 commandes
-- 📊 Agent confluence (520 lignes) + Agent jira (580 lignes)
-- 📈 15 commandes externes (6 Confluence + 9 JIRA)
-- 🔧 77 scripts bash (+15 nouveaux pour Confluence/JIRA)
 
 **V1.3.0 (2025-12-19)** :
 - 🎯 **Centralisation massive** : 33 commandes dans `hard_points/commands/`
@@ -50,129 +42,6 @@ V1.2.0 (Nov 2025) ──────→ V1.3.0 (Déc 2025) ──────→
 
 ---
 
-## [1.3.1] - 2026-01-06
-
-### 🎉 Ajouté
-
-#### Skill Confluence - Synchronisation Bidirectionnelle Confluence Cloud
-
-**Ajouté le 5 janvier 2026** (commits 6f2b908, c0941eb)
-
-- **Agent** : `agent-aikido-confluence` (520 lignes) - Synchronisateur Confluence Cloud bidirectionnel
-- **6 Commandes Confluence** :
-  - `confluence-test` : Test connexion API Confluence Cloud
-  - `confluence-init` : Initialisation métadonnées Confluence dans Markdown
-  - `confluence-create-page` : Création page Confluence depuis Markdown
-  - `confluence-import-page` : Import page Confluence vers Markdown
-  - `confluence-sync` : Synchronisation bidirectionnelle (last-write-wins)
-  - `confluence-tree` : Arborescence complète espace Confluence
-
-- **Fonctionnalités** :
-  - Synchronisation bidirectionnelle Memory Bank ↔ Confluence Cloud (API REST v2)
-  - Conversion Markdown ↔ Storage Format (pandoc + scripts bash)
-  - Gestion métadonnées YAML (confluence_id, space_key, parent_id, last_modified)
-  - Stratégie last-write-wins (timestamps UTC)
-  - Mapping hiérarchique automatique (arborescence → pages/sous-pages)
-  - Gestion attachments avec cache MD5
-
-- **Configuration** : `.env` pour credentials Confluence Cloud (URL, email, API token)
-- **Scripts** : 8 scripts bash pour API Confluence, conversion, synchronisation
-- **Documentation** : `SKILL.md` (7.1K), `README.md` (160 lignes), `.env.example`
-- **Prérequis** : pandoc obligatoire pour conversion Markdown ↔ Storage Format
-
-#### Skill JIRA - Synchronisation & Analyse JIRA Cloud
-
-**Ajouté le 6 janvier 2026** (commit 043efdb)
-- **Agent** : `agent-aikido-jira` - Synchronisation bidirectionnelle Memory Bank ↔ JIRA Cloud
-- **9 Commandes JIRA** :
-  - `jira-test` : Test connexion API JIRA Cloud
-  - `jira-init` : Initialisation projet JIRA dans Memory Bank
-  - `jira-sync-sprints` : Synchronisation sprints + génération rapports KPI
-  - `jira-sync-tickets` : Synchronisation bidirectionnelle tickets (last-write-wins)
-  - `jira-sync-project` : Synchronisation métadonnées générales projet
-  - `jira-sync-epic` : Synchronisation epic complet avec hiérarchie
-  - `jira-import-full` : Import complet projet (épics, features, tickets, sprints)
-  - `jira-sync-backlog` : Synchronisation backlog + vue HTML gestion
-- **Fonctionnalités** :
-  - Calcul automatique KPI Agile (vélocité, burndown, temps, qualité) avec JQ
-  - Génération rapports HTML interactifs (Chart.js, tableaux triables)
-  - Structure hiérarchique EPICS → FEATURES → TICKETS
-  - Stratégie last-write-wins (timestamps UTC)
-  - Architecture données JSON optimisée
-- **Configuration** : `.env` pour credentials JIRA Cloud
-- **Scripts** : 15+ scripts bash pour API JIRA, calcul KPI, génération rapports
-- **Templates** : Templates HTML/JS pour rapports interactifs
-- **Documentation** : `SKILL.md`, `README.md`, `ARCHITECTURE.md`, `install-aikido.md`
-
-#### Documentation et Structure
-
-**README.md - Sections Skills Externes** (+470 lignes) :
-- **Section complète Skill Confluence** (160 lignes) :
-  - 6 commandes documentées avec syntaxe, processus, agents
-  - Architecture synchronisation bidirectionnelle
-  - Stratégie last-write-wins détaillée
-  - Configuration et prérequis pandoc
-
-- **Section complète Skill JIRA** (310 lignes) :
-  - 9 commandes documentées avec syntaxe, processus, KPI
-  - Architecture données hiérarchique (EPICS → FEATURES → TICKETS)
-  - Calcul KPI Agile automatique (vélocité, burndown, temps, qualité)
-  - Génération rapports HTML interactifs
-  - Configuration et prérequis JQ
-
-**README.md - Structure Projet** (refonte section existante) :
-- Documentation `/prompts/hard_points/system/` avec **7 skills** (confluence et jira ajoutés)
-- Arborescence mise à jour avec répertoires confluence/ et jira/
-- Tableau Skills Système complété (7 skills au total)
-
-**Fichiers de référence mis à jour** :
-- **agents_list.md** : Sections utilisation `agent-aikido-confluence` et `agent-aikido-jira`
-- **skills_list.md** : Entrées Skill Confluence et Skill JIRA
-- **commands_list.md** : 15 commandes externes (6 Confluence + 9 JIRA) référencées
-
-#### Mapping et Configuration
-
-**Confluence** :
-- **`.claude/agents/agent-aikido-confluence.md`** : Mapping agent pour Claude Code
-- **`.claude/commands/`** : 6 wrappers commandes Confluence
-- **`.roo/commands/`** : 6 wrappers commandes Confluence
-- **`.roomodes`** : Configuration agent `agent-aikido-confluence`
-
-**JIRA** :
-- **`.claude/agents/agent-aikido-jira.md`** : Mapping agent pour Claude Code
-- **`.claude/commands/`** : 9 wrappers commandes JIRA
-- **`.roo/commands/`** : 9 wrappers commandes JIRA
-- **`.roomodes`** : Configuration agent `agent-aikido-jira`
-
-**Total V1.3.1** : 48 fichiers mappings dans `.claude/` et `.roo/`
-
-### 🔧 Modifié
-
-- **Installation** : Scripts bash rendus exécutables (`chmod +x`)
-- **Configuration** : Ajout prérequis JQ obligatoire (macOS/Linux) pour Skill JIRA
-- **Configuration** : Ajout prérequis pandoc obligatoire (macOS/Linux) pour Skill Confluence
-
-### 📊 Statistiques V1.3.1
-
-| Métrique | V1.3.0 | V1.3.1 | Évolution |
-|----------|--------|--------|-----------|
-| **Skills système** | 5 | 7 | **+2 (Confluence, JIRA)** |
-| **Agents** | 12 | 14 | **+2 (confluence, jira)** |
-| **Commandes externes** | 0 | 15 | **+15 (6 Confluence + 9 JIRA)** |
-| **Scripts bash** | 62 | 77 | **+15 (8 Confluence + 7 JIRA)** |
-| **Templates** | 0 | 3+ | **+3 (JIRA HTML/JS)** |
-| **Documentation Skills** | 14.2K | 31.2K | **+17K (+120%)** |
-| **README.md Skills** | ~400 lignes | ~870 lignes | **+470 lignes (+118%)** |
-
-**Nouveaux contenus V1.3.1** :
-- **2 Skills externes** : Confluence (7.1K) + JIRA (9.9K) = **17K documentation**
-- **2 Agents majeurs** : confluence (520 lignes) + jira (580 lignes) = **1,100 lignes**
-- **15 commandes externes** : Intégration complète systèmes externes
-- **15 scripts bash** : Automatisation API Confluence/JIRA, conversion, KPI
-- **3+ templates HTML/JS** : Rapports interactifs JIRA avec Chart.js
-
----
-
 ## [1.3.0] - 2025-12-09
 
 ### 📊 Statistiques Globales
@@ -183,7 +52,6 @@ V1.2.0 (Nov 2025) ──────→ V1.3.0 (Déc 2025) ──────→
 - **Net: +50,240 lignes** (croissance x10 !)
 - **README.md** : 524→2464 lignes (+1940 lignes, **x4.7**)
 - **hard_points/** : 96→197 fichiers (**+101 fichiers**)
-- **77 scripts bash** dans system/ (dont 7 pour JIRA)
 - **205 fichiers** dans system/, **14 agents**, **21 commandes**
 
 ### 🎉 Ajouté
@@ -276,7 +144,7 @@ V1.2.0 (Nov 2025) ──────→ V1.3.0 (Déc 2025) ──────→
 
 ##### Centralisation Agents (`/prompts/hard_points/agents/`)
 
-**12 Agents AI-KIDO internes créés** (Confluence et JIRA ajoutés en V1.3.1) :
+**12 Agents AI-KIDO internes créés** :
   1. `agent-aikido-explore-bank` : Explorateur Memory Bank (v5.1 Grep-only)
   2. `agent-aikido-explore-code` : Explorateur code source avec métadonnées
   3. `agent-aikido-explore-all` : Orchestrateur recherche parallèle bank + code
@@ -289,9 +157,6 @@ V1.2.0 (Nov 2025) ──────→ V1.3.0 (Déc 2025) ──────→
   10. `agent-aikido-balancer` : Équilibreur arborescence
   11. `agent-aikido-maj-md-index` : Indexeur Memory Bank (renommé depuis indexer)
   12. `agent-aikido-fusion` : Fusionneur intelligent
-
-**Note** : `agent-aikido-update-controller` et `agent-aikido-confluence` ajoutés progressivement.
-Les agents `agent-aikido-confluence` (520 lignes) et `agent-aikido-jira` (580 lignes) sont ajoutés en **V1.3.1**.
 
 #### Nouveaux Agents et Fonctionnalités
 
@@ -324,7 +189,6 @@ Les agents `agent-aikido-confluence` (520 lignes) et `agent-aikido-jira` (580 li
 - Truth validation metadata (last-check, source authority)
 - Source traceability avec dates modification
 - Optimisation truth-evaluator (fast-path, économie 70-80% tokens)
-
 
 #### Configuration et Mapping
 
@@ -369,14 +233,11 @@ Les agents `agent-aikido-confluence` (520 lignes) et `agent-aikido-jira` (580 li
    - **6 commandes de maintenance** détaillées (check-claude, check-truth, maj-aikido, analyse-aikido, reindex-projet, clean-index)
    - **2 commandes de traçabilité** (logllmon, logllmoff)
    - **Section "🔄 Commandes de Synchronisation Externe"** (310+ lignes) :
-     - 6 commandes Confluence : test, init, create-page, import-page, sync, tree
-     - **Skill JIRA complet** (220 lignes) : 9 commandes documentées avec syntaxe, processus, KPI, architecture données
    - **Section "🚀 Commandes d'Export"** : compile-agent-from-use
 
 4. **"🤖 Agents AI-KIDO Disponibles"** (700+ lignes) - **Nouvelle section complète** :
    - **14 agents spécialisés** documentés individuellement :
      - Spécialisation, quand l'utiliser, capabilities, conformité, intégration
-     - Exemples : explore-bank (366 lignes agent), explore-code (650 lignes), explore-all (150 lignes), projet-index (667 lignes), confluence (520 lignes), etc.
    - **Workflows inter-agents** : 6 patterns de base documentés
    - **Gains de performance** : Tableaux détaillés par agent (jusqu'à 500x)
    - **5 Use Cases détaillés** : Scénarios complets bout-en-bout
@@ -414,8 +275,6 @@ Les agents `agent-aikido-confluence` (520 lignes) et `agent-aikido-jira` (580 li
   - Scripts téléchargement sites web
 
 **Skills externes V1.3.1** (voir section V1.3.1) :
-- **Skill Confluence** (7.1K) : 6 commandes, 1 agent, scripts bash/pandoc
-- **Skill JIRA** (9.9K) : 9 commandes, 1 agent, 7 scripts bash, templates HTML/JS
 
 **Total Skills V1.3.0** : **14.2K** documentation + **62 scripts bash** (skills de base uniquement)
 
@@ -426,7 +285,6 @@ Les agents `agent-aikido-confluence` (520 lignes) et `agent-aikido-jira` (580 li
 - **`prompts/gen/concepts/analyse-projet.md`** (234 lignes) : Concept analyse projet
 - **`prompts/gen/concepts/guideline-prompts.md`** (36 lignes) : Guidelines prompts
 - **`prompts/gen/index.md`** : Enrichi (+45 lignes) avec navigation améliorée
-- **Use cases** enrichis : Confluence/, Jira/ avec données synchronisées
 
 #### Structure et Architecture V1.3
 
@@ -633,8 +491,6 @@ Les agents `agent-aikido-confluence` (520 lignes) et `agent-aikido-jira` (580 li
    - Fichiers réels déplacés dans `prompts/hard_points/commands/`
 
 3. **Nouveaux Skills** :
-   - Installer Skills selon besoins (Confluence, Search, Structure)
-   - Configurer `.env` pour Skills externes (Confluence)
 
 4. **Agents supplémentaires** :
    - 8 nouveaux agents disponibles
@@ -663,7 +519,6 @@ Les agents `agent-aikido-confluence` (520 lignes) et `agent-aikido-jira` (580 li
 
 **Processus automatique** :
 1. ✅ Détection dépôt Git AI-KIDO existant (`/prompts/spec/aikido-source-git/`)
-2. 🔄 `git pull` pour récupérer dernières modifications (Skills Confluence + JIRA)
 3. 📊 Analyse différentielle : comparaison source ↔ cible
 4. 🎯 Choix par fichier : REMPLACER / FUSIONNER / IGNORER
 5. 🔒 Hard points remplacés automatiquement
@@ -671,7 +526,6 @@ Les agents `agent-aikido-confluence` (520 lignes) et `agent-aikido-jira` (580 li
 7. 📋 Rapport détaillé
 
 **Avantages** :
-- ✅ Installation automatique Skills Confluence et JIRA
 - ✅ Mise à jour agents, commandes, scripts
 - ✅ Fusion intelligente avec `agent-aikido-fusion`
 - ✅ Backup automatique (fichiers .bak)
@@ -683,13 +537,9 @@ Les agents `agent-aikido-confluence` (520 lignes) et `agent-aikido-jira` (580 li
 
 **Si vous préférez installer manuellement les Skills** :
 
-##### 1. **Installer Skill Confluence** (optionnel)
-
 ```bash
-# Suivre guide : prompts/hard_points/system/confluence/README.md
 ```
 
-**Prérequis pandoc** (obligatoire pour Confluence) :
 ```bash
 # macOS
 brew install pandoc
@@ -701,23 +551,16 @@ apt install pandoc
 yum install pandoc
 ```
 
-**Configuration Confluence** :
 ```bash
-cd prompts/hard_points/system/confluence/
 cp .env.example .env
-# Éditer .env avec credentials Confluence Cloud :
 # - CONFLUENCE_URL (ex: https://your-domain.atlassian.net/wiki)
 # - CONFLUENCE_USER (email)
 # - CONFLUENCE_API_TOKEN (générer sur Atlassian)
 ```
 
-##### 2. **Installer Skill JIRA** (optionnel)
-
 ```bash
-# Suivre guide : prompts/hard_points/system/jira/install-aikido.md
 ```
 
-**Prérequis JQ** (obligatoire pour JIRA) :
 ```bash
 # macOS
 brew install jq
@@ -729,15 +572,8 @@ apt install jq
 yum install jq
 ```
 
-**Configuration JIRA** :
 ```bash
-cd prompts/hard_points/system/jira/
 cp .env.example .env
-# Éditer .env avec credentials JIRA Cloud :
-# - JIRA_URL (ex: https://your-domain.atlassian.net)
-# - JIRA_USER (email)
-# - JIRA_API_TOKEN (générer sur Atlassian)
-# - JIRA_PROJECT_KEY (ex: PROJ)
 ```
 
 ##### 3. **Redémarrer IDE**
@@ -753,16 +589,10 @@ cp .env.example .env
 
 1. **Vérifier installation** :
    ```bash
-   # Tester Confluence (si installé)
-   /confluence-test
 
-   # Tester JIRA (si installé)
-   /jira-test
    ```
 
 2. **Consulter documentation** :
-   - README.md section "Skills Confluence" (160 lignes)
-   - README.md section "Skills JIRA" (310 lignes)
    - `agents_list.md` pour utilisation agents
 
 3. **Mapping automatique** :
@@ -775,11 +605,9 @@ cp .env.example .env
 
 #### Compatibilité
 
-- ✅ **Rétrocompatible** : Skills Confluence et JIRA **optionnels**
 - ✅ **Pas de breaking change** : Système existant non affecté
 - ✅ **Installation guidée** : Documentation complète fournie
 - ✅ **Rollback possible** : Backups automatiques (.bak)
-- ⚠️ **Prérequis externes** : pandoc (Confluence) et jq (JIRA) requis si Skills utilisés
 
 ---
 
@@ -790,7 +618,6 @@ cp .env.example .env
 #### Fonctionnalités Prévues
 - Intégration du Skill DEX.
 - Améliorations UX pour commandes interactives.
-- Intégration de Skill BA pour action entre DEX et Jira.
 - Intégration Skills TestLeaders et DevOps.
 - Support multi-langues (FR/EN). (Opt)
 
