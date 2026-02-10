@@ -166,6 +166,7 @@ def resolve_analysis_plan(nature: str, profondeur: int) -> str:
 | **Standard Générique** | `plan-standard.md` | Fallback profondeur 2 (détail modéré) | ~400 |
 | **Approfondi Générique** | `plan-approfondi.md` | Fallback profondeur 3 (exhaustif) | ~500 |
 | **Expert Générique** | `plan-expert.md` | Fallback profondeur 4 (audit complet) | ~600 |
+| **Audit Technique Complet Expert** | `technique/audit-complet/plan-expert.md` | Audit technique multi-repository (frontend+backend) - Profondeur 4 | ~1200 |
 
 ### ⏳ À Créer (TODO - Priorisés)
 
