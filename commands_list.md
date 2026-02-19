@@ -9,6 +9,7 @@
 - **create-analyse-plan** : Guide interactif pour créer un plan d'analyse AI‑KIDO ([`create-analyse-plan.md`](prompts/hard_points/commands/create-analyse-plan.md:2))
 - **create-command** : Guide interactif pour créer des commandes AI‑KIDO ([`create-command.md`](prompts/hard_points/commands/create-command.md:2))
 - **create-persona** : Créer un nouveau persona ou agent AI‑KIDO interactivement (anthropomorphique ou technique) ([`create-persona.md`](prompts/hard_points/commands/create-persona.md:2))
+- **create-skill** : Guide interactif pour créer un squelette de Skill AI‑KIDO complet ([`create-skill.md`](prompts/hard_points/commands/create-skill.md:2))
 - **create-search-plan** : Guide interactif pour créer un plan de recherche AI‑KIDO ([`create-search-plan.md`](prompts/hard_points/commands/create-search-plan.md:2))
 - **download-site** : Télécharge un site web et convertit son contenu en Markdown ([`download-site.md`](prompts/hard_points/system/web/commands/download-site.md:2))
 - **init-aikido** : Initialiser la memory bank AI‑KIDO avec les éléments fondamentaux du projet ([`init-aikido.md`](prompts/hard_points/commands/init-aikido.md:2))

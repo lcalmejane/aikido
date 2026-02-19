@@ -23,10 +23,13 @@ Un **Skill** est un module de capacité spécialisée qui étend les fonctionnal
 
 skill-name/
 ├── SKILL.md           # Fichier principal (obligatoire)
-├── reference.md       # Documentation de référence (optionnel)
-├── examples.md        # Exemples d'usage (optionnel)
+├── references/       # Documentation de référence (optionnel)
+├── examples/        # Exemples d'usage (optionnel)
 ├── scripts/           # Scripts utilitaires (optionnel)
 │   └── helper.py
-└── templates/         # Modèles de fichiers (optionnel)
-    └── template.txt
+|── templates/         # Modèles de fichiers (optionnel)
+|   └── template.txt
+└── documentation/         # Documentation détaillée (optionnel)
+    └── documentation.md
+
 **Source** : [Skills Format](https://code.claude.com/docs/en/skills.md)
