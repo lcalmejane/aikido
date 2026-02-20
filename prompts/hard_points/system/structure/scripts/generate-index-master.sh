@@ -50,7 +50,7 @@ if [[ -d "$INDICES_DIR/by-id" ]]; then
         lines=$(jq -r '[.files[].lines] | add' "$batch_file")
         total_lines=$((total_lines + lines))
 
-        ((index_files_count++))
+        index_files_count=$((index_files_count + 1))
     done
 fi
 
@@ -59,7 +59,7 @@ if [[ -d "$INDICES_DIR/by-directory" ]]; then
     for batch_file in "$INDICES_DIR/by-directory"/index-dir-*.json; do
         count=$(jq -r '.metadata.directories_count' "$batch_file")
         total_dirs=$((total_dirs + count))
-        ((index_files_count++))
+        index_files_count=$((index_files_count + 1))
     done
 fi
 
@@ -115,7 +115,7 @@ if [[ -d "$INDICES_DIR/by-path" ]]; then
 "
         done
 
-        ((batch_num++))
+        batch_num=$((batch_num + 1))
     done
     # Enlever dernière virgule
     by_path_hash_table=$(echo "$by_path_hash_table" | sed '$ s/,$//')

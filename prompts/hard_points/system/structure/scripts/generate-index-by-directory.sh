@@ -107,7 +107,7 @@ while IFS='|' read -r dir ids names; do
         # Reset
         current_lines=0
         dirs_in_batch=0
-        ((batch_num++))
+        batch_num=$((batch_num + 1))
     fi
 
     # Ouvrir nouveau batch si nécessaire
@@ -130,7 +130,7 @@ EOF
     fi
 
     # Écrire directory → {ids: [...]}
-    if (( dirs_in_batch == 0 )); then
+    if [[ $dirs_in_batch -eq 0 ]]; then
         # Première entrée (pas de virgule)
         echo "    \"$(json_escape "$dir")\": {" >> "$current_batch_file"
     else
@@ -142,14 +142,14 @@ EOF
     echo "      \"ids\": [$(printf '\"%s\",' "${id_array[@]}" | sed 's/,$//')]" >> "$current_batch_file"
     echo "    }" >> "$current_batch_file"
 
-    ((dirs_in_batch++))
+    dirs_in_batch=$((dirs_in_batch + 1))
     current_lines=$((current_lines + estimated_lines))
 done < "$grouped_file"
 
 rm "$grouped_file"
 
 # Fermer dernier batch
-if (( current_lines > 0 )); then
+if [[ $current_lines -gt 0 ]]; then
     echo "  }" >> "$current_batch_file"
     echo "}" >> "$current_batch_file"
 
