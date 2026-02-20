@@ -92,9 +92,9 @@ current_batch_file=""
 
 while IFS='|' read -r name ids; do
     # Nouveau batch si nécessaire
-    if (( current_count % BATCH_SIZE == 0 )); then
+    if [[ $(( current_count % BATCH_SIZE )) -eq 0 ]]; then
         # Fermer batch précédent
-        if (( batch_num > 0 )); then
+        if [[ $batch_num -gt 0 ]]; then
             echo "  }" >> "$current_batch_file"
             echo "}" >> "$current_batch_file"
 
@@ -124,14 +124,14 @@ while IFS='|' read -r name ids; do
   "files": {
 EOF
 
-        ((batch_num++))
+        batch_num=$((batch_num + 1))
         current_count=0
     fi
 
     # Écrire name → [IDs]
     IFS=',' read -ra id_array <<< "$ids"
 
-    if (( current_count == 0 )); then
+    if [[ $current_count -eq 0 ]]; then
         # Première entrée du batch (pas de virgule)
         if [[ ${#id_array[@]} -eq 1 ]]; then
             echo "    \"$(json_escape "$name")\": [\"${id_array[0]}\"]" >> "$current_batch_file"
@@ -148,13 +148,13 @@ EOF
     fi
 
     last_char="${name:0:1}"
-    ((current_count++))
+    current_count=$((current_count + 1))
 done < "$grouped_file"
 
 rm "$grouped_file"
 
 # Fermer dernier batch
-if (( current_count > 0 )); then
+if [[ $current_count -gt 0 ]]; then
     echo "  }" >> "$current_batch_file"
     echo "}" >> "$current_batch_file"
 

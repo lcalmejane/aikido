@@ -60,9 +60,9 @@ current_count=0
 
 while IFS='|' read -r path file_id; do
     # Nouveau batch si nécessaire
-    if (( current_count % BATCH_SIZE == 0 )); then
+    if [[ $(( current_count % BATCH_SIZE )) -eq 0 ]]; then
         # Fermer batch précédent
-        if (( batch_num > 0 )); then
+        if [[ $batch_num -gt 0 ]]; then
             echo "  }" >> "$current_batch_file"
             echo "}" >> "$current_batch_file"
         fi
@@ -84,18 +84,18 @@ while IFS='|' read -r path file_id; do
   "paths": {
 EOF
 
-        ((batch_num++))
+        batch_num=$((batch_num + 1))
     fi
 
     # Écrire path → ID (format ultra compact)
-    if (( current_count % BATCH_SIZE == 0 )); then
+    if [[ $(( current_count % BATCH_SIZE )) -eq 0 ]]; then
         # Première entrée du batch (pas de virgule avant)
         echo "    \"$(json_escape "$path")\": \"$file_id\"" >> "$current_batch_file"
     else
         echo "    ,\"$(json_escape "$path")\": \"$file_id\"" >> "$current_batch_file"
     fi
 
-    ((current_count++))
+    current_count=$((current_count + 1))
 done < "$temp_file"
 
 # Fermer dernier batch
