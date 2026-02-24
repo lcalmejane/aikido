@@ -25,6 +25,7 @@ skill-name/
 ├── SKILL.md           # Fichier principal (obligatoire)
 ├── references/       # Documentation de référence (optionnel)
 ├── examples/        # Exemples d'usage (optionnel)
+├── personas/        # Personas (optionnel)
 ├── scripts/           # Scripts utilitaires (optionnel)
 │   └── helper.py
 |── templates/         # Modèles de fichiers (optionnel)
