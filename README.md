@@ -2253,6 +2253,7 @@ Toutes les commandes sont documentées dans [`prompts/hard_points/commands/`](pr
 - **Commandes de maintenance** : `check-claude`, `check-truth` 🆕, `maj-aikido`, `validate-search-plan` 🆕, `validate-analyse-plan` 🆕
 - **Commandes d'indexation** : `reindex-projet` 🆕, `clean-index` 🆕
 - **Commandes de traçabilité** : `logllmon`, `logllmoff`
+- **Commandes de gestion des skills** : `create-skill`, `skill-get` 🆕
 
 ## 🎓 Philosophie et Avantages
 

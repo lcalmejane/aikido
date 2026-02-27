@@ -26,7 +26,7 @@
 
 **Commands Spécifiques AI-KIDO**
 
-- `/init-aikido`, `/create-persona`, `/create-command`, `/analyse-project`, `/analyse-aikido`, `/maj-aikido`, `/init-glossaire`, `/check-truth`, `/list-command`, `/clean-index`, `/reindex-projet`, `/validate-analyse-plan`, `/create-search-plan`, `/validate-search-plan`, `/create-analyse-plan` → Voir [prompts/hard_points/commands/](prompts/hard_points/commands/)
+- `/init-aikido`, `/create-persona`, `/create-command`, `/analyse-project`, `/analyse-aikido`, `/maj-aikido`, `/init-glossaire`, `/check-truth`, `/list-command`, `/clean-index`, `/reindex-projet`, `/validate-analyse-plan`, `/create-search-plan`, `/validate-search-plan`, `/create-analyse-plan`, `/skill-get` → Voir [prompts/hard_points/commands/](prompts/hard_points/commands/)
 
 ## Workflows et Orchestration
 
