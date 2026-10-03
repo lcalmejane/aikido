@@ -45,7 +45,7 @@ AI‑KIDO repose sur 18 règles fondamentales qui garantissent :
 6. ✅ Migration V1.3 si nécessaire
 7. 📋 Rapport détaillé de la mise à jour
 
-**Avantages** : Rapide, pas de téléchargement, synchronisation directe depuis aikido.fr
+**Avantages** : Rapide, pas de téléchargement, synchronisation directe depuis le dépôt GitHub
 
 ---
 
@@ -181,7 +181,7 @@ find . -name "*.bak.*" -type f
 | Situation | Commande | Source |
 |-----------|----------|--------|
 | **Git AI-KIDO déjà cloné** | `/maj-aikido --update` | Pull automatique |
-| **Première installation depuis Git** | `/maj-aikido --update` → Option 1 | Clone depuis aikido.fr |
+| **Première installation depuis Git** | `/maj-aikido --update` → Option 1 | Clone depuis GitHub |
 | **Depuis archive tar.gz/zip** | `/maj-aikido --update` → Option 3 | Extraction archive |
 | **Depuis répertoire local** | `/maj-aikido --update` → Option 2 | Copie depuis répertoire |
 

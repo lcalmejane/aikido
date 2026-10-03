@@ -5,3 +5,5 @@ spec/
 prompts/hard_points/system/structure/indices
 prompts/hard_points/system/structure/index.json
 prompts/hard_points/system/structure/index.json
+.claude/worktrees
+.claude/worktrees/*

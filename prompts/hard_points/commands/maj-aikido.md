@@ -137,7 +137,7 @@ Enter your choice (1/2/3):
 
 ##### 3.1 GIT Source (if choice = 1)
 
-**Action: Clone or update the aikido.fr Git repository**
+**Action: Clone or update the AI-KIDO Git repository**
 
 1. **Define variables**:
    - `AIKIDO_REPO="git@github.com:lcalmejane/aikido.git"`
