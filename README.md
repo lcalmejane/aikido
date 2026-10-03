@@ -1,174 +1,176 @@
-# AI‑KIDO – Méthode de Construction de Memory Bank IA
+> 🌐 **English** | [Français](README_FR.md)
+
+# AI‑KIDO – AI Memory Bank Construction Method
 
 ## Description
 
-**AI‑KIDO** est une méthode structurée pour créer et maintenir une **memory bank** (base de connaissances) optimisée pour les interactions avec les LLM avec une équipe humaine. Cette base constitue un système de **Tables de Vérités** hiérarchique permettant de capitaliser, structurer et réutiliser les connaissances de manière efficace et cohérente.
+**AI‑KIDO** is a structured method for creating and maintaining a **memory bank** (knowledge base) optimized for LLM interactions within a human team. This base forms a hierarchical **Truth Tables** system that makes it possible to capitalize, structure and reuse knowledge efficiently and consistently.
 
-La méthode AI‑KIDO suit un processus itératif alternant entre approches **fonctionnelle/technique** et **globale/spécifique** pour construire progressivement une base de connaissances robuste et évolutive.
+The AI‑KIDO method follows an iterative process alternating between **functional/technical** and **global/specific** approaches in order to progressively build a robust and scalable knowledge base.
 
-## 🎯 Philosophie AI‑KIDO
+## 🎯 AI‑KIDO Philosophy
 
-AI‑KIDO repose sur 18 règles fondamentales qui garantissent :
+AI‑KIDO is based on 18 fundamental rules that guarantee:
 
-- **🌳 Structure arborescente** : Navigation récursive depuis un point d'entrée unique
-- **📊 Séparation théorie/pratique** : Concepts vs techniques, personas vs use cases
-- **🔄 Auto-alimentation** : Amélioration continue basée sur les retours d'expérience
-- **⚖️ Équilibrage** : Contraintes de taille (≤500 lignes standard, ≤1000 pour agents/personas/commands/skills, prompts/hard_points/system/structure/index.json no limit.) et profondeur (4 niveaux max)
-- **🔗 Liens bidirectionnels** : Navigation cohérente dans toutes les directions
-- **👥 Répartition par rôles** : Organisation collaborative avec matrice RACI
+- **🌳 Tree structure**: Recursive navigation from a single entry point
+- **📊 Theory/practice separation**: Concepts vs techniques, personas vs use cases
+- **🔄 Self-feeding**: Continuous improvement based on lessons learned
+- **⚖️ Balancing**: Size constraints (≤500 lines standard, ≤1000 for agents/personas/commands/skills, prompts/hard_points/system/structure/index.json no limit.) and depth (4 levels max)
+- **🔗 Bidirectional links**: Consistent navigation in every direction
+- **👥 Role distribution**: Collaborative organization with a RACI matrix
 
 ---
 
-## 🔄 Mettre à Jour une Base AI-KIDO Existante
+## 🔄 Updating an Existing AI-KIDO Base
 
-### Deux Méthodes de Mise à Jour
+### Two Update Methods
 
-#### 📦 Méthode 1 : Mise à Jour Directe (Git AI-KIDO déjà cloné)
+#### 📦 Method 1: Direct Update (AI-KIDO Git already cloned)
 
-**Si vous avez déjà le dépôt Git AI-KIDO dans `/prompts/spec/aikido-source-git/`** :
+**If you already have the AI-KIDO Git repository in `/prompts/spec/aikido-source-git/`**:
 
 ```bash
-# Lancer la mise à jour en mode UPDATE
+# Run the update in UPDATE mode
 /maj-aikido --update
 ```
 
-**Processus** :
+**Process**:
 
-1. ✅ Détection automatique du dépôt Git existant
-2. 🔄 `git pull` pour récupérer les dernières modifications
-3. 📊 Analyse différentielle : comparaison source ↔ cible
-4. 🎯 Choix utilisateur par fichier :
-   - **REMPLACER** : Nouvelle version avec backup (.bak)
-   - **FUSIONNER** : Fusion intelligente avec agent-aikido-fusion
-   - **IGNORER** : Conserver version actuelle
-5. 🔒 Hard points remplacés automatiquement (autorité absolue)
-6. ✅ Migration V1.3 si nécessaire
-7. 📋 Rapport détaillé de la mise à jour
+1. ✅ Automatic detection of the existing Git repository
+2. 🔄 `git pull` to fetch the latest changes
+3. 📊 Differential analysis: source ↔ target comparison
+4. 🎯 User choice per file:
+   - **REPLACE**: New version with backup (.bak)
+   - **MERGE**: Intelligent merge with agent-aikido-fusion
+   - **IGNORE**: Keep the current version
+5. 🔒 Hard points replaced automatically (absolute authority)
+6. ✅ V1.3 migration if needed
+7. 📋 Detailed update report
 
-**Avantages** : Rapide, pas de téléchargement, synchronisation directe depuis le dépôt GitHub
+**Advantages**: Fast, no download, direct synchronization from the GitHub repository
 
 ---
 
-#### 🆕 Méthode 2 : Installation Initiale ou Mise à Jour depuis Nouvelle Source
+#### 🆕 Method 2: Initial Installation or Update from a New Source
 
-**Si vous n'avez PAS encore le dépôt Git AI-KIDO** ou voulez utiliser une autre source :
+**If you do NOT have the AI-KIDO Git repository yet** or want to use another source:
 
-##### Option A : Depuis Git AI-KIDO (Première Installation)
+##### Option A: From AI-KIDO Git (First Installation)
 
 ```bash
-# Si vous etes en version ancienne (< V1.3), copier d'abord le script maj-aikido dans /roo/commands/
+# If you are on an old version (< V1.3), first copy the maj-aikido script into /roo/commands/
 cp /prompts/spec/aikido-source-git/prompts/hard_points/commands/maj-aikido /prompts/hard_points/commands/
 
-# Lancer la mise à jour en mode UPDATE
+# Run the update in UPDATE mode
 /maj-aikido --update
 
-# Choisir l'option 1 : GIT AI-KIDO
-Choix : 1
+# Choose option 1: GIT AI-KIDO
+Choice: 1
 ```
 
-**La commande va** :
+**The command will**:
 
-1. 📥 Cloner automatiquement le dépôt officiel :
+1. 📥 Automatically clone the official repository:
 
    ```
    git@github.com:lcalmejane/aikido.git
    ```
 
-2. 📂 Installation dans `/prompts/spec/aikido-source-git/`
-3. 🔄 Continuer avec le processus de mise à jour standard
+2. 📂 Install it in `/prompts/spec/aikido-source-git/`
+3. 🔄 Continue with the standard update process
 
-##### Option B : Depuis Archive (tar.gz/zip)
+##### Option B: From an Archive (tar.gz/zip)
 
-**Si vous avez reçu une archive AI-KIDO** :
+**If you received an AI-KIDO archive**:
 
 ```bash
-# 1. Placer l'archive dans /prompts/spec/
+# 1. Place the archive in /prompts/spec/
 mv ai-kido-vX.Y.Z.tar.gz /prompts/spec/
 
-# Si vous etes en version ancienne (< V1.3), copier d'abord le script maj-aikido dans /roo/commands/
+# If you are on an old version (< V1.3), first copy the maj-aikido script into /roo/commands/
 cp /prompts/spec/aikido-source-git/prompts/hard_points/commands/maj-aikido /prompts/hard_points/commands/
 
-# 2. Lancer la mise à jour
+# 2. Run the update
 /maj-aikido --update
 
-# 3. Choisir l'option 3 : ARCHIVE
-Choix : 3
+# 3. Choose option 3: ARCHIVE
+Choice: 3
 
-# 4. Indiquer le chemin
-Archive : /prompts/spec/ai-kido-vX.Y.Z.tar.gz
+# 4. Provide the path
+Archive: /prompts/spec/ai-kido-vX.Y.Z.tar.gz
 ```
 
-**Formats supportés** : `.tar.gz`, `.tgz`, `.zip`
+**Supported formats**: `.tar.gz`, `.tgz`, `.zip`
 
-##### Option C : Depuis Répertoire Local
+##### Option C: From a Local Directory
 
-**Si vous avez déjà extrait les sources quelque part** :
+**If you have already extracted the sources somewhere**:
 
 ```bash
-# Si vous etes en version ancienne (< V1.3), copier d'abord le script maj-aikido dans /roo/commands/
+# If you are on an old version (< V1.3), first copy the maj-aikido script into /roo/commands/
 cp /path/to/ai-kido-sources/prompts/hard_points/commands/maj-aikido /prompts/hard_points/commands/
 
-# 1. Lancer la mise à jour
+# 1. Run the update
 /maj-aikido --update
 
-# 2. Choisir l'option 2 : RÉPERTOIRE LOCAL
-Choix : 2
+# 2. Choose option 2: LOCAL DIRECTORY
+Choice: 2
 
-# 3. Indiquer le chemin
-Répertoire : /path/to/ai-kido-sources/
+# 3. Provide the path
+Directory: /path/to/ai-kido-sources/
 ```
 
 ---
 
-### 🔀 Fusion Intelligente avec Agent-Aikido-Fusion
+### 🔀 Intelligent Merge with Agent-Aikido-Fusion
 
-Lors de la mise à jour, pour chaque fichier modifié, vous pouvez choisir **"2. FUSIONNER"** :
+During the update, for each modified file you can choose **"2. MERGE"**:
 
-**Processus de fusion** :
+**Merge process**:
 
-1. 🤖 L'agent-aikido-fusion est invoqué automatiquement
-2. 📝 Un script de fusion est généré : `/tmp/aikido/aikido-fusion-*.md`
-3. ⚡ **Option Automatique** : Exécuter `claude < /tmp/aikido/aikido-fusion-*.md`
-4. 🔄 L'agent applique les règles de fusion :
-   - ✅ **Adopte** le formalisme et la structure SOURCE (nouvelle version)
-   - ✅ **Préserve** le contexte et les exemples CIBLE (votre projet)
-   - ✅ **Intègre** tous les nouveaux concepts SOURCE
-   - ✅ **Résout** les conflits intelligemment
-5. 📦 Génération de deux fichiers :
-   - `fichier.merged.YYYYMMDD-HHMMSS` : Fichier fusionné
-   - `fichier.merged.YYYYMMDD-HHMMSS.meta.json` : Métadonnées de fusion
-6. 👀 Révision et validation utilisateur
-7. ✅ Remplacement final : `mv fichier.merged.* fichier.md`
+1. 🤖 The agent-aikido-fusion is invoked automatically
+2. 📝 A merge script is generated: `/tmp/aikido/aikido-fusion-*.md`
+3. ⚡ **Automatic option**: Run `claude < /tmp/aikido/aikido-fusion-*.md`
+4. 🔄 The agent applies the merge rules:
+   - ✅ **Adopts** the SOURCE formalism and structure (new version)
+   - ✅ **Preserves** the TARGET context and examples (your project)
+   - ✅ **Integrates** all new SOURCE concepts
+   - ✅ **Resolves** conflicts intelligently
+5. 📦 Generation of two files:
+   - `file.merged.YYYYMMDD-HHMMSS`: Merged file
+   - `file.merged.YYYYMMDD-HHMMSS.meta.json`: Merge metadata
+6. 👀 User review and validation
+7. ✅ Final replacement: `mv file.merged.* file.md`
 
-**Règles de fusion** :
+**Merge rules**:
 
-- 📋 **Formalisme SOURCE** : Structure, titres, frontmatter de la nouvelle version
-- 💼 **Contexte CIBLE** : Exemples projet, configurations spécifiques préservés
-- 🆕 **Nouveautés SOURCE** : Tous les nouveaux concepts intégrés
-- ⚖️ **Résolution Conflits** : SOURCE pour forme, CIBLE pour contenu projet
-- ✅ **Conformité AI-KIDO** : ≤500 lignes, liens bidirectionnels, frontmatter valide
+- 📋 **SOURCE formalism**: Structure, headings, frontmatter of the new version
+- 💼 **TARGET context**: Project examples and specific configurations preserved
+- 🆕 **SOURCE novelties**: All new concepts integrated
+- ⚖️ **Conflict resolution**: SOURCE for form, TARGET for project content
+- ✅ **AI-KIDO compliance**: ≤500 lines, bidirectional links, valid frontmatter
 
-**Fallback Manuel** : Si la fusion automatique échoue, un template structuré est créé avec instructions détaillées pour fusion manuelle.
+**Manual fallback**: If the automatic merge fails, a structured template is created with detailed instructions for a manual merge.
 
 ---
 
-### 📊 Après la Mise à Jour
+### 📊 After the Update
 
-**1. Vérifier l'état de la base** :
+**1. Check the state of the base**:
 
 ```bash
-/check-claude (Si vous êtes sous Claude Code)
+/check-claude (If you are using Claude Code)
 ```
 
-**2. Audit conformité** (recommandé) :
+**2. Compliance audit** (recommended):
 
 ```bash
 /analyse-aikido
 ```
 
-**3. Relancer Claude Code** (si nouveaux agents/commandes)
+**3. Restart Claude Code** (if there are new agents/commands)
 
-**4. Consulter les backups** (si besoin de rollback) :
+**4. Check the backups** (if a rollback is needed):
 
 ```bash
 find . -name "*.bak.*" -type f
@@ -176,42 +178,42 @@ find . -name "*.bak.*" -type f
 
 ---
 
-### 🎯 Récapitulatif
+### 🎯 Summary
 
-| Situation | Commande | Source |
+| Situation | Command | Source |
 |-----------|----------|--------|
-| **Git AI-KIDO déjà cloné** | `/maj-aikido --update` | Pull automatique |
-| **Première installation depuis Git** | `/maj-aikido --update` → Option 1 | Clone depuis GitHub |
-| **Depuis archive tar.gz/zip** | `/maj-aikido --update` → Option 3 | Extraction archive |
-| **Depuis répertoire local** | `/maj-aikido --update` → Option 2 | Copie depuis répertoire |
+| **AI-KIDO Git already cloned** | `/maj-aikido --update` | Automatic pull |
+| **First installation from Git** | `/maj-aikido --update` → Option 1 | Clone from GitHub |
+| **From a tar.gz/zip archive** | `/maj-aikido --update` → Option 3 | Archive extraction |
+| **From a local directory** | `/maj-aikido --update` → Option 2 | Copy from directory |
 
-**💡 Recommandation** : Après la première installation Git AI-KIDO, utilisez toujours la méthode directe (`/maj-aikido --update`) pour bénéficier des mises à jour automatiques.
+**💡 Recommendation**: After the first AI-KIDO Git installation, always use the direct method (`/maj-aikido --update`) to benefit from automatic updates.
 
 ---
 
-## 📁 Structure du Projet
+## 📁 Project Structure
 
-### Structure Mono-Projet (Défaut) - V1.3
+### Single-Project Structure (Default) - V1.3
 
 ```
 /
 ├── prompts/
-│   ├── index.md                    # 🎯 POINT D'ENTRÉE UNIQUE (V1.3+)
+│   ├── index.md                    # 🎯 SINGLE ENTRY POINT (V1.3+)
 │   │
-│   ├── gen/                        # 🧠 Memory Bank - Tables de Vérités (Évolutif)
-│   │   ├── index.md               # 📚 Navigateur interne /prompts/gen/
-│   │   ├── concepts/              # 📚 Concepts fondamentaux (théorie)
-│   │   ├── techniques/            # 🔧 Méthodes pratiques (application)
-│   │   ├── personas/              # 👤 Personas métier (rôles humains/experts)
-│   │   └── use_cases/             # 💼 Applications concrètes par contexte
+│   ├── gen/                        # 🧠 Memory Bank - Truth Tables (Evolving)
+│   │   ├── index.md               # 📚 Internal navigator /prompts/gen/
+│   │   ├── concepts/              # 📚 Fundamental concepts (theory)
+│   │   ├── techniques/            # 🔧 Practical methods (application)
+│   │   ├── personas/              # 👤 Business personas (human roles/experts)
+│   │   └── use_cases/             # 💼 Concrete applications by context
 │   │
-│   ├── hard_points/               # 🔒 Vérités Immuables (PRIORITÉ ABSOLUE)
-│   │   ├── index.md              # 📋 Index hard points
-│   │   ├── ai-kido.md            # 📖 Guide V1.3 - 18 règles (Mode STANDARD)
-│   │   ├── ai-kido-light.md      # 📖 Guide V1.3 - Mode LIGHT (bases légères)
-│   │   ├── gestion-logs-aikido.md # 📝 Règles traçabilité LLM
+│   ├── hard_points/               # 🔒 Immutable Truths (ABSOLUTE PRIORITY)
+│   │   ├── index.md              # 📋 Hard points index
+│   │   ├── ai-kido.md            # 📖 V1.3 Guide - 18 rules (STANDARD mode)
+│   │   ├── ai-kido-light.md      # 📖 V1.3 Guide - LIGHT mode (lightweight bases)
+│   │   ├── gestion-logs-aikido.md # 📝 LLM traceability rules
 │   │   │
-│   │   ├── agents/               # 🤖 Agents AI-KIDO internes (14 agents techniques)
+│   │   ├── agents/               # 🤖 Internal AI-KIDO agents (14 technical agents)
 │   │   │   ├── agent-aikido-explore-bank.md
 │   │   │   ├── agent-aikido-explore-code.md
 │   │   │   ├── agent-aikido-explore-all.md
@@ -226,7 +228,7 @@ find . -name "*.bak.*" -type f
 │   │   │   ├── agent-aikido-fusion.md
 │   │   │   └── agent-aikido-update-controller.md
 │   │   │
-│   │   ├── commands/             # ⚡ Commandes AI-KIDO centralisées (33 commandes)
+│   │   ├── commands/             # ⚡ Centralized AI-KIDO commands (33 commands)
 │   │   │   ├── init-aikido.md
 │   │   │   ├── init-glossaire.md
 │   │   │   ├── init-raci-aikido.md
@@ -249,18 +251,18 @@ find . -name "*.bak.*" -type f
 │   │   │   ├── logllmoff.md
 │   │   │   └── list-command.md
 │   │   │
-│   │   ├── concepts/             # 📚 Concepts hard (immuables)
-│   │   ├── techniques/           # 🔧 Techniques hard (immuables)
-│   │   ├── personas/             # 👤 Personas hard (immuables, rarement utilisé)
-│   │   ├── use_cases/            # 💼 Use cases hard (immuables)
+│   │   ├── concepts/             # 📚 Hard concepts (immutable)
+│   │   ├── techniques/           # 🔧 Hard techniques (immutable)
+│   │   ├── personas/             # 👤 Hard personas (immutable, rarely used)
+│   │   ├── use_cases/            # 💼 Hard use cases (immutable)
 │   │   │
-│   │   └── system/               # ⚙️ SYSTÈME AI-KIDO (Skills & Infrastructure)
-│   │       ├── Skills.md         # 📖 Définition Skills AI-KIDO
+│   │   └── system/               # ⚙️ AI-KIDO SYSTEM (Skills & Infrastructure)
+│   │       ├── Skills.md         # 📖 AI-KIDO Skills definition
 │   │       │
-│   │       ├── analyse/          # 🔍 Skill Analyse (plans d'analyse projet)
+│   │       ├── analyse/          # 🔍 Analyse Skill (project analysis plans)
 │   │       │   ├── SKILL.md
 │   │       │   ├── README.md
-│   │       │   └── plans/        # Plans d'analyse (architecturale, technique, etc.)
+│   │       │   └── plans/        # Analysis plans (architectural, technical, etc.)
 │   │       │
 │   │       │   ├── SKILL.md
 │   │       │   ├── README.md
@@ -273,697 +275,681 @@ find . -name "*.bak.*" -type f
 │   │       │   ├── install-aikido.md
 │   │       │   ├── .env.example
 │   │       │   ├── agents/
-│   │       │   │   ├── lib/      # Bibliothèques communes
-│   │       │   │   └── *.sh      # Scripts sync, calcul KPI, génération rapports
-│   │       │   ├── templates/    # Templates HTML/JS rapports
-│   │       │   └── examples/     # Exemples configurations
+│   │       │   │   ├── lib/      # Shared libraries
+│   │       │   │   └── *.sh      # Sync scripts, KPI computation, report generation
+│   │       │   ├── templates/    # HTML/JS report templates
+│   │       │   └── examples/     # Configuration examples
 │   │       │
-│   │       ├── search/           # 🔎 Skill Search (plans recherche code)
+│   │       ├── search/           # 🔎 Search Skill (code search plans)
 │   │       │   ├── SKILL.md
 │   │       │   ├── README.md
-│   │       │   └── plans/        # Plans recherche par technologie
-│   │       │       ├── plan-generic.md      # Multi-langage
+│   │       │   └── plans/        # Search plans by technology
+│   │       │       ├── plan-generic.md      # Multi-language
 │   │       │       ├── php/plan.md          # PHP + PSR-4
 │   │       │       └── javascript/plan.md   # JS/TS + ES Modules
 │   │       │
-│   │       ├── structure/        # 🗂️ Skill Structure (index projet JSON)
+│   │       ├── structure/        # 🗂️ Structure Skill (JSON project index)
 │   │       │   ├── SKILL.md
 │   │       │   ├── README.md
-│   │       │   ├── index.json    # Index complet projet (cache 24h)
-│   │       │   └── scripts/      # Scripts génération/maintenance index
+│   │       │   ├── index.json    # Complete project index (24h cache)
+│   │       │   └── scripts/      # Index generation/maintenance scripts
 │   │       │       ├── generate-project-tree.sh
 │   │       │       ├── generate-project-tree-json.sh
 │   │       │       ├── format-file-metadata.sh
 │   │       │       └── watch-changes.sh
 │   │       │
-│   │       ├── web/              # 🌐 Skill Web (téléchargement sites)
+│   │       ├── web/              # 🌐 Web Skill (site downloading)
 │   │       │   ├── SKILL.md
 │   │       │   └── README.md
 │   │       │
-│   │       └── maj/              # 🔄 Skill Maj (mises à jour AI-KIDO)
+│   │       └── maj/              # 🔄 Maj Skill (AI-KIDO updates)
 │   │           ├── SKILL.md
 │   │           └── README.md
 │   │
-│   └── spec/                     # ⚠️ Espaces Personnels (IGNORER sauf activation)
-│       ├── aikido-source-git/    # 📦 Clone Git AI-KIDO (/maj-aikido --update)
-│       └── logs/                 # 📊 Logs interactions (LLM_TRACIBILITY=TRUE)
-│           └── prompts.log       # Format markdown horodaté
+│   └── spec/                     # ⚠️ Personal Spaces (IGNORE unless activated)
+│       ├── aikido-source-git/    # 📦 AI-KIDO Git clone (/maj-aikido --update)
+│       └── logs/                 # 📊 Interaction logs (LLM_TRACIBILITY=TRUE)
+│           └── prompts.log       # Timestamped markdown format
 │
-├── .roo/                         # 🔧 Configuration Roo-Code
-│   ├── commands/                 # Wrappers commandes (33 fichiers .md)
+├── .roo/                         # 🔧 Roo-Code configuration
+│   ├── commands/                 # Command wrappers (33 .md files)
 │   │   ├── init-aikido.md
-│   │   └── ...                   # Autres commandes AI-KIDO
-│   └── .roomodes                 # Configuration agents personnalisés
+│   │   └── ...                   # Other AI-KIDO commands
+│   └── .roomodes                 # Custom agents configuration
 │
-├── .claude/                      # 🤖 Configuration Claude Code
-│   ├── agents/                   # Mapping agents (14 fichiers .md)
-│   │   ├── agent-aikido-*.md     # 14 agents internes AI-KIDO
-│   │   └── ...                   # Personas projet convertis
-│   └── commands/                 # Mapping commandes (33 fichiers .md)
+├── .claude/                      # 🤖 Claude Code configuration
+│   ├── agents/                   # Agent mapping (14 .md files)
+│   │   ├── agent-aikido-*.md     # 14 internal AI-KIDO agents
+│   │   └── ...                   # Converted project personas
+│   └── commands/                 # Command mapping (33 .md files)
 │       ├── init-aikido.md
-│       └── ...                   # Autres commandes AI-KIDO
+│       └── ...                   # Other AI-KIDO commands
 │
-├── AGENTS.md                     # 🤖 Interface standardisée Memory Bank
-├── agents_list.md                # 📋 Liste complète agents + utilisation
-├── skills_list.md                # 📦 Liste complète skills système
-├── commands_list.md              # ⚡ Liste complète commandes
-├── CLAUDE.md                     # 📊 Mapping AI-KIDO ↔ Norme CLAUDE.md
-└── README.md                     # 📖 Ce fichier
+├── AGENTS.md                     # 🤖 Standardized Memory Bank interface
+├── agents_list.md                # 📋 Complete list of agents + usage
+├── skills_list.md                # 📦 Complete list of system skills
+├── commands_list.md              # ⚡ Complete list of commands
+├── CLAUDE.md                     # 📊 AI-KIDO ↔ CLAUDE.md standard mapping
+└── README.md                     # 📖 This file
 ```
 
-### Distinction Personas vs Agents
+### Personas vs Agents Distinction
 
-**Personas** (`/prompts/gen/personas/`) :
-- 👤 **Rôles métier/humains** : Architecte, Développeur, Product Owner, etc.
-- 🎭 **Expertise domaine** : Connaissances spécifiques d'un rôle
-- 📝 **Évolutif** : Créés selon besoins projet (`/create-persona`)
-- 💼 **Usage** : Consultation pour perspective métier
-- **Exemples** : Architecte Solution, Expert Sécurité, Scrum Master
+**Personas** (`/prompts/gen/personas/`):
+- 👤 **Business/human roles**: Architect, Developer, Product Owner, etc.
+- 🎭 **Domain expertise**: Specific knowledge of a role
+- 📝 **Evolving**: Created according to project needs (`/create-persona`)
+- 💼 **Usage**: Consultation for a business perspective
+- **Examples**: Solution Architect, Security Expert, Scrum Master
 
-**Agents** (`/prompts/hard_points/agents/`) :
-- 🤖 **Outils techniques** : Validation, exploration, synchronisation
-- ⚙️ **Fonctions système** : Opérations automatisées AI-KIDO
-- 🔒 **Immuable** : Partie core du système AI-KIDO
-- 🚀 **Usage** : Exécution automatique de tâches
+**Agents** (`/prompts/hard_points/agents/`):
+- 🤖 **Technical tools**: Validation, exploration, synchronization
+- ⚙️ **System functions**: Automated AI-KIDO operations
+- 🔒 **Immutable**: Core part of the AI-KIDO system
+- 🚀 **Usage**: Automatic task execution
 
-**Résumé** :
-- **Personas** = Qui (rôles humains) → `/gen/personas/`
-- **Agents** = Quoi (outils système) → `/hard_points/agents/` + `/hard_points/system/*/agents/`
+**Summary**:
+- **Personas** = Who (human roles) → `/gen/personas/`
+- **Agents** = What (system tools) → `/hard_points/agents/` + `/hard_points/system/*/agents/`
 
-### Skills Système
+### System Skills
 
-Les **Skills** (`/prompts/hard_points/system/`) regroupent des capacités fonctionnelles complètes :
+The **Skills** (`/prompts/hard_points/system/`) group together complete functional capabilities:
 
-| Skill | Description | Agents | Commandes | Scripts |
+| Skill | Description | Agents | Commands | Scripts |
 |-------|-------------|--------|-----------|---------|
-| **analyse** | Plans d'analyse projet | 0 | 2 | Plans markdown |
-| **search** | Plans recherche code tech-aware | 0 | 2 | Plans markdown |
-| **structure** | Index JSON projet + cache 24h | 1 | 2 | Bash + JQ |
-| **web** | Téléchargement sites web | 0 | 0 | Bash + wget |
-| **maj** | Mises à jour système AI-KIDO | 1 | 1 | Bash + git |
+| **analyse** | Project analysis plans | 0 | 2 | Markdown plans |
+| **search** | Tech-aware code search plans | 0 | 2 | Markdown plans |
+| **structure** | Project JSON index + 24h cache | 1 | 2 | Bash + JQ |
+| **web** | Website downloading | 0 | 0 | Bash + wget |
+| **maj** | AI-KIDO system updates | 1 | 1 | Bash + git |
 
-**Chaque Skill contient** :
-- `SKILL.md` : Spécification technique complète
-- `README.md` : Guide utilisateur
-- `agents/` : Agent(s) spécialisé(s) du skill
-- `commands/` : Commandes exposées
-- `scripts/` : Scripts bash/JQ d'implémentation
-- `.env.example` : Configuration (si API externe)
+**Each Skill contains**:
+- `SKILL.md`: Complete technical specification
+- `README.md`: User guide
+- `agents/`: Specialized agent(s) of the skill
+- `commands/`: Exposed commands
+- `scripts/`: Implementation bash/JQ scripts
+- `.env.example`: Configuration (if external API)
 
-### Structure Multi-Projet - V1.3
+### Multi-Project Structure - V1.3
 
 ```
 /
 ├── prompts/
-│   ├── index.md                    # 🎯 POINT D'ENTRÉE UNIQUE (V1.3+)
-│   │                               #    → Liste et référence tous les projets
+│   ├── index.md                    # 🎯 SINGLE ENTRY POINT (V1.3+)
+│   │                               #    → Lists and references all projects
 │   │
-│   ├── [projet-1]/                 # 📁 Projet 1 (Memory Bank isolée)
-│   │   ├── index.md               # 📚 Point d'entrée projet-1
-│   │   ├── gen/                   # 🧠 Memory Bank projet-1
+│   ├── [project-1]/                # 📁 Project 1 (isolated Memory Bank)
+│   │   ├── index.md               # 📚 Project-1 entry point
+│   │   ├── gen/                   # 🧠 Project-1 Memory Bank
 │   │   │   ├── index.md
 │   │   │   ├── concepts/
 │   │   │   ├── techniques/
-│   │   │   ├── personas/          # Personas spécifiques projet-1
+│   │   │   ├── personas/          # Project-1 specific personas
 │   │   │   └── use_cases/
-│   │   └── hard_points/           # 🔒 Vérités immuables projet-1
+│   │   └── hard_points/           # 🔒 Project-1 immutable truths
 │   │       ├── ai-kido.md
 │   │       ├── concepts/
 │   │       ├── techniques/
 │   │       └── use_cases/
 │   │
-│   ├── [projet-2]/                 # 📁 Projet 2 (Memory Bank isolée)
+│   ├── [project-2]/                # 📁 Project 2 (isolated Memory Bank)
 │   │   ├── index.md
-│   │   ├── gen/                   # Memory Bank projet-2
-│   │   └── hard_points/           # Vérités immuables projet-2
+│   │   ├── gen/                   # Project-2 Memory Bank
+│   │   └── hard_points/           # Project-2 immutable truths
 │   │
-│   ├── hard_points/               # 🔒 Hard Points PARTAGÉS (tous projets)
+│   ├── hard_points/               # 🔒 SHARED Hard Points (all projects)
 │   │   ├── index.md
-│   │   ├── ai-kido.md            # Règles communes AI-KIDO
+│   │   ├── ai-kido.md            # Common AI-KIDO rules
 │   │   ├── gestion-logs-aikido.md
 │   │   │
-│   │   ├── agents/               # 🤖 Agents AI-KIDO (14 agents partagés)
+│   │   ├── agents/               # 🤖 AI-KIDO agents (14 shared agents)
 │   │   │   ├── agent-aikido-explore-bank.md
 │   │   │   ├── agent-aikido-explore-code.md
-│   │   │   └── ...               # Tous les agents système
+│   │   │   └── ...               # All system agents
 │   │   │
-│   │   ├── commands/             # ⚡ Commandes partagées (33 commandes)
+│   │   ├── commands/             # ⚡ Shared commands (33 commands)
 │   │   │   ├── init-aikido.md
 │   │   │   ├── analyse-project.md
-│   │   │   └── ...               # Toutes les commandes AI-KIDO
+│   │   │   └── ...               # All AI-KIDO commands
 │   │   │
-│   │   └── system/               # ⚙️ SYSTÈME AI-KIDO (Skills partagés)
+│   │   └── system/               # ⚙️ AI-KIDO SYSTEM (shared Skills)
 │   │       ├── Skills.md
-│   │       ├── analyse/          # Skill Analyse
-│   │       ├── search/           # Skill Search
-│   │       ├── structure/        # Skill Structure
-│   │       ├── web/              # Skill Web
-│   │       └── maj/              # Skill Maj
+│   │       ├── analyse/          # Analyse Skill
+│   │       ├── search/           # Search Skill
+│   │       ├── structure/        # Structure Skill
+│   │       ├── web/              # Web Skill
+│   │       └── maj/              # Maj Skill
 │   │
-│   └── spec/                     # ⚠️ Espaces personnels (IGNORER)
-│       └── logs/                 # Logs partagés tous projets
+│   └── spec/                     # ⚠️ Personal spaces (IGNORE)
+│       └── logs/                 # Logs shared by all projects
 │
 ├── .roo/
-│   ├── commands/                 # Wrappers commandes (33 fichiers)
-│   └── .roomodes                 # Agents multi-projets
+│   ├── commands/                 # Command wrappers (33 files)
+│   └── .roomodes                 # Multi-project agents
 │
 ├── .claude/
-│   ├── agents/                   # Mapping agents (14 agents + personas)
-│   └── commands/                 # Mapping commandes (33 commandes)
+│   ├── agents/                   # Agent mapping (14 agents + personas)
+│   └── commands/                 # Command mapping (33 commands)
 │
-├── AGENTS.md                     # 🤖 Interface multi-projets
-├── agents_list.md                # 📋 Liste agents tous projets
-├── skills_list.md                # 📦 Liste skills système
-├── commands_list.md              # ⚡ Liste commandes
-├── CLAUDE.md                     # 📊 Mapping multi-projets
-└── README.md                     # 📖 Ce fichier
+├── AGENTS.md                     # 🤖 Multi-project interface
+├── agents_list.md                # 📋 List of agents for all projects
+├── skills_list.md                # 📦 List of system skills
+├── commands_list.md              # ⚡ List of commands
+├── CLAUDE.md                     # 📊 Multi-project mapping
+└── README.md                     # 📖 This file
 ```
 
-**Architecture Multi-Projet** :
+**Multi-Project Architecture**:
 
-- **Memory Banks isolées** : Chaque projet a sa propre arborescence `/gen/` et `/hard_points/` spécifiques
-- **Système partagé** : `/prompts/hard_points/` contient agents, commandes et skills communs à tous projets
-- **Point d'entrée unique** : `/prompts/index.md` liste et référence tous les projets
-- **Navigation** : `/prompts/index.md` → `/prompts/[projet-n]/index.md` → `/prompts/[projet-n]/gen/index.md`
+- **Isolated Memory Banks**: Each project has its own specific `/gen/` and `/hard_points/` tree
+- **Shared system**: `/prompts/hard_points/` contains agents, commands and skills common to all projects
+- **Single entry point**: `/prompts/index.md` lists and references all projects
+- **Navigation**: `/prompts/index.md` → `/prompts/[project-n]/index.md` → `/prompts/[project-n]/gen/index.md`
 
-**⚠️ CHANGEMENT MAJEUR V1.3** : Point d'entrée **unifié** `/prompts/index.md` pour TOUS les types de projets
+**⚠️ MAJOR V1.3 CHANGE**: **Unified** entry point `/prompts/index.md` for ALL project types
 
-**Navigation Mono-Projet** :
+**Single-Project Navigation**:
 
-1. `/prompts/index.md` → Point d'entrée UNIQUE (référence `/prompts/gen/`, `/prompts/hard_points/`)
-2. `/prompts/gen/index.md` → Navigation interne (concepts, techniques, personas, use_cases)
+1. `/prompts/index.md` → SINGLE entry point (references `/prompts/gen/`, `/prompts/hard_points/`)
+2. `/prompts/gen/index.md` → Internal navigation (concepts, techniques, personas, use_cases)
 
-**Navigation Multi-Projet** :
+**Multi-Project Navigation**:
 
-1. `/prompts/index.md` → Point d'entrée UNIQUE (liste et pointe tous les projets)
-2. `/prompts/[projet-n]/index.md` → Point d'entrée spécifique du projet
-3. `/prompts/[projet-n]/gen/index.md` → Navigation interne du projet
+1. `/prompts/index.md` → SINGLE entry point (lists and points to all projects)
+2. `/prompts/[project-n]/index.md` → Project-specific entry point
+3. `/prompts/[project-n]/gen/index.md` → Project internal navigation
 
-**ANCIEN SYSTÈME (< V1.3)** : `/prompts/gen/index.md` (mono) ou `/prompts/[projet]/gen/index.md` (multi) - **OBSOLÈTE**
+**OLD SYSTEM (< V1.3)**: `/prompts/gen/index.md` (single) or `/prompts/[project]/gen/index.md` (multi) - **OBSOLETE**
 
-## 🚀 Méthode AI‑KIDO : Processus Itératif
+## 🚀 AI‑KIDO Method: Iterative Process
 
-### Phase 1 : Initialisation de la Base
+### Phase 1: Base Initialization
 
-#### 1.1 `init-aikido` - Fondations du Projet
+#### 1.1 `init-aikido` - Project Foundations
 
-**Objectif** : Créer la structure de base de la memory bank
+**Goal**: Create the basic structure of the memory bank
 
-**Processus itératif** :
+**Iterative process**:
 
-1. **Analyse des sources** (Fonctionnel) → Détection automatique du contexte projet
-2. **Architecture système** (Technique) → Modélisation C1 et composants
-3. **Stack technique** (Spécifique) → Technologies et outils identifiés
-4. **Use cases fondamentaux** (Global) → Cas d'usage de base du domaine
+1. **Source analysis** (Functional) → Automatic detection of the project context
+2. **System architecture** (Technical) → C1 modeling and components
+3. **Technical stack** (Specific) → Identified technologies and tools
+4. **Fundamental use cases** (Global) → Basic use cases of the domain
 
-**Résultat** : Structure `/prompts/gen/` initialisée avec les fichiers de base
+**Result**: `/prompts/gen/` structure initialized with the base files
 
-#### 1.2 `init-glossaire` - Terminologie Métier
+#### 1.2 `init-glossaire` - Business Terminology
 
-**Objectif** : Clarifier la terminologie spécifique au projet
+**Goal**: Clarify the project-specific terminology
 
-**Processus itératif** :
+**Iterative process**:
 
-1. **Extraction terminologique** (Spécifique) → Termes métier confus ou ambigus
-2. **Analyse contextuelle** (Fonctionnel) → Domaine métier et sous-domaines
-3. **Définitions structurées** (Technique) → Glossaire organisé par catégories
-4. **Validation globale** (Global) → Cohérence terminologique
+1. **Terminology extraction** (Specific) → Confusing or ambiguous business terms
+2. **Contextual analysis** (Functional) → Business domain and sub-domains
+3. **Structured definitions** (Technical) → Glossary organized by categories
+4. **Global validation** (Global) → Terminological consistency
 
-**Résultat** : Glossaire métier dans `/prompts/gen/concepts/glossaire-metier.md`
+**Result**: Business glossary in `/prompts/gen/concepts/glossaire-metier.md`
 
-#### 1.3 `init-raci-aikido` - Organisation d'Équipe
+#### 1.3 `init-raci-aikido` - Team Organization
 
-**Objectif** : Définir la matrice RACI et la répartition par rôles
+**Goal**: Define the RACI matrix and the role distribution
 
-**Processus itératif** :
+**Iterative process**:
 
-1. **Identification des rôles** (Fonctionnel) → Équipe et responsabilités
-2. **Matrice RACI** (Technique) → Attribution R/A/C/I par activité
-3. **Sous-répertoires spécialisés** (Spécifique) → Structure par rôles
-4. **Workflow de collaboration** (Global) → Règles Git et validation
+1. **Role identification** (Functional) → Team and responsibilities
+2. **RACI matrix** (Technical) → R/A/C/I assignment per activity
+3. **Specialized subdirectories** (Specific) → Structure by roles
+4. **Collaboration workflow** (Global) → Git and validation rules
 
-**Résultat** : Spécifications RACI dans `/prompts/hard_points/aikido-raci-[TEAM].md`
+**Result**: RACI specifications in `/prompts/hard_points/aikido-raci-[TEAM].md`
 
-### Phase 2 : Analyse et Enrichissement
+### Phase 2: Analysis and Enrichment
 
-#### 2.1 `analyse-project` - Analyse Contextuelle
+#### 2.1 `analyse-project` - Contextual Analysis
 
-**Objectif** : Analyser le projet existant pour enrichir la memory bank
+**Goal**: Analyze the existing project to enrich the memory bank
 
-**Processus itératif** :
+**Iterative process**:
 
-1. **Scan fonctionnel** (Global) → Vue d'ensemble du projet
-2. **Analyse technique** (Spécifique) → Code, architecture, patterns
-3. **Extraction de connaissances** (Technique) → Concepts et techniques utilisés
-4. **Intégration** (Fonctionnel) → Mise à jour de la memory bank
+1. **Functional scan** (Global) → Project overview
+2. **Technical analysis** (Specific) → Code, architecture, patterns
+3. **Knowledge extraction** (Technical) → Concepts and techniques used
+4. **Integration** (Functional) → Memory bank update
 
-### Phase 3 : Création des Personas
+### Phase 3: Persona Creation
 
-#### 3.1 `create-persona` - Agents Spécialisés
+#### 3.1 `create-persona` - Specialized Agents
 
-**Objectif** : Créer des personas adaptés au contexte projet
+**Goal**: Create personas adapted to the project context
 
-**Taxonomie hiérarchique** :
+**Hierarchical taxonomy**:
 
 ```
-Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ, 🔍 QUALITÉ, 🚀 DÉPLOIEMENT)
-└── Niveau 2: Famille fonctionnelle (Architecture, Backend, Frontend, etc.)
-    └── Niveau 3: Persona spécifique (Architecte Solutions, Développeur API, etc.)
-        └── Niveau 4: Spécialisation contextuelle (Domaine, technologie, contraintes)
+Level 1: Category (🏗️ DESIGN, ⚙️ DEVELOPMENT, 🔒 SECURITY, 🔍 QUALITY, 🚀 DEPLOYMENT)
+└── Level 2: Functional family (Architecture, Backend, Frontend, etc.)
+    └── Level 3: Specific persona (Solutions Architect, API Developer, etc.)
+        └── Level 4: Contextual specialization (Domain, technology, constraints)
 ```
 
-**Processus itératif** :
+**Iterative process**:
 
-1. **Identification des besoins** (Fonctionnel) → Quels rôles pour quels contextes ?
-2. **Spécialisation technique** (Technique) → Compétences et responsabilités
-3. **Adaptation contextuelle** (Spécifique) → Domaine métier et contraintes
-4. **Intégration taxonomique** (Global) → Cohérence avec la hiérarchie
+1. **Needs identification** (Functional) → Which roles for which contexts?
+2. **Technical specialization** (Technical) → Skills and responsibilities
+3. **Contextual adaptation** (Specific) → Business domain and constraints
+4. **Taxonomic integration** (Global) → Consistency with the hierarchy
 
-### Phase 4 : Optimisation de la Memory Bank
+### Phase 4: Memory Bank Optimization
 
-#### 4.1 Construction Itérative de la Base de Connaissances
+#### 4.1 Iterative Knowledge Base Construction
 
-**Alternance Fonctionnel ↔ Technique** :
+**Functional ↔ Technical alternation**:
 
-- **Itération Fonctionnelle** : Focus sur les besoins métier, use cases, workflows
-- **Itération Technique** : Focus sur l'implémentation, patterns, optimisations
+- **Functional iteration**: Focus on business needs, use cases, workflows
+- **Technical iteration**: Focus on implementation, patterns, optimizations
 
-**Alternance Global ↔ Spécifique** :
+**Global ↔ Specific alternation**:
 
-- **Itération Globale** : Vue d'ensemble, architecture, cohérence
-- **Itération Spécifique** : Détails d'implémentation, cas particuliers
+- **Global iteration**: Overview, architecture, consistency
+- **Specific iteration**: Implementation details, special cases
 
-**Exemple de cycle itératif** :
+**Example of an iterative cycle**:
 
-1. **Global + Fonctionnel** → Architecture métier générale
-2. **Spécifique + Technique** → Implémentation d'un composant
-3. **Global + Technique** → Patterns architecturaux
-4. **Spécifique + Fonctionnel** → Use case particulier
-5. **Retour à 1** avec enrichissement
+1. **Global + Functional** → General business architecture
+2. **Specific + Technical** → Implementation of a component
+3. **Global + Technical** → Architectural patterns
+4. **Specific + Functional** → Particular use case
+5. **Back to 1** with enrichment
 
-## ⚡ Commandes AI‑KIDO
+## ⚡ AI‑KIDO Commands
 
-### 🏗️ Commandes d'Initialisation (Ordre Recommandé)
+### 🏗️ Initialization Commands (Recommended Order)
 
-1. **`init-aikido`** - Initialisation de la memory bank
-   - Crée la structure de base dans `/prompts/gen/`
-   - Analyse automatique des sources projet (via `agent-aikido-explore-bank`)
-   - Résolution contradictions (via `agent-aikido-truth-evaluator`)
-   - Classification RACI mode STANDARD (via `agent-aikido-raci-delegator`)
-   - Validation finale (via `agent-aikido-validator`)
-   - **Agents utilisés** : 4 agents (explore-bank, truth-evaluator, raci-delegator, validator)
+1. **`init-aikido`** - Memory bank initialization
+   - Creates the base structure in `/prompts/gen/`
+   - Automatic analysis of the project sources (via `agent-aikido-explore-bank`)
+   - Contradiction resolution (via `agent-aikido-truth-evaluator`)
+   - STANDARD mode RACI classification (via `agent-aikido-raci-delegator`)
+   - Final validation (via `agent-aikido-validator`)
+   - **Agents used**: 4 agents (explore-bank, truth-evaluator, raci-delegator, validator)
 
-2. **`init-glossaire`** - Création du glossaire métier
-   - Extraction des termes métier spécifiques et confus (via `agent-aikido-explore-bank`)
-   - Résolution contradictions terminologiques (via `agent-aikido-truth-evaluator`)
-   - Classification par domaines (via `agent-aikido-raci-delegator`)
-   - Validation conformité (via `agent-aikido-validator`)
-   - **Agents utilisés** : 4 agents (explore-bank, truth-evaluator, raci-delegator, validator)
+2. **`init-glossaire`** - Business glossary creation
+   - Extraction of specific and confusing business terms (via `agent-aikido-explore-bank`)
+   - Terminological contradiction resolution (via `agent-aikido-truth-evaluator`)
+   - Classification by domain (via `agent-aikido-raci-delegator`)
+   - Compliance validation (via `agent-aikido-validator`)
+   - **Agents used**: 4 agents (explore-bank, truth-evaluator, raci-delegator, validator)
 
-3. **`init-raci-aikido`** - Matrice RACI et organisation
-   - Extraction rôles et responsabilités (via `agent-aikido-explore-bank`)
-   - Génération hiérarchie et slugification (via `agent-aikido-raci-delegator`)
-   - Validation conformité RACI (via `agent-aikido-validator`)
-   - **Agents utilisés** : 3 agents (explore-bank, raci-delegator, validator)
+3. **`init-raci-aikido`** - RACI matrix and organization
+   - Extraction of roles and responsibilities (via `agent-aikido-explore-bank`)
+   - Hierarchy generation and slugification (via `agent-aikido-raci-delegator`)
+   - RACI compliance validation (via `agent-aikido-validator`)
+   - **Agents used**: 3 agents (explore-bank, raci-delegator, validator)
 
-4. **`analyse-project`** - Analyse contextuelle
-   - Scan du projet existant et extraction sources
-   - Résolution contradictions si détectées (via `agent-aikido-truth-evaluator`)
-   - Classification documents (via `agent-aikido-raci-delegator`)
-   - Validation conformité (via `agent-aikido-validator`)
-   - **Agents utilisés** : 3 agents (truth-evaluator, raci-delegator, validator)
+4. **`analyse-project`** - Contextual analysis
+   - Scan of the existing project and source extraction
+   - Contradiction resolution if detected (via `agent-aikido-truth-evaluator`)
+   - Document classification (via `agent-aikido-raci-delegator`)
+   - Compliance validation (via `agent-aikido-validator`)
+   - **Agents used**: 3 agents (truth-evaluator, raci-delegator, validator)
 
-5. **`create-persona`** - Création des personas
-   - Exploration personas existants pour éviter doublons (via `agent-aikido-explore-bank` en QUICK MODE)
-   - Workflow interactif : anthropomorphique (expert humain) ou technique (outil spécialisé)
-   - Génération automatique des fichiers persona, .roomodes, et .claude/agents/
-   - **Agents utilisés** : 1 agent (explore-bank en mode rapide)
+5. **`create-persona`** - Persona creation
+   - Exploration of existing personas to avoid duplicates (via `agent-aikido-explore-bank` in QUICK MODE)
+   - Interactive workflow: anthropomorphic (human expert) or technical (specialized tool)
+   - Automatic generation of persona files, .roomodes, and .claude/agents/
+   - **Agents used**: 1 agent (explore-bank in quick mode)
 
-6. **`create-command`** 🆕 - Assistant de Création de Commandes
-   - Guide interactif avec questionnaire utilisateur
-   - Détection commandes similaires pour éviter doublons (via `agent-aikido-explore-bank` QUICK)
-   - Identification agents experts/personas NON-internes pertinents (via `agent-aikido-explore-bank` QUICK)
-   - Recherche ressources Memory Bank (hard points, concepts, techniques, use cases) (via `agent-aikido-explore-bank` DEEP)
-   - Suggestion agents AI-KIDO internes optimaux (via `agent-aikido-explore-bank` QUICK)
-   - Génération structure commande optimisée avec validation conformité (via `agent-aikido-validator`)
-   - Intégration automatique AGENTS.md, CLAUDE.md, README.md (via `agent-aikido-maj-md-index`)
-   - **Agents utilisés** : 6 agents (explore-bank×4 modes variés, validator, indexer)
+6. **`create-command`** 🆕 - Command Creation Assistant
+   - Interactive guide with user questionnaire
+   - Detection of similar commands to avoid duplicates (via `agent-aikido-explore-bank` QUICK)
+   - Identification of relevant NON-internal expert agents/personas (via `agent-aikido-explore-bank` QUICK)
+   - Memory Bank resource search (hard points, concepts, techniques, use cases) (via `agent-aikido-explore-bank` DEEP)
+   - Suggestion of optimal internal AI-KIDO agents (via `agent-aikido-explore-bank` QUICK)
+   - Generation of an optimized command structure with compliance validation (via `agent-aikido-validator`)
+   - Automatic integration into AGENTS.md, CLAUDE.md, README.md (via `agent-aikido-maj-md-index`)
+   - **Agents used**: 6 agents (explore-bank×4 varied modes, validator, indexer)
 
-7. **`create-search-plan`** 🆕 - Création de Plans de Recherche Code
-   - Assistant interactif pour créer des plans de recherche technology-aware
-   - Templates pré-configurés (generic, php, javascript, python, java, rust, go, etc.)
-   - Validation automatique contre exigences `agent-aikido-explore-code`
-   - Support PSR-4, ES Modules, imports spécifiques par langage
-   - Génération patterns regex pour classes, interfaces, functions, dependencies
-   - Intégration dans `/prompts/hard_points/system/search/plans/`
+7. **`create-search-plan`** 🆕 - Code Search Plan Creation
+   - Interactive assistant to create technology-aware search plans
+   - Pre-configured templates (generic, php, javascript, python, java, rust, go, etc.)
+   - Automatic validation against `agent-aikido-explore-code` requirements
+   - Support for PSR-4, ES Modules, language-specific imports
+   - Regex pattern generation for classes, interfaces, functions, dependencies
+   - Integration into `/prompts/hard_points/system/search/plans/`
 
-8. **`validate-search-plan`** 🆕 - Validation de Plans de Recherche
-   - Vérification conformité plans contre README.md et requirements
-   - Validation patterns regex, output format, line numbers
-   - Checklist complète : imports, declarations, functions, keywords, output
-   - Rapport détaillé avec recommandations corrections
-   - Support tous langages (generic, php, javascript, typescript, etc.)
+8. **`validate-search-plan`** 🆕 - Search Plan Validation
+   - Compliance check of plans against README.md and requirements
+   - Validation of regex patterns, output format, line numbers
+   - Complete checklist: imports, declarations, functions, keywords, output
+   - Detailed report with correction recommendations
+   - Support for all languages (generic, php, javascript, typescript, etc.)
 
-9. **`create-analyse-plan`** 🆕 - Création de Plans d'Analyse Projet
-   - Assistant interactif pour créer des plans d'analyse project pour `/analyse-project`
-   - Templates type-spécifiques (architecturale, technique, fonctionnelle, méthodologique)
-   - 4 niveaux de profondeur (survol, standard, approfondi, expert)
-   - Génération prompts agents, stratégies extraction, workflows Mermaid
-   - Intégration dans `/prompts/hard_points/system/analyse/plans/`
+9. **`create-analyse-plan`** 🆕 - Project Analysis Plan Creation
+   - Interactive assistant to create project analysis plans for `/analyse-project`
+   - Type-specific templates (architectural, technical, functional, methodological)
+   - 4 depth levels (overview, standard, in-depth, expert)
+   - Generation of agent prompts, extraction strategies, Mermaid workflows
+   - Integration into `/prompts/hard_points/system/analyse/plans/`
 
-10. **`validate-analyse-plan`** 🆕 - Validation de Plans d'Analyse
+10. **`validate-analyse-plan`** 🆕 - Analysis Plan Validation
 
-- Vérification conformité plans contre README.md et `/analyse-project`
-- Validation sections obligatoires, métadonnées, orchestration agents
-- Validation stratégies extraction, workflow Mermaid, output format
-- Rapport détaillé dans `/prompts/spec/` avec score global et recommandations
-- Compatibilité avec algorithme de résolution de plans
+- Compliance check of plans against README.md and `/analyse-project`
+- Validation of mandatory sections, metadata, agent orchestration
+- Validation of extraction strategies, Mermaid workflow, output format
+- Detailed report in `/prompts/spec/` with overall score and recommendations
+- Compatibility with the plan resolution algorithm
 
-### 🔧 Commandes de Maintenance
+### 🔧 Maintenance Commands
 
-#### `check-claude` - Synchronisation CLAUDE.md et Compatibilité Claude Code
+#### `check-claude` - CLAUDE.md Synchronization and Claude Code Compatibility
 
-**Objectif** : Vérifier l'état de la Memory Bank et générer les fichiers de compatibilité Claude Code
+**Goal**: Check the state of the Memory Bank and generate the Claude Code compatibility files
 
-**Processus** :
+**Process**:
 
-1. **Inventaire complet** → Scan Memory Bank (via `agent-aikido-explore-bank`)
-2. **Validation conformité** → Règles AI-KIDO (via `agent-aikido-validator`)
-3. **Détection incohérences** → Mapping CLAUDE.md ↔ Memory Bank (via `agent-aikido-truth-evaluator`)
-4. **Génération .claude/agents/** → Mapping automatique depuis `/prompts/gen/personas/`
-5. **Génération .claude/commands/** → Mapping automatique depuis `prompts/hard_points/commands/`
-6. **Mise à jour CLAUDE.md** → Section 12 avec état actuel et statistiques
-7. **Rapport détaillé** → Création dans `/prompts/spec/check-claude-[DATE].md`
+1. **Complete inventory** → Memory Bank scan (via `agent-aikido-explore-bank`)
+2. **Compliance validation** → AI-KIDO rules (via `agent-aikido-validator`)
+3. **Inconsistency detection** → CLAUDE.md ↔ Memory Bank mapping (via `agent-aikido-truth-evaluator`)
+4. **.claude/agents/ generation** → Automatic mapping from `/prompts/gen/personas/`
+5. **.claude/commands/ generation** → Automatic mapping from `prompts/hard_points/commands/`
+6. **CLAUDE.md update** → Section 12 with current status and statistics
+7. **Detailed report** → Created in `/prompts/spec/check-claude-[DATE].md`
 
-**Agents utilisés** : 3 agents (explore-bank, validator, truth-evaluator)
+**Agents used**: 3 agents (explore-bank, validator, truth-evaluator)
 
-**Résultat** : Base 100% compatible Claude Code avec commandes et agents détectés automatiquement
+**Result**: Base 100% compatible with Claude Code, with commands and agents detected automatically
 
-#### `check-truth` - Vérification Cohérence Documentation ↔ Code 🆕
+#### `check-truth` - Documentation ↔ Code Consistency Check 🆕
 
-**Objectif** : Vérifier la cohérence entre documentation AI-KIDO et code source, détecter l'obsolescence et proposer des redressements automatiques
+**Goal**: Check the consistency between AI-KIDO documentation and source code, detect obsolescence and propose automatic fixes
 
-**Syntaxes disponibles** :
+**Available syntaxes**:
 
 ```bash
-/check-truth                           # Vérification complète Memory Bank
-/check-truth --file [path]            # Fichier spécifique
-/check-truth --domain concepts         # Domaine complet
-/check-truth --search "keyword"        # Recherche par mot-clé
-/check-truth --code-path ./src/auth/   # Analyse code + doc
-/check-truth --verbose                 # Mode détaillé
+/check-truth                           # Complete Memory Bank check
+/check-truth --file [path]            # Specific file
+/check-truth --domain concepts         # Complete domain
+/check-truth --search "keyword"        # Search by keyword
+/check-truth --code-path ./src/auth/   # Code + doc analysis
+/check-truth --verbose                 # Detailed mode
 /check-truth --force-check             # Force validation (ignore fast-path)
 ```
 
-**Processus optimisé** :
+**Optimized process**:
 
-1. **Inventaire ciblé** → Scan selon scope (via `agent-aikido-explore-bank` QUICK)
-2. **Fast-path optimization** → Skip validation si ✅ + sources inchangées (via `agent-aikido-doc-header`)
-3. **Validation truth sources** → Cohérence doc ↔ code/specs (via `agent-aikido-truth-evaluator`)
-4. **Analyse des manques** → Détection documentation manquante (via `agent-aikido-explore-bank` + `truth-evaluator`)
-5. **Mise à jour headers** → Refresh last-check metadata (via `agent-aikido-doc-header` batch)
-6. **Rapport complet** → Statistiques + recommandations dans `/prompts/spec/check-truth-[DATE].md`
-7. **Auto-redressement** (optionnel) → Correction incohérences + création docs manquants (via `agent-aikido-bank-populate`)
+1. **Targeted inventory** → Scan according to scope (via `agent-aikido-explore-bank` QUICK)
+2. **Fast-path optimization** → Skip validation if ✅ + sources unchanged (via `agent-aikido-doc-header`)
+3. **Truth sources validation** → doc ↔ code/specs consistency (via `agent-aikido-truth-evaluator`)
+4. **Gap analysis** → Detection of missing documentation (via `agent-aikido-explore-bank` + `truth-evaluator`)
+5. **Header update** → Refresh last-check metadata (via `agent-aikido-doc-header` batch)
+6. **Complete report** → Statistics + recommendations in `/prompts/spec/check-truth-[DATE].md`
+7. **Auto-correction** (optional) → Fix inconsistencies + create missing docs (via `agent-aikido-bank-populate`)
 
-**Agents utilisés** : 5 agents (explore-bank×2, doc-header×2, truth-evaluator, [bank-populate optionnel])
+**Agents used**: 5 agents (explore-bank×2, doc-header×2, truth-evaluator, [bank-populate optional])
 
-**Optimisations clés** :
+**Key optimizations**:
 
-- ⚡ **Fast-path** : Économie 70-80% tokens sur documents à jour (via last-check metadata)
-- 🎯 **Analyse ciblée** : Scope ajustable (fichier, domaine, recherche, code, full)
-- 🤖 **Orchestration agents** : Workflow optimisé pour performance maximale
-- 📊 **Détection intelligente** : Gaps, obsolescence, conflits majeurs/mineurs
+- ⚡ **Fast-path**: 70-80% token savings on up-to-date documents (via last-check metadata)
+- 🎯 **Targeted analysis**: Adjustable scope (file, domain, search, code, full)
+- 🤖 **Agent orchestration**: Workflow optimized for maximum performance
+- 📊 **Smart detection**: Gaps, obsolescence, major/minor conflicts
 
-**Performance estimée** : ~20-30k tokens (vs ~100k sans optimisation) = **70-80% efficacité**
+**Estimated performance**: ~20-30k tokens (vs ~100k without optimization) = **70-80% efficiency**
 
-**Use cases** :
+**Use cases**:
 
-- Vérification après développement features
-- Maintenance continue documentation
-- Détection obsolescence régulière
-- Analyse code nouveau/refactoré
+- Verification after feature development
+- Ongoing documentation maintenance
+- Regular obsolescence detection
+- Analysis of new/refactored code
 
-#### `maj-aikido` - Mise à Jour et Synchronisation Complète
+#### `maj-aikido` - Complete Update and Synchronization
 
-**Objectif** : Mettre à jour depuis sources externes OU synchroniser la memory bank après évolutions
+**Goal**: Update from external sources OR synchronize the memory bank after changes
 
-**Deux modes disponibles** :
+**Two modes available**:
 
-**Mode UPDATE** (`/maj-aikido --update`) :
+**UPDATE mode** (`/maj-aikido --update`):
 
-1. **Sélection source** → Git AI-KIDO, archive, ou répertoire local
-2. **Analyse différentielle** → Comparaison source ↔ cible avec statistiques
-3. **Mise à jour fichiers** → Choix utilisateur (REMPLACER/FUSIONNER/IGNORER)
-4. **Fusion intelligente** → Agent-aikido-fusion pour préservation contexte
-5. **Hard points** → Remplacement automatique (autorité absolue)
-6. **Migration V1.3** → Si base < V1.3, migration automatique
-7. **Synchronisation** → Phases 0-7 standard
+1. **Source selection** → AI-KIDO Git, archive, or local directory
+2. **Differential analysis** → Source ↔ target comparison with statistics
+3. **File update** → User choice (REPLACE/MERGE/IGNORE)
+4. **Intelligent merge** → Agent-aikido-fusion for context preservation
+5. **Hard points** → Automatic replacement (absolute authority)
+6. **V1.3 migration** → If base < V1.3, automatic migration
+7. **Synchronization** → Standard phases 0-7
 
-**Mode SYNC** (`/maj-aikido`) :
+**SYNC mode** (`/maj-aikido`):
 
-1. **Détection des changements** → Hard points et nouvelles commandes (via `agent-aikido-explore-bank`)
-2. **Analyse d'impact** → Compatibilité avec la base existante
-3. **Détection contradictions** → Résolution automatique (via `agent-aikido-truth-evaluator`)
-4. **Audit conformité** → Validation post-rebase (via `agent-aikido-validator`)
-5. **Validation finale** → Vérification complète (via `agent-aikido-validator`)
+1. **Change detection** → Hard points and new commands (via `agent-aikido-explore-bank`)
+2. **Impact analysis** → Compatibility with the existing base
+3. **Contradiction detection** → Automatic resolution (via `agent-aikido-truth-evaluator`)
+4. **Compliance audit** → Post-rebase validation (via `agent-aikido-validator`)
+5. **Final validation** → Complete check (via `agent-aikido-validator`)
 
-**Agents utilisés** : 5 agents (explore-bank, truth-evaluator, validator×2, fusion)
+**Agents used**: 5 agents (explore-bank, truth-evaluator, validator×2, fusion)
 
-**Voir section complète** : [🔄 Mettre à Jour une Base AI-KIDO](#-mettre-à-jour-une-base-ai-kido-existante)
+**See the complete section**: [🔄 Updating an Existing AI-KIDO Base](#-updating-an-existing-ai-kido-base)
 
-#### `analyse-aikido` - Audit et Redressage
+#### `analyse-aikido` - Audit and Correction
 
-**Objectif** : Audit complet avec corrections automatiques selon les 18 règles
+**Goal**: Complete audit with automatic corrections according to the 18 rules
 
-**Processus** :
+**Process**:
 
-1. **Scan structure** → Détection violations (via `agent-aikido-explore-bank`)
-2. **Validation contraintes** → Règles 4, 6, 7 (via `agent-aikido-validator`)
-3. **Validation corrections** → Vérification post-correction (via `agent-aikido-validator`)
-4. **Cohérence RACI** → Validation matrice (via `agent-aikido-raci-delegator`)
-5. **Arbitrage contradictions** → Résolution conflits (via `agent-aikido-truth-evaluator`)
-6. **Audit final** → Validation complète (via `agent-aikido-validator`)
+1. **Structure scan** → Violation detection (via `agent-aikido-explore-bank`)
+2. **Constraint validation** → Rules 4, 6, 7 (via `agent-aikido-validator`)
+3. **Correction validation** → Post-correction check (via `agent-aikido-validator`)
+4. **RACI consistency** → Matrix validation (via `agent-aikido-raci-delegator`)
+5. **Contradiction arbitration** → Conflict resolution (via `agent-aikido-truth-evaluator`)
+6. **Final audit** → Complete validation (via `agent-aikido-validator`)
 
-**Agents utilisés** : 4 agents (explore-bank, validator×3, raci-delegator, truth-evaluator)
+**Agents used**: 4 agents (explore-bank, validator×3, raci-delegator, truth-evaluator)
 
-#### `reindex-projet` - Réindexation Complète du Projet 🆕
+#### `reindex-projet` - Complete Project Reindexing 🆕
 
-**Objectif** : Régénérer l'index JSON complet de la structure projet avec cache 24H
+**Goal**: Regenerate the complete JSON index of the project structure with a 24H cache
 
-**Syntaxe** :
-
-```bash
-/reindex-projet              # Indexation complète
-/reindex-projet src/Domain   # Indexation ciblée sur un répertoire
-```
-
-**Processus** :
-
-1. **Analyse structure** → Scan complet projet (260 fichiers, 37 répertoires)
-2. **Génération index JSON** → Format V3.2 optimisé (by_path, by_directory, by_type, by_name)
-3. **Validation structure** → Vérification cohérence et conformité AI-KIDO V1.3
-4. **Statistiques** → Rapport détaillé (fichiers, lignes, taille, conformité)
-5. **Cache 24H** → Performance queries <5ms vs 2500ms markdown
-
-**Agents utilisés** : 1 agent (agent-aikido-projet-index)
-
-**Performance** : ~36s génération, <100ms parse, <5ms query
-
-#### `clean-index` - Nettoyage Intelligent de l'Index 🆕
-
-**Objectif** : Nettoyer sélectivement les entrées orphelines de l'index (fichiers indexés mais absents du filesystem)
-
-**Syntaxe** :
+**Syntax**:
 
 ```bash
-/clean-index                 # Nettoyage intelligent automatique
-/clean-index --dry-run       # Analyse seule sans suppression
-/clean-index --verbose       # Mode détaillé avec liste complète
+/reindex-projet              # Complete indexing
+/reindex-projet src/Domain   # Indexing targeted at a directory
 ```
 
-**Cas d'usage** :
+**Process**:
 
-- Fichiers supprimés mais toujours dans l'index
-- Entrées orphelines après refactoring
-- Maintenance régulière de l'index
-- Nettoyage incrémental sans régénération complète
+1. **Structure analysis** → Complete project scan (260 files, 37 directories)
+2. **JSON index generation** → Optimized V3.2 format (by_path, by_directory, by_type, by_name)
+3. **Structure validation** → Consistency and AI-KIDO V1.3 compliance check
+4. **Statistics** → Detailed report (files, lines, size, compliance)
+5. **24H cache** → Query performance <5ms vs 2500ms markdown
 
-**Workflow intelligent** :
+**Agents used**: 1 agent (agent-aikido-projet-index)
 
-- `/clean-index` → Détecte et supprime orphelins
-- Si <10% orphelins → Index cohérent ✅
-- Si >10% orphelins → Recommande `/reindex-projet`
+**Performance**: ~36s generation, <100ms parse, <5ms query
 
-**Agents utilisés** : 0 agents (script bash optimisé avec jq)
+#### `clean-index` - Smart Index Cleanup 🆕
 
-**Performance** : ~5-10s (3-5× plus rapide qu'avec agent)
-**Prérequis** : `jq` doit être installé (`brew install jq` / `apt-get install jq` / `yum install jq`)
-**Avantage** : Nettoyage sélectif ultra-rapide sans tokens LLM
+**Goal**: Selectively clean orphan entries from the index (files indexed but absent from the filesystem)
 
-### 📊 Commandes de Traçabilité
+**Syntax**:
 
-#### `logllmon` - Activation des Logs
+```bash
+/clean-index                 # Automatic smart cleanup
+/clean-index --dry-run       # Analysis only, no deletion
+/clean-index --verbose       # Detailed mode with complete list
+```
 
-- Active `LLM_TRACIBILITY=TRUE` dans `/prompts/index.md`
-- Démarre l'enregistrement des interactions dans `/prompts/spec/logs/prompts.log`
+**Use cases**:
 
-#### `logllmoff` - Désactivation des Logs
+- Files deleted but still in the index
+- Orphan entries after refactoring
+- Regular index maintenance
+- Incremental cleanup without full regeneration
 
-- Désactive `LLM_TRACIBILITY=FALSE` dans `/prompts/index.md`
-- Arrête l'enregistrement des interactions
+**Smart workflow**:
 
-**Format des logs** :
+- `/clean-index` → Detects and removes orphans
+- If <10% orphans → Index consistent ✅
+- If >10% orphans → Recommends `/reindex-projet`
+
+**Agents used**: 0 agents (bash script optimized with jq)
+
+**Performance**: ~5-10s (3-5× faster than with an agent)
+**Prerequisites**: `jq` must be installed (`brew install jq` / `apt-get install jq` / `yum install jq`)
+**Advantage**: Ultra-fast selective cleanup without LLM tokens
+
+### 📊 Traceability Commands
+
+#### `logllmon` - Enable Logs
+
+- Enables `LLM_TRACIBILITY=TRUE` in `/prompts/index.md`
+- Starts recording interactions in `/prompts/spec/logs/prompts.log`
+
+#### `logllmoff` - Disable Logs
+
+- Disables `LLM_TRACIBILITY=FALSE` in `/prompts/index.md`
+- Stops recording interactions
+
+**Log format**:
 
 ```markdown
 # DATE: YYYY-MM-DD HH:MM:SS
-## PROMPT [Mode utilisé]
-[Question de l'utilisateur]
+## PROMPT [Mode used]
+[User question]
 
 ```
 
-**⚠️ Règle critique** : Les logs sont **TOUJOURS** stockés dans `/prompts/spec/logs/prompts.log`, jamais à la racine du projet.
+**⚠️ Critical rule**: Logs are **ALWAYS** stored in `/prompts/spec/logs/prompts.log`, never at the project root.
 
-### 🔄 Commandes de Synchronisation Externe
+### 🔄 External Synchronization Commands
 
 
 
-**Syntaxe** :
+**Syntax**:
 
 ```bash
 ```
 
-**Processus** :
+**Process**:
 
-1. **Validation credentials** → Lecture variables environnement (CONFLUENCE_URL, CONFLUENCE_USER, CONFLUENCE_TOKEN)
-2. **Test connexion API** → Vérification accès REST API v2
-3. **Liste espaces** → Récupération espaces accessibles
-4. **Rapport détaillé** → Statut connexion, permissions, diagnostics
-
-
-
-
-
-**Syntaxe** :
-
-```bash
-```
-
-**Processus** :
-
-2. **Configuration sync** → Paramètres synchronisation (strategy, auto_sync)
-3. **Préservation contenu** → Intégration header sans modifier le contenu existant
+1. **Credentials validation** → Reading environment variables (CONFLUENCE_URL, CONFLUENCE_USER, CONFLUENCE_TOKEN)
+2. **API connection test** → REST API v2 access check
+3. **Space listing** → Retrieval of accessible spaces
+4. **Detailed report** → Connection status, permissions, diagnostics
 
 
 
 
 
-**Syntaxe** :
+**Syntax**:
 
 ```bash
 ```
 
-**Processus** :
+**Process**:
 
-1. **Validation fichier** → Vérification métadonnées YAML
-2. **Conversion Markdown → Storage Format** → Transformation via pandoc
-
-
-
-
-
-**Syntaxe** :
-
-```bash
-```
-
-**Processus** :
-
-2. **Conversion Storage Format → Markdown** → Transformation via pandoc
-3. **Extraction métadonnées** → Space, parent, version, last_modified
-4. **Création fichier local** → Génération Markdown avec header YAML
+2. **Sync configuration** → Synchronization parameters (strategy, auto_sync)
+3. **Content preservation** → Header integration without modifying the existing content
 
 
 
 
 
-**Syntaxe** :
+**Syntax**:
 
 ```bash
 ```
 
-**Processus** :
+**Process**:
 
-2. **Détection direction** → Détermination push/pull selon last-write-wins
-3. **Conversion format** → Markdown ↔ Storage Format selon direction
-4. **Synchronisation** → Upload ou download selon stratégie
-
-**Stratégies disponibles** :
-
-- **last-write-wins** (défaut) : Synchronisation automatique selon timestamps
-- **manual** : Confirmation utilisateur avant chaque opération
-
-
-**Résultat** : Fichiers synchronisés avec résolution automatique des conflits
+1. **File validation** → YAML metadata check
+2. **Markdown → Storage Format conversion** → Transformation via pandoc
 
 
 
-**Syntaxe** :
+
+
+**Syntax**:
 
 ```bash
 ```
 
-**Processus** :
+**Process**:
 
-1. **Récupération structure** → Liste pages avec hiérarchie parent-enfant
-2. **Construction arbre** → Visualisation arborescente avec indentation
-3. **Métadonnées** → ID, title, version, last_modified pour chaque page
-
-
+2. **Storage Format → Markdown conversion** → Transformation via pandoc
+3. **Metadata extraction** → Space, parent, version, last_modified
+4. **Local file creation** → Markdown generation with YAML header
 
 
 
-**Fonctionnalités principales** :
-
-- 📈 **Calcul KPI Agile** : Vélocité, burndown, temps, qualité (via JQ obligatoire)
-- 📑 **Rapports HTML interactifs** : Chart.js, tableaux triables, graphiques temps réel
-- 🗂️ **Structure hiérarchique** : EPICS → FEATURES → TICKETS
-- ⚡ **Performance optimisée** : <2,500 tokens par sprint (50 tickets), 15-30s sync + rapport
 
 
-**Prérequis** :
-- **JQ obligatoire** : `brew install jq` (macOS) / `apt install jq` (Linux)
-- Curl et bash 4.0+
+**Syntax**:
+
+```bash
+```
+
+**Process**:
+
+2. **Direction detection** → Determination of push/pull according to last-write-wins
+3. **Format conversion** → Markdown ↔ Storage Format depending on direction
+4. **Synchronization** → Upload or download according to the strategy
+
+**Available strategies**:
+
+- **last-write-wins** (default): Automatic synchronization according to timestamps
+- **manual**: User confirmation before each operation
+
+
+**Result**: Files synchronized with automatic conflict resolution
+
+
+
+**Syntax**:
+
+```bash
+```
+
+**Process**:
+
+1. **Structure retrieval** → Page list with parent-child hierarchy
+2. **Tree construction** → Tree visualization with indentation
+3. **Metadata** → ID, title, version, last_modified for each page
+
+
+
+
+
+**Main features**:
+
+- 📈 **Agile KPI computation**: Velocity, burndown, time, quality (via mandatory JQ)
+- 📑 **Interactive HTML reports**: Chart.js, sortable tables, real-time charts
+- 🗂️ **Hierarchical structure**: EPICS → FEATURES → TICKETS
+- ⚡ **Optimized performance**: <2,500 tokens per sprint (50 tickets), 15-30s sync + report
+
+
+**Prerequisites**:
+- **JQ required**: `brew install jq` (macOS) / `apt install jq` (Linux)
+- Curl and bash 4.0+
 
 ---
 
 
 
-**Syntaxe** :
+**Syntax**:
 
 ```bash
 ```
 
-**Processus** :
+**Process**:
 
-2. **Test connexion API** → Vérification accès REST API v3
-3. **Récupération informations** → User info, projet accessible
-4. **Rapport détaillé** → Statut connexion, permissions, diagnostics
-
-
-
----
-
-
-
-**Syntaxe** :
-
-```bash
-```
-
-**Processus** :
-
-3. **Configuration metadata** → Initialisation fichiers JSON (project-info.json)
-4. **Documentation** → Création README.md avec instructions utilisation
+2. **API connection test** → REST API v3 access check
+3. **Information retrieval** → User info, accessible project
+4. **Detailed report** → Connection status, permissions, diagnostics
 
 
 
@@ -971,66 +957,15 @@ Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ
 
 
 
-**Syntaxe** :
+**Syntax**:
 
 ```bash
 ```
 
-**Processus** :
+**Process**:
 
-2. **Synchronisation tickets** → Download tickets par sprint avec métadonnées
-3. **Calcul KPI avec JQ** → Vélocité, burndown, temps, qualité, completion rate
-4. **Génération rapports HTML** → Dashboard interactif avec Chart.js, tableaux triables
-5. **Mise à jour métadonnées** → sprint-data.json, tickets.json, kpi-metrics.json
-
-**KPI calculés** (par sprint) :
-- **Vélocité** : Story points committed vs completed, moyenne 3 sprints
-- **Burndown** : Idéal vs actuel, tracking quotidien
-- **Temps** : Estimé vs passé vs restant, efficacité %
-- **Tickets** : Total / Completed / In Progress / Todo / Blocked
-- **Qualité** : Bugs trouvés/résolus, taux défaut %
-
-
-**Performance** : 15-30s par sprint + génération rapport
-
-
----
-
-
-
-**Syntaxe** :
-
-```bash
-```
-
-**Processus** :
-
-2. **Détection direction** → Détermination push/pull selon last-write-wins
-3. **Synchronisation** → Upload ou download selon stratégie
-5. **Résolution conflits** → Automatique via timestamps ou manuelle
-
-**Stratégies** :
-- **last-write-wins** (défaut) : Automatique selon timestamps
-- **manual** : Confirmation utilisateur avant chaque opération
-
-
-**Résultat** : Tickets synchronisés avec résolution automatique des conflits
-
----
-
-
-
-**Syntaxe** :
-
-```bash
-```
-
-**Processus** :
-
-1. **Récupération métadonnées** → Infos projet (name, description, lead, url)
-2. **Configuration** → Types tickets, workflow, custom fields
-3. **Statistiques** → Compteurs tickets, sprints, epics
-4. **Mise à jour local** → project-info.json avec toutes les métadonnées
+3. **Metadata configuration** → JSON files initialization (project-info.json)
+4. **Documentation** → README.md creation with usage instructions
 
 
 
@@ -1038,18 +973,66 @@ Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ
 
 
 
-**Syntaxe** :
+**Syntax**:
 
 ```bash
 ```
 
-**Processus** :
+**Process**:
 
-1. **Récupération epic** → Métadonnées epic principal
-2. **Récupération hiérarchie** → Features et tickets liés
-3. **Structure hiérarchique** → Organisation EPIC → FEATURES → TICKETS
-4. **Synchronisation complète** → Tous les éléments avec métadonnées
-5. **Génération arborescence** → Fichiers JSON structurés
+2. **Ticket synchronization** → Ticket download per sprint with metadata
+3. **KPI computation with JQ** → Velocity, burndown, time, quality, completion rate
+4. **HTML report generation** → Interactive dashboard with Chart.js, sortable tables
+5. **Metadata update** → sprint-data.json, tickets.json, kpi-metrics.json
+
+**Computed KPIs** (per sprint):
+- **Velocity**: Story points committed vs completed, 3-sprint average
+- **Burndown**: Ideal vs actual, daily tracking
+- **Time**: Estimated vs spent vs remaining, efficiency %
+- **Tickets**: Total / Completed / In Progress / Todo / Blocked
+- **Quality**: Bugs found/resolved, defect rate %
+
+
+**Performance**: 15-30s per sprint + report generation
+
+
+---
+
+
+
+**Syntax**:
+
+```bash
+```
+
+**Process**:
+
+2. **Direction detection** → Determination of push/pull according to last-write-wins
+3. **Synchronization** → Upload or download according to the strategy
+5. **Conflict resolution** → Automatic via timestamps or manual
+
+**Strategies**:
+- **last-write-wins** (default): Automatic according to timestamps
+- **manual**: User confirmation before each operation
+
+
+**Result**: Tickets synchronized with automatic conflict resolution
+
+---
+
+
+
+**Syntax**:
+
+```bash
+```
+
+**Process**:
+
+1. **Metadata retrieval** → Project info (name, description, lead, url)
+2. **Configuration** → Ticket types, workflow, custom fields
+3. **Statistics** → Ticket, sprint and epic counters
+4. **Local update** → project-info.json with all the metadata
 
 
 
@@ -1057,56 +1040,75 @@ Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ
 
 
 
-**Syntaxe** :
+**Syntax**:
 
 ```bash
 ```
 
-**Processus** :
+**Process**:
 
-1. **Import projet** → Métadonnées générales
-2. **Import epics** → Tous les epics du projet
-3. **Import features** → Features liées aux epics
-4. **Import tickets** → Tous les tickets (hiérarchie complète)
-5. **Import sprints** → Tous les sprints avec tickets associés
-6. **Génération rapports** → Rapports HTML pour chaque sprint
+1. **Epic retrieval** → Main epic metadata
+2. **Hierarchy retrieval** → Linked features and tickets
+3. **Hierarchical structure** → EPIC → FEATURES → TICKETS organization
+4. **Full synchronization** → All elements with metadata
+5. **Tree generation** → Structured JSON files
 
-
-**Performance** : Variable selon taille projet (peut prendre plusieurs minutes pour gros projets)
 
 
 ---
 
 
-**Processus** :
 
-1. **Lecture données** → sprint-data.json, tickets.json, kpi-metrics.json
-2. **Calcul KPI** → Si nécessaire, recalcul avec JQ
-3. **Génération HTML** → Dashboard avec Chart.js (burndown, distribution)
-4. **Tableaux interactifs** → Tri, filtrage, recherche (vanilla JS)
-5. **Assets** → CSS/JS inclus (autonome, pas de serveur requis)
+**Syntax**:
+
+```bash
+```
+
+**Process**:
+
+1. **Project import** → General metadata
+2. **Epics import** → All the project's epics
+3. **Features import** → Features linked to epics
+4. **Tickets import** → All tickets (complete hierarchy)
+5. **Sprints import** → All sprints with associated tickets
+6. **Report generation** → HTML reports for each sprint
 
 
-**Performance** : <10s génération rapport
+**Performance**: Varies with project size (can take several minutes for large projects)
 
-**Résultat** : Fichier `report.html` autonome avec tous les graphiques et données
+
+---
+
+
+**Process**:
+
+1. **Data reading** → sprint-data.json, tickets.json, kpi-metrics.json
+2. **KPI computation** → If needed, recomputation with JQ
+3. **HTML generation** → Dashboard with Chart.js (burndown, distribution)
+4. **Interactive tables** → Sorting, filtering, search (vanilla JS)
+5. **Assets** → CSS/JS included (standalone, no server required)
+
+
+**Performance**: <10s report generation
+
+**Result**: Standalone `report.html` file with all the charts and data
 
 ---
 
 
 
-**Syntaxe** :
+**Syntax**:
 
 ```bash
 ```
 
-**Processus** :
+**Process**:
 
-1. **Récupération backlog** → Tickets non assignés à un sprint
-2. **Tri priorités** → Organisation par priorité, type, assignee
-3. **Synchronisation** → Download métadonnées + last-write-wins
-4. **Génération vue HTML** → Tableau interactif de gestion backlog
-5. **Statistiques** → Compteurs par priorité, type, status
+1. **Backlog retrieval** → Tickets not assigned to a sprint
+2. **Priority sorting** → Organization by priority, type, assignee
+3. **Synchronization** → Metadata download + last-write-wins
+4. **HTML view generation** → Interactive backlog management table
+5. **Statistics** → Counters by priority, type, status
 
 
 
@@ -1115,138 +1117,138 @@ Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ
 
 ```
 ├── [General]/
-│   └── project-info.json              # Métadonnées projet
+│   └── project-info.json              # Project metadata
 ├── [Sprints]/
 │   ├── SPRINT-001/
-│   │   ├── sprint-data.json           # Données sprint
-│   │   ├── tickets.json               # Liste tickets
-│   │   ├── kpi-metrics.json           # KPI calculés
-│   │   ├── report.html                # Rapport interactif
+│   │   ├── sprint-data.json           # Sprint data
+│   │   ├── tickets.json               # Ticket list
+│   │   ├── kpi-metrics.json           # Computed KPIs
+│   │   ├── report.html                # Interactive report
 │   │   └── assets/                    # JS/CSS (Chart.js)
 │   └── SPRINT-002/...
 ├── [Backlog]/
-│   ├── backlog.json                   # Tickets backlog
-│   └── backlog.html                   # Vue gestion backlog
+│   ├── backlog.json                   # Backlog tickets
+│   └── backlog.html                   # Backlog management view
 └── [EPICS]/
     ├── EPIC-001/
-    │   ├── epic.json                  # Métadonnées epic
+    │   ├── epic.json                  # Epic metadata
     │   ├── [FEATURES]/
     │   │   └── FEATURE-001/
-    │   │       ├── feature.json       # Métadonnées feature
+    │   │       ├── feature.json       # Feature metadata
     │   │       └── [TICKETS]/
-    │   │           └── TICKET-001.json # Ticket individuel
-    │   └── [TICKETS]/                 # Tickets directs (sans feature)
+    │   │           └── TICKET-001.json # Individual ticket
+    │   └── [TICKETS]/                 # Direct tickets (without feature)
     └── EPIC-002/...
 ```
 
-**Rapports HTML Interactifs** :
+**Interactive HTML Reports**:
 
-- **Dashboard KPI** : 4 cartes avec indicateurs visuels
-- **Graphique Burndown** : Idéal vs actuel (Chart.js)
-- **Distribution** : Pie chart par status
-- **Tableau tickets** : Tri, filtrage, recherche (vanilla JS)
-- **Autonome** : Toutes données depuis JSON local (pas de serveur)
+- **KPI Dashboard**: 4 cards with visual indicators
+- **Burndown chart**: Ideal vs actual (Chart.js)
+- **Distribution**: Pie chart by status
+- **Ticket table**: Sorting, filtering, search (vanilla JS)
+- **Standalone**: All data from local JSON (no server)
 
-**Configuration** :
+**Configuration**:
 
 
 ```bash
 ```
 
-**Générer API Token** : https://id.atlassian.com/manage-profile/security/api-tokens
+**Generate an API Token**: https://id.atlassian.com/manage-profile/security/api-tokens
 
 ---
 
-### 🚀 Commandes d'Export et Utilisation Externe
+### 🚀 Export and External Use Commands
 
-#### `compile-agent-from-use` - Compilation d'Agents Autonomes
+#### `compile-agent-from-use` - Standalone Agent Compilation
 
-**Objectif** : Exporter la memory bank AI-KIDO vers des agents autonomes pour utilisation externe (ChatGPT, Microsoft Copilot, MCP, etc.)
+**Goal**: Export the AI-KIDO memory bank to standalone agents for external use (ChatGPT, Microsoft Copilot, MCP, etc.)
 
-**Processus interactif** :
+**Interactive process**:
 
-1. **Sélection du mode** → 4 options : cas existant, commande, use-case, manuel
-2. **Extraction éléments** → Analyse ciblée (via `agent-aikido-explore-bank`)
-3. **Optimisation sémantique** → Compression, hiérarchisation, validation orale
-4. **Validation conformité** → Pré-finalisation (via `agent-aikido-validator`)
-5. **Versioning SEMVER** → Calcul automatique des versions selon les changements
+1. **Mode selection** → 4 options: existing case, command, use-case, manual
+2. **Element extraction** → Targeted analysis (via `agent-aikido-explore-bank`)
+3. **Semantic optimization** → Compression, prioritization, oral validation
+4. **Compliance validation** → Pre-finalization (via `agent-aikido-validator`)
+5. **SEMVER versioning** → Automatic version calculation based on the changes
 
-**Agents utilisés** : 2 agents (explore-bank, validator)
+**Agents used**: 2 agents (explore-bank, validator)
 
-**Modes disponibles** :
+**Available modes**:
 
-- **📋 Cas existant** : Modifier un agent déjà compilé
-- **⚡ Commande** : Créer depuis une commande `.roo` existante
-- **🎯 Use-case** : Partir d'un cas d'usage AI-KIDO spécifique
-- **✋ Manuel** : Configuration complète étape par étape
+- **📋 Existing case**: Modify an already compiled agent
+- **⚡ Command**: Create from an existing `.roo` command
+- **🎯 Use-case**: Start from a specific AI-KIDO use case
+- **✋ Manual**: Complete step-by-step configuration
 
-**Résultat** : Agent compilé dans `/out/agents/agent-[usage]-vX.Y.Z.md` avec :
+**Result**: Agent compiled in `/out/agents/agent-[usage]-vX.Y.Z.md` with:
 
-- Prompt système optimisé pour usage externe
-- Personas consultants intégrés
-- Techniques avancées de reformulation
-- Workflow opérationnel step-by-step
-- Métriques de qualité (densité sémantique, cohérence, facilité orale)
+- System prompt optimized for external use
+- Integrated consulting personas
+- Advanced reformulation techniques
+- Step-by-step operational workflow
+- Quality metrics (semantic density, consistency, ease of oral use)
 
-**Cas d'usage** : Déploiement sur ChatGPT, intégration MCP, agents Microsoft Copilot, ou tout autre contexte externe à Roo-Code/VSCode.
+**Use cases**: Deployment on ChatGPT, MCP integration, Microsoft Copilot agents, or any other context outside Roo-Code/VSCode.
 
-## 🤖 Agents AI-KIDO Disponibles
+## 🤖 Available AI-KIDO Agents
 
-### Agents Spécialisés Actuels
+### Current Specialized Agents
 
-Le projet dispose actuellement de **13 agents spécialisés** dans `/prompts/gen/personas/` :
+The project currently has **13 specialized agents** in `/prompts/gen/personas/`:
 
-#### 1. **agent-aikido-explore-bank** 🔍 (Explorateur Memory Bank)
+#### 1. **agent-aikido-explore-bank** 🔍 (Memory Bank Explorer)
 
-**Spécialisation** : Recherche et extraction d'informations depuis la Memory Bank AI-KIDO
+**Specialization**: Search and extraction of information from the AI-KIDO Memory Bank
 
-**Quand l'utiliser** :
+**When to use it**:
 
-- Lorsqu'un utilisateur pose des questions sur des concepts/techniques/personas documentés
-- Avant d'exécuter des tâches complexes nécessitant un contexte Memory Bank
-- Pour explorer proactivement les patterns et bonnes pratiques du projet
-- Pour identifier les agents disponibles et leurs capacités
+- When a user asks questions about documented concepts/techniques/personas
+- Before running complex tasks requiring Memory Bank context
+- To proactively explore the project's patterns and best practices
+- To identify the available agents and their capabilities
 
-**Capabilities** :
+**Capabilities**:
 
-- Recherche intelligente dans `/prompts/gen/` et `/prompts/hard_points/` uniquement
-- **IGNORE `/spec/`** : Espace personnel, jamais exploré (sauf activation explicite)
-- Extraction contextuelle adaptée à la requête
-- Navigation récursive dans l'arborescence AI-KIDO
-- Détection automatique des patterns pertinents
+- Intelligent search in `/prompts/gen/` and `/prompts/hard_points/` only
+- **IGNORES `/spec/`**: Personal space, never explored (unless explicitly activated)
+- Contextual extraction adapted to the query
+- Recursive navigation in the AI-KIDO tree structure
+- Automatic detection of relevant patterns
 
-**✅ Optimisation effectuée** : 366 lignes (conforme à la contrainte 500 lignes - Règle 4)
+**✅ Optimization done**: 366 lines (meets the 500-line constraint - Rule 4)
 
-#### 2. **agent-aikido-explore-code** 💻 (Explorateur Code Source)
+#### 2. **agent-aikido-explore-code** 💻 (Source Code Explorer)
 
-**Spécialisation** : Recherche profonde dans le code source du projet (HORS Memory Bank) avec extraction de métadonnées structurées
+**Specialization**: Deep search in the project source code (OUTSIDE the Memory Bank) with structured metadata extraction
 
-**Quand l'utiliser** :
+**When to use it**:
 
-- Pour localiser classes, interfaces, functions, modules dans le code source
-- Analyse de dépendances et imports (cross-file relationship graph)
-- Cartographie architecture code (extends, implements, uses)
-- Recherche guidée "où chercher quoi" selon technologie (PHP, JavaScript/TypeScript, generic)
-- Besoin de métadonnées compactes avec line numbers (PAS le code complet)
+- To locate classes, interfaces, functions, modules in the source code
+- Dependency and import analysis (cross-file relationship graph)
+- Code architecture mapping (extends, implements, uses)
+- Guided "where to look for what" search by technology (PHP, JavaScript/TypeScript, generic)
+- Need for compact metadata with line numbers (NOT the full code)
 
-**Capabilities** :
+**Capabilities**:
 
-- **Technology-aware** : Plans de recherche spécialisés (generic, php, javascript/typescript)
-- **Résolution hiérarchique** : tech/version → tech → generic (fallback)
-- **Métadonnées structurées** : Classes (lines X-Y), Functions (signatures), Dependencies (imports)
-- **Output compact** : ~50 lignes par fichier max, <2500 tokens total
-- **Respect .gitignore** : Exclut automatiquement patterns ignorés
-- **PSR-4 aware** (PHP) : Résolution namespace → file path via composer.json
-- **ES Module aware** (JS/TS) : Résolution import paths avec tsconfig.json
-- **IGNORE `/prompts/`** : Recherche UNIQUEMENT dans code source projet
+- **Technology-aware**: Specialized search plans (generic, php, javascript/typescript)
+- **Hierarchical resolution**: tech/version → tech → generic (fallback)
+- **Structured metadata**: Classes (lines X-Y), Functions (signatures), Dependencies (imports)
+- **Compact output**: ~50 lines per file max, <2500 tokens total
+- **.gitignore aware**: Automatically excludes ignored patterns
+- **PSR-4 aware** (PHP): Namespace → file path resolution via composer.json
+- **ES Module aware** (JS/TS): Import path resolution with tsconfig.json
+- **IGNORES `/prompts/`**: Searches ONLY in the project source code
 
-**Search Plans disponibles** :
+**Available Search Plans**:
 
-- `plan-generic.md` : Fallback multi-langage (Python, Java, Rust, Go, C++, etc.)
-- `php/plan.md` : PHP avec PSR-4, Laravel, Symfony, WordPress patterns
-- `javascript/plan.md` : JavaScript/TypeScript avec ES Modules, React, Node.js
+- `plan-generic.md`: Multi-language fallback (Python, Java, Rust, Go, C++, etc.)
+- `php/plan.md`: PHP with PSR-4, Laravel, Symfony, WordPress patterns
+- `javascript/plan.md`: JavaScript/TypeScript with ES Modules, React, Node.js
 
-**Output format** :
+**Output format**:
 
 ```markdown
 ## 📄 `path/to/file.ext`
@@ -1258,29 +1260,29 @@ Le projet dispose actuellement de **13 agents spécialisés** dans `/prompts/gen
   - `package/module/path` (line 3)
 ```
 
-**Conformité** : ✅ 650 lignes (respecte contrainte 1000 lignes extended - agent technique)
+**Compliance**: ✅ 650 lines (meets the extended 1000-line constraint - technical agent)
 
-**Intégration** : Appelé manuellement ou via `agent-aikido-explore-all` pour recherche parallèle
+**Integration**: Called manually or via `agent-aikido-explore-all` for parallel search
 
-#### 3. **agent-aikido-explore-all** 🔍💻 (Orchestrateur Recherche Parallèle)
+#### 3. **agent-aikido-explore-all** 🔍💻 (Parallel Search Orchestrator)
 
-**Spécialisation** : Orchestrateur minimal pour recherche simultanée dans Memory Bank ET code source
+**Specialization**: Minimal orchestrator for simultaneous search in the Memory Bank AND the source code
 
-**Quand l'utiliser** :
+**When to use it**:
 
-- Recherche générale sans savoir si documentation ou code
-- Besoin vue complète : documentation + implémentation
-- Vérifier cohérence entre specs (bank) et réalité (code)
-- Exploration globale projet (docs + code)
+- General search without knowing whether it is in documentation or code
+- Need for a complete view: documentation + implementation
+- Check consistency between specs (bank) and reality (code)
+- Global project exploration (docs + code)
 
-**Capabilities** :
+**Capabilities**:
 
-- **Orchestration parallèle** : Lance explore-bank + explore-code EN PARALLÈLE (single message, 2 Task calls)
-- **Combinaison résultats** : Fusionne outputs dans format structuré
-- **Détection cross-references** : Identifie connexions docs ↔ code
-- **Performance optimisée** : Temps = max(time_bank, time_code) ≈ 3-5s (PAS somme)
+- **Parallel orchestration**: Launches explore-bank + explore-code IN PARALLEL (single message, 2 Task calls)
+- **Result combination**: Merges outputs into a structured format
+- **Cross-reference detection**: Identifies docs ↔ code connections
+- **Optimized performance**: Time = max(time_bank, time_code) ≈ 3-5s (NOT the sum)
 
-**Execution pattern** :
+**Execution pattern**:
 
 ```markdown
 Task 1: explore-bank (subagent_type: agent-aikido-explore-bank)
@@ -1288,7 +1290,7 @@ Task 2: explore-code (subagent_type: agent-aikido-explore-code)
 Wait → Combine → Return structured output
 ```
 
-**Output format** :
+**Output format**:
 
 ```markdown
 # Comprehensive Search Results: [QUERY]
@@ -1307,283 +1309,283 @@ Wait → Combine → Return structured output
 - Source Code: Y files, Z elements
 ```
 
-**Performance** :
+**Performance**:
 
 - Parallel execution (not sequential)
 - Total time: ~3-5s (max of both)
 - Tokens: ~2,000-3,000 (sum)
 
-**Conformité** : ✅ 150 lignes (agent minimal, orchestration pure)
+**Compliance**: ✅ 150 lines (minimal agent, pure orchestration)
 
-**Trade-offs** :
+**Trade-offs**:
 
-- ❌ Coût double (2 agents) → N'utiliser QUE si besoin vraiment global
-- ✅ Temps optimisé (parallèle) → Pas 2× plus lent (max time, pas somme)
-- ✅ Vue complète → Idéal pour exploration sans scope précis
+- ❌ Double cost (2 agents) → Use ONLY when a truly global need exists
+- ✅ Optimized time (parallel) → Not 2× slower (max time, not sum)
+- ✅ Complete view → Ideal for exploration without a precise scope
 
-#### 4. **agent-aikido-truth-evaluator** ⚖️ (Évaluateur Sources de Vérité)
+#### 4. **agent-aikido-truth-evaluator** ⚖️ (Truth Sources Evaluator)
 
-**Spécialisation** : Détermine les sources autoritaires (specs, code, docs, tests) selon le scénario de développement
+**Specialization**: Determines the authoritative sources (specs, code, docs, tests) according to the development scenario
 
-**Quand l'utiliser** :
+**When to use it**:
 
-- Avant de démarrer un travail de développement (identifier sources autoritaires)
-- Lorsque specs et code se contredisent (déterminer quelle source respecter)
-- Pendant les code reviews (valider contre les bonnes sources)
-- En refactoring (distinguer docs legacy vs implémentation actuelle)
-- Quand la documentation semble obsolète (vérifier contre le code)
+- Before starting development work (identify authoritative sources)
+- When specs and code contradict each other (determine which source to follow)
+- During code reviews (validate against the right sources)
+- During refactoring (distinguish legacy docs vs current implementation)
+- When documentation seems outdated (check against the code)
 
-**Capabilities** :
+**Capabilities**:
 
-- Classification automatique par scénario (8 types : new feature, bug fix, refactoring, config, docs, from-scratch, investigation, API integration)
-- Hiérarchie des sources : `/hard_points/` (immutable) > `/gen/` (évolutif) > code/docs > **JAMAIS `/spec/`**
-- **IGNORE `/spec/`** : Espace personnel, pas source de vérité (sauf activation explicite)
-- Détection de conflits entre sources
-- Recommandations précises avec niveau de confiance
+- Automatic classification by scenario (8 types: new feature, bug fix, refactoring, config, docs, from-scratch, investigation, API integration)
+- Source hierarchy: `/hard_points/` (immutable) > `/gen/` (evolving) > code/docs > **NEVER `/spec/`**
+- **IGNORES `/spec/`**: Personal space, not a source of truth (unless explicitly activated)
+- Conflict detection between sources
+- Precise recommendations with confidence level
 
-**Conformité** : ✅ 127 lignes (respecte contrainte 500 lignes)
+**Compliance**: ✅ 127 lines (meets the 500-line constraint)
 
-#### 5. **agent-aikido-raci-delegator** 🎯 (Classificateur RACI)
+#### 5. **agent-aikido-raci-delegator** 🎯 (RACI Classifier)
 
-**Spécialisation** : Classifie et route les documents vers leur emplacement correct dans la Memory Bank selon la matrice RACI
+**Specialization**: Classifies and routes documents to their correct location in the Memory Bank according to the RACI matrix
 
-**Quand l'utiliser** :
+**When to use it**:
 
-- Pour classer un nouveau document dans la Memory Bank
-- Lors de l'organisation/réorganisation de contenu
-- Pour déterminer le rôle responsable d'un type de contenu
-- En contexte mono-projet ou multi-projet (détection automatique)
+- To classify a new document in the Memory Bank
+- When organizing/reorganizing content
+- To determine the role responsible for a type of content
+- In a single-project or multi-project context (automatic detection)
 
-**Capabilities** :
+**Capabilities**:
 
-- Analyse de contenu (extraction topic, type, domaine, niveau technique, rôle)
-- Classification par type (concept, technique, persona, use_case, hard_point)
-- Détection contexte projet (mono vs multi-projet)
-- Mapping RACI (Responsible/Accountable/Consulted/Informed)
-- Recommandation paths : `/gen/` ou `/hard_points/` uniquement (JAMAIS `/spec/`)
-- **IGNORE `/spec/`** : Espace personnel, pas destination de classification
+- Content analysis (extraction of topic, type, domain, technical level, role)
+- Classification by type (concept, technique, persona, use_case, hard_point)
+- Project context detection (single vs multi-project)
+- RACI mapping (Responsible/Accountable/Consulted/Informed)
+- Path recommendation: `/gen/` or `/hard_points/` only (NEVER `/spec/`)
+- **IGNORES `/spec/`**: Personal space, not a classification destination
 
-**Conformité** : ✅ 214 lignes (respecte contrainte 500 lignes)
+**Compliance**: ✅ 214 lines (meets the 500-line constraint)
 
-#### 6. **agent-aikido-doc-header** 📝 (Gestionnaire En-têtes Documents)
+#### 6. **agent-aikido-doc-header** 📝 (Document Header Manager)
 
-**Spécialisation** : Standardise et gère les en-têtes de documents AI-KIDO avec versioning, métadonnées de validation de vérité, et traçabilité des sources
+**Specialization**: Standardizes and manages AI-KIDO document headers with versioning, truth validation metadata, and source traceability
 
-**Quand l'utiliser** :
+**When to use it**:
 
-- Lors de la création d'en-têtes pour nouveaux documents dans la Memory Bank
-- Pour valider les en-têtes existants contre les standards AI-KIDO
-- Après validation par truth-evaluator pour mettre à jour les métadonnées last-check
-- Pour rafraîchir les références aux sources avec dates de modification actuelles
-- Pour ajouter du tracking de références inline dans les sections de documents
+- When creating headers for new documents in the Memory Bank
+- To validate existing headers against the AI-KIDO standards
+- After validation by truth-evaluator to update the last-check metadata
+- To refresh source references with current modification dates
+- To add inline reference tracking in document sections
 
-**Capabilities** :
+**Capabilities**:
 
-- Création d'en-têtes avec métadonnées complètes (version, truth source, last-check, source refs)
-- Validation de format et conformité des en-têtes existants
-- Mise à jour post-validation (Last Check, Check Status, Checked By)
-- Gestion des références aux sources (code/specs) avec extraction automatique des dates de modification
-- Support des scénarios Greenfield (Spec = truth), TMA (Code = truth), et Dual (Refactoring)
-- Tracking inline de références avec statut (✅ Up-to-date, ⚠️ Review needed, ❌ Outdated)
-- Optimisation truth-evaluator : Fast-path skip validation si ✅ + sources inchangées (économie 70-80% tokens)
+- Header creation with complete metadata (version, truth source, last-check, source refs)
+- Format and compliance validation of existing headers
+- Post-validation update (Last Check, Check Status, Checked By)
+- Source reference management (code/specs) with automatic extraction of modification dates
+- Support for Greenfield (Spec = truth), TMA (Code = truth), and Dual (Refactoring) scenarios
+- Inline reference tracking with status (✅ Up-to-date, ⚠️ Review needed, ❌ Outdated)
+- truth-evaluator optimization: Fast-path skips validation if ✅ + sources unchanged (70-80% token savings)
 
-**Formats d'en-tête** :
+**Header formats**:
 
-- **Minimal** (théorie pure) : Version, Date, Statut
-- **Complet** (lié au code) : + Truth Source, Last Check, Source Refs, Check Status
+- **Minimal** (pure theory): Version, Date, Status
+- **Complete** (code-linked): + Truth Source, Last Check, Source Refs, Check Status
 
-**Conformité** : ✅ 475 lignes (respecte contrainte 500 lignes)
+**Compliance**: ✅ 475 lines (meets the 500-line constraint)
 
-**Intégration** : Invoqué par truth-evaluator (post-validation) et bank-populate (création documents)
+**Integration**: Invoked by truth-evaluator (post-validation) and bank-populate (document creation)
 
-#### 7. **agent-aikido-bank-populate** 🤖 (Peupleur Automatique Memory Bank)
+#### 7. **agent-aikido-bank-populate** 🤖 (Memory Bank Automatic Populator)
 
-**Spécialisation** : Orchestre le peuplement automatique de la Memory Bank à partir du code et du contexte lorsque documents manquants ou invalides
+**Specialization**: Orchestrates the automatic population of the Memory Bank from code and context when documents are missing or invalid
 
-**⏰ TIMING D'INVOCATION : FIN DE PROCESSUS UNIQUEMENT**
+**⏰ INVOCATION TIMING: END OF PROCESS ONLY**
 
-- Appelé APRÈS analyse/audit complet
-- Appelé APRÈS génération du rapport final listant tous les gaps
-- Utilisateur décide explicitement de peupler ou non
-- ❌ PAS invoqué immédiatement lors de détection de gap
+- Called AFTER a complete analysis/audit
+- Called AFTER generation of the final report listing all gaps
+- The user explicitly decides whether or not to populate
+- ❌ NOT invoked immediately upon gap detection
 
-**Quand l'utiliser** :
+**When to use it**:
 
-- En fin d'analyse : liste complète de documents absents/invalides générée
-- Après audit complet Memory Bank avec rapport de gaps
-- Utilisateur valide le peuplement automatique des gaps détectés
-- Besoin de capitaliser connaissances depuis code existant (batch)
+- At the end of an analysis: complete list of missing/invalid documents generated
+- After a complete Memory Bank audit with a gap report
+- The user validates the automatic population of the detected gaps
+- Need to capitalize knowledge from existing code (batch)
 
-**Capabilities** :
+**Capabilities**:
 
-- Détection gaps Memory Bank
-- Collecte infos depuis code/contexte/docs sans analyse
-- Orchestration multi-agents (truth-evaluator, raci-delegator, expert personas)
-- Validation conformité AI-KIDO (≤500 lignes, liens bidirectionnels)
-- Intégration automatique avec mise à jour index
-- **Nouveau** : Invoque doc-header pour création d'en-têtes complets avec métadonnées
+- Memory Bank gap detection
+- Information collection from code/context/docs without analysis
+- Multi-agent orchestration (truth-evaluator, raci-delegator, expert personas)
+- AI-KIDO compliance validation (≤500 lines, bidirectional links)
+- Automatic integration with index update
+- **New**: Invokes doc-header to create complete headers with metadata
 
-**Conformité** : ✅ 477 lignes (respecte contrainte 500 lignes)
+**Compliance**: ✅ 477 lines (meets the 500-line constraint)
 
-#### 8. **agent-aikido-validator** ✅ (Validateur de Conformité AI-KIDO)
+#### 8. **agent-aikido-validator** ✅ (AI-KIDO Compliance Validator)
 
-**Spécialisation** : Validation légère et rapide des fichiers contre les règles AI-KIDO essentielles (contraintes lignes, emplacement, frontmatter, liens)
+**Specialization**: Lightweight and fast validation of files against the essential AI-KIDO rules (line constraints, location, frontmatter, links)
 
-**Trigger automatique** : Invoqué sur opérations fichiers dans `/prompts` (create/edit/move)
+**Automatic trigger**: Invoked on file operations in `/prompts` (create/edit/move)
 
-**Quand l'utiliser** :
+**When to use it**:
 
-- ✅ Automatiquement après création/modification de fichier dans `/prompts`
-- ✅ Vérification rapide conformité (contraintes lignes, emplacement, frontmatter)
-- ✅ Validation fichiers spécifiques passés en paramètre
-- ⚠️ PAS pour audit complet Memory Bank (utiliser `/analyse-aikido`)
+- ✅ Automatically after file creation/modification in `/prompts`
+- ✅ Quick compliance check (line constraints, location, frontmatter)
+- ✅ Validation of specific files passed as a parameter
+- ⚠️ NOT for a complete Memory Bank audit (use `/analyse-aikido`)
 
-**Capabilities** :
+**Capabilities**:
 
-- Détection automatique structure mono/multi-projet
-- Validation ciblée : Règle 4 (lignes), Règle 6 (liens), Règle 2 (séparation), frontmatter
-- Rapports concis (<2k tokens par validation)
-- Chargement minimal des règles (depuis `/prompts/hard_points/ai-kido.md`)
-- Gestion exceptions (ai-kido.md exempt de limite 500 lignes)
+- Automatic single/multi-project structure detection
+- Targeted validation: Rule 4 (lines), Rule 6 (links), Rule 2 (separation), frontmatter
+- Concise reports (<2k tokens per validation)
+- Minimal rule loading (from `/prompts/hard_points/ai-kido.md`)
+- Exception handling (ai-kido.md exempt from the 500-line limit)
 
-**Optimisations** :
+**Optimizations**:
 
-- 🚀 Utilisation minimale de tokens (<2k par validation)
-- ⚡ Pas de navigation récursive (charge seulement les règles)
-- 🎯 Valide UNIQUEMENT fichiers spécifiés (pas d'exploration)
-- 📊 Quick checks (wc -l, grep frontmatter, validation emplacement)
+- 🚀 Minimal token usage (<2k per validation)
+- ⚡ No recursive navigation (only loads the rules)
+- 🎯 Validates ONLY specified files (no exploration)
+- 📊 Quick checks (wc -l, grep frontmatter, location validation)
 
-**Conformité** : ✅ 143 lignes (optimisé pour rapidité)
+**Compliance**: ✅ 143 lines (optimized for speed)
 
-#### 9. **agent-aikido-balancer** ⚖️ (Équilibreur Arborescence)
+#### 9. **agent-aikido-balancer** ⚖️ (Tree Structure Balancer)
 
-**Spécialisation** : Équilibre automatique de la structure arborescente de la Memory Bank selon règles AI-KIDO (≤500 lignes, 3-7 enfants, ≤4 niveaux)
+**Specialization**: Automatic balancing of the Memory Bank tree structure according to AI-KIDO rules (≤500 lines, 3-7 children, ≤4 levels)
 
-**Quand l'utiliser** :
+**When to use it**:
 
-- Après modifications significatives de la Memory Bank
-- Fichiers dépassant 500 lignes (ou 1000 pour extended), prompts/hard_points/system/structure/index.json no limit.
-- Profondeur arborescente >4 niveaux
-- Facteur de branchement hors 3-7 (trop d'enfants ou trop peu)
-- Liens bidirectionnels cassés après réorganisation
+- After significant Memory Bank modifications
+- Files exceeding 500 lines (or 1000 for extended), prompts/hard_points/system/structure/index.json no limit.
+- Tree depth >4 levels
+- Branching factor outside 3-7 (too many or too few children)
+- Broken bidirectional links after a reorganization
 
-**Capabilities** :
+**Capabilities**:
 
-- Analyse structure complète (profondeur, branchement, taille fichiers)
-- Détection violations Règles 4, 6, 7
-- Split sémantique fichiers >500 lignes (préserve cohérence)
-- Réduction profondeur (flatten hierarchies)
-- Optimisation branchement (grouping/merging)
-- Maintenance liens bidirectionnels automatique
+- Complete structure analysis (depth, branching, file size)
+- Detection of Rule 4, 6, 7 violations
+- Semantic split of files >500 lines (preserves consistency)
+- Depth reduction (flatten hierarchies)
+- Branching optimization (grouping/merging)
+- Automatic bidirectional link maintenance
 
-**Gains estimés** (vs manuel) :
+**Estimated gains** (vs manual):
 
-- Temps : -70% (60 → 18 min)
-- Complexité : -50% (3.5 → 1.8/5)
-- Risque : -60% (3.5 → 1.4/5)
-- Qualité : Split sémantique intelligent, liens garantis
+- Time: -70% (60 → 18 min)
+- Complexity: -50% (3.5 → 1.8/5)
+- Risk: -60% (3.5 → 1.4/5)
+- Quality: Intelligent semantic split, guaranteed links
 
-**Conformité** : ✅ 383 lignes (respecte contrainte 500 lignes)
+**Compliance**: ✅ 383 lines (meets the 500-line constraint)
 
-#### 10. **agent-aikido-maj-md-index** 📑 (Indexeur Memory Bank)
+#### 10. **agent-aikido-maj-md-index** 📑 (Memory Bank Indexer)
 
-**Spécialisation** : Mise à jour automatique de tous les index.md de la Memory Bank (domaines, principal, AGENTS.md)
+**Specialization**: Automatic update of all Memory Bank index.md files (domains, main, AGENTS.md)
 
-**Quand l'utiliser** :
+**When to use it**:
 
-- Après ajout/modification/suppression de fichiers
-- Désynchronisation index ↔ structure réelle
-- Statistiques Memory Bank obsolètes
-- AGENTS.md nécessite mise à jour contexte/agents
-- Génération rapports état Memory Bank
+- After adding/modifying/deleting files
+- Index ↔ actual structure out of sync
+- Outdated Memory Bank statistics
+- AGENTS.md needs a context/agents update
+- Memory Bank status report generation
 
-**Capabilities** :
+**Capabilities**:
 
-- Scan structure complète tous domaines (concepts, techniques, uses, personas)
-- Extraction metadata (title, description, frontmatter, line counts, dates)
-- Génération index.md domaines (avec navigation, stats, subdirs)
-- Mise à jour index principal (/prompts/gen/index.md)
-- Synchronisation AGENTS.md (contexte, agent list, statistics)
-- Création index subdirectories (si >3 files)
+- Complete structure scan of all domains (concepts, techniques, uses, personas)
+- Metadata extraction (title, description, frontmatter, line counts, dates)
+- Domain index.md generation (with navigation, stats, subdirs)
+- Main index update (/prompts/gen/index.md)
+- AGENTS.md synchronization (context, agent list, statistics)
+- Subdirectory index creation (if >3 files)
 
-**Gains estimés** (vs manuel) :
+**Estimated gains** (vs manual):
 
-- Temps : -80% (45 → 9 min)
-- Complexité : -67% (3.0 → 1.0/5)
-- Risque : -67% (3.0 → 1.0/5)
-- Qualité : Statistics accuracy garantie, navigation cohérente
+- Time: -80% (45 → 9 min)
+- Complexity: -67% (3.0 → 1.0/5)
+- Risk: -67% (3.0 → 1.0/5)
+- Quality: Guaranteed statistics accuracy, consistent navigation
 
-**Conformité** : ✅ 518 lignes (respecte contrainte 500 lignes avec extended)
+**Compliance**: ✅ 518 lines (meets the 500-line constraint with extended)
 
-#### 11. **agent-aikido-fusion** 🔀 (Fusionneur Intelligent)
+#### 11. **agent-aikido-fusion** 🔀 (Intelligent Merger)
 
-**Spécialisation** : Fusion intelligente de fichiers lors des mises à jour AI-KIDO, préservant contexte projet tout en adoptant nouveau formalisme
+**Specialization**: Intelligent file merging during AI-KIDO updates, preserving project context while adopting the new formalism
 
-**Quand l'utiliser** :
+**When to use it**:
 
-- Lors de mises à jour externes (`/maj-aikido --update`)
-- Pour fusionner fichiers modifiés (choix "2. FUSIONNER")
-- Quand formalisme source évolue mais contexte projet doit être préservé
-- Adoption nouvelles versions AI-KIDO (V1.3) avec contexte existant
+- During external updates (`/maj-aikido --update`)
+- To merge modified files (choice "2. MERGE")
+- When the source formalism evolves but the project context must be preserved
+- Adopting new AI-KIDO versions (V1.3) with existing context
 
-**Capabilities** :
+**Capabilities**:
 
-- Analyse différentielle avancée (formalisme vs contenu vs concepts)
-- Préservation contexte projet (exemples, configurations, décisions)
-- Adoption formalisme source (structure, frontmatter, liens)
-- Résolution conflits intelligente (priorités claires : SOURCE forme, CIBLE contexte)
-- Validation conformité AI-KIDO (≤500 lignes, liens bidirectionnels, frontmatter)
-- Génération métadonnées JSON complètes (modifications, conformity, recommendations)
+- Advanced differential analysis (formalism vs content vs concepts)
+- Project context preservation (examples, configurations, decisions)
+- Source formalism adoption (structure, frontmatter, links)
+- Intelligent conflict resolution (clear priorities: SOURCE for form, TARGET for context)
+- AI-KIDO compliance validation (≤500 lines, bidirectional links, frontmatter)
+- Complete JSON metadata generation (modifications, conformity, recommendations)
 
-**Principe fondamental** : *"Préserver l'essence, adopter la forme"*
+**Fundamental principle**: *"Preserve the essence, adopt the form"*
 
-**Workflow 5 phases** :
+**5-phase workflow**:
 
-1. **Analyse Préliminaire** : Extraction métadonnées, détection sections, identification divergences
-2. **Cartographie Sémantique** : Mapping sections SOURCE ↔ CIBLE
-3. **Fusion Progressive** : Métadonnées → Structure → Contenu
-4. **Validation et Conformité** : Vérifications automatiques
-5. **Génération du Résultat** : Fichier fusionné + métadonnées + notes
+1. **Preliminary Analysis**: Metadata extraction, section detection, divergence identification
+2. **Semantic Mapping**: SOURCE ↔ TARGET section mapping
+3. **Progressive Merge**: Metadata → Structure → Content
+4. **Validation and Compliance**: Automatic checks
+5. **Result Generation**: Merged file + metadata + notes
 
-**Gains estimés** (vs fusion manuelle) :
+**Estimated gains** (vs manual merge):
 
-- Temps : -80% (60 → 12 min par fichier)
-- Complexité : -70% (4.5 → 1.4/5)
-- Risque : -85% (4.0 → 0.6/5 - préservation contexte garantie)
-- Qualité : Conformité AI-KIDO validée, aucune perte d'information
+- Time: -80% (60 → 12 min per file)
+- Complexity: -70% (4.5 → 1.4/5)
+- Risk: -85% (4.0 → 0.6/5 - guaranteed context preservation)
+- Quality: Validated AI-KIDO compliance, no information loss
 
-**Conformité** : ✅ 474 lignes (respecte contrainte 500 lignes)
+**Compliance**: ✅ 474 lines (meets the 500-line constraint)
 
-**Intégration** : Appelé automatiquement par `/maj-aikido --update` lors du choix "FUSIONNER"
+**Integration**: Called automatically by `/maj-aikido --update` when "MERGE" is chosen
 
-#### 12. **agent-aikido-projet-index** 🗂️ (Gestionnaire Index Projet)
+#### 12. **agent-aikido-projet-index** 🗂️ (Project Index Manager)
 
-**Spécialisation** : Génération et maintenance de l'arborescence du projet en JSON avec cache mémoire pour réponses instantanées sur la structure et localisation des fichiers
+**Specialization**: Generation and maintenance of the project tree in JSON with a memory cache for instant answers on structure and file location
 
-**Quand l'utiliser** :
+**When to use it**:
 
-- Pour localiser rapidement un fichier dans le projet ("Où est X?")
-- Pour lister les fichiers d'un répertoire
-- Pour obtenir des statistiques sur la structure du projet
-- Pour des requêtes de navigation filesystem répétitives
+- To quickly locate a file in the project ("Where is X?")
+- To list the files of a directory
+- To get statistics on the project structure
+- For repetitive filesystem navigation queries
 
-**Capabilities** :
+**Capabilities**:
 
-- Génération index JSON complet (`prompts/hard_points/system/structure/index.json`) via scripts bash
-- Cache JSON avec 4 index multi-niveaux : by_path, by_directory, by_type, by_name
-- Réponses instantanées (<10ms) depuis cache mémoire (TTL 24h)
-- Métadonnées pré-calculées : lignes, tailles, dates, types, icônes
-- Exclusion automatique : `.git/`, `node_modules/`, patterns `.gitignore`
-- Régénération automatique via `watch-changes.sh` lors de modifications filesystem
+- Complete JSON index generation (`prompts/hard_points/system/structure/index.json`) via bash scripts
+- JSON cache with 4 multi-level indexes: by_path, by_directory, by_type, by_name
+- Instant answers (<10ms) from the memory cache (24h TTL)
+- Pre-computed metadata: lines, sizes, dates, types, icons
+- Automatic exclusion: `.git/`, `node_modules/`, `.gitignore` patterns
+- Automatic regeneration via `watch-changes.sh` on filesystem changes
 
-**Performance** :
+**Performance**:
 
-- **Query temps** : <10ms (mémoire O(1) access)
-- **Parse JSON** : ~100ms (première lecture, partagée entre invocations)
-- **Régénération** : ~36s (1200+ fichiers, asynchrone en arrière-plan)
-- **Gain vs find/stat/wc** : **300-500x plus rapide** ⚡⚡⚡
+- **Query time**: <10ms (memory O(1) access)
+- **JSON parse**: ~100ms (first read, shared between invocations)
+- **Regeneration**: ~36s (1200+ files, asynchronous in the background)
+- **Gain vs find/stat/wc**: **300-500x faster** ⚡⚡⚡
 
-**Format JSON (v3.0)** :
+**JSON format (v3.0)**:
 
 ```json
 {
@@ -1600,85 +1602,85 @@ Wait → Combine → Return structured output
 }
 ```
 
-**Scripts disponibles** :
+**Available scripts**:
 
-- `generate-project-tree.sh` : Wrapper principal (génération complète)
-- `generate-project-tree-json.sh` : Moteur JSON optimisé
-- `format-file-metadata.sh` : Helper extraction métadonnées
-- `watch-changes.sh` : Surveillance filesystem + régénération auto
+- `generate-project-tree.sh`: Main wrapper (complete generation)
+- `generate-project-tree-json.sh`: Optimized JSON engine
+- `format-file-metadata.sh`: Metadata extraction helper
+- `watch-changes.sh`: Filesystem monitoring + automatic regeneration
 
-**Intégration avec autres agents** :
+**Integration with other agents**:
 
-- ✅ **agent-aikido-maj-md-index** : Accélère scan fichiers 300-500x (3-5s → <10ms)
-- ✅ **agent-aikido-explore-bank** : Phase -0.75 ultra-fast pour requêtes localisation (2.6s → <5ms, 97% tokens économisés)
-- ✅ **agent-aikido-balancer** : Analyse structure instantanée (3-5s → <10ms)
-- ⚙️ **agent-aikido-validator** : Métadonnées instant (lignes, dates)
-- ⚙️ **agent-aikido-bank-populate** : Validation gaps instantanée
-- ⚙️ **agent-aikido-raci-delegator** : Localisation RACI rapide
+- ✅ **agent-aikido-maj-md-index**: Speeds up file scanning 300-500x (3-5s → <10ms)
+- ✅ **agent-aikido-explore-bank**: Ultra-fast Phase -0.75 for location queries (2.6s → <5ms, 97% tokens saved)
+- ✅ **agent-aikido-balancer**: Instant structure analysis (3-5s → <10ms)
+- ⚙️ **agent-aikido-validator**: Instant metadata (lines, dates)
+- ⚙️ **agent-aikido-bank-populate**: Instant gap validation
+- ⚙️ **agent-aikido-raci-delegator**: Fast RACI location
 
-**Gains estimés** (vs scans manuels) :
+**Estimated gains** (vs manual scans):
 
-- **Temps** : -95% à -99% selon agent (3-5s → <10ms)
-- **Tokens** : -97% pour explore-bank location queries (1400 → 50 tokens)
-- **Complexité** : Élimination complète des `find`, `stat`, `wc -l`
-- **Qualité** : Métadonnées standardisées, cache partagé, exclusions cohérentes
+- **Time**: -95% to -99% depending on the agent (3-5s → <10ms)
+- **Tokens**: -97% for explore-bank location queries (1400 → 50 tokens)
+- **Complexity**: Complete elimination of `find`, `stat`, `wc -l`
+- **Quality**: Standardized metadata, shared cache, consistent exclusions
 
-**Conformité** : ✅ 667 lignes (respecte contrainte 1000 lignes extended - agent technique)
+**Compliance**: ✅ 667 lines (meets the extended 1000-line constraint - technical agent)
 
-**Cas d'usage** :
+**Use cases**:
 
-1. **Navigation rapide** : "Où est agent-aikido-maj-md-index.md?" → Réponse <5ms
-2. **Exploration répertoires** : "Que contient /prompts/gen/personas/?" → Liste instantanée
-3. **Statistiques projet** : Total fichiers, lignes, distribution par type → Pré-calculé
-4. **Optimisation agents** : Tous les agents utilisant find/grep/stat bénéficient automatiquement
+1. **Fast navigation**: "Where is agent-aikido-maj-md-index.md?" → Answer in <5ms
+2. **Directory exploration**: "What does /prompts/gen/personas/ contain?" → Instant list
+3. **Project statistics**: Total files, lines, distribution by type → Pre-computed
+4. **Agent optimization**: All agents using find/grep/stat benefit automatically
 
-**Mise à jour automatique** : `watch-changes.sh` détecte modifications fichiers → régénération JSON asynchrone (~36s en arrière-plan)
+**Automatic update**: `watch-changes.sh` detects file changes → asynchronous JSON regeneration (~36s in the background)
 
-### 🔄 Intégration Inter-Agents : Projet-Index comme Accélérateur
+### 🔄 Inter-Agent Integration: Projet-Index as an Accelerator
 
-L'agent **agent-aikido-projet-index** agit comme un **accélérateur de performance** pour les autres agents en fournissant un cache JSON pré-calculé de la structure du projet.
+The **agent-aikido-projet-index** agent acts as a **performance accelerator** for the other agents by providing a pre-computed JSON cache of the project structure.
 
-#### Mécanisme d'Intégration
+#### Integration Mechanism
 
-**Principe** : Fast-path avec fallback gracieux
+**Principle**: Fast-path with graceful fallback
 
 ```
-Agent démarre
-  → Vérifie JSON index disponible (<24h)
-    → OUI : Fast path (<10ms) ⚡⚡⚡
-    → NON : Fallback traditionnel (3-5s)
-  → Aucun breaking change
+Agent starts
+  → Checks JSON index availability (<24h)
+    → YES: Fast path (<10ms) ⚡⚡⚡
+    → NO: Traditional fallback (3-5s)
+  → No breaking change
 ```
 
-**Architecture** :
+**Architecture**:
 
 ```
 prompts/hard_points/system/structure/
-├── index.json                    # Cache partagé (605KB → 92KB optimisé)
+├── index.json                    # Shared cache (605KB → 92KB optimized)
 └── scripts/
-    ├── generate-project-tree.sh  # Génération
+    ├── generate-project-tree.sh  # Generation
     ├── watch-changes.sh          # Auto-update
     └── format-file-metadata.sh   # Helper
 ```
 
-#### Gains par Agent
+#### Gains per Agent
 
-| Agent | Opération Optimisée | Avant | Après | Gain |
-|-------|---------------------|-------|-------|------|
-| **indexer** | Scan fichiers + stats | 3-5s | <10ms | **300-500x** ⚡⚡⚡ |
+| Agent | Optimized Operation | Before | After | Gain |
+|-------|---------------------|--------|-------|------|
+| **indexer** | File scan + stats | 3-5s | <10ms | **300-500x** ⚡⚡⚡ |
 | **explore-bank** | Location queries | 2.6s, 1400 tok | <5ms, 50 tok | **520x, 97% tokens** ⚡⚡⚡💰 |
-| **explore-code** | Code search metadata | N/A | Technology-aware | **N/A** (nouvel agent) |
+| **explore-code** | Code search metadata | N/A | Technology-aware | **N/A** (new agent) |
 | **explore-all** | Parallel bank+code | N/A | 3-5s (parallel) | **N/A** (orchestrator) |
-| **balancer** | Analyse structure | 3-5s | <10ms | **300-500x** ⚡⚡⚡ |
-| **validator** | Comptage lignes | 0.5s (wc) | <1ms (cache) | **500x** ⚡⚡ |
-| **bank-populate** | Validation gaps | 1-2s | <10ms | **100-200x** ⚡⚡ |
-| **raci-delegator** | Localisation RACI | 1-2s | <10ms | **100-200x** ⚡⚡ |
+| **balancer** | Structure analysis | 3-5s | <10ms | **300-500x** ⚡⚡⚡ |
+| **validator** | Line counting | 0.5s (wc) | <1ms (cache) | **500x** ⚡⚡ |
+| **bank-populate** | Gap validation | 1-2s | <10ms | **100-200x** ⚡⚡ |
+| **raci-delegator** | RACI location | 1-2s | <10ms | **100-200x** ⚡⚡ |
 
-**Impact cumulé** : Jusqu'à **-95% temps d'exécution** sur les opérations filesystem lourdes
+**Cumulative impact**: Up to **-95% execution time** on heavy filesystem operations
 
-#### Code d'Intégration Type
+#### Typical Integration Code
 
-**Pattern utilisé dans tous les agents optimisés** :
+**Pattern used in all optimized agents**:
 
 ```bash
 # Check availability
@@ -1704,200 +1706,200 @@ if [ "$USE_PROJET_INDEX" != "true" ]; then
 fi
 ```
 
-**Avantages** :
+**Advantages**:
 
-- ✅ **Aucun breaking change** : Fallback automatique si JSON indisponible
-- ✅ **Gains massifs** : 300-500x plus rapide quand disponible
-- ✅ **Transparent** : Intégration invisible pour l'utilisateur
-- ✅ **Robuste** : TTL 24h avec régénération auto via watch-changes.sh
+- ✅ **No breaking change**: Automatic fallback if the JSON is unavailable
+- ✅ **Massive gains**: 300-500x faster when available
+- ✅ **Transparent**: Integration invisible to the user
+- ✅ **Robust**: 24h TTL with automatic regeneration via watch-changes.sh
 
-### 💼 Use Cases des Agents AI-KIDO
+### 💼 AI-KIDO Agent Use Cases
 
-#### Use Case 1 : **Exploration Contextuelle Avant Développement**
+#### Use Case 1: **Contextual Exploration Before Development**
 
-**Agent** : `agent-aikido-explore-bank`
+**Agent**: `agent-aikido-explore-bank`
 
-**Scénario** : Un développeur doit créer un nouveau endpoint d'authentification
+**Scenario**: A developer must create a new authentication endpoint
 
-**Workflow** :
+**Workflow**:
 
-1. Utilisateur : "Je dois créer un endpoint d'authentification OAuth"
-2. Agent explore-bank recherche : patterns d'authentification, specs sécurité, techniques OAuth existantes
-3. Agent retourne : architecture établie, contraintes sécurité (`/hard_points/`), patterns réutilisables
-4. Développeur implémente en respectant les standards projet
+1. User: "I need to create an OAuth authentication endpoint"
+2. The explore-bank agent searches for: authentication patterns, security specs, existing OAuth techniques
+3. The agent returns: established architecture, security constraints (`/hard_points/`), reusable patterns
+4. The developer implements while respecting the project standards
 
-**Bénéfice** : Cohérence avec l'existant, respect des contraintes, réutilisation des patterns
+**Benefit**: Consistency with existing work, respect of constraints, pattern reuse
 
-#### Use Case 2 : **Résolution de Conflit Spec vs Code**
+#### Use Case 2: **Spec vs Code Conflict Resolution**
 
-**Agent** : `agent-aikido-truth-evaluator`
+**Agent**: `agent-aikido-truth-evaluator`
 
-**Scénario** : La spécification dit "retry 3 fois" mais le code retente indéfiniment
+**Scenario**: The specification says "retry 3 times" but the code retries indefinitely
 
-**Workflow** :
+**Workflow**:
 
-1. Utilisateur : "Fix le bug de retry dans le payment processor"
-2. Agent truth-evaluator analyse : scénario = BUG_FIX
-3. Agent évalue sources :
-   - 🥇 Code actuel (process-payment.ts) = source de bug
+1. User: "Fix the retry bug in the payment processor"
+2. The truth-evaluator agent analyzes: scenario = BUG_FIX
+3. The agent evaluates sources:
+   - 🥇 Current code (process-payment.ts) = source of the bug
    - 🥈 Tests (expected behavior) = validation
-   - 🥉 Spec originale = contexte
-4. Agent détecte conflit : code ≠ spec ≠ tests
-5. Recommandation : "Fixer le code pour matcher tests + spec (max 3 retries)"
+   - 🥉 Original spec = context
+4. The agent detects a conflict: code ≠ spec ≠ tests
+5. Recommendation: "Fix the code to match tests + spec (max 3 retries)"
 
-**Bénéfice** : Décision claire sur quelle source respecter, évite débats d'équipe
+**Benefit**: Clear decision on which source to follow, avoids team debates
 
-#### Use Case 3 : **Organisation Automatique de Documentation**
+#### Use Case 3: **Automatic Documentation Organization**
 
-**Agent** : `agent-aikido-raci-delegator`
+**Agent**: `agent-aikido-raci-delegator`
 
-**Scénario** : Un document sur l'architecture microservices doit être intégré à la Memory Bank
+**Scenario**: A document about microservices architecture must be integrated into the Memory Bank
 
-**Workflow** :
+**Workflow**:
 
-1. Utilisateur fournit document "Architecture Microservices"
-2. Agent raci-delegator analyse :
-   - Type : **Concept** (théorie architecturale)
-   - Domaine : **Architecture**
-   - Rôle responsable : **Architect Lead** (selon RACI)
-   - Contexte : **Mono-projet**
-3. Agent recommande : `/prompts/gen/concepts/architecture/microservices.md`
-4. Validation : confiance 95%, alternatives proposées
+1. User provides the "Microservices Architecture" document
+2. The raci-delegator agent analyzes:
+   - Type: **Concept** (architectural theory)
+   - Domain: **Architecture**
+   - Responsible role: **Architect Lead** (according to RACI)
+   - Context: **Single-project**
+3. The agent recommends: `/prompts/gen/concepts/architecture/microservices.md`
+4. Validation: 95% confidence, alternatives proposed
 
-**Bénéfice** : Classification précise, organisation cohérente, respect RACI
+**Benefit**: Precise classification, consistent organization, RACI compliance
 
-#### Use Case 4 : **Workflow Complet : Nouveau Feature avec Contexte**
+#### Use Case 4: **Complete Workflow: New Feature with Context**
 
-**Agents combinés** : `explore-bank` → `truth-evaluator` → développement
+**Combined agents**: `explore-bank` → `truth-evaluator` → development
 
-**Scénario** : Implémenter un système de notifications push
+**Scenario**: Implement a push notification system
 
-**Workflow** :
+**Workflow**:
 
-1. **Phase Exploration** (`explore-bank`) :
-   - Recherche patterns notifications existants
-   - Identifie contraintes `/hard_points/security-*`
-   - Extrait techniques de messaging
-2. **Phase Truth Evaluation** (`truth-evaluator`) :
-   - Scénario : NEW_FEATURE
-   - Sources autoritaires : specs > architecture > patterns
-   - Hiérarchie : `/hard_points/` > `/gen/` > code existant
-3. **Phase Implémentation** :
-   - Développeur suit specs avec contexte complet
-   - Respecte contraintes sécurité
-   - Réutilise patterns validés
-4. **Phase Documentation** (`raci-delegator`) :
-   - Classifie nouvelle doc technique
-   - Route vers `/prompts/gen/techniques/notifications-push.md`
+1. **Exploration phase** (`explore-bank`):
+   - Searches existing notification patterns
+   - Identifies `/hard_points/security-*` constraints
+   - Extracts messaging techniques
+2. **Truth evaluation phase** (`truth-evaluator`):
+   - Scenario: NEW_FEATURE
+   - Authoritative sources: specs > architecture > patterns
+   - Hierarchy: `/hard_points/` > `/gen/` > existing code
+3. **Implementation phase**:
+   - The developer follows the specs with full context
+   - Respects security constraints
+   - Reuses validated patterns
+4. **Documentation phase** (`raci-delegator`):
+   - Classifies the new technical doc
+   - Routes to `/prompts/gen/techniques/notifications-push.md`
 
-**Bénéfice** : Workflow bout-en-bout cohérent, capitalisation automatique
+**Benefit**: Consistent end-to-end workflow, automatic capitalization
 
-#### Use Case 5 : **Mise à Jour AI-KIDO avec Préservation Contexte Projet**
+#### Use Case 5: **AI-KIDO Update with Project Context Preservation**
 
-**Agent** : `agent-aikido-fusion`
+**Agent**: `agent-aikido-fusion`
 
-**Scénario** : Nouvelle version AI-KIDO V1.3 disponible avec nouveau point d'entrée unifié, mais votre projet a des exemples et configurations spécifiques
+**Scenario**: A new AI-KIDO V1.3 version is available with a new unified entry point, but your project has specific examples and configurations
 
-**Workflow** :
+**Workflow**:
 
-1. **Utilisateur** : `/maj-aikido --update` → Choix source Git AI-KIDO
-2. **Analyse différentielle** → Détection : `prompts/gen/concepts/memory-bank.md` modifié
-3. **Choix utilisateur** : "2. FUSIONNER"
-4. **Agent fusion** analyse :
-   - SOURCE V1.3 : Nouveau formalisme (frontmatter V1.3, structure réorganisée)
-   - CIBLE V1.2 : Exemples projet réels, configurations CloudFormation spécifiques
-5. **Agent fusion** exécute :
-   - ✅ Adopte frontmatter V1.3 : `> Version: 1.3 | Date: 2025-12-08`
-   - ✅ Adopte nouvelle structure sections SOURCE
-   - ✅ Préserve exemples CloudFormation CIBLE (spécifiques projet)
-   - ✅ Intègre nouveaux concepts V1.3 (point d'entrée unifié)
-   - ✅ Résout conflit "Architecture" : garde décision CIBLE justifiée, note nouveau pattern V1.3
-6. **Génération** :
-   - `memory-bank.md.merged.20251208-143022` : Fichier fusionné
-   - `memory-bank.md.merged.20251208-143022.meta.json` : Métadonnées
-7. **Utilisateur révise** → Validation conformité → Remplacement : `mv merged.* memory-bank.md`
+1. **User**: `/maj-aikido --update` → Choose the AI-KIDO Git source
+2. **Differential analysis** → Detection: `prompts/gen/concepts/memory-bank.md` modified
+3. **User choice**: "2. MERGE"
+4. **Fusion agent** analyzes:
+   - SOURCE V1.3: New formalism (V1.3 frontmatter, reorganized structure)
+   - TARGET V1.2: Real project examples, specific CloudFormation configurations
+5. **Fusion agent** executes:
+   - ✅ Adopts V1.3 frontmatter: `> Version: 1.3 | Date: 2025-12-08`
+   - ✅ Adopts the new SOURCE section structure
+   - ✅ Preserves the TARGET CloudFormation examples (project-specific)
+   - ✅ Integrates new V1.3 concepts (unified entry point)
+   - ✅ Resolves the "Architecture" conflict: keeps the justified TARGET decision, notes the new V1.3 pattern
+6. **Generation**:
+   - `memory-bank.md.merged.20251208-143022`: Merged file
+   - `memory-bank.md.merged.20251208-143022.meta.json`: Metadata
+7. **User reviews** → Compliance validation → Replacement: `mv merged.* memory-bank.md`
 
-**Résultat** :
+**Result**:
 
-- ✅ Base à jour avec formalisme V1.3
-- ✅ Contexte projet préservé (exemples, configs)
-- ✅ Nouveaux concepts V1.3 intégrés
-- ✅ Conformité AI-KIDO validée (474 lignes, liens OK)
+- ✅ Base up to date with V1.3 formalism
+- ✅ Project context preserved (examples, configs)
+- ✅ New V1.3 concepts integrated
+- ✅ AI-KIDO compliance validated (474 lines, links OK)
 
-**Bénéfice** : Mise à jour sûre avec zéro perte d'information, adoption progressive des évolutions AI-KIDO
-
-
-
-**Quand l'utiliser** :
-
-- Gérer métadonnées YAML de synchronisation (page_id, last_sync, version)
-
-**Capabilities** :
-
-- **Synchronisation bidirectionnelle** : Last-write-wins (timestamps) ou manuelle
-- **Mapping hiérarchique** : `index.md`/`README.md` = page parente automatique
-- **Attachments intelligents** : Cache MD5, upload uniquement si modifié
-- **Mode interactif** : Gestion pages orphelines avec confirmation utilisateur
-
-**Operations disponibles** :
-
-- **init** : Initialiser header YAML dans fichier Markdown
-- **sync** : Synchronisation bidirectionnelle (last-write-wins ou manual)
-
-**Performance** :
-
-- **Sync time** : 2-5s par page (conversion + API)
-- **Conflict resolution** : Automatique (timestamps) ou manuelle
-- **Tokens** : <2,000 par fichier
-
-**Prérequis** :
-
-- Configuration `.env` : CONFLUENCE_URL, CONFLUENCE_USER, CONFLUENCE_TOKEN
-- Pandoc installé (`brew install pandoc`)
-
-**Conformité** : ✅ 520 lignes (respecte contrainte 1000 lignes extended - agent technique)
+**Benefit**: Safe update with zero information loss, gradual adoption of AI-KIDO changes
 
 
 
+**When to use it**:
 
-**Quand l'utiliser** :
+- Manage YAML synchronization metadata (page_id, last_sync, version)
 
-- Calculer KPI Agile pour analyse de sprints (vélocité, burndown, temps, qualité)
-- Générer rapports HTML interactifs avec Chart.js et tableaux triables
-- Analyser métriques sprint avec JQ (calcul performant)
-- Gérer structure hiérarchique EPICS → FEATURES → TICKETS
+**Capabilities**:
 
-**Capabilities** :
+- **Bidirectional synchronization**: Last-write-wins (timestamps) or manual
+- **Hierarchical mapping**: `index.md`/`README.md` = automatic parent page
+- **Smart attachments**: MD5 cache, upload only if modified
+- **Interactive mode**: Orphan page handling with user confirmation
 
-- **Synchronisation bidirectionnelle** : Last-write-wins (timestamps UTC) ou manuelle
-- **Calcul KPI Agile** : Vélocité (SP committed vs completed, moyenne 3 sprints), Burndown (idéal vs actuel, tracking quotidien), Temps (estimé vs passé vs restant, efficacité %), Tickets (Total/Completed/In Progress/Todo/Blocked), Qualité (bugs trouvés/résolus, taux défaut %)
-- **Rapports HTML interactifs** : Dashboard 4 KPI cards, graphiques Chart.js (burndown, distribution), tableaux triables/filtrables (vanilla JS), autonome (données JSON local)
-- **Structure hiérarchique** : EPICS → FEATURES → TICKETS avec métadonnées complètes
-- **JQ obligatoire** : Calcul KPI ultra-performant (<1s pour 1000 lignes JSON)
+**Available operations**:
 
-**Operations disponibles** :
+- **init**: Initialize a YAML header in a Markdown file
+- **sync**: Bidirectional synchronization (last-write-wins or manual)
 
-- **sync-sprints** : Synchroniser sprints + générer rapports HTML avec KPI
-- **sync-tickets** : Synchronisation bidirectionnelle tickets (unique/sprint/all)
-- **sync-project** : Synchroniser métadonnées générales projet
-- **sync-epic** : Synchroniser epic complet avec hiérarchie
-- **import-full** : Import complet projet (épics, features, tickets, sprints)
-- **generate-report** : Générer (ou régénérer) rapport HTML pour sprint
-- **sync-backlog** : Synchroniser backlog + générer vue HTML gestion
+**Performance**:
 
-**Performance** :
+- **Sync time**: 2-5s per page (conversion + API)
+- **Conflict resolution**: Automatic (timestamps) or manual
+- **Tokens**: <2,000 per file
 
-- **Sync time** : 15-30s par sprint (50 tickets) + génération rapport
-- **Tokens** : <2,500 per sprint
-- **Conflict resolution** : Automatique (timestamps) ou manuelle
-- **KPI calculation** : JQ-based (<1s for 1000 lines JSON)
+**Prerequisites**:
 
-**Prérequis** :
+- `.env` configuration: CONFLUENCE_URL, CONFLUENCE_USER, CONFLUENCE_TOKEN
+- Pandoc installed (`brew install pandoc`)
 
-- **JQ obligatoire** : `brew install jq` (macOS) / `apt install jq` (Linux)
-- Curl et bash 4.0+
+**Compliance**: ✅ 520 lines (meets the extended 1000-line constraint - technical agent)
 
-**Architecture données** :
+
+
+
+**When to use it**:
+
+- Compute Agile KPIs for sprint analysis (velocity, burndown, time, quality)
+- Generate interactive HTML reports with Chart.js and sortable tables
+- Analyze sprint metrics with JQ (high-performance computation)
+- Manage the hierarchical structure EPICS → FEATURES → TICKETS
+
+**Capabilities**:
+
+- **Bidirectional synchronization**: Last-write-wins (UTC timestamps) or manual
+- **Agile KPI computation**: Velocity (SP committed vs completed, 3-sprint average), Burndown (ideal vs actual, daily tracking), Time (estimated vs spent vs remaining, efficiency %), Tickets (Total/Completed/In Progress/Todo/Blocked), Quality (bugs found/resolved, defect rate %)
+- **Interactive HTML reports**: Dashboard with 4 KPI cards, Chart.js charts (burndown, distribution), sortable/filterable tables (vanilla JS), standalone (local JSON data)
+- **Hierarchical structure**: EPICS → FEATURES → TICKETS with complete metadata
+- **JQ required**: Ultra-fast KPI computation (<1s for 1000 JSON lines)
+
+**Available operations**:
+
+- **sync-sprints**: Synchronize sprints + generate HTML reports with KPIs
+- **sync-tickets**: Bidirectional ticket synchronization (single/sprint/all)
+- **sync-project**: Synchronize general project metadata
+- **sync-epic**: Synchronize a full epic with its hierarchy
+- **import-full**: Full project import (epics, features, tickets, sprints)
+- **generate-report**: Generate (or regenerate) the HTML report for a sprint
+- **sync-backlog**: Synchronize the backlog + generate a management HTML view
+
+**Performance**:
+
+- **Sync time**: 15-30s per sprint (50 tickets) + report generation
+- **Tokens**: <2,500 per sprint
+- **Conflict resolution**: Automatic (timestamps) or manual
+- **KPI calculation**: JQ-based (<1s for 1000 lines JSON)
+
+**Prerequisites**:
+
+- **JQ required**: `brew install jq` (macOS) / `apt install jq` (Linux)
+- Curl and bash 4.0+
+
+**Data architecture**:
 
 ```
 ├── [General]/project-info.json
@@ -1912,377 +1914,381 @@ fi
     └── [TICKETS]/
 ```
 
-**Conformité** : ✅ 580 lignes (respecte contrainte 1000 lignes extended - agent technique)
+**Compliance**: ✅ 580 lines (meets the extended 1000-line constraint - technical agent)
 
 
-### 🎯 Roadmap Agents AI-KIDO
+### 🎯 AI-KIDO Agents Roadmap
 
-**Prochains agents à créer** (selon besoins projet) :
+**Next agents to create** (depending on project needs):
 
-- **agent-aikido-optimizer** : Optimisation des fichiers dépassant leurs limites (500/1000 lignes)
-- **agent-aikido-link-validator** : Vérification liens bidirectionnels (Règle 6)
-- **agent-aikido-semantic-compressor** : Compression sémantique pour densité maximale
-- **agent-aikido-raci-matrix-builder** : Construction interactive de matrice RACI
-- **agent-aikido-multi-project-migrator** : Migration mono-projet ↔ multi-projet
+- **agent-aikido-optimizer**: Optimization of files exceeding their limits (500/1000 lines)
+- **agent-aikido-link-validator**: Bidirectional link verification (Rule 6)
+- **agent-aikido-semantic-compressor**: Semantic compression for maximum density
+- **agent-aikido-raci-matrix-builder**: Interactive RACI matrix construction
+- **agent-aikido-multi-project-migrator**: Single-project ↔ multi-project migration
 
-**Nouveaux agents créés récemment** :
+**Recently created agents**:
 
-- ✅ **agent-aikido-explore-code** : Recherche code source avec métadonnées structurées (~650 lignes)
-- ✅ **agent-aikido-explore-all** : Orchestrateur recherche parallèle bank+code (~150 lignes)
+- ✅ **agent-aikido-explore-code**: Source code search with structured metadata (~650 lines)
+- ✅ **agent-aikido-explore-all**: Parallel bank+code search orchestrator (~150 lines)
 
-**Création d'agents** : Utiliser `/create-persona` pour générer de nouveaux agents selon la taxonomie AI-KIDO
+**Agent creation**: Use `/create-persona` to generate new agents according to the AI-KIDO taxonomy
 
-## 🧠 Construction de la Memory Bank
+## 🧠 Memory Bank Construction
 
-### Principe de l'Auto-Alimentation
+### Self-Feeding Principle
 
-La memory bank AI-KIDO s'enrichit automatiquement selon plusieurs mécanismes :
+The AI-KIDO memory bank enriches itself automatically through several mechanisms:
 
-1. **Signal utilisateur** → Dès signalement d'erreur, création d'une règle préventive
-2. **Auto-détection** → 2+ erreurs similaires déclenchent une auto-alimentation proactive  
-3. **Seuils adaptatifs** → Immédiat (critique), Rapide (majeur 2x), Standard (mineur 3x)
-4. **Intégration automatique** → Placement dans le répertoire approprié + mise à jour des index
+1. **User signal** → As soon as an error is reported, a preventive rule is created
+2. **Auto-detection** → 2+ similar errors trigger proactive self-feeding  
+3. **Adaptive thresholds** → Immediate (critical), Fast (major 2x), Standard (minor 3x)
+4. **Automatic integration** → Placement in the appropriate directory + index update
 
-### Capitalisation des Analyses
+### Analysis Capitalization
 
-**Règle fondamentale** : Toute analyse DOIT générer des fichiers dans les Tables de Vérités
+**Fundamental rule**: Every analysis MUST generate files in the Truth Tables
 
-**Répartition par type** :
+**Distribution by type**:
 
-- **Analyse conceptuelle** → `/prompts/gen/concepts/`
-- **Analyse technique** → `/prompts/gen/techniques/`  
-- **Analyse de cas** → `/prompts/gen/use_cases/`
-- **Définition de rôle** → `/prompts/gen/personas/`
+- **Conceptual analysis** → `/prompts/gen/concepts/`
+- **Technical analysis** → `/prompts/gen/techniques/`  
+- **Case analysis** → `/prompts/gen/use_cases/`
+- **Role definition** → `/prompts/gen/personas/`
 
-### Synchronisation AGENTS.md ↔ AI-KIDO
+### AGENTS.md ↔ AI-KIDO Synchronization
 
-Le fichier `AGENTS.md` sert d'**interface standardisée** exposant la memory bank selon la norme LLM :
+The `AGENTS.md` file serves as a **standardized interface** exposing the memory bank according to the LLM standard:
 
-**Structure obligatoire** :
+**Mandatory structure**:
 
 ```markdown
 # AI Agents Configuration
 
 ## Project Context
-[Liens vers /prompts/index.md et /prompts/gen/]
+[Links to /prompts/index.md and /prompts/gen/]
 
 ## Available Agents  
-[Références vers /prompts/gen/personas/]
+[References to /prompts/gen/personas/]
 
 ## Agent Interaction Matrix
-[Liens vers matrice RACI et spécifications]
+[Links to the RACI matrix and specifications]
 
 ## Usage Guidelines
-[Liens vers /prompts/gen/use_cases/ et documentation]
+[Links to /prompts/gen/use_cases/ and documentation]
 ```
 
-**Règles de synchronisation** :
+**Synchronization rules**:
 
-- **Liens exclusifs** : Aucune duplication de contenu, que des références
-- **Correspondance 1:1** : Chaque agent AGENTS.md ↔ persona AI-KIDO
-- **Mise à jour automatique** : Synchronisation lors des changements dans `/prompts/gen/`
+- **Exclusive links**: No content duplication, only references
+- **1:1 correspondence**: Each AGENTS.md agent ↔ AI-KIDO persona
+- **Automatic update**: Synchronization on changes in `/prompts/gen/`
 
-## 🚀 Démarrage Rapide avec Claude Code
+## 🚀 Quick Start with Claude Code
 
-### Prendre en Main une Base AI-KIDO Bootstrap
+### Getting Started with a Bootstrap AI-KIDO Base
 
-Si vous récupérez un dépôt AI-KIDO bootstrap (structure vide), suivez ces étapes pour le rendre opérationnel sous Claude Code :
+If you retrieve a bootstrap AI-KIDO repository (empty structure), follow these steps to make it operational under Claude Code:
 
-#### 1️⃣ **Vérifier et Initialiser la Base**
+#### 1️⃣ **Check and Initialize the Base**
 
-Lancez la commande suivante dans Claude Code :
+Run the following command in Claude Code:
 
 ```
 Exécute le fichier prompts/hard_points/commands/check-claude.md pour vérifier l'état de la Memory Bank AI-KIDO et générer les fichiers de compatibilité Claude Code
 ```
 
-Cette commande va :
+> 🇬🇧 English equivalent: *Run the file prompts/hard_points/commands/check-claude.md to check the state of the AI-KIDO Memory Bank and generate the Claude Code compatibility files.*
 
-- ✅ Analyser l'état actuel de la Memory Bank (bootstrap ou peuplée)
-- ✅ Mettre à jour le fichier `CLAUDE.md` avec les statistiques actuelles
-- ✅ Générer automatiquement les fichiers `.claude/agents/*.md` depuis `/prompts/gen/personas/`
-- ✅ Générer automatiquement les fichiers `.claude/commands/*.md` depuis `prompts/hard_points/commands/`
-- ✅ Créer un rapport détaillé dans `/prompts/spec/check-claude-[DATE].md`
-- ✅ Afficher les métriques de conformité aux règles AI-KIDO
+This command will:
 
-**⚠️ IMPORTANT** : Après l'exécution de cette commande, vous devez **relancer Claude Code** pour que les nouvelles commandes et agents soient détectés. Les fichiers `.claude/` sont chargés au démarrage de Claude Code.
+- ✅ Analyze the current state of the Memory Bank (bootstrap or populated)
+- ✅ Update the `CLAUDE.md` file with the current statistics
+- ✅ Automatically generate the `.claude/agents/*.md` files from `/prompts/gen/personas/`
+- ✅ Automatically generate the `.claude/commands/*.md` files from `prompts/hard_points/commands/`
+- ✅ Create a detailed report in `/prompts/spec/check-claude-[DATE].md`
+- ✅ Display the compliance metrics against the AI-KIDO rules
 
-#### 2️⃣ **Relancer Claude Code**
+**⚠️ IMPORTANT**: After running this command, you must **restart Claude Code** so that the new commands and agents are detected. The `.claude/` files are loaded when Claude Code starts.
 
-Fermez et rouvrez Claude Code (ou rechargez la fenêtre) pour que les fichiers générés soient pris en compte.
+#### 2️⃣ **Restart Claude Code**
 
-#### 3️⃣ **Vérifier la Détection des Commandes**
+Close and reopen Claude Code (or reload the window) so that the generated files are taken into account.
 
-Tapez `/` dans Claude Code pour vérifier que les commandes AI-KIDO sont disponibles :
+#### 3️⃣ **Check Command Detection**
+
+Type `/` in Claude Code to check that the AI-KIDO commands are available:
 
 ```
 /list
 ```
 
-Vous devriez voir apparaître les commandes suivantes :
+You should see the following commands appear:
 
-- `/analyse-aikido` - Audit complet de la Memory Bank
-- `/analyse-project` - Analyse des sources projet
-- `/check-claude` - Synchronisation CLAUDE.md et fichiers .claude/
-- `/create-persona` - Création de nouveau persona
-- `/init-aikido` - Initialisation Memory Bank
-- `/init-glossaire` - Création glossaire métier
-- `/init-raci-aikido` - Initialisation matrice RACI
-- `/logllmon` / `/logllmoff` - Gestion de la traçabilité
-- `/maj-aikido` - Synchronisation après rebase
+- `/analyse-aikido` - Full Memory Bank audit
+- `/analyse-project` - Project source analysis
+- `/check-claude` - CLAUDE.md and .claude/ files synchronization
+- `/create-persona` - New persona creation
+- `/init-aikido` - Memory Bank initialization
+- `/init-glossaire` - Business glossary creation
+- `/init-raci-aikido` - RACI matrix initialization
+- `/logllmon` / `/logllmoff` - Traceability management
+- `/maj-aikido` - Synchronization after a rebase
 
-#### 4️⃣ **Vérifier la Détection des Agents** (si présents)
+#### 4️⃣ **Check Agent Detection** (if present)
 
-Si la base contient déjà des personas, vérifiez leur disponibilité :
+If the base already contains personas, check their availability:
 
 ```
 /agents
 ```
 
-Les agents disponibles apparaîtront dans la liste Claude Code, directement générés depuis `/prompts/gen/personas/`.
+The available agents will appear in the Claude Code list, generated directly from `/prompts/gen/personas/`.
 
-#### 5️⃣ **Vérifier l'État de la Base**
+#### 5️⃣ **Check the State of the Base**
 
-Consultez le fichier `CLAUDE.md` section 12 pour voir :
+See section 12 of the `CLAUDE.md` file to find:
 
-- 📊 L'inventaire complet (concepts, techniques, personas, use cases, commandes)
-- 📈 Les métriques de qualité et conformité
-- ⚠️ Les écarts détectés et recommandations
-- 🎯 Le workflow recommandé pour peupler la Memory Bank
+- 📊 The complete inventory (concepts, techniques, personas, use cases, commands)
+- 📈 Quality and compliance metrics
+- ⚠️ Detected gaps and recommendations
+- 🎯 The recommended workflow to populate the Memory Bank
 
-#### 6️⃣ **Peupler la Base (si bootstrap vide)**
+#### 6️⃣ **Populate the Base (if the bootstrap is empty)**
 
-Si la base est vide (bootstrap), suivez le workflow recommandé dans `CLAUDE.md` section 12.5 :
+If the base is empty (bootstrap), follow the recommended workflow in `CLAUDE.md` section 12.5:
 
 ```bash
-/analyse-project    # Analyser le projet existant
-/init-aikido        # Initialiser la Memory Bank
-/create-persona     # Créer des personas spécialisés
-/init-glossaire     # Créer le glossaire métier
-/analyse-aikido     # Vérifier la cohérence
-/check-claude       # Synchroniser CLAUDE.md
+/analyse-project    # Analyze the existing project
+/init-aikido        # Initialize the Memory Bank
+/create-persona     # Create specialized personas
+/init-glossaire     # Create the business glossary
+/analyse-aikido     # Check consistency
+/check-claude       # Synchronize CLAUDE.md
 ```
 
-#### ✅ **Base Opérationnelle**
+#### ✅ **Operational Base**
 
-Après ces étapes, votre base AI-KIDO est **100% compatible Claude Code** :
+After these steps, your AI-KIDO base is **100% compatible with Claude Code**:
 
-- 🤖 Commandes disponibles via `/`
-- 👥 Agents disponibles via `/agents`
-- 📚 Memory Bank accessible depuis `/prompts/index.md` (point d'entrée V1.3)
-- 🔒 Hard Points prioritaires dans `/prompts/hard_points/`
-- 📊 Documentation synchronisée dans `CLAUDE.md`
+- 🤖 Commands available via `/`
+- 👥 Agents available via `/agents`
+- 📚 Memory Bank accessible from `/prompts/index.md` (V1.3 entry point)
+- 🔒 Priority Hard Points in `/prompts/hard_points/`
+- 📊 Documentation synchronized in `CLAUDE.md`
 
 ---
 
-## 🎯 Workflow Standard d'Utilisation
+## 🎯 Standard Usage Workflow
 
-### Pour Démarrer un Nouveau Projet
+### To Start a New Project
 
-1. **Initialisation** :
-
-   ```bash
-   init-aikido          # Créer la structure de base
-   init-glossaire       # Clarifier la terminologie
-   init-raci-aikido     # Organiser l'équipe
-   ```
-
-2. **Enrichissement** :
+1. **Initialization**:
 
    ```bash
-   analyse-project      # Analyser le contexte existant
-   create-persona       # Créer les agents spécialisés
+   init-aikido          # Create the base structure
+   init-glossaire       # Clarify the terminology
+   init-raci-aikido     # Organize the team
    ```
 
-3. **Activation de la traçabilité** (optionnel) :
+2. **Enrichment**:
 
    ```bash
-   logllmon            # Activer les logs d'interactions
+   analyse-project      # Analyze the existing context
+   create-persona       # Create the specialized agents
    ```
 
-### Pour Maintenir un Projet Existant
-
-1. **Synchronisation régulière** :
+3. **Enabling traceability** (optional):
 
    ```bash
-   maj-aikido          # Après chaque rebase/évolution
+   logllmon            # Enable interaction logs
    ```
 
-2. **Audit périodique** :
+### To Maintain an Existing Project
+
+1. **Regular synchronization**:
 
    ```bash
-   analyse-aikido      # Audit complet avec corrections
+   maj-aikido          # After each rebase/change
    ```
 
-3. **Gestion des logs** :
+2. **Periodic audit**:
 
    ```bash
-   logllmoff           # Désactiver si nécessaire
-   logllmon            # Réactiver pour debug
+   analyse-aikido      # Full audit with corrections
    ```
 
-### Navigation dans la Memory Bank (V1.3)
+3. **Log management**:
 
-**Point d'entrée obligatoire** : [`/prompts/index.md`](prompts/index.md) - Point d'entrée UNIQUE depuis V1.3
+   ```bash
+   logllmoff           # Disable if necessary
+   logllmon            # Re-enable for debugging
+   ```
 
-**Parcours récursif** : Chaque fichier référence ses dépendances et est référencé par ses parents, créant une navigation bidirectionnelle complète.
+### Navigating the Memory Bank (V1.3)
 
-**Consultation automatique** : Les LLM doivent automatiquement consulter `/prompts/index.md` avant toute réponse (sauf agents internes AI-KIDO).
+**Mandatory entry point**: [`/prompts/index.md`](prompts/index.md) - SINGLE entry point since V1.3
 
-**Navigation** :
+**Recursive traversal**: Each file references its dependencies and is referenced by its parents, creating a complete bidirectional navigation.
 
-- **Mono-projet** : `/prompts/index.md` → `/prompts/gen/index.md` → domaines
-- **Multi-projet** : `/prompts/index.md` → `/prompts/[projet-n]/index.md` → `/prompts/[projet-n]/gen/index.md` → domaines
+**Automatic consultation**: LLMs must automatically consult `/prompts/index.md` before any answer (except internal AI-KIDO agents).
 
-## 🔧 Règles de Qualité
+**Navigation**:
 
-### Contraintes Structurelles
+- **Single-project**: `/prompts/index.md` → `/prompts/gen/index.md` → domains
+- **Multi-project**: `/prompts/index.md` → `/prompts/[project-n]/index.md` → `/prompts/[project-n]/gen/index.md` → domains
 
-- **📏 Contraintes de Lignes** :
-  - **≤500 lignes** : Fichiers standard (concepts, techniques, use cases, docs)
-  - **≤1000 lignes** : Commands, personas, agents, skills (optimisation LLM)
-  - **Exception critique** : `ai-kido.md` et `ai-kido-light.md` DOIVENT rester ≤500 lignes
-  - **Division automatique** : Si dépassement, split intelligent avec liens préservés
-- **🌳 4 niveaux maximum** de profondeur dans l'arborescence
-- **⚖️ 3-7 enfants** par nœud parent pour équilibrage optimal
-- **🔗 Liens bidirectionnels** systématiques (A→B implique B→A)
-- **🏗️ Structures flexibles** : Support mono-projet et multi-projet
+## 🔧 Quality Rules
 
-### Format Standard
+### Structural Constraints
+
+- **📏 Line Constraints**:
+  - **≤500 lines**: Standard files (concepts, techniques, use cases, docs)
+  - **≤1000 lines**: Commands, personas, agents, skills (LLM optimization)
+  - **Critical exception**: `ai-kido.md` and `ai-kido-light.md` MUST stay ≤500 lines
+  - **Automatic splitting**: If exceeded, intelligent split with links preserved
+- **🌳 4 levels maximum** of depth in the tree structure
+- **⚖️ 3-7 children** per parent node for optimal balancing
+- **🔗 Systematic bidirectional links** (A→B implies B→A)
+- **🏗️ Flexible structures**: Single-project and multi-project support
+
+### Standard Format
 
 ```markdown
-# [Titre du Concept/Composant]
-> Version: X.Y | Date: YYYY-MM-DD | Statut: [Statut]
+# [Concept/Component Title]
+> Version: X.Y | Date: YYYY-MM-DD | Status: [Status]
 
-## Vue d'ensemble
-[Description concise]
+## Overview
+[Concise description]
 
-## Définitions clés  
-[Terminologie essentielle]
+## Key definitions  
+[Essential terminology]
 
-## Principes directeurs
-[Règles et axiomes]
+## Guiding principles
+[Rules and axioms]
 
-## Spécifications techniques
-[Détails d'implémentation]
+## Technical specifications
+[Implementation details]
 
-## Exemples d'application
-[Cas d'usage concrets]
+## Application examples
+[Concrete use cases]
 
-## Relations et dépendances
-[Connexions avec d'autres composants]
+## Relations and dependencies
+[Connections with other components]
 ```
 
-### Métriques de Qualité
+### Quality Metrics
 
-- **Conformité** : % de fichiers respectant les standards
-- **Traçabilité** : Présence de références aux sources
-- **Cohérence** : Absence de contradictions internes
-- **Densité sémantique** : Ratio information utile / tokens utilisés
-- **Synchronisation AGENTS.md** : % de conformité personas ↔ agents
+- **Compliance**: % of files meeting the standards
+- **Traceability**: Presence of references to sources
+- **Consistency**: Absence of internal contradictions
+- **Semantic density**: Ratio of useful information / tokens used
+- **AGENTS.md synchronization**: % of personas ↔ agents compliance
 
-## 🎚️ Modes AI-KIDO : Standard vs Light
+## 🎚️ AI-KIDO Modes: Standard vs Light
 
-AI-KIDO propose deux modes d'organisation selon la taille et complexité du projet :
+AI-KIDO offers two organization modes depending on the size and complexity of the project:
 
-### Mode STANDARD (Par Défaut)
+### STANDARD Mode (Default)
 
-**Recommandé pour** : Grandes équipes (4+), projets complexes, applications enterprise
+**Recommended for**: Large teams (4+), complex projects, enterprise applications
 
-**Caractéristiques** :
+**Characteristics**:
 
-- 📦 **Fichiers multiples** : Concepts et techniques organisés par domaine
-- 👥 **6-12 personas** : Agents spécialisés par fonction
-- 📋 **8-15 use cases** : Couverture complète des scénarios
-- 🎭 **RACI complet** : Matrice multi-acteurs avec rôles définis
-- 🌳 **Profondeur 3-4 niveaux** : Arborescence riche
+- 📦 **Multiple files**: Concepts and techniques organized by domain
+- 👥 **6-12 personas**: Agents specialized by function
+- 📋 **8-15 use cases**: Complete scenario coverage
+- 🎭 **Full RACI**: Multi-actor matrix with defined roles
+- 🌳 **Depth of 3-4 levels**: Rich tree structure
 
-**Règles** : Définies dans [`/prompts/hard_points/ai-kido.md`](prompts/hard_points/ai-kido.md)
+**Rules**: Defined in [`/prompts/hard_points/ai-kido.md`](prompts/hard_points/ai-kido.md)
 
-### Mode LIGHT (Bases Légères)
+### LIGHT Mode (Lightweight Bases)
 
-**Recommandé pour** : Solo/petites équipes (1-3), prototypes, POCs, microservices
+**Recommended for**: Solo/small teams (1-3), prototypes, POCs, microservices
 
-**Caractéristiques** :
+**Characteristics**:
 
-- 📦 **Fichiers unifiés** : 1 fichier concepts + 1 fichier techniques
-- 👥 **3-5 personas max** : Agents polyvalents
-- 📋 **3-5 use cases max** : Scénarios critiques uniquement
-- 🎭 **RACI optionnel** : Acteur unique ou minimal (≤3 rôles)
-- 🌳 **Profondeur 2-3 niveaux** : Arborescence plate
+- 📦 **Unified files**: 1 concepts file + 1 techniques file
+- 👥 **3-5 personas max**: Versatile agents
+- 📋 **3-5 use cases max**: Critical scenarios only
+- 🎭 **Optional RACI**: Single or minimal actor (≤3 roles)
+- 🌳 **Depth of 2-3 levels**: Flat tree structure
 
-**Règles** : Définies dans [`/prompts/hard_points/ai-kido-light.md`](prompts/hard_points/ai-kido-light.md)
+**Rules**: Defined in [`/prompts/hard_points/ai-kido-light.md`](prompts/hard_points/ai-kido-light.md)
 
-**Migration** : Passage LIGHT ↔ STANDARD possible selon l'évolution du projet
+**Migration**: Switching LIGHT ↔ STANDARD is possible as the project evolves
 
-## 🚨 Hard Points - Vérités Immuables
+## 🚨 Hard Points - Immutable Truths
 
-Les **hard points** dans `/prompts/hard_points/` constituent des vérités immuables qui ne peuvent être remises en question.
+The **hard points** in `/prompts/hard_points/` are immutable truths that cannot be questioned.
 
-**Hiérarchie de priorité** :
+**Priority hierarchy**:
 
-1. **Hard points** (priorité absolue)
-2. **Tables de vérités** (`/prompts/gen/`)
-3. **Demandes utilisateur**
+1. **Hard points** (absolute priority)
+2. **Truth tables** (`/prompts/gen/`)
+3. **User requests**
 
-**Traitement obligatoire** :
+**Mandatory handling**:
 
-- Vérifier l'existence de hard points pour le domaine concerné
-- Respecter ABSOLUMENT toutes les contraintes listées
-- En cas de conflit : hard points > tables de vérité > demande utilisateur
+- Check for the existence of hard points for the relevant domain
+- ABSOLUTELY respect all listed constraints
+- In case of conflict: hard points > truth tables > user request
 
-## 📚 Ressources et Documentation
+## 📚 Resources and Documentation
 
-### Fichiers de Référence
+### Reference Files
 
-- **[`prompts/hard_points/ai-kido.md`](prompts/hard_points/ai-kido.md)** : Guide complet des 18 règles AI-KIDO (Mode STANDARD)
-- **[`prompts/hard_points/ai-kido-light.md`](prompts/hard_points/ai-kido-light.md)** : Guide AI-KIDO Mode LIGHT (bases légères)
-- **[`prompts/hard_points/gestion-logs-aikido.md`](prompts/hard_points/gestion-logs-aikido.md)** : Règles de traçabilité
-- **[`prompts/gen/index.md`](prompts/gen/index.md)** : Point d'entrée de la memory bank (mono-projet)
-- **[`prompts/[projet]/gen/index.md`](prompts/)** : Point d'entrée memory bank (multi-projet)
-- **[`AGENTS.md`](AGENTS.md)** : Interface standardisée pour les LLM
-- **[`CLAUDE.md`](CLAUDE.md)** : Mapping AI-KIDO ↔ Norme CLAUDE.md avec état de la base
+- **[`prompts/hard_points/ai-kido.md`](prompts/hard_points/ai-kido.md)**: Complete guide to the 18 AI-KIDO rules (STANDARD mode)
+- **[`prompts/hard_points/ai-kido-light.md`](prompts/hard_points/ai-kido-light.md)**: AI-KIDO LIGHT mode guide (lightweight bases)
+- **[`prompts/hard_points/gestion-logs-aikido.md`](prompts/hard_points/gestion-logs-aikido.md)**: Traceability rules
+- **[`prompts/gen/index.md`](prompts/gen/index.md)**: Memory bank entry point (single-project)
+- **[`prompts/[project]/gen/index.md`](prompts/)**: Memory bank entry point (multi-project)
+- **[`AGENTS.md`](AGENTS.md)**: Standardized interface for LLMs
+- **[`CLAUDE.md`](CLAUDE.md)**: AI-KIDO ↔ CLAUDE.md standard mapping with base status
 
-### Commandes Disponibles
+### Available Commands
 
-Toutes les commandes sont documentées dans [`prompts/hard_points/commands/`](prompts/hard_points/commands/) :
+All commands are documented in [`prompts/hard_points/commands/`](prompts/hard_points/commands/):
 
-- **Commandes d'initialisation** : `init-aikido`, `init-glossaire`, `init-raci-aikido`
-- **Commandes d'analyse** : `analyse-project`, `analyse-aikido`
-- **Commandes de création** : `create-persona`, `create-command` 🆕, `create-search-plan` 🆕, `create-analyse-plan` 🆕, `compile-agent-from-use`
-- **Commandes de maintenance** : `check-claude`, `check-truth` 🆕, `maj-aikido`, `validate-search-plan` 🆕, `validate-analyse-plan` 🆕
-- **Commandes d'indexation** : `reindex-projet` 🆕, `clean-index` 🆕
-- **Commandes de traçabilité** : `logllmon`, `logllmoff`
-- **Commandes de gestion des skills** : `create-skill`, `skill-get` 🆕
+- **Initialization commands**: `init-aikido`, `init-glossaire`, `init-raci-aikido`
+- **Analysis commands**: `analyse-project`, `analyse-aikido`
+- **Creation commands**: `create-persona`, `create-command` 🆕, `create-search-plan` 🆕, `create-analyse-plan` 🆕, `compile-agent-from-use`
+- **Maintenance commands**: `check-claude`, `check-truth` 🆕, `maj-aikido`, `validate-search-plan` 🆕, `validate-analyse-plan` 🆕
+- **Indexing commands**: `reindex-projet` 🆕, `clean-index` 🆕
+- **Traceability commands**: `logllmon`, `logllmoff`
+- **Skill management commands**: `create-skill`, `skill-get` 🆕
 
-## 🎓 Philosophie et Avantages
+## 🎓 Philosophy and Benefits
 
-### Pourquoi AI-KIDO ?
+### Why AI-KIDO?
 
-1. **🧠 Optimisation LLM** : Structure pensée pour maximiser l'efficacité des interactions IA
-2. **🔄 Évolution continue** : Auto-alimentation et amélioration basée sur l'usage
-3. **👥 Collaboration** : Organisation par rôles avec matrice RACI claire
-4. **📈 Scalabilité** : Contraintes d'équilibrage pour gérer la croissance
-5. **🔒 Fiabilité** : Hard points pour préserver les décisions critiques
-6. **🌐 Interopérabilité** : Interface AGENTS.md standard pour outils LLM
+1. **🧠 LLM optimization**: Structure designed to maximize the efficiency of AI interactions
+2. **🔄 Continuous evolution**: Self-feeding and improvement based on usage
+3. **👥 Collaboration**: Role-based organization with a clear RACI matrix
+4. **📈 Scalability**: Balancing constraints to handle growth
+5. **🔒 Reliability**: Hard points to preserve critical decisions
+6. **🌐 Interoperability**: Standard AGENTS.md interface for LLM tools
 
-### Bénéfices Concrets
+### Concrete Benefits
 
-- **Réduction du temps de réponse** des LLM grâce à la structure optimisée
-- **Cohérence des réponses** via les tables de vérités partagées  
-- **Capitalisation des connaissances** avec auto-alimentation
-- **Collaboration efficace** grâce à la répartition par rôles
-- **Maintenance simplifiée** avec outils d'audit automatique
-- **Traçabilité complète** des interactions et décisions
+- **Reduced LLM response time** thanks to the optimized structure
+- **Response consistency** via shared truth tables  
+- **Knowledge capitalization** with self-feeding
+- **Effective collaboration** thanks to role distribution
+- **Simplified maintenance** with automatic audit tools
+- **Complete traceability** of interactions and decisions
 
 ---
 
-**🎯 AI-KIDO transforme votre projet en une memory bank intelligente, évolutive et collaborative, optimisée pour l'ère de l'IA.**
+**🎯 AI-KIDO turns your project into an intelligent, scalable and collaborative memory bank, optimized for the AI era.**
 
-Pour démarrer avec un bootstrap AI-KIDO sous Claude Code :
+To get started with an AI-KIDO bootstrap under Claude Code:
 
 ```
 Exécute le fichier prompts/hard_points/commands/check-claude.md pour vérifier l'état de la Memory Bank AI-KIDO et générer les fichiers de compatibilité Claude Code
 ```
 
-Pour initialiser un nouveau projet : `/init-aikido`
+> 🇬🇧 English equivalent: *Run the file prompts/hard_points/commands/check-claude.md to check the state of the AI-KIDO Memory Bank and generate the Claude Code compatibility files.*
+
+To initialize a new project: `/init-aikido`
