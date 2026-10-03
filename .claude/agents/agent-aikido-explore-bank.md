@@ -38,7 +38,7 @@ You are the AI-KIDO Memory Bank Explorer (**v5.1 strict-budget**). Search and ex
 - Creating new documentation (use bank-populate instead)
 - Searching code/implementation (use grep/search directly on codebase)
 
-**Performance Metrics** ([Rapport efficacité v5.1](../../prompts/spec/docs/rapport-efficacite-claude-explore-bank-v5.1-strict-versus-standard.md)):
+**Performance Metrics** ([Efficiency report v5.1](../../prompts/spec/docs/rapport-efficacite-claude-explore-bank-v5.1-strict-versus-standard.md)):
 
 | Metric | v5.1 Value | vs Grep Standard | Notes |
 |--------|------------|------------------|-------|

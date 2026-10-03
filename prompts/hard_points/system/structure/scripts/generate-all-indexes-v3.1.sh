@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# generate-all-indexes-v3.1.sh - Orchestrateur génération complète V3.1
+# generate-all-indexes-v3.1.sh - Full V3.1 generation orchestrator
 # Version 3.1 - Hash-based ID normalization
 
 if [ -n "$BASH_VERSION" ]; then
@@ -14,7 +14,7 @@ PROJECT_ROOT="${PROJECT_ROOT:-$(cd "$(dirname "$0")/../../../../.." && pwd)}"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 
-# Mode parallèle par défaut (set USE_PARALLEL=false pour mode séquentiel)
+# Parallel mode by default (set USE_PARALLEL=false for sequential mode)
 USE_PARALLEL="${USE_PARALLEL:-true}"
 
 echo "=========================================="
@@ -26,7 +26,7 @@ echo "Start time: $TIMESTAMP"
 echo "Project root: $PROJECT_ROOT"
 echo ""
 
-# Étape 1 : Génération index by-id (SOURCE DE VÉRITÉ)
+# Step 1: by-id index generation (SOURCE OF TRUTH)
 echo "Step 1/5: Generating by-id index (source of truth)..."
 if [[ "$USE_PARALLEL" == "true" ]]; then
     echo "Mode: PARALLEL (4 workers)"
@@ -42,13 +42,13 @@ else
 fi
 echo ""
 
-# Étape 2 : Génération index by-path (refs ID)
+# Step 2: by-path index generation (ID refs)
 echo "Step 2/5: Generating by-path index (ID references)..."
 echo "---"
 time "$SCRIPT_DIR/generate-index-by-path.sh"
 echo ""
 
-# Étape 3 : Génération index by-alphabetical (refs ID)
+# Step 3: by-alphabetical index generation (ID refs)
 echo "Step 3/5: Generating by-alphabetical index (ID references)..."
 echo "---"
 if [[ -f "$SCRIPT_DIR/generate-index-by-alpha.sh" ]]; then
@@ -59,7 +59,7 @@ else
 fi
 echo ""
 
-# Étape 4 : Génération index by-directory (refs ID)
+# Step 4: by-directory index generation (ID refs)
 echo "Step 4/5: Generating by-directory index (ID references)..."
 echo "---"
 if [[ -f "$SCRIPT_DIR/generate-index-by-directory.sh" ]]; then
@@ -70,7 +70,7 @@ else
 fi
 echo ""
 
-# Étape 5 : Génération index by-type (refs ID)
+# Step 5: by-type index generation (ID refs)
 echo "Step 5/5: Generating by-type index (ID references)..."
 echo "---"
 if [[ -f "$SCRIPT_DIR/generate-index-by-type.sh" ]]; then
@@ -81,7 +81,7 @@ else
 fi
 echo ""
 
-# Étape 6 : Génération master index
+# Step 6: master index generation
 echo "Step 6/6: Generating master index.json..."
 echo "---"
 if [[ -f "$SCRIPT_DIR/generate-index-master.sh" ]]; then
@@ -98,7 +98,7 @@ echo "Generation Complete!"
 echo "=========================================="
 echo ""
 
-# Afficher tailles fichiers
+# Display file sizes
 echo "Index sizes:"
 echo ""
 

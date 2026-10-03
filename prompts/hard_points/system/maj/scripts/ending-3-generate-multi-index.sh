@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ending-3-generate-multi-index.sh - Générer index multi-projet
+# ending-3-generate-multi-index.sh - Generate multi-project index
 # Usage: ending-3-generate-multi-index.sh <source_dir> <project_names>
 
 if [ -n "$BASH_VERSION" ]; then
@@ -12,41 +12,41 @@ SOURCE_DIR="${1:-.}"
 shift
 PROJECT_NAMES=("$@")
 
-echo "📝 Création index multi-projet..."
+echo "📝 Creating multi-project index..."
 
 # Index global
 cat > "$SOURCE_DIR/prompts/index.md" <<'INDEX_GLOBAL_START'
 # AI-KIDO Knowledge Base – Multi-Projet
 
-> **Version**: 1.3 | **Type** : MULTI-PROJET | **Point d'Entrée** : `/prompts/index.md`
+> **Version**: 1.3 | **Type**: MULTI-PROJECT | **Entry Point**: `/prompts/index.md`
 
-Ce fichier constitue le **point d'entrée global** pour un environnement **multi-projet** AI‑KIDO.
+This file is the **global entry point** for an AI‑KIDO **multi-project** environment.
 
 ## Navigation par Projet
 
-Ce workspace contient plusieurs projets AI‑KIDO. Sélectionnez le projet pour accéder à sa Memory Bank :
+This workspace contains several AI‑KIDO projects. Select a project to access its Memory Bank:
 
 INDEX_GLOBAL_START
 
 for project_name in "${PROJECT_NAMES[@]}"; do
-  echo "- **[$project_name]($project_name/index.md)** : Point d'entrée du projet $project_name" >> "$SOURCE_DIR/prompts/index.md"
+  echo "- **[$project_name]($project_name/index.md)** : Entry point of project $project_name" >> "$SOURCE_DIR/prompts/index.md"
 done
 
 cat >> "$SOURCE_DIR/prompts/index.md" <<'INDEX_GLOBAL_END'
 
 ## Hard Points Communs
 
-Les hard points (vérités immuables) sont partagés entre tous les projets :
+Hard points (immutable truths) are shared across all projects:
 
-- [`hard_points/ai-kido.md`](hard_points/ai-kido.md) : Guide complet AI-KIDO
-- [`hard_points/system/`](hard_points/system/) : Outils système et skills
+- [`hard_points/ai-kido.md`](hard_points/ai-kido.md) : Complete AI-KIDO guide
+- [`hard_points/system/`](hard_points/system/) : System tools and skills
 
 ---
 
-*Index global multi-projet généré automatiquement par /maj-aikido*
+*Global multi-project index generated automatically by /maj-aikido*
 INDEX_GLOBAL_END
 
-echo "✅ Index global créé : $SOURCE_DIR/prompts/index.md"
+echo "✅ Global index created: $SOURCE_DIR/prompts/index.md"
 
 # Index projets
 for project_name in "${PROJECT_NAMES[@]}"; do
@@ -58,31 +58,31 @@ for project_name in "${PROJECT_NAMES[@]}"; do
 
 > **Version**: 1.3 | **Projet** : $project_name | **Type** : Mono-projet dans multi-workspace
 
-Ce fichier est le **point d'entrée spécifique** du projet **$project_name**.
+This file is the **project-specific entry point** of project **$project_name**.
 
 ## Structure du Projet
 
-- [\`gen/concepts/\`](gen/concepts/index.md) : Concepts fondamentaux
-- [\`gen/techniques/\`](gen/techniques/index.md) : Méthodes pratiques
-- [\`gen/personas/\`](gen/personas/index.md) : Prompts par rôle
-- [\`gen/use_cases/\`](gen/use_cases/index.md) : Applications par contexte
-- [\`gen/index.md\`](gen/index.md) : Navigation interne détaillée
+- [\`gen/concepts/\`](gen/concepts/index.md) : Core concepts
+- [\`gen/techniques/\`](gen/techniques/index.md) : Practical methods
+- [\`gen/personas/\`](gen/personas/index.md) : Role-based prompts
+- [\`gen/use_cases/\`](gen/use_cases/index.md) : Context-based applications
+- [\`gen/index.md\`](gen/index.md) : Detailed internal navigation
 
-## Hard Points (Partagés)
+## Hard Points (Shared)
 
-Les vérités immuables sont communes à tous les projets :
+Immutable truths are common to all projects:
 
 - [AI-KIDO Guide](../../hard_points/ai-kido.md)
-- [Système](../../hard_points/system/)
+- [System](../../hard_points/system/)
 
 ## Retour
 
-- [← Index Global](../index.md) : Retour à la liste des projets
+- [← Index Global](../index.md) : Back to the project list
 
 ---
 
-*Index projet généré automatiquement par /maj-aikido*
+*Project index generated automatically by /maj-aikido*
 INDEX_PROJECT
 
-  echo "   ✅ $PROJECT_INDEX créé"
+  echo "   ✅ $PROJECT_INDEX created"
 done

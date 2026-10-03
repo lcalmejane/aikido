@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# generate-index-by-id.sh - Génération index by-id (source de vérité unique)
+# generate-index-by-id.sh - by-id index generation (single source of truth)
 # Version 3.1 - Hash-based ID normalization
 
 if [ -n "$BASH_VERSION" ]; then
@@ -19,7 +19,7 @@ TIMESTAMP_ISO=$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)
 # Source utilities
 source "$SCRIPT_DIR/lib/hash-utils.sh"
 
-# Variables globales .gitignore (réutilisées depuis generate-project-tree-json.sh)
+# Global .gitignore variables (reused from generate-project-tree-json.sh)
 GITIGNORE_DIRS=()
 GITIGNORE_PATTERNS=()
 
@@ -30,7 +30,7 @@ EXCLUDE_PATTERNS=(
 )
 
 # ============================================================================
-# FONCTIONS .GITIGNORE (réutilisées)
+# .GITIGNORE FUNCTIONS (reused)
 # ============================================================================
 
 discover_all_gitignores() {
@@ -112,7 +112,7 @@ should_exclude() {
 }
 
 # ============================================================================
-# EXTRACTION MÉTADONNÉES (simplifié pour by-id)
+# METADATA EXTRACTION (simplified for by-id)
 # ============================================================================
 
 get_file_icon_and_category() {
@@ -163,11 +163,11 @@ extract_metadata() {
             IFS='|' read -r size_bytes modified <<< "$(stat -c "%s|%y" "$file" 2>/dev/null | cut -d' ' -f1)"
         fi
 
-        # Détection fichier texte rapide : lire premières lignes + check header
+        # Fast text file detection: read first lines + check header
         local header="" line_count=0 is_text=true
 
         while IFS= read -r line && (( line_count < 10 )); do
-            # Détection binaire simple : si caractères non-imprimables dans les 10 premières lignes
+            # Simple binary detection: if non-printable characters in the first 10 lines
             if [[ "$line" =~ [^[:print:]$'\t'$'\n'] ]]; then
                 is_text=false
                 break
@@ -177,10 +177,10 @@ extract_metadata() {
         done < "$file" 2>/dev/null
 
         if $is_text; then
-            # Compter lignes avec awk (très rapide, optimisé C)
+            # Count lines with awk (very fast, C-optimized)
             lines=$(awk 'END {print NR}' "$file" 2>/dev/null || echo "0")
 
-            # Check status pour fichiers prompts/*.md
+            # Check status for prompts/*.md files
             if [[ "$relative_path" == prompts/* && ("$extension" == "md" || "$extension" == "mdx") ]]; then
                 if [[ "$header" =~ last-check: ]]; then
                     check_status="✅"
@@ -200,20 +200,20 @@ extract_metadata() {
 }
 
 # ============================================================================
-# GÉNÉRATION INDEX BY-ID (16 BATCHES)
+# BY-ID INDEX GENERATION (16 BATCHES)
 # ============================================================================
 
-# Créer répertoire output
+# Create output directory
 mkdir -p "$PROJECT_ROOT/$OUTPUT_DIR"
 
-# Initialiser fichiers temporaires pour chaque batch (0-f)
+# Initialize temp files for each batch (0-f)
 declare -a temp_files
 for prefix in {0..9} {a..f}; do
     temp_files[$((16#$prefix))]=$(mktemp)
     echo "# Temp file for batch $prefix" > "${temp_files[$((16#$prefix))]}"
 done
 
-# Découvrir .gitignore
+# Discover .gitignore
 cd "$PROJECT_ROOT"
 discover_all_gitignores
 
@@ -226,15 +226,15 @@ done
 
 echo "Scanning files and generating IDs (optimized buffered writes)..."
 
-# Buffers pour écriture groupée (réduit I/O)
+# Buffers for grouped writes (reduces I/O)
 declare -a write_buffers
 for i in {0..15}; do
     write_buffers[$i]=""
 done
 
-BUFFER_FLUSH_SIZE=1000  # Flush tous les 1000 fichiers (~400KB par buffer)
+BUFFER_FLUSH_SIZE=1000  # Flush every 1000 files (~400KB per buffer)
 
-# Scanner tous les fichiers avec optimisations
+# Scan all files with optimizations
 while IFS= read -r -d '' file; do
     if should_exclude "$file"; then
         continue
@@ -244,20 +244,20 @@ while IFS= read -r -d '' file; do
 
     relative_path="${file#./}"
 
-    # Générer ID hash (optimisé : moins de subshells)
+    # Generate hash ID (optimized: fewer subshells)
     file_id=$(generate_file_id "$relative_path")
 
-    # Extraire métadonnées
+    # Extract metadata
     metadata=$(extract_metadata "$file")
 
-    # Déterminer batch prefix (0-f)
+    # Determine batch prefix (0-f)
     batch_prefix=$(get_batch_prefix "$file_id")
     batch_index=$((16#$batch_prefix))
 
     # Accumuler dans buffer
     write_buffers[$batch_index]+="\"$file_id\":$metadata,"$'\n'
 
-    # Flush buffer si plein (1000 entrées * ~400 bytes = ~400KB)
+    # Flush buffer if full (1000 entries * ~400 bytes = ~400KB)
     if (( ${#write_buffers[$batch_index]} > BUFFER_FLUSH_SIZE * 400 )); then
         echo -n "${write_buffers[$batch_index]}" >> "${temp_files[$batch_index]}"
         write_buffers[$batch_index]=""
@@ -283,7 +283,7 @@ done
 echo "Processed total: $total_files files"
 echo ""
 
-# Générer 16 fichiers JSON finaux
+# Generate the 16 final JSON files
 echo "Generating 16 batch JSON files..."
 
 for prefix in {0..9} {a..f}; do
@@ -307,7 +307,7 @@ for prefix in {0..9} {a..f}; do
   "files": {
 EOF
 
-    # Content (enlever la première ligne de commentaire et la dernière virgule)
+    # Content (remove the first comment line and the last comma)
     if [[ $count -gt 0 ]]; then
         tail -n +2 "$temp_file" | sed '$ s/,$//' >> "$batch_file"
     fi
@@ -329,7 +329,7 @@ echo "   Batches: 16 (0-f)"
 echo "   Output: $OUTPUT_DIR/"
 echo ""
 
-# Afficher distribution
+# Display distribution
 echo "Distribution across batches:"
 for prefix in {0..9} {a..f}; do
     batch_index=$((16#$prefix))

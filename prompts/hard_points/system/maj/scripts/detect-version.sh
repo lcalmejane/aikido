@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# detect-version.sh - Extraire version depuis ai-kido.md
+# detect-version.sh - Extract version from ai-kido.md
 # Usage: detect-version.sh <file_path>
 
 if [ -n "$BASH_VERSION" ]; then
@@ -11,7 +11,7 @@ fi
 FILE_PATH="${1:-prompts/hard_points/ai-kido.md}"
 
 if [ ! -f "$FILE_PATH" ]; then
-  echo "❌ Fichier introuvable : $FILE_PATH" >&2
+  echo "❌ File not found: $FILE_PATH" >&2
   exit 1
 fi
 
@@ -21,7 +21,7 @@ VERSION=$(grep -E '^> \*\*Version\*\*:' "$FILE_PATH" \
   | tr -d ' ')
 
 if [ -z "$VERSION" ]; then
-  echo "❌ Version non détectée dans $FILE_PATH" >&2
+  echo "❌ Version not detected in $FILE_PATH" >&2
   exit 1
 fi
 

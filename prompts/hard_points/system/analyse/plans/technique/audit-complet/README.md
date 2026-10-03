@@ -1,243 +1,243 @@
-# Plan d'Analyse Technique - Audit Complet Expert
+# Technical Analysis Plan - Expert Full Audit
 
-> **Chemin** : `prompts/hard_points/system/analyse/plans/technique/audit-complet/`  
-> **Version** : 1.0 | **Date** : 2026-02-10 | **Type** : Analysis Plan
+> **Path**: `prompts/hard_points/system/analyse/plans/technique/audit-complet/`  
+> **Version**: 1.0 | **Date**: 2026-02-10 | **Type**: Analysis Plan
 
-## 📋 Vue d'Ensemble
+## 📋 Overview
 
-Ce répertoire contient le **plan d'analyse technique complet expert** pour réaliser un audit approfondi multi-repository (frontend + backend).
+This directory contains the **expert full technical analysis plan** for carrying out an in-depth multi-repository audit (frontend + backend).
 
-### Fichiers Disponibles
+### Available Files
 
-| Fichier | Description |
-|---------|-------------|
-| [`plan-expert.md`](plan-expert.md) | Plan d'analyse complet (~1200 lignes) avec stratégies, agents, workflows |
-| [`config-example.yml`](config-example.yml) | Fichier de configuration exemple à adapter à votre projet |
-| `README.md` | Ce fichier |
+| File | Description |
+|------|-------------|
+| [`plan-expert.md`](plan-expert.md) | Full analysis plan (~1200 lines) with strategies, agents, workflows |
+| [`config-example.yml`](config-example.yml) | Example configuration file to adapt to your project |
+| `README.md` | This file |
 
-## 🎯 Objectif
+## 🎯 Goal
 
-Réaliser un **audit technique complet** couvrant :
+Carry out a **full technical audit** covering:
 - 🏗️ Architecture & code
-- 📦 Stack technique
-- 🔗 Dépendances
-- 🔒 Sécurité
-- ✅ Tests & qualité
+- 📦 Technical stack
+- 🔗 Dependencies
+- 🔒 Security
+- ✅ Tests & quality
 - ⚡ Performance
-- 📊 Observabilité
-- 🛠️ Maintenabilité
+- 📊 Observability
+- 🛠️ Maintainability
 
-## 🚀 Démarrage Rapide
+## 🚀 Quick Start
 
-### 1. Copier et Adapter la Configuration
+### 1. Copy and Adapt the Configuration
 
 ```bash
-# Copier le fichier exemple
+# Copy the example file
 cp prompts/hard_points/system/analyse/plans/technique/audit-complet/config-example.yml ./config-audit.yml
 
-# Éditer les chemins des repositories
+# Edit the repository paths
 nano config-audit.yml
-# Modifier :
-#   repositories.frontend.path: "./frontend"  ← Votre chemin frontend
-#   repositories.backend.path: "./backend"    ← Votre chemin backend
+# Change:
+#   repositories.frontend.path: "./frontend"  ← Your frontend path
+#   repositories.backend.path: "./backend"    ← Your backend path
 ```
 
-### 2. Exécuter l'Audit
+### 2. Run the Audit
 
-**Option A : Avec configuration YAML** (recommandé)
+**Option A: With YAML configuration** (recommended)
 ```bash
 /analyse-project --config=./config-audit.yml
 ```
 
-**Option B : Mode interactif**
+**Option B: Interactive mode**
 ```bash
 /analyse-project
-# Puis suivre les prompts :
-# - Nature : 6 (Stack générale technique)
-# - Profondeur : 4 (Expert)
-# - Chemins : Indiquer frontend et backend
+# Then follow the prompts:
+# - Nature: 6 (General technical stack)
+# - Depth: 4 (Expert)
+# - Paths: Provide frontend and backend
 ```
 
-### 3. Consulter les Rapports
+### 3. Read the Reports
 
-Les rapports sont générés dans `./audits/` :
+Reports are generated in `./audits/`:
 ```
 audits/
-├── audit-synthese.md              # Synthèse exécutive (5 lignes + tableau priorisé)
-├── audit-frontend.md              # Détails frontend (architecture, stack, sécu, perf...)
-├── audit-backend.md               # Détails backend (architecture, stack, sécu, perf...)
-├── plan-action.md                 # Plan d'action phasé (CRITIQUE/IMPORTANT/RECOMMANDÉ)
-└── vulnerabilites-cve.json        # Export JSON vulnérabilités CVE
+├── audit-synthese.md              # Executive summary (5 lines + prioritized table)
+├── audit-frontend.md              # Frontend details (architecture, stack, security, perf...)
+├── audit-backend.md               # Backend details (architecture, stack, security, perf...)
+├── plan-action.md                 # Phased action plan (CRITICAL/IMPORTANT/RECOMMENDED)
+└── vulnerabilites-cve.json        # JSON export of CVE vulnerabilities
 ```
 
-## 📊 Ce Que le Plan Analyse
+## 📊 What the Plan Analyzes
 
 ### 1. Architecture & Code
-- Structure modules/packages/composants
-- Patterns architecturaux (Layered, Hexagonal, Microservices)
-- Respect SOLID, DRY, séparation responsabilités
-- Code smells (classes >300 lignes, complexité cyclomatique >10)
-- Duplication de code
+- Module/package/component structure
+- Architectural patterns (Layered, Hexagonal, Microservices)
+- SOLID, DRY, separation of concerns
+- Code smells (classes >300 lines, cyclomatic complexity >10)
+- Code duplication
 
-### 2. Stack Technique
-- Versions frameworks (Angular, Spring Boot, React, etc.)
-- EOL (End of Life) et support
-- Configuration TypeScript (strict mode, typage)
-- Configuration build (Maven, Webpack, Vite)
+### 2. Technical Stack
+- Framework versions (Angular, Spring Boot, React, etc.)
+- EOL (End of Life) and support
+- TypeScript configuration (strict mode, typing)
+- Build configuration (Maven, Webpack, Vite)
 
-### 3. Dépendances
-- **Vulnérabilités CVE** : npm audit, OWASP Dependency-Check
-- Librairies obsolètes (>2 versions majeures retard)
-- Dépendances inutilisées ou redondantes
+### 3. Dependencies
+- **CVE vulnerabilities**: npm audit, OWASP Dependency-Check
+- Outdated libraries (>2 major versions behind)
+- Unused or redundant dependencies
 
-### 4. Sécurité
-- **Secrets hardcodés** : API keys, passwords, tokens
-- **OWASP Top 10** : XSS, CSRF, injection SQL/NoSQL
-- Configuration CORS, headers sécurité (CSP, HSTS)
-- Chiffrement données sensibles
+### 4. Security
+- **Hardcoded secrets**: API keys, passwords, tokens
+- **OWASP Top 10**: XSS, CSRF, SQL/NoSQL injection
+- CORS configuration, security headers (CSP, HSTS)
+- Sensitive data encryption
 
-### 5. Tests & Qualité
-- Couverture tests (unitaires, intégration, e2e)
-- Qualité des tests (assertions, mocks)
+### 5. Tests & Quality
+- Test coverage (unit, integration, e2e)
+- Test quality (assertions, mocks)
 - CI/CD (GitHub Actions, GitLab CI, Jenkins)
-- Analyse statique (SonarQube, ESLint)
+- Static analysis (SonarQube, ESLint)
 
 ### 6. Performance
-- **Frontend** : Lazy loading, bundle size, OnPush change detection, memory leaks RxJS
-- **Backend** : Requêtes N+1, cache (Redis, Caffeine), optimisations queries
+- **Frontend**: Lazy loading, bundle size, OnPush change detection, RxJS memory leaks
+- **Backend**: N+1 queries, cache (Redis, Caffeine), query optimizations
 - Code splitting, dynamic imports
 
-### 7. Observabilité
-- Logging structuré (JSON vs texte)
-- Monitoring et métriques (Prometheus, Grafana)
-- Gestion centralisée erreurs (Sentry, Rollbar)
-- Tracing distribué (OpenTelemetry)
+### 7. Observability
+- Structured logging (JSON vs text)
+- Monitoring and metrics (Prometheus, Grafana)
+- Centralized error handling (Sentry, Rollbar)
+- Distributed tracing (OpenTelemetry)
 
-### 8. Maintenabilité
-- Documentation code (JSDoc, JavaDoc)
-- Internationalisation i18n
-- Accessibilité WCAG 2.1 AA
+### 8. Maintainability
+- Code documentation (JSDoc, JavaDoc)
+- Internationalization i18n
+- Accessibility WCAG 2.1 AA
 - Responsive design
 
-## 🤖 Agents AI-KIDO Utilisés
+## 🤖 AI-KIDO Agents Used
 
-| Agent | Phase | Rôle | Obligatoire |
-|-------|-------|------|-------------|
-| [`agent-aikido-explore-code`](../../../agents/agent-aikido-explore-code.md) | 3.1 | Scan code source multi-repository | ✅ Oui |
-| [`agent-aikido-explore-all`](../../../agents/agent-aikido-explore-all.md) | 3.2 | Recherche parallèle Memory Bank + Code | ✅ Oui (prof ≥4) |
-| [`agent-aikido-truth-evaluator`](../../../agents/agent-aikido-truth-evaluator.md) | Résolution | Résolution contradictions doc vs code | Si contradictions |
-| [`agent-aikido-raci-delegator`](../../../agents/agent-aikido-raci-delegator.md) | Classification | Classification documents par domaine | Si RACI activé |
-| [`agent-aikido-bank-populate`](../../../agents/agent-aikido-bank-populate.md) | Peuplement | Peuplement automatique gaps détectés | Si gaps >3 |
-| [`agent-aikido-validator`](../../../agents/agent-aikido-validator.md) | Validation | Validation conformité AI-KIDO | ✅ Oui |
+| Agent | Phase | Role | Required |
+|-------|-------|------|----------|
+| [`agent-aikido-explore-code`](../../../agents/agent-aikido-explore-code.md) | 3.1 | Multi-repository source code scan | ✅ Yes |
+| [`agent-aikido-explore-all`](../../../agents/agent-aikido-explore-all.md) | 3.2 | Parallel Memory Bank + Code search | ✅ Yes (depth ≥4) |
+| [`agent-aikido-truth-evaluator`](../../../agents/agent-aikido-truth-evaluator.md) | Resolution | Resolution of doc vs code contradictions | If contradictions |
+| [`agent-aikido-raci-delegator`](../../../agents/agent-aikido-raci-delegator.md) | Classification | Document classification by domain | If RACI enabled |
+| [`agent-aikido-bank-populate`](../../../agents/agent-aikido-bank-populate.md) | Population | Automatic population of detected gaps | If gaps >3 |
+| [`agent-aikido-validator`](../../../agents/agent-aikido-validator.md) | Validation | AI-KIDO compliance validation | ✅ Yes |
 
-## 📤 Format de Sortie
+## 📤 Output Format
 
-### Rapport de Synthèse (`audit-synthese.md`)
+### Summary Report (`audit-synthese.md`)
 
 ```markdown
-# Audit Technique Complet - Synthèse Exécutive
+# Full Technical Audit - Executive Summary
 
-## 📋 SYNTHÈSE EXÉCUTIVE (5 lignes)
-> Résumé concis des points clés, impacts et effort total estimé
+## 📋 EXECUTIVE SUMMARY (5 lines)
+> Concise summary of key points, impacts and total estimated effort
 
-## 📊 TABLEAU DES POINTS D'AMÉLIORATION
+## 📊 IMPROVEMENT POINTS TABLE
 
-### 🔴 CRITIQUE (Sécurité, EOL, CVE)
-| ID | Catégorie | Titre | Localisation | Impact | Effort |
-| SEC-001 | Sécurité | Secrets hardcodés | frontend/src/config.ts:12 | CRITIQUE | 2h |
+### 🔴 CRITICAL (Security, EOL, CVE)
+| ID | Category | Title | Location | Impact | Effort |
+| SEC-001 | Security | Hardcoded secrets | frontend/src/config.ts:12 | CRITICAL | 2h |
 
-### 🟠 IMPORTANT (Dette technique majeure)
-| PERF-001 | Performance | Absence lazy loading | frontend/app-routing.ts | IMPORTANT | 1j |
+### 🟠 IMPORTANT (Major technical debt)
+| PERF-001 | Performance | Missing lazy loading | frontend/app-routing.ts | IMPORTANT | 1d |
 
-### 🟡 RECOMMANDÉ (Améliorations continues)
-| MAIN-001 | Maintenabilité | JSDoc incomplète | frontend/services/*.ts | RECOMMANDÉ | 1j |
+### 🟡 RECOMMENDED (Continuous improvements)
+| MAIN-001 | Maintainability | Incomplete JSDoc | frontend/services/*.ts | RECOMMENDED | 1d |
 
-## 📈 STATISTIQUES GLOBALES
-| Métrique | Valeur | Status | Cible |
-| Couverture tests | 78% | 🟡 | ≥80% |
-| Vulnérabilités CVE | 3 HIGH | 🔴 | 0 HIGH |
+## 📈 GLOBAL STATISTICS
+| Metric | Value | Status | Target |
+| Test coverage | 78% | 🟡 | ≥80% |
+| CVE vulnerabilities | 3 HIGH | 🔴 | 0 HIGH |
 | Bundle size | 4.2 MB | 🟠 | <3 MB |
 
-## 🎯 PRIORITÉS IMMÉDIATES (Semaine 1)
-1. SEC-001 : Externaliser secrets (2h)
-2. SEC-002 : Update log4j (1h)
-3. SEC-003 : CORS restrictif (30min)
+## 🎯 IMMEDIATE PRIORITIES (Week 1)
+1. SEC-001: Externalize secrets (2h)
+2. SEC-002: Update log4j (1h)
+3. SEC-003: Restrictive CORS (30min)
 ```
 
-### Rapports Détaillés
+### Detailed Reports
 
-**`audit-frontend.md`** : 8 sections complètes
+**`audit-frontend.md`**: 8 complete sections
 - Architecture & Code (structure, patterns, code smells)
-- Stack Technique (versions, EOL, config TS/build)
-- Dépendances (CVE, obsolètes, inutilisées)
-- Sécurité (secrets, XSS, CORS, CSP)
-- Tests & Qualité (couverture, CI/CD, ESLint)
+- Technical Stack (versions, EOL, TS/build config)
+- Dependencies (CVE, outdated, unused)
+- Security (secrets, XSS, CORS, CSP)
+- Tests & Quality (coverage, CI/CD, ESLint)
 - Performance (lazy loading, bundle, memory leaks, OnPush)
-- Observabilité (logging, monitoring, error tracking)
-- Maintenabilité (JSDoc, i18n, accessibilité, responsive)
+- Observability (logging, monitoring, error tracking)
+- Maintainability (JSDoc, i18n, accessibility, responsive)
 
-**`audit-backend.md`** : Structure similaire adaptée backend
+**`audit-backend.md`**: Similar structure adapted to the backend
 
-**`plan-action.md`** : Plan d'action phasé
-- Phase 1 (Semaine 1) : CRITIQUE → ~1j
-- Phase 2 (Semaines 2-3) : IMPORTANT → ~2 semaines
-- Phase 3 (Semaines 4-8) : RECOMMANDÉ → ~2 semaines
-- Diagramme Gantt (Mermaid)
-- Checklist validation par phase
+**`plan-action.md`**: Phased action plan
+- Phase 1 (Week 1): CRITICAL → ~1d
+- Phase 2 (Weeks 2-3): IMPORTANT → ~2 weeks
+- Phase 3 (Weeks 4-8): RECOMMENDED → ~2 weeks
+- Gantt chart (Mermaid)
+- Validation checklist per phase
 
-## ⏱️ Durée Estimée
+## ⏱️ Estimated Duration
 
-| Phase | Durée |
-|-------|-------|
-| Configuration et détection | ~2 min |
-| Scan code (frontend + backend) | ~16 min |
-| Audit CVE (npm/maven) | ~5 min |
-| Recherche parallèle | ~10 min |
-| Extraction et analyse | ~8 min |
-| Résolution contradictions | ~3 min |
-| Priorisation et enrichissement | ~5 min |
-| Validation et génération rapports | ~5 min |
+| Phase | Duration |
+|-------|----------|
+| Configuration and detection | ~2 min |
+| Code scan (frontend + backend) | ~16 min |
+| CVE audit (npm/maven) | ~5 min |
+| Parallel search | ~10 min |
+| Extraction and analysis | ~8 min |
+| Contradiction resolution | ~3 min |
+| Prioritization and enrichment | ~5 min |
+| Validation and report generation | ~5 min |
 | **TOTAL** | **~50-60 min** |
 
-## 🎓 Cas d'Usage Idéaux
+## 🎓 Ideal Use Cases
 
-Ce plan est optimal pour :
-- ✅ Audit pré-production (validation avant mise en prod majeure)
-- ✅ Due diligence technique (évaluation projet existant)
-- ✅ Migration framework majeure (Angular 12→17, Java 11→17)
-- ✅ Certification sécurité (ISO 27001, SOC 2)
-- ✅ Diagnostic dette technique exhaustif
-- ✅ Onboarding nouvelle équipe technique
-- ✅ Roadmap refactoring multi-mois
-- ✅ Audit performance approfondi
+This plan is best suited for:
+- ✅ Pre-production audit (validation before a major release)
+- ✅ Technical due diligence (assessment of an existing project)
+- ✅ Major framework migration (Angular 12→17, Java 11→17)
+- ✅ Security certification (ISO 27001, SOC 2)
+- ✅ Exhaustive technical debt diagnosis
+- ✅ Onboarding a new technical team
+- ✅ Multi-month refactoring roadmap
+- ✅ In-depth performance audit
 
-## 📚 Références
+## 📚 References
 
-- **Plan complet** : [`plan-expert.md`](plan-expert.md)
-- **Configuration** : [`config-example.yml`](config-example.yml)
-- **Commande principale** : [`/analyse-project`](../../../commands/analyse-project.md)
-- **Agents AI-KIDO** : [`/agents/`](../../../agents/)
-- **Documentation AI-KIDO** : [`ai-kido.md`](../../../ai-kido.md)
+- **Full plan**: [`plan-expert.md`](plan-expert.md)
+- **Configuration**: [`config-example.yml`](config-example.yml)
+- **Main command**: [`/analyse-project`](../../../commands/analyse-project.md)
+- **AI-KIDO agents**: [`/agents/`](../../../agents/)
+- **AI-KIDO documentation**: [`ai-kido.md`](../../../ai-kido.md)
 
-## 🔧 Personnalisation
+## 🔧 Customization
 
-### Adapter les Thresholds
+### Adjust Thresholds
 
-Modifier dans `config-audit.yml` :
+Edit in `config-audit.yml`:
 ```yaml
 performance:
   thresholds:
-    bundle_size_mb: 3      # Votre limite
+    bundle_size_mb: 3      # Your limit
     lazy_loading_ratio: 0.5
     onpush_ratio: 0.5
 
 testing:
   coverage_targets:
-    unit_tests: 80         # Votre cible
+    unit_tests: 80         # Your target
     integration_tests: 70
 ```
 
-### Ajouter des Repositories
+### Add Repositories
 
 ```yaml
 repositories:
@@ -245,51 +245,51 @@ repositories:
     path: "./frontend"
   backend:
     path: "./backend"
-  infrastructure:        # ← Nouveau
+  infrastructure:        # ← New
     path: "./terraform"
     type: "infrastructure"
     priority: "medium"
 ```
 
-### Désactiver des Catégories
+### Disable Categories
 
 ```yaml
 scope:
   categories:
     architecture: true
-    securite: true
-    performance: false    # ← Désactiver si non pertinent
-    maintenabilite: false
+    security: true
+    performance: false    # ← Disable if not relevant
+    maintainability: false
 ```
 
-## 💡 Conseils
+## 💡 Tips
 
-1. **Avant l'audit** :
-   - Vérifier chemins repositories accessibles
-   - Installer outils CVE (npm, maven, OWASP)
-   - Prévoir ~1h pour exécution complète
+1. **Before the audit**:
+   - Check that repository paths are accessible
+   - Install CVE tools (npm, maven, OWASP)
+   - Plan ~1h for a full run
 
-2. **Pendant l'audit** :
-   - Laisser le plan s'exécuter sans interruption
-   - Agents optionnels demanderont confirmation
+2. **During the audit**:
+   - Let the plan run without interruption
+   - Optional agents will ask for confirmation
 
-3. **Après l'audit** :
-   - Prioriser corrections CRITIQUES (semaine 1)
-   - Planifier IMPORTANTES (sprints suivants)
-   - Intégrer RECOMMANDÉES dans backlog
+3. **After the audit**:
+   - Prioritize CRITICAL fixes (week 1)
+   - Plan IMPORTANT ones (next sprints)
+   - Add RECOMMENDED ones to the backlog
 
-4. **Maintenance** :
-   - Réexécuter audit tous les 3-6 mois
-   - Après chaque migration majeure
-   - Avant mises en production importantes
+4. **Maintenance**:
+   - Re-run the audit every 3-6 months
+   - After each major migration
+   - Before important production releases
 
 ## 🆘 Support
 
-Questions ou problèmes ? Consulter :
-- Documentation complète : [`plan-expert.md`](plan-expert.md)
-- Agents AI-KIDO : [`/agents/`](../../../agents/)
-- Issues AI-KIDO : [GitHub Issues](https://github.com/votre-repo/issues)
+Questions or issues? See:
+- Full documentation: [`plan-expert.md`](plan-expert.md)
+- AI-KIDO agents: [`/agents/`](../../../agents/)
+- AI-KIDO issues: [GitHub Issues](https://github.com/lcalmejane/aikido/issues)
 
 ---
-*Créé le 2026-02-10 pour audit technique complet multi-repository*
-*Voir plan générique : [`../plan-expert.md`](../plan-expert.md)*
+*Created on 2026-02-10 for full multi-repository technical audit*
+*See generic plan: [`../plan-expert.md`](../plan-expert.md)*

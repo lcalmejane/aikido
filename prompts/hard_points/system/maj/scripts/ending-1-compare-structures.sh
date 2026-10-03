@@ -42,14 +42,14 @@ jq -s '
 JQ_EXIT=$?
 
 if [ $JQ_EXIT -ne 0 ]; then
-  echo "⚠️  Échec comparaison jq (code: $JQ_EXIT)"
-  echo "   Rapport différentiel non généré"
+  echo "⚠️  jq comparison failed (code: $JQ_EXIT)"
+  echo "   Differential report not generated"
   echo ""
-  echo "   Fichiers disponibles pour comparaison manuelle :"
+  echo "   Files available for manual comparison:"
   echo "   - /tmp/aikido/maj_before.json"
   echo "   - /tmp/aikido/maj_after.json"
   echo ""
   exit 1
 fi
 
-echo "✅ Rapport différentiel généré : /tmp/aikido/maj_diff.json"
+echo "✅ Differential report generated: /tmp/aikido/maj_diff.json"

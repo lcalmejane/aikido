@@ -206,11 +206,11 @@ Expected output:
 # Observer
 (interface.*Observer|class.*Subject)
 
-# Anti-patterns détection
-# God Class (heuristique : classe > 500 lignes + > 20 méthodes)
+# Anti-pattern detection
+# God Class (heuristic: class > 500 lines + > 20 methods)
 class\s+\w+.*\{[\s\S]{5000,}\}
 
-# Circular dependencies (détection via graphe)
+# Circular dependencies (detection via graph)
 
 # Commentaires design
 (TODO|FIXME|HACK|NOTE|XXX|BUG):\s*(.+)

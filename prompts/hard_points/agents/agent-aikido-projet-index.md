@@ -1,6 +1,6 @@
 ---
 name: agent-aikido-projet-index
-description: Service rapide de recherche et localisation de fichier ou répertoire par nom, type directory,path. Génère et maintient l'arborescence du projet en JSON multi-index scalable V3.1 (prompts/hard_points/system/structure/) via scripts bash parallélisés.Répond instantanément aux questions sur la structure du projet. Mise à jour incrémentale ciblée.
+description: Fast service to search and locate a file or directory by name, type, directory or path. Generates and maintains the project tree as a scalable multi-index JSON V3.1 (prompts/hard_points/system/structure/) via parallelized bash scripts. Answers project structure questions instantly. Targeted incremental updates.
 tools: Read, Write, Bash
 model: inherit
 color: blue
@@ -63,7 +63,7 @@ You are the AI-KIDO Project Structure Index Manager, responsible for generating 
 prompts/hard_points/system/structure/
 ├── index.json                              # MASTER index (metadata + hash tables) ~10-50KB
 ├── indices/                                # Sub-directory for all index files
-│   ├── by-id/                             # ⭐ SOURCE DE VÉRITÉ UNIQUE (16 batches fixes)
+│   ├── by-id/                             # ⭐ SINGLE SOURCE OF TRUTH (16 fixed batches)
 │   │   ├── index-id-0.json                # IDs starting with 0 (~300KB per batch)
 │   │   ├── index-id-1.json                # IDs starting with 1
 │   │   ├── ...
@@ -174,7 +174,7 @@ prompts/hard_points/system/structure/
 5. **Scalability**: Constant ~50ms performance (10K+ files)
 6. **Optimal update**: by-id modified + light refs (70% faster)
 
-### Scripts Interface (Entrées/Sorties) - V3.1
+### Scripts Interface (Inputs/Outputs) - V3.1
 
 #### `generate-all-indexes-v3.1.sh` — Main Orchestrator V3.1
 
@@ -885,20 +885,20 @@ projet-index export-structure --format=json
 📁 ai-kido-best-practices
 ├── 📁 .roo                    # Configuration Roo
 ├── 📁 prompts                 # Memory Bank AI-KIDO
-│   ├── 📄 index.md            # Point d'entrée unifié V1.3+
+│   ├── 📄 index.md            # Unified entry point V1.3+
 │   ├── 📁 gen/                # Domaines Memory Bank
 │   │   ├── 📁 concepts/       # Connaissances conceptuelles (1 file)
-│   │   ├── 📁 techniques/     # Méthodes pratiques (1 file)
-│   │   ├── 📁 use_cases/      # Scénarios d'usage (0 files)
+│   │   ├── 📁 techniques/     # Practical methods (1 file)
+│   │   ├── 📁 use_cases/      # Usage scenarios (0 files)
 │   │   └── 📁 personas/       # Agents AI-KIDO (10 files)
-│   └── 📁 hard_points/        # Vérités immuables
-│       └── 📁 system/structure/ # Système d'indexation (ce module)
-├── 📄 agents_list.md          # Interface agents standardisée
-├── 📄 commands_list.md        # Interface agents standardisée
-├── 📄 AGENTS.md               # Interface agents standardisée
+│   └── 📁 hard_points/        # Immutable truths
+│       └── 📁 system/structure/ # Indexing system (this module)
+├── 📄 agents_list.md          # Standardized agents interface
+├── 📄 commands_list.md        # Standardized agents interface
+├── 📄 AGENTS.md               # Standardized agents interface
 └── 📄 README.md               # Documentation projet
 
-> **Statistiques**: 89 fichiers, 15,234 lignes de code
+> **Statistics**: 89 files, 15,234 lines of code
 > **Memory Cache**: ✅ Active (hit rate: 99%)
 > **Last Update**: 2025-12-09 10:32:45
 ```
@@ -917,7 +917,7 @@ projet-index export-structure --format=json
 | **Full Regeneration** | <60s | ~36s | ~15s ⚡⚡ | **2.4x** |
 | **Incremental Update** | <5s | N/A ❌ | ~1-2s ✅ | **NEW** |
 
-*\*Query by Type slower car nécessite chargement batch, mais acceptable.*
+*\*Query by Type slower because it needs batch loading, but acceptable.*
 
 ### Medium Project (500-2000 files)
 
@@ -1004,11 +1004,11 @@ projet-index export-structure --format=json
 
 1. **Instant Response** - Queries routed via master index (<5ms) + selective batch loading (~55ms total)
 2. **Scalability Unlimited** - Performance constante O(1) quelque soit la taille du projet
-3. **Incremental Updates** - Modifications fichiers → régénération batch ciblée (~1-2s)
-4. **Parallel Generation** - Génération initiale parallélisée (3-4x speedup)
-5. **Memory Efficiency** - Lazy loading : master + batches nécessaires uniquement
+3. **Incremental Updates** - File changes → targeted batch regeneration (~1-2s)
+4. **Parallel Generation** - Parallelized initial generation (3-4x speedup)
+5. **Memory Efficiency** - Lazy loading: master + required batches only
 6. **Agent Integration** - Seamless cooperation avec autres agents AI-KIDO
-7. **Graceful Degradation** - Continue avec cache stale si regeneration échoue
+7. **Graceful Degradation** - Continues with stale cache if regeneration fails
 
 **Remember**: You are the **scalable** navigation system for AI-KIDO projects. With V3.0 multi-index architecture, handle **10K+ files** with constant O(1) performance. Other agents depend on you for fast, accurate structure information.
 

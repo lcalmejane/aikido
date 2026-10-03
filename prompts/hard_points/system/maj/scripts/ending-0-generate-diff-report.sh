@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ending-0-generate-diff-report.sh - Générer rapport différences TARGET vs SOURCE
+# ending-0-generate-diff-report.sh - Generate TARGET vs SOURCE differences report
 # Usage: ending-0-generate-diff-report.sh
 
 if [ -n "$BASH_VERSION" ]; then
@@ -8,17 +8,17 @@ else
   set -eu
 fi
 
-echo "📊 Analyse des différences TARGET vs SOURCE..."
+echo "📊 Analyzing TARGET vs SOURCE differences..."
 
-# Extraire les chemins de fichiers de chaque JSON
+# Extract file paths from each JSON
 jq -r '.by_path | keys[]' /tmp/aikido/maj_target.json | sort > /tmp/aikido/target_files.txt
 jq -r '.by_path | keys[]' /tmp/aikido/maj_before.json | sort > /tmp/aikido/source_files.txt
 
-# Fichiers ajoutés (dans TARGET mais pas dans SOURCE)
+# Added files (in TARGET but not in SOURCE)
 comm -23 /tmp/aikido/target_files.txt /tmp/aikido/source_files.txt > /tmp/aikido/added_files.txt
 ADDED_COUNT=$(wc -l < /tmp/aikido/added_files.txt | tr -d ' ')
 
-# Fichiers modifiés (présents dans les deux, mais différents)
+# Modified files (present in both, but different)
 comm -12 /tmp/aikido/target_files.txt /tmp/aikido/source_files.txt | while read -r file; do
   TARGET_SIZE=$(jq -r ".by_path[\"$file\"].size" /tmp/aikido/maj_target.json 2>/dev/null || echo "0")
   SOURCE_SIZE=$(jq -r ".by_path[\"$file\"].size" /tmp/aikido/maj_before.json 2>/dev/null || echo "0")
@@ -29,17 +29,17 @@ comm -12 /tmp/aikido/target_files.txt /tmp/aikido/source_files.txt | while read 
 done > /tmp/aikido/modified_files.txt
 MODIFIED_COUNT=$(wc -l < /tmp/aikido/modified_files.txt | tr -d ' ')
 
-# Fusionner dans un rapport unique
+# Merge into a single report
 cat /tmp/aikido/added_files.txt /tmp/aikido/modified_files.txt | sort -u > /tmp/aikido/diff_report.txt
 TOTAL_CHANGES=$(wc -l < /tmp/aikido/diff_report.txt | tr -d ' ')
 
 echo ""
-echo "📈 Résumé des changements détectés :"
-echo "   Fichiers ajoutés    : $ADDED_COUNT"
-echo "   Fichiers modifiés   : $MODIFIED_COUNT"
-echo "   Total à fusionner   : $TOTAL_CHANGES"
+echo "📈 Summary of detected changes:"
+echo "   Added files         : $ADDED_COUNT"
+echo "   Modified files      : $MODIFIED_COUNT"
+echo "   Total to merge      : $TOTAL_CHANGES"
 echo ""
-echo "✅ Rapport généré : /tmp/aikido/diff_report.txt"
+echo "✅ Report generated: /tmp/aikido/diff_report.txt"
 
-# Export pour usage ultérieur
+# Export for later use
 echo "$TOTAL_CHANGES"

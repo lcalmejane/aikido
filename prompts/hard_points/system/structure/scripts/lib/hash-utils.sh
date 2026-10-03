@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# hash-utils.sh - Fonctions utilitaires pour hash-based IDs
+# hash-utils.sh - Utility functions for hash-based IDs
 # Version 3.1 - Architecture hash-based ID normalization
 
 if [ -n "$BASH_VERSION" ]; then
@@ -9,30 +9,30 @@ else
   set -eu              # Fallback for POSIX‑sh
 fi
 
-# Génération ID hash-based à partir du path
+# Hash-based ID generation from the path
 # Input: path (string)
 # Output: ID hash 12 chars hex (string)
 generate_file_id() {
     local path="$1"
 
-    # SHA-256 du path, tronqué à 12 caractères hexadécimaux
+    # SHA-256 of the path, truncated to 12 hexadecimal characters
     echo -n "$path" | shasum -a 256 | cut -c1-12
 }
 
-# Détermination du batch by-id à partir de l'ID
+# Determine the by-id batch from the ID
 # Input: id (string 12 chars hex)
 # Output: batch file path relatif (string)
 get_by_id_batch_file() {
     local id="$1"
 
-    # Extraire premier caractère hex (0-f)
+    # Extract first hex character (0-f)
     local batch_prefix="${id:0:1}"
 
     # Construire path batch file
     echo "indices/by-id/index-id-${batch_prefix}.json"
 }
 
-# Détermination du batch prefix à partir de l'ID
+# Determine the batch prefix from the ID
 # Input: id (string 12 chars hex)
 # Output: batch prefix (string 1 char hex)
 get_batch_prefix() {
@@ -46,7 +46,7 @@ get_batch_prefix() {
 validate_id_format() {
     local id="$1"
 
-    # Vérifier longueur 12 et charset hexadécimal
+    # Check length 12 and hexadecimal charset
     if [[ "${#id}" -eq 12 ]] && [[ "$id" =~ ^[0-9a-f]{12}$ ]]; then
         return 0
     else
@@ -55,7 +55,7 @@ validate_id_format() {
     fi
 }
 
-# Liste batch files pour tous les préfixes (0-f)
+# List batch files for all prefixes (0-f)
 # Output: Liste des 16 batch files (array)
 list_all_by_id_batches() {
     for prefix in {0..9} {a..f}; do
@@ -63,14 +63,14 @@ list_all_by_id_batches() {
     done
 }
 
-# Liste tous les préfixes batch possibles (0-f)
-# Output: Liste des 16 préfixes (array)
+# List all possible batch prefixes (0-f)
+# Output: List of the 16 prefixes (array)
 list_all_prefixes() {
     echo {0..9} {a..f}
 }
 
-# Calcul nombre de fichiers attendus par batch (estimation)
-# Input: total_files (integer), num_batches (integer, défaut 16)
+# Compute expected number of files per batch (estimate)
+# Input: total_files (integer), num_batches (integer, default 16)
 # Output: expected_files_per_batch (integer)
 estimate_files_per_batch() {
     local total_files="$1"
@@ -79,7 +79,7 @@ estimate_files_per_batch() {
     echo $(( (total_files + num_batches - 1) / num_batches ))
 }
 
-# JSON escape pour path (utilisé dans génération JSON)
+# JSON escape for path (used in JSON generation)
 json_escape() {
     local str="$1"
     str="${str//\\/\\\\}"
@@ -90,7 +90,7 @@ json_escape() {
     echo "$str"
 }
 
-# Test unitaire si script exécuté directement
+# Unit test if script is run directly
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     echo "=== Testing hash-utils.sh ==="
     echo ""
@@ -131,7 +131,7 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     fi
     echo ""
 
-    # Test 5: Deterministic (même input = même output)
+    # Test 5: Deterministic (same input = same output)
     echo "Test 5: Deterministic hash"
     id1=$(generate_file_id "$test_path")
     id2=$(generate_file_id "$test_path")

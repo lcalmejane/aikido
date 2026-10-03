@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# generate-index-by-directory.sh - Génération index by-directory (références ID uniquement)
+# generate-index-by-directory.sh - by-directory index generation (ID references only)
 # Version 3.1 - Hash-based ID normalization
 
 if [ -n "$BASH_VERSION" ]; then
@@ -20,7 +20,7 @@ TIMESTAMP_ISO=$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)
 # Source utilities
 source "$SCRIPT_DIR/lib/hash-utils.sh"
 
-# Créer répertoire output
+# Create output directory
 mkdir -p "$PROJECT_ROOT/$OUTPUT_DIR"
 
 echo "Generating by-directory index (ID references only)..."
@@ -32,10 +32,10 @@ if [[ ! -d "$BY_ID_DIR" ]]; then
     exit 1
 fi
 
-# Créer fichier temporaire avec directory + name + ID
+# Create temp file with directory + name + ID
 temp_file=$(mktemp)
 
-# Extraire path + ID depuis by-id batches, puis calculer directory
+# Extract path + ID from by-id batches, then compute directory
 for batch_file in "$BY_ID_DIR"/index-id-*.json; do
     jq -r '.files | to_entries[] | "\(.value.path)|\(.key)"' "$batch_file" | while IFS='|' read -r path file_id; do
         dir=$(dirname "$path")
@@ -80,7 +80,7 @@ echo "  Total files: $total_files"
 echo "  Unique directories: $total_dirs"
 echo ""
 
-# Générer batches (découpage si >1000 lignes JSON par batch)
+# Generate batches (split if >1000 JSON lines per batch)
 batch_num=0
 current_lines=0
 current_batch_file=""
@@ -90,13 +90,13 @@ while IFS='|' read -r dir ids names; do
     IFS=',' read -ra id_array <<< "$ids"
     files_count=${#id_array[@]}
 
-    # Estimer nombre de lignes JSON pour ce directory
-    # ~3-5 lignes par directory selon nombre fichiers
+    # Estimate the number of JSON lines for this directory
+    # ~3-5 lines per directory depending on file count
     estimated_lines=$((3 + files_count / 10))
 
-    # Nouveau batch si dépassement
+    # New batch on overflow
     if (( current_lines + estimated_lines > MAX_LINES_PER_BATCH && current_lines > 0 )); then
-        # Fermer batch précédent
+        # Close previous batch
         echo "  }" >> "$current_batch_file"
         echo "}" >> "$current_batch_file"
 
@@ -110,7 +110,7 @@ while IFS='|' read -r dir ids names; do
         batch_num=$((batch_num + 1))
     fi
 
-    # Ouvrir nouveau batch si nécessaire
+    # Open a new batch if needed
     if (( current_lines == 0 )); then
         batch_file_name=$(printf "index-dir-%03d.json" $batch_num)
         current_batch_file="$PROJECT_ROOT/$OUTPUT_DIR/$batch_file_name"
@@ -129,12 +129,12 @@ while IFS='|' read -r dir ids names; do
 EOF
     fi
 
-    # Écrire directory → {ids: [...]}
+    # Write directory → {ids: [...]}
     if [[ $dirs_in_batch -eq 0 ]]; then
-        # Première entrée (pas de virgule)
+        # First entry (no comma)
         echo "    \"$(json_escape "$dir")\": {" >> "$current_batch_file"
     else
-        # Entrées suivantes (avec virgule)
+        # Following entries (with comma)
         echo "    ,\"$(json_escape "$dir")\": {" >> "$current_batch_file"
     fi
 

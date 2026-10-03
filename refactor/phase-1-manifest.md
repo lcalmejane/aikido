@@ -139,7 +139,7 @@ The authoritative source for what is common vs project-specific is `aikido-manif
 You are creating the AI-KIDO common pack manifest.
 
 CONTEXT:
-- Project: /Users/lcare/workspace/best-p/ai-kido-best-practices
+- Project: /path/to/ai-kido-best-practices
 - File to create: aikido-manifest.json at project root
 - Reference: refactor/phase-1-manifest.md contains the exact JSON schema to use
 

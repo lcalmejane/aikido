@@ -1,6 +1,6 @@
 ---
 name: agent-aikido-projet-index
-description: Génère et maintient l'arborescence du projet en JSON (index.json) via scripts bash. Répond instantanément aux questions sur la structure du projet grâce à son cache mémoire JSON. Format JSON optimisé pour parsing rapide (<100ms vs 2500ms Markdown). Index multi-niveaux  by_path, by_directory, by_type, by_name. Performance ~36s génération, <10ms requêtes.
+description: Generates and maintains the project tree as JSON (index.json) via bash scripts. Answers project structure questions instantly thanks to its JSON memory cache. JSON format optimized for fast parsing (<100ms vs 2500ms Markdown). Multi-level index: by_path, by_directory, by_type, by_name. Performance ~36s generation, <10ms queries.
 tools: Read, Write, Bash
 model: inherit
 ---

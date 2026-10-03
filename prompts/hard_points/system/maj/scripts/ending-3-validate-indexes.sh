@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ending-3-validate-indexes.sh - Valider index créés
+# ending-3-validate-indexes.sh - Validate created indexes
 # Usage: ending-3-validate-indexes.sh <source_dir> <project_type> [project_names...]
 
 if [ -n "$BASH_VERSION" ]; then
@@ -13,28 +13,28 @@ PROJECT_TYPE="${2:-MONO}"
 shift 2 || true
 PROJECT_NAMES=("$@")
 
-echo "🔍 Validation des index créés..."
+echo "🔍 Validating created indexes..."
 
 if [ "$PROJECT_TYPE" = "MONO" ]; then
   if [ -f "$SOURCE_DIR/prompts/index.md" ]; then
     echo "✅ Validation MONO : Index principal existe"
     exit 0
   else
-    echo "❌ ERREUR : Index principal manquant après génération"
+    echo "❌ ERROR: Main index missing after generation"
     exit 1
   fi
 fi
 
 if [ "$PROJECT_TYPE" = "MULTI" ]; then
   if [ ! -f "$SOURCE_DIR/prompts/index.md" ]; then
-    echo "❌ ERREUR : Index global manquant après génération"
+    echo "❌ ERROR: Global index missing after generation"
     exit 1
   fi
 
   MISSING_INDEXES=0
   for project_name in "${PROJECT_NAMES[@]}"; do
     if [ ! -f "$SOURCE_DIR/prompts/$project_name/index.md" ]; then
-      echo "❌ ERREUR : Index projet manquant : $project_name"
+      echo "❌ ERROR: Project index missing: $project_name"
       ((MISSING_INDEXES++))
     fi
   done
@@ -43,7 +43,7 @@ if [ "$PROJECT_TYPE" = "MULTI" ]; then
     echo "✅ Validation MULTI : Tous les index existent"
     exit 0
   else
-    echo "❌ ERREUR : $MISSING_INDEXES index projet(s) manquant(s)"
+    echo "❌ ERROR: $MISSING_INDEXES project index(es) missing"
     exit 1
   fi
 fi

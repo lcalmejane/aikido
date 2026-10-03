@@ -1,195 +1,195 @@
-# Plan d'Analyse Technique - Audit Complet Expert
+# Technical Analysis Plan - Expert Full Audit
 
-> **Version**: 1.0 | **Date**: 2026-02-10 | **Type**: Analysis Plan | **Nature**: technique/audit-complet | **Profondeur**: 4 - Expert
+> **Version**: 1.0 | **Date**: 2026-02-10 | **Type**: Analysis Plan | **Nature**: technique/audit-complet | **Depth**: 4 - Expert
 
 ## 📋 Overview
 
-Plan d'analyse spécialisé pour **Audit Technique Complet** avec profondeur **Expert**.
+Specialized analysis plan for a **Full Technical Audit** at **Expert** depth.
 
-Ce plan réalise un audit technique approfondi et détaillé couvrant :
-- Architecture & code (structure, patterns, bonnes pratiques)
-- Stack technique (versions, obsolescence, configuration)
-- Dépendances (librairies, vulnérabilités CVE)
-- Sécurité (authentification, autorisation, vulnérabilités)
-- Tests & qualité (couverture, CI/CD, analyse statique)
-- Performance (lazy loading, cache, bundle size, optimisations)
-- Observabilité (logging, monitoring, gestion erreurs)
-- Maintenabilité (documentation, i18n, accessibilité)
+This plan carries out an in-depth, detailed technical audit covering:
+- Architecture & code (structure, patterns, best practices)
+- Technical stack (versions, obsolescence, configuration)
+- Dependencies (libraries, CVE vulnerabilities)
+- Security (authentication, authorization, vulnerabilities)
+- Tests & quality (coverage, CI/CD, static analysis)
+- Performance (lazy loading, cache, bundle size, optimizations)
+- Observability (logging, monitoring, error handling)
+- Maintainability (documentation, i18n, accessibility)
 
-**Philosophie Expert** :
-- Analyse exhaustive et systématique de tous les aspects techniques
-- Détection proactive des problèmes de sécurité et performance
-- Recommandations concrètes et actionnables avec estimation d'effort
-- Priorisation des actions (CRITIQUE/IMPORTANT/RECOMMANDÉ)
-- Plan d'action phasé avec ROI estimé
-- Génération de rapports détaillés par repository
+**Expert philosophy**:
+- Exhaustive and systematic analysis of all technical aspects
+- Proactive detection of security and performance issues
+- Concrete, actionable recommendations with effort estimates
+- Action prioritization (CRITICAL/IMPORTANT/RECOMMENDED)
+- Phased action plan with estimated ROI
+- Detailed reports generated per repository
 
-## 🎯 Critères de Sélection
+## 🎯 Selection Criteria
 
-Ce plan est sélectionné quand :
-- **Nature** : 6 (Stack générale) ou besoin d'audit technique complet multi-aspects
-- **Profondeur** : 4 - Expert (audit complet ~40-60 min)
-- **Contexte** : 
-  - Audit avant migration majeure
-  - Évaluation technique d'un projet existant
-  - Préparation certification sécurité
-  - Diagnostic dette technique
-  - Audit pré-production
+This plan is selected when:
+- **Nature**: 6 (General stack) or a need for a full multi-aspect technical audit
+- **Depth**: 4 - Expert (full audit ~40-60 min)
+- **Context**: 
+  - Audit before a major migration
+  - Technical assessment of an existing project
+  - Security certification preparation
+  - Technical debt diagnosis
+  - Pre-production audit
 
-**Différence vs autres plans** :
-- vs Plan générique : Spécialisé pour audit technique multi-repository (frontend + backend)
-- vs Profondeur 3 (Approfondi) : Ajout sécurité CVE, performance approfondie, plan d'action phasé
-- vs Plans spécifiques (backend/frontend) : Vue d'ensemble complète + analyse croisée
+**Difference vs other plans**:
+- vs Generic plan: Specialized for multi-repository technical audits (frontend + backend)
+- vs Depth 3 (In-depth): Adds CVE security, in-depth performance, phased action plan
+- vs Specific plans (backend/frontend): Complete overview + cross analysis
 
-## 🔍 Sources à Analyser
+## 🔍 Sources to Analyze
 
-### Configuration des Chemins
+### Path Configuration
 
-**⚠️ À CONFIGURER AVANT EXÉCUTION** :
+**⚠️ TO BE CONFIGURED BEFORE EXECUTION**:
 
 ```yaml
-# Modifier ces chemins selon votre projet
+# Change these paths according to your project
 repositories:
   frontend:
-    path: "./frontend"  # ← MODIFIER ICI
+    path: "./frontend"  # ← MODIFY HERE
     type: "frontend"
     priority: "high"
   backend:
-    path: "./backend"   # ← MODIFIER ICI
+    path: "./backend"   # ← MODIFY HERE
     type: "backend"
     priority: "high"
-  # Ajouter d'autres repositories si nécessaire
+  # Add other repositories if needed
   # infrastructure:
   #   path: "./terraform"
   #   type: "infrastructure"
   #   priority: "medium"
 ```
 
-### Sources Prioritaires
+### Priority Sources
 
-**Code Source Frontend** :
-- Répertoires : `{frontend_path}/src/`, `{frontend_path}/components/`, `{frontend_path}/views/`
-- Extensions : `.ts`, `.tsx`, `.js`, `.jsx`, `.vue`, `.svelte`, `.html`, `.css`, `.scss`
-- Exclusions : `node_modules/`, `dist/`, `build/`, `.next/`, `coverage/`
+**Frontend source code**:
+- Directories: `{frontend_path}/src/`, `{frontend_path}/components/`, `{frontend_path}/views/`
+- Extensions: `.ts`, `.tsx`, `.js`, `.jsx`, `.vue`, `.svelte`, `.html`, `.css`, `.scss`
+- Exclusions: `node_modules/`, `dist/`, `build/`, `.next/`, `coverage/`
 
-**Code Source Backend** :
-- Répertoires : `{backend_path}/src/`, `{backend_path}/api/`, `{backend_path}/services/`
-- Extensions : `.java`, `.kt`, `.ts`, `.js`, `.py`, `.php`, `.go`, `.rs`, `.cs`
-- Exclusions : `node_modules/`, `target/`, `build/`, `vendor/`, `__pycache__/`
+**Backend source code**:
+- Directories: `{backend_path}/src/`, `{backend_path}/api/`, `{backend_path}/services/`
+- Extensions: `.java`, `.kt`, `.ts`, `.js`, `.py`, `.php`, `.go`, `.rs`, `.cs`
+- Exclusions: `node_modules/`, `target/`, `build/`, `vendor/`, `__pycache__/`
 
-**Documentation** :
-- Fichiers : `README.md`, `ARCHITECTURE.md`, `CONTRIBUTING.md`, `docs/**/*.md`
-- Sections prioritaires : Architecture, Stack technique, Déploiement, Sécurité
+**Documentation**:
+- Files: `README.md`, `ARCHITECTURE.md`, `CONTRIBUTING.md`, `docs/**/*.md`
+- Priority sections: Architecture, Technical stack, Deployment, Security
 
-**Configuration** :
-- **Frontend** : `package.json`, `tsconfig.json`, `angular.json`, `webpack.config.js`, `vite.config.js`, `.env.example`
-- **Backend** : `pom.xml`, `build.gradle`, `package.json`, `requirements.txt`, `composer.json`, `application.yml`, `.env.example`
-- **CI/CD** : `.github/workflows/`, `.gitlab-ci.yml`, `Jenkinsfile`, `docker-compose.yml`, `Dockerfile`
-- **Sécurité** : `.npmrc`, `security.md`, `OWASP-*`, configurations CORS/CSP
+**Configuration**:
+- **Frontend**: `package.json`, `tsconfig.json`, `angular.json`, `webpack.config.js`, `vite.config.js`, `.env.example`
+- **Backend**: `pom.xml`, `build.gradle`, `package.json`, `requirements.txt`, `composer.json`, `application.yml`, `.env.example`
+- **CI/CD**: `.github/workflows/`, `.gitlab-ci.yml`, `Jenkinsfile`, `docker-compose.yml`, `Dockerfile`
+- **Security**: `.npmrc`, `security.md`, `OWASP-*`, CORS/CSP configurations
 
-### Critères de Filtrage
+### Filtering Criteria
 
-**Inclure** :
-- Tous les fichiers source (pas de limite de profondeur)
-- Fichiers de configuration (versions, build, déploiement)
-- Tests (unitaires, intégration, e2e)
-- Documentation technique
-- Scripts CI/CD et déploiement
+**Include**:
+- All source files (no depth limit)
+- Configuration files (versions, build, deployment)
+- Tests (unit, integration, e2e)
+- Technical documentation
+- CI/CD and deployment scripts
 
-**Exclure** :
-- Dépendances externes (`node_modules/`, `vendor/`, `target/`)
-- Fichiers générés (`dist/`, `build/`, `coverage/`)
-- Assets binaires (images, fonts, sauf analyse de taille)
-- Logs et fichiers temporaires
+**Exclude**:
+- External dependencies (`node_modules/`, `vendor/`, `target/`)
+- Generated files (`dist/`, `build/`, `coverage/`)
+- Binary assets (images, fonts, except size analysis)
+- Logs and temporary files
 
-## 🤖 Agents AI-KIDO à Mobiliser
+## 🤖 AI-KIDO Agents to Mobilize
 
-### Phase 3.1 : Scan Code Multi-Repository (Obligatoire)
+### Phase 3.1: Multi-Repository Code Scan (Required)
 
-**Agent** : `agent-aikido-explore-code`
+**Agent**: `agent-aikido-explore-code`
 
-**Prompt spécialisé** :
+**Specialized prompt**:
 ```
 "FORMAT: JSON
 
-Analyse TECHNIQUE COMPLÈTE profondeur EXPERT :
+FULL TECHNICAL analysis at EXPERT depth:
 
-REPOSITORIES :
-- Frontend : {frontend_path}
-- Backend : {backend_path}
+REPOSITORIES:
+- Frontend: {frontend_path}
+- Backend: {backend_path}
 
-FOCUS AUDIT COMPLET :
+FULL AUDIT FOCUS:
 
 1. ARCHITECTURE & CODE
-   - Structure modules/packages/composants
-   - Patterns : services, repositories, guards, interceptors, dependency injection
-   - SOLID, DRY, séparation responsabilités
-   - Code smells : classes >300 lignes, méthodes >50 lignes, complexité cyclomatique >10
+   - Module/package/component structure
+   - Patterns: services, repositories, guards, interceptors, dependency injection
+   - SOLID, DRY, separation of concerns
+   - Code smells: classes >300 lines, methods >50 lines, cyclomatic complexity >10
    - Duplications, dead code
 
-2. STACK TECHNIQUE
-   - Versions frameworks (Java, Spring Boot, Angular, React, Vue, Node)
-   - EOL (End of Life) et support
-   - Configuration TypeScript (strict mode, noImplicitAny)
-   - Configuration build (Maven, Gradle, Webpack, Vite, esbuild)
+2. TECHNICAL STACK
+   - Framework versions (Java, Spring Boot, Angular, React, Vue, Node)
+   - EOL (End of Life) and support
+   - TypeScript configuration (strict mode, noImplicitAny)
+   - Build configuration (Maven, Gradle, Webpack, Vite, esbuild)
 
-3. DÉPENDANCES
+3. DEPENDENCIES
    - package.json, pom.xml, build.gradle, requirements.txt
-   - Librairies obsolètes (>2 versions majeures de retard)
-   - Vulnérabilités CVE (npm audit, OWASP Dependency-Check)
-   - Dépendances inutilisées ou redondantes
+   - Outdated libraries (>2 major versions behind)
+   - CVE vulnerabilities (npm audit, OWASP Dependency-Check)
+   - Unused or redundant dependencies
 
-4. SÉCURITÉ
-   - Authentification/Autorisation (JWT, OAuth2, guards, interceptors)
-   - Secrets hardcodés (API keys, passwords, tokens)
-   - Vulnérabilités OWASP Top 10 : XSS, CSRF, injection SQL/NoSQL
-   - Configuration CORS, headers sécurité (CSP, HSTS, X-Frame-Options)
-   - Chiffrement données sensibles
+4. SECURITY
+   - Authentication/Authorization (JWT, OAuth2, guards, interceptors)
+   - Hardcoded secrets (API keys, passwords, tokens)
+   - OWASP Top 10 vulnerabilities: XSS, CSRF, SQL/NoSQL injection
+   - CORS configuration, security headers (CSP, HSTS, X-Frame-Options)
+   - Sensitive data encryption
 
-5. TESTS & QUALITÉ
-   - Couverture tests unitaires (cible >80%)
-   - Tests intégration, tests e2e
-   - Qualité tests (assertions, mocks, fixtures)
+5. TESTS & QUALITY
+   - Unit test coverage (target >80%)
+   - Integration tests, e2e tests
+   - Test quality (assertions, mocks, fixtures)
    - CI/CD (GitLab CI, GitHub Actions, Jenkins)
-   - Analyse statique (SonarQube, ESLint, Checkstyle, Prettier)
+   - Static analysis (SonarQube, ESLint, Checkstyle, Prettier)
 
 6. PERFORMANCE
-   - Lazy loading : modules, routes, images
-   - Stratégies cache : frontend (service worker) et backend (Redis, Caffeine)
-   - Bundle size et tree shaking
-   - Requêtes N+1, optimisation queries DB
-   - Memory leaks : subscriptions RxJS non désabonnées, event listeners
+   - Lazy loading: modules, routes, images
+   - Cache strategies: frontend (service worker) and backend (Redis, Caffeine)
+   - Bundle size and tree shaking
+   - N+1 queries, DB query optimization
+   - Memory leaks: RxJS subscriptions not unsubscribed, event listeners
    - Change detection strategy (Angular OnPush)
-   - Code splitting et dynamic imports
+   - Code splitting and dynamic imports
 
-7. OBSERVABILITÉ
-   - Logging structuré (JSON vs texte)
-   - Niveaux logs appropriés (DEBUG, INFO, WARN, ERROR)
-   - Monitoring et métriques (Prometheus, Grafana, APM)
-   - Gestion centralisée erreurs (Sentry, Rollbar)
-   - Tracing distribué (OpenTelemetry, Jaeger)
+7. OBSERVABILITY
+   - Structured logging (JSON vs text)
+   - Appropriate log levels (DEBUG, INFO, WARN, ERROR)
+   - Monitoring and metrics (Prometheus, Grafana, APM)
+   - Centralized error handling (Sentry, Rollbar)
+   - Distributed tracing (OpenTelemetry, Jaeger)
 
-8. MAINTENABILITÉ
-   - Documentation code (JSDoc, JavaDoc, comments)
-   - Internationalisation i18n (ngx-translate, i18next)
-   - Accessibilité WCAG 2.1 AA (aria, semantic HTML)
+8. MAINTAINABILITY
+   - Code documentation (JSDoc, JavaDoc, comments)
+   - Internationalization i18n (ngx-translate, i18next)
+   - Accessibility WCAG 2.1 AA (aria, semantic HTML)
    - Responsive design (mobile-first, breakpoints)
 
-DÉTAIL REQUIS :
-- Localisation précise (fichier:ligne) pour chaque problème
-- Sévérité : 🔴 CRITIQUE / 🟠 IMPORTANT / 🟡 RECOMMANDÉ
-- Impact business et technique
-- Recommandation concrète avec exemple de code
-- Estimation effort (heures/jours/semaines)
+REQUIRED DETAIL:
+- Precise location (file:line) for each problem
+- Severity: 🔴 CRITICAL / 🟠 IMPORTANT / 🟡 RECOMMENDED
+- Business and technical impact
+- Concrete recommendation with code example
+- Effort estimate (hours/days/weeks)
 
-EXCLUSIONS :
+EXCLUSIONS:
 - node_modules/, dist/, build/, target/, vendor/
-- Fichiers générés, minifiés
-- Assets binaires (sauf analyse taille)
+- Generated, minified files
+- Binary assets (except size analysis)
 
-Output attendu :
+Expected output:
 {
-  \"synthese_executive\": \"Résumé 5 lignes\",
+  \"synthese_executive\": \"5-line summary\",
   \"repositories_analyses\": {
     \"frontend\": { ... },
     \"backend\": { ... }
@@ -197,14 +197,14 @@ Output attendu :
   \"points_amelioration\": [
     {
       \"id\": \"SEC-001\",
-      \"priorite\": \"CRITIQUE\",
-      \"categorie\": \"Sécurité\",
-      \"titre\": \"Secrets hardcodés\",
+      \"priorite\": \"CRITICAL\",
+      \"categorie\": \"Security\",
+      \"titre\": \"Hardcoded secrets\",
       \"description\": \"...\",
       \"localisation\": \"src/config/api.ts:12\",
       \"impact\": \"...\",
       \"recommandation\": \"...\",
-      \"effort_estime\": \"2 heures\"
+      \"effort_estime\": \"2 hours\"
     }
   ],
   \"plan_action_phase\": { ... },
@@ -213,117 +213,117 @@ Output attendu :
 }"
 ```
 
-### Phase 3.2 : Recherche Parallèle Memory Bank + Code (Obligatoire pour Expert)
+### Phase 3.2: Parallel Memory Bank + Code Search (Required for Expert)
 
-**Condition** : Profondeur = 4 (Expert)
+**Condition**: Depth = 4 (Expert)
 
-**Agent** : `agent-aikido-explore-all`
+**Agent**: `agent-aikido-explore-all`
 
-**Prompt spécialisé** :
+**Specialized prompt**:
 ```
 "FORMAT: JSON
 
-Recherche parallèle Memory Bank + Code pour AUDIT TECHNIQUE EXPERT :
+Parallel Memory Bank + Code search for EXPERT TECHNICAL AUDIT:
 
-KEYWORDS :
-- Architecture : layered, hexagonal, microservices, monolith, DDD, CQRS
-- Sécurité : authentication, authorization, JWT, OAuth2, OWASP, XSS, CSRF, SQL injection
-- Performance : cache, lazy loading, optimization, N+1, bundle size, memory leak
-- Testing : unit test, integration test, e2e, coverage, TDD, BDD
-- CI/CD : pipeline, deployment, docker, kubernetes, terraform
-- Observability : logging, monitoring, tracing, metrics, APM
+KEYWORDS:
+- Architecture: layered, hexagonal, microservices, monolith, DDD, CQRS
+- Security: authentication, authorization, JWT, OAuth2, OWASP, XSS, CSRF, SQL injection
+- Performance: cache, lazy loading, optimization, N+1, bundle size, memory leak
+- Testing: unit test, integration test, e2e, coverage, TDD, BDD
+- CI/CD: pipeline, deployment, docker, kubernetes, terraform
+- Observability: logging, monitoring, tracing, metrics, APM
 
-ÉCARTS RECHERCHÉS :
-- Documentation architecture vs implémentation réelle
-- Standards sécurité documentés vs appliqués
-- Processus tests décrits vs couverture effective
-- Configuration déploiement documentée vs scripts réels
+GAPS SOUGHT:
+- Architecture documentation vs actual implementation
+- Documented security standards vs applied ones
+- Described test processes vs actual coverage
+- Documented deployment configuration vs actual scripts
 
-Output attendu : Vue complète avec cross-references Memory Bank ↔ Code"
+Expected output: Complete view with Memory Bank ↔ Code cross-references"
 ```
 
-### Résolution Contradictions (Si détecté)
+### Contradiction Resolution (If detected)
 
-**Condition** : Contradictions entre documentation et code
+**Condition**: Contradictions between documentation and code
 
-**Agent** : `agent-aikido-truth-evaluator`
+**Agent**: `agent-aikido-truth-evaluator`
 
-**Stratégie hiérarchie** :
-1. **Code source** = vérité (implémentation réelle)
-2. Documentation technique si à jour (< 6 mois)
-3. Commentaires code si cohérents
-4. README si validé récemment
+**Hierarchy strategy**:
+1. **Source code** = truth (actual implementation)
+2. Technical documentation if up to date (< 6 months)
+3. Code comments if consistent
+4. README if recently validated
 
-### Validation Vulnérabilités CVE (Obligatoire pour Expert)
+### CVE Vulnerability Validation (Required for Expert)
 
-**Condition** : Profondeur = 4
+**Condition**: Depth = 4
 
-**Commandes externes** :
+**External commands**:
 ```bash
 # Frontend
 cd {frontend_path}
 npm audit --json > audit-frontend.json
-# ou
+# or
 yarn audit --json > audit-frontend.json
 
-# Backend (selon stack)
+# Backend (depending on stack)
 # Node.js
 cd {backend_path}
 npm audit --json > audit-backend.json
 
 # Java
 mvn org.owasp:dependency-check-maven:check
-# ou
+# or
 gradle dependencyCheckAnalyze
 ```
 
-**Agent** : `agent-aikido-explore-code` (analyse résultats audit)
+**Agent**: `agent-aikido-explore-code` (audit results analysis)
 
-### Classification RACI (Optionnel)
+### RACI Classification (Optional)
 
-**Condition** : Structure RACI activée dans projet
+**Condition**: RACI structure enabled in the project
 
-**Agent** : `agent-aikido-raci-delegator`
+**Agent**: `agent-aikido-raci-delegator`
 
-**Mapping** :
+**Mapping**:
 - Architecture → `prompts/{project}/architecte/`
-- Sécurité → `prompts/{project}/securite/`
+- Security → `prompts/{project}/securite/`
 - Performance → `prompts/{project}/performance/`
 - Tests → `prompts/{project}/qualite/`
 
-### Peuplement Automatique (Optionnel)
+### Automatic Population (Optional)
 
-**Condition** : Gaps détectés > 3 ET utilisateur accepte
+**Condition**: Gaps detected > 3 AND user accepts
 
-**Agent** : `agent-aikido-bank-populate`
+**Agent**: `agent-aikido-bank-populate`
 
-**Stratégie** :
-- Créer fiches techniques pour stack détectée
-- Documenter patterns architecturaux identifiés
-- Générer use cases à partir des endpoints API
-- Créer fiches vulnérabilités détectées
+**Strategy**:
+- Create technical sheets for the detected stack
+- Document identified architectural patterns
+- Generate use cases from API endpoints
+- Create sheets for detected vulnerabilities
 
-### Validation Finale (Obligatoire)
+### Final Validation (Required)
 
-**Agent** : `agent-aikido-validator`
+**Agent**: `agent-aikido-validator`
 
-**Règles strictes** :
-- Rapport markdown conforme AI-KIDO (headers, structure)
-- Tous les points d'amélioration documentés avec priorité
-- Plan d'action avec estimations
-- Références vers code source précises (fichier:ligne)
-- Pas de faux positifs (validation manuelle recommandée)
+**Strict rules**:
+- AI-KIDO-compliant markdown report (headers, structure)
+- All improvement points documented with priority
+- Action plan with estimates
+- Precise source code references (file:line)
+- No false positives (manual validation recommended)
 
-## 📊 Stratégie d'Extraction
+## 📊 Extraction Strategy
 
-### 1. Détection Automatique
+### 1. Automatic Detection
 
-**Algorithme Expert** :
+**Expert algorithm**:
 
 ```python
 def detect_audit_elements(repository_path, repo_type):
     """
-    Détection exhaustive pour audit technique expert.
+    Exhaustive detection for the expert technical audit.
     """
     elements = {
         "architecture": detect_architecture_patterns(repository_path),
@@ -338,7 +338,7 @@ def detect_audit_elements(repository_path, repo_type):
     return elements
 
 def detect_architecture_patterns(path):
-    """Détecte patterns architecturaux."""
+    """Detects architectural patterns."""
     patterns = []
     
     # Layered architecture
@@ -356,7 +356,7 @@ def detect_architecture_patterns(path):
     return patterns
 
 def detect_tech_stack(path, repo_type):
-    """Détecte versions et EOL."""
+    """Detects versions and EOL."""
     stack = {}
     
     if repo_type == "frontend":
@@ -401,12 +401,12 @@ def detect_tech_stack(path, repo_type):
     return stack
 
 def analyze_dependencies(path, repo_type):
-    """Analyse dépendances et vulnérabilités."""
+    """Analyzes dependencies and vulnerabilities."""
     vulnerabilities = []
     outdated = []
     
     if repo_type in ["frontend", "backend"] and exists(f"{path}/package.json"):
-        # Exécuter npm audit
+        # Run npm audit
         audit_result = run_command(f"cd {path} && npm audit --json")
         audit_data = json.loads(audit_result)
         
@@ -418,7 +418,7 @@ def analyze_dependencies(path, repo_type):
                 "recommendation": vuln["fixAvailable"]
             })
         
-        # Exécuter npm outdated
+        # Run npm outdated
         outdated_result = run_command(f"cd {path} && npm outdated --json")
         outdated_data = json.loads(outdated_result)
         
@@ -434,10 +434,10 @@ def analyze_dependencies(path, repo_type):
     return {"vulnerabilities": vulnerabilities, "outdated": outdated}
 
 def scan_security_issues(path):
-    """Scan problèmes sécurité."""
+    """Scans for security issues."""
     issues = []
     
-    # Secrets hardcodés
+    # Hardcoded secrets
     secret_patterns = [
         r"(api[_-]?key|apikey)\s*[:=]\s*['\"]([^'\"]+)['\"]",
         r"(password|passwd|pwd)\s*[:=]\s*['\"]([^'\"]+)['\"]",
@@ -475,7 +475,7 @@ def scan_security_issues(path):
     return issues
 
 def analyze_test_coverage(path):
-    """Analyse couverture tests."""
+    """Analyzes test coverage."""
     coverage = {
         "unit_tests": 0,
         "integration_tests": 0,
@@ -483,7 +483,7 @@ def analyze_test_coverage(path):
         "coverage_percent": 0
     }
     
-    # Compter fichiers tests
+    # Count test files
     test_files = find_files(path, "**/*.{spec,test}.{ts,js,java}")
     coverage["unit_tests"] = len([f for f in test_files if "spec" in f or "test" in f])
     
@@ -493,7 +493,7 @@ def analyze_test_coverage(path):
     e2e_files = find_files(path, "**/e2e/**/*.{ts,js}")
     coverage["e2e_tests"] = len(e2e_files)
     
-    # Lire rapport coverage si existe
+    # Read the coverage report if it exists
     if exists(f"{path}/coverage/coverage-summary.json"):
         cov_data = load_json(f"{path}/coverage/coverage-summary.json")
         coverage["coverage_percent"] = cov_data["total"]["lines"]["pct"]
@@ -501,7 +501,7 @@ def analyze_test_coverage(path):
     return coverage
 
 def detect_performance_issues(path, repo_type):
-    """Détecte problèmes performance."""
+    """Detects performance issues."""
     issues = []
     
     if repo_type == "frontend":
@@ -512,7 +512,7 @@ def detect_performance_issues(path, repo_type):
                 issues.append({
                     "type": "no_lazy_loading",
                     "severity": "IMPORTANT",
-                    "message": "Aucun lazy loading détecté dans routing"
+                    "message": "No lazy loading detected in routing"
                 })
         
         # Bundle size
@@ -538,7 +538,7 @@ def detect_performance_issues(path, repo_type):
             issues.append({
                 "type": "suboptimal_change_detection",
                 "severity": "RECOMMENDED",
-                "message": f"Seulement {onpush_count}/{len(components)} composants utilisent OnPush"
+                "message": f"Only {onpush_count}/{len(components)} components use OnPush"
             })
         
         # Memory leaks (RxJS subscriptions)
@@ -549,7 +549,7 @@ def detect_performance_issues(path, repo_type):
                     "type": "potential_memory_leak",
                     "severity": "IMPORTANT",
                     "file": file,
-                    "message": "Subscription sans unsubscribe dans ngOnDestroy"
+                    "message": "Subscription without unsubscribe in ngOnDestroy"
                 })
     
     elif repo_type == "backend":
@@ -557,24 +557,24 @@ def detect_performance_issues(path, repo_type):
         service_files = find_files(path, "**/service/**/*.{java,ts,js}")
         for file in service_files:
             content = load_file(file)
-            # Détection pattern N+1 (loop avec query)
+            # N+1 pattern detection (loop with query)
             if re.search(r"for\s*\([^)]+\)\s*\{[^}]*\.(find|query|select)", content):
                 issues.append({
                     "type": "potential_n_plus_1",
                     "severity": "IMPORTANT",
                     "file": file,
-                    "message": "Potentielle requête N+1 détectée"
+                    "message": "Potential N+1 query detected"
                 })
     
     return issues
 ```
 
-**Patterns de recherche** :
+**Search patterns**:
 ```regex
-# Secrets hardcodés
+# Hardcoded secrets
 (api[_-]?key|apikey|password|passwd|secret|token)\s*[:=]\s*['"]([^'"]+)['"]
 
-# CORS ouvert
+# Open CORS
 allowedOrigins.*['"]?\*['"]?
 
 # SQL Injection
@@ -583,7 +583,7 @@ allowedOrigins.*['"]?\*['"]?
 # XSS
 innerHTML\s*=|dangerouslySetInnerHTML
 
-# Memory leaks RxJS
+# RxJS memory leaks
 \.subscribe\([^)]*\)(?!.*\.unsubscribe)
 
 # N+1 queries
@@ -593,105 +593,105 @@ for\s*\([^)]+\)\s*\{[^}]*\.(find|query|select)
 ^import\s+.*from\s+['"]([^'"]+)['"];?\s*$
 ```
 
-**Heuristiques** :
-- Classe >300 lignes → candidate refactoring
-- Méthode >50 lignes → candidate extraction
-- Complexité cyclomatique >10 → simplifier
-- Duplication >20 lignes → factoriser
-- Coverage <80% → améliorer tests
-- Vulnérabilités CVE HIGH/CRITICAL → corriger immédiatement
+**Heuristics**:
+- Class >300 lines → refactoring candidate
+- Method >50 lines → extraction candidate
+- Cyclomatic complexity >10 → simplify
+- Duplication >20 lines → factorize
+- Coverage <80% → improve tests
+- CVE HIGH/CRITICAL vulnerabilities → fix immediately
 
-### 2. Extraction Métadonnées
+### 2. Metadata Extraction
 
-**Architecture** :
-- Patterns détectés (Layered, Hexagonal, Microservices)
-- Nombre de modules/packages/composants
-- Profondeur hiérarchie (max depth)
-- Couplage inter-modules (dépendances)
+**Architecture**:
+- Detected patterns (Layered, Hexagonal, Microservices)
+- Number of modules/packages/components
+- Hierarchy depth (max depth)
+- Inter-module coupling (dependencies)
 
-**Stack Technique** :
-- Frameworks et versions (Angular 15, Spring Boot 3.0, etc.)
-- Langages et versions (Java 17, TypeScript 5.0, etc.)
+**Technical Stack**:
+- Frameworks and versions (Angular 15, Spring Boot 3.0, etc.)
+- Languages and versions (Java 17, TypeScript 5.0, etc.)
 - Build tools (Maven 3.8, Webpack 5, Vite 4)
-- EOL status pour chaque technologie
+- EOL status for each technology
 
-**Domaine Métier** :
-- Endpoints API détectés (REST, GraphQL)
-- Entités métier (modèles, DTOs)
-- Règles métier (validations, contraintes)
-- Use cases implémentés
+**Business Domain**:
+- Detected API endpoints (REST, GraphQL)
+- Business entities (models, DTOs)
+- Business rules (validations, constraints)
+- Implemented use cases
 
-**Configuration** :
-- Variables d'environnement (.env files)
-- Configuration build (tsconfig, maven, gradle)
-- Configuration déploiement (Docker, K8s)
-- Configuration sécurité (CORS, headers, auth)
+**Configuration**:
+- Environment variables (.env files)
+- Build configuration (tsconfig, maven, gradle)
+- Deployment configuration (Docker, K8s)
+- Security configuration (CORS, headers, auth)
 
-### 3. Analyse Profondeur Spécifique
+### 3. Depth-Specific Analysis
 
-**Profondeur 4 - Expert** :
-- **Niveau de détail** : Exhaustif avec localisation précise (fichier:ligne)
-- **Métriques collectées** :
-  - Architecture : Nombre de modules, profondeur, couplage
-  - Stack : Versions, EOL dates, compatibilités
-  - Dépendances : Nombre total, obsolètes, vulnérabilités CVE avec scores CVSS
-  - Sécurité : Secrets hardcodés, vulnérabilités OWASP, configuration CORS/CSP
-  - Tests : Couverture %, nombre tests (unit/integration/e2e)
-  - Performance : Bundle size, lazy loading %, memory leaks détectés
-  - Code : Lignes code, duplication %, complexité cyclomatique moyenne
-- **Graphes générés** :
-  - Diagramme architecture (Mermaid C4)
-  - Graphe dépendances modules
-  - Matrice couplage composants
-  - Timeline EOL technologies
-  - Répartition vulnérabilités par sévérité
-- **Temps estimé** : 40-60 min (selon taille projet)
+**Depth 4 - Expert**:
+- **Level of detail**: Exhaustive with precise location (file:line)
+- **Collected metrics**:
+  - Architecture: Number of modules, depth, coupling
+  - Stack: Versions, EOL dates, compatibilities
+  - Dependencies: Total count, outdated, CVE vulnerabilities with CVSS scores
+  - Security: Hardcoded secrets, OWASP vulnerabilities, CORS/CSP configuration
+  - Tests: Coverage %, number of tests (unit/integration/e2e)
+  - Performance: Bundle size, lazy loading %, detected memory leaks
+  - Code: Lines of code, duplication %, average cyclomatic complexity
+- **Generated graphs**:
+  - Architecture diagram (Mermaid C4)
+  - Module dependency graph
+  - Component coupling matrix
+  - Technology EOL timeline
+  - Vulnerability breakdown by severity
+- **Estimated time**: 40-60 min (depending on project size)
 
-## 🔄 Workflow Complet
+## 🔄 Complete Workflow
 
-### Phases d'Exécution
+### Execution Phases
 
 ```mermaid
 graph TB
-    START[Début Audit Technique Expert] --> CONFIG[Configuration Chemins<br/>Frontend + Backend]
-    CONFIG --> DETECT[Détection Sources<br/>Multi-repository]
+    START[Start Expert Technical Audit] --> CONFIG[Path Configuration<br/>Frontend + Backend]
+    CONFIG --> DETECT[Source Detection<br/>Multi-repository]
     
-    DETECT --> SCAN_FE[🤖 explore-code<br/>FRONTEND<br/>Architecture, Stack, Sécu]
-    DETECT --> SCAN_BE[🤖 explore-code<br/>BACKEND<br/>Architecture, Stack, Sécu]
+    DETECT --> SCAN_FE[🤖 explore-code<br/>FRONTEND<br/>Architecture, Stack, Security]
+    DETECT --> SCAN_BE[🤖 explore-code<br/>BACKEND<br/>Architecture, Stack, Security]
     
-    SCAN_FE --> AUDIT_FE[Audit NPM/Yarn<br/>Vulnérabilités CVE]
-    SCAN_BE --> AUDIT_BE[Audit Maven/Gradle/NPM<br/>Vulnérabilités CVE]
+    SCAN_FE --> AUDIT_FE[NPM/Yarn Audit<br/>CVE Vulnerabilities]
+    SCAN_BE --> AUDIT_BE[Maven/Gradle/NPM Audit<br/>CVE Vulnerabilities]
     
-    AUDIT_FE --> PARALLEL[🤖 explore-all<br/>Recherche parallèle Bank+Code]
+    AUDIT_FE --> PARALLEL[🤖 explore-all<br/>Parallel Bank+Code search]
     AUDIT_BE --> PARALLEL
     
-    PARALLEL --> EXTRACT[Extraction Métadonnées<br/>Architecture, Stack, Domaine]
-    EXTRACT --> ANALYZE[Analyse Multi-Aspects<br/>8 catégories audit]
+    PARALLEL --> EXTRACT[Metadata Extraction<br/>Architecture, Stack, Domain]
+    EXTRACT --> ANALYZE[Multi-Aspect Analysis<br/>8 audit categories]
     
-    ANALYZE --> GAPS[Détection Écarts<br/>Doc vs Code]
+    ANALYZE --> GAPS[Gap Detection<br/>Doc vs Code]
     
-    GAPS -->|Contradictions| TRUTH[🤖 truth-evaluator<br/>Résolution hiérarchique]
+    GAPS -->|Contradictions| TRUTH[🤖 truth-evaluator<br/>Hierarchical resolution]
     TRUTH --> PRIORITIZE
-    GAPS --> PRIORITIZE[Priorisation Issues<br/>CRITIQUE/IMPORTANT/RECOMMANDÉ]
+    GAPS --> PRIORITIZE[Issue Prioritization<br/>CRITICAL/IMPORTANT/RECOMMENDED]
     
-    PRIORITIZE --> ENRICH[Enrichissement Memory Bank<br/>Fiches techniques, patterns]
+    PRIORITIZE --> ENRICH[Memory Bank Enrichment<br/>Technical sheets, patterns]
     
-    ENRICH --> RACI{RACI activé?}
-    RACI -->|OUI| CLASSIFY[🤖 raci-delegator<br/>Classification par domaine]
-    RACI -->|NON| BALANCE
+    ENRICH --> RACI{RACI enabled?}
+    RACI -->|YES| CLASSIFY[🤖 raci-delegator<br/>Classification by domain]
+    RACI -->|NO| BALANCE
     
-    CLASSIFY --> BALANCE[Équilibrage AI-KIDO<br/>≤500 lignes, 3-7 enfants]
-    BALANCE --> INDEX[Mise à jour Index<br/>index.md]
+    CLASSIFY --> BALANCE[AI-KIDO Balancing<br/>≤500 lines, 3-7 children]
+    BALANCE --> INDEX[Index Update<br/>index.md]
     
-    INDEX --> POPULATE{Gaps>3 ET<br/>accepté?}
-    POPULATE -->|OUI| BANKPOP[🤖 bank-populate<br/>Peuplement auto]
-    POPULATE -->|NON| VALIDATE
+    INDEX --> POPULATE{Gaps>3 AND<br/>accepted?}
+    POPULATE -->|YES| BANKPOP[🤖 bank-populate<br/>Auto population]
+    POPULATE -->|NO| VALIDATE
     
-    BANKPOP --> VALIDATE[🤖 validator<br/>Validation conformité]
-    VALIDATE --> REPORT[Génération Rapports<br/>Par repository + Synthèse]
+    BANKPOP --> VALIDATE[🤖 validator<br/>Compliance validation]
+    VALIDATE --> REPORT[Report Generation<br/>Per repository + Summary]
     
-    REPORT --> PLAN[Plan d'Action Phasé<br/>Estimations effort]
-    PLAN --> END[✅ Audit terminé<br/>Rapports markdown générés]
+    REPORT --> PLAN[Phased Action Plan<br/>Effort estimates]
+    PLAN --> END[✅ Audit complete<br/>Markdown reports generated]
     
     style SCAN_FE fill:#f9f,stroke:#333,stroke-width:2px
     style SCAN_BE fill:#f9f,stroke:#333,stroke-width:2px
@@ -703,219 +703,219 @@ graph TB
     style END fill:#9f9,stroke:#333,stroke-width:2px
 ```
 
-### Temps d'Exécution Estimé
+### Estimated Execution Time
 
-**Par Phase** :
-- Configuration et détection sources : ~2 min
-- Scan code frontend (explore-code) : ~8 min
-- Scan code backend (explore-code) : ~8 min
-- Audit dépendances CVE (npm/maven) : ~5 min
-- Recherche parallèle (explore-all) : ~10 min
-- Extraction et analyse : ~8 min
-- Résolution contradictions (si nécessaire) : ~3 min
-- Priorisation et enrichissement : ~5 min
-- Classification RACI (optionnel) : ~3 min
-- Peuplement automatique (optionnel) : ~5 min
-- Validation et génération rapports : ~5 min
+**Per phase**:
+- Configuration and source detection: ~2 min
+- Frontend code scan (explore-code): ~8 min
+- Backend code scan (explore-code): ~8 min
+- CVE dependency audit (npm/maven): ~5 min
+- Parallel search (explore-all): ~10 min
+- Extraction and analysis: ~8 min
+- Contradiction resolution (if needed): ~3 min
+- Prioritization and enrichment: ~5 min
+- RACI classification (optional): ~3 min
+- Automatic population (optional): ~5 min
+- Validation and report generation: ~5 min
 
-**Total** : ~50-60 min (peut varier selon taille projet)
+**Total**: ~50-60 min (may vary depending on project size)
 
 ## 📤 Output Format
 
-### Structure de Sortie
+### Output Structure
 
-Le plan génère des rapports markdown séparés dans `audits/` :
+The plan generates separate markdown reports in `audits/`:
 
 ```
 audits/
-├── audit-synthese.md              # Synthèse exécutive globale
-├── audit-frontend.md              # Rapport détaillé frontend
-├── audit-backend.md               # Rapport détaillé backend
-├── plan-action.md                 # Plan d'action phasé
-└── vulnerabilites-cve.json        # Export JSON vulnérabilités
+├── audit-synthese.md              # Global executive summary
+├── audit-frontend.md              # Detailed frontend report
+├── audit-backend.md               # Detailed backend report
+├── plan-action.md                 # Phased action plan
+└── vulnerabilites-cve.json        # JSON export of vulnerabilities
 ```
 
-### Template : audit-synthese.md
+### Template: audit-synthese.md
 
 ```markdown
-# Audit Technique Complet - Synthèse Exécutive
+# Full Technical Audit - Executive Summary
 
-**Date** : {DATE}
-**Durée** : {DURATION}
-**Repositories analysés** : {REPO_COUNT}
+**Date**: {DATE}
+**Duration**: {DURATION}
+**Repositories analyzed**: {REPO_COUNT}
 
 ## 🎯 Configuration
 
-- **Nature** : Audit Technique Complet (Stack générale + Sécurité + Performance)
-- **Profondeur** : 4 - Expert
-- **Plan utilisé** : `plans/technique/audit-complet/plan-expert.md`
-- **Repositories** :
-  - Frontend : `{frontend_path}`
-  - Backend : `{backend_path}`
+- **Nature**: Full Technical Audit (General stack + Security + Performance)
+- **Depth**: 4 - Expert
+- **Plan used**: `plans/technique/audit-complet/plan-expert.md`
+- **Repositories**:
+  - Frontend: `{frontend_path}`
+  - Backend: `{backend_path}`
 
-## 📋 SYNTHÈSE EXÉCUTIVE (5 lignes)
+## 📋 EXECUTIVE SUMMARY (5 lines)
 
 {EXECUTIVE_SUMMARY}
 
-Exemple :
-> L'audit révèle une base de code globalement bien structurée avec quelques points critiques à adresser immédiatement : 3 vulnérabilités CVE HIGH détectées dans les dépendances backend, absence de lazy loading frontend (impact performance), et 5 secrets hardcodés à externaliser. La couverture de tests est correcte (78%) mais nécessite amélioration sur les tests d'intégration. Le plan d'action priorisé estime 4 semaines d'effort pour corriger les points critiques et 8 semaines additionnelles pour les améliorations recommandées.
+Example:
+> The audit reveals a globally well-structured codebase with a few critical points to address immediately: 3 HIGH CVE vulnerabilities detected in the backend dependencies, no frontend lazy loading (performance impact), and 5 hardcoded secrets to externalize. Test coverage is decent (78%) but integration tests need improvement. The prioritized action plan estimates 4 weeks of effort to fix the critical points and 8 additional weeks for the recommended improvements.
 
-## 📊 TABLEAU DES POINTS D'AMÉLIORATION
+## 📊 IMPROVEMENT POINTS TABLE
 
-### 🔴 CRITIQUE - À traiter immédiatement (Sécurité, EOL, CVE)
+### 🔴 CRITICAL - Handle immediately (Security, EOL, CVE)
 
-| ID | Catégorie | Titre | Localisation | Impact | Effort |
-|----|-----------|-------|--------------|--------|--------|
-| SEC-001 | Sécurité | Secrets API hardcodés | frontend/src/config/api.ts:12 | **CRITIQUE** - Exposition credentials | 2h |
-| SEC-002 | Sécurité | Vulnérabilité CVE-2023-XXXX (HIGH) | backend/pom.xml (log4j 2.14) | **CRITIQUE** - RCE possible | 1h |
-| SEC-003 | Sécurité | CORS ouvert à tous origins | backend/src/config/CorsConfig.java:18 | **CRITIQUE** - Attaques XSS | 30min |
+| ID | Category | Title | Location | Impact | Effort |
+|----|----------|-------|----------|--------|--------|
+| SEC-001 | Security | Hardcoded API secrets | frontend/src/config/api.ts:12 | **CRITICAL** - Credentials exposure | 2h |
+| SEC-002 | Security | CVE-2023-XXXX vulnerability (HIGH) | backend/pom.xml (log4j 2.14) | **CRITICAL** - Possible RCE | 1h |
+| SEC-003 | Security | CORS open to all origins | backend/src/config/CorsConfig.java:18 | **CRITICAL** - XSS attacks | 30min |
 
-**Total CRITIQUE : {CRITICAL_COUNT} points - Effort estimé : {CRITICAL_EFFORT}**
+**Total CRITICAL: {CRITICAL_COUNT} points - Estimated effort: {CRITICAL_EFFORT}**
 
-### 🟠 IMPORTANT - Dette technique majeure (à planifier rapidement)
+### 🟠 IMPORTANT - Major technical debt (plan quickly)
 
-| ID | Catégorie | Titre | Localisation | Impact | Effort |
-|----|-----------|-------|--------------|--------|--------|
-| PERF-001 | Performance | Absence lazy loading modules | frontend/src/app/app-routing.module.ts | **IMPORTANT** - Temps chargement initial élevé | 1j |
-| ARCH-001 | Architecture | Services trop couplés | backend/src/services/*.java | **IMPORTANT** - Maintenabilité réduite | 3j |
-| TEST-001 | Tests | Couverture tests intégration <50% | backend/src/test/integration/ | **IMPORTANT** - Risque régressions | 2j |
+| ID | Category | Title | Location | Impact | Effort |
+|----|----------|-------|----------|--------|--------|
+| PERF-001 | Performance | No module lazy loading | frontend/src/app/app-routing.module.ts | **IMPORTANT** - High initial load time | 1d |
+| ARCH-001 | Architecture | Services too tightly coupled | backend/src/services/*.java | **IMPORTANT** - Reduced maintainability | 3d |
+| TEST-001 | Tests | Integration test coverage <50% | backend/src/test/integration/ | **IMPORTANT** - Regression risk | 2d |
 
-**Total IMPORTANT : {IMPORTANT_COUNT} points - Effort estimé : {IMPORTANT_EFFORT}**
+**Total IMPORTANT: {IMPORTANT_COUNT} points - Estimated effort: {IMPORTANT_EFFORT}**
 
-### 🟡 RECOMMANDÉ - Améliorations continues (backlog)
+### 🟡 RECOMMENDED - Continuous improvements (backlog)
 
-| ID | Catégorie | Titre | Localisation | Impact | Effort |
-|----|-----------|-------|--------------|--------|--------|
-| MAIN-001 | Maintenabilité | Documentation JSDoc incomplète | frontend/src/services/*.ts | RECOMMANDÉ - Maintenabilité | 1j |
-| PERF-002 | Performance | OnPush change detection 40% composants | frontend/src/components/*.component.ts | RECOMMANDÉ - Optimisation perf | 2j |
-| QUAL-001 | Qualité | Dépendances obsolètes (2+ versions retard) | package.json, pom.xml | RECOMMANDÉ - Sécurité future | 1j |
+| ID | Category | Title | Location | Impact | Effort |
+|----|----------|-------|----------|--------|--------|
+| MAIN-001 | Maintainability | Incomplete JSDoc documentation | frontend/src/services/*.ts | RECOMMENDED - Maintainability | 1d |
+| PERF-002 | Performance | OnPush change detection on 40% of components | frontend/src/components/*.component.ts | RECOMMENDED - Perf optimization | 2d |
+| QUAL-001 | Quality | Outdated dependencies (2+ versions behind) | package.json, pom.xml | RECOMMENDED - Future security | 1d |
 
-**Total RECOMMANDÉ : {RECOMMENDED_COUNT} points - Effort estimé : {RECOMMENDED_EFFORT}**
+**Total RECOMMENDED: {RECOMMENDED_COUNT} points - Estimated effort: {RECOMMENDED_EFFORT}**
 
-## 📈 STATISTIQUES GLOBALES
+## 📈 GLOBAL STATISTICS
 
-| Métrique | Valeur | Status | Cible |
-|----------|--------|--------|-------|
-| **Couverture tests** | {COVERAGE}% | {STATUS_ICON} | ≥80% |
-| **Vulnérabilités CVE** | {CVE_COUNT} ({HIGH_COUNT} HIGH, {MEDIUM_COUNT} MEDIUM) | {STATUS_ICON} | 0 HIGH |
-| **Dépendances obsolètes** | {OUTDATED_COUNT} | {STATUS_ICON} | <5 |
-| **Complexité cyclomatique** | {CYCLOMATIC_AVG} | {STATUS_ICON} | <10 |
-| **Duplication code** | {DUPLICATION}% | {STATUS_ICON} | <5% |
+| Metric | Value | Status | Target |
+|--------|-------|--------|--------|
+| **Test coverage** | {COVERAGE}% | {STATUS_ICON} | ≥80% |
+| **CVE vulnerabilities** | {CVE_COUNT} ({HIGH_COUNT} HIGH, {MEDIUM_COUNT} MEDIUM) | {STATUS_ICON} | 0 HIGH |
+| **Outdated dependencies** | {OUTDATED_COUNT} | {STATUS_ICON} | <5 |
+| **Cyclomatic complexity** | {CYCLOMATIC_AVG} | {STATUS_ICON} | <10 |
+| **Code duplication** | {DUPLICATION}% | {STATUS_ICON} | <5% |
 | **Bundle size** | {BUNDLE_SIZE} MB | {STATUS_ICON} | <3 MB |
 
-## 🎯 PRIORITÉS IMMÉDIATES (Semaine 1)
+## 🎯 IMMEDIATE PRIORITIES (Week 1)
 
-1. **SEC-001** : Externaliser secrets vers variables environnement (2h)
-2. **SEC-002** : Mettre à jour log4j vers 2.20+ (1h)
-3. **SEC-003** : Restreindre CORS aux domaines autorisés (30min)
+1. **SEC-001**: Externalize secrets to environment variables (2h)
+2. **SEC-002**: Update log4j to 2.20+ (1h)
+3. **SEC-003**: Restrict CORS to authorized domains (30min)
 
-## 📋 PLAN D'ACTION DÉTAILLÉ
+## 📋 DETAILED ACTION PLAN
 
-Voir : [`plan-action.md`](./plan-action.md)
+See: [`plan-action.md`](./plan-action.md)
 
-## ✅ POINTS POSITIFS IDENTIFIÉS
+## ✅ POSITIVE POINTS IDENTIFIED
 
-- ✅ Architecture backend bien structurée (Layered + DDD)
-- ✅ TypeScript strict mode activé (frontend)
-- ✅ CI/CD fonctionnel avec tests automatisés
-- ✅ Logging structuré JSON (backend)
-- ✅ Utilisation Docker pour déploiement
-- ✅ Documentation README complète
+- ✅ Well-structured backend architecture (Layered + DDD)
+- ✅ TypeScript strict mode enabled (frontend)
+- ✅ Working CI/CD with automated tests
+- ✅ Structured JSON logging (backend)
+- ✅ Docker used for deployment
+- ✅ Complete README documentation
 
-## 🔗 RAPPORTS DÉTAILLÉS
+## 🔗 DETAILED REPORTS
 
-- **Frontend** : [`audit-frontend.md`](./audit-frontend.md)
-- **Backend** : [`audit-backend.md`](./audit-backend.md)
-- **Plan d'action phasé** : [`plan-action.md`](./plan-action.md)
-- **Export CVE** : [`vulnerabilites-cve.json`](./vulnerabilites-cve.json)
+- **Frontend**: [`audit-frontend.md`](./audit-frontend.md)
+- **Backend**: [`audit-backend.md`](./audit-backend.md)
+- **Phased action plan**: [`plan-action.md`](./plan-action.md)
+- **CVE export**: [`vulnerabilites-cve.json`](./vulnerabilites-cve.json)
 
 ---
-*Généré par /analyse-project avec plan `technique/audit-complet/plan-expert.md` le {DATE}*
+*Generated by /analyse-project with plan `technique/audit-complet/plan-expert.md` on {DATE}*
 ```
 
-### Template : audit-frontend.md
+### Template: audit-frontend.md
 
 ```markdown
-# Audit Technique Frontend - Rapport Détaillé
+# Frontend Technical Audit - Detailed Report
 
-**Repository** : `{frontend_path}`
-**Date** : {DATE}
-**Framework** : {FRAMEWORK} {VERSION}
+**Repository**: `{frontend_path}`
+**Date**: {DATE}
+**Framework**: {FRAMEWORK} {VERSION}
 
 ## 🏗️ 1. ARCHITECTURE & CODE
 
-### Structure Détectée
+### Detected Structure
 
-- **Pattern** : {PATTERN} (ex: Layered MVC, Feature-based)
-- **Modules** : {MODULE_COUNT}
-- **Composants** : {COMPONENT_COUNT}
-- **Services** : {SERVICE_COUNT}
-- **Profondeur max** : {MAX_DEPTH} niveaux
+- **Pattern**: {PATTERN} (e.g. Layered MVC, Feature-based)
+- **Modules**: {MODULE_COUNT}
+- **Components**: {COMPONENT_COUNT}
+- **Services**: {SERVICE_COUNT}
+- **Max depth**: {MAX_DEPTH} levels
 
-### Code Smells Détectés
+### Detected Code Smells
 
-#### CS-001 : Classe trop volumineuse
-- **Fichier** : `src/services/data.service.ts`
-- **Lignes** : 450 (limite recommandée : 300)
-- **Recommandation** : Extraire en plusieurs services spécialisés
-- **Effort** : 4h
+#### CS-001: Class too large
+- **File**: `src/services/data.service.ts`
+- **Lines**: 450 (recommended limit: 300)
+- **Recommendation**: Extract into several specialized services
+- **Effort**: 4h
 
-#### CS-002 : Complexité cyclomatique élevée
-- **Fichier** : `src/components/form/form.component.ts`
-- **Méthode** : `validateForm()`
-- **Complexité** : 15 (limite recommandée : 10)
-- **Recommandation** : Extraire validations dans fonctions séparées
-- **Effort** : 2h
+#### CS-002: High cyclomatic complexity
+- **File**: `src/components/form/form.component.ts`
+- **Method**: `validateForm()`
+- **Complexity**: 15 (recommended limit: 10)
+- **Recommendation**: Extract validations into separate functions
+- **Effort**: 2h
 
-### Respect Bonnes Pratiques
+### Best Practices Compliance
 
-| Pratique | Status | Détail |
+| Practice | Status | Detail |
 |----------|--------|--------|
-| **SOLID** | 🟡 Partiel | SRP violé dans {COUNT} services |
-| **DRY** | ✅ Bon | Duplication <5% |
-| **Séparation responsabilités** | ✅ Bon | Composants, services, models séparés |
-| **Dependency Injection** | ✅ Excellent | Utilisé systématiquement |
+| **SOLID** | 🟡 Partial | SRP violated in {COUNT} services |
+| **DRY** | ✅ Good | Duplication <5% |
+| **Separation of concerns** | ✅ Good | Components, services, models separated |
+| **Dependency Injection** | ✅ Excellent | Used systematically |
 
-## 📦 2. STACK TECHNIQUE
+## 📦 2. TECHNICAL STACK
 
-### Frameworks et Versions
+### Frameworks and Versions
 
-| Technologie | Version Actuelle | Version Stable | EOL Date | Status |
-|-------------|------------------|----------------|----------|--------|
+| Technology | Current Version | Stable Version | EOL Date | Status |
+|------------|-----------------|----------------|----------|--------|
 | **{FRAMEWORK}** | {CURRENT_VERSION} | {STABLE_VERSION} | {EOL_DATE} | {STATUS_ICON} |
 | **TypeScript** | {TS_VERSION} | {TS_STABLE} | N/A | {STATUS_ICON} |
 | **Node.js** | {NODE_VERSION} | {NODE_LTS} | {NODE_EOL} | {STATUS_ICON} |
 
-### Configuration TypeScript
+### TypeScript Configuration
 
 ```json
 {
   "compilerOptions": {
-    "strict": {STRICT_MODE},              // ⚠️ Recommandé : true
-    "noImplicitAny": {NO_IMPLICIT_ANY},   // ⚠️ Recommandé : true
-    "strictNullChecks": {STRICT_NULL},    // ⚠️ Recommandé : true
+    "strict": {STRICT_MODE},              // ⚠️ Recommended: true
+    "noImplicitAny": {NO_IMPLICIT_ANY},   // ⚠️ Recommended: true
+    "strictNullChecks": {STRICT_NULL},    // ⚠️ Recommended: true
     "target": "{TARGET}",
     "module": "{MODULE}"
   }
 }
 ```
 
-**Issues détectées** :
+**Detected issues**:
 - {ISSUE_1}
 - {ISSUE_2}
 
-### Configuration Build
+### Build Configuration
 
-- **Tool** : {BUILD_TOOL} (Webpack, Vite, esbuild, etc.)
-- **Version** : {BUILD_VERSION}
-- **Optimisations activées** :
-  - Tree shaking : {TREE_SHAKING}
-  - Minification : {MINIFICATION}
-  - Code splitting : {CODE_SPLITTING}
+- **Tool**: {BUILD_TOOL} (Webpack, Vite, esbuild, etc.)
+- **Version**: {BUILD_VERSION}
+- **Enabled optimizations**:
+  - Tree shaking: {TREE_SHAKING}
+  - Minification: {MINIFICATION}
+  - Code splitting: {CODE_SPLITTING}
 
-## 🔗 3. DÉPENDANCES
+## 🔗 3. DEPENDENCIES
 
-### Vulnérabilités CVE
+### CVE Vulnerabilities
 
 ```json
 {
@@ -927,127 +927,127 @@ Voir : [`plan-action.md`](./plan-action.md)
 }
 ```
 
-#### CVE-001 : {PACKAGE_NAME} - {CVE_ID}
-- **Sévérité** : **HIGH**
-- **Score CVSS** : {CVSS_SCORE}
-- **Description** : {CVE_DESCRIPTION}
-- **Version affectée** : {AFFECTED_VERSION}
-- **Fix disponible** : {FIX_VERSION}
-- **Action** : `npm update {PACKAGE_NAME}@{FIX_VERSION}`
+#### CVE-001: {PACKAGE_NAME} - {CVE_ID}
+- **Severity**: **HIGH**
+- **CVSS score**: {CVSS_SCORE}
+- **Description**: {CVE_DESCRIPTION}
+- **Affected version**: {AFFECTED_VERSION}
+- **Fix available**: {FIX_VERSION}
+- **Action**: `npm update {PACKAGE_NAME}@{FIX_VERSION}`
 
-### Dépendances Obsolètes
+### Outdated Dependencies
 
-| Package | Version Actuelle | Version Latest | Retard | Action |
-|---------|------------------|----------------|--------|--------|
-| {PACKAGE_1} | {CURRENT_1} | {LATEST_1} | {DIFF_1} versions majeures | Mettre à jour |
-| {PACKAGE_2} | {CURRENT_2} | {LATEST_2} | {DIFF_2} versions majeures | Mettre à jour |
+| Package | Current Version | Latest Version | Lag | Action |
+|---------|-----------------|----------------|-----|--------|
+| {PACKAGE_1} | {CURRENT_1} | {LATEST_1} | {DIFF_1} major versions | Update |
+| {PACKAGE_2} | {CURRENT_2} | {LATEST_2} | {DIFF_2} major versions | Update |
 
-### Dépendances Inutilisées
+### Unused Dependencies
 
-- `{UNUSED_1}` : Aucune utilisation détectée dans le code
-- `{UNUSED_2}` : Aucune utilisation détectée dans le code
+- `{UNUSED_1}`: No usage detected in the code
+- `{UNUSED_2}`: No usage detected in the code
 
-**Action** : Nettoyer avec `npm prune` ou supprimer manuellement
+**Action**: Clean up with `npm prune` or remove manually
 
-## 🔒 4. SÉCURITÉ
+## 🔒 4. SECURITY
 
-### Secrets Hardcodés
+### Hardcoded Secrets
 
-#### SEC-FE-001 : API Key hardcodée
-- **Fichier** : `src/config/api.ts:12`
-- **Code** :
+#### SEC-FE-001: Hardcoded API Key
+- **File**: `src/config/api.ts:12`
+- **Code**:
 ```typescript
 export const API_CONFIG = {
-  apiKey: "sk_live_XXXXXXXXXX",  // ⚠️ SECRET EXPOSÉ
+  apiKey: "sk_live_XXXXXXXXXX",  // ⚠️ EXPOSED SECRET
   endpoint: "https://api.example.com"
 };
 ```
-- **Impact** : **CRITIQUE** - Credentials exposés dans le code source
-- **Recommandation** : Utiliser variables d'environnement
+- **Impact**: **CRITICAL** - Credentials exposed in the source code
+- **Recommendation**: Use environment variables
 ```typescript
 export const API_CONFIG = {
   apiKey: process.env.VITE_API_KEY || "",
   endpoint: process.env.VITE_API_ENDPOINT || ""
 };
 ```
-- **Effort** : 30min
+- **Effort**: 30min
 
-### Vulnérabilités OWASP
+### OWASP Vulnerabilities
 
 #### XSS (Cross-Site Scripting)
-- **Fichier** : `src/components/display/display.component.ts:45`
-- **Code** :
+- **File**: `src/components/display/display.component.ts:45`
+- **Code**:
 ```typescript
 this.element.nativeElement.innerHTML = userInput;  // ⚠️ XSS
 ```
-- **Impact** : **IMPORTANT** - Injection code malveillant possible
-- **Recommandation** : Utiliser sanitization
+- **Impact**: **IMPORTANT** - Malicious code injection possible
+- **Recommendation**: Use sanitization
 ```typescript
 this.element.nativeElement.textContent = userInput;  // Safe
-// ou
+// or
 this.sanitizedContent = this.sanitizer.sanitize(SecurityContext.HTML, userInput);
 ```
 
-### Configuration Sécurité
+### Security Configuration
 
-| Élément | Status | Recommandation |
-|---------|--------|----------------|
-| **CSP Headers** | {CSP_STATUS} | Implémenter Content-Security-Policy |
-| **HTTPS Only** | {HTTPS_STATUS} | Forcer HTTPS en production |
-| **Secure Cookies** | {COOKIE_STATUS} | Ajouter flags Secure, HttpOnly, SameSite |
+| Item | Status | Recommendation |
+|------|--------|----------------|
+| **CSP Headers** | {CSP_STATUS} | Implement Content-Security-Policy |
+| **HTTPS Only** | {HTTPS_STATUS} | Force HTTPS in production |
+| **Secure Cookies** | {COOKIE_STATUS} | Add Secure, HttpOnly, SameSite flags |
 
-## ✅ 5. TESTS & QUALITÉ
+## ✅ 5. TESTS & QUALITY
 
-### Couverture Tests
+### Test Coverage
 
-| Type | Nombre | Couverture | Cible | Status |
-|------|--------|-----------|-------|--------|
-| **Tests unitaires** | {UNIT_COUNT} | {UNIT_COV}% | ≥80% | {UNIT_STATUS} |
-| **Tests intégration** | {INTEGRATION_COUNT} | {INTEGRATION_COV}% | ≥70% | {INTEGRATION_STATUS} |
-| **Tests e2e** | {E2E_COUNT} | {E2E_COV}% | ≥60% | {E2E_STATUS} |
+| Type | Count | Coverage | Target | Status |
+|------|-------|----------|--------|--------|
+| **Unit tests** | {UNIT_COUNT} | {UNIT_COV}% | ≥80% | {UNIT_STATUS} |
+| **Integration tests** | {INTEGRATION_COUNT} | {INTEGRATION_COV}% | ≥70% | {INTEGRATION_STATUS} |
+| **E2E tests** | {E2E_COUNT} | {E2E_COV}% | ≥60% | {E2E_STATUS} |
 
-**Recommandation** : Augmenter couverture tests intégration (actuellement {INTEGRATION_COV}%, cible 70%)
+**Recommendation**: Increase integration test coverage (currently {INTEGRATION_COV}%, target 70%)
 
-### Qualité Tests
+### Test Quality
 
-**Points positifs** :
-- ✅ Tests bien organisés (*.spec.ts à côté des fichiers)
-- ✅ Utilisation de mocks et fixtures
+**Positive points**:
+- ✅ Well-organized tests (*.spec.ts next to the files)
+- ✅ Use of mocks and fixtures
 
-**À améliorer** :
+**To improve**:
 - ⚠️ {IMPROVEMENT_1}
 - ⚠️ {IMPROVEMENT_2}
 
 ### CI/CD
 
-- **Plateforme** : {CI_PLATFORM} (GitHub Actions, GitLab CI, etc.)
-- **Pipeline** :
-  - ✅ Build automatique
-  - ✅ Tests automatiques
+- **Platform**: {CI_PLATFORM} (GitHub Actions, GitLab CI, etc.)
+- **Pipeline**:
+  - ✅ Automatic build
+  - ✅ Automatic tests
   - {LINTING_STATUS} Linting (ESLint)
-  - {SONAR_STATUS} Analyse Sonar
+  - {SONAR_STATUS} Sonar analysis
 
-### Analyse Statique
+### Static Analysis
 
-**ESLint** :
-- Erreurs : {ESLINT_ERRORS}
-- Warnings : {ESLINT_WARNINGS}
+**ESLint**:
+- Errors: {ESLINT_ERRORS}
+- Warnings: {ESLINT_WARNINGS}
 
-**Prettier** :
-- Formatage : {PRETTIER_STATUS}
+**Prettier**:
+- Formatting: {PRETTIER_STATUS}
 
 ## ⚡ 6. PERFORMANCE
 
 ### Lazy Loading
 
-**Modules** :
-- Lazy loaded : {LAZY_COUNT} / {TOTAL_MODULES}
-- Ratio : {LAZY_RATIO}%
+**Modules**:
+- Lazy loaded: {LAZY_COUNT} / {TOTAL_MODULES}
+- Ratio: {LAZY_RATIO}%
 
-**Recommandation** : Implémenter lazy loading pour {MISSING_LAZY_MODULES}
+**Recommendation**: Implement lazy loading for {MISSING_LAZY_MODULES}
 
 ```typescript
-// Exemple route à lazy load
+// Example of a route to lazy load
 {
   path: 'admin',
   loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)
@@ -1056,25 +1056,25 @@ this.sanitizedContent = this.sanitizer.sanitize(SecurityContext.HTML, userInput)
 
 ### Bundle Size
 
-| Fichier | Taille | Status | Recommandation |
-|---------|--------|--------|----------------|
+| File | Size | Status | Recommendation |
+|------|------|--------|----------------|
 | **main.js** | {MAIN_SIZE} MB | {MAIN_STATUS} | {MAIN_RECOMMENDATION} |
 | **vendor.js** | {VENDOR_SIZE} MB | {VENDOR_STATUS} | {VENDOR_RECOMMENDATION} |
 | **polyfills.js** | {POLYFILLS_SIZE} MB | {POLYFILLS_STATUS} | {POLYFILLS_RECOMMENDATION} |
 
-**Total** : {TOTAL_BUNDLE_SIZE} MB (cible <3 MB)
+**Total**: {TOTAL_BUNDLE_SIZE} MB (target <3 MB)
 
 ### Cache Strategy
 
-- **Service Worker** : {SW_STATUS}
-- **HTTP Caching** : {HTTP_CACHE_STATUS}
-- **State Management** : {STATE_MGMT} ({NGRX_AKITA_ETC})
+- **Service Worker**: {SW_STATUS}
+- **HTTP Caching**: {HTTP_CACHE_STATUS}
+- **State Management**: {STATE_MGMT} ({NGRX_AKITA_ETC})
 
 ### Memory Leaks
 
-#### PERF-FE-001 : Subscription non désabonnée
-- **Fichier** : `src/components/user/user.component.ts:32`
-- **Code** :
+#### PERF-FE-001: Subscription not unsubscribed
+- **File**: `src/components/user/user.component.ts:32`
+- **Code**:
 ```typescript
 ngOnInit() {
   this.userService.getUser().subscribe(user => {
@@ -1082,7 +1082,7 @@ ngOnInit() {
   }); // ⚠️ Memory leak
 }
 ```
-- **Recommandation** :
+- **Recommendation**:
 ```typescript
 private destroy$ = new Subject<void>();
 
@@ -1100,56 +1100,56 @@ ngOnDestroy() {
 
 ### Change Detection
 
-- **Composants avec OnPush** : {ONPUSH_COUNT} / {COMPONENT_COUNT}
-- **Ratio** : {ONPUSH_RATIO}%
+- **Components with OnPush**: {ONPUSH_COUNT} / {COMPONENT_COUNT}
+- **Ratio**: {ONPUSH_RATIO}%
 
-**Recommandation** : Augmenter utilisation OnPush pour optimiser performances
+**Recommendation**: Increase OnPush usage to optimize performance
 
-## 📊 7. OBSERVABILITÉ
+## 📊 7. OBSERVABILITY
 
 ### Logging
 
-- **Niveau** : {LOG_LEVEL}
-- **Format** : {LOG_FORMAT} (JSON structuré recommandé)
-- **Service centralisé** : {LOG_SERVICE_STATUS}
+- **Level**: {LOG_LEVEL}
+- **Format**: {LOG_FORMAT} (structured JSON recommended)
+- **Centralized service**: {LOG_SERVICE_STATUS}
 
 ### Monitoring
 
-- **APM** : {APM_STATUS} (ex: Datadog, New Relic)
-- **Error Tracking** : {ERROR_TRACKING} (ex: Sentry, Rollbar)
+- **APM**: {APM_STATUS} (e.g. Datadog, New Relic)
+- **Error Tracking**: {ERROR_TRACKING} (e.g. Sentry, Rollbar)
 
-### Gestion Erreurs
+### Error Handling
 
 ```typescript
-// Exemple error handler global
+// Example of a global error handler
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
   handleError(error: Error) {
-    // ⚠️ Améliorer : envoyer vers service centralisé
+    // ⚠️ Improve: send to a centralized service
     console.error(error);
   }
 }
 ```
 
-## 🛠️ 8. MAINTENABILITÉ
+## 🛠️ 8. MAINTAINABILITY
 
-### Documentation Code
+### Code Documentation
 
-- **JSDoc** : {JSDOC_COVERAGE}% des fonctions/classes
-- **Comments** : {COMMENT_STATUS}
+- **JSDoc**: {JSDOC_COVERAGE}% of functions/classes
+- **Comments**: {COMMENT_STATUS}
 
-**Recommandation** : Augmenter documentation pour fonctions publiques
+**Recommendation**: Increase documentation for public functions
 
-### Internationalisation (i18n)
+### Internationalization (i18n)
 
-- **Library** : {I18N_LIB} (ngx-translate, i18next, etc.)
-- **Langues supportées** : {LANGUAGES}
-- **Couverture** : {I18N_COVERAGE}%
+- **Library**: {I18N_LIB} (ngx-translate, i18next, etc.)
+- **Supported languages**: {LANGUAGES}
+- **Coverage**: {I18N_COVERAGE}%
 
-### Accessibilité (WCAG 2.1)
+### Accessibility (WCAG 2.1)
 
-| Critère | Status | Issues |
-|---------|--------|--------|
+| Criterion | Status | Issues |
+|-----------|--------|--------|
 | **ARIA labels** | {ARIA_STATUS} | {ARIA_ISSUES} |
 | **Semantic HTML** | {SEMANTIC_STATUS} | {SEMANTIC_ISSUES} |
 | **Keyboard navigation** | {KEYBOARD_STATUS} | {KEYBOARD_ISSUES} |
@@ -1157,256 +1157,256 @@ export class GlobalErrorHandler implements ErrorHandler {
 
 ### Responsive Design
 
-- **Mobile-first** : {MOBILE_FIRST_STATUS}
-- **Breakpoints** : {BREAKPOINTS}
-- **Media queries** : {MEDIA_QUERIES_COUNT}
+- **Mobile-first**: {MOBILE_FIRST_STATUS}
+- **Breakpoints**: {BREAKPOINTS}
+- **Media queries**: {MEDIA_QUERIES_COUNT}
 
 ---
 
-**Rapport Frontend généré le {DATE}**
-*Voir synthèse globale : [`audit-synthese.md`](./audit-synthese.md)*
+**Frontend report generated on {DATE}**
+*See global summary: [`audit-synthese.md`](./audit-synthese.md)*
 ```
 
-### Template : plan-action.md
+### Template: plan-action.md
 
 ```markdown
-# Plan d'Action Phasé - Audit Technique
+# Phased Action Plan - Technical Audit
 
-**Date** : {DATE}
-**Effort total estimé** : {TOTAL_EFFORT}
-**Durée estimée** : {TOTAL_DURATION}
+**Date**: {DATE}
+**Total estimated effort**: {TOTAL_EFFORT}
+**Estimated duration**: {TOTAL_DURATION}
 
-## 🎯 Objectifs
+## 🎯 Objectives
 
-Corriger les points critiques identifiés et améliorer la qualité globale du code selon la priorisation :
-1. **Phase 1** (Semaine 1) : CRITIQUE - Sécurité et EOL
-2. **Phase 2** (Semaines 2-3) : IMPORTANT - Dette technique majeure
-3. **Phase 3** (Semaines 4-8) : RECOMMANDÉ - Améliorations continues
+Fix the identified critical points and improve overall code quality according to the prioritization:
+1. **Phase 1** (Week 1): CRITICAL - Security and EOL
+2. **Phase 2** (Weeks 2-3): IMPORTANT - Major technical debt
+3. **Phase 3** (Weeks 4-8): RECOMMENDED - Continuous improvements
 
-## 📋 PHASE 1 : CRITIQUE (Semaine 1)
+## 📋 PHASE 1: CRITICAL (Week 1)
 
-**Objectif** : Corriger toutes les vulnérabilités critiques et problèmes de sécurité
+**Goal**: Fix all critical vulnerabilities and security issues
 
-### 🔴 Tâches Critiques
+### 🔴 Critical Tasks
 
-| ID | Tâche | Repository | Effort | Responsable | Status |
-|----|-------|------------|--------|-------------|--------|
-| SEC-001 | Externaliser secrets hardcodés vers .env | Frontend | 2h | Dev Frontend | ⏳ À faire |
-| SEC-002 | Mettre à jour log4j 2.14 → 2.20+ (CVE-2023-XXXX) | Backend | 1h | Dev Backend | ⏳ À faire |
-| SEC-003 | Restreindre CORS aux domaines autorisés | Backend | 30min | Dev Backend | ⏳ À faire |
-| SEC-004 | Sanitiser inputs utilisateur (XSS) | Frontend | 3h | Dev Frontend | ⏳ À faire |
-| DEP-001 | Corriger 2 vulnérabilités CVE HIGH | Backend | 2h | Dev Backend | ⏳ À faire |
+| ID | Task | Repository | Effort | Owner | Status |
+|----|------|------------|--------|-------|--------|
+| SEC-001 | Externalize hardcoded secrets to .env | Frontend | 2h | Frontend Dev | ⏳ To do |
+| SEC-002 | Update log4j 2.14 → 2.20+ (CVE-2023-XXXX) | Backend | 1h | Backend Dev | ⏳ To do |
+| SEC-003 | Restrict CORS to authorized domains | Backend | 30min | Backend Dev | ⏳ To do |
+| SEC-004 | Sanitize user inputs (XSS) | Frontend | 3h | Frontend Dev | ⏳ To do |
+| DEP-001 | Fix 2 HIGH CVE vulnerabilities | Backend | 2h | Backend Dev | ⏳ To do |
 
-**Effort total Phase 1** : 8.5h (~1 jour)
+**Total Phase 1 effort**: 8.5h (~1 day)
 
-### Détails Phase 1
+### Phase 1 Details
 
-#### SEC-001 : Externaliser secrets hardcodés
+#### SEC-001: Externalize hardcoded secrets
 
-**Fichiers impactés** :
+**Impacted files**:
 - `frontend/src/config/api.ts`
 - `frontend/src/services/auth.service.ts`
 
-**Actions** :
-1. Créer fichier `.env.example` avec variables template
-2. Créer `.env.local` (ignoré par git) avec vraies valeurs
-3. Remplacer secrets hardcodés par `process.env.VITE_*`
-4. Documenter dans README.md
+**Actions**:
+1. Create a `.env.example` file with template variables
+2. Create `.env.local` (ignored by git) with real values
+3. Replace hardcoded secrets with `process.env.VITE_*`
+4. Document in README.md
 
-**Validation** :
-- ✅ Aucun secret dans git history
-- ✅ Application démarre avec .env
-- ✅ Variables documentées
+**Validation**:
+- ✅ No secret in git history
+- ✅ Application starts with .env
+- ✅ Variables documented
 
-#### SEC-002 : Mettre à jour log4j
+#### SEC-002: Update log4j
 
-**Actions** :
-1. Modifier `pom.xml` : `<log4j.version>2.20.0</log4j.version>`
-2. Exécuter `mvn clean install`
-3. Tester application (logs fonctionnels)
-4. Vérifier audit : `mvn org.owasp:dependency-check-maven:check`
+**Actions**:
+1. Edit `pom.xml`: `<log4j.version>2.20.0</log4j.version>`
+2. Run `mvn clean install`
+3. Test the application (logs working)
+4. Check the audit: `mvn org.owasp:dependency-check-maven:check`
 
-**Validation** :
-- ✅ Aucune vulnérabilité CVE HIGH/CRITICAL
-- ✅ Tests passent
-- ✅ Application fonctionne
+**Validation**:
+- ✅ No HIGH/CRITICAL CVE vulnerability
+- ✅ Tests pass
+- ✅ Application works
 
-## 📋 PHASE 2 : IMPORTANT (Semaines 2-3)
+## 📋 PHASE 2: IMPORTANT (Weeks 2-3)
 
-**Objectif** : Réduire dette technique majeure impactant maintenabilité et performance
+**Goal**: Reduce major technical debt affecting maintainability and performance
 
-### 🟠 Tâches Importantes
+### 🟠 Important Tasks
 
-| ID | Tâche | Repository | Effort | Responsable | Status |
-|----|-------|------------|--------|-------------|--------|
-| PERF-001 | Implémenter lazy loading modules | Frontend | 1j | Dev Frontend | ⏳ À faire |
-| ARCH-001 | Refactoring services couplés | Backend | 3j | Dev Backend | ⏳ À faire |
-| TEST-001 | Augmenter couverture tests intégration | Backend | 2j | QA + Dev | ⏳ À faire |
-| PERF-002 | Optimiser OnPush change detection | Frontend | 1j | Dev Frontend | ⏳ À faire |
-| DEP-002 | Mettre à jour dépendances obsolètes | Frontend + Backend | 1j | Dev Full | ⏳ À faire |
+| ID | Task | Repository | Effort | Owner | Status |
+|----|------|------------|--------|-------|--------|
+| PERF-001 | Implement module lazy loading | Frontend | 1d | Frontend Dev | ⏳ To do |
+| ARCH-001 | Refactor coupled services | Backend | 3d | Backend Dev | ⏳ To do |
+| TEST-001 | Increase integration test coverage | Backend | 2d | QA + Dev | ⏳ To do |
+| PERF-002 | Optimize OnPush change detection | Frontend | 1d | Frontend Dev | ⏳ To do |
+| DEP-002 | Update outdated dependencies | Frontend + Backend | 1d | Full Dev | ⏳ To do |
 
-**Effort total Phase 2** : 8j (~2 semaines)
+**Total Phase 2 effort**: 8d (~2 weeks)
 
-### Détails Phase 2
+### Phase 2 Details
 
-#### PERF-001 : Lazy loading modules
+#### PERF-001: Module lazy loading
 
-**Modules à lazy load** :
-- AdminModule (utilisé par <10% utilisateurs)
+**Modules to lazy load**:
+- AdminModule (used by <10% of users)
 - ReportsModule (heavy dependencies)
 - SettingsModule
 
-**Actions** :
-1. Modifier `app-routing.module.ts`
-2. Remplacer `import` direct par `loadChildren`
-3. Mesurer impact bundle size (avant/après)
+**Actions**:
+1. Edit `app-routing.module.ts`
+2. Replace direct `import` with `loadChildren`
+3. Measure bundle size impact (before/after)
 
-**Bénéfice attendu** :
-- 📉 Bundle initial : -1.2 MB (~40% réduction)
-- ⚡ Temps chargement initial : -2s (~30% amélioration)
+**Expected benefit**:
+- 📉 Initial bundle: -1.2 MB (~40% reduction)
+- ⚡ Initial load time: -2s (~30% improvement)
 
-#### ARCH-001 : Refactoring services couplés
+#### ARCH-001: Refactor coupled services
 
-**Services impactés** :
-- `UserService` (450 lignes, 12 dépendances)
-- `DataService` (380 lignes, 8 dépendances)
+**Impacted services**:
+- `UserService` (450 lines, 12 dependencies)
+- `DataService` (380 lines, 8 dependencies)
 
-**Actions** :
-1. Extraire en services spécialisés (ex: UserAuthService, UserProfileService)
-2. Appliquer principe SRP (Single Responsibility)
-3. Ajouter tests unitaires pour chaque nouveau service
+**Actions**:
+1. Extract into specialized services (e.g. UserAuthService, UserProfileService)
+2. Apply the SRP principle (Single Responsibility)
+3. Add unit tests for each new service
 
-**Bénéfice attendu** :
-- 🧪 Testabilité améliorée
-- 🔧 Maintenabilité simplifiée
-- 📉 Complexité réduite
+**Expected benefit**:
+- 🧪 Improved testability
+- 🔧 Simplified maintainability
+- 📉 Reduced complexity
 
-## 📋 PHASE 3 : RECOMMANDÉ (Semaines 4-8)
+## 📋 PHASE 3: RECOMMENDED (Weeks 4-8)
 
-**Objectif** : Améliorations continues pour qualité long terme
+**Goal**: Continuous improvements for long-term quality
 
-### 🟡 Tâches Recommandées
+### 🟡 Recommended Tasks
 
-| ID | Tâche | Repository | Effort | Responsable | Status |
-|----|-------|------------|--------|-------------|--------|
-| MAIN-001 | Compléter documentation JSDoc | Frontend | 1j | Dev Frontend | ⏳ À faire |
-| QUAL-001 | Implémenter analyse Sonar | CI/CD | 2j | DevOps | ⏳ À faire |
-| PERF-003 | Implémenter cache Redis | Backend | 3j | Dev Backend | ⏳ À faire |
-| ACC-001 | Audit accessibilité WCAG 2.1 AA | Frontend | 2j | Dev Frontend | ⏳ À faire |
-| OBS-001 | Intégrer Sentry error tracking | Frontend + Backend | 1j | Dev Full | ⏳ À faire |
+| ID | Task | Repository | Effort | Owner | Status |
+|----|------|------------|--------|-------|--------|
+| MAIN-001 | Complete JSDoc documentation | Frontend | 1d | Frontend Dev | ⏳ To do |
+| QUAL-001 | Implement Sonar analysis | CI/CD | 2d | DevOps | ⏳ To do |
+| PERF-003 | Implement Redis cache | Backend | 3d | Backend Dev | ⏳ To do |
+| ACC-001 | WCAG 2.1 AA accessibility audit | Frontend | 2d | Frontend Dev | ⏳ To do |
+| OBS-001 | Integrate Sentry error tracking | Frontend + Backend | 1d | Full Dev | ⏳ To do |
 
-**Effort total Phase 3** : 9j (~2 semaines)
+**Total Phase 3 effort**: 9d (~2 weeks)
 
-## 📊 Résumé Effort
+## 📊 Effort Summary
 
-| Phase | Durée | Effort | Priorité | ROI |
-|-------|-------|--------|----------|-----|
-| **Phase 1** | Semaine 1 | 1j | 🔴 CRITIQUE | Très élevé |
-| **Phase 2** | Semaines 2-3 | 2 semaines | 🟠 IMPORTANT | Élevé |
-| **Phase 3** | Semaines 4-8 | 2 semaines | 🟡 RECOMMANDÉ | Moyen |
+| Phase | Duration | Effort | Priority | ROI |
+|-------|----------|--------|----------|-----|
+| **Phase 1** | Week 1 | 1d | 🔴 CRITICAL | Very high |
+| **Phase 2** | Weeks 2-3 | 2 weeks | 🟠 IMPORTANT | High |
+| **Phase 3** | Weeks 4-8 | 2 weeks | 🟡 RECOMMENDED | Medium |
 
-**Total** : 4-8 semaines (selon ressources)
+**Total**: 4-8 weeks (depending on resources)
 
-## 🎯 KPIs de Succès
+## 🎯 Success KPIs
 
-| Indicateur | Avant | Cible | Mesure |
-|-----------|-------|-------|--------|
-| **Vulnérabilités CVE HIGH** | {CVE_HIGH_BEFORE} | 0 | npm audit, OWASP |
-| **Couverture tests** | {COVERAGE_BEFORE}% | 85% | Coverage report |
+| Indicator | Before | Target | Measure |
+|-----------|--------|--------|---------|
+| **HIGH CVE vulnerabilities** | {CVE_HIGH_BEFORE} | 0 | npm audit, OWASP |
+| **Test coverage** | {COVERAGE_BEFORE}% | 85% | Coverage report |
 | **Bundle size** | {BUNDLE_BEFORE} MB | <3 MB | Webpack bundle analyzer |
-| **Temps chargement** | {LOAD_BEFORE}s | <2s | Lighthouse |
-| **Dette technique** | {DEBT_BEFORE}h | -{DEBT_TARGET}h | SonarQube |
+| **Load time** | {LOAD_BEFORE}s | <2s | Lighthouse |
+| **Technical debt** | {DEBT_BEFORE}h | -{DEBT_TARGET}h | SonarQube |
 
-## 📅 Planning Recommandé
+## 📅 Recommended Schedule
 
 ```mermaid
 gantt
-    title Planning Audit Technique - 8 Semaines
+    title Technical Audit Schedule - 8 Weeks
     dateFormat YYYY-MM-DD
-    section Phase 1 CRITIQUE
-    SEC-001 Externaliser secrets       :crit, 2026-02-10, 2h
+    section Phase 1 CRITICAL
+    SEC-001 Externalize secrets         :crit, 2026-02-10, 2h
     SEC-002 Update log4j                :crit, 2026-02-10, 1h
-    SEC-003 Restreindre CORS            :crit, 2026-02-10, 30m
-    SEC-004 Sanitiser XSS               :crit, 2026-02-10, 3h
-    DEP-001 Fix CVE HIGH                :crit, 2026-02-11, 2h
+    SEC-003 Restrict CORS               :crit, 2026-02-10, 30m
+    SEC-004 Sanitize XSS                :crit, 2026-02-10, 3h
+    DEP-001 Fix HIGH CVE                :crit, 2026-02-11, 2h
     
     section Phase 2 IMPORTANT
     PERF-001 Lazy loading               :active, 2026-02-12, 1d
-    ARCH-001 Refactoring services       :2026-02-13, 3d
-    TEST-001 Couverture tests           :2026-02-16, 2d
+    ARCH-001 Services refactoring       :2026-02-13, 3d
+    TEST-001 Test coverage              :2026-02-16, 2d
     PERF-002 OnPush change detection    :2026-02-18, 1d
-    DEP-002 Update dépendances          :2026-02-19, 1d
+    DEP-002 Update dependencies         :2026-02-19, 1d
     
-    section Phase 3 RECOMMANDÉ
-    MAIN-001 Documentation JSDoc        :2026-02-20, 1d
+    section Phase 3 RECOMMENDED
+    MAIN-001 JSDoc documentation        :2026-02-20, 1d
     QUAL-001 Sonar integration          :2026-02-21, 2d
-    PERF-003 Cache Redis                :2026-02-23, 3d
-    ACC-001 Audit accessibilité         :2026-02-26, 2d
+    PERF-003 Redis cache                :2026-02-23, 3d
+    ACC-001 Accessibility audit         :2026-02-26, 2d
     OBS-001 Sentry integration          :2026-02-28, 1d
 ```
 
-## ✅ Checklist de Validation
+## ✅ Validation Checklist
 
 ### Phase 1
-- [ ] Toutes vulnérabilités CVE HIGH/CRITICAL corrigées
-- [ ] Aucun secret hardcodé dans le code
-- [ ] CORS configuré avec whitelist domaines
-- [ ] Inputs utilisateur sanitisés (XSS protection)
-- [ ] Tests de sécurité passent
+- [ ] All HIGH/CRITICAL CVE vulnerabilities fixed
+- [ ] No hardcoded secret in the code
+- [ ] CORS configured with a domain whitelist
+- [ ] User inputs sanitized (XSS protection)
+- [ ] Security tests pass
 
 ### Phase 2
-- [ ] Lazy loading implémenté (bundle size réduit >30%)
-- [ ] Services refactorisés (complexité réduite)
-- [ ] Couverture tests ≥80%
-- [ ] OnPush utilisé sur composants principaux
-- [ ] Dépendances à jour (<1 version majeure de retard)
+- [ ] Lazy loading implemented (bundle size reduced >30%)
+- [ ] Services refactored (complexity reduced)
+- [ ] Test coverage ≥80%
+- [ ] OnPush used on main components
+- [ ] Dependencies up to date (<1 major version behind)
 
 ### Phase 3
-- [ ] Documentation JSDoc ≥80% couverture
-- [ ] Analyse Sonar intégrée CI/CD
-- [ ] Cache implémenté (réduction temps réponse API)
-- [ ] Accessibilité WCAG 2.1 AA validée
-- [ ] Error tracking opérationnel (Sentry)
+- [ ] JSDoc documentation ≥80% coverage
+- [ ] Sonar analysis integrated in CI/CD
+- [ ] Cache implemented (API response time reduction)
+- [ ] WCAG 2.1 AA accessibility validated
+- [ ] Error tracking operational (Sentry)
 
 ---
 
-**Plan d'action généré le {DATE}**
-*Voir synthèse : [`audit-synthese.md`](./audit-synthese.md)*
+**Action plan generated on {DATE}**
+*See summary: [`audit-synthese.md`](./audit-synthese.md)*
 ```
 
-## 🎓 Cas d'Usage Idéaux
+## 🎓 Ideal Use Cases
 
-Le plan **Audit Technique Complet - Expert** est idéal pour :
+The **Full Technical Audit - Expert** plan is ideal for:
 
-1. **Audit pré-production** : Validation complète avant mise en production majeure
-2. **Due diligence technique** : Évaluation d'un projet existant (rachat, reprise)
-3. **Migration framework** : Audit avant migration majeure (Angular 12→17, Java 11→17)
-4. **Certification sécurité** : Préparation audit sécurité (ISO 27001, SOC 2)
-5. **Diagnostic dette technique** : Évaluation exhaustive état du code
-6. **Onboarding nouvelle équipe** : Compréhension approfondie du projet
-7. **Roadmap refactoring** : Base pour planifier refactoring multi-mois
-8. **Audit performance** : Détection goulots d'étranglement et optimisations
+1. **Pre-production audit**: Full validation before a major production release
+2. **Technical due diligence**: Assessment of an existing project (acquisition, takeover)
+3. **Framework migration**: Audit before a major migration (Angular 12→17, Java 11→17)
+4. **Security certification**: Security audit preparation (ISO 27001, SOC 2)
+5. **Technical debt diagnosis**: Exhaustive assessment of the code state
+6. **New team onboarding**: In-depth understanding of the project
+7. **Refactoring roadmap**: Basis for planning multi-month refactoring
+8. **Performance audit**: Detection of bottlenecks and optimizations
 
-**Contexte idéal** :
-- Projet existant (>6 mois de développement)
-- Multi-repositories (frontend + backend minimum)
-- Besoin diagnostic complet et actionnable
-- Budget temps disponible (~1 jour d'analyse)
-- Équipe prête à implémenter corrections
+**Ideal context**:
+- Existing project (>6 months of development)
+- Multi-repository (frontend + backend minimum)
+- Need for a complete, actionable diagnosis
+- Available time budget (~1 day of analysis)
+- Team ready to implement fixes
 
-## 📚 Références
+## 📚 References
 
-- **Plan profondeur inférieure** : `plan-approfondi.md` (profondeur 3, ~30 min)
-- **Plans spécialisés** :
-  - `technique/backend/plan-expert.md` (focus backend uniquement)
-  - `technique/frontend/plan-expert.md` (focus frontend uniquement)
-  - `technique/securite/plan-expert.md` (focus sécurité approfondi)
-- **Plan générique** : `plan-expert.md` (fallback)
-- **Agents** : `agent-aikido-explore-code`, `agent-aikido-explore-all`, `agent-aikido-truth-evaluator`, `agent-aikido-validator`
-- **Commande** : `prompts/hard_points/commands/analyse-project.md`
-- **Documentation AI-KIDO** : `prompts/hard_points/ai-kido.md`
+- **Lower depth plan**: `plan-approfondi.md` (depth 3, ~30 min)
+- **Specialized plans**:
+  - `technique/backend/plan-expert.md` (backend focus only)
+  - `technique/frontend/plan-expert.md` (frontend focus only)
+  - `technique/securite/plan-expert.md` (in-depth security focus)
+- **Generic plan**: `plan-expert.md` (fallback)
+- **Agents**: `agent-aikido-explore-code`, `agent-aikido-explore-all`, `agent-aikido-truth-evaluator`, `agent-aikido-validator`
+- **Command**: `prompts/hard_points/commands/analyse-project.md`
+- **AI-KIDO documentation**: `prompts/hard_points/ai-kido.md`
 
 ---
-*Plan Audit Technique Complet créé le 2026-02-10 pour /analyse-project*
-*Généré pour audit approfondi multi-repository (frontend + backend)*
-*Utilisation : /analyse-project avec nature=6 (Stack générale), profondeur=4 (Expert)*
+*Full Technical Audit plan created on 2026-02-10 for /analyse-project*
+*Generated for in-depth multi-repository audit (frontend + backend)*
+*Usage: /analyse-project with nature=6 (General stack), depth=4 (Expert)*

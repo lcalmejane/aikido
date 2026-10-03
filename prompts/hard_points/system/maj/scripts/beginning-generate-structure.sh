@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# beginning-generate-structure.sh - Générer structures JSON before/target
+# beginning-generate-structure.sh - Generate before/target JSON structures
 # Usage: beginning-generate-structure.sh <source_dir> <target_dir>
 
 if [ -n "$BASH_VERSION" ]; then
@@ -21,21 +21,21 @@ mkdir -p /tmp/aikido
 GENERATE_SCRIPT="prompts/hard_points/system/structure/scripts/generate-all-indexes-v3.1.sh"
 
 # Structure TARGET
-echo "📊 Génération structure TARGET..."
+echo "📊 Generating TARGET structure..."
 cd "$TARGET_DIR"
 if bash "$GENERATE_SCRIPT" && [ -f "prompts/hard_points/system/structure/index.json" ]; then
   cp prompts/hard_points/system/structure/index.json /tmp/aikido/maj_target.json
   echo "✅ Structure TARGET : /tmp/aikido/maj_target.json"
 else
-  echo "⚠️  Échec structure TARGET (non bloquant)"
+  echo "⚠️  TARGET structure failed (non-blocking)"
 fi
 
 # Structure SOURCE (before)
-echo "📊 Génération structure SOURCE (before)..."
+echo "📊 Generating SOURCE structure (before)..."
 cd "$SOURCE_DIR"
 if bash "$GENERATE_SCRIPT" && [ -f "prompts/hard_points/system/structure/index.json" ]; then
   cp prompts/hard_points/system/structure/index.json /tmp/aikido/maj_before.json
   echo "✅ Structure SOURCE (before) : /tmp/aikido/maj_before.json"
 else
-  echo "⚠️  Échec structure SOURCE (non bloquant)"
+  echo "⚠️  SOURCE structure failed (non-blocking)"
 fi

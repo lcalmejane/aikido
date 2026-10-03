@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# ending-0-ask-llm-capability.sh - Demander capacité LLM utilisateur
+# ending-0-ask-llm-capability.sh - Ask the user about their LLM capability
 # Usage: ending-0-ask-llm-capability.sh
+#
+# Output (last line of stdout): INTELLIGENT | REPLACE | SKIP | MANUAL_LATER
 
 if [ -n "$BASH_VERSION" ]; then
   set -euo pipefail
@@ -10,36 +12,42 @@ fi
 
 cat <<PROMPT
 ═══════════════════════════════════════════════════════════════
-⚠️  VÉRIFICATION PRÉREQUIS
+⚠️  PREREQUISITE CHECK
 ═══════════════════════════════════════════════════════════════
 
-Ce mode nécessite un LLM puissant (≥ Sonnet 4) pour fonctionner correctement.
+This mode requires a powerful LLM (≥ Sonnet 4) to work correctly.
 
-Avec un modèle moins puissant, vous risquez :
-  - Fusion incomplète ou incorrecte
-  - Perte de contexte projet
-  - Non-respect des règles AI-KIDO
-  - Corruption de fichiers critiques
+With a less powerful model, you risk:
+  - Incomplete or incorrect merge
+  - Loss of project context
+  - Non-compliance with AI-KIDO rules
+  - Corruption of critical files
 
-Disposez-vous d'un LLM ≥ Sonnet 4 ? (oui/non) :
+Do you have an LLM ≥ Sonnet 4? (yes/no):
 PROMPT
 
 read -r HAS_POWERFUL_LLM
 
-if [ "$HAS_POWERFUL_LLM" != "oui" ]; then
+# Accept English and French affirmative answers (case-insensitive)
+case "$(printf '%s' "$HAS_POWERFUL_LLM" | tr '[:upper:]' '[:lower:]')" in
+  yes|y|oui|o) POWERFUL=true ;;
+  *) POWERFUL=false ;;
+esac
+
+if [ "$POWERFUL" != "true" ]; then
   echo ""
-  echo "❌ Fusion intelligente non disponible sans LLM puissant"
+  echo "❌ Intelligent merge is not available without a powerful LLM"
   echo ""
-  echo "Options alternatives :"
-  echo "  1. REMPLACER - Écrase les fichiers locaux par la version TARGET"
-  echo "  2. IGNORER   - Conserve les fichiers locaux inchangés"
-  echo "  3. MANUEL    - Créer script de fusion pour traitement ultérieur"
+  echo "Alternative options:"
+  echo "  1. REPLACE - Overwrite local files with the TARGET version"
+  echo "  2. SKIP    - Keep local files unchanged"
+  echo "  3. MANUAL  - Create a merge script for later processing"
   echo ""
-  echo "Recommandation : Choisir MANUEL et effectuer fusion ultérieurement"
-  echo "                 avec un LLM approprié"
+  echo "Recommendation: choose MANUAL and perform the merge later"
+  echo "                with a suitable LLM"
   echo ""
 
-  echo "Que souhaitez-vous faire ? (1=REMPLACER / 2=IGNORER / 3=MANUEL) :"
+  echo "What do you want to do? (1=REPLACE / 2=SKIP / 3=MANUAL):"
   read -r FALLBACK_CHOICE
 
   case "$FALLBACK_CHOICE" in
@@ -50,8 +58,8 @@ if [ "$HAS_POWERFUL_LLM" != "oui" ]; then
   esac
 else
   echo ""
-  echo "✅ Confirmation LLM puissant reçue"
-  echo "   Poursuite avec fusion intelligente..."
+  echo "✅ Powerful LLM confirmation received"
+  echo "   Proceeding with intelligent merge..."
   echo ""
   echo "INTELLIGENT"
 fi

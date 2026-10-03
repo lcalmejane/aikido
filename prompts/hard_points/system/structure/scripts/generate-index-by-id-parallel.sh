@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# generate-index-by-id-parallel.sh - Génération parallélisée index by-id V3.1
-# Version 3.1-parallel - 4 workers simultanés
+# generate-index-by-id-parallel.sh - Parallelized by-id index generation V3.1
+# Version 3.1-parallel - 4 simultaneous workers
 
 if [ -n "$BASH_VERSION" ]; then
   set -euo pipefail   # Bash‑only, portable sur Rocky, Ubuntu, etc.
@@ -13,13 +13,13 @@ fi
 PROJECT_ROOT="${PROJECT_ROOT:-$(cd "$(dirname "$0")/../../../../.." && pwd)}"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 OUTPUT_DIR="prompts/hard_points/system/structure/indices/by-id"
-NUM_WORKERS=4  # Nombre de workers parallèles
+NUM_WORKERS=4  # Number of parallel workers
 TIMESTAMP_ISO=$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)
 
 # Source utilities et fonctions
 source "$SCRIPT_DIR/lib/hash-utils.sh"
 
-# Copier les fonctions nécessaires depuis generate-index-by-id.sh
+# Copy the required functions from generate-index-by-id.sh
 EXCLUDE_PATTERNS=(
     "node_modules" ".git" "dist" "build" ".next" ".nuxt" ".cache"
     "coverage" ".nyc_output" "*.log" "*.tmp" ".env*" "*.swp" "*.swo" "*~" "temp"
@@ -171,7 +171,7 @@ extract_metadata() {
     echo "{\"name\":\"$(json_escape "$name")\",\"path\":\"$(json_escape "$relative_path")\",\"type\":\"$category\",\"icon\":\"$icon\",\"size_bytes\":$size_bytes,\"lines\":$lines,\"modified\":\"$modified\",\"check_status\":\"$(json_escape "$check_status")\",\"extension\":\"$extension\"}"
 }
 
-# Créer répertoire output
+# Create output directory
 mkdir -p "$PROJECT_ROOT/$OUTPUT_DIR"
 mkdir -p "/tmp/aikido"
 
@@ -188,10 +188,10 @@ echo "Phase 1: Collecting all files..."
 
 discover_all_gitignores
 
-# Liste complète des fichiers
+# Complete list of files
 temp_filelist=$(mktemp)
 
-# Correction : écrire directement sans subshell
+# Fix: write directly without a subshell
 while IFS= read -r -d '' file; do
     should_exclude "$file" && continue
     [[ -f "$file" ]] && echo "$file"
@@ -202,7 +202,7 @@ echo "  Found $total_files files to index"
 echo ""
 
 # ============================================================================
-# PHASE 2 : DIVISER EN CHUNKS ET TRAITER EN PARALLÈLE
+# PHASE 2: SPLIT INTO CHUNKS AND PROCESS IN PARALLEL
 # ============================================================================
 
 echo "Phase 2: Processing in parallel ($NUM_WORKERS workers)..."
@@ -216,29 +216,29 @@ for worker_id in $(seq 0 $((NUM_WORKERS - 1))); do
 
     echo "  Worker $worker_id: processing lines $start_line-$end_line"
 
-    # Lancer worker en background
+    # Start worker in background
     (
         worker_temp_dir=$(mktemp -d)
 
-        # Créer 16 fichiers temp pour ce worker
+        # Create 16 temp files for this worker
         for prefix in {0..9} {a..f}; do
             : > "$worker_temp_dir/batch-$prefix.jsonl"
         done
 
-        # Traiter le chunk de ce worker
+        # Process this worker's chunk
         sed -n "${start_line},${end_line}p" "$temp_filelist" | while IFS= read -r file; do
             relative_path="${file#./}"
 
-            # Générer ID + métadonnées
+            # Generate ID + metadata
             file_id=$(generate_file_id "$relative_path")
             metadata=$(extract_metadata "$file")
 
-            # Écrire dans le fichier temp approprié
+            # Write to the appropriate temp file
             batch_prefix=$(get_batch_prefix "$file_id")
             echo "\"$file_id\":$metadata," >> "$worker_temp_dir/batch-$batch_prefix.jsonl"
         done
 
-        # Marquer comme terminé
+        # Mark as done
         echo "$worker_temp_dir" > "/tmp/aikido/worker-$$-$worker_id.done"
 
     ) &
@@ -253,7 +253,7 @@ echo "✅ All workers completed"
 echo ""
 
 # ============================================================================
-# PHASE 3 : FUSIONNER LES RÉSULTATS
+# PHASE 3: MERGE THE RESULTS
 # ============================================================================
 
 echo "Phase 3: Merging results into 16 batches..."
@@ -266,7 +266,7 @@ done
 for prefix in {0..9} {a..f}; do
     batch_file="$PROJECT_ROOT/$OUTPUT_DIR/index-id-${prefix}.json"
 
-    # Fusionner tous les fichiers worker pour ce préfixe
+    # Merge all worker files for this prefix
     merged_content=$(mktemp)
 
     for worker_id in $(seq 0 $((NUM_WORKERS - 1))); do
@@ -279,12 +279,12 @@ for prefix in {0..9} {a..f}; do
         fi
     done
 
-    # Compter entrées
+    # Count entries
     count=$(wc -l < "$merged_content" | tr -d ' ')
     batch_index=$((16#$prefix))
     batch_counts[$batch_index]=$count
 
-    # Générer fichier JSON final
+    # Generate final JSON file
     cat > "$batch_file" << EOF
 {
   "metadata": {
@@ -296,7 +296,7 @@ for prefix in {0..9} {a..f}; do
   "files": {
 EOF
 
-    # Ajouter contenu (enlever dernière virgule)
+    # Append content (remove last comma)
     if [[ $count -gt 0 ]]; then
         sed '$ s/,$//' "$merged_content" >> "$batch_file"
     fi
@@ -329,7 +329,7 @@ echo "   Workers: $NUM_WORKERS"
 echo "   Output: $OUTPUT_DIR/"
 echo ""
 
-# Afficher distribution
+# Display distribution
 echo "Distribution across 16 batches:"
 for prefix in {0..9} {a..f}; do
     batch_index=$((16#$prefix))

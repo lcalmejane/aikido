@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ending-2-analyze-changes.sh - Analyser et catégoriser changements
+# ending-2-analyze-changes.sh - Analyze and categorize changes
 # Usage: ending-2-analyze-changes.sh
 
 if [ -n "$BASH_VERSION" ]; then
@@ -16,30 +16,30 @@ echo ""
 TOTAL_CHANGES=$(jq 'keys | length' /tmp/aikido/maj_diff.json)
 
 if [ "$TOTAL_CHANGES" -eq 0 ]; then
-  echo "ℹ️  Aucun changement détecté dans le rapport"
+  echo "ℹ️  No change detected in the report"
   echo ""
   exit 0
 fi
 
-echo "🔄 Total des éléments modifiés : $TOTAL_CHANGES"
+echo "🔄 Total modified items: $TOTAL_CHANGES"
 echo ""
 
-# Compter par catégorie
+# Count by category
 ADDED=$(jq '[.[] | select(.before == null)] | length' /tmp/aikido/maj_diff.json)
 REMOVED=$(jq '[.[] | select(.after == null)] | length' /tmp/aikido/maj_diff.json)
 MODIFIED=$(jq '[.[] | select(.before != null and .after != null)] | length' /tmp/aikido/maj_diff.json)
 
-echo "📊 Répartition :"
-echo "   ✨ Fichiers ajoutés   : $ADDED"
-echo "   🗑️  Fichiers supprimés : $REMOVED"
-echo "   📝 Fichiers modifiés  : $MODIFIED"
+echo "📊 Breakdown:"
+echo "   ✨ Added files   : $ADDED"
+echo "   🗑️  Removed files: $REMOVED"
+echo "   📝 Modified files : $MODIFIED"
 echo ""
 
-# Lister si demandé
+# List if requested
 if [ "${1:-}" = "--list" ]; then
   [ "$ADDED" -gt 0 ] && {
     echo "───────────────────────────────────────────────────────────────"
-    echo "✨ FICHIERS AJOUTÉS ($ADDED)"
+    echo "✨ ADDED FILES ($ADDED)"
     echo "───────────────────────────────────────────────────────────────"
     jq -r 'to_entries[] | select(.value.before == null) | "  + \(.key)"' /tmp/aikido/maj_diff.json
     echo ""
@@ -47,7 +47,7 @@ if [ "${1:-}" = "--list" ]; then
 
   [ "$REMOVED" -gt 0 ] && {
     echo "───────────────────────────────────────────────────────────────"
-    echo "🗑️  FICHIERS SUPPRIMÉS ($REMOVED)"
+    echo "🗑️  REMOVED FILES ($REMOVED)"
     echo "───────────────────────────────────────────────────────────────"
     jq -r 'to_entries[] | select(.value.after == null) | "  - \(.key)"' /tmp/aikido/maj_diff.json
     echo ""
@@ -55,7 +55,7 @@ if [ "${1:-}" = "--list" ]; then
 
   [ "$MODIFIED" -gt 0 ] && {
     echo "───────────────────────────────────────────────────────────────"
-    echo "📝 FICHIERS MODIFIÉS ($MODIFIED)"
+    echo "📝 MODIFIED FILES ($MODIFIED)"
     echo "───────────────────────────────────────────────────────────────"
     jq -r 'to_entries[] | select(.value.before != null and .value.after != null) | "  ~ \(.key)"' /tmp/aikido/maj_diff.json
     echo ""

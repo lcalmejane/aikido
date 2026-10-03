@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# generate-index-master.sh - Génération master index.json V3.1
+# generate-index-master.sh - master index.json generation V3.1
 # Version 3.1 - Hash-based ID normalization
 
 if [ -n "$BASH_VERSION" ]; then
@@ -40,7 +40,7 @@ total_dirs=0
 total_lines=0
 index_files_count=0
 
-# Compter fichiers et lignes depuis by-id
+# Count files and lines from by-id
 if [[ -d "$INDICES_DIR/by-id" ]]; then
     for batch_file in "$INDICES_DIR/by-id"/index-id-*.json; do
         count=$(jq -r '.metadata.count' "$batch_file")
@@ -54,7 +54,7 @@ if [[ -d "$INDICES_DIR/by-id" ]]; then
     done
 fi
 
-# Compter répertoires depuis by-directory
+# Count directories from by-directory
 if [[ -d "$INDICES_DIR/by-directory" ]]; then
     for batch_file in "$INDICES_DIR/by-directory"/index-dir-*.json; do
         count=$(jq -r '.metadata.directories_count' "$batch_file")
@@ -89,7 +89,7 @@ for prefix in {0..9} {a..f}; do
 "
     fi
 done
-# Enlever dernière virgule
+# Remove last comma
 by_id_hash_table=$(echo "$by_id_hash_table" | sed '$ s/,$//')
 by_id_hash_table=$(echo "$by_id_hash_table" | sed '$ s/,$//')
 
@@ -107,7 +107,7 @@ if [[ -d "$INDICES_DIR/by-path" ]]; then
         offset=$(jq -r '.metadata.offset' "$batch_file")
         count=$(jq -r '.paths | length' "$batch_file")
 
-        # Extraire top-level directories
+        # Extract top-level directories
         top_dirs=$(jq -r '.paths | keys[] | split("/")[0]' "$batch_file" | sort -u | head -5)
 
         for top_dir in $top_dirs; do
@@ -117,7 +117,7 @@ if [[ -d "$INDICES_DIR/by-path" ]]; then
 
         batch_num=$((batch_num + 1))
     done
-    # Enlever dernière virgule
+    # Remove last comma
     by_path_hash_table=$(echo "$by_path_hash_table" | sed '$ s/,$//')
     by_path_hash_table=$(echo "$by_path_hash_table" | sed '$ s/,$//')
 fi
@@ -139,7 +139,7 @@ if [[ -d "$INDICES_DIR/by-alphabetical" ]]; then
         by_alpha_hash_table="${by_alpha_hash_table}    \"${range}\": {\"batch\": \"indices/by-alphabetical/${batch_name}\", \"range\": $(jq -c '.metadata.range' "$batch_file"), \"count\": $count},
 "
     done
-    # Enlever dernière virgule
+    # Remove last comma
     by_alpha_hash_table=$(echo "$by_alpha_hash_table" | sed '$ s/,$//')
     by_alpha_hash_table=$(echo "$by_alpha_hash_table" | sed '$ s/,$//')
 fi
@@ -157,7 +157,7 @@ if [[ -d "$INDICES_DIR/by-directory" ]]; then
         offset=$(jq -r '.metadata.offset' "$batch_file")
         batch_name=$(basename "$batch_file")
 
-        # Extraire quelques directories exemples
+        # Extract a few example directories
         sample_dirs=$(jq -r '.directories | keys[]' "$batch_file" | head -3)
 
         for dir in $sample_dirs; do
@@ -166,7 +166,7 @@ if [[ -d "$INDICES_DIR/by-directory" ]]; then
 "
         done
     done
-    # Enlever dernière virgule
+    # Remove last comma
     by_dir_hash_table=$(echo "$by_dir_hash_table" | sed '$ s/,$//')
     by_dir_hash_table=$(echo "$by_dir_hash_table" | sed '$ s/,$//')
 fi
@@ -188,13 +188,13 @@ if [[ -d "$INDICES_DIR/by-type" ]]; then
         by_type_hash_table="${by_type_hash_table}    \"${type}\": {\"batch\": \"indices/by-type/${batch_name}\", \"count\": $count},
 "
     done
-    # Enlever dernière virgule
+    # Remove last comma
     by_type_hash_table=$(echo "$by_type_hash_table" | sed '$ s/,$//')
     by_type_hash_table=$(echo "$by_type_hash_table" | sed '$ s/,$//')
 fi
 
 # ============================================================================
-# GÉNÉRATION MASTER INDEX.JSON
+# MASTER INDEX.JSON GENERATION
 # ============================================================================
 
 echo "  Writing master index.json..."

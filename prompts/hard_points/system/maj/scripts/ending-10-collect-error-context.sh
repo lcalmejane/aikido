@@ -4,10 +4,10 @@ set -euo pipefail
 SOURCE_DIR="${1:-.}"
 FAILED_PLAN="${2:-UNKNOWN}"
 ERROR_CODE="${3:-1}"
-ERROR_MESSAGE="${4:-Aucun message}"
+ERROR_MESSAGE="${4:-No message}"
 
 echo "==============================================================="
-echo "GESTION ERREURS - DIAGNOSTIC CENTRALISE"
+echo "ERROR HANDLING - CENTRALIZED DIAGNOSTIC"
 echo "==============================================================="
 echo ""
 

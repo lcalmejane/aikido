@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ending-5-display-tmp-aikido.sh - Afficher infos /tmp/aikido
+# ending-5-display-tmp-aikido.sh - Display /tmp/aikido info
 # Usage: ending-5-display-tmp-aikido.sh
 
 if [ -n "$BASH_VERSION" ]; then
@@ -17,23 +17,23 @@ if [ -d "/tmp/aikido" ]; then
   TMP_AIKIDO_SIZE=$(du -sh /tmp/aikido 2>/dev/null | cut -f1)
   TMP_AIKIDO_COUNT=$(find /tmp/aikido -type f 2>/dev/null | wc -l | tr -d ' ')
 
-  echo "📁 Répertoire : /tmp/aikido"
+  echo "📁 Directory: /tmp/aikido"
   echo "   Taille     : $TMP_AIKIDO_SIZE"
-  echo "   Fichiers   : $TMP_AIKIDO_COUNT"
+  echo "   Files      : $TMP_AIKIDO_COUNT"
   echo ""
 
-  echo "📋 Fichiers principaux :"
+  echo "📋 Main files:"
   ls -lh /tmp/aikido/*.json /tmp/aikido/*.txt 2>/dev/null | awk '{print "   " $9 " (" $5 ")"}'
   echo ""
 
-  echo "💡 Ces fichiers peuvent être conservés pour diagnostic"
-  echo "   ou supprimés pour libérer de l'espace :"
+  echo "💡 These files can be kept for diagnostics"
+  echo "   or removed to free up space:"
   echo ""
   echo "   rm -rf /tmp/aikido"
   echo ""
   echo "$TMP_AIKIDO_COUNT $TMP_AIKIDO_SIZE"
 else
-  echo "ℹ️  Aucun répertoire /tmp/aikido détecté"
+  echo "ℹ️  No /tmp/aikido directory detected"
   echo ""
   echo "0 0"
 fi

@@ -1995,7 +1995,7 @@ If you retrieve a bootstrap AI-KIDO repository (empty structure), follow these s
 Run the following command in Claude Code:
 
 ```
-Exécute le fichier prompts/hard_points/commands/check-claude.md pour vérifier l'état de la Memory Bank AI-KIDO et générer les fichiers de compatibilité Claude Code
+Run prompts/hard_points/commands/check-claude.md to check the state of the AI-KIDO Memory Bank and generate the Claude Code compatibility files
 ```
 
 > 🇬🇧 English equivalent: *Run the file prompts/hard_points/commands/check-claude.md to check the state of the AI-KIDO Memory Bank and generate the Claude Code compatibility files.*
@@ -2286,7 +2286,7 @@ All commands are documented in [`prompts/hard_points/commands/`](prompts/hard_po
 To get started with an AI-KIDO bootstrap under Claude Code:
 
 ```
-Exécute le fichier prompts/hard_points/commands/check-claude.md pour vérifier l'état de la Memory Bank AI-KIDO et générer les fichiers de compatibilité Claude Code
+Run prompts/hard_points/commands/check-claude.md to check the state of the AI-KIDO Memory Bank and generate the Claude Code compatibility files
 ```
 
 > 🇬🇧 English equivalent: *Run the file prompts/hard_points/commands/check-claude.md to check the state of the AI-KIDO Memory Bank and generate the Claude Code compatibility files.*

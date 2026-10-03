@@ -18,7 +18,7 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPT_NAME="$(basename "${BASH_SOURCE[0]}")"
 
-# Fichiers requis mono-projet
+# Required files for mono-project
 MONO_REQUIRED_FILES=(
     "prompts/index.md"
     "prompts/gen/index.md"
@@ -26,7 +26,7 @@ MONO_REQUIRED_FILES=(
     "AGENTS.md"
 )
 
-# Fichiers requis multi-projet (base)
+# Required files for multi-project (base)
 MULTI_REQUIRED_FILES=(
     "prompts/index.md"
     "prompts/hard_points/ai-kido.md"
@@ -70,12 +70,12 @@ Usage: $SCRIPT_NAME [--type mono|multi|auto] [--json]
 
 Options:
   --type TYPE    Type de projet (mono, multi, auto)
-                 auto = détection automatique (défaut)
+                 auto = automatic detection (default)
   --json         Sortie au format JSON
   -h, --help     Affiche cette aide
 
 Exemples:
-  # Détection automatique
+  # Automatic detection
   $SCRIPT_NAME
   
   # Validation mono-projet
@@ -85,7 +85,7 @@ Exemples:
   $SCRIPT_NAME --type multi --json
 
 Sortie:
-  Affiche les fichiers requis et leur statut (✅/❌)
+  Displays required files and their status (✅/❌)
   
 Format JSON (avec --json):
   {
@@ -97,7 +97,7 @@ Format JSON (avec --json):
 
 Codes de sortie:
   0  Structure valide
-  1  Structure invalide (fichiers manquants)
+  1  Invalid structure (missing files)
   2  Arguments invalides
 EOF
 }
@@ -107,7 +107,7 @@ EOF
 # ═══════════════════════════════════════════════════════════════
 
 detect_project_type() {
-    # Détection basée sur présence de prompts/gen/index.md
+    # Detection based on the presence of prompts/gen/index.md
     if [ -f "prompts/gen/index.md" ]; then
         echo "mono"
     elif [ -d "prompts" ] && [ $(find prompts -maxdepth 1 -type d ! -name prompts ! -name gen ! -name hard_points ! -name spec | wc -l) -gt 0 ]; then
@@ -138,7 +138,7 @@ validate_mono() {
             missing+=("$file")
             valid=false
             if [ "$json_mode" = "false" ]; then
-                log_error "$file manquant"
+                log_error "$file missing"
             fi
         fi
     done
@@ -157,7 +157,7 @@ EOF
         if [ "$valid" = "true" ]; then
             log_success "Structure mono-projet VALIDE"
         else
-            log_error "Structure mono-projet INVALIDE (${#missing[@]} fichiers manquants)"
+            log_error "INVALID mono-project structure (${#missing[@]} missing files)"
         fi
     fi
     
@@ -175,7 +175,7 @@ validate_multi() {
         echo ""
     fi
     
-    # Vérifier fichiers base
+    # Check base files
     for file in "${MULTI_REQUIRED_FILES[@]}"; do
         if [ -f "$file" ]; then
             present+=("$file")
@@ -186,12 +186,12 @@ validate_multi() {
             missing+=("$file")
             valid=false
             if [ "$json_mode" = "false" ]; then
-                log_error "$file manquant"
+                log_error "$file missing"
             fi
         fi
     done
     
-    # Détecter projets
+    # Detect projects
     local projects=()
     if [ -d "prompts" ]; then
         while IFS= read -r -d '' project_dir; do
@@ -199,7 +199,7 @@ validate_multi() {
             if [ "$project_name" != "gen" ] && [ "$project_name" != "hard_points" ] && [ "$project_name" != "spec" ]; then
                 projects+=("$project_name")
                 
-                # Vérifier index.md du projet
+                # Check the project's index.md
                 local project_index="prompts/$project_name/index.md"
                 if [ -f "$project_index" ]; then
                     present+=("$project_index")
@@ -210,7 +210,7 @@ validate_multi() {
                     missing+=("$project_index")
                     valid=false
                     if [ "$json_mode" = "false" ]; then
-                        log_error "$project_index manquant"
+                        log_error "$project_index missing"
                     fi
                 fi
             fi
@@ -229,7 +229,7 @@ validate_multi() {
 EOF
     else
         echo ""
-        log_info "Projets détectés : ${#projects[@]}"
+        log_info "Projects detected: ${#projects[@]}"
         for project in "${projects[@]}"; do
             echo "  - $project"
         done
@@ -237,7 +237,7 @@ EOF
         if [ "$valid" = "true" ]; then
             log_success "Structure multi-projet VALIDE"
         else
-            log_error "Structure multi-projet INVALIDE (${#missing[@]} fichiers manquants)"
+            log_error "INVALID multi-project structure (${#missing[@]} missing files)"
         fi
     fi
     
@@ -274,11 +274,11 @@ main() {
         esac
     done
     
-    # Détection automatique si nécessaire
+    # Automatic detection if needed
     if [ "$project_type" = "auto" ]; then
         project_type=$(detect_project_type)
         if [ "$json_mode" = "false" ]; then
-            log_info "Type détecté : $project_type"
+            log_info "Type detected: $project_type"
             echo ""
         fi
     fi
@@ -303,7 +303,7 @@ main() {
     esac
 }
 
-# Exécuter si appelé directement
+# Run if called directly
 if [ "${BASH_SOURCE[0]}" = "${0}" ]; then
     main "$@"
 fi

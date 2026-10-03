@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# generate-index-by-alpha.sh - Génération index by-alphabetical (références ID uniquement)
+# generate-index-by-alpha.sh - by-alphabetical index generation (ID references only)
 # Version 3.1 - Hash-based ID normalization
 
 if [ -n "$BASH_VERSION" ]; then
@@ -20,7 +20,7 @@ TIMESTAMP_ISO=$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)
 # Source utilities
 source "$SCRIPT_DIR/lib/hash-utils.sh"
 
-# Créer répertoire output
+# Create output directory
 mkdir -p "$PROJECT_ROOT/$OUTPUT_DIR"
 
 echo "Generating by-alphabetical index (ID references only)..."
@@ -32,15 +32,15 @@ if [[ ! -d "$BY_ID_DIR" ]]; then
     exit 1
 fi
 
-# Créer fichier temporaire avec name + ID
+# Create temp file with name + ID
 temp_file=$(mktemp)
 
-# Extraire name + ID depuis by-id batches
+# Extract name + ID from by-id batches
 for batch_file in "$BY_ID_DIR"/index-id-*.json; do
     jq -r '.files | to_entries[] | "\(.value.name)|\(.key)"' "$batch_file" >> "$temp_file"
 done
 
-# Trier alphabétiquement par name et grouper homonymes avec awk (bash 3.x compatible)
+# Sort alphabetically by name and group homonyms with awk (bash 3.x compatible)
 grouped_file=$(mktemp)
 
 # Grouper par name : name|id1,id2,id3
@@ -74,16 +74,16 @@ echo "  Unique names: $unique_names"
 echo "  Homonyms: $((total_names - unique_names))"
 echo ""
 
-# Définir plages alphabétiques (équilibrées pour ~1000 entries/batch)
-# Stratégie simple : diviser alphabet en plages équilibrées
-# Pour 5000 fichiers : a-d, e-m, n-z (3 batches)
+# Define alphabetical ranges (balanced for ~1000 entries/batch)
+# Simple strategy: split the alphabet into balanced ranges
+# For 5000 files: a-d, e-m, n-z (3 batches)
 
-# Déterminer nombre de batches nécessaires
+# Determine the number of batches needed
 num_batches=$(( (unique_names + BATCH_SIZE - 1) / BATCH_SIZE ))
 echo "  Creating $num_batches batches..."
 echo ""
 
-# Créer batches
+# Create batches
 batch_num=0
 current_count=0
 first_char=""
@@ -91,14 +91,14 @@ last_char=""
 current_batch_file=""
 
 while IFS='|' read -r name ids; do
-    # Nouveau batch si nécessaire
+    # New batch if needed
     if [[ $(( current_count % BATCH_SIZE )) -eq 0 ]]; then
-        # Fermer batch précédent
+        # Close previous batch
         if [[ $batch_num -gt 0 ]]; then
             echo "  }" >> "$current_batch_file"
             echo "}" >> "$current_batch_file"
 
-            # Update metadata avec range réelle (bash 3.x compatible)
+            # Update metadata with actual range (bash 3.x compatible)
             range_start=$(echo "$first_char" | tr '[:upper:]' '[:lower:]')
             range_end=$(echo "$last_char" | tr '[:upper:]' '[:lower:]')
             sed -i.bak "s/\"range\": \[\"?\", \"?\"\]/\"range\": [\"$range_start\", \"$range_end\"]/" "$current_batch_file"
@@ -128,18 +128,18 @@ EOF
         current_count=0
     fi
 
-    # Écrire name → [IDs]
+    # Write name → [IDs]
     IFS=',' read -ra id_array <<< "$ids"
 
     if [[ $current_count -eq 0 ]]; then
-        # Première entrée du batch (pas de virgule)
+        # First entry of the batch (no comma)
         if [[ ${#id_array[@]} -eq 1 ]]; then
             echo "    \"$(json_escape "$name")\": [\"${id_array[0]}\"]" >> "$current_batch_file"
         else
             echo "    \"$(json_escape "$name")\": [$(printf '\"%s\",' "${id_array[@]}" | sed 's/,$//')]" >> "$current_batch_file"
         fi
     else
-        # Entrées suivantes (avec virgule)
+        # Following entries (with comma)
         if [[ ${#id_array[@]} -eq 1 ]]; then
             echo "    ,\"$(json_escape "$name")\": [\"${id_array[0]}\"]" >> "$current_batch_file"
         else

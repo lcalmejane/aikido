@@ -1,383 +1,385 @@
-# AI-KIDO LIGHT - Guide Pratique pour Bases Légères
+# AI-KIDO LIGHT - Practical Guide for Lightweight Bases
 
-> **Version**: 1.3.1-LIGHT | **Usage**: Configuration allégée d'AI-KIDO pour agents unitaires
+> **Version**: 1.3.1-LIGHT | **Usage**: Lightweight AI-KIDO configuration for unit agents
 >
-> Ce document définit les règles spécifiques pour l'initialisation et la gestion d'une base AI-KIDO en mode LIGHT.
+> This document defines the specific rules for initializing and managing an AI-KIDO base in LIGHT mode.
 
-## RÉFÉRENCE AU STANDARD
+## REFERENCE TO THE STANDARD
 
-Ce document est une **spécialisation** de [`ai-kido.md`](ai-kido.md). Toutes les règles du standard s'appliquent, sauf celles explicitement redéfinies ci-dessous pour le mode LIGHT.
+This document is a **specialization** of [`ai-kido.md`](ai-kido.md). All standard rules apply, except those explicitly redefined below for LIGHT mode.
 
-**PRÉFIX DE PROMPT GENERAL**:
+**GENERAL PROMPT PREFIX**:
 
 ```
-Sauf pour les agents internes "agent-aikido-*",Après analyse de la question et avant d'y répondre, utiliser le fichier prompts/index.md pour faire un parcours recursif pertinent afin de récupérer les infos strictement utiles à la compréhension de la demande.
+Except for internal "agent-aikido-*" agents: after analyzing the question and before answering, use prompts/index.md for a relevant recursive traversal to retrieve information strictly useful for understanding the request.
 ```
 
-**EXCEPTIONS**: Ce pré-prompt ne s'applique PAS :
+**EXCEPTIONS**: This pre-prompt does NOT apply:
 
-- Aux agents internes AI-KIDO (préfixe `agent-aikido-*`) qui possèdent déjà les règles nécessaires
+- To internal AI-KIDO agents (prefix `agent-aikido-*`), which already have the necessary rules
 
-**PRINCIPE FONDAMENTAL**: Une base LIGHT privilégie la **densité maximale** et le **minimum de fichiers** pour approcher la notion d'**agent unitaire** définie dans [`AGENTS.md`](../../AGENTS.md).
+**FUNDAMENTAL PRINCIPLE**: A LIGHT base favors **maximum density** and the **minimum number of files** to approach the **unit agent** notion defined in [`AGENTS.md`](../../AGENTS.md).
 
-## CARACTÉRISTIQUES D'UNE BASE LIGHT
+## CHARACTERISTICS OF A LIGHT BASE
 
-### Objectifs du Mode Light
+### Light Mode Goals
 
-1. **Légèreté**: Minimum de fichiers, maximum d'efficacité
-2. **Densité**: Information maximale par fichier
-3. **Simplicité**: Structure réduite au strict nécessaire
-4. **Agent Unitaire**: Approche mono-agent ou multi-agents très restreint
-5. **Rapidité**: Temps de parcours minimal pour le LLM
+1. **Lightness**: Minimum files, maximum efficiency
+2. **Density**: Maximum information per file
+3. **Simplicity**: Structure reduced to the strict minimum
+4. **Unit Agent**: Single-agent or very limited multi-agent approach
+5. **Speed**: Minimal traversal time for the LLM
 
-### Différences avec le Mode Standard
+### Differences from Standard Mode
 
-| Aspect | Mode Standard | Mode Light |
+| Aspect | Standard Mode | Light Mode |
 |--------|--------------|------------|
-| **Fichiers concepts** | Multiple fichiers thématiques | 1 seul fichier unifié |
-| **Fichiers techniques** | Multiple fichiers par domaine | 1 seul fichier unifié |
-| **Personas** | 6-12 personas spécialisés | 3-5 personas maximum |
-| **Use cases** | 8-15 cas d'usage | 3-5 cas d'usage maximum |
-| **RACI** | Matrice complète multi-acteurs | Acteur unique ou minimal (optionnel) |
-| **Profondeur arbre** | 3-4 niveaux | 2-3 niveaux maximum |
-| **Hard points** | Structure complète | Structure minimale |
+| **Concept files** | Multiple thematic files | 1 single unified file |
+| **Technique files** | Multiple files per domain | 1 single unified file |
+| **Personas** | 6-12 specialized personas | 3-5 personas maximum |
+| **Use cases** | 8-15 use cases | 3-5 use cases maximum |
+| **RACI** | Full multi-actor matrix | Single or minimal actor (optional) |
+| **Tree depth** | 3-4 levels | 2-3 levels maximum |
+| **Hard points** | Full structure | Minimal structure |
 
-## RÈGLES ARCHITECTURALES ADAPTÉES
+## ADAPTED ARCHITECTURAL RULES
 
-### Règles Modifiées pour Mode Light
+### Rules Modified for Light Mode
 
-Les règles suivantes de [`ai-kido.md`](ai-kido.md) sont **adaptées** pour le mode LIGHT:
+The following rules from [`ai-kido.md`](ai-kido.md) are **adapted** for LIGHT mode:
 
-1. **🌳 Arborescence Simplifiée**: Parcours réduit depuis [`/prompts/index.md`](../index.md)
-2. **📊 Fusion Théorie/Pratique**: Possibilité de fusionner `concepts/` et `techniques/` en fichiers uniques
-3. **⚖️ Arbre Minimal**: Facteur 2-4 enfants/parent, profondeur ≤ 3 niveaux
-4. **👥 Agents Restreints**: 3-5 personas maximum, approche agent unitaire privilégiée
-5. **🎭 Agent Unique**: Pas d'orchestrateur nécessaire en mode light
-6. **👨‍💼 RACI Optionnel**: Acteur unique ou RACI minimal (2-3 rôles max)
+1. **🌳 Simplified Tree**: Reduced traversal from [`/prompts/index.md`](../index.md)
+2. **📊 Theory/Practice Merge**: `concepts/` and `techniques/` may be merged into single files
+3. **⚖️ Minimal Tree**: 2-4 children per parent, depth ≤ 3 levels
+4. **👥 Limited Agents**: 3-5 personas maximum, unit agent approach preferred
+5. **🎭 Single Agent**: No orchestrator needed in light mode
+6. **👨‍💼 Optional RACI**: Single actor or minimal RACI (2-3 roles max)
 
 
-## STRUCTURE OBLIGATOIRE MODE LIGHT
+## MANDATORY LIGHT MODE STRUCTURE
 
-### Structure Unifiée Light (V1.3+)
+### Unified Light Structure (V1.3+)
 
-**CHANGEMENT MAJEUR V1.3** : Point d'entrée unique `/prompts/index.md` pour mono ET multi-projets light.
+**MAJOR CHANGE V1.3**: Single entry point `/prompts/index.md` for both mono- AND multi-project light setups.
 
 ```
 /prompts/
-├── index.md                    # 🎯 POINT D'ENTRÉE UNIQUE - TOUJOURS CONSULTER EN PREMIER
-├── gen/                        # Connaissances collectives - VERSION LIGHT
-│   ├── concepts/               # 1 SEUL fichier unifié recommandé
-│   │   └── core-concepts.md    # Tous les concepts fusionnés
-│   ├── techniques/             # 1 SEUL fichier unifié recommandé
-│   │   └── core-techniques.md  # Toutes les techniques fusionnées
+├── index.md                    # 🎯 SINGLE ENTRY POINT - ALWAYS CONSULT FIRST
+├── gen/                        # Collective knowledge - LIGHT VERSION
+│   ├── concepts/               # 1 SINGLE unified file recommended
+│   │   └── core-concepts.md    # All concepts merged
+│   ├── techniques/             # 1 SINGLE unified file recommended
+│   │   └── core-techniques.md  # All techniques merged
 │   ├── personas/               # 3-5 personas MAXIMUM
 │   │   ├── index.md
 │   │   ├── persona-1.md
 │   │   ├── persona-2.md
-│   │   └── persona-3.md        # (optionnels: 4 et 5)
-│   └── use_cases/              # 3-5 cas d'usage MAXIMUM
+│   │   └── persona-3.md        # (optional: 4 and 5)
+│   └── use_cases/              # 3-5 use cases MAXIMUM
 │       ├── index.md
 │       ├── use-case-1.md
 │       ├── use-case-2.md
-│       └── use-case-3.md       # (optionnels: 4 et 5)
-├── hard_points/                # Vérités immuables - VERSION MINIMALE
-│   ├── index.md                # Index des hard points
-│   ├── ai-kido-light.md        # Ce fichier
-│   └── [1-3 hard points max]   # Contraintes critiques uniquement
-└── spec/                       # Espaces personnels (optionnel)
-    └── logs/                   # Logs si LLM_TRACIBILITY=TRUE
+│       └── use-case-3.md       # (optional: 4 and 5)
+├── hard_points/                # Immutable truths - MINIMAL VERSION
+│   ├── index.md                # Hard points index
+│   ├── ai-kido-light.md        # This file
+│   └── [1-3 hard points max]   # Critical constraints only
+└── spec/                       # Personal spaces (optional)
+    └── logs/                   # Logs if LLM_TRACIBILITY=TRUE
 ```
 
-### Structure Multi-Projet Light (V1.3+)
+### Multi-Project Light Structure (V1.3+)
 
 ```
 /prompts/
-├── index.md                    # 🎯 POINT D'ENTRÉE UNIQUE - Agrège tous les projets
-│                               #    Pointe vers /prompts/[projet-1]/index.md, /prompts/[projet-2]/index.md, etc.
-├── [projet-1]/
-│   ├── index.md                # 📚 Point d'entrée projet-1 (référence gen/, hard_points/)
-│   ├── gen/                    # Connaissances projet-1 (light)
-│   │   ├── index.md            # Navigateur interne gen/ projet-1
+├── index.md                    # 🎯 SINGLE ENTRY POINT - Aggregates all projects
+│                               #    Points to /prompts/[project-1]/index.md, /prompts/[project-2]/index.md, etc.
+├── [project-1]/
+│   ├── index.md                # 📚 Project-1 entry point (references gen/, hard_points/)
+│   ├── gen/                    # Project-1 knowledge (light)
+│   │   ├── index.md            # Internal navigator for project-1 gen/
 │   │   ├── concepts/core-concepts.md
 │   │   ├── techniques/core-techniques.md
 │   │   ├── personas/           # 3-5 max
 │   │   └── use_cases/          # 3-5 max
 │   └── hard_points/            # 1-3 max
-├── [projet-2]/
-│   ├── index.md                # 📚 Point d'entrée projet-2
-│   └── gen/...                 # Idem light pour projet-2
-└── spec/                       # Espaces personnels
+├── [project-2]/
+│   ├── index.md                # 📚 Project-2 entry point
+│   └── gen/...                 # Same light layout for project-2
+└── spec/                       # Personal spaces
 ```
 
-**Navigation Multi-Projet Light** :
+**Multi-Project Light Navigation**:
 
-1. `/prompts/index.md` → Liste et pointe tous les projets
-2. `/prompts/[projet-n]/index.md` → Point d'entrée spécifique du projet
-3. `/prompts/[projet-n]/gen/index.md` → Navigation interne du projet
+1. `/prompts/index.md` → Lists and points to all projects
+2. `/prompts/[project-n]/index.md` → Project-specific entry point
+3. `/prompts/[project-n]/gen/index.md` → Project internal navigation
 
-## RÈGLES DE CRÉATION MODE LIGHT
+## LIGHT MODE CREATION RULES
 
-### Fusion des Fichiers Concepts et Techniques
+### Merging Concept and Technique Files
 
-**PRINCIPE**: Privilégier UN SEUL fichier par catégorie pour maximiser la densité.
+**PRINCIPLE**: Prefer ONE SINGLE file per category to maximize density.
 
-#### Structure du Fichier Unifié Concepts
+#### Unified Concepts File Structure
 
 ```markdown
-# Concepts Fondamentaux - Base Light
+# Core Concepts - Light Base
 > Version: X.Y | Date: YYYY-MM-DD | Mode: LIGHT
 
-## Vue d'ensemble
-[Vision globale du projet en 2-3 paragraphes maximum]
+## Overview
+[Global project vision in 2-3 paragraphs maximum]
 
-## Concepts Clés
-### Concept 1: [Nom]
-[Description ultra-dense avec schéma Mermaid si pertinent]
+## Key Concepts
+### Concept 1: [Name]
+[Ultra-dense description with Mermaid diagram if relevant]
 
-### Concept 2: [Nom]
-[Description ultra-dense avec schéma Mermaid si pertinent]
+### Concept 2: [Name]
+[Ultra-dense description with Mermaid diagram if relevant]
 
-### Concept 3: [Nom]
-[Description ultra-dense avec schéma Mermaid si pertinent]
+### Concept 3: [Name]
+[Ultra-dense description with Mermaid diagram if relevant]
 
-## Glossaire Essentiel
-[Uniquement les 10-15 termes les plus critiques]
+## Essential Glossary
+[Only the 10-15 most critical terms]
 
-## Relations et Dépendances
-[Schéma Mermaid de synthèse]
+## Relationships and Dependencies
+[Summary Mermaid diagram]
 ```
 
-#### Structure du Fichier Unifié Techniques
+#### Unified Techniques File Structure
 
 ```markdown
-# Techniques Pratiques - Base Light
+# Practical Techniques - Light Base
 > Version: X.Y | Date: YYYY-MM-DD | Mode: LIGHT
 
-## Vue d'ensemble
-[Approche technique globale en 2-3 paragraphes]
+## Overview
+[Global technical approach in 2-3 paragraphs]
 
-## Techniques Essentielles
-### Technique 1: [Nom]
-[Méthode + exemple concret en format ultra-dense]
+## Essential Techniques
+### Technique 1: [Name]
+[Method + concrete example in ultra-dense format]
 
-### Technique 2: [Nom]
-[Méthode + exemple concret en format ultra-dense]
+### Technique 2: [Name]
+[Method + concrete example in ultra-dense format]
 
-### Technique 3: [Nom]
-[Méthode + exemple concret en format ultra-dense]
+### Technique 3: [Name]
+[Method + concrete example in ultra-dense format]
 
-## Patterns et Best Practices
-[Liste condensée des patterns critiques]
+## Patterns and Best Practices
+[Condensed list of critical patterns]
 
-## Stack Technique
-[Technologies essentielles uniquement]
+## Tech Stack
+[Essential technologies only]
 ```
 
-### Personas en Mode Light
+### Personas in Light Mode
 
-**CONTRAINTE**: 3-5 personas MAXIMUM
-**PRINCIPE**: Le RACI est **optionnel** ou **minimal** en mode light.
-## WORKFLOW LIGHT ADAPTÉ
-### Workflow Standard LLM en Mode Light
+**CONSTRAINT**: 3-5 personas MAXIMUM
+**PRINCIPLE**: RACI is **optional** or **minimal** in light mode.
 
-1. **LOGS**: Log si LLM_TRACIBILITY=TRUE (optionnel en light)
-2. **ANALYSE**: Identifier le domaine (simplifié)
-3. **CONSULTATION**: Vérifier [`/prompts/index.md`](../index.md) (version light)
-4. **FICHIERS UNIFIÉS**: Consulter `core-concepts.md` et `core-techniques.md`
-5. **HARD POINTS**: Contrôler les 1-3 contraintes critiques
-6. **PERSONA**: Adopter un des 3-5 personas disponibles
-7. **RÉPONSE**: Générer selon standards (densité maximale)
-8. **VALIDATION**: Vérifier cohérence (simplifiée)
+## ADAPTED LIGHT WORKFLOW
 
-### Optimisations Spécifiques Mode Light
+### Standard LLM Workflow in Light Mode
 
-- **Parcours Réduit**: Moins de fichiers à consulter
-- **Décisions Rapides**: Moins de contexte à analyser
-- **Réponses Directes**: Moins de validation croisée nécessaire
-- **Tokens Économisés**: Structure minimale = moins de tokens
+1. **LOGS**: Log if LLM_TRACIBILITY=TRUE (optional in light)
+2. **ANALYSIS**: Identify the domain (simplified)
+3. **CONSULTATION**: Check [`/prompts/index.md`](../index.md) (light version)
+4. **UNIFIED FILES**: Consult `core-concepts.md` and `core-techniques.md`
+5. **HARD POINTS**: Check the 1-3 critical constraints
+6. **PERSONA**: Adopt one of the 3-5 available personas
+7. **ANSWER**: Generate according to standards (maximum density)
+8. **VALIDATION**: Check consistency (simplified)
 
-## INITIALISATION D'UNE BASE LIGHT
+### Light Mode Specific Optimizations
 
-### Commande d'Initialisation
+- **Reduced Traversal**: Fewer files to consult
+- **Fast Decisions**: Less context to analyze
+- **Direct Answers**: Less cross-validation needed
+- **Tokens Saved**: Minimal structure = fewer tokens
 
-La commande d'initialisation doit proposer le choix entre mode STANDARD et mode LIGHT:
+## INITIALIZING A LIGHT BASE
+
+### Initialization Command
+
+The initialization command must offer the choice between STANDARD and LIGHT mode:
 
 ```bash
-# Exemple de prompt d'initialisation
-Quel mode AI-KIDO souhaitez-vous initialiser ?
-1. Mode STANDARD (structure complète, multi-agents)
-2. Mode LIGHT (structure minimale, agent unitaire)
+# Example initialization prompt
+Which AI-KIDO mode do you want to initialize?
+1. STANDARD mode (full structure, multi-agent)
+2. LIGHT mode (minimal structure, unit agent)
 
-Choix: [1/2]
+Choice: [1/2]
 ```
 
-### Création Automatique en Mode Light
+### Automatic Creation in Light Mode
 
-Lors de l'initialisation en mode LIGHT, créer automatiquement:
+When initializing in LIGHT mode, automatically create:
 
-1. **Structure minimale**:
-   - `/prompts/index.md` (point d'entrée unique V1.3)
+1. **Minimal structure**:
+   - `/prompts/index.md` (single entry point V1.3)
    - `/prompts/gen/concepts/core-concepts.md`
    - `/prompts/gen/techniques/core-techniques.md`
-   - `/prompts/gen/personas/index.md` + 3 personas de base
-   - `/prompts/gen/use_cases/index.md` + 3 use cases de base
+   - `/prompts/gen/personas/index.md` + 3 base personas
+   - `/prompts/gen/use_cases/index.md` + 3 base use cases
 
-2. **Hard points minimaux**:
-   - `/prompts/hard_points/index.md` (version light)
-   - `/prompts/hard_points/ai-kido-light.md` (ce fichier)
+2. **Minimal hard points**:
+   - `/prompts/hard_points/index.md` (light version)
+   - `/prompts/hard_points/ai-kido-light.md` (this file)
 
-3. **AGENTS.md**: Version light avec 3-5 agents maximum
+3. **AGENTS.md**: Light version with 3-5 agents maximum
 
-### Migration Standard → Light
+### Standard → Light Migration
 
-Pour convertir une base standard en light:
+To convert a standard base to light:
 
-1. **Fusionner** les fichiers concepts en `core-concepts.md`
-2. **Fusionner** les fichiers techniques en `core-techniques.md`
-3. **Réduire** les personas à 3-5 maximum (fusion des rôles)
-4. **Réduire** les use cases à 3-5 maximum (cas critiques)
-5. **Simplifier** ou supprimer le RACI si acteur unique
-6. **Mettre à jour** `AGENTS.md` avec la structure light
+1. **Merge** the concept files into `core-concepts.md`
+2. **Merge** the technique files into `core-techniques.md`
+3. **Reduce** personas to 3-5 maximum (merge roles)
+4. **Reduce** use cases to 3-5 maximum (critical cases)
+5. **Simplify** or remove the RACI if there is a single actor
+6. **Update** `AGENTS.md` with the light structure
 
-## MÉTRIQUES DE QUALITÉ MODE LIGHT
+## LIGHT MODE QUALITY METRICS
 
-### Métriques Spécifiques
+### Specific Metrics
 
-- **Nombre de Fichiers**: ≤ 15 fichiers total dans `/prompts/gen/`
-- **Nombre de Personas**: 3-5 maximum
-- **Nombre de Use Cases**: 3-5 maximum
-- **Profondeur Arbre**: ≤ 3 niveaux
-- **Densité par Fichier**: > 80% d'information utile
-- **Temps de Parcours LLM**: < 50% du mode standard
+- **Number of Files**: ≤ 15 files total in `/prompts/gen/`
+- **Number of Personas**: 3-5 maximum
+- **Number of Use Cases**: 3-5 maximum
+- **Tree Depth**: ≤ 3 levels
+- **Density per File**: > 80% useful information
+- **LLM Traversal Time**: < 50% of standard mode
 
-### Validation de Conformité Light
+### Light Compliance Validation
 
-**Checklist de Validation**:
+**Validation Checklist**:
 
-- ✅ Fichiers concepts fusionnés ou ≤ 3 fichiers
-- ✅ Fichiers techniques fusionnés ou ≤ 3 fichiers
+- ✅ Concept files merged or ≤ 3 files
+- ✅ Technique files merged or ≤ 3 files
 - ✅ 3-5 personas maximum
 - ✅ 3-5 use cases maximum
-- ✅ RACI absent ou minimal (≤ 3 rôles)
-- ✅ Hard points ≤ 3 fichiers
-- ✅ Profondeur arbre ≤ 3 niveaux
-- ✅ Densité sémantique maximale
+- ✅ RACI absent or minimal (≤ 3 roles)
+- ✅ Hard points ≤ 3 files
+- ✅ Tree depth ≤ 3 levels
+- ✅ Maximum semantic density
 
-## QUAND UTILISER LE MODE LIGHT
+## WHEN TO USE LIGHT MODE
 
-### Cas d'Usage Recommandés
+### Recommended Use Cases
 
-**Mode LIGHT est recommandé pour**:
+**LIGHT mode is recommended for**:
 
-- Projets solo ou petites équipes (1-3 personnes)
-- Prototypes et POCs
-- Microservices unitaires
-- Scripts et outils simples
-- Projets avec scope bien défini et limité
-- Contextes nécessitant rapidité d'exécution LLM
+- Solo projects or small teams (1-3 people)
+- Prototypes and POCs
+- Unit microservices
+- Simple scripts and tools
+- Projects with a well-defined, limited scope
+- Contexts requiring fast LLM execution
 
-**Mode STANDARD est recommandé pour**:
+**STANDARD mode is recommended for**:
 
-- Grandes équipes (4+ personnes)
-- Projets complexes multi-domaines
-- Applications enterprise
-- Systèmes distribués complexes
-- Projets nécessitant forte traçabilité
-- Contextes multi-stakeholders
+- Large teams (4+ people)
+- Complex multi-domain projects
+- Enterprise applications
+- Complex distributed systems
+- Projects requiring strong traceability
+- Multi-stakeholder contexts
 
-## ÉVOLUTION D'UNE BASE LIGHT
+## EVOLVING A LIGHT BASE
 
-### Passage Light → Standard
+### Light → Standard Transition
 
-Une base light peut évoluer vers le standard si:
+A light base can evolve to standard if:
 
-- L'équipe grandit (> 3 personnes)
-- La complexité augmente significativement
-- Le besoin de spécialisation émerge
-- Le RACI devient nécessaire
+- The team grows (> 3 people)
+- Complexity increases significantly
+- The need for specialization emerges
+- The RACI becomes necessary
 
-**Processus de Migration**:
+**Migration Process**:
 
-1. Identifier les besoins de spécialisation
-2. Éclater `core-concepts.md` en fichiers thématiques
-3. Éclater `core-techniques.md` en fichiers par domaine
-4. Ajouter des personas spécialisés (jusqu'à 12)
-5. Enrichir les use cases (jusqu'à 15)
-6. Créer la matrice RACI complète
-7. Mettre à jour vers [`ai-kido.md`](ai-kido.md) standard
+1. Identify specialization needs
+2. Split `core-concepts.md` into thematic files
+3. Split `core-techniques.md` into per-domain files
+4. Add specialized personas (up to 12)
+5. Enrich the use cases (up to 15)
+6. Create the full RACI matrix
+7. Update to the standard [`ai-kido.md`](ai-kido.md)
 
-### Maintien en Mode Light
+### Staying in Light Mode
 
-Pour maintenir une base en mode light:
+To keep a base in light mode:
 
-- **Résister à la tentation** d'ajouter des fichiers
-- **Fusionner** plutôt que créer de nouveaux fichiers
-- **Densifier** le contenu existant
-- **Supprimer** ce qui devient obsolète
-- **Valider régulièrement** la conformité light
+- **Resist the temptation** to add files
+- **Merge** rather than create new files
+- **Densify** existing content
+- **Delete** what becomes obsolete
+- **Validate light compliance** regularly
 
-## COMPATIBILITÉ AVEC AGENTS.MD
+## AGENTS.MD COMPATIBILITY
 
-### Structure AGENTS.md en Mode Light
+### AGENTS.md Structure in Light Mode
 
 ```markdown
 # AI Agents Configuration - Light Mode
 
 ## Project Context
-- **Project Name**: [Lien vers /prompts/index.md]
-- **Mode**: LIGHT (Agent Unitaire / Multi-agents Minimal)
-- **Architecture**: [Lien vers /prompts/gen/concepts/core-concepts.md]
-- **Tech Stack**: [Lien vers /prompts/gen/techniques/core-techniques.md]
+- **Project Name**: [Link to /prompts/index.md]
+- **Mode**: LIGHT (Unit Agent / Minimal Multi-agent)
+- **Architecture**: [Link to /prompts/gen/concepts/core-concepts.md]
+- **Tech Stack**: [Link to /prompts/gen/techniques/core-techniques.md]
 
 ## Available Agents (3-5 Maximum)
 
-### Agent 1: [Nom]
-[Lien vers /prompts/gen/personas/agent-1.md]
-**Responsabilités**: [Liste des domaines couverts]
+### Agent 1: [Name]
+[Link to /prompts/gen/personas/agent-1.md]
+**Responsibilities**: [List of covered domains]
 
-### Agent 2: [Nom]
-[Lien vers /prompts/gen/personas/agent-2.md]
-**Responsabilités**: [Liste des domaines couverts]
+### Agent 2: [Name]
+[Link to /prompts/gen/personas/agent-2.md]
+**Responsibilities**: [List of covered domains]
 
-### Agent 3: [Nom]
-[Lien vers /prompts/gen/personas/agent-3.md]
-**Responsabilités**: [Liste des domaines couverts]
+### Agent 3: [Name]
+[Link to /prompts/gen/personas/agent-3.md]
+**Responsibilities**: [List of covered domains]
 
-## Agent Interaction (Optionnel en Light)
-[Matrice RACI minimale si applicable, sinon "Agent Unitaire"]
+## Agent Interaction (Optional in Light)
+[Minimal RACI matrix if applicable, otherwise "Unit Agent"]
 
 ## Usage Guidelines
-[Lien vers /prompts/gen/use_cases/index.md - 3-5 cas maximum]
+[Link to /prompts/gen/use_cases/index.md - 3-5 cases maximum]
 ```
 
-## RÈGLES CRITIQUES MODE LIGHT
+## CRITICAL LIGHT MODE RULES
 
-### Règles Non Négociables
+### Non-Negotiable Rules
 
-1. **Maximum 5 Personas**: Jamais plus, fusion obligatoire si dépassement
-2. **Maximum 5 Use Cases**: Sélection des cas critiques uniquement
-3. **Fichiers Unifiés Privilégiés**: 1 fichier concepts + 1 fichier techniques recommandé
-4. **Densité Maximale**: Chaque mot doit apporter de la valeur
-5. **RACI Optionnel**: Acteur unique ou minimal (≤ 3 rôles)
-6. **Profondeur ≤ 3**: Arborescence plate privilégiée
-7. **Hard Points Minimaux**: ≤ 3 contraintes critiques
+1. **Maximum 5 Personas**: Never more, merging mandatory if exceeded
+2. **Maximum 5 Use Cases**: Critical cases selection only
+3. **Unified Files Preferred**: 1 concepts file + 1 techniques file recommended
+4. **Maximum Density**: Every word must add value
+5. **Optional RACI**: Single or minimal actor (≤ 3 roles)
+6. **Depth ≤ 3**: Flat tree preferred
+7. **Minimal Hard Points**: ≤ 3 critical constraints
 
-### Signaux d'Alerte
+### Warning Signs
 
-**Une base light doit être revue si**:
+**A light base must be reviewed if**:
 
-- Nombre de fichiers > 15 dans `/prompts/gen/`
-- Nombre de personas > 5
-- Nombre de use cases > 5
-- Profondeur arbre > 3 niveaux
-- RACI avec > 3 rôles
-- Temps de parcours LLM > 50% du standard
+- Number of files > 15 in `/prompts/gen/`
+- Number of personas > 5
+- Number of use cases > 5
+- Tree depth > 3 levels
+- RACI with > 3 roles
+- LLM traversal time > 50% of standard
 
-**Action**: Soit densifier/fusionner, soit migrer vers mode standard.
+**Action**: Either densify/merge, or migrate to standard mode.
 
 ---
 
-**RAPPEL CRITIQUE**: Le mode LIGHT privilégie la **densité** et la **simplicité**. Toute complexification doit être justifiée ou doit déclencher une migration vers le mode STANDARD.
-**RAPPEL CRITIQUE**: Les agents internes `agent-aikido-*` reviennent toujours au mode ou à l'agent qui les a appelés en exécutant `switch_mode` avec le `mode_slug` du caller. Les retours entre modes/agents internes se font au format JSON.(il ne peux pas s'invoquer lui-même de manière autonome).il faut toujours nomer les agents internes au complet avec le préfixe `agent-aikido-`
+**CRITICAL REMINDER**: LIGHT mode favors **density** and **simplicity**. Any added complexity must be justified or must trigger a migration to STANDARD mode.
+**CRITICAL REMINDER**: Internal `agent-aikido-*` agents always return to the mode or agent that called them by running `switch_mode` with the caller's `mode_slug`. Returns between modes/internal agents are in JSON format (an internal agent cannot invoke itself autonomously). Internal agents must always be named in full with the `agent-aikido-` prefix.
 
-**RÉFÉRENCE**: Pour les règles complètes, consulter [`ai-kido.md`](ai-kido.md).
+**REFERENCE**: For the complete rules, see [`ai-kido.md`](ai-kido.md).

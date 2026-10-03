@@ -184,7 +184,7 @@ See [`common/README.md`](common/README.md) for full details and options.
 You are creating the common pack documentation layer for AI-KIDO.
 
 CONTEXT:
-- Project: /Users/lcare/workspace/best-p/ai-kido-best-practices
+- Project: /path/to/ai-kido-best-practices
 - Reference: refactor/phase-4-common-layer.md contains exact file templates
 
 TASK 1 — Create common/README.md:

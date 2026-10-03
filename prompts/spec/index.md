@@ -1,4 +1,4 @@
-# Spécifications personnelles
+# Personal specifications
 
-Ce répertoire est destiné aux spécifications, notes ou expérimentations propres à chaque utilisateur ou projet.  
-Il n’est pas pris en compte par les règles de validation standard, sauf activation explicite.
+This directory is intended for specifications, notes or experiments specific to each user or project.  
+It is not covered by the standard validation rules unless explicitly enabled.

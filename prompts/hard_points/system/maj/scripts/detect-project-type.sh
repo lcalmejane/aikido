@@ -2,7 +2,7 @@
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Script: detect-project-type.sh
-# Description: Détection mono vs multi-projet AI-KIDO
+# Description: Mono vs multi-project detection for AI-KIDO
 # Version: 1.0.0
 # Author: AI-KIDO System
 # ═══════════════════════════════════════════════════════════════════════════
@@ -22,11 +22,11 @@ cmd_detect() {
     local prompts_dir="${1:-.}/prompts"
     
     if [ ! -d "$prompts_dir" ]; then
-        echo "ERROR: Répertoire prompts introuvable"
+        echo "ERROR: prompts directory not found"
         return 1
     fi
     
-    # Compter sous-répertoires (hors gen, hard_points, spec)
+    # Count subdirectories (excluding gen, hard_points, spec)
     local project_dirs=$(find "$prompts_dir" -mindepth 1 -maxdepth 1 -type d \
         ! -name "gen" ! -name "hard_points" ! -name "spec" 2>/dev/null | wc -l)
     
@@ -37,7 +37,7 @@ cmd_detect() {
         echo "MULTI"
         print_info "Type: Multi-projet ($project_dirs projets)"
         
-        # Lister projets
+        # List projects
         find "$prompts_dir" -mindepth 1 -maxdepth 1 -type d \
             ! -name "gen" ! -name "hard_points" ! -name "spec" \
             -exec basename {} \; 2>/dev/null | sort
@@ -48,11 +48,11 @@ usage() {
     cat <<EOF
 Usage: $(basename "$0") detect [prompts_dir]
 
-Détection mono vs multi-projet AI-KIDO
+Mono vs multi-project detection for AI-KIDO
 
 OUTPUT:
-  MONO              Mono-projet (pas de sous-répertoires projets)
-  MULTI             Multi-projet (avec liste projets sur stdout)
+  MONO              Single project (no project subdirectories)
+  MULTI             Multi-project (with project list on stdout)
   projet1
   projet2
   ...
@@ -60,9 +60,9 @@ OUTPUT:
 EXEMPLE:
   TYPE=\$($(basename "$0") detect)
   if [ "\$TYPE" = "MONO" ]; then
-    echo "Mono-projet détecté"
+    echo "Mono-project detected"
   else
-    echo "Multi-projet détecté"
+    echo "Multi-project detected"
   fi
 EOF
 }

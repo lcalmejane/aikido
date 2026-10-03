@@ -20,7 +20,7 @@ This document guides the installation and integration of the Web Skill into the 
 Add the Web Skill:
 
 ```markdown
-- **web** – Le Skill Web d'AI‑KIDO gère les interactions avec le Web : téléchargement de sites, extraction de contenu pertinent, normalisation du HTML et génération de réponses structurées (texte brut ou JSON). – [`prompts/hard_points/system/web/SKILL.md`](prompts/hard_points/system/web/SKILL.md)
+- **web** – The AI‑KIDO Web Skill handles web interactions: site download, relevant content extraction, HTML normalization and structured response generation (plain text or JSON). – [`prompts/hard_points/system/web/SKILL.md`](prompts/hard_points/system/web/SKILL.md)
 ```
 
 ### 2. commands_list.md

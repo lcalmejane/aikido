@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# beginning-detect-versions.sh - Détecter versions CURRENT et TARGET
+# beginning-detect-versions.sh - Detect CURRENT and TARGET versions
 # Usage: beginning-detect-versions.sh <source_dir> <target_dir>
 
 if [ -n "$BASH_VERSION" ]; then
@@ -18,26 +18,26 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-echo "🔍 Détection versions..."
+echo "🔍 Detecting versions..."
 
-# Détecter version actuelle
+# Detect current version
 MAJ_CURRENT_VERSION=$("$SCRIPT_DIR/detect-version.sh" "$SOURCE_DIR/prompts/hard_points/ai-kido.md")
 
-# Détecter version cible
+# Detect target version
 MAJ_TARGET_VERSION=$("$SCRIPT_DIR/detect-version.sh" "$TARGET_DIR/prompts/hard_points/ai-kido.md")
 
 if [ -z "$MAJ_CURRENT_VERSION" ] || [ -z "$MAJ_TARGET_VERSION" ]; then
-  echo "❌ ERREUR : Impossible de détecter les versions" >&2
+  echo "❌ ERROR: Unable to detect versions" >&2
   echo "   CURRENT = ${MAJ_CURRENT_VERSION:-VIDE}" >&2
   echo "   TARGET  = ${MAJ_TARGET_VERSION:-VIDE}" >&2
   exit 1
 fi
 
-echo "ℹ️  Versions détectées :"
+echo "ℹ️  Versions detected:"
 echo "   CURRENT : $MAJ_CURRENT_VERSION"
 echo "   TARGET  : $MAJ_TARGET_VERSION"
 
-# Export pour usage ultérieur
+# Export for later use
 export MAJ_CURRENT_VERSION
 export MAJ_TARGET_VERSION
 

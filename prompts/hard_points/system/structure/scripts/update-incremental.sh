@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# update-incremental.sh - Mise à jour incrémentale V3.1 hash-based IDs
+# update-incremental.sh - Incremental update V3.1 hash-based IDs
 # Version 3.1
 #
 # Usage: ./update-incremental.sh <file_path> [<file_path2> ...]
-# Mise à jour ciblée des index affectés par les changements de fichiers
+# Targeted update of the indexes affected by file changes
 
 if [ -n "$BASH_VERSION" ]; then
   set -euo pipefail   # Bash‑only, portable sur Rocky, Ubuntu, etc.
@@ -27,7 +27,7 @@ log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >&2
 }
 
-# Vérifier présence fichiers index
+# Check presence of index files
 check_indices_exist() {
     if [[ ! -d "$PROJECT_ROOT/$INDICES_DIR/by-id" ]]; then
         log "ERROR: by-id index directory not found. Run generate-all-indexes-v3.1.sh first."
@@ -35,7 +35,7 @@ check_indices_exist() {
     fi
 }
 
-# Extraire métadonnées d'un fichier
+# Extract metadata from a file
 extract_file_metadata() {
     local file_path="$1"
 
@@ -44,17 +44,17 @@ extract_file_metadata() {
         return 1
     fi
 
-    # Utiliser format-file-metadata.sh pour cohérence
+    # Use format-file-metadata.sh for consistency
     format_metadata "$file_path"
 }
 
-# Mettre à jour entry dans by-id batch
+# Update entry in by-id batch
 update_by_id_entry() {
     local file_path="$1"
     local id="$2"
     local metadata_json="$3"
 
-    # Déterminer batch file
+    # Determine batch file
     local batch_file="$PROJECT_ROOT/$INDICES_DIR/$(get_by_id_batch_file "$id")"
 
     log "Updating by-id entry: $id in $(basename "$batch_file")"
@@ -69,12 +69,12 @@ update_by_id_entry() {
 
     # Update ou insert entry
     if jq -e ".files[\"$id\"]" "$batch_file" >/dev/null 2>&1; then
-        # Entry existe, update
+        # Entry exists, update
         jq ".files[\"$id\"] = $metadata_json" "$batch_file" > "${batch_file}.tmp"
         mv "${batch_file}.tmp" "$batch_file"
         log "✅ Updated entry for ID $id"
     else
-        # Entry n'existe pas, insert
+        # Entry does not exist, insert
         jq ".files[\"$id\"] = $metadata_json | .metadata.count += 1" "$batch_file" > "${batch_file}.tmp"
         mv "${batch_file}.tmp" "$batch_file"
         log "✅ Inserted entry for ID $id"
@@ -87,7 +87,7 @@ update_by_id_entry() {
     rm -f "${batch_file}.bak"
 }
 
-# Mettre à jour référence dans by-path
+# Update reference in by-path
 update_by_path_ref() {
     local file_path="$1"
     local id="$2"
@@ -98,7 +98,7 @@ update_by_path_ref() {
     # TODO: Optimiser avec hash table lookup du master index
     for batch_file in "$PROJECT_ROOT/$INDICES_DIR/by-path"/index-path-*.json; do
         if jq -e ".paths[\"$file_path\"]" "$batch_file" >/dev/null 2>&1; then
-            # Trouvé, update
+            # Found, update
             jq ".paths[\"$file_path\"] = \"$id\"" "$batch_file" > "${batch_file}.tmp"
             mv "${batch_file}.tmp" "$batch_file"
             log "✅ Updated by-path ref in $(basename "$batch_file")"
@@ -106,26 +106,26 @@ update_by_path_ref() {
         fi
     done
 
-    # Pas trouvé, déterminer batch d'insertion (TODO: implémenter logique insertion)
+    # Not found, determine insertion batch (TODO: implement insertion logic)
     log "⚠️  Path not found in by-path, might need full regeneration"
 }
 
-# Mettre à jour référence dans by-alphabetical
+# Update reference in by-alphabetical
 update_by_alpha_ref() {
     local filename="$1"
     local id="$2"
 
     log "Updating by-alphabetical reference for $filename → $id"
 
-    # Trouver batch alphabétique correspondant
+    # Find the matching alphabetical batch
     for batch_file in "$PROJECT_ROOT/$INDICES_DIR/by-alphabetical"/index-alpha-*.json; do
         if jq -e ".files[\"$filename\"]" "$batch_file" >/dev/null 2>&1; then
-            # Trouvé, vérifier si ID déjà présent
+            # Found, check whether the ID is already present
             if jq -e ".files[\"$filename\"] | arrays | index(\"$id\")" "$batch_file" >/dev/null 2>&1; then
                 log "✅ ID already in by-alphabetical for $filename"
                 return 0
             else
-                # Ajouter ID au array
+                # Add ID to the array
                 jq ".files[\"$filename\"] += [\"$id\"]" "$batch_file" > "${batch_file}.tmp"
                 mv "${batch_file}.tmp" "$batch_file"
                 log "✅ Added ID to by-alphabetical for $filename"
@@ -137,7 +137,7 @@ update_by_alpha_ref() {
     log "⚠️  Filename not found in by-alphabetical, might need full regeneration"
 }
 
-# Mettre à jour référence dans by-directory
+# Update reference in by-directory
 update_by_dir_ref() {
     local dir_path="$1"
     local id="$2"
@@ -147,12 +147,12 @@ update_by_dir_ref() {
     # Trouver batch directory correspondant
     for batch_file in "$PROJECT_ROOT/$INDICES_DIR/by-directory"/index-dir-*.json; do
         if jq -e ".directories[\"$dir_path\"]" "$batch_file" >/dev/null 2>&1; then
-            # Trouvé, vérifier si ID déjà présent
+            # Found, check whether the ID is already present
             if jq -e ".directories[\"$dir_path\"].ids | index(\"$id\")" "$batch_file" >/dev/null 2>&1; then
                 log "✅ ID already in by-directory for $dir_path"
                 return 0
             else
-                # Ajouter ID au array
+                # Add ID to the array
                 jq ".directories[\"$dir_path\"].ids += [\"$id\"] | .directories[\"$dir_path\"].files_count += 1" "$batch_file" > "${batch_file}.tmp"
                 mv "${batch_file}.tmp" "$batch_file"
                 log "✅ Added ID to by-directory for $dir_path"
@@ -164,7 +164,7 @@ update_by_dir_ref() {
     log "⚠️  Directory not found in by-directory, might need full regeneration"
 }
 
-# Mettre à jour référence dans by-type
+# Update reference in by-type
 update_by_type_ref() {
     local file_type="$1"
     local id="$2"
@@ -175,12 +175,12 @@ update_by_type_ref() {
     local batch_file="$PROJECT_ROOT/$INDICES_DIR/by-type/index-type-${file_type}.json"
 
     if [[ -f "$batch_file" ]]; then
-        # Vérifier si ID déjà présent
+        # Check whether the ID is already present
         if jq -e ".ids | index(\"$id\")" "$batch_file" >/dev/null 2>&1; then
             log "✅ ID already in by-type for $file_type"
             return 0
         else
-            # Ajouter ID au array
+            # Add ID to the array
             jq ".ids += [\"$id\"] | .metadata.count += 1" "$batch_file" > "${batch_file}.tmp"
             mv "${batch_file}.tmp" "$batch_file"
             log "✅ Added ID to by-type for $file_type"
@@ -191,7 +191,7 @@ update_by_type_ref() {
     fi
 }
 
-# Supprimer entry complètement (pour fichiers supprimés)
+# Remove entry completely (for deleted files)
 remove_file_entry() {
     local file_path="$1"
     local id="$2"
@@ -220,7 +220,7 @@ remove_file_entry() {
     log "⚠️  Removal from other indexes not fully implemented, recommend full regeneration"
 }
 
-# Régénérer master index
+# Regenerate master index
 regenerate_master_index() {
     log "Regenerating master index..."
 
@@ -233,7 +233,7 @@ regenerate_master_index() {
     fi
 }
 
-# Process un fichier
+# Process one file
 process_file() {
     local file_path="$1"
 
@@ -241,19 +241,19 @@ process_file() {
     local relative_path="${file_path#"$PROJECT_ROOT"/}"
     relative_path="${relative_path#./}"
 
-    # Générer ID hash
+    # Generate hash ID
     local id=$(generate_file_id "$relative_path")
 
     log "Processing: $relative_path (ID: $id)"
 
-    # Vérifier si fichier existe
+    # Check whether the file exists
     if [[ -f "$PROJECT_ROOT/$relative_path" ]]; then
-        # Fichier existe, update ou insert
+        # File exists, update or insert
 
-        # Extraire métadonnées
+        # Extract metadata
         local metadata_json=$(extract_file_metadata "$PROJECT_ROOT/$relative_path")
 
-        # Update by-id (source de vérité)
+        # Update by-id (source of truth)
         update_by_id_entry "$relative_path" "$id" "$metadata_json"
 
         # Update refs dans autres index
@@ -269,7 +269,7 @@ process_file() {
         update_by_type_ref "$file_type" "$id"
 
     else
-        # Fichier n'existe plus, remove
+        # File no longer exists, remove
         remove_file_entry "$relative_path" "$id"
     fi
 }
@@ -292,15 +292,15 @@ main() {
 
     cd "$PROJECT_ROOT"
 
-    # Vérifier index existent
+    # Check that indexes exist
     check_indices_exist
 
-    # Process chaque fichier
+    # Process each file
     for file_path in "$@"; do
         process_file "$file_path"
     done
 
-    # Régénérer master index (stats globales)
+    # Regenerate master index (global stats)
     regenerate_master_index
 
     log "=== Incremental Update Complete ==="

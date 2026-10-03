@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# generate-index-by-type.sh - Génération index by-type (références ID uniquement)
+# generate-index-by-type.sh - by-type index generation (ID references only)
 # Version 3.1 - Hash-based ID normalization
 
 if [ -n "$BASH_VERSION" ]; then
@@ -20,7 +20,7 @@ TIMESTAMP_ISO=$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)
 # Source utilities
 source "$SCRIPT_DIR/lib/hash-utils.sh"
 
-# Créer répertoire output
+# Create output directory
 mkdir -p "$PROJECT_ROOT/$OUTPUT_DIR"
 
 echo "Generating by-type index (ID references only)..."
@@ -32,10 +32,10 @@ if [[ ! -d "$BY_ID_DIR" ]]; then
     exit 1
 fi
 
-# Créer fichier temporaire avec type + ID
+# Create temp file with type + ID
 temp_file=$(mktemp)
 
-# Extraire type + ID depuis by-id batches
+# Extract type + ID from by-id batches
 for batch_file in "$BY_ID_DIR"/index-id-*.json; do
     jq -r '.files | to_entries[] | "\(.value.type)|\(.key)"' "$batch_file" >> "$temp_file"
 done
@@ -73,14 +73,14 @@ echo "  Total files: $total_files"
 echo "  Unique types: $total_types"
 echo ""
 
-# Générer fichiers par type (split si >1000 IDs)
+# Generate files per type (split if >1000 IDs)
 echo "  Generating type index files..."
 
 while IFS='|' read -r type ids; do
     IFS=',' read -ra id_array <<< "$ids"
     count=${#id_array[@]}
 
-    # Si type a >1000 fichiers, créer plusieurs batches
+    # If a type has >1000 files, create several batches
     if (( count > MAX_IDS_PER_BATCH )); then
         num_type_batches=$(( (count + MAX_IDS_PER_BATCH - 1) / MAX_IDS_PER_BATCH ))
 
@@ -110,7 +110,7 @@ $(printf '    "%s",\n' "${batch_ids[@]}" | sed '$ s/,$//')
 EOF
         done
     else
-        # Type a ≤1000 fichiers, un seul fichier index
+        # Type has ≤1000 files, a single index file
         batch_file_name="index-type-${type}.json"
         batch_file="$PROJECT_ROOT/$OUTPUT_DIR/$batch_file_name"
 

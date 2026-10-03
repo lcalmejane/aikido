@@ -16,7 +16,7 @@ echo ""
 VALIDATION_REPORT="/tmp/aikido/validation-report.md"
 VALIDATION_SUMMARY="/tmp/aikido/validation-summary.txt"
 
-# Attendre génération rapport (timeout 30s)
+# Wait for report generation (30s timeout)
 WAIT_COUNT=0
 while [ ! -f "$VALIDATION_SUMMARY" ] && [ $WAIT_COUNT -lt 30 ]; do
   sleep 1
@@ -24,22 +24,22 @@ while [ ! -f "$VALIDATION_SUMMARY" ] && [ $WAIT_COUNT -lt 30 ]; do
 done
 
 if [ -f "$VALIDATION_SUMMARY" ]; then
-  echo "✅ Rapport de validation détecté"
+  echo "✅ Validation report detected"
   echo ""
   cat "$VALIDATION_SUMMARY"
   echo ""
 
   if grep -q "OK" "$VALIDATION_SUMMARY"; then
-    echo "✅ Validation réussie : Memory Bank conforme"
+    echo "✅ Validation successful: Memory Bank compliant"
     echo "OK"
   else
-    echo "⚠️  Validation partielle : Erreurs détectées"
+    echo "⚠️  Partial validation: errors detected"
     echo ""
-    echo "Voir détails dans : $VALIDATION_REPORT"
+    echo "See details in: $VALIDATION_REPORT"
     echo "KO"
   fi
 else
-  echo "⚠️  Rapport non généré (timeout ou agent non exécuté)"
+  echo "⚠️  Report not generated (timeout or agent not run)"
   echo "UNKNOWN"
 fi
 

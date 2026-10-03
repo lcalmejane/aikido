@@ -14,11 +14,11 @@ MISSING_FILES_COUNT="${3:-0}"
 
 if [ "$MISSING_DIRS_COUNT" -eq 0 ] && [ "$MISSING_FILES_COUNT" -eq 0 ]; then
   echo "═══════════════════════════════════════════════════════════════"
-  echo "✅ AUCUN GAP DÉTECTÉ"
+  echo "✅ NO GAP DETECTED"
   echo "═══════════════════════════════════════════════════════════════"
   echo ""
-  echo "   La Memory Bank est complète"
-  echo "   Aucun peuplement nécessaire"
+  echo "   The Memory Bank is complete"
+  echo "   No population needed"
   echo ""
   exit 0
 fi
@@ -34,49 +34,49 @@ if [ ! -f "$POPULATE_AGENT" ]; then
   echo "⚠️  Agent-aikido-bank-populate introuvable : $POPULATE_AGENT"
   echo "   Peuplement automatique impossible"
   echo ""
-  echo "📝 Recommandations manuelles : voir gaps détectés ci-dessus"
+  echo "📝 Manual recommendations: see gaps detected above"
   echo ""
   exit 0
 fi
 
-echo "✅ Agent-aikido-bank-populate disponible"
+echo "✅ Agent-aikido-bank-populate available"
 echo ""
-echo "📝 Préparation contexte de peuplement..."
+echo "📝 Preparing population context..."
 
 POPULATE_CONTEXT="/tmp/aikido/populate-context-$$.md"
 
 cat > "$POPULATE_CONTEXT" <<'POPULATE'
 # 🌱 PEUPLEMENT MEMORY BANK AI-KIDO
 
-Vous êtes l'**agent-aikido-bank-populate**. Votre mission est de peupler les gaps détectés dans la Memory Bank.
+You are **agent-aikido-bank-populate**. Your mission is to populate the gaps detected in the Memory Bank.
 
 ## Mission
 
-1. **Créer répertoires manquants** avec permissions 755
-2. **Générer fichiers index.md** pour chaque répertoire
-3. **Créer listes** (agents_list.md, commands_list.md, skills_list.md) si manquantes
-4. **Peupler avec contenu minimal** conforme AI-KIDO
+1. **Create missing directories** with 755 permissions
+2. **Generate index.md files** for each directory
+3. **Create lists** (agents_list.md, commands_list.md, skills_list.md) if missing
+4. **Populate with minimal content** compliant with AI-KIDO
 
-## Règles
+## Rules
 
-- Conformité strict AI-KIDO (≤500 lignes, frontmatter, liens)
+- Strict AI-KIDO compliance (≤500 lines, frontmatter, links)
 - Templates depuis prompts/hard_points/
 - Pas de duplication
 
 ## Action
 
-Exécuter le peuplement MAINTENANT (création uniquement, pas de modification fichiers existants).
+Run the population NOW (creation only, no modification of existing files).
 POPULATE
 
-echo "✅ Contexte créé : $POPULATE_CONTEXT"
+echo "✅ Context created: $POPULATE_CONTEXT"
 echo ""
-echo "⚡ Pour exécuter le peuplement :"
+echo "⚡ To run the population:"
 echo "   Le LLM doit :"
-echo "   1. Lire $POPULATE_AGENT"
-echo "   2. Lire $POPULATE_CONTEXT"
-echo "   3. Créer répertoires/fichiers manquants"
-echo "   4. Générer contenu conforme"
+echo "   1. Read $POPULATE_AGENT"
+echo "   2. Read $POPULATE_CONTEXT"
+echo "   3. Create missing directories/files"
+echo "   4. Generate compliant content"
 echo ""
-echo "   OU exécuter manuellement :"
+echo "   OR run manually:"
 echo "   /bank-populate --gaps-only"
 echo ""

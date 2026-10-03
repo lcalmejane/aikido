@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# watch-changes.sh - Surveillance des changements fichiers pour système AI-KIDO
+# watch-changes.sh - File change monitoring for the AI-KIDO system
 # Usage: ./watch-changes.sh [--daemon] [--notify=agent] [--exclude=pattern]
 #
-# Fonctionnalités:
-# - Surveillance temps réel des modifications fichiers
-# - Notifications aux agents concernés (projet-index, indexer, etc.)
+# Features:
+# - Real-time monitoring of file changes
+# - Notifications to relevant agents (projet-index, indexer, etc.)
 # - Filtrage intelligent (ignore .gitignore, node_modules, etc.)
 # - Mode daemon avec logging
-# - Détection batch pour éviter spam notifications
+# - Batch detection to avoid notification spam
 
 if [ -n "$BASH_VERSION" ]; then
   set -euo pipefail   # Bash‑only, portable sur Rocky, Ubuntu, etc.
@@ -63,13 +63,13 @@ log() {
     fi
 }
 
-# Vérifier si fichier doit être ignoré
+# Check whether the file must be ignored
 should_ignore() {
     local file_path="$1"
     local filename=$(basename "$file_path")
     local dirname=$(dirname "$file_path")
     
-    # Vérification patterns d'exclusion
+    # Check exclusion patterns
     for pattern in "${EXCLUDE_PATTERNS[@]}"; do
         case "$filename" in
             $pattern) return 0 ;;
@@ -79,7 +79,7 @@ should_ignore() {
         esac
     done
     
-    # Vérification .gitignore si présent
+    # Check .gitignore if present
     if [[ -f "$PROJECT_ROOT/.gitignore" ]]; then
         local relative_path=${file_path#$PROJECT_ROOT/}
         
@@ -87,7 +87,7 @@ should_ignore() {
             [[ "$line" =~ ^#.*$ ]] && continue
             [[ -z "$line" ]] && continue
             
-            # Simple pattern matching (peut être amélioré)
+            # Simple pattern matching (can be improved)
             case "$relative_path" in
                 ${line%/}|${line%/}/*) return 0 ;;
             esac
@@ -97,7 +97,7 @@ should_ignore() {
     return 1
 }
 
-# Obtenir type de fichier pour notifications ciblées
+# Get file type for targeted notifications
 get_file_category() {
     local file_path="$1"
     local relative_path=${file_path#$PROJECT_ROOT/}
@@ -119,13 +119,13 @@ get_file_category() {
     esac
 }
 
-# Régénérer l'index JSON en arrière-plan
+# Regenerate the JSON index in the background
 regenerate_index() {
     local trigger_reason="$1"
 
     log "INFO" "Triggering index regeneration: $trigger_reason"
 
-    # Chemin vers le script de génération V3.1 (hash-based IDs)
+    # Path to the V3.1 generation script (hash-based IDs)
     local script_path="${PROJECT_ROOT}/prompts/hard_points/system/structure/scripts/generate-all-indexes-v3.1.sh"
 
     if [[ ! -x "$script_path" ]]; then
@@ -133,7 +133,7 @@ regenerate_index() {
         return 1
     fi
 
-    # Lancer la régénération en arrière-plan
+    # Start regeneration in the background
     (
         cd "$PROJECT_ROOT"
         "$script_path" 2>&1 | while IFS= read -r line; do
@@ -151,7 +151,7 @@ regenerate_index() {
     log "INFO" "Index regeneration started in background (PID: $regen_pid)"
 }
 
-# Notifier agent approprié
+# Notify the appropriate agent
 notify_agent() {
     local change_type="$1"
     local file_path="$2" 
@@ -159,7 +159,7 @@ notify_agent() {
     
     log "DEBUG" "Notifying agents for $change_type: $file_path ($category)"
     
-    # Notifications selon catégorie
+    # Notifications by category
     case "$category" in
         "memory_bank_"*|"main_index"|"agents_config")
             # Notification pour agent-aikido-maj-md-index
@@ -173,11 +173,11 @@ notify_agent() {
         "hard_points")
             # Notification pour agent-aikido-truth-evaluator + projet-index
             log "INFO" "Hard points change detected - triggering immediate index regeneration"
-            # Régénération immédiate pour hard points (changements critiques)
+            # Immediate regeneration for hard points (critical changes)
             regenerate_index "Critical: Hard points modification"
             ;;
         "scripts")
-            # Notification pour agent-aikido-projet-index (scripts modifiés)
+            # Notification for agent-aikido-projet-index (modified scripts)
             log "INFO" "Scripts change detected - projet-index should refresh capabilities"
             ;;
         "configuration")
@@ -191,12 +191,12 @@ notify_agent() {
 process_batch_changes() {
     local current_time=$(date +%s)
 
-    # Vérifier si assez de temps s'est écoulé
+    # Check whether enough time has elapsed
     if [[ $((current_time - LAST_CHANGE_TIME)) -lt $BATCH_TIMEOUT ]]; then
         return
     fi
 
-    # Traiter tous les changements en attente
+    # Process all pending changes
     if [[ -f "$PENDING_CHANGES_FILE" ]]; then
         local change_count=$(wc -l < "$PENDING_CHANGES_FILE" | tr -d ' ')
 
@@ -215,7 +215,7 @@ process_batch_changes() {
                 esac
             done < "$PENDING_CHANGES_FILE"
 
-            # Notifications groupées et régénération si nécessaire
+            # Grouped notifications and regeneration if needed
             if [[ $memory_bank_changes -gt 0 ]]; then
                 log "INFO" "Batch notification: $memory_bank_changes Memory Bank changes detected"
                 regenerate_index "Memory Bank changes ($memory_bank_changes files)"
@@ -237,27 +237,27 @@ process_batch_changes() {
     fi
 }
 
-# Gestionnaire d'événement fichier
+# File event handler
 handle_file_event() {
     local event="$1"
     local file_path="$2"
 
-    # Ignorer si fichier dans exclusions
+    # Skip if file is in exclusions
     if should_ignore "$file_path"; then
         log "DEBUG" "Ignoring $event for excluded file: $file_path"
         return
     fi
 
-    # Obtenir catégorie fichier
+    # Get file category
     local category=$(get_file_category "$file_path")
 
     log "DEBUG" "File $event: $file_path (category: $category)"
 
-    # Ajouter au batch de changements (fichier temporaire)
+    # Add to the changes batch (temp file)
     echo "${event}|${file_path}|${category}" >> "$PENDING_CHANGES_FILE"
     LAST_CHANGE_TIME=$(date +%s)
 
-    # Notification immédiate pour changements critiques
+    # Immediate notification for critical changes
     case "$category" in
         "hard_points")
             if [[ "$event" == "MODIFY" ]] || [[ "$event" == "CREATE" ]]; then
@@ -286,7 +286,7 @@ start_watching_fswatch() {
         --event MovedTo \
         "$PROJECT_ROOT" | while read file_path event_flags; do
         
-        # Déterminer type d'événement à partir des flags
+        # Determine event type from flags
         local event_type="MODIFY"
         case "$event_flags" in
             *Created*) event_type="CREATE" ;;
@@ -297,7 +297,7 @@ start_watching_fswatch() {
         
         handle_file_event "$event_type" "$file_path"
         
-        # Traitement batch périodique
+        # Periodic batch processing
         process_batch_changes
     done
 }
@@ -321,26 +321,26 @@ start_watching_inotify() {
         
         handle_file_event "$event_type" "$file_path"
         
-        # Traitement batch périodique
+        # Periodic batch processing
         process_batch_changes
     done
 }
 
-# Démarrer surveillance selon OS
+# Start monitoring depending on the OS
 start_watching() {
     cd "$PROJECT_ROOT"
 
-    # Créer répertoire logs et cache si nécessaire (pas dans git)
+    # Create logs and cache directory if needed (not in git)
     mkdir -p "$(dirname "$WATCH_LOG")"
     mkdir -p "${PROJECT_ROOT}/prompts/spec/system/structure/cache"/{structure,metadata,snapshots,temp}
 
-    # Initialiser le fichier de changements en attente
+    # Initialize the pending changes file
     > "$PENDING_CHANGES_FILE"
 
     log "INFO" "Starting file system watching for project: $PROJECT_ROOT"
     log "INFO" "Batch timeout: ${BATCH_TIMEOUT}s, Daemon mode: $DAEMON_MODE"
     
-    # Détecter outil de surveillance disponible
+    # Detect available monitoring tool
     if command -v fswatch >/dev/null 2>&1; then
         start_watching_fswatch
     elif command -v inotifywait >/dev/null 2>&1; then
@@ -351,7 +351,7 @@ start_watching() {
     fi
 }
 
-# Arrêter surveillance (daemon)
+# Stop monitoring (daemon)
 stop_watching() {
     if [[ -f "$PID_FILE" ]]; then
         local pid=$(cat "$PID_FILE")
@@ -375,7 +375,7 @@ status_watching() {
         if kill -0 "$pid" 2>/dev/null; then
             echo "Watch daemon running (PID: $pid)"
             
-            # Statistiques si log disponible
+            # Statistics if log available
             if [[ -f "$WATCH_LOG" ]]; then
                 local log_lines=$(wc -l < "$WATCH_LOG")
                 local last_activity=$(tail -n1 "$WATCH_LOG" | cut -d']' -f1 | tr -d '[')
@@ -391,7 +391,7 @@ status_watching() {
     fi
 }
 
-# Gestionnaire signaux pour arrêt propre
+# Signal handler for clean shutdown
 cleanup() {
     log "INFO" "Stopping file watcher..."
 
@@ -399,7 +399,7 @@ cleanup() {
     BATCH_TIMEOUT=0
     process_batch_changes
 
-    # Nettoyer les fichiers temporaires
+    # Clean up temp files
     rm -f "$PID_FILE" "$PENDING_CHANGES_FILE"
     exit 0
 }
@@ -502,5 +502,5 @@ main() {
     esac
 }
 
-# Exécution
+# Execution
 main "$@"

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# check-file-exists.sh - Vérifie l'existence d'un fichier/répertoire
+# check-file-exists.sh - Checks the existence of a file/directory
 # Usage: check-file-exists.sh <path> [--required]
 
 if [ -n "$BASH_VERSION" ]; then
@@ -21,10 +21,10 @@ if [ -e "$FILE_PATH" ]; then
   exit 0
 else
   if [ "$REQUIRED" = "--required" ]; then
-    echo "❌ ERREUR : $FILE_PATH manquant (requis)" >&2
+    echo "❌ ERROR: $FILE_PATH missing (required)" >&2
     exit 1
   else
-    echo "⚠️  $FILE_PATH manquant (optionnel)"
+    echo "⚠️  $FILE_PATH missing (optional)"
     exit 0
   fi
 fi

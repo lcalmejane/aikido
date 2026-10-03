@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# create-backup.sh - Créer backup du projet
+# create-backup.sh - Create project backup
 # Usage: create-backup.sh <source_dir> <backup_name>
 
 if [ -n "$BASH_VERSION" ]; then
@@ -14,7 +14,7 @@ BACKUP_NAME="${2:-aikido-backup}"
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 BACKUP_FILE="backups/${BACKUP_NAME}-${TIMESTAMP}.tgz"
 
-echo "📦 Création backup : $BACKUP_FILE"
+echo "📦 Creating backup: $BACKUP_FILE"
 
 mkdir -p backups
 
@@ -24,9 +24,9 @@ cd "$SOURCE_DIR"
 tar -czf "$BACKUP_FILE" $LIST_FILES 2>/dev/null
 
 if [ -f "$BACKUP_FILE" ]; then
-  echo "✅ Backup créé : $BACKUP_FILE"
+  echo "✅ Backup created: $BACKUP_FILE"
   echo "$BACKUP_FILE"
 else
-  echo "❌ Échec création backup" >&2
+  echo "❌ Backup creation failed" >&2
   exit 1
 fi

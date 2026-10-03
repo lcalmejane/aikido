@@ -17,8 +17,8 @@ This plan executes **immediately after** the initial backup is created and **bef
 
 **Example** :
 ```bash
-export SOURCE="/Users/lcare/workspace/best-p/ai-kido-best-practices"
-export TARGET="/Users/lcare/workspace/best-p/ai-kido-best-practices/prompts/spec/aikido-source-git"
+export SOURCE="/path/to/ai-kido-best-practices"
+export TARGET="/path/to/ai-kido-best-practices/prompts/spec/aikido-source-git"
 ```
 
 ---

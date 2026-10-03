@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ending-6-list-critical-files.sh - Lister fichiers critiques
+# ending-6-list-critical-files.sh - List critical files
 # Usage: ending-6-list-critical-files.sh <source_dir>
 
 if [ -n "$BASH_VERSION" ]; then
@@ -11,7 +11,7 @@ fi
 SOURCE_DIR="${1:-.}"
 
 echo "═══════════════════════════════════════════════════════════════"
-echo "🔍 VALIDATION FINALE CONFORMITÉ AI-KIDO"
+echo "🔍 FINAL AI-KIDO COMPLIANCE VALIDATION"
 echo "═══════════════════════════════════════════════════════════════"
 echo ""
 
@@ -25,13 +25,13 @@ CRITICAL_PATHS=(
   ".roomodes"
 )
 
-echo "📋 Fichiers à valider :"
+echo "📋 Files to validate:"
 for path in "${CRITICAL_PATHS[@]}"; do
-  [ -e "$path" ] && echo "  ✅ $path" || echo "  ⚠️  $path (non trouvé)"
+  [ -e "$path" ] && echo "  ✅ $path" || echo "  ⚠️  $path (not found)"
 done
 echo ""
 
-# Export liste pour usage ultérieur
+# Export list for later use
 for path in "${CRITICAL_PATHS[@]}"; do
   [ -e "$path" ] && echo "$path"
 done

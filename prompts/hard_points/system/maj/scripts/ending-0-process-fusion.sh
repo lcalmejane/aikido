@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ending-0-process-fusion.sh - Traiter fichiers selon mode fusion
+# ending-0-process-fusion.sh - Process files according to merge mode
 # Usage: ending-0-process-fusion.sh <source_dir> <target_dir> <fusion_mode>
 
 if [ -n "$BASH_VERSION" ]; then
@@ -18,7 +18,7 @@ if [ -z "$TARGET" ]; then
 fi
 
 echo "═══════════════════════════════════════════════════════════════"
-echo "🔄 TRAITEMENT DES FICHIERS ($FUSION_MODE)"
+echo "🔄 FILE PROCESSING ($FUSION_MODE)"
 echo "═══════════════════════════════════════════════════════════════"
 echo ""
 
@@ -29,61 +29,61 @@ while IFS= read -r relative_file; do
   [ -z "$relative_file" ] && continue
 
   echo "───────────────────────────────────────────────────────────────"
-  echo "📝 Fichier : $relative_file"
+  echo "📝 File: $relative_file"
   echo ""
 
   TARGET_FILE="$TARGET/$relative_file"
   SOURCE_FILE="$SOURCE/$relative_file"
 
   if [ ! -f "$TARGET_FILE" ]; then
-    echo "  ⚠️  Fichier absent dans TARGET, ignoré"
+    echo "  ⚠️  File missing in TARGET, skipped"
     continue
   fi
 
   case "$FUSION_MODE" in
     INTELLIGENT)
-      echo "  🔀 Mode : Fusion intelligente (préparation contexte)"
-      echo "  ⚠️  Agent-aikido-fusion doit être invoqué par LLM"
-      echo "  📝 Fichiers : TARGET=$TARGET_FILE → SOURCE=$SOURCE_FILE"
+      echo "  🔀 Mode: Intelligent merge (context preparation)"
+      echo "  ⚠️  Agent-aikido-fusion must be invoked by the LLM"
+      echo "  📝 Files: TARGET=$TARGET_FILE → SOURCE=$SOURCE_FILE"
       ;;
 
     REPLACE)
-      echo "  ⚠️  Mode : Remplacement direct"
+      echo "  ⚠️  Mode: Direct replacement"
       if [ -f "$SOURCE_FILE" ]; then
         BACKUP_FILE="${SOURCE_FILE}.bak.$(date +%Y%m%d-%H%M%S)"
         cp "$SOURCE_FILE" "$BACKUP_FILE"
-        echo "  💾 Backup créé : $BACKUP_FILE"
+        echo "  💾 Backup created: $BACKUP_FILE"
       fi
       mkdir -p "$(dirname "$SOURCE_FILE")"
       cp "$TARGET_FILE" "$SOURCE_FILE"
-      echo "  ✅ Fichier remplacé"
+      echo "  ✅ File replaced"
       ;;
 
     SKIP)
-      echo "  ℹ️  Mode : Ignorer (conservation fichier local)"
-      echo "  ✅ Fichier local conservé"
+      echo "  ℹ️  Mode: Skip (keep local file)"
+      echo "  ✅ Local file kept"
       ;;
 
     MANUAL_LATER)
-      echo "  📝 Mode : Préparation fusion manuelle"
+      echo "  📝 Mode: Manual merge preparation"
       MANUAL_DIR="/tmp/aikido/manual-fusion"
       mkdir -p "$MANUAL_DIR"
       SCRIPT_NAME="$(echo "$relative_file" | sed 's/[\/\.]/_/g')"
       MANUAL_SCRIPT="$MANUAL_DIR/fusion-${SCRIPT_NAME}.md"
 
       cat > "$MANUAL_SCRIPT" <<MANUAL
-# Fusion Manuelle : $relative_file
+# Manual Merge: $relative_file
 
-## Fichiers
+## Files
 
 - TARGET : \`$TARGET_FILE\`
 - SOURCE : \`$SOURCE_FILE\`
 
 ## Instructions
 
-1. Comparer les deux fichiers
-2. Appliquer formalisme TARGET + contexte SOURCE
-3. Sauvegarder dans SOURCE
+1. Compare the two files
+2. Apply TARGET formalism + SOURCE context
+3. Save into SOURCE
 
 ## TARGET
 
@@ -94,10 +94,10 @@ $(cat "$TARGET_FILE")
 ## SOURCE
 
 \`\`\`
-$([ -f "$SOURCE_FILE" ] && cat "$SOURCE_FILE" || echo "Nouveau fichier")
+$([ -f "$SOURCE_FILE" ] && cat "$SOURCE_FILE" || echo "New file")
 \`\`\`
 MANUAL
-      echo "  📝 Script créé : $MANUAL_SCRIPT"
+      echo "  📝 Script created: $MANUAL_SCRIPT"
       ;;
   esac
 
@@ -107,6 +107,6 @@ MANUAL
 done < /tmp/aikido/diff_report.txt
 
 echo "═══════════════════════════════════════════════════════════════"
-echo "✅ Traitement terminé : $PROCESSED fichier(s) traité(s)"
-[ $ERRORS -gt 0 ] && echo "⚠️  Erreurs : $ERRORS"
+echo "✅ Processing complete: $PROCESSED file(s) processed"
+[ $ERRORS -gt 0 ] && echo "⚠️  Errors: $ERRORS"
 echo "═══════════════════════════════════════════════════════════════"

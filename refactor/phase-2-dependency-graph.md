@@ -316,7 +316,7 @@ associated_agents:
 You are adding a formal dependency graph to the AI-KIDO memory bank.
 
 CONTEXT:
-- Project: /Users/lcare/workspace/best-p/ai-kido-best-practices
+- Project: /path/to/ai-kido-best-practices
 - Reference file: refactor/phase-2-dependency-graph.md contains the exact JSON schema and change patterns
 
 TASK 1 — Create dependencies.json:

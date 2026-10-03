@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ending-7-detect-gaps.sh - Détecter gaps Memory Bank
+# ending-7-detect-gaps.sh - Detect Memory Bank gaps
 # Usage: ending-7-detect-gaps.sh <source_dir>
 
 if [ -n "$BASH_VERSION" ]; then
@@ -32,7 +32,7 @@ MISSING_DIRS=()
 for dir in "${EXPECTED_DIRS[@]}"; do
   if [ ! -d "$dir" ]; then
     MISSING_DIRS+=("$dir")
-    echo "❌ Répertoire manquant : $dir"
+    echo "❌ Missing directory: $dir"
   fi
 done
 
@@ -51,14 +51,14 @@ MISSING_FILES=()
 for file in "${EXPECTED_FILES[@]}"; do
   if [ ! -f "$file" ]; then
     MISSING_FILES+=("$file")
-    echo "❌ Fichier manquant : $file"
+    echo "❌ Missing file: $file"
   fi
 done
 
 echo ""
-echo "📊 Résumé gaps :"
-echo "  Répertoires manquants : ${#MISSING_DIRS[@]}"
-echo "  Fichiers manquants    : ${#MISSING_FILES[@]}"
+echo "📊 Gaps summary:"
+echo "  Missing directories: ${#MISSING_DIRS[@]}"
+echo "  Missing files         : ${#MISSING_FILES[@]}"
 echo ""
 
 # Export pour ending-7-propose-populate.sh

@@ -198,7 +198,7 @@ Apply 2025-2026 prompting best practices to all 13 `.claude/agents/*.md` stubs. 
 You are performing the final validation sync and prompt quality pass for the AI-KIDO memory bank refactoring.
 
 CONTEXT:
-- Project: /Users/lcare/workspace/best-p/ai-kido-best-practices
+- Project: /path/to/ai-kido-best-practices
 - Reference: refactor/phase-5-validation-sync.md
 
 TASK 1 — Add rule 19 to agent-aikido-validator.md:

@@ -25,9 +25,9 @@ The plan must be executed sequentially by the **`agent-aikido-update-controller`
 ```bash
 mkdir -p "/tmp/aikido"
 # Lists real command files (non-mappings) in .roo/commands
-# A mapping contains the phrase "Cette commande exécute le fichier de commande complet depuis `prompts/hard_points/commands/`"
+# A mapping is a thin file that only points to `prompts/hard_points/commands/<name>.md`
 find .roo/commands -type f -name "*.md" \
-  -exec grep -L "Cette commande exécute le fichier de commande complet depuis \`prompts/hard_points/commands/" {} \; \
+  -exec grep -L "Executes \`prompts/hard_points/commands/" {} \; \
 
   -exec basename {} .md \; > /tmp/aikido/commands-to-migrate.txt
 ```
@@ -57,7 +57,7 @@ description: "[short description]"
 # Command {{command-name}}
 
 
-Cette commande exécute le fichier de commande complet depuis \`prompts/hard_points/commands/{{command-name}}.md\`.
+Executes \`prompts/hard_points/commands/{{command-name}}.md\`.
 
 **EXECUTION**: I will now read and execute the complete command.
 
@@ -79,7 +79,7 @@ description: "[short description]"
 
 # Command ${cmd}
 
-Cette commande exécute le fichier de commande complet depuis \`prompts/hard_points/commands/${cmd}.md\`.
+Executes \`prompts/hard_points/commands/${cmd}.md\`.
 
 **EXECUTION**: I will now read and execute the complete command.
 
@@ -97,7 +97,7 @@ description: "[short description]"
 
 # Command ${cmd}
 
-Cette commande exécute le fichier de commande complet depuis \`prompts/hard_points/commands/${cmd}.md\`.
+Executes \`prompts/hard_points/commands/${cmd}.md\`.
 
 
 **EXECUTION**: I will now read and execute the complete command.

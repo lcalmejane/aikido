@@ -182,10 +182,10 @@ Expected output:
 
 **Search patterns** (complete) :
 ```regex
-# Points d'entrée
+# Entry points
 (index|main|app|server|router|controller)\.(js|ts|php|py|java|go|rs|rb)
 
-# Imports/Dépendances (multi-langage)
+# Imports/Dependencies (multi-language)
 ^import\s+.*from\s+['"]([^'"]+)['"]          # JS/TS
 ^require\(['"]([^'"]+)['"]\)                  # JS CommonJS
 ^use\s+([\w\\]+);                             # PHP
@@ -193,7 +193,7 @@ Expected output:
 ^import\s+([\w\.]+)                           # Java/Go
 ^use\s+([\w:]+);                              # Rust
 
-# Déclarations classes/interfaces
+# Class/interface declarations
 ^(export\s+)?(default\s+)?class\s+(\w+)       # JS/TS
 ^class\s+(\w+)(\s+extends\s+(\w+))?           # PHP/Python/Java
 ^interface\s+(\w+)                            # TS/Java/PHP
@@ -201,7 +201,7 @@ Expected output:
 ^type\s+(\w+)\s+struct                        # Go
 ^pub\s+struct\s+(\w+)                         # Rust
 
-# Fonctions/Méthodes
+# Functions/Methods
 ^(export\s+)?(async\s+)?function\s+(\w+)      # JS/TS
 ^(public|private|protected)\s+function\s+(\w+) # PHP
 ^def\s+(\w+)\s*\(                             # Python

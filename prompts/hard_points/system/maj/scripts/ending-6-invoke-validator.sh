@@ -20,14 +20,14 @@ VALIDATOR_AGENT="$SOURCE_DIR/prompts/hard_points/agents/agent-aikido-validator.m
 if [ ! -f "$VALIDATOR_AGENT" ]; then
   echo "⚠️  Agent-aikido-validator introuvable : $VALIDATOR_AGENT"
   echo "   Validation automatique impossible"
-  echo "   Passage à validation manuelle (Plan ending-10)"
+  echo "   Switching to manual validation (Plan ending-10)"
   echo "MANUAL"
   exit 0
 fi
 
-echo "✅ Agent-aikido-validator localisé"
+echo "✅ Agent-aikido-validator located"
 echo ""
-echo "📝 Préparation contexte de validation..."
+echo "📝 Preparing validation context..."
 echo ""
 
 VALIDATION_CONTEXT="/tmp/aikido/validation-context-$$.md"
@@ -35,35 +35,35 @@ VALIDATION_CONTEXT="/tmp/aikido/validation-context-$$.md"
 cat > "$VALIDATION_CONTEXT" <<'VALIDATION'
 # 🔍 VALIDATION FINALE AI-KIDO
 
-Vous êtes l'**agent-aikido-validator**. Votre mission est de valider la conformité de la Memory Bank après mise à jour.
+You are **agent-aikido-validator**. Your mission is to validate the compliance of the Memory Bank after the update.
 
-## Règles de Validation
+## Validation Rules
 
-Vérifier pour CHAQUE fichier :
+Check for EACH file:
 
 1. **Taille** : ≤500 lignes (hard points), ≤1000 lignes (agents), ≤100 lignes (index)
-2. **Frontmatter** : Présent et valide (YAML ou Markdown)
+2. **Frontmatter**: Present and valid (YAML or Markdown)
 3. **Liens** : Bidirectionnels fonctionnels
-4. **Structure** : Headers hiérarchiques (H1 unique)
-5. **Conformité** : Selon hard_points/ai-kido.md
+4. **Structure**: Hierarchical headers (single H1)
+5. **Compliance**: According to hard_points/ai-kido.md
 
 ## Action Attendue
 
-Générer rapport de validation :
-- `/tmp/aikido/validation-report.md` : Rapport détaillé
-- `/tmp/aikido/validation-summary.txt` : Résumé (OK/KO + nombre erreurs)
+Generate the validation report:
+- `/tmp/aikido/validation-report.md` : Detailed report
+- `/tmp/aikido/validation-summary.txt` : Summary (OK/KO + error count)
 
-Exécuter la validation MAINTENANT.
+Run the validation NOW.
 VALIDATION
 
-echo "✅ Contexte créé : $VALIDATION_CONTEXT"
+echo "✅ Context created: $VALIDATION_CONTEXT"
 echo ""
 echo "⚡ LANCEMENT AGENT-AIKIDO-VALIDATOR..."
 echo ""
 echo "ℹ️  Le LLM doit :"
-echo "   1. Lire $VALIDATOR_AGENT"
-echo "   2. Lire $VALIDATION_CONTEXT"
-echo "   3. Parcourir les fichiers critiques"
-echo "   4. Générer rapport de validation"
+echo "   1. Read $VALIDATOR_AGENT"
+echo "   2. Read $VALIDATION_CONTEXT"
+echo "   3. Go through the critical files"
+echo "   4. Generate validation report"
 echo ""
 echo "AGENT"

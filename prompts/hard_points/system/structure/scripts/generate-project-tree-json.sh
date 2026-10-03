@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# generate-project-tree-json.sh - Génération arborescence projet AI-KIDO en JSON
-# Version 2.1 - Format JSON optimisé (version simplifiée sans parallélisation)
+# generate-project-tree-json.sh - AI-KIDO project tree generation as JSON
+# Version 2.1 - Optimized JSON format (simplified version without parallelization)
 
 if [ -n "$BASH_VERSION" ]; then
   set -euo pipefail   # Bash‑only, portable sur Rocky, Ubuntu, etc.
@@ -91,19 +91,19 @@ should_exclude() {
     local relative_path="${path#./}"
     local name=$(basename "$path")
 
-    # Vérifier d'abord si le chemin contient un des patterns d'exclusion
+    # First check whether the path contains one of the exclusion patterns
     for pattern in "${EXCLUDE_PATTERNS[@]}"; do
-        # Vérifier le nom du fichier/dossier
+        # Check the file/folder name
         case "$name" in $pattern) return 0 ;; esac
 
-        # Vérifier si le chemin contient le pattern (ex: .git/ dans le chemin)
+        # Check whether the path contains the pattern (e.g. .git/ in the path)
         case "$relative_path" in
             ${pattern}/*) return 0 ;;  # Commence par pattern/
             */${pattern}/*) return 0 ;;  # Contient /pattern/
         esac
     done
 
-    # Vérifier les patterns .gitignore
+    # Check .gitignore patterns
     for i in "${!GITIGNORE_DIRS[@]}"; do
         IFS='|' read -ra patterns <<< "${GITIGNORE_PATTERNS[i]}"
         for pattern in "${patterns[@]}"; do
@@ -128,7 +128,7 @@ json_escape() {
 }
 
 # ============================================================================
-# EXTRACTION MÉTADONNÉES
+# METADATA EXTRACTION
 # ============================================================================
 
 get_file_icon_and_category() {
@@ -167,10 +167,10 @@ extract_metadata() {
     local file="$1" relative_path="${file#./}"
     local name=$(basename "$file")
 
-    # Icône et catégorie
+    # Icon and category
     IFS='|' read -r icon category extension <<< "$(get_file_icon_and_category "$file" "$name" "$relative_path")"
 
-    # Métadonnées de base
+    # Base metadata
     local size_bytes=0 modified="" lines=0 check_status="❌ no-header"
 
     if [[ -f "$file" ]]; then
@@ -180,7 +180,7 @@ extract_metadata() {
         if file "$file" 2>/dev/null | grep -q "text"; then
             lines=$(wc -l < "$file" 2>/dev/null || echo "0")
 
-            # Check-status uniquement pour fichiers dans /prompts
+            # Check-status only for files in /prompts
             if [[ "$relative_path" == prompts/* ]]; then
                 if [[ "$extension" == "md" ]] || [[ "$extension" == "mdx" ]]; then
                     if head -10 "$file" 2>/dev/null | grep -q "last-check:"; then
@@ -197,15 +197,15 @@ extract_metadata() {
         fi
     fi
 
-    # Output JSON (une ligne) - size_human supprimé (redondant avec size_bytes)
+    # JSON output (one line) - size_human removed (redundant with size_bytes)
     echo "{\"name\":\"$(json_escape "$name")\",\"path\":\"$(json_escape "$relative_path")\",\"type\":\"$category\",\"icon\":\"$icon\",\"size_bytes\":$size_bytes,\"lines\":$lines,\"modified\":\"$modified\",\"check_status\":\"$(json_escape "$check_status")\",\"extension\":\"$extension\"}"
 }
 
 # ============================================================================
-# GÉNÉRATION JSON
+# JSON GENERATION
 # ============================================================================
 
-# Collecter tous les fichiers avec métadonnées (OPTIMISÉ - batch)
+# Collect all files with metadata (OPTIMIZED - batch)
 collect_all_metadata() {
     cd "$PROJECT_ROOT"
 
@@ -233,13 +233,13 @@ collect_all_metadata() {
     echo "}"
 }
 
-# Construire index by_directory (OPTIMISÉ)
+# Build by_directory index (OPTIMIZED)
 build_index_by_directory() {
     local metadata_json="$1"
 
     echo "{"
 
-    # Extraire tous les chemins et grouper par répertoire
+    # Extract all paths and group by directory
     local dirs=$(echo "$metadata_json" | jq -r 'keys[]' | xargs -I {} dirname {} | sort -u)
     local first_dir=true
 
@@ -271,7 +271,7 @@ build_index_by_directory() {
     echo "}"
 }
 
-# Construire index by_type (OPTIMISÉ)
+# Build by_type index (OPTIMIZED)
 build_index_by_type() {
     local metadata_json="$1"
 
@@ -289,7 +289,7 @@ build_index_by_type() {
     } | with_entries(select(.value | length > 0))'
 }
 
-# Construire index by_name (OPTIMISÉ)
+# Build by_name index (OPTIMIZED)
 build_index_by_name() {
     local metadata_json="$1"
 
@@ -323,15 +323,15 @@ calculate_stats() {
 # ============================================================================
 
 main() {
-    echo "🚀 Génération index JSON AI-KIDO..." >&2
+    echo "🚀 Generating AI-KIDO JSON index..." >&2
     echo "📂 Racine: $PROJECT_ROOT" >&2
     echo "" >&2
 
-    # Découvrir .gitignore
+    # Discover .gitignore
     discover_all_gitignores
 
-    # Collecter métadonnées
-    echo "📦 Collecte des métadonnées..." >&2
+    # Collect metadata
+    echo "📦 Collecting metadata..." >&2
     local metadata=$(collect_all_metadata)
 
     # Statistiques
@@ -344,8 +344,8 @@ main() {
     local index_by_type=$(build_index_by_type "$metadata")
     local index_by_name=$(build_index_by_name "$metadata")
 
-    # Générer JSON final
-    echo "🔨 Génération JSON final..." >&2
+    # Generate final JSON
+    echo "🔨 Generating final JSON..." >&2
     cat > "$OUTPUT_FILE" <<EOF
 {
   "metadata": {
@@ -372,8 +372,8 @@ main() {
 EOF
 
     echo "" >&2
-    echo "✅ Terminé!" >&2
-    echo "📦 Fichier: $OUTPUT_FILE" >&2
+    echo "✅ Done!" >&2
+    echo "📦 File: $OUTPUT_FILE" >&2
     echo "📏 Taille: $(du -h "$OUTPUT_FILE" | cut -f1)" >&2
 }
 

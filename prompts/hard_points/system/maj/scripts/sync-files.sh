@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
-# sync-files.sh - Synchronisation intelligente de fichiers
+# sync-files.sh - Smart file synchronization
 # Compatible: Linux, macOS, Windows Git Bash
 # Usage: sync-files.sh <source_file> <target_file> [--force] [--backup]
+#
+# NOTE: sync-directories.sh parses this script's output using the keywords
+#       "identical", "Copy", "newer" and "Keep". Keep them in sync.
 
 if [ -n "$BASH_VERSION" ]; then
-  set -euo pipefail   # Bash‑only, portable sur Rocky, Ubuntu, etc.
+  set -euo pipefail   # Bash-only, portable on Rocky, Ubuntu, etc.
 else
-  set -eu              # Fallback for POSIX‑sh
+  set -eu              # Fallback for POSIX-sh
 fi
-# Couleurs pour output
+# Output colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -37,7 +40,7 @@ if [[ -z "$SOURCE_FILE" ]] || [[ -z "$TARGET_FILE" ]]; then
   exit 1
 fi
 
-# Fonction: Comparer dates de modification (compatible multi-OS)
+# Function: get modification time (cross-OS compatible)
 get_mtime() {
   local file="$1"
   if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -49,7 +52,7 @@ get_mtime() {
   fi
 }
 
-# Fonction: Backup intelligent
+# Function: smart backup
 backup_file() {
   local file="$1"
   local backup_dir
@@ -64,43 +67,43 @@ backup_file() {
   echo -e "${BLUE}  💾 Backup: $backup_path${NC}"
 }
 
-# Logique principale
+# Main logic
 main() {
-  # Cas 1: Source n'existe pas
+  # Case 1: source does not exist
   if [[ ! -f "$SOURCE_FILE" ]]; then
     if [[ -f "$TARGET_FILE" ]]; then
-      echo -e "${GREEN}✅ Source absente, target existe → Conserver target${NC}"
+      echo -e "${GREEN}✅ Source missing, target exists → Keep target${NC}"
       echo "   Target: $TARGET_FILE"
       return 0
     else
-      echo -e "${RED}❌ Ni source ni target n'existent${NC}" >&2
+      echo -e "${RED}❌ Neither source nor target exists${NC}" >&2
       return 1
     fi
   fi
   
-  # Cas 2: Target n'existe pas
+  # Case 2: target does not exist
   if [[ ! -f "$TARGET_FILE" ]]; then
-    echo -e "${GREEN}✅ Target absent → Copier depuis source${NC}"
+    echo -e "${GREEN}✅ Target missing → Copy from source${NC}"
     mkdir -p "$(dirname "$TARGET_FILE")"
     cp "$SOURCE_FILE" "$TARGET_FILE"
     echo "   Source: $SOURCE_FILE → Target: $TARGET_FILE"
     return 0
   fi
   
-  # Cas 3: Les deux existent - Comparer
+  # Case 3: both exist - compare
   if diff -q "$SOURCE_FILE" "$TARGET_FILE" >/dev/null 2>&1; then
-    echo -e "${GREEN}✅ Fichiers identiques → Aucune action${NC}"
+    echo -e "${GREEN}✅ Files identical → No action${NC}"
     echo "   $TARGET_FILE"
     return 0
   fi
   
-  # Cas 4: Différents - Choisir le plus récent (ou forcer source)
+  # Case 4: different - pick the newest (or force source)
   local source_mtime target_mtime
   source_mtime=$(get_mtime "$SOURCE_FILE")
   target_mtime=$(get_mtime "$TARGET_FILE")
   
   if [[ "$FORCE_MODE" == true ]]; then
-    echo -e "${YELLOW}⚠️  Mode --force: Source prioritaire${NC}"
+    echo -e "${YELLOW}⚠️  --force mode: source takes priority${NC}"
     [[ "$BACKUP_MODE" == true ]] && backup_file "$TARGET_FILE"
     cp "$SOURCE_FILE" "$TARGET_FILE"
     echo -e "${GREEN}   ✅ $SOURCE_FILE → $TARGET_FILE${NC}"
@@ -108,21 +111,21 @@ main() {
   fi
   
   if [[ "$source_mtime" -gt "$target_mtime" ]]; then
-    echo -e "${GREEN}✅ Source plus récent → Copier${NC}"
+    echo -e "${GREEN}✅ Source newer → Copy${NC}"
     [[ "$BACKUP_MODE" == true ]] && backup_file "$TARGET_FILE"
     cp "$SOURCE_FILE" "$TARGET_FILE"
     echo "   Source: $SOURCE_FILE ($(date -r "$SOURCE_FILE" '+%Y-%m-%d %H:%M:%S' 2>/dev/null || echo 'N/A'))"
     echo "   → Target: $TARGET_FILE"
   elif [[ "$target_mtime" -gt "$source_mtime" ]]; then
-    echo -e "${BLUE}ℹ️  Target plus récent → Conserver target${NC}"
+    echo -e "${BLUE}ℹ️  Target newer → Keep target${NC}"
     echo "   Target: $TARGET_FILE ($(date -r "$TARGET_FILE" '+%Y-%m-%d %H:%M:%S' 2>/dev/null || echo 'N/A'))"
   else
-    echo -e "${YELLOW}⚠️  Dates identiques mais contenu différent → Conserver target${NC}"
+    echo -e "${YELLOW}⚠️  Same timestamps but different content → Keep target${NC}"
     echo "   Target: $TARGET_FILE"
   fi
   
   return 0
 }
 
-# Exécution
+# Execution
 main

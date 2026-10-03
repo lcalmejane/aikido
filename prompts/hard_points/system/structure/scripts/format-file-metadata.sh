@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# format-file-metadata.sh - Format complet métadonnées fichiers AI-KIDO
-# Version 3.0 - Spécifications utilisateur : lignes + taille + date + check (avec détection absence en-tête)
+# format-file-metadata.sh - Full AI-KIDO file metadata format
+# Version 3.0 - User specs: lines + size + date + check (with missing header detection)
 # Usage: format-file-metadata.sh <file_path> <format>
 # Formats: tree, agents
 
@@ -31,11 +31,11 @@ fi
 BASENAME=$(basename "$FILE_PATH")
 EXTENSION="${BASENAME##*.}"
 
-# Informations système toujours collectées
+# System information always collected
 SIZE=$(stat -f%z "$FILE_PATH" 2>/dev/null || stat -c%s "$FILE_PATH" 2>/dev/null || echo "0")
 MOD_DATE=$(stat -f%Sm -t"%Y-%m-%d" "$FILE_PATH" 2>/dev/null || stat -c%y "$FILE_PATH" 2>/dev/null | cut -d' ' -f1 || echo "unknown")
 
-# Note: size_human supprimé car redondant avec SIZE (size_bytes)
+# Note: size_human removed as redundant with SIZE (size_bytes)
 
 # Calculate line count for text files (only for files, not directories)
 LINES=0
@@ -78,49 +78,49 @@ get_file_icon() {
     esac
 }
 
-# Analyser les infos de check (métadonnées en-tête + absence en-tête)
-# UNIQUEMENT pour fichiers dans /prompts
+# Parse check info (header metadata + missing header)
+# ONLY for files in /prompts
 get_check_info() {
     local file="$1"
 
-    # Vérifier si le fichier est dans /prompts
-    # Si non, retourner N/A immédiatement (pas de vérification last-check nécessaire)
+    # Check whether the file is in /prompts
+    # If not, return N/A immediately (no last-check verification needed)
     if [[ "$file" != prompts/* ]] && [[ "$file" != ./prompts/* ]]; then
         echo "N/A"
         return
     fi
 
-    # Vérifier si c'est un fichier et si c'est du texte
+    # Check whether it is a file and whether it is text
     if [[ ! -f "$file" ]]; then
         echo "❌ no-file"
         return
     fi
 
-    # Vérifier si c'est un fichier binaire
+    # Check whether it is a binary file
     if ! file "$file" 2>/dev/null | grep -q "text"; then
         echo "❌ binary"
         return
     fi
 
-    # Pour les fichiers texte, vérifier la présence d'un en-tête YAML
+    # For text files, check for a YAML header
     local first_line=$(head -1 "$file" 2>/dev/null)
 
     if [[ "$first_line" != "---" ]]; then
-        # Pas d'en-tête YAML
+        # No YAML header
         echo "❌ no-header"
         return
     fi
 
-    # En-tête YAML présent, chercher les métadonnées last_check
+    # YAML header present, look for last_check metadata
     local header_content=$(awk '/^---$/,/^---$/ {print}' "$file" 2>/dev/null)
 
-    # Extraire les métadonnées last_check dans le frontmatter YAML (format agent-aikido-doc-header)
+    # Extract last_check metadata from the YAML frontmatter (agent-aikido-doc-header format)
     local status=""
     local validator=""
 
-    # Recherche dans la section last_check du YAML
+    # Search in the last_check section of the YAML
     if echo "$header_content" | grep -q "^last_check:"; then
-        # Extraire le statut et validator avec des expressions plus simples
+        # Extract status and validator with simpler expressions
         status=$(echo "$header_content" | awk '/^last_check:/,/^[a-zA-Z_]/ { if (/^[[:space:]]*status:[[:space:]]*/) { gsub(/^[[:space:]]*status:[[:space:]]*["'"'"']?|["'"'"']?[[:space:]]*$/, ""); print; exit } }')
         validator=$(echo "$header_content" | awk '/^last_check:/,/^[a-zA-Z_]/ { if (/^[[:space:]]*validator:[[:space:]]*/) { gsub(/^[[:space:]]*validator:[[:space:]]*["'"'"']?|["'"'"']?[[:space:]]*$/, ""); print; exit } }')
     fi
@@ -128,7 +128,7 @@ get_check_info() {
     if [[ -n "$status" ]] && [[ -n "$validator" ]]; then
         echo "$status by:$validator"
     else
-        # En-tête présent mais pas de last_check ou incomplet
+        # Header present but no last_check or incomplete
         echo "⚠️ no-lastcheck"
     fi
 }
@@ -157,17 +157,17 @@ case "$FORMAT" in
         if [[ -d "$FILE_PATH" ]]; then
             echo "$ICON $BASENAME"
         else
-            # Construire le résultat avec toutes les métadonnées demandées
+            # Build the result with all requested metadata
             result="$ICON $BASENAME"
 
-            # Ajouter lignes + taille + date
+            # Add lines + size + date
             if [[ "$LINES" -gt 0 ]]; then
                 result="$result (${LINES}L ${SIZE}B ${MOD_DATE})"
             else
                 result="$result (${SIZE}B ${MOD_DATE})"
             fi
 
-            # Ajouter les infos de check (uniquement si pertinent, N/A sinon)
+            # Add check info (only if relevant, N/A otherwise)
             if [[ "$CHECK_INFO" != "N/A" ]]; then
                 result="$result [Check: $CHECK_INFO]"
             fi

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# create-log.sh - Créer fichier log formaté
+# create-log.sh - Create formatted log file
 # Usage: create-log.sh <log_file> <title> <content>
 
 if [ -n "$BASH_VERSION" ]; then
@@ -30,4 +30,4 @@ $CONTENT
 ═══════════════════════════════════════════════════════════════
 LOG
 
-echo "📝 Log créé : $LOG_FILE"
+echo "📝 Log created: $LOG_FILE"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# generate-index-by-path.sh - Génération index by-path (références ID uniquement)
+# generate-index-by-path.sh - by-path index generation (ID references only)
 # Version 3.1 - Hash-based ID normalization
 
 if [ -n "$BASH_VERSION" ]; then
@@ -20,12 +20,12 @@ TIMESTAMP_ISO=$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)
 # Source utilities
 source "$SCRIPT_DIR/lib/hash-utils.sh"
 
-# Créer répertoire output
+# Create output directory
 mkdir -p "$PROJECT_ROOT/$OUTPUT_DIR"
 
 echo "Generating by-path index (ID references only)..."
 
-# Charger tous les IDs depuis by-id batches
+# Load all IDs from by-id batches
 cd "$PROJECT_ROOT"
 
 if [[ ! -d "$BY_ID_DIR" ]]; then
@@ -33,12 +33,12 @@ if [[ ! -d "$BY_ID_DIR" ]]; then
     exit 1
 fi
 
-# Créer fichier temporaire avec tous les paths + IDs
+# Create temp file with all paths + IDs
 temp_file=$(mktemp)
 
-# Extraire tous les paths depuis les batches by-id
+# Extract all paths from the by-id batches
 for batch_file in "$BY_ID_DIR"/index-id-*.json; do
-    # Extraire path + ID avec jq
+    # Extract path + ID with jq
     jq -r '.files | to_entries[] | "\(.value.path)|\(.key)"' "$batch_file" >> "$temp_file"
 done
 
@@ -54,14 +54,14 @@ echo "  Batch size: $BATCH_SIZE"
 echo "  Number of batches: $num_batches"
 echo ""
 
-# Générer batches by-path
+# Generate by-path batches
 batch_num=0
 current_count=0
 
 while IFS='|' read -r path file_id; do
-    # Nouveau batch si nécessaire
+    # New batch if needed
     if [[ $(( current_count % BATCH_SIZE )) -eq 0 ]]; then
-        # Fermer batch précédent
+        # Close previous batch
         if [[ $batch_num -gt 0 ]]; then
             echo "  }" >> "$current_batch_file"
             echo "}" >> "$current_batch_file"
@@ -87,9 +87,9 @@ EOF
         batch_num=$((batch_num + 1))
     fi
 
-    # Écrire path → ID (format ultra compact)
+    # Write path → ID (ultra compact format)
     if [[ $(( current_count % BATCH_SIZE )) -eq 0 ]]; then
-        # Première entrée du batch (pas de virgule avant)
+        # First entry of the batch (no preceding comma)
         echo "    \"$(json_escape "$path")\": \"$file_id\"" >> "$current_batch_file"
     else
         echo "    ,\"$(json_escape "$path")\": \"$file_id\"" >> "$current_batch_file"
@@ -100,7 +100,7 @@ done < "$temp_file"
 
 # Fermer dernier batch
 if (( current_count > 0 )); then
-    # Mise à jour count dans metadata (réécriture fichier)
+    # Update count in metadata (file rewrite)
     last_batch_count=$(( current_count % BATCH_SIZE ))
     [[ $last_batch_count -eq 0 ]] && last_batch_count=$BATCH_SIZE
 

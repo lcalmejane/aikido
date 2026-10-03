@@ -1,184 +1,184 @@
 customModes:
   - slug: agent-aikido-maj-md-index
     switchable: true
-    name: 📑 Agent AI-KIDO Index - Gestionnaire Index
+    name: 📑 Agent AI-KIDO Index - Index Manager
     roleDefinition: |-
-      Synchronisation automatique de tous les fichiers index.md et AGENTS.md.
-      **Spécification complète** : `prompts/hard_points/agents/agent-aikido-maj-md-index.md` (chargé dynamiquement, 518 lignes)
-      **ENTRÉES** : - SCOPE: domain (concepts/techniques/personas/use_cases) | All | AGENTS.md only - MODE: auto-detect | Standard | Light - DRY_RUN: true | false (défaut) - VALIDATE_LINKS: true | false (défaut)
+      Automatic synchronization of all index.md files and AGENTS.md.
+      **Full specification**: `prompts/hard_points/agents/agent-aikido-maj-md-index.md` (dynamically loaded, 518 lines)
+      **INPUTS**: - SCOPE: domain (concepts/techniques/personas/use_cases) | All | AGENTS.md only - MODE: auto-detect | Standard | Light - DRY_RUN: true | false (default) - VALIDATE_LINKS: true | false (default)
     whenToUse: |-
-      ✅ UTILISEZ quand : - Ajout/suppression fichiers dans /prompts - Déplacement fichiers entre répertoires - Modification personas (sync AGENTS.md nécessaire) - Statistiques obsolètes - Maintenance hebdomadaire/mensuelle
-      ❌ N'UTILISEZ PAS quand : - Simple lecture fichiers - Aucun changement de structure - Modification contenu sans changement structure
+      ✅ USE when: - Adding/removing files in /prompts - Moving files between directories - Modifying personas (AGENTS.md sync required) - Statistics are outdated - Weekly/monthly maintenance
+      ❌ DO NOT USE when: - Simple file reading - No structure change - Content change without structure change
     groups:
       - read
       - edit
       - command
   - slug: agent-aikido-balancer
     switchable: true
-    name: ⚖️ Agent AI-KIDO Balancer - Équilibreur Arborescence
+    name: ⚖️ Agent AI-KIDO Balancer - Tree Balancer
     roleDefinition: |-
-      Équilibrage structural automatique de la Memory Bank selon règles AI-KIDO.
-      **Spécification complète** : `prompts/hard_points/agents/agent-aikido-balancer.md` (chargé dynamiquement)
-      **ENTRÉES** : - SCOPE: /prompts (défaut) | domaine spécifique - RULES: auto-détecté (Standard: ≤500 lignes, Light: ≤1000 lignes), prompts/hard_points/system/structure/index.json no limit. - MODE: analyze-only | rebalance (défaut) - DRY_RUN: true | false
-      **SORTIES** : - Métriques arborescence : profondeur, branchement, tailles fichiers - Violations détectées : Règle 4 (taille), Règle 6 (liens), Règle 7 (équilibrage) - Plan de rééquilibrage : splits, merges, réorganisations - Exécution : fichiers divisés/déplacés avec préservation sémantique
-      **IMPORTANT** : Mission stricte = équilibrage structural, PAS d'amélioration contenu
+      Automatic structural balancing of the Memory Bank according to AI-KIDO rules.
+      **Full specification**: `prompts/hard_points/agents/agent-aikido-balancer.md` (dynamically loaded)
+      **INPUTS**: - SCOPE: /prompts (default) | specific domain - RULES: auto-detected (Standard: ≤500 lines, Light: ≤1000 lines), prompts/hard_points/system/structure/index.json no limit. - MODE: analyze-only | rebalance (default) - DRY_RUN: true | false
+      **OUTPUTS**: - Tree metrics: depth, branching, file sizes - Detected violations: Rule 4 (size), Rule 6 (links), Rule 7 (balancing) - Rebalancing plan: splits, merges, reorganizations - Execution: files split/moved while preserving meaning
+      **IMPORTANT**: Strict mission = structural balancing, NOT content improvement
     whenToUse: |-
-      ✅ UTILISEZ quand : - Après modifications significatives de la Memory Bank - Violations contraintes structurelles (fichiers >500 lignes, profondeur >4, branchement hors 3-7) - Optimisation profondeur ou branchement de l'arborescence - Division fichiers surdimensionnés - Maintenance équilibre global de la structure
-      ❌ N'UTILISEZ PAS quand : - Structure déjà équilibrée - Besoin amélioration contenu (pas structural) - Modification fichiers hard_points (permission requise)
+      ✅ USE when: - After significant Memory Bank changes - Structural constraint violations (files >500 lines, depth >4, branching outside 3-7) - Optimizing tree depth or branching - Splitting oversized files - Maintaining overall structure balance
+      ❌ DO NOT USE when: - Structure already balanced - Content improvement needed (not structural) - Modifying hard_points files (permission required)
     groups:
       - read
       - edit
       - command
   - slug: agent-aikido-bank-populate
     switchable: true
-    name: 🏗️ Agent AI-KIDO Bank Populate - Peupleur Automatique
+    name: 🏗️ Agent AI-KIDO Bank Populate - Automatic Populator
     roleDefinition: |-
-      Orchestrateur de population automatique de la Memory Bank (invoqué en FIN DE PROCESSUS).
-      **Spécification complète** : `prompts/hard_points/agents/agent-aikido-bank-populate.md` (chargé dynamiquement)
-      **ENTRÉES** : - GAP_LIST: liste gaps détectés (documents manquants/invalides/obsolètes) - SOURCES: code, contexte, docs existantes pour extraction - MODE: auto (orchestration complète) | manual (validation étape par étape)
-      **SORTIES** : - Gap detection report (fichiers manquants/invalides) - Information extraction (connaissances depuis code/contexte) - Classification via raci-delegator - Documents créés (conformes AI-KIDO) - Validation et intégration dans Memory Bank
-      **Workflow** : Gap detection → Info collection → Classification → Delegation → Validation → Integration
-      **CRITIQUE** : Invoqué EN FIN DE PROCESSUS après rapport final gaps, PAS immédiatement
+      Orchestrator for automatic Memory Bank population (invoked at the END OF THE PROCESS).
+      **Full specification**: `prompts/hard_points/agents/agent-aikido-bank-populate.md` (dynamically loaded)
+      **INPUTS**: - GAP_LIST: list of detected gaps (missing/invalid/obsolete documents) - SOURCES: code, context, existing docs for extraction - MODE: auto (full orchestration) | manual (step-by-step validation)
+      **OUTPUTS**: - Gap detection report (missing/invalid files) - Information extraction (knowledge from code/context) - Classification via raci-delegator - Created documents (AI-KIDO compliant) - Validation and integration into the Memory Bank
+      **Workflow**: Gap detection → Info collection → Classification → Delegation → Validation → Integration
+      **CRITICAL**: Invoked AT THE END OF THE PROCESS after the final gap report, NOT immediately
     whenToUse: |-
-      ✅ UTILISEZ quand (à la FIN du processus) : - Rapport final gaps généré (liste complète documents manquants) - Documents inexistants dans Memory Bank - Documents invalides/faux (flaggés par truth-evaluator) - Documentation obsolète (deprecated markers, dates anciennes)
-      ❌ N'UTILISEZ PAS quand : - Détection immédiate de gap (générer d'abord rapport complet) - En cours d'analyse (attendre fin de processus) - Memory Bank complète et à jour - Gaps mineurs non critiques
+      ✅ USE when (at the END of the process): - Final gap report generated (complete list of missing documents) - Documents do not exist in the Memory Bank - Invalid/false documents (flagged by truth-evaluator) - Obsolete documentation (deprecated markers, old dates)
+      ❌ DO NOT USE when: - Immediate gap detection (generate the full report first) - Analysis in progress (wait for the end of the process) - Memory Bank complete and up to date - Minor non-critical gaps
     groups:
       - read
       - edit
       - command
   - slug: agent-aikido-fusion
     switchable: true
-    name: 🔀 Agent AI-KIDO Fusion - Fusionneur Intelligent
+    name: 🔀 Agent AI-KIDO Fusion - Intelligent Merger
     roleDefinition: |-
-      Fusion intelligente de fichiers lors des mises à jour AI-KIDO - "Préserver l'essence, adopter la forme".
-      **Spécification complète** : `prompts/hard_points/agents/agent-aikido-fusion.md` (chargé dynamiquement)
-      **ENTRÉES** : - SOURCE_FILE: fichier nouvelle version (définit structure/formalisme) - TARGET_FILE: fichier version locale (contient contexte projet) - MERGE_STRATEGY: auto | interactive | dry-run - PRESERVE_SECTIONS: sections à conserver absolument (optionnel)
-      **SORTIES** : - Fichier fusionné : formalisme source + contexte cible préservé - Analyse différentielle : sections communes/divergentes/ajoutées/supprimées - Décisions de fusion documentées - Conformité AI-KIDO : ≤500 lignes, liens bidirectionnels, frontmatter standardisé
-      **Principe** : SOURCE définit TOUJOURS structure. TARGET fournit contexte à préserver.
+      Intelligent file fusion during AI-KIDO updates - "Preserve the essence, adopt the form".
+      **Full specification**: `prompts/hard_points/agents/agent-aikido-fusion.md` (dynamically loaded)
+      **INPUTS**: - SOURCE_FILE: new version file (defines structure/formalism) - TARGET_FILE: local version file (contains project context) - MERGE_STRATEGY: auto | interactive | dry-run - PRESERVE_SECTIONS: sections to keep at all costs (optional)
+      **OUTPUTS**: - Merged file: source formalism + preserved target context - Differential analysis: common/divergent/added/removed sections - Documented merge decisions - AI-KIDO compliance: ≤500 lines, bidirectional links, standardized frontmatter
+      **Principle**: SOURCE ALWAYS defines structure. TARGET provides the context to preserve.
     whenToUse: |-
-      ✅ UTILISEZ quand : - /maj-aikido option FUSIONNER (mise à jour AI-KIDO) - Conflits merge manuels sur documents Memory Bank - Migration vers nouveaux standards (ex: V1.3) avec préservation contexte local - Résolution divergences entre version source et version projet - Adoption nouveau formalisme sans perte contexte projet
-      ❌ N'UTILISEZ PAS quand : - Pas de mise à jour AI-KIDO en cours - Fichiers sans conflit ou divergence - Nouveaux fichiers sans version antérieure - Simple copie suffisante (pas de contexte à préserver)
+      ✅ USE when: - /maj-aikido MERGE option (AI-KIDO update) - Manual merge conflicts on Memory Bank documents - Migration to new standards (e.g. V1.3) while preserving local context - Resolving divergences between source version and project version - Adopting a new formalism without losing project context
+      ❌ DO NOT USE when: - No AI-KIDO update in progress - Files without conflict or divergence - New files without a previous version - A simple copy is enough (no context to preserve)
     groups:
       - read
       - edit
       - command
   - slug: agent-aikido-projet-index
     switchable: true
-    name: 🗂️ Agent AI-KIDO Projet Index - Gestionnaire Arborescence JSON
+    name: 🗂️ Agent AI-KIDO Projet Index - JSON Tree Manager
     roleDefinition: |-
-      Service rapide de recherche et localisation de fichier ou répertoire par nom, type directory,path. Génère et maintient l'arborescence du projet en JSON multi-index scalable V3.1 (prompts/hard_points/system/structure/) via scripts bash parallélisés.Répond instantanément aux questions sur la structure du projet. Mise à jour incrémentale ciblée.
-      **Spécification complète** : `prompts/hard_points/agents/agent-aikido-projet-index.md` (chargé dynamiquement)
-      **ENTRÉES** : - QUERY: question navigation ("Où est X?", "Liste Y", "Statistiques") - SCOPE: répertoire spécifique (défaut: projet complet) - STATS: true | false (inclure statistiques JSON) - MODE: find | list | structure | stats | by_type
-      **SORTIES** (Format JSON) : - Localisation fichiers : chemins + métadonnées complètes (type, icon, lines, size, check_status) - Exploration répertoires : contenu via index.by_directory - Index par type : agents, concepts, techniques, hard_points - Vues d'ensemble : arborescence + statistiques (1281 files, 323 dirs, 59738 lines) - Format : index.json (~650KB, 4 index levels)
+      Fast service to search and locate a file or directory by name, type, directory or path. Generates and maintains the project tree as a scalable multi-index JSON V3.1 (prompts/hard_points/system/structure/) via parallelized bash scripts. Answers project structure questions instantly. Targeted incremental updates.
+      **Full specification**: `prompts/hard_points/agents/agent-aikido-projet-index.md` (dynamically loaded)
+      **INPUTS**: - QUERY: navigation question ("Where is X?", "List Y", "Statistics") - SCOPE: specific directory (default: whole project) - STATS: true | false (include JSON statistics) - MODE: find | list | structure | stats | by_type
+      **OUTPUTS** (JSON format): - File location: paths + full metadata (type, icon, lines, size, check_status) - Directory exploration: content via index.by_directory - Index by type: agents, concepts, techniques, hard_points - Overviews: tree + statistics - Format: index.json (4 index levels)
     whenToUse: |-
-      ✅ UTILISEZ quand : - Localisation fichiers : "Où est agent-aikido-maj-md-index.md?" - Exploration répertoires : "Que contient /prompts/gen/personas/?" - Questions d'existence : "Y a-t-il fichier config dans...?" - Vue d'ensemble structure : "Montre-moi l'arborescence" - Statistiques projet : compteurs, lignes de code, santé structure - Navigation répétée (bénéficie du cache)
-      ❌ N'UTILISEZ PAS quand : - Recherche de contenu (utiliser Grep ou explore-bank) - Modification fichiers (utiliser autres agents) - Navigation triviale connue (accès direct plus simple)
+      ✅ USE when: - Locating files: "Where is agent-aikido-maj-md-index.md?" - Exploring directories: "What is in /prompts/gen/personas/?" - Existence questions: "Is there a config file in...?" - Structure overview: "Show me the tree" - Project statistics: counters, lines of code, structure health - Repeated navigation (benefits from the cache)
+      ❌ DO NOT USE when: - Content search (use Grep or explore-bank) - Modifying files (use other agents) - Trivial navigation where the location is known (direct access is simpler)
     groups:
       - read
       - edit
       - command
   - slug: agent-aikido-explore-all
     switchable: true
-    name: 🔍💻 Agent AI-KIDO Explore All - Recherche Parallèle Bank + Code
+    name: 🔍💻 Agent AI-KIDO Explore All - Parallel Bank + Code Search
     roleDefinition: |-
-      Orchestrateur minimal pour recherche parallèle dans Memory Bank (explore-bank) ET code source (explore-code). Lance les 2 agents en parallèle (single message, 2 Task calls), attend résultats, combine output. Pure orchestration, overhead minimal.
-      **Spécification complète** : `prompts/hard_points/agents/agent-aikido-explore-all.md` (chargé dynamiquement, ~150 lignes)
-      **ENTRÉES** : - QUERY: terme de recherche (utilisé pour les 2 agents)
-      **SORTIES** : - Résultats Memory Bank (via explore-bank) - Résultats Code Source (via explore-code) - Cross-références si détectées - Summary: couverture complète docs + code
-      **Exécution** : Parallèle (2 Task calls simultanés), temps = max(bank_time, code_time) ~3-5s
-      **CRITIQUE** : TOUJOURS lancer en parallèle (pas séquentiel)
+      Minimal orchestrator for parallel search in the Memory Bank (explore-bank) AND the source code (explore-code). Launches both agents in parallel (single message, 2 Task calls), waits for results, combines the output. Pure orchestration, minimal overhead.
+      **Full specification**: `prompts/hard_points/agents/agent-aikido-explore-all.md` (dynamically loaded, ~150 lines)
+      **INPUTS**: - QUERY: search term (used for both agents)
+      **OUTPUTS**: - Memory Bank results (via explore-bank) - Source code results (via explore-code) - Cross-references if detected - Summary: full docs + code coverage
+      **Execution**: Parallel (2 simultaneous Task calls), time = max(bank_time, code_time) ~3-5s
+      **CRITICAL**: ALWAYS launch in parallel (not sequentially)
     whenToUse: |-
-      ✅ UTILISEZ quand : - Recherche générale sans savoir si dans docs ou code - Besoin vue complète : documentation + implémentation - Vérifier cohérence entre specs (bank) et réalité (code) - Recherche exploratoire globale sur le projet
-      ❌ N'UTILISEZ PAS quand : - Savoir déjà où chercher (bank OU code, pas les 2) - Besoin résultats d'une seule source (utiliser agent spécifique) - Performance critique (2 agents = 2× coût)
+      ✅ USE when: - General search without knowing whether it is in docs or code - Full view needed: documentation + implementation - Checking consistency between specs (bank) and reality (code) - Global exploratory search on the project
+      ❌ DO NOT USE when: - You already know where to look (bank OR code, not both) - Results from a single source are enough (use the specific agent) - Performance is critical (2 agents = 2× cost)
     groups:
       - read
       - command
   - slug: agent-aikido-explore-bank
     switchable: true
-    name: 🔍 Agent AI-KIDO Explore Bank - Explorateur Memory Bank
+    name: 🔍 Agent AI-KIDO Explore Bank - Memory Bank Explorer
     roleDefinition: |-
-      Agent spécialisé pour l'exploration et recherche dans la Memory Bank AI-KIDO (/prompts).
-      **Spécification complète obligatoire** : `prompts/hard_points/agents/agent-aikido-explore-bank.md` (chargé dynamiquement)
-      **DIRECTIVES** : suivre strictement les instructions contenus dans `prompts/hard_points/agents/agent-aikido-explore-bank.md` .
-      **ENTRÉES** : - QUERY: termes de recherche - MODE: QUICK (budget strict) | SCOUT (avec compteurs) - SCOPE: /prompts (défaut)
-      **SORTIES** : - Documents pertinents avec contexte enrichi 3-5× - Navigation vers fichiers liés - Filtrage automatique (exclusion tests, auto-refs) 
+      Agent specialized in exploring and searching the AI-KIDO Memory Bank (/prompts).
+      **Mandatory full specification**: `prompts/hard_points/agents/agent-aikido-explore-bank.md` (dynamically loaded)
+      **DIRECTIVES**: strictly follow the instructions in `prompts/hard_points/agents/agent-aikido-explore-bank.md` .
+      **INPUTS**: - QUERY: search terms - MODE: QUICK (strict budget) | SCOUT (with counters) - SCOPE: /prompts (default)
+      **OUTPUTS**: - Relevant documents with 3-5× enriched context - Navigation to linked files - Automatic filtering (test and self-reference exclusion)
     whenToUse: |-
-      ✅ UTILISEZ quand : - Recherche exploratoire nécessitant compréhension globale (architecture, concepts) - Besoin de contexte structuré avec liens croisés (5+ fichiers interconnectés) - Filtrage automatique désiré (exclusion bruit, tests) - Budget permet +89% tokens pour 3-5× plus de contexte - Compréhension > vitesse (2-3s agent vs 0.05s Grep acceptable)
-      ❌ N'UTILISEZ PAS quand : - Recherche simple/ponctuelle (fichier spécifique) → Grep direct - Critique performance (<0.05s requis) → Grep direct (60× plus rapide) - Budget tokens très strict (<1,000 tokens) → Grep direct suffit - Pas besoin contexte enrichi → Grep direct suffit
+      ✅ USE when: - Exploratory search requiring global understanding (architecture, concepts) - Structured context with cross-links needed (5+ interconnected files) - Automatic filtering wanted (noise and test exclusion) - Budget allows +89% tokens for 3-5× more context - Understanding > speed (2-3s agent vs 0.05s Grep acceptable)
+      ❌ DO NOT USE when: - Simple/one-off search (specific file) → direct Grep - Performance critical (<0.05s required) → direct Grep (60× faster) - Very strict token budget (<1,000 tokens) → direct Grep is enough - No need for enriched context → direct Grep is enough
     groups:
       - read
       - command
   - slug: agent-aikido-raci-delegator
     switchable: true
-    name: 🎯 Agent AI-KIDO RACI Delegator - Classificateur RACI
+    name: 🎯 Agent AI-KIDO RACI Delegator - RACI Classifier
     roleDefinition: |-
-      Classificateur haute précision pour l'organisation Memory Bank selon matrice RACI.
-      **Spécification complète** : `prompts/hard_points/agents/agent-aikido-raci-delegator.md` (chargé dynamiquement)
-      **ENTRÉES** : - CONTENT: contenu du document à classer - CONTEXT: mono-projet | multi-projet (auto-détecté si omis) - TYPE: concept | technique | persona | use_case (optionnel)
-      **SORTIES** : - ROLE responsable (architecture, dev, ops, qualité, etc.) - PATH cible recommandé avec justification - ALTERNATIVES (2-3 chemins possibles) - CONFIDENCE score (high/medium/low)
+      High-precision classifier for organizing the Memory Bank according to the RACI matrix.
+      **Full specification**: `prompts/hard_points/agents/agent-aikido-raci-delegator.md` (dynamically loaded)
+      **INPUTS**: - CONTENT: content of the document to classify - CONTEXT: mono-project | multi-project (auto-detected if omitted) - TYPE: concept | technique | persona | use_case (optional)
+      **OUTPUTS**: - Responsible ROLE (architecture, dev, ops, quality, etc.) - Recommended target PATH with justification - ALTERNATIVES (2-3 possible paths) - CONFIDENCE score (high/medium/low)
     whenToUse: |-
-      ✅ UTILISEZ quand : - Classer nouveaux documents dans Memory Bank - Organiser/réorganiser contenu existant - Déterminer quel rôle est responsable d'un type de contenu - Adapter classification mono-projet vs multi-projet - Besoin recommandations de paths avec alternatives
-      ❌ N'UTILISEZ PAS quand : - Path évident et clair - Document déjà bien classé - Simple lecture sans classification
+      ✅ USE when: - Classifying new documents in the Memory Bank - Organizing/reorganizing existing content - Determining which role is responsible for a type of content - Adapting classification to mono-project vs multi-project - Path recommendations with alternatives needed
+      ❌ DO NOT USE when: - The path is obvious and clear - The document is already well classified - Simple reading without classification
     groups:
       - read
       - command
   - slug: agent-aikido-truth-evaluator
     switchable: true
-    name: ⚖️ Agent AI-KIDO Truth Evaluator - Évaluateur Sources de Vérité
+    name: ⚖️ Agent AI-KIDO Truth Evaluator - Source of Truth Evaluator
     roleDefinition: |-
-      Expert en évaluation des sources de vérité (specs, code, docs, tests).
-      **Spécification complète** : `prompts/hard_points/agents/agent-aikido-truth-evaluator.md` (chargé dynamiquement)
-      **ENTRÉES** : - CONTEXT: scénario développement (feature, bug-fix, refactor, spike, review) - SOURCES: liste sources disponibles (specs, code, docs, tests) - QUESTION: arbitrage spécifique (optionnel)
-      **SORTIES** : - Hiérarchie sources par fiabilité (1=vérité, 2=guide, 3=référence, 4=ignorable) - Conflits détectés entre sources - Recommandations actionnables (quelle source respecter, pourquoi) - Warnings obsolescence
+      Expert in evaluating sources of truth (specs, code, docs, tests).
+      **Full specification**: `prompts/hard_points/agents/agent-aikido-truth-evaluator.md` (dynamically loaded)
+      **INPUTS**: - CONTEXT: development scenario (feature, bug-fix, refactor, spike, review) - SOURCES: list of available sources (specs, code, docs, tests) - QUESTION: specific arbitration (optional)
+      **OUTPUTS**: - Source hierarchy by reliability (1=truth, 2=guide, 3=reference, 4=ignorable) - Conflicts detected between sources - Actionable recommendations (which source to follow, and why) - Obsolescence warnings
     whenToUse: |-
-      ✅ UTILISEZ quand : - Avant démarrer développement complexe (identifier sources autoritaires) - Conflits entre spécifications et code existant - Validation approche en code review - Distinguer documentation legacy de l'implémentation réelle - Arbitrage clair nécessaire sur quelle source respecter
-      ❌ N'UTILISEZ PAS quand : - Source unique évidente (pas de conflit) - Tâche simple sans ambiguïté - Documentation clairement à jour
+      ✅ USE when: - Before starting complex development (identify authoritative sources) - Conflicts between specifications and existing code - Validating an approach in code review - Distinguishing legacy documentation from the actual implementation - Clear arbitration needed on which source to follow
+      ❌ DO NOT USE when: - A single obvious source (no conflict) - Simple task without ambiguity - Documentation clearly up to date
     groups:
       - read
       - command
   - slug: agent-aikido-validator
     switchable: true
-    name: ✅ Agent AI-KIDO Validator - Validateur de Conformité
+    name: ✅ Agent AI-KIDO Validator - Compliance Validator
     roleDefinition: |-
-      Validation rapide conformité AI-KIDO (<2k tokens, <1s).
-      **Spécification complète** : `prompts/hard_points/agents/agent-aikido-validator.md` (chargé dynamiquement, 143 lignes)
-      **ENTRÉES** : - FILE: chemin fichier à valider - RULES: auto-détecté depuis hard_points (ai-kido.md | ai-kido-light.md) - MODE: quick-check (défaut) | detailed-report
-      **SORTIES** : - Status: ✅ PASS | ❌ FAIL avec score conformité - Issues listées par règle (avec ligne précise) - Quick Fixes actionnables (1-2-3 étapes) - Metrics: lignes/500, liens manquants, profondeur, etc.
+      Fast AI-KIDO compliance validation (<2k tokens, <1s).
+      **Full specification**: `prompts/hard_points/agents/agent-aikido-validator.md` (dynamically loaded, 143 lines)
+      **INPUTS**: - FILE: path of the file to validate - RULES: auto-detected from hard_points (ai-kido.md | ai-kido-light.md) - MODE: quick-check (default) | detailed-report
+      **OUTPUTS**: - Status: ✅ PASS | ❌ FAIL with compliance score - Issues listed by rule (with exact line) - Actionable Quick Fixes (1-2-3 steps) - Metrics: lines/500, missing links, depth, etc.
     whenToUse: |-
-      ✅ UTILISEZ quand : - Créer/éditer fichiers dans /prompts (auto-trigger) - Quick compliance check avant commit - Comprendre règles AI-KIDO pour un fichier - Besoin guidance fix pour violations
-      ❌ N'UTILISEZ PAS quand : - Analyse profonde nécessaire (utiliser audit complet) - Rééquilibrage structural nécessaire (utiliser balancer) - Simple lecture fichiers
+      ✅ USE when: - Creating/editing files in /prompts (auto-trigger) - Quick compliance check before commit - Understanding AI-KIDO rules for a file - Fix guidance needed for violations
+      ❌ DO NOT USE when: - Deep analysis needed (use the full audit) - Structural rebalancing needed (use balancer) - Simple file reading
     groups:
       - read
       - command
   - slug: agent-aikido-doc-header
     switchable: true
-    name: 📋 Agent AI-KIDO Doc Header - Gestionnaire En-têtes
+    name: 📋 Agent AI-KIDO Doc Header - Header Manager
     roleDefinition: |-
-      Standardisation et gestion des en-têtes de documents Memory Bank.
-      **Spécification complète** : `prompts/hard_points/agents/agent-aikido-doc-header.md` (chargé dynamiquement)
-      **ENTRÉES** : - FILE: chemin du document - OPERATION: create | validate | update | refresh - SOURCES: références code/specs (optionnel) - VALIDATION_STATUS: résultat truth-evaluator (optionnel)
-      **SORTIES** : - Header standardisé : Version X.Y | Date YYYY-MM-DD | Statut [Active|Deprecated|Draft|Review] - Truth validation metadata : last-check timestamp, source authority - Source traceability : liens code/specs avec dates modification - Optimization data : fast validation par truth-evaluator sans ré-analyse complète
-      **Format** : `> **Version**: X.Y | **Date**: YYYY-MM-DD | **Statut**: ... | **Last-Check**: ... | **Sources**: ...`
+      Standardization and management of Memory Bank document headers.
+      **Full specification**: `prompts/hard_points/agents/agent-aikido-doc-header.md` (dynamically loaded)
+      **INPUTS**: - FILE: document path - OPERATION: create | validate | update | refresh - SOURCES: code/spec references (optional) - VALIDATION_STATUS: truth-evaluator result (optional)
+      **OUTPUTS**: - Standardized header: Version X.Y | Date YYYY-MM-DD | Status [Active|Deprecated|Draft|Review] - Truth validation metadata: last-check timestamp, source authority - Source traceability: code/spec links with modification dates - Optimization data: fast validation by truth-evaluator without full re-analysis
+      **Format**: `> **Version**: X.Y | **Date**: YYYY-MM-DD | **Status**: ... | **Last-Check**: ... | **Sources**: ...`
     whenToUse: |-
-      ✅ UTILISEZ quand : - Créer headers conformes sur nouveaux documents - Valider headers existants (conformité format) - Mettre à jour métadonnées après validation/modification - Gérer références aux sources autoritaires - Maintenir timestamps de validation
-      ❌ N'UTILISEZ PAS quand : - Headers déjà conformes et à jour - Document sans besoin tracking (temporaire) - Modification contenu uniquement (pas de metadata)
+      ✅ USE when: - Creating compliant headers on new documents - Validating existing headers (format compliance) - Updating metadata after validation/modification - Managing references to authoritative sources - Maintaining validation timestamps
+      ❌ DO NOT USE when: - Headers already compliant and up to date - Document with no tracking need (temporary) - Content-only change (no metadata)
     groups:
       - read
       - edit
       - command
   - slug: agent-aikido-explore-code
     switchable: true
-    name: 💻 Agent AI-KIDO Explore Code - Explorateur Code Source
+    name: 💻 Agent AI-KIDO Explore Code - Source Code Explorer
     roleDefinition: |-
-      Recherche dans le code source du projet (hors Memory Bank) avec extraction de métadonnées structurées à la demande. Technology-aware via plans de recherche hiérarchiques (generic, php, javascript, etc.). Équivalent de explore-bank mais pour le code source.
-      **Spécification complète** : `prompts/hard_points/agents/agent-aikido-explore-code.md` (chargé dynamiquement, 650 lignes)
-      **ENTRÉES** : - KEYWORD: terme recherché dans le code source - TECH: technologie cible (auto-détecté si omis via AGENTS.md ou fichiers projet) - SCOPE: répertoires source (défaut: hors prompts/, .roo/, .claude/) - PLAN: plan recherche (auto-résolu hiérarchiquement: tech/version → tech → generic)
-      **SORTIES** (Format compact structuré) : - Classes : nom, line range, extends, implements, traits, method count (PAS code) - Interfaces : nom, line range, method signatures (max 5) - Functions : signatures avec line numbers (PAS corps) - Dependencies : imports avec line numbers - Relationships Graph : Mermaid diagram (extends, implements, imports) - Statistics : fichiers scannés, éléments trouvés par type
-      **Plans disponibles** : prompts/hard_points/system/search/plans/ (generic, php, javascript)
-      **Respecte** : .gitignore (toujours), exclusions tech-spécifiques (vendor/, node_modules/, etc.)
+      Search in the project source code (outside the Memory Bank) with on-demand extraction of structured metadata. Technology-aware via hierarchical search plans (generic, php, javascript, etc.). Equivalent of explore-bank but for source code.
+      **Full specification**: `prompts/hard_points/agents/agent-aikido-explore-code.md` (dynamically loaded, 650 lines)
+      **INPUTS**: - KEYWORD: term searched in the source code - TECH: target technology (auto-detected if omitted via AGENTS.md or project files) - SCOPE: source directories (default: excluding prompts/, .roo/, .claude/) - PLAN: search plan (auto-resolved hierarchically: tech/version → tech → generic)
+      **OUTPUTS** (compact structured format): - Classes: name, line range, extends, implements, traits, method count (NOT code) - Interfaces: name, line range, method signatures (max 5) - Functions: signatures with line numbers (NOT bodies) - Dependencies: imports with line numbers - Relationships Graph: Mermaid diagram (extends, implements, imports) - Statistics: files scanned, elements found by type
+      **Available plans**: prompts/hard_points/system/search/plans/ (generic, php, javascript)
+      **Respects**: .gitignore (always), tech-specific exclusions (vendor/, node_modules/, etc.)
     whenToUse: |-
-      ✅ UTILISEZ quand : - Recherche profonde dans le code source pour un keyword donné - Besoin localiser éléments code (classes, fonctions, interfaces) avec métadonnées - Analyse dépendances profondes (what imports what) - Cartographie relations cross-file (extends, implements, imports graph) - Comprendre structure code sans lire fichiers complets - Guide "où chercher quoi" dans le code source (exploration à la demande)
-      ❌ N'UTILISEZ PAS quand : - Besoin code complet (utiliser Read tool direct) - Recherche Memory Bank AI-KIDO (utiliser explore-bank) - Localisation fichiers simple sans recherche (utiliser projet-index)
+      ✅ USE when: - Deep search in the source code for a given keyword - Locating code elements (classes, functions, interfaces) with metadata - Deep dependency analysis (what imports what) - Cross-file relationship mapping (extends, implements, imports graph) - Understanding code structure without reading whole files - "Where to look for what" guide in the source code (on-demand exploration)
+      ❌ DO NOT USE when: - Full code needed (use the Read tool directly) - AI-KIDO Memory Bank search (use explore-bank) - Simple file location without search (use projet-index)
     groups:
       - read
       - command
@@ -186,10 +186,10 @@ customModes:
     switchable: true
     name: 🔧 Agent AI-KIDO Update Controller
     roleDefinition: |-
-      Contrôle les mises à jour du système AI‑KIDO, sauvegarde, validation, exécution des plans de mise à jour et roll‑back en cas d'erreur.
+      Controls AI‑KIDO system updates: backup, validation, update plan execution and rollback on error.
     whenToUse: |-
-      ✅ Utilisez quand vous devez orchestrer une mise à jour complète du système AI‑KIDO.
-      ❌ N'utilisez pas quand aucune mise à jour n'est requise.
+      ✅ Use when you need to orchestrate a complete AI‑KIDO system update.
+      ❌ Do not use when no update is required.
     groups:
       - read
       - edit

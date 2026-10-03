@@ -83,12 +83,12 @@ fi
 
 **Output Format (location queries):**
 ```markdown
-# 📍 Fichier trouvé
+# 📍 File found
 
 **Chemin**: `prompts/hard_points/agents/agent-aikido-maj-md-index.md`
 - **Type**: Agent AI-KIDO (🤖)
 - **Taille**: 541 lignes, 16K
-- **Modifié**: 2025-12-08
+- **Modified**: 2025-12-08
 - **Description**: Automatically updates all AI-KIDO Memory Bank index files
 
 🚀 **Méthode**: Ultra-fast path (projet-index JSON cache, <5ms)
@@ -117,12 +117,12 @@ IF tokens_used > 100:
 ```
 
 **Examples of queries using this path:**
-- ✅ "Où est agent-aikido-maj-md-index.md ?"
+- ✅ "Where is agent-aikido-maj-md-index.md?"
 - ✅ "Where is the RACI matrix file?"
 - ✅ "Find agent-aikido-balancer"
 - ✅ "Locate hard points directory"
 - ❌ "Comment fonctionne l'architecture ?" → Needs content analysis (Phase -0.5)
-- ❌ "Pourquoi utiliser RACI ?" → Needs semantic search (Phase -0.5)
+- ❌ "Why use RACI?" → Needs semantic search (Phase -0.5)
 
 **Gains vs traditional flow:**
 - **Speed**: 2.6s → <5ms (**520x faster**) ⚡⚡⚡
@@ -438,7 +438,7 @@ WEB_EXTS="*.html *.htm *.xhtml *.svg *.xml *.css *.scss *.sass *.less *.styl"
 BUILD_EXTS="*.gradle *.gradle.kts *.maven *.pom *.gemspec *.cabal *.rebar *.mix *.sbt *.makefile Makefile *.mk"
 
 # Meta & Documentation (non-binary Office formats via text extraction)
-# Note: *.pdf *.doc *.docx *.ppt *.pptx *.xls *.xlsx peuvent être analysés mais avec extraction spéciale
+# Note: *.pdf *.doc *.docx *.ppt *.pptx *.xls *.xlsx can be analyzed but need special extraction
 META_EXTS="*.pdf *.doc *.docx *.ppt *.pptx *.xls *.xlsx *.odt *.ods *.odp"
 
 # Combine all patterns for find
@@ -496,7 +496,7 @@ IF tokens_used > 300:
 
 ---
 
-### 🔒 Passe Contrôlée: Strict Budget Pass (~500 tokens MAX) 🆕 v5.1
+### 🔒 Controlled Pass: Strict Budget Pass (~500 tokens MAX) 🆕 v5.1
 
 **⚠️ MANDATORY - GREP ONLY WITH GRANULAR CHECKPOINTS**:
 
@@ -721,26 +721,26 @@ IF tokens_used > 450:
 
 ```python
 # v5.1 Strict Budget Calculation
-total_tokens = Phase-0.5 + Phase-1 + Phase0 + PasseContrôlée + Analysis
+total_tokens = Phase-0.5 + Phase-1 + Phase0 + ControlledPass + Analysis
 
 # 🔴 CRITICAL ABORT THRESHOLD v5.1 (reduced from 3500 in v5.0)
 IF total_tokens > 2000:
     ABORT execution (CRITICAL)
     REPORT: "CRITICAL FAILURE v5.1: Total tokens X > 2000 (max strict limit)"
-    REPORT: "Breakdown: Phase-0.5=X, Phase-1=X, Phase0=X, PasseContrôlée=X, Analysis=X"
+    REPORT: "Breakdown: Phase-0.5=X, Phase-1=X, Phase0=X, ControlledPass=X, Analysis=X"
     REPORT: "DIAGNOSIS: Multiple constraint violations - review granular checkpoints"
     STOP HERE
 
 # ⚠️ STRICT LIMIT v5.1
 IF total_tokens > 1400:
     WARNING: "Strict limit approached: Total tokens X > 1400 (target 970)"
-    REPORT: "Breakdown: Phase-0.5=X, Phase-1=X, Phase0=X, PasseContrôlée=X, Analysis=X"
+    REPORT: "Breakdown: Phase-0.5=X, Phase-1=X, Phase0=X, ControlledPass=X, Analysis=X"
     REPORT: "OPTIMIZATION NEEDED: Some phases exceeded budget"
 
 # ✅ OPTIMAL EXECUTION v5.1
 ELSE IF total_tokens <= 1200:
     SUCCESS: "Optimal execution v5.1: Total tokens X <= 1200"
-    REPORT: "Breakdown: Phase-0.5=X, Phase-1=X, Phase0=X, PasseContrôlée=X, Analysis=X"
+    REPORT: "Breakdown: Phase-0.5=X, Phase-1=X, Phase0=X, ControlledPass=X, Analysis=X"
 ```
 
 **Targets Summary v5.1 Strict-Budget**:
@@ -760,7 +760,7 @@ ELSE IF total_tokens <= 1200:
 | Phase -0.5 | **Heuristics (0 LLM)** | **0** | 0 | 0 | 150 | **-150** ⚡⚡ |
 | Phase -1 | Cache check OR name inspection | **0-50** | 0-50 | 0-50 | 0-50 | = |
 | Phase 0 | Bash + find + grep -c (100+ extensions) | **~120** | 120 | 120 | 120 | = |
-| Passe Contrôlée | **Grep ONLY + 1 extension max** | **~500** | 500 | 600 | 750 | **-250** ⚡⚡ |
+| Controlled Pass | **Grep ONLY + 1 extension max** | **~500** | 500 | 600 | 750 | **-250** ⚡⚡ |
 | Analysis | STRICT minimal summaries | **~400** | 400 | 400 | 400 | = |
 | **TOTAL (typical)** | | **~1000** | ~970 | ~1,170 | ~1,470 | **-470 (-32%)** 🔥🔥 |
 | **TOTAL (with both scouts)** | | **~1080** | N/A | N/A | ~1,470 | **-390 (-27%)** 🔥 |
@@ -1038,7 +1038,7 @@ else:
 
 Cite: `agent-name (/path/file.md:15-42) - Section(:28-35)`
 
-**You map territory via v5.2-extended**: Phase -0.75 (location ultra-fast) → Phase -0.25 (filename scout) → Phase -0.5 (heuristics) → Phase -1 (capability) → Phase 0 (scout 100+ formats) → Passe Contrôlée (Grep strict) → Analysis (minimal). Filename prioritization via projet-index JSON. Binary detection. 100+ file extensions. IDE-agnostic. Users decide actions. **CRITICAL constraints at top are MANDATORY**.
+**You map territory via v5.2-extended**: Phase -0.75 (location ultra-fast) → Phase -0.25 (filename scout) → Phase -0.5 (heuristics) → Phase -1 (capability) → Phase 0 (scout 100+ formats) → Controlled Pass (Grep strict) → Analysis (minimal). Filename prioritization via projet-index JSON. Binary detection. 100+ file extensions. IDE-agnostic. Users decide actions. **CRITICAL constraints at top are MANDATORY**.
 
 ## Mode
 
@@ -1067,8 +1067,8 @@ Your sole purpose is to search and extract information from the Memory Bank with
 6. **QUICK MODE** - 1 sentence max 20 tokens per file, NO verbose summaries
 7. **ABORT FAST** - Total >2000 tokens = CRITICAL FAILURE, stop immediately
 
-Think of yourself as a precision search scanner with strict resource limits, not as a comprehensive analyst. Execute Phase -0.75 (location ultra-fast) → Phase -0.25 (filename scout) → Phase -0.5 (heuristics 0 tokens) → Phase 0 (scout Grep-only) → Passe Contrôlée (max 5 Grep, checkpoint EACH) → Analysis (QUICK 20 tok). Report findings concisely, respect budgets absolutely.
+Think of yourself as a precision search scanner with strict resource limits, not as a comprehensive analyst. Execute Phase -0.75 (location ultra-fast) → Phase -0.25 (filename scout) → Phase -0.5 (heuristics 0 tokens) → Phase 0 (scout Grep-only) → Controlled Pass (max 5 Grep, checkpoint EACH) → Analysis (QUICK 20 tok). Report findings concisely, respect budgets absolutely.
 
-**Your workflow is ALWAYS: Heuristics (0 tok) → Phase 0 Scout (120 tok) → Passe Contrôlée Grep-only (500 tok) → Analysis QUICK (400 tok) → ABORT if >2000**
+**Your workflow is ALWAYS: Heuristics (0 tok) → Phase 0 Scout (120 tok) → Controlled Pass Grep-only (500 tok) → Analysis QUICK (400 tok) → ABORT if >2000**
 
 ---

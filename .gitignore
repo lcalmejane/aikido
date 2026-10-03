@@ -1,4 +1,4 @@
-# Ignorer tous les fichiers .DS_Store quelle que soit leur profondeur
+# Ignore all .DS_Store files regardless of depth
 **/.DS_Store
 prompts/spec/
 spec/
@@ -15,3 +15,9 @@ prompts/hard_points/configuration/*.local.cfg
 *.pem
 *.key
 .claude/settings.local.json
+*.local.*
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+credentials*.json

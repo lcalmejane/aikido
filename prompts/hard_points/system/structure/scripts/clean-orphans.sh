@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # AI-KIDO Index Orphan Cleaner V1.0
-# Nettoie intelligemment les entrées orphelines de l'index
-# Performance : ~5-10s pour 2600 fichiers (vs 20-30s via agent)
+# Smartly cleans orphan entries from the index
+# Performance: ~5-10s for 2600 files (vs 20-30s via agent)
 
 if [ -n "$BASH_VERSION" ]; then
   set -euo pipefail   # Bash‑only, portable sur Rocky, Ubuntu, etc.
@@ -30,18 +30,18 @@ if ! command -v jq &> /dev/null; then
 fi
 
 if [ ! -f "$MASTER_INDEX" ]; then
-    echo -e "${YELLOW}ℹ️  Index non trouvé${NC}"
-    echo "   Utilisez /reindex-projet pour créer l'index."
+    echo -e "${YELLOW}ℹ️  Index not found${NC}"
+    echo "   Use /reindex-projet to create the index."
     exit 0
 fi
 
 echo "╔══════════════════════════════════════════════════════════╗"
-echo "║  🧹 NETTOYAGE INTELLIGENT DE L'INDEX - DÉMARRAGE        ║"
+echo "║  🧹 SMART INDEX CLEANUP - STARTING                      ║"
 echo "╚══════════════════════════════════════════════════════════╝"
 echo ""
 
 # Step 1: Extract all indexed paths from by-id batches
-echo "⚙️  Extraction des fichiers indexés..."
+echo "⚙️  Extracting indexed files..."
 INDEXED_DATA=$(mktemp)  # Format: hash_id|path
 BATCH_COUNT=0
 
@@ -54,11 +54,11 @@ for batch in "$INDEX_DIR"/by-id/index-id-*.json; do
 done
 
 TOTAL_INDEXED=$(wc -l < "$INDEXED_DATA" | tr -d ' ')
-echo "✓ $TOTAL_INDEXED fichiers indexés ($BATCH_COUNT batches)"
+echo "✓ $TOTAL_INDEXED files indexed ($BATCH_COUNT batches)"
 echo ""
 
 # Step 2: Check which files still exist
-echo "⚙️  Vérification existence des fichiers..."
+echo "⚙️  Checking file existence..."
 VALID_DATA=$(mktemp)    # hash_id|path for valid files
 ORPHAN_DATA=$(mktemp)   # hash_id|path for orphans
 ORPHAN_COUNT=0
@@ -77,14 +77,14 @@ while IFS='|' read -r hash_id path; do
     fi
 done < "$INDEXED_DATA"
 
-echo "✓ Vérification terminée"
-echo "  Fichiers valides : $VALID_COUNT"
-echo "  Orphelins détectés : $ORPHAN_COUNT"
+echo "✓ Verification complete"
+echo "  Valid files: $VALID_COUNT"
+echo "  Orphans detected: $ORPHAN_COUNT"
 echo ""
 
 # Step 3: Display orphans
 if [ $ORPHAN_COUNT -gt 0 ]; then
-    echo "📋 Exemples d'orphelins détectés :"
+    echo "📋 Examples of orphans detected:"
     head -n 5 "$ORPHAN_DATA" | while IFS='|' read -r hash_id orphan_path; do
         echo "  - $orphan_path"
     done
@@ -97,13 +97,13 @@ if [ $ORPHAN_COUNT -gt 0 ]; then
     ORPHAN_PCT=$(awk "BEGIN {printf \"%.1f\", ($ORPHAN_COUNT / $TOTAL_INDEXED) * 100}")
 
     if (( $(echo "$ORPHAN_PCT > 10.0" | bc -l) )); then
-        echo -e "${YELLOW}⚠️  ATTENTION : Beaucoup d'orphelins détectés ($ORPHAN_PCT%)${NC}"
-        echo "   Recommandation : Utilisez /reindex-projet pour régénération complète"
+        echo -e "${YELLOW}⚠️  WARNING: Many orphans detected ($ORPHAN_PCT%)${NC}"
+        echo "   Recommendation: use /reindex-projet for a full regeneration"
         echo ""
     fi
 
     # Step 4: Clean orphans from by-id batches
-    echo "⚙️  Nettoyage des entrées orphelines..."
+    echo "⚙️  Cleaning orphan entries..."
     CLEANED_COUNT=0
 
     while IFS='|' read -r hash_id orphan_path; do
@@ -120,15 +120,15 @@ if [ $ORPHAN_COUNT -gt 0 ]; then
         fi
     done < "$ORPHAN_DATA"
 
-    echo "✓ $CLEANED_COUNT entrées supprimées"
+    echo "✓ $CLEANED_COUNT entries removed"
     echo ""
 
     # Step 5: Update master index statistics
-    echo "⚙️  Mise à jour du master index..."
+    echo "⚙️  Updating the master index..."
     TMP_MASTER=$(mktemp)
     jq ".metadata.statistics.total_files = $VALID_COUNT | .metadata.last_check.timestamp = \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\" | .metadata.last_check.generator = \"clean-orphans-script\"" "$MASTER_INDEX" > "$TMP_MASTER"
     mv "$TMP_MASTER" "$MASTER_INDEX"
-    echo "✓ Master index mis à jour"
+    echo "✓ Master index updated"
     echo ""
 fi
 
@@ -137,25 +137,25 @@ rm -f "$INDEXED_DATA" "$VALID_DATA" "$ORPHAN_DATA"
 
 # Final summary
 echo "╔══════════════════════════════════════════════════════════╗"
-echo "║  ✓ NETTOYAGE INTELLIGENT TERMINÉ                        ║"
+echo "║  ✓ SMART CLEANUP COMPLETE                               ║"
 echo "╚══════════════════════════════════════════════════════════╝"
 echo ""
 echo "📊 Statistiques :"
-echo "  - Fichiers indexés : $TOTAL_INDEXED"
-echo "  - Fichiers valides : $VALID_COUNT"
-echo "  - Orphelins détectés : $ORPHAN_COUNT"
-echo "  - Orphelins supprimés : ${CLEANED_COUNT:-0}"
+echo "  - Indexed files: $TOTAL_INDEXED"
+echo "  - Valid files: $VALID_COUNT"
+echo "  - Orphans detected: $ORPHAN_COUNT"
+echo "  - Orphans removed: ${CLEANED_COUNT:-0}"
 echo ""
 
 if [ $ORPHAN_COUNT -eq 0 ]; then
-    echo -e "${GREEN}✓ Index parfaitement cohérent${NC}"
-    echo "  Aucune action de nettoyage nécessaire."
+    echo -e "${GREEN}✓ Index fully consistent${NC}"
+    echo "  No cleanup action needed."
 elif (( $(echo "$ORPHAN_PCT > 10.0" | bc -l) )); then
     echo -e "${YELLOW}💡 RECOMMANDATION FORTE :${NC}"
-    echo "   Lancez une réindexation complète : /reindex-projet"
+    echo "   Run a full reindex: /reindex-projet"
 else
-    echo -e "${GREEN}✓ Index nettoyé avec succès${NC}"
-    echo "  L'index est maintenant cohérent."
+    echo -e "${GREEN}✓ Index cleaned successfully${NC}"
+    echo "  The index is now consistent."
 fi
 echo ""
 

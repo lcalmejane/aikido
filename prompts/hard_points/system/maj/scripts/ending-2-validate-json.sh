@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ending-2-validate-json.sh - Valider format JSON rapport
+# ending-2-validate-json.sh - Validate report JSON format
 # Usage: ending-2-validate-json.sh
 
 if [ -n "$BASH_VERSION" ]; then
@@ -15,7 +15,7 @@ if ! jq empty /tmp/aikido/maj_diff.json 2>/dev/null; then
   echo "   Contenu brut :"
   cat /tmp/aikido/maj_diff.json
   echo ""
-  echo "   → Passage en mode dégradé (analyse manuelle requise)"
+  echo "   → Switching to degraded mode (manual analysis required)"
   echo "INVALID"
   exit 0
 fi

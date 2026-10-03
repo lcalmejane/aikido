@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
-# sync-directories.sh - Synchronisation batch optimisée de répertoires
+# sync-directories.sh - Optimized batch directory synchronization
 # Compatible: Linux, macOS, Windows Git Bash
 # Usage: sync-directories.sh <source_dir> <target_dir> <pattern> [--force] [--backup]
+#
+# NOTE: counters are computed by parsing the output of sync-files.sh
+#       (keywords "identical", "Copy", "newer", "Keep"). Keep them in sync.
 
 if [ -n "$BASH_VERSION" ]; then
-  set -euo pipefail   # Bash‑only, portable sur Rocky, Ubuntu, etc.
+  set -euo pipefail   # Bash-only, portable on Rocky, Ubuntu, etc.
 else
-  set -eu              # Fallback for POSIX‑sh
+  set -eu              # Fallback for POSIX-sh
 fi
-# Couleurs
+# Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -38,13 +41,13 @@ if [[ -z "$SOURCE_DIR" ]] || [[ -z "$TARGET_DIR" ]]; then
   exit 1
 fi
 
-# Compteurs
+# Counters
 TOTAL=0
 COPIED=0
 SKIPPED=0
 IDENTICAL=0
 
-# Fonction: Trouver script sync-files.sh
+# Function: locate the sync-files.sh script
 find_sync_script() {
   local script_dir
   script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -54,30 +57,30 @@ find_sync_script() {
 SYNC_SCRIPT=$(find_sync_script)
 
 if [[ ! -f "$SYNC_SCRIPT" ]]; then
-  echo -e "${RED}❌ Script sync-files.sh introuvable: $SYNC_SCRIPT${NC}" >&2
+  echo -e "${RED}❌ Script sync-files.sh not found: $SYNC_SCRIPT${NC}" >&2
   exit 1
 fi
 
-# Fonction principale
+# Main function
 main() {
-  echo -e "${BLUE}🔵 Synchronisation répertoire batch${NC}"
+  echo -e "${BLUE}🔵 Batch directory synchronization${NC}"
   echo "   Source: $SOURCE_DIR"
   echo "   Target: $TARGET_DIR"
   echo "   Pattern: $PATTERN"
-  [[ "$FORCE_MODE" == true ]] && echo "   Mode: --force (source prioritaire)"
-  [[ "$BACKUP_MODE" == true ]] && echo "   Backup: activé"
+  [[ "$FORCE_MODE" == true ]] && echo "   Mode: --force (source takes priority)"
+  [[ "$BACKUP_MODE" == true ]] && echo "   Backup: enabled"
   echo ""
   
-  # Vérifier source existe
+  # Check that the source exists
   if [[ ! -d "$SOURCE_DIR" ]]; then
-    echo -e "${RED}❌ Répertoire source inexistant: $SOURCE_DIR${NC}" >&2
+    echo -e "${RED}❌ Source directory does not exist: $SOURCE_DIR${NC}" >&2
     return 1
   fi
   
-  # Créer target si nécessaire
+  # Create target if needed
   mkdir -p "$TARGET_DIR"
   
-  # Trouver tous les fichiers matchant le pattern
+  # Find all files matching the pattern
   local files=()
   while IFS= read -r -d '' file; do
     files+=("$file")
@@ -86,14 +89,14 @@ main() {
   TOTAL=${#files[@]}
   
   if [[ $TOTAL -eq 0 ]]; then
-    echo -e "${YELLOW}⚠️  Aucun fichier trouvé avec pattern: $PATTERN${NC}"
+    echo -e "${YELLOW}⚠️  No file found with pattern: $PATTERN${NC}"
     return 0
   fi
   
-  echo -e "${BLUE}📊 $TOTAL fichier(s) à traiter${NC}"
+  echo -e "${BLUE}📊 $TOTAL file(s) to process${NC}"
   echo ""
   
-  # Traiter chaque fichier
+  # Process each file
   local args=""
   [[ "$FORCE_MODE" == true ]] && args="$args --force"
   [[ "$BACKUP_MODE" == true ]] && args="$args --backup"
@@ -103,44 +106,44 @@ main() {
     filename="$(basename "$source_file")"
     local target_file="${TARGET_DIR}/${filename}"
     
-    # Appeler sync-files.sh
+    # Call sync-files.sh
     local output
     if output=$("$SYNC_SCRIPT" "$source_file" "$target_file" $args 2>&1); then
-      # Analyser output pour compteurs
-      if echo "$output" | grep -q "identiques"; then
+      # Parse output for counters
+      if echo "$output" | grep -q "identical"; then
         ((IDENTICAL++))
-      elif echo "$output" | grep -q "Copier\|plus récent"; then
+      elif echo "$output" | grep -q "Copy\|newer"; then
         ((COPIED++))
       else
         ((SKIPPED++))
       fi
       
-      # Afficher résumé compact
-      if echo "$output" | grep -q "identiques"; then
-        echo -e "${GREEN}  ✅ $filename (identique)${NC}"
-      elif echo "$output" | grep -q "Copier"; then
-        echo -e "${GREEN}  ✅ $filename (copié)${NC}"
-      elif echo "$output" | grep -q "Conserver"; then
-        echo -e "${BLUE}  ℹ️  $filename (target conservé)${NC}"
+      # Print compact summary
+      if echo "$output" | grep -q "identical"; then
+        echo -e "${GREEN}  ✅ $filename (identical)${NC}"
+      elif echo "$output" | grep -q "Copy"; then
+        echo -e "${GREEN}  ✅ $filename (copied)${NC}"
+      elif echo "$output" | grep -q "Keep"; then
+        echo -e "${BLUE}  ℹ️  $filename (target kept)${NC}"
       fi
     else
-      echo -e "${RED}  ❌ $filename (erreur)${NC}"
+      echo -e "${RED}  ❌ $filename (error)${NC}"
       ((SKIPPED++))
     fi
   done
   
-  # Résumé final
+  # Final summary
   echo ""
   echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-  echo -e "${GREEN}✅ Synchronisation terminée${NC}"
-  echo "   Total: $TOTAL fichiers"
-  echo "   Copiés: $COPIED"
-  echo "   Identiques: $IDENTICAL"
-  echo "   Conservés: $SKIPPED"
+  echo -e "${GREEN}✅ Synchronization complete${NC}"
+  echo "   Total: $TOTAL files"
+  echo "   Copied: $COPIED"
+  echo "   Identical: $IDENTICAL"
+  echo "   Kept: $SKIPPED"
   echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
   
   return 0
 }
 
-# Exécution
+# Execution
 main
