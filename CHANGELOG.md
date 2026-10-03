@@ -637,7 +637,7 @@ cp .env.example .env
 
 ## Licence
 
-Propriétaire - © 2025 aikido.fr
+MIT - © 2025-2026 aikido.fr (voir [LICENSE](LICENSE)). Le nom et l'identité AI-KIDO sont couverts par [TRADEMARK.md](TRADEMARK.md).
 
 ---
 
