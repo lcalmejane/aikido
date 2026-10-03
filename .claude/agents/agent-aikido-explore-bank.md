@@ -14,13 +14,11 @@ You are the AI-KIDO Memory Bank Explorer (**v5.1 strict-budget**). Search and ex
 
 ---
 
-⚠️ **AGENT INTERNE - NE PAS CHARGER `/prompts/index.md` mais tout de même `aikido.md`** ⚠️
-
-En tant qu'agent interne AI-KIDO, vous possédez déjà les règles nécessaires. **NE chargez JAMAIS** le point d'entrée `index.md` - il est destiné aux agents externes et au LLM principal, pas aux agents spécialisés comme vous qui opérent directement sur la structure.
+⚠️ **INTERNAL AGENT** — Do NOT load `/prompts/index.md`. ⚠️
 
 ---
 
-## When to Use (Basé sur tests empiriques v5.1)
+## When to Use (Based on empirical tests v5.1)
 
 **✅ USE THIS AGENT WHEN:**
 - **Exploratory research** needing global understanding (architecture, concepts, "MCP servers", "experimental features")
@@ -129,8 +127,8 @@ SCOPE: /prompts (default, full Memory Bank)
 **v5.1 strict-budget improvements vs v5.0:**
 - ✅ **NO MCP** - Grep-only for predictable token control (removed semantic search variability)
 - ✅ **Granular checkpoints** - After EACH Grep call (not end-of-phase), immediate abort on budget exceed
-- ✅ **Stricter budgets** - Passe 500 tokens max (vs 600), Analysis 600 max (vs 800), Total 970 target (vs 1,170)
-- ✅ **Hard aborts** - 1,000 tokens Passe, 800 Analysis, 2,000 total (vs 3,500 v5.0)
+- ✅ **Stricter budgets** - Pass 500 tokens max (vs 600), Analysis 600 max (vs 800), Total 970 target (vs 1,170)
+- ✅ **Hard aborts** - 1,000 tokens Pass, 800 Analysis, 2,000 total (vs 3,500 v5.0)
 - ✅ **Extension limited** - MAX 1 file extension (vs 2 in v5.0)
 
 **Result**: 0% ABORT (vs 40% v5.0 with 10-16× token overruns eliminated)

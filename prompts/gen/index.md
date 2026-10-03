@@ -1,29 +1,29 @@
-# AI-KIDO Gen - Tables de Vérités Évolutives
+# AI-KIDO Gen - Evolving Truth Tables
 
-> **Point d'entrée** : [`/prompts/index.md`](../index.md) | **Version** : 1.3
+> **Entry point**: [`/prompts/index.md`](../index.md) | **Version**: 1.3
 
-Ce répertoire contient les **Tables de Vérités évolutives** du projet AI-KIDO. Pour le point d'entrée principal unifié, consultez [`/prompts/index.md`](../index.md).
+This directory contains the **evolving Truth Tables** of the AI-KIDO project. For the unified main entry point, see [`/prompts/index.md`](../index.md).
 
 ## 📚 Navigation
 
-### Concepts Fondamentaux
-- [Index Concepts](concepts/index.md) - Théorie et fondations
+### Fundamental Concepts
+- [Concepts Index](concepts/index.md) - Theory and foundations
 
-### Techniques Pratiques
-- [Index Techniques](techniques/index.md) - Méthodes et implémentations
+### Practical Techniques
+- [Techniques Index](techniques/index.md) - Methods and implementations
 
 ### Personas & Agents
-- [Index Personas](personas/index.md) - Agents LLM spécialisés
+- [Personas Index](personas/index.md) - Specialized LLM agents
 
-### Cas d'Usage
-- [Index Use Cases](use_cases/index.md) - Applications concrètes
+### Use Cases
+- [Use Cases Index](use_cases/index.md) - Concrete applications
 
-## 🔗 Liens Importants
+## 🔗 Important Links
 
-- **Point d'entrée principal** : [`/prompts/index.md`](../index.md)
-- **Hard Points** : [`/prompts/hard_points/`](../hard_points/) (Vérités immuables)
-- **Règles AI-KIDO** : [`/prompts/hard_points/ai-kido.md`](../hard_points/ai-kido.md)
+- **Main entry point**: [`/prompts/index.md`](../index.md)
+- **Hard Points**: [`/prompts/hard_points/`](../hard_points/) (Immutable truths)
+- **AI-KIDO Rules**: [`/prompts/hard_points/ai-kido.md`](../hard_points/ai-kido.md)
 
 ---
 
-*Navigateur interne du répertoire /prompts/gen/ - V1.3*
+*Internal navigator for the /prompts/gen/ directory - V1.3*

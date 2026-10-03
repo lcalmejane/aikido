@@ -1,471 +1,479 @@
 ---
-description: "Analyse et optimise les commandes AI-KIDO avec les agents techniques disponibles"
+description: "Analyze and optimize AI-KIDO commands with available technical agents"
 ---
 
-# Commande Optimize-Command-With-Aikido-Agents
+# /optimize-command-with-aikido-agents
 
-Analyse automatiquement toutes les commandes AI-KIDO pour identifier les opportunités d'optimisation avec les agents techniques spécialisés disponibles, puis propose et applique les optimisations.
+**Purpose**: Automatically analyze all AI-KIDO commands to identify optimization opportunities with available specialized technical agents, then propose and apply the optimizations.
 
-## 🎯 Objectif
+---
 
-Maximiser l'utilisation des agents AI-KIDO dans les commandes pour :
-- Réduire la consommation de tokens (40-70%)
-- Automatiser les tâches répétitives
-- Garantir la qualité via validations systématiques
-- Standardiser les workflows d'orchestration
+## Usage
 
-## ⚠️ CONTRAINTE CRITIQUE : Préservation Stricte de l'Algorithme
+```
+/optimize-command-with-aikido-agents
+```
 
-**RÈGLE ABSOLUE** : L'optimisation ne doit **JAMAIS** :
-- ❌ Modifier l'algorithme ou la logique métier des commandes
-- ❌ Changer les étapes fonctionnelles du workflow
-- ❌ Ajouter/supprimer des fonctionnalités
-- ❌ Modifier le résultat final attendu
-- ❌ Prendre des initiatives sur les fonctions des commandes
+## Prerequisites
 
-**CE QUI EST AUTORISÉ** (substitution pure uniquement) :
-- ✅ Remplacer scans manuels répétitifs (grep/glob) par `agent-aikido-explore-bank` **SEULEMENT SI** :
-  - Recherche exploratoire (architecture, concepts, multiples fichiers interconnectés)
-  - Besoin de contexte structuré avec cross-références
-  - Budget permet +89% tokens vs Grep (1,397 vs 740) pour contexte 3-5× plus riche
-  - ❌ **NE PAS utiliser** pour recherches simples/ponctuelles (fichier spécifique, ligne unique) → Grep direct préférable
-- ✅ Remplacer comparaisons/arbitrages manuels par `agent-aikido-truth-evaluator`
-- ✅ Remplacer classifications manuelles par `agent-aikido-raci-delegator`
-- ✅ Remplacer vérifications manuelles par `agent-aikido-validator`
-- ✅ Remplacer créations manuelles documents par `agent-aikido-bank-populate`
+- AI-KIDO Memory Bank initialized with agents in `/prompts/gen/personas/`
+- Commands present in `prompts/hard_points/commands/`
 
-**Principe** : L'optimisation est une **substitution technique transparente** qui produit exactement le même résultat fonctionnel avec moins de tokens.
+## Steps
 
-**⚠️ Critères d'Usage explore-bank** (tests empiriques v5.1 - [rapport](../prompts/spec/docs/rapport-efficacite-claude-explore-bank-v5.1-strict-versus-standard.md)) :
-- ✅ **Utiliser** : Recherche exploratoire, architecture, concepts larges (ex: "MCP servers", "experimental features")
-- ❌ **Ne PAS utiliser** : Recherche simple (ex: "rooignore.md location"), budget strict, perf critique (<0.05s)
+### CRITICAL CONSTRAINT: Strict Algorithm Preservation
 
-## Exécution Automatique
+**ABSOLUTE RULE** — Optimization must **NEVER**:
+- Modify the algorithm or business logic of commands
+- Change the functional workflow steps
+- Add or remove features
+- Modify the expected final result
+- Take initiatives on command functions
 
-### Étape 1 : Inventaire Dynamique Agents et Commandes 🤖
+**WHAT IS ALLOWED** (Pure substitution only):
+- Replace repetitive manual scans (grep/glob) with `agent-aikido-explore-bank` **ONLY IF**:
+  - Exploratory search (architecture, concepts, multiple interconnected files)
+  - Need for structured context with cross-references
+  - Budget allows +89% tokens vs Grep (1,397 vs 740) for 3-5x richer context
+  - **DO NOT use** for simple/one-off searches (specific file, single line) — direct Grep preferred
+- Replace manual comparisons/arbitrations with `agent-aikido-truth-evaluator`
+- Replace manual classifications with `agent-aikido-raci-delegator`
+- Replace manual verifications with `agent-aikido-validator`
+- Replace manual document creation with `agent-aikido-bank-populate`
 
-**UTILISER L'AGENT** `agent-aikido-explore-bank` pour inventaire complet et analyse :
+**Principle**: Optimization is a **transparent technical substitution** that produces exactly the same functional result with fewer tokens.
+
+**explore-bank Usage Criteria** (empirical tests v5.1):
+- Use: Exploratory search, architecture, broad concepts (e.g., "MCP servers", "experimental features")
+- Do NOT use: Simple search (e.g., "rooignore.md location"), strict budget, critical performance (<0.05s)
+
+---
+
+### Step 1: Dynamic Inventory of Agents and Commands
+
+Use agent `agent-aikido-explore-bank` for complete inventory and analysis:
 
 ```markdown
-🤖 AGENT: agent-aikido-explore-bank (DEEP MODE)
+AGENT: agent-aikido-explore-bank (DEEP MODE)
 FORMAT: JSON
 
-**Prompt pour l'agent** :
-"Analyse complète pour optimisation des commandes AI-KIDO avec agents techniques disponibles.
+Prompt for the agent:
+"Complete analysis for AI-KIDO command optimization with available technical agents.
 
-## PARTIE 1 : Inventaire Agents Techniques Disponibles
+## PART 1: Dynamic Inventory of Available Technical Agents
 
-Scanner dynamiquement `/prompts/gen/personas/` pour détecter TOUS les agents techniques AI-KIDO :
-- Pattern : Fichiers `agent-aikido-*.md` (agents commençant par 'agent-aikido-')
-- Exclure : Agents non-techniques, personas consultants standards
+Dynamically scan `/prompts/gen/personas/` to detect ALL AI-KIDO technical agents:
+- Pattern: Files `agent-aikido-*.md` (agents starting with 'agent-aikido-')
+- Exclude: Non-technical agents, standard consultant personas
 
-Pour chaque agent détecté, extraire :
-1. **Nom complet** (slug du fichier)
-2. **Spécialisation** (depuis frontmatter ou titre)
-3. **Cas d'usage** (section 'Quand l'utiliser')
-4. **Capacités clés** (section 'Capabilities')
-5. **Patterns détectables** : Identifier automatiquement quels patterns de code manuel cet agent peut remplacer
-   - Analyser le prompt système de l'agent
-   - Identifier les actions principales (scan, validation, classification, extraction, etc.)
-   - Déduire les patterns manuels équivalents (grep répétitifs, comparaisons, etc.)
+For each detected agent, extract:
+1. Full name (file slug)
+2. Specialization (from frontmatter or title)
+3. Use cases (section 'When to use')
+4. Key capabilities (section 'Capabilities')
+5. Detectable patterns: Automatically identify which manual code patterns this agent can replace
+   - Analyze the agent's system prompt
+   - Identify main actions (scan, validation, classification, extraction, etc.)
+   - Deduce equivalent manual patterns (repetitive greps, comparisons, etc.)
 
-Retourner tableau :
-| Agent | Spécialisation | Patterns remplaçables | Gain estimé |
-|-------|----------------|----------------------|-------------|
+Return table:
+| Agent | Specialization | Replaceable patterns | Estimated gain |
+|-------|----------------|---------------------|----------------|
 | agent-aikido-X | [spec] | [patterns] | [gain]% |
 
-## PARTIE 2 : Inventaire Commandes Existantes
+## PART 2: Inventory of Existing Commands
 
-Scanner dynamiquement `prompts/hard_points/commands/` :
-- Format : Fichiers `.md` uniquement
-- Exclure : Fichiers backup (.bak), rapports (reports/)
+Dynamically scan `prompts/hard_points/commands/`:
+- Format: `.md` files only
+- Exclude: Backup files (.bak), reports (reports/)
 
-Pour chaque commande, analyser :
-1. **Identification** :
-   - Nom (sans .md)
+For each command, analyze:
+1. Identification:
+   - Name (without .md)
    - Description (frontmatter)
-   - Taille (nombre de lignes)
+   - Size (number of lines)
 
-2. **Analyse Agents Actuels** :
-   - Rechercher pattern '🤖 AGENT:' ou 'UTILISER L'AGENT'
-   - Extraire noms agents utilisés
-   - Compter nombre total agents
+2. Current Agent Analysis:
+   - Search for pattern 'AGENT:' or 'USE AGENT'
+   - Extract agent names used
+   - Count total number of agents
 
-3. **Détection Opportunités** :
-   Pour chaque agent disponible (PARTIE 1), analyser si ses patterns sont présents dans la commande :
-   - Identifier sections/phases de la commande
-   - Détecter patterns manuels correspondant aux capacités des agents
-   - Calculer score opportunité par agent
+3. Opportunity Detection:
+   For each available agent (PART 1), analyze if its patterns are present in the command:
+   - Identify sections/phases of the command
+   - Detect manual patterns corresponding to agent capabilities
+   - Calculate opportunity score per agent
 
-   **⚠️ CONTRAINTE CRITIQUE** : Ne recommander QUE des substitutions techniques pures :
-   - ✅ Remplacer scans/grep répétitifs par explore-bank **SEULEMENT SI EXPLORATOIRE** :
-     - ✅ OUI : Recherche architecture, concepts larges, multiples fichiers interconnectés
-     - ❌ NON : Recherche simple (fichier/ligne spécifique), budget strict, perf critique
-     - Trade-off : +89% tokens (1,397 vs 740) pour contexte 3-5× plus riche (test v5.1)
-   - ✅ Remplacer comparaisons manuelles par truth-evaluator
-   - ✅ Remplacer classifications manuelles par raci-delegator
-   - ✅ Remplacer vérifications manuelles par validator
-   - ❌ NE JAMAIS modifier l'algorithme ou la logique métier
-   - ❌ NE JAMAIS changer les étapes fonctionnelles
-   - ❌ NE JAMAIS ajouter/supprimer des fonctionnalités
+   CRITICAL CONSTRAINT: Recommend ONLY pure technical substitutions:
+   - Replace repetitive scans/greps with explore-bank ONLY IF EXPLORATORY:
+     - YES: Architecture search, broad concepts, multiple interconnected files
+     - NO: Simple search (specific file/line), strict budget, critical performance
+     - Trade-off: +89% tokens (1,397 vs 740) for 3-5x richer context (test v5.1)
+   - Replace manual comparisons with truth-evaluator
+   - Replace manual classifications with raci-delegator
+   - Replace manual verifications with validator
+   - NEVER modify the algorithm or business logic
+   - NEVER change the functional steps
+   - NEVER add or remove features
 
-## PARTIE 3 : Scoring et Recommandations
+## PART 3: Scoring and Recommendations
 
-Pour chaque commande, calculer :
-- **Opportunités détectées** : Nombre de patterns remplaçables
-- **Agents recommandés** : Liste agents + phase d'insertion suggérée
-- **Gain tokens estimé** : Pourcentage (basé sur patterns détectés)
-- **Priorité** :
-  - HIGH : ≥3 opportunités ET gain >40%
-  - MEDIUM : 2 opportunités OU gain 20-40%
-  - LOW : 1 opportunité OU gain <20%
-- **Complexité** : FACILE/MOYEN/DIFFICILE (basé sur structure commande)
+For each command, calculate:
+- Detected opportunities: Number of replaceable patterns
+- Recommended agents: Agent list + suggested insertion phase
+- Estimated token gain: Percentage (based on detected patterns)
+- Priority:
+  - HIGH: >=3 opportunities AND gain >40%
+  - MEDIUM: 2 opportunities OR gain 20-40%
+  - LOW: 1 opportunity OR gain <20%
+- Complexity: EASY/MEDIUM/HARD (based on command structure)
 
-## RAPPORT FINAL
+## FINAL REPORT
 
-Retourner structure JSON ou Markdown :
+Return JSON or Markdown structure:
 
-### Résumé Global
-- Total agents disponibles : X
-- Total commandes analysées : Y
-- Total opportunités détectées : Z
-- Gain moyen potentiel : W%
+### Global Summary
+- Total available agents: X
+- Total commands analyzed: Y
+- Total opportunities detected: Z
+- Average potential gain: W%
 
-### Tableau Opportunités par Commande
-| Commande | Agents actuels | Agents recommandés | Opportunités | Gain estimé | Priorité | Complexité |
-|----------|----------------|--------------------|--------------|-------------|----------|------------|
-| [nom]    | X agents       | +Y agents          | Z patterns   | W%          | HIGH/MED/LOW | FACILE/MOYEN/DIFFICILE |
+### Opportunity Table by Command
+| Command | Current agents | Recommended agents | Opportunities | Estimated gain | Priority | Complexity |
+|---------|---------------|-------------------|---------------|----------------|----------|------------|
+| [name]  | X agents      | +Y agents         | Z patterns    | W%             | HIGH/MED/LOW | EASY/MEDIUM/HARD |
 
-### Détail par Commande (Top 5 priorités)
-Pour chaque commande prioritaire :
-#### [Nom Commande]
-- **Agents actuels** : [liste]
-- **Opportunités détectées** (SUBSTITUTIONS PURES uniquement) :
-  1. Phase/Section [X] : Pattern [Y] → Agent recommandé : [agent-aikido-Z]
-     - Type : Substitution technique (pas de modification algorithme)
-     - Pattern manuel remplacé : [description exacte]
-     - Gain estimé : [W]%
-     - Template insertion : [template optimisé pour cette phase]
-     - ⚠️ Garantie : Résultat fonctionnel identique
-  2. [...]
+### Detail by Command (Top 5 priorities)
+For each priority command:
+#### [Command Name]
+- Current agents: [list]
+- Detected opportunities (PURE SUBSTITUTIONS only):
+  1. Phase/Section [X]: Pattern [Y] -> Recommended agent: [agent-aikido-Z]
+     - Type: Technical substitution (no algorithm modification)
+     - Replaced manual pattern: [exact description]
+     - Estimated gain: [W]%
+     - Insertion template: [optimized template for this phase]
+     - Guarantee: Identical functional result
 
-Mode : DEEP (analyse exhaustive)
-Tokens estimés : <60k"
+Mode: DEEP (exhaustive analysis)
+Estimated tokens: <60k"
 
-**Résultat attendu** : Rapport complet dynamique avec opportunités détectées automatiquement
+Expected result: Complete dynamic report with automatically detected opportunities
 ```
 
-Afficher en temps réel :
+Display in real time:
 ```
-🔍 ANALYSE DYNAMIQUE EN COURS (agent-aikido-explore-bank DEEP MODE)...
+DYNAMIC ANALYSIS IN PROGRESS (agent-aikido-explore-bank DEEP MODE)...
 
-✓ Scan agents disponibles : /prompts/hard_points/agents/agent-aikido-*.md
-✓ Extraction capacités et patterns remplaçables (par agent)
-✓ Scan commandes existantes : prompts/hard_points/commands/*.md
-✓ Détection opportunités optimisation (agents × commandes)
-✓ Calcul scoring priorité + complexité
-✓ Génération recommandations par commande
-✓ Rapport dynamique prêt
-```
-
-### Étape 2 : Présentation Rapport
-
-Afficher le rapport généré par l'agent :
-
-```
-📊 RAPPORT D'OPTIMISATION DYNAMIQUE
-
-[Afficher résumé global]
-[Afficher tableau opportunités par commande]
-
-🎯 Top 5 priorités d'optimisation :
-[Afficher détail top 5 avec agents recommandés + templates]
+Scan available agents: /prompts/hard_points/agents/agent-aikido-*.md
+Extract capabilities and replaceable patterns (per agent)
+Scan existing commands: prompts/hard_points/commands/*.md
+Detect optimization opportunities (agents x commands)
+Calculate priority scoring + complexity
+Generate recommendations per command
+Dynamic report ready
 ```
 
-### Étape 3 : Question Utilisateur - Sélection
+### Step 2: Display Report
 
-Poser la **Question : Sélection commandes à optimiser**
+Display the report generated by the agent:
+
 ```
-🤖 Quelles commandes souhaitez-vous optimiser ?
+DYNAMIC OPTIMIZATION REPORT
 
-1. 🚀 Toutes les commandes avec opportunités
-2. 🎯 Priorité HIGH uniquement
-3. 📝 Sélection manuelle (entrez les noms séparés par virgules)
-4. 🔍 Une seule commande (entrez le nom sans .md)
-5. 💾 Mode Dry-Run (simulation sans modification)
-6. ❌ Annuler
+[Display global summary]
+[Display opportunity table by command]
 
-Entrez votre choix (1-6) :
+Top 5 optimization priorities:
+[Display top 5 detail with recommended agents + templates]
 ```
 
-### Étape 4 : Confirmation
+### Step 3: User Question — Selection
 
-Afficher récapitulatif sélection + demander confirmation :
+Ask the **Question: Select commands to optimize**:
 ```
-✅ Récapitulatif :
+Which commands do you want to optimize?
 
-Commandes à optimiser :
-- [Commande 1] : +X agents → [Y]% gain estimé
-- [Commande 2] : +X agents → [Y]% gain estimé
+1. All commands with opportunities
+2. HIGH priority only
+3. Manual selection (enter names separated by commas)
+4. A single command (enter name without .md)
+5. Dry-Run mode (simulation without modification)
+6. Cancel
+
+Enter your choice (1-6):
+```
+
+### Step 4: Confirmation
+
+Display selection summary and ask for confirmation:
+```
+Summary:
+
+Commands to optimize:
+- [Command 1]: +X agents -> [Y]% estimated gain
+- [Command 2]: +X agents -> [Y]% estimated gain
 ...
 
-Gain tokens total estimé : [Z]%
+Total estimated token gain: [Z]%
 
-⚠️ Cette opération va modifier les fichiers dans prompts/hard_points/commands/ et .claude/commands/
-💾 Backups automatiques (.bak) créés pour chaque fichier
+This operation will modify files in prompts/hard_points/commands/ and .claude/commands/
+Automatic backups (.bak) created for each file
 
-Confirmez-vous ? (oui/non)
+Confirm? (yes/no)
 ```
 
-## Processus d'Optimisation Automatique
+## Automatic Optimization Process
 
-Pour chaque commande sélectionnée :
+For each selected command:
 
-### Phase 1 : Lecture et Backup
-
-```
-🔧 OPTIMISATION : [nom-commande]
-
-✓ Lecture prompts/hard_points/commands/[nom-commande].md
-✓ Backup créé : [nom-commande].md.bak
-✓ Parsing structure commande
-```
-
-### Phase 2 : Application Optimisations
-
-Pour chaque opportunité détectée par agent-aikido-explore-bank :
+### Phase 1: Read and Backup
 
 ```
-✓ Insertion agent [N]/[Total] : [agent-aikido-X] dans Phase/Section [Y]
-  - Pattern remplacé : [description]
-  - Template utilisé : [template généré par explore-bank]
-  - Gain estimé : ~[Z]%
+OPTIMIZING: [command-name]
+
+Read prompts/hard_points/commands/[command-name].md
+Backup created: [command-name].md.bak
+Parse command structure
 ```
 
-Modifications appliquées automatiquement :
-1. Insertion sections `🤖 AGENT: [agent-name]` avec prompts optimisés
-2. Ajout emoji 🤖 dans titres phases concernées
-3. Mise à jour frontmatter description (mention nombre agents)
-4. Ajout section récapitulative agents utilisés (fin de fichier)
+### Phase 2: Apply Optimizations
 
-### Phase 3 : Validation Conformité 🤖
+For each opportunity detected by agent-aikido-explore-bank:
 
-**UTILISER L'AGENT** `agent-aikido-validator` pour validation post-optimisation :
+```
+Insert agent [N]/[Total]: [agent-aikido-X] in Phase/Section [Y]
+  - Pattern replaced: [description]
+  - Template used: [template generated by explore-bank]
+  - Estimated gain: ~[Z]%
+```
+
+Automatically applied modifications:
+1. Insert `AGENT: [agent-name]` sections with optimized prompts
+2. Update frontmatter description (mention number of agents)
+3. Add summary section of agents used (end of file)
+
+### Phase 3: Compliance Validation
+
+Use agent `agent-aikido-validator` for post-optimization validation:
 
 ```markdown
-🤖 AGENT: agent-aikido-validator
+AGENT: agent-aikido-validator
 FORMAT: JSON
 
-**Prompt pour l'agent** :
-"Valide la commande optimisée contre les règles AI-KIDO.
+Prompt for the agent:
+"Validate the optimized command against AI-KIDO rules.
 
-Fichier : prompts/hard_points/commands/[nom-commande].md
+File: prompts/hard_points/commands/[command-name].md
 
-Validations spécifiques commandes optimisées :
-1. Règle 4 : Contraintes lignes (≤1000 lignes pour commandes)
-2. Format agents : Sections '🤖 AGENT:' correctement formatées
-3. Cohérence workflow : Agents insérés aux bons endroits (phases logiques)
-4. Frontmatter : Description mise à jour avec mention agents
-5. Section récap : Présence section récapitulative agents
+Specific validations for optimized commands:
+1. Rule 4: Line constraints (<=1000 lines for commands)
+2. Agent format: 'AGENT:' sections correctly formatted
+3. Workflow coherence: Agents inserted at correct locations (logical phases)
+4. Frontmatter: Description updated with agent mention
+5. Recap section: Presence of agent summary section
 
-Retourner :
-- Score conformité global : [X]%
-- Violations détectées : [liste avec quick fixes]
+Return:
+- Global compliance score: [X]%
+- Detected violations: [list with quick fixes]
 
-Mode : <3k tokens"
+Mode: <3k tokens"
 
-**Résultat attendu** : Score + violations si < 90%
+Expected result: Score + violations if < 90%
 ```
 
-Afficher résultat :
+Display result:
 ```
-🔍 VALIDATION (agent-aikido-validator)...
+VALIDATION (agent-aikido-validator)...
 
-✓ Score conformité : [X]% [✅/⚠️]
-[Si < 90% : Liste violations + quick fixes proposés]
-```
-
-**Si score < 90%** : Proposer corrections automatiques ou restauration backup
-**Si score ≥ 90%** : Continuer Phase 4
-
-### Phase 4 : Mise à Jour Mapping
-
-```
-🔄 MAPPING CLAUDE CODE...
-
-✓ Backup : .claude/commands/[nom-commande].md.bak
-✓ Mise à jour description + agents utilisés
-✓ Fichier mapping mis à jour
+Compliance score: [X]%
+[If < 90%: List of violations + proposed quick fixes]
 ```
 
-### Phase 5 : Génération Rapport
+**If score < 90%**: Propose automatic corrections or backup restoration
+**If score >= 90%**: Continue to Phase 4
 
-Créer `prompts/hard_points/commands/reports/optimize-[nom-commande]-[timestamp].md` :
+### Phase 4: Update Mapping
+
+```
+CLAUDE CODE MAPPING...
+
+Backup: .claude/commands/[command-name].md.bak
+Update description + agents used
+Mapping file updated
+```
+
+### Phase 5: Generate Report
+
+Create `prompts/hard_points/commands/reports/optimize-[command-name]-[timestamp].md`:
 
 ```markdown
-# Rapport Optimisation : [nom-commande]
+# Optimization Report: [command-name]
 
-**Date** : [timestamp]
+**Date**: [timestamp]
 
-## Résumé
-- Agents ajoutés : X agents
-- Lignes : [avant] → [après]
-- Gain tokens estimé : [X]%
-- Conformité finale : [X]% ✅
+## Summary
+- Agents added: X agents
+- Lines: [before] -> [after]
+- Estimated token gain: [X]%
+- Final compliance: [X]%
 
-## Optimisations Appliquées
-[Liste agents insérés avec phases et gains]
+## Applied Optimizations
+[List of agents inserted with phases and gains]
 
 ## Backup
-- Original : prompts/hard_points/commands/[nom-commande].md.bak
-- Mapping : .claude/commands/[nom-commande].md.bak
+- Original: prompts/hard_points/commands/[command-name].md.bak
+- Mapping: .claude/commands/[command-name].md.bak
 
-Pour restaurer : `mv [fichier].bak [fichier]`
+To restore: `mv [file].bak [file]`
 ```
 
-### Phase 6 : Mise à Jour Documentation
+### Phase 6: Update Documentation
 
-Si commande nouvellement optimisée, mettre à jour `commands_list.md` :
+If command is newly optimized, update `commands_list.md`:
 ```
-✓ commands_list.md : Ajout workflow [nom-commande] si nécessaire
-✓ Section "Commandes optimisées" mise à jour
-```
-
-## Résultat Final par Commande
-
-```
-✅ [nom-commande] optimisée !
-
-🤖 Agents intégrés : X
-📊 Gain tokens estimé : Y%
-✅ Conformité : Z%
-💾 Backups : .bak disponibles
-📋 Rapport : reports/optimize-[nom]-[timestamp].md
+commands_list.md: Add workflow [command-name] if necessary
+Section "Optimized commands" updated
 ```
 
-## Résultat Global Final
+## Output
 
-Après toutes optimisations :
+### Per-Command Result
 
 ```
-🎉 OPTIMISATION GLOBALE TERMINÉE !
+[command-name] optimized!
 
-📊 Statistiques :
-- Commandes analysées : X
-- Commandes optimisées : Y
-- Agents ajoutés au total : Z
-- Gain tokens moyen : W%
-
-📁 Fichiers modifiés :
-- prompts/hard_points/commands/ : Y commandes
-- .claude/commands/ : Y mappings
-- reports/ : Y rapports
-
-🤖 Récapitulatif agents par commande :
-| Commande | Agents avant | Agents après | Gain |
-|----------|--------------|--------------|------|
-[Tableau depuis données réelles]
-
-💾 Tous les backups (.bak) disponibles
-
-💡 Prochaines étapes :
-- Tester commandes optimisées
-- Vérifier rapports dans reports/
-- Committer si satisfait ou restaurer depuis .bak
+Agents integrated: X
+Estimated token gain: Y%
+Compliance: Z%
+Backups: .bak available
+Report: reports/optimize-[name]-[timestamp].md
 ```
 
-## Gestion des Erreurs
+### Global Final Result
 
-### Erreur Analyse
+After all optimizations:
+
 ```
-❌ ERREUR : Échec analyse
+GLOBAL OPTIMIZATION COMPLETE!
 
-Détail : [message]
-Action : 1. Réessayer / 2. Annuler
+Statistics:
+- Commands analyzed: X
+- Commands optimized: Y
+- Total agents added: Z
+- Average token gain: W%
+
+Modified files:
+- prompts/hard_points/commands/: Y commands
+- .claude/commands/: Y mappings
+- reports/: Y reports
+
+Agent summary per command:
+| Command | Agents before | Agents after | Gain |
+|---------|--------------|--------------|------|
+[Table from real data]
+
+All backups (.bak) available
+
+Next steps:
+- Test optimized commands
+- Review reports in reports/
+- Commit if satisfied or restore from .bak
 ```
 
-### Erreur Optimisation
+## Notes
+
+### Error Handling
+
+**Analysis Error**:
 ```
-❌ ERREUR : Échec optimisation [nom-commande]
+ERROR: Analysis failed
 
-✅ Backup restauré automatiquement
-Action : 1. Réessayer / 2. Ignorer / 3. Annuler
-```
-
-### Erreur Validation (Score < 90%)
-```
-❌ VALIDATION ÉCHOUÉE : [nom-commande]
-
-Score : [X]%
-Violations : [liste]
-
-✅ Backup disponible
-Action : 1. Appliquer quick fixes / 2. Restaurer backup / 3. Forcer
+Detail: [message]
+Action: 1. Retry / 2. Cancel
 ```
 
-## Options Modes
+**Optimization Error**:
+```
+ERROR: Optimization failed [command-name]
 
-**Mode Dry-Run** (choix 5) :
-- Génère rapports sans modifier fichiers
-- Crée fichiers `.preview` pour visualisation
-- Aucun backup nécessaire
+Backup automatically restored
+Action: 1. Retry / 2. Skip / 3. Cancel
+```
 
-**Mode Restauration** :
+**Validation Error (Score < 90%)**:
+```
+VALIDATION FAILED: [command-name]
+
+Score: [X]%
+Violations: [list]
+
+Backup available
+Action: 1. Apply quick fixes / 2. Restore backup / 3. Force
+```
+
+### Mode Options
+
+**Dry-Run mode** (choice 5):
+- Generate reports without modifying files
+- Create `.preview` files for visualization
+- No backup required
+
+**Restore mode**:
 ```bash
-# Restaurer une commande
-mv prompts/hard_points/commands/[nom].md.bak prompts/hard_points/commands/[nom].md
-mv .claude/commands/[nom].md.bak .claude/commands/[nom].md
+# Restore a single command
+mv prompts/hard_points/commands/[name].md.bak prompts/hard_points/commands/[name].md
+mv .claude/commands/[name].md.bak .claude/commands/[name].md
 
-# Restaurer toutes
-find .roo/commands -name "*.bak" -exec bash -c 'mv "$1" "${1%.bak}"' _ {} \;
+# Restore all
 find .claude/commands -name "*.bak" -exec bash -c 'mv "$1" "${1%.bak}"' _ {} \;
 ```
 
-## Algorithme Pérenne
+### Perpetual Algorithm
 
-**Principe** : Déléguer intelligence à `agent-aikido-explore-bank`
+**Principle**: Delegate intelligence to `agent-aikido-explore-bank`
 
-1. **Détection dynamique agents** : Scanner `/prompts/hard_points/agents/agent-aikido-*.md`
-2. **Extraction capacités** : Lire descriptions et déduire patterns
-3. **Analyse commandes** : Scanner `prompts/hard_points/commands/*.md`
-4. **Matching intelligent** : Patterns agents ↔ Patterns commandes
-5. **Génération templates** : Créer prompts optimisés selon contexte
-6. **Application standard** : Insertion agents avec format unifié
+1. **Dynamic agent detection**: Scan `/prompts/hard_points/agents/agent-aikido-*.md`
+2. **Capability extraction**: Read descriptions and deduce patterns
+3. **Command analysis**: Scan `prompts/hard_points/commands/*.md`
+4. **Intelligent matching**: Agent patterns <-> Command patterns
+5. **Template generation**: Create optimized prompts based on context
+6. **Standard application**: Insert agents with unified format
 
-**Adaptabilité** :
-- ✅ Nouveaux agents détectés automatiquement
-- ✅ Nouvelles commandes analysées automatiquement
-- ✅ Patterns agents évolutifs (via descriptions personas)
-- ✅ Aucun hardcoding agents/commandes
+**Adaptability**:
+- New agents detected automatically
+- New commands analyzed automatically
+- Evolving agent patterns (via persona descriptions)
+- No hardcoded agents or commands
 
-## 🤖 Récapitulatif des Agents AI-KIDO Utilisés
+### AI-KIDO Agents Summary
 
-Cette commande utilise **2 agents AI-KIDO** en mode dynamique :
+This command uses **2 AI-KIDO agents** in dynamic mode:
 
-### Étape 1 : `agent-aikido-explore-bank` (DEEP MODE)
-- **Rôle** : Inventaire dynamique agents disponibles + analyse opportunités commandes
-- **Output** : Rapport complet avec agents détectés, commandes analysées, opportunités scorées
-- **Tokens** : ~50-60k (DEEP mode avec analyse exhaustive)
-- **Gain** : ~80% tokens vs analyse manuelle multi-fichiers
-- **Adaptabilité** : Détecte automatiquement nouveaux agents et commandes
+**Step 1: `agent-aikido-explore-bank` (DEEP MODE)**
+- Role: Dynamic inventory of available agents + command opportunity analysis
+- Output: Complete report with detected agents, analyzed commands, scored opportunities
+- Tokens: ~50-60k (DEEP mode with exhaustive analysis)
+- Gain: ~80% tokens vs manual multi-file analysis
+- Adaptability: Automatically detects new agents and commands
 
-### Phase 3 : `agent-aikido-validator`
-- **Rôle** : Validation conformité AI-KIDO post-optimisation
-- **Output** : Score conformité + violations éventuelles avec quick fixes
-- **Tokens** : <3k
-- **Gain** : Garantie qualité + détection précoce violations
+**Phase 3: `agent-aikido-validator`**
+- Role: AI-KIDO compliance validation post-optimization
+- Output: Compliance score + possible violations with quick fixes
+- Tokens: <3k
+- Gain: Quality guarantee + early violation detection
 
-### 📊 Gains d'Optimisation
+### Optimization Gains
 
-| Aspect | Avant (manuel) | Après (agents) | Gain |
+| Aspect | Before (manual) | After (agents) | Gain |
 |--------|----------------|----------------|------|
-| **Détection agents disponibles** | Hardcodé statique | Scanner dynamique | Évolutif ∞ |
-| **Analyse commandes** | Manuelle par commande | explore-bank batch | ~80% tokens |
-| **Matching opportunités** | Règles hardcodées | Intelligence agent | Adaptable |
-| **Validation conformité** | Manuelle ou absente | validator systématique | +Garantie |
-| **Workflow global** | ~100k tokens | ~60k tokens | ~40% efficacité |
-| **Pérennité** | Maintenance requise | Auto-adaptatif | 100% |
+| Agent detection | Static hardcoded | Dynamic scanner | Infinite scalability |
+| Command analysis | Manual per command | explore-bank batch | ~80% tokens |
+| Opportunity matching | Hardcoded rules | Agent intelligence | Adaptable |
+| Compliance validation | Manual or absent | Systematic validator | +Quality guarantee |
+| Global workflow | ~100k tokens | ~60k tokens | ~40% efficiency |
+| Longevity | Maintenance required | Self-adaptive | 100% |
 
 ---
 
-*Meta-commande d'optimisation automatique et pérenne - S'adapte à l'évolution des agents et commandes*
+*Automatic and perpetual meta-command for optimization — self-adapts to evolution of agents and commands*

@@ -1,70 +1,70 @@
 # Architecture V3.1 - Hash-Based ID Normalization
 
-> **Version**: 3.1 | **Date**: 2025-12-09 | **Statut**: Specification
+> **Version**: 3.1 | **Date**: 2025-12-09 | **Status**: Specification
 >
-> Evolution majeure de V3.0 : Normalisation par ID hash-based pour déduplication et performance O(1).
+> Major evolution from V3.0: Normalization via hash-based IDs for deduplication and O(1) performance.
 
-## 🎯 Innovation Majeure V3.1 : Hash-Based IDs
+## 🎯 Major Innovation V3.1: Hash-Based IDs
 
-### Problème V3.0 (Duplication)
+### V3.0 Problem (Duplication)
 
-**Métadonnées dupliquées dans 4+ index** :
+**Metadata duplicated across 4+ indexes**:
 
-- `by-path/index-path-NNN.json` : Métadonnées complètes (300 bytes/fichier)
-- `by-alphabetical/index-alpha-XXX.json` : Métadonnées dupliquées (300 bytes/fichier)
-- `by-directory/index-dir-NNN.json` : Métadonnées dupliquées (200 bytes/fichier)
-- `by-type/index-type-XXX.json` : Métadonnées dupliquées (300 bytes/fichier)
+- `by-path/index-path-NNN.json`: Full metadata (300 bytes/file)
+- `by-alphabetical/index-alpha-XXX.json`: Duplicated metadata (300 bytes/file)
+- `by-directory/index-dir-NNN.json`: Duplicated metadata (200 bytes/file)
+- `by-type/index-type-XXX.json`: Duplicated metadata (300 bytes/file)
 
-**Coût projet 5000 fichiers** : 5000 × (300+300+200+300) = **5.5MB** ❌
+**Cost for a 5000-file project**: 5000 × (300+300+200+300) = **5.5MB** ❌
 
-### Solution V3.1 (Hash-Based Normalization)
+### V3.1 Solution (Hash-Based Normalization)
 
-**Principe** :
+**Principle**:
 
-1. **ID = hash(path)** → Identifiant unique, prédictif, déterministe
-2. **Index by-id** → Source de vérité unique (métadonnées complètes)
-3. **Autres index** → Références ID uniquement (15 bytes/fichier)
+1. **ID = hash(path)** → Unique, predictive, deterministic identifier
+2. **Index by-id** → Single source of truth (full metadata)
+3. **Other indexes** → ID references only (15 bytes/file)
 
-**Coût projet 5000 fichiers** :
+**Cost for a 5000-file project**:
 
-- by-id: 5000 × 300B = 1.5MB (source unique)
+- by-id: 5000 × 300B = 1.5MB (single source)
 - by-path: 5000 × 15B = 75KB (refs)
 - by-alpha: 5000 × 15B = 75KB (refs)
 - by-dir: 5000 × 15B = 75KB (refs)
 - by-type: 5000 × 15B = 75KB (refs)
-- **Total** : **1.8MB** ✅ = **67% économie** ⚡⚡⚡
+- **Total**: **1.8MB** ✅ = **67% savings** ⚡⚡⚡
 
-## 🔑 Fonction de Hash
+## 🔑 Hash Function
 
 ### Hash Function Spec
 
-**Algorithme** : SHA-256 tronqué à 12 caractères hexadécimaux
+**Algorithm**: SHA-256 truncated to 12 hexadecimal characters
 
-**Pourquoi SHA-256 ?**
+**Why SHA-256?**
 
-- ✅ Disponible nativement (openssl, shasum)
-- ✅ Distribution uniforme (bon pour partitioning)
-- ✅ Pas de collision pratique (2^48 espace avec 12 chars hex)
-- ✅ Déterministe et reproductible
+- ✅ Natively available (openssl, shasum)
+- ✅ Uniform distribution (good for batch partitioning)
+- ✅ No practical collisions (2^48 space with 12 hex chars)
+- ✅ Deterministic and reproducible
 
-**Implémentation Bash** :
+**Bash Implementation**:
 
 ```bash
-# Génération ID hash-based
+# Hash-based ID generation
 generate_file_id() {
     local path="$1"
-    # SHA-256 du path, tronqué à 12 caractères hexadécimaux
+    # SHA-256 of the path, truncated to 12 hexadecimal characters
     echo -n "$path" | shasum -a 256 | cut -c1-12
 }
 
-# Exemple
+# Example
 # generate_file_id "prompts/hard_points/commands/init-aikido.md"
 # → "7f8a3c4b2e1d"
 ```
 
-**Format ID** : `[a-f0-9]{12}` (12 chars hexadécimal)
+**ID Format**: `[a-f0-9]{12}` (12 hex chars)
 
-**Exemples** :
+**Examples**:
 
 ```
 prompts/hard_points/commands/init-aikido.md           → 7f8a3c4b2e1d
@@ -72,80 +72,80 @@ prompts/gen/personas/agent-indexer.md → 9b3e5f1a8c2d
 prompts/hard_points/ai-kido.md         → 4d6c1a9f3e7b
 ```
 
-### Propriétés Clés
+### Key Properties
 
-1. **Prédictif** : Calculer ID sans charger aucun index
+1. **Predictive**: Calculate ID without loading any index
 
    ```bash
-   # Connaître l'ID immédiatement
+   # Know the ID immediately
    id=$(generate_file_id "$path")
-   # → Lookup direct dans by-id sans table de mapping
+   # → Direct lookup in by-id without a mapping table
    ```
 
-2. **Déterministe** : Même path = même ID toujours
+2. **Deterministic**: Same path = same ID always
 
    ```bash
-   # ID stable entre régénérations
+   # Stable ID between regenerations
    generate_file_id "prompts/index.md"  # → abc123def456
-   # Toujours le même ID pour ce path
+   # Always the same ID for this path
    ```
 
-3. **Distribution uniforme** : Bon pour partitioning batches
+3. **Uniform distribution**: Good for batch partitioning
 
    ```bash
-   # Premier digit hex pour router vers batch (16 batches max)
-   batch_id="${id:0:1}"  # 0-f (16 possibilités)
+   # First hex digit to route to batch (16 batches max)
+   batch_id="${id:0:1}"  # 0-f (16 possibilities)
    batch_file="index-id-${batch_id}.json"
    ```
 
-4. **Pas de collision** : 2^48 espace (281 trillions d'IDs uniques)
-   - Projet 10K fichiers : probabilité collision < 0.000001%
+4. **No collision**: 2^48 space (281 trillion unique IDs)
+   - 10K-file project: collision probability < 0.000001%
 
-## 📐 Architecture Fichiers V3.1
+## 📐 V3.1 File Architecture
 
-### Structure Répertoires
+### Directory Structure
 
 ```
 prompts/hard_points/system/structure/
 ├── index.json                              # Master index (hash tables + routing)
 ├── indices/
-│   ├── by-id/                             # ⭐ SOURCE DE VÉRITÉ UNIQUE
-│   │   ├── index-id-0.json                # IDs commençant par 0
-│   │   ├── index-id-1.json                # IDs commençant par 1
+│   ├── by-id/                             # ⭐ SINGLE SOURCE OF TRUTH
+│   │   ├── index-id-0.json                # IDs starting with 0
+│   │   ├── index-id-1.json                # IDs starting with 1
 │   │   ├── ...
-│   │   └── index-id-f.json                # IDs commençant par f (16 batches total)
-│   ├── by-path/                           # Mapping path → ID (refs uniquement)
+│   │   └── index-id-f.json                # IDs starting with f (16 batches total)
+│   ├── by-path/                           # Path → ID mapping (refs only)
 │   │   ├── index-path-000.json            # Paths [0-999]
 │   │   └── index-path-NNN.json
-│   ├── by-alphabetical/                   # Mapping name → ID(s) (refs uniquement)
+│   ├── by-alphabetical/                   # Name → ID(s) mapping (refs only)
 │   │   ├── index-alpha-a-d.json
 │   │   └── index-alpha-n-z.json
-│   ├── by-directory/                      # Mapping dir → ID(s) (refs uniquement)
+│   ├── by-directory/                      # Directory → ID(s) mapping (refs only)
 │   │   └── index-dir-NNN.json
-│   └── by-type/                           # Mapping type → ID(s) (refs uniquement)
+│   └── by-type/                           # Type → ID(s) mapping (refs only)
 │       └── index-type-TYPE.json
 └── scripts/
-    ├── generate-project-tree.sh           # Orchestrateur V3.1
+    ├── generate-project-tree.sh           # V3.1 orchestrator
     ├── generate-index-master.sh           # Master index
-    ├── generate-index-by-id.sh            # ⭐ NOUVEAU : Index by-id (source vérité)
-    ├── generate-index-by-path.sh          # Index path → ID refs
-    ├── generate-index-by-alpha.sh         # Index name → ID refs
-    ├── generate-index-by-directory.sh     # Index dir → ID refs
-    ├── generate-index-by-type.sh          # Index type → ID refs
-    └── lib/hash-utils.sh                  # ⭐ NOUVEAU : Fonctions hash ID
+    ├── generate-index-by-id.sh            # ⭐ NEW: by-id index (source of truth)
+    ├── generate-index-by-path.sh          # Path → ID refs index
+    ├── generate-index-by-alpha.sh         # Name → ID refs index
+    ├── generate-index-by-directory.sh     # Directory → ID refs index
+    ├── generate-index-by-type.sh          # Type → ID refs index
+    └── lib/hash-utils.sh                  # ⭐ NEW: Hash ID utility functions
 ```
 
-### Partitioning by-id (16 batches)
+### by-id Partitioning (16 batches)
 
-**Stratégie** : Premier caractère hex de l'ID → Batch (0-f = 16 batches)
+**Strategy**: First hex character of ID → Batch (0-f = 16 batches)
 
-**Distribution uniforme** :
+**Uniform distribution**:
 
-- SHA-256 garantit distribution uniforme
-- ~312 fichiers/batch pour 5000 fichiers (5000/16)
-- ~625 fichiers/batch pour 10000 fichiers
+- SHA-256 guarantees uniform distribution
+- ~312 files/batch for 5000 files (5000/16)
+- ~625 files/batch for 10000 files
 
-**Exemple** :
+**Example**:
 
 ```
 ID: 7f8a3c4b2e1d → batch: index-id-7.json
@@ -153,20 +153,20 @@ ID: 9b3e5f1a8c2d → batch: index-id-9.json
 ID: 4d6c1a9f3e7b → batch: index-id-4.json
 ```
 
-**Avantages** :
+**Advantages**:
 
-- ✅ Batches équilibrés automatiquement (hash uniforme)
-- ✅ 16 batches seulement (vs 1000+ pour by-path)
-- ✅ Lookup O(1) : calcul ID → extraction 1er char → batch déterminé
+- ✅ Automatically balanced batches (uniform hash)
+- ✅ Only 16 batches (vs 1000+ for by-path)
+- ✅ O(1) lookup: hash → first char extraction → batch determined
 
-## 🔧 Formats JSON V3.1
+## 🔧 V3.1 JSON Formats
 
 ### 1. Master Index (index.json)
 
-**Changements vs V3.0** :
+**Changes vs V3.0**:
 
-- Ajout section `by_id` dans hash_tables
-- Batching by-id : 16 batches fixes (0-f)
+- Added `by_id` section in hash_tables
+- by-id batching: 16 fixed batches (0-f)
 
 ```json
 {
@@ -220,7 +220,7 @@ ID: 4d6c1a9f3e7b → batch: index-id-4.json
     }
   },
   "routing": {
-    "description": "Hash-based ID routing en O(1) - Calcul ID puis lookup direct",
+    "description": "Hash-based ID routing in O(1) - Calculate ID then direct lookup",
     "examples": {
       "find_by_path": "prompts/gen/personas/agent.md → hash(path) → ID 9b3e5f1a → by-id/index-id-9.json",
       "find_by_name": "agent.md → by-alphabetical → ID 9b3e5f1a → by-id/index-id-9.json",
@@ -230,13 +230,13 @@ ID: 4d6c1a9f3e7b → batch: index-id-4.json
 }
 ```
 
-### 2. Index by-id (SOURCE DE VÉRITÉ UNIQUE)
+### 2. Index by-id (SINGLE SOURCE OF TRUTH)
 
-**Rôle** : Contient TOUTES les métadonnées complètes, indexé par ID hash
+**Role**: Contains ALL full metadata, indexed by hash ID
 
-**Taille** : ~300KB par batch (342 fichiers × ~900 bytes JSON par fichier)
+**Size**: ~300KB per batch (342 files × ~900 bytes JSON per file)
 
-**Format** :
+**Format**:
 
 ```json
 {
@@ -273,18 +273,18 @@ ID: 4d6c1a9f3e7b → batch: index-id-4.json
 }
 ```
 
-**Stratégie découpage** :
+**Splitting strategy**:
 
-- Partitioning par premier caractère hex de l'ID (0-f)
-- 16 batches fixes, distribution uniforme garantie par SHA-256
+- Partitioning by first hex character of ID (0-f)
+- 16 fixed batches, uniform distribution guaranteed by SHA-256
 
-### 3. Index by-path (RÉFÉRENCES ID UNIQUEMENT)
+### 3. Index by-path (ID REFERENCES ONLY)
 
-**Rôle** : Mapping path → ID hash (ultra léger)
+**Role**: Path → hash ID mapping (ultra lightweight)
 
-**Taille** : ~15 bytes par fichier (vs 300 bytes avant) = **95% économie** ⚡⚡⚡
+**Size**: ~15 bytes per file (vs 300 bytes before) = **95% savings** ⚡⚡⚡
 
-**Format** :
+**Format**:
 
 ```json
 {
@@ -302,19 +302,19 @@ ID: 4d6c1a9f3e7b → batch: index-id-4.json
 }
 ```
 
-**Avantages** :
+**Advantages**:
 
-- ✅ **95% réduction taille** vs V3.0
-- ✅ Format ultra simple : `path: id` (string: string)
-- ✅ Parse instantané
+- ✅ **95% size reduction** vs V3.0
+- ✅ Ultra-simple format: `path: id` (string: string)
+- ✅ Instant parsing
 
-### 4. Index by-alphabetical (RÉFÉRENCES ID UNIQUEMENT)
+### 4. Index by-alphabetical (ID REFERENCES ONLY)
 
-**Rôle** : Mapping name → ID(s) hash (gestion homonymes)
+**Role**: Name → hash ID(s) mapping (handles homonyms)
 
-**Taille** : ~15-30 bytes par fichier (selon homonymes)
+**Size**: ~15-30 bytes per file (depending on homonyms)
 
-**Format** :
+**Format**:
 
 ```json
 {
@@ -332,18 +332,18 @@ ID: 4d6c1a9f3e7b → batch: index-id-4.json
 }
 ```
 
-**Notes** :
+**Notes**:
 
-- Array d'IDs pour gérer homonymes (ex: index.md présent dans 3 répertoires)
-- Si 1 seul ID : peut être optimisé en string (vs array)
+- Array of IDs to handle homonyms (e.g., index.md present in 3 directories)
+- If only 1 ID: can be optimized to string (vs array)
 
-### 5. Index by-directory (RÉFÉRENCES ID UNIQUEMENT)
+### 5. Index by-directory (ID REFERENCES ONLY)
 
-**Rôle** : Mapping directory → ID(s) hash
+**Role**: Directory → hash ID(s) mapping
 
-**Taille** : ~15-200 bytes par répertoire (selon nombre fichiers)
+**Size**: ~15-200 bytes per directory (depending on number of files)
 
-**Format** :
+**Format**:
 
 ```json
 {
@@ -366,13 +366,13 @@ ID: 4d6c1a9f3e7b → batch: index-id-4.json
 }
 ```
 
-### 6. Index by-type (RÉFÉRENCES ID UNIQUEMENT)
+### 6. Index by-type (ID REFERENCES ONLY)
 
-**Rôle** : Mapping type → ID(s) hash
+**Role**: Type → hash ID(s) mapping
 
-**Taille** : ~15-200 bytes par type
+**Size**: ~15-200 bytes per type
 
-**Format** :
+**Format**:
 
 ```json
 {
@@ -391,20 +391,20 @@ ID: 4d6c1a9f3e7b → batch: index-id-4.json
 }
 ```
 
-## 🔄 Workflows V3.1
+## 🔄 V3.1 Workflows
 
-### Workflow 1 : Query by Path (O(1) Direct)
+### Workflow 1: Query by Path (O(1) Direct)
 
-**Query** : "Find prompts/hard_points/commands/init-aikido.md"
+**Query**: "Find prompts/hard_points/commands/init-aikido.md"
 
-**Process V3.1 (optimisé)** :
+**V3.1 Process (optimized)**:
 
 ```bash
-# Step 1: Calculer ID hash (0ms - local)
+# Step 1: Calculate hash ID (0ms - local)
 id=$(generate_file_id "prompts/hard_points/commands/init-aikido.md")
 # → "7f8a3c4b2e1d"
 
-# Step 2: Déterminer batch by-id (0ms - local)
+# Step 2: Determine by-id batch (0ms - local)
 batch_prefix="${id:0:1}"  # → "7"
 batch_file="indices/by-id/index-id-${batch_prefix}.json"
 # → "indices/by-id/index-id-7.json"
@@ -412,48 +412,48 @@ batch_file="indices/by-id/index-id-${batch_prefix}.json"
 # Step 3: Load batch if needed (~50ms)
 load_batch "$batch_file"
 
-# Step 4: Lookup ID dans batch (0ms - hash lookup)
+# Step 4: Lookup ID in batch (0ms - hash lookup)
 metadata=$(jq ".files[\"$id\"]" "$batch_file")
 
 # Total: ~50ms (cache MISS), <1ms (cache HIT)
 ```
 
-**Avantages vs V3.0** :
+**Advantages vs V3.0**:
 
-- ✅ **Pas besoin master index** pour déterminer batch (calcul local)
-- ✅ **O(1) direct** : hash → batch déterminé instantanément
-- ✅ **Pas besoin by-path** si on connaît le path (lookup direct by-id)
+- ✅ **No master index needed** to determine batch (local calculation)
+- ✅ **O(1) direct**: hash → batch determined instantly
+- ✅ **No need for by-path** if path is known (direct by-id lookup)
 
-**Comparaison** :
+**Comparison**:
 
-| Étape | V3.0 | V3.1 | Gain |
-|-------|------|------|------|
-| Load master | ~5ms | **0ms** (optionnel) | ✅ |
-| Lookup hash table | ~5ms | **0ms** (calcul local) | ✅ |
+| Step | V3.0 | V3.1 | Gain |
+|------|------|------|------|
+| Load master | ~5ms | **0ms** (optional) | ✅ |
+| Lookup hash table | ~5ms | **0ms** (local calculation) | ✅ |
 | Load batch by-path | ~50ms | - | - |
 | Calculate ID | - | **<1ms** (hash) | - |
 | Load batch by-id | - | ~50ms | - |
 | **Total** | ~60ms | **~50ms** | **17% faster** ⚡ |
 
-### Workflow 2 : Query by Name (avec by-alphabetical)
+### Workflow 2: Query by Name (with by-alphabetical)
 
-**Query** : "Find agent-aikido-maj-md-index.md"
+**Query**: "Find agent-aikido-maj-md-index.md"
 
-**Process V3.1** :
+**V3.1 Process**:
 
 ```bash
 # Step 1: Load master index (~5ms)
-# (pour déterminer batch alphabetical)
+# (to determine alphabetical batch)
 
-# Step 2: Lookup batch alphabetical (~5ms)
+# Step 2: Lookup alphabetical batch (~5ms)
 range=$(jq '.hash_tables.by_alphabetical | to_entries[] | select(.value.range[0] <= "a" and .value.range[1] >= "a") | .value.batch' index.json)
 # → "indices/by-alphabetical/index-alpha-a-d.json"
 
-# Step 3: Load batch alphabetical (~50ms)
+# Step 3: Load alphabetical batch (~50ms)
 ids=$(jq '.files["agent-aikido-maj-md-index.md"]' "$range")
 # → ["9b3e5f1a8c2d"]
 
-# Step 4: Pour chaque ID, lookup by-id
+# Step 4: For each ID, lookup by-id
 for id in $ids; do
     batch_prefix="${id:0:1}"  # → "9"
     batch_file="indices/by-id/index-id-${batch_prefix}.json"
@@ -465,16 +465,16 @@ done
 # Total: ~110ms (cache MISS), ~60ms (partial cache), <5ms (full cache)
 ```
 
-**Avantages vs V3.0** :
+**Advantages vs V3.0**:
 
-- ✅ **Métadonnées déduplicates** : 1 seule source (by-id)
-- ✅ **Cache réutilisable** : by-id batch peut servir plusieurs queries
+- ✅ **Deduplicated metadata**: single source (by-id)
+- ✅ **Reusable cache**: by-id batch can serve multiple queries
 
-### Workflow 3 : Incremental Update (OPTIMISÉ)
+### Workflow 3: Incremental Update (OPTIMIZED)
 
-**Trigger** : File modified "prompts/gen/personas/agent-new.md"
+**Trigger**: File modified "prompts/gen/personas/agent-new.md"
 
-**Process V3.1** :
+**V3.1 Process**:
 
 ```bash
 # Step 1: Calculate ID
@@ -485,11 +485,11 @@ id=$(generate_file_id "prompts/gen/personas/agent-new.md")
 batch_prefix="${id:0:1}"  # → "a"
 batch_file="indices/by-id/index-id-${batch_prefix}.json"
 
-# Step 3: Update by-id ONLY (source de vérité)
+# Step 3: Update by-id ONLY (source of truth)
 # Extract metadata → update batch file
 update_by_id_batch "$batch_file" "$id" "$metadata"
 
-# Step 4: Update secondary indexes (refs ID only, ultra light)
+# Step 4: Update secondary indexes (ID refs only, ultra lightweight)
 # by-path
 update_by_path_ref "prompts/gen/personas/agent-new.md" "$id"
 
@@ -502,18 +502,18 @@ update_by_dir_ref "prompts/gen/personas" "$id"
 # by-type
 update_by_type_ref "agent" "$id"
 
-# Total: ~1-2s (1 batch by-id + 4 refs updates ultra légères)
+# Total: ~1-2s (1 by-id batch + 4 ultra-light ref updates)
 ```
 
-**Avantages vs V3.0** :
+**Advantages vs V3.0**:
 
-- ✅ **Métadonnées écrites 1 seule fois** (by-id uniquement)
-- ✅ **Refs ultra légères** : 4 × 15 bytes = 60 bytes total (vs 1200 bytes V3.0)
-- ✅ **Cohérence garantie** : 1 source de vérité
+- ✅ **Metadata written only once** (by-id only)
+- ✅ **Ultra-light refs**: 4 × 15 bytes = 60 bytes total (vs 1200 bytes V3.0)
+- ✅ **Guaranteed consistency**: single source of truth
 
-## 📊 Comparaison V3.0 vs V3.1
+## 📊 V3.0 vs V3.1 Comparison
 
-### Taille Fichiers (Projet 5000 fichiers)
+### File Size (5000-file project)
 
 | Index | V3.0 | V3.1 | Gain |
 |-------|------|------|------|
@@ -521,44 +521,44 @@ update_by_type_ref "agent" "$id"
 | **by-alphabetical** | 1.5MB | 75KB | **95%** ⚡⚡⚡ |
 | **by-directory** | 1MB | 75KB | **93%** ⚡⚡⚡ |
 | **by-type** | 1.5MB | 75KB | **95%** ⚡⚡⚡ |
-| **by-id** (nouveau) | - | 1.5MB | Source unique |
+| **by-id** (new) | - | 1.5MB | Single source |
 | **TOTAL** | **5.5MB** | **1.8MB** | **67%** ⚡⚡⚡ |
 
-### Performance Queries
+### Query Performance
 
 | Query Type | V3.0 | V3.1 | Note |
 |------------|------|------|------|
-| **By Path** | ~60ms | ~50ms | V3.1 : calcul ID local, pas besoin master |
-| **By Name** | ~60ms | ~60ms | Identique (nécessite alphabetical lookup) |
-| **By Directory** | ~60ms | ~60ms | Identique |
-| **By Type** | ~60ms | ~60ms | Identique |
-| **By ID Direct** | N/A | ~50ms | ✅ NOUVEAU : Lookup O(1) si ID connu |
+| **By Path** | ~60ms | ~50ms | V3.1: local ID calculation, no master needed |
+| **By Name** | ~60ms | ~60ms | Identical (requires alphabetical lookup) |
+| **By Directory** | ~60ms | ~60ms | Identical |
+| **By Type** | ~60ms | ~60ms | Identical |
+| **By ID Direct** | N/A | ~50ms | ✅ NEW: O(1) lookup if ID known |
 
-### Mise à Jour Incrémentale
+### Incremental Update
 
-| Opération | V3.0 | V3.1 | Gain |
+| Operation | V3.0 | V3.1 | Gain |
 |-----------|------|------|------|
 | **Update metadata** | 4 batches × 300B = 1.2KB | 1 batch × 300B = 300B | **75%** ⚡⚡ |
-| **Update refs** | - | 4 refs × 15B = 60B | Ultra léger |
+| **Update refs** | - | 4 refs × 15B = 60B | Ultra lightweight |
 | **Total write** | 1.2KB | 360B | **70%** ⚡⚡ |
 | **Time** | ~1-2s | ~0.8-1.5s | **20-25% faster** ⚡ |
 
-### Cohérence Données
+### Data Consistency
 
-| Aspect | V3.0 | V3.1 | Avantage |
-|--------|------|------|----------|
-| **Sources de vérité** | 4 (duplication) | **1** (by-id) | V3.1 ⚡⚡⚡ |
-| **Risque incohérence** | Élevé | **Minimal** | V3.1 ⚡⚡⚡ |
-| **Update complexity** | Haute (4 sources) | **Faible** (1 source + refs) | V3.1 ⚡⚡⚡ |
+| Aspect | V3.0 | V3.1 | Advantage |
+|--------|------|------|-----------|
+| **Sources of truth** | 4 (duplication) | **1** (by-id) | V3.1 ⚡⚡⚡ |
+| **Inconsistency risk** | High | **Minimal** | V3.1 ⚡⚡⚡ |
+| **Update complexity** | High (4 sources) | **Low** (1 source + refs) | V3.1 ⚡⚡⚡ |
 
-## ⚙️ Implémentation
+## ⚙️ Implementation
 
-### Script lib/hash-utils.sh (NOUVEAU)
+### Script lib/hash-utils.sh (NEW)
 
 ```bash
 #!/bin/bash
 
-# hash-utils.sh - Fonctions utilitaires pour hash-based IDs
+# hash-utils.sh - Utility functions for hash-based IDs
 # Version 3.1
 
 if [ -n "$BASH_VERSION" ]; then
@@ -567,36 +567,36 @@ else
   set -eu              # Fallback for POSIX‑sh
 fi
 
-# Génération ID hash-based à partir du path
+# Hash-based ID generation from path
 # Input: path (string)
-# Output: ID hash 12 chars hex (string)
+# Output: hash ID 12 hex chars (string)
 generate_file_id() {
     local path="$1"
 
-    # SHA-256 du path, tronqué à 12 caractères hexadécimaux
+    # SHA-256 of the path, truncated to 12 hexadecimal characters
     echo -n "$path" | shasum -a 256 | cut -c1-12
 }
 
-# Détermination du batch by-id à partir de l'ID
-# Input: id (string 12 chars hex)
+# Determine by-id batch from ID
+# Input: id (string 12 hex chars)
 # Output: batch file path (string)
 get_by_id_batch_file() {
     local id="$1"
 
-    # Extraire premier caractère hex (0-f)
+    # Extract first hex character (0-f)
     local batch_prefix="${id:0:1}"
 
-    # Construire path batch file
+    # Build batch file path
     echo "indices/by-id/index-id-${batch_prefix}.json"
 }
 
-# Validation format ID
+# Validate ID format
 # Input: id (string)
-# Output: 0 (valid) ou 1 (invalid)
+# Output: 0 (valid) or 1 (invalid)
 validate_id_format() {
     local id="$1"
 
-    # Vérifier longueur 12 et charset hexadécimal
+    # Check length 12 and hexadecimal charset
     if [[ "${#id}" -eq 12 ]] && [[ "$id" =~ ^[0-9a-f]{12}$ ]]; then
         return 0
     else
@@ -605,17 +605,17 @@ validate_id_format() {
     fi
 }
 
-# Batch files pour tous les préfixes (0-f)
-# Output: Liste des 16 batch files
+# Batch files for all prefixes (0-f)
+# Output: List of 16 batch files
 list_all_by_id_batches() {
     for prefix in {0..9} {a..f}; do
         echo "indices/by-id/index-id-${prefix}.json"
     done
 }
 
-# Exemple usage
+# Example usage
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    # Test unitaire
+    # Unit test
     echo "Testing hash-utils.sh..."
 
     test_path="prompts/hard_points/commands/init-aikido.md"
@@ -629,14 +629,14 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 fi
 ```
 
-### Modifications Scripts Génération
+### Generation Script Modifications
 
-**generate-index-by-id.sh (NOUVEAU)** :
+**generate-index-by-id.sh (NEW)**:
 
 ```bash
 #!/bin/bash
 
-# generate-index-by-id.sh - Génération index by-id (source de vérité)
+# generate-index-by-id.sh - Generate by-id index (source of truth)
 # Version 3.1
 
 if [ -n "$BASH_VERSION" ]; then
@@ -647,44 +647,44 @@ fi
 
 source "$(dirname "$0")/lib/hash-utils.sh"
 
-# Collecter tous fichiers et générer ID
-# Group par batch (préfixe 0-f)
+# Collect all files and generate IDs
+# Group by batch (prefix 0-f)
 collect_files_by_id() {
     cd "$PROJECT_ROOT"
 
-    # Créer 16 fichiers temporaires (un par préfixe hex)
+    # Create 16 temporary files (one per hex prefix)
     for prefix in {0..9} {a..f}; do
         temp_files["$prefix"]=$(mktemp)
     done
 
-    # Scanner tous fichiers
+    # Scan all files
     while IFS= read -r -d '' file; do
         if ! should_exclude "$file"; then
             [[ -f "$file" ]] || continue
 
             relative_path="${file#./}"
 
-            # Générer ID hash
+            # Generate hash ID
             id=$(generate_file_id "$relative_path")
 
-            # Extraire métadonnées
+            # Extract metadata
             metadata=$(extract_metadata "$file")
 
-            # Déterminer batch prefix
+            # Determine batch prefix
             batch_prefix="${id:0:1}"
 
-            # Append au fichier temp correspondant
+            # Append to corresponding temp file
             echo "\"$id\":$metadata," >> "${temp_files[$batch_prefix]}"
         fi
     done < <(find . -type f -print0 2>/dev/null)
 
-    # Générer 16 fichiers JSON finaux
+    # Generate 16 final JSON files
     for prefix in {0..9} {a..f}; do
         generate_batch_file "$prefix" "${temp_files[$prefix]}"
     done
 }
 
-# Générer fichier batch JSON
+# Generate JSON batch file
 generate_batch_file() {
     local prefix="$1"
     local temp_file="$2"
@@ -702,7 +702,7 @@ generate_batch_file() {
     echo "  }," >> "$batch_file"
     echo "  \"files\": {" >> "$batch_file"
 
-    # Content (enlever dernière virgule)
+    # Content (remove trailing comma)
     sed '$ s/,$//' "$temp_file" >> "$batch_file"
 
     # Footer
@@ -723,101 +723,101 @@ main() {
 main "$@"
 ```
 
-**Modifications autres scripts** :
+**Other script modifications**:
 
-- `generate-index-by-path.sh` : Stocker `path: id` au lieu de métadonnées complètes
-- `generate-index-by-alpha.sh` : Stocker `name: [ids]` au lieu de métadonnées complètes
-- `generate-index-by-directory.sh` : Stocker `dir: {ids: [...]}` au lieu de métadonnées complètes
-- `generate-index-by-type.sh` : Stocker `type: [ids]` au lieu de métadonnées complètes
+- `generate-index-by-path.sh`: Store `path: id` instead of full metadata
+- `generate-index-by-alpha.sh`: Store `name: [ids]` instead of full metadata
+- `generate-index-by-directory.sh`: Store `dir: {ids: [...]}` instead of full metadata
+- `generate-index-by-type.sh`: Store `type: [ids]` instead of full metadata
 
-## 🎯 Avantages Clés V3.1
+## 🎯 Key Advantages of V3.1
 
-### 1. Déduplication (67% économie espace)
+### 1. Deduplication (67% space savings)
 
-- ✅ Métadonnées stockées UNE SEULE FOIS (by-id)
-- ✅ Autres index : références ID ultra légères (15 bytes)
+- ✅ Metadata stored ONCE (by-id)
+- ✅ Other indexes: ultra-lightweight ID references (15 bytes)
 
-### 2. Prédictivité O(1)
+### 2. O(1) Predictability
 
-- ✅ Calcul ID hash local (pas besoin charger index)
-- ✅ Batch déterminé instantanément (1er char hex)
-- ✅ Lookup direct sans table de mapping
+- ✅ Local hash ID calculation (no index loading needed)
+- ✅ Batch determined instantly (1st hex char)
+- ✅ Direct lookup without mapping table
 
-### 3. Cohérence Garantie
+### 3. Guaranteed Consistency
 
-- ✅ 1 source de vérité unique (by-id)
-- ✅ Mise à jour centralisée
-- ✅ Pas de risque désynchronisation
+- ✅ Single source of truth (by-id)
+- ✅ Centralized updates
+- ✅ No desynchronization risk
 
-### 4. Performance Optimale
+### 4. Optimal Performance
 
-- ✅ Query by-path : ~50ms (17% faster que V3.0)
-- ✅ Incremental update : ~0.8-1.5s (20-25% faster)
-- ✅ Cache efficace : by-id batch réutilisable
+- ✅ Query by-path: ~50ms (17% faster than V3.0)
+- ✅ Incremental update: ~0.8-1.5s (20-25% faster)
+- ✅ Efficient cache: by-id batch reusable
 
-### 5. Scalabilité Illimitée
+### 5. Unlimited Scalability
 
-- ✅ Distribution uniforme (SHA-256)
-- ✅ 16 batches fixes quelque soit taille projet
-- ✅ Performance constante O(1)
+- ✅ Uniform distribution (SHA-256)
+- ✅ 16 fixed batches regardless of project size
+- ✅ Constant O(1) performance
 
 ## 🚀 Migration V3.0 → V3.1
 
 ### Breaking Changes
 
-❌ **Format index incompatible** :
+❌ **Incompatible index format**:
 
-- by-path, by-alphabetical, by-directory, by-type : Nouveau format (refs ID)
-- Ajout by-id (nouveau index)
+- by-path, by-alphabetical, by-directory, by-type: New format (ID refs)
+- Addition of by-id (new index)
 
-✅ **Rétrocompatibilité** :
+✅ **Backward compatibility**:
 
-- Master index.json : Compatible (ajout champs, pas suppression)
-- Scripts V3.0 peuvent coexister (fallback si V3.1 échoue)
+- Master index.json: Compatible (fields added, none removed)
+- V3.0 scripts can coexist (fallback if V3.1 fails)
 
 ### Migration Path
 
-1. **Génération V3.1 complète** : `./generate-project-tree.sh --version 3.1`
-2. **Test validation** : Vérifier tous les queries fonctionnent
-3. **Backup V3.0** : Garder anciens index pour rollback
-4. **Activation progressive** : Feature flag pour toggle V3.0/V3.1
-5. **Suppression V3.0** : Une fois V3.1 stable
+1. **Full V3.1 generation**: `./generate-project-tree.sh --version 3.1`
+2. **Validation test**: Verify all queries work
+3. **V3.0 backup**: Keep old indexes for rollback
+4. **Progressive activation**: Feature flag to toggle V3.0/V3.1
+5. **V3.0 removal**: Once V3.1 is stable
 
-## 📋 Checklist Implémentation V3.1
+## 📋 V3.1 Implementation Checklist
 
-### Scripts Nouveaux/Modifiés
+### New/Modified Scripts
 
-- [ ] `lib/hash-utils.sh` - Fonctions hash ID (NOUVEAU)
-- [ ] `generate-index-by-id.sh` - Index by-id source vérité (NOUVEAU)
-- [ ] `generate-index-by-path.sh` - Modifier pour refs ID
-- [ ] `generate-index-by-alpha.sh` - Modifier pour refs ID
-- [ ] `generate-index-by-directory.sh` - Modifier pour refs ID
-- [ ] `generate-index-by-type.sh` - Modifier pour refs ID
-- [ ] `generate-index-master.sh` - Ajouter section by_id
-- [ ] `update-incremental.sh` - Adapter logique by-id + refs
+- [ ] `lib/hash-utils.sh` - Hash ID utility functions (NEW)
+- [ ] `generate-index-by-id.sh` - by-id index source of truth (NEW)
+- [ ] `generate-index-by-path.sh` - Modify for ID refs
+- [ ] `generate-index-by-alpha.sh` - Modify for ID refs
+- [ ] `generate-index-by-directory.sh` - Modify for ID refs
+- [ ] `generate-index-by-type.sh` - Modify for ID refs
+- [ ] `generate-index-master.sh` - Add by_id section
+- [ ] `update-incremental.sh` - Adapt by-id + refs logic
 
 ### Tests
 
-- [ ] Tests unitaires hash-utils.sh
-- [ ] Tests génération by-id (16 batches)
-- [ ] Tests génération autres index (refs ID)
-- [ ] Tests query by-path (O(1) direct)
-- [ ] Tests query by-name (with by-id lookup)
-- [ ] Tests incremental update (by-id + refs)
-- [ ] Tests performance vs V3.0
-- [ ] Tests collision hash (stress 100K+ fichiers)
+- [ ] Unit tests hash-utils.sh
+- [ ] Generation tests by-id (16 batches)
+- [ ] Generation tests other indexes (ID refs)
+- [ ] Query tests by-path (O(1) direct)
+- [ ] Query tests by-name (with by-id lookup)
+- [ ] Incremental update tests (by-id + refs)
+- [ ] Performance tests vs V3.0
+- [ ] Hash collision tests (stress 100K+ files)
 
 ### Documentation
 
-- [ ] ARCHITECTURE-V3.1-HASH-ID.md (ce document)
-- [ ] Mise à jour persona agent-aikido-projet-index
-- [ ] Guide migration V3.0 → V3.1
-- [ ] Benchmark performance V3.0 vs V3.1
+- [ ] ARCHITECTURE-V3.1-HASH-ID.md (this document)
+- [ ] Update persona agent-aikido-projet-index
+- [ ] Migration guide V3.0 → V3.1
+- [ ] Performance benchmark V3.0 vs V3.1
 
 ---
 
-**Version** : 3.1
-**Date** : 2025-12-09
-**Auteur** : agent-aikido-projet-index
-**Statut** : Specification complète, implémentation pending
-**Innovation** : Hash-based ID normalization pour déduplication et performance O(1)
+**Version**: 3.1
+**Date**: 2025-12-09
+**Author**: agent-aikido-projet-index
+**Status**: Complete specification, implementation pending
+**Innovation**: Hash-based ID normalization for deduplication and O(1) performance

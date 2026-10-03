@@ -1,864 +1,712 @@
 ---
-description: "Vérifie la cohérence entre documentation AI-KIDO et code source, détecte l'obsolescence et propose des redressements automatiques"
+description: "Verify coherence between AI-KIDO documentation and source code, detect obsolescence, and propose automatic remediation"
 ---
 
-# Commande Check-Truth
+# /check-truth
 
-Vérifie la cohérence entre la documentation de la Memory Bank AI-KIDO et le code source du ou des projets. Détecte les obsolescences, contradictions, et manques pour proposer des redressements automatiques avec optimisation maximale (agents AI-KIDO + fast-path via last-check).
+**Purpose**: Verify coherence between the AI-KIDO Memory Bank documentation and project source code, detect obsolescence and conflicts, and propose automatic remediation with maximum optimization (AI-KIDO agents + fast-path via last-check).
 
-## Objectif
+---
 
-**Maintenir la synchronisation** entre :
-- La documentation dans `/prompts/gen/` (concepts, techniques, use cases)
-- Le code source dans le(s) projet(s)
-- Les spécifications dans `/prompts/hard_points/` (vérités immuables)
-
-**Optimisations** :
-- ✅ Fast-path via `last-check` metadata (skip validation si ✅ + sources inchangées)
-- ✅ Utilisation maximale des agents AI-KIDO spécialisés
-- ✅ Économie 70-80% tokens sur documents déjà validés
-- ✅ Analyse ciblée selon scope demandé
-
-## Syntaxe
+## Usage
 
 ```bash
-# Vérification complète de la Memory Bank
 /check-truth
-
-# Vérification d'un fichier spécifique
 /check-truth --file /prompts/gen/concepts/oauth.md
-
-# Vérification d'un domaine
 /check-truth --domain concepts
-/check-truth --domain techniques
-
-# Vérification d'une recherche keyword
 /check-truth --search "authentication"
-
-# Vérification du code d'un projet
 /check-truth --code-path ./src/auth/
-
-# Vérification code + doc liée
-/check-truth --code-path ./src/auth/ --domain concepts
-
-# Mode verbose (affiche détails)
-/check-truth --verbose
-
-# Mode dry-run (simulation)
+/check-truth --force-check
 /check-truth --dry-run
+/check-truth --verbose
 ```
 
-## Arguments
+## Prerequisites
 
-| Argument | Description | Exemple |
+| Argument | Description | Example |
 |----------|-------------|---------|
-| `--file <path>` | Fichier unique à vérifier | `--file /prompts/gen/concepts/oauth.md` |
-| `--domain <domain>` | Domaine Memory Bank | `--domain concepts`, `--domain techniques` |
-| `--search <keyword>` | Recherche par mot-clé | `--search "authentication"` |
-| `--code-path <path>` | Chemin code à analyser | `--code-path ./src/auth/` |
-| `--verbose` | Mode détaillé | - |
-| `--dry-run` | Simulation sans modifications | - |
+| `--file <path>` | Single file to verify | `--file /prompts/gen/concepts/oauth.md` |
+| `--domain <domain>` | Memory Bank domain | `--domain concepts`, `--domain techniques` |
+| `--search <keyword>` | Keyword search | `--search "authentication"` |
+| `--code-path <path>` | Code path to analyze | `--code-path ./src/auth/` |
+| `--verbose` | Detailed output | - |
+| `--dry-run` | Simulation without modifications | - |
 | `--force-check` | Force validation (ignore fast-path) | - |
 
-## Exécution
+> **Warning**: Major conflicts cause LLM response incoherence. Prioritize immediate remediation of ❌ items.
 
-### Phase 0 : Détection du Scope 🎯
+## Steps
 
-**Analyser les arguments** pour déterminer le scope :
+### Phase 0: Scope Detection
 
-```markdown
-🎯 SCOPE DETECTION
+Analyze arguments to determine scope:
 
-Arguments fournis :
-- --file : [PATH ou NONE]
-- --domain : [DOMAIN ou NONE]
-- --search : [KEYWORD ou NONE]
-- --code-path : [PATH ou NONE]
+```
+SCOPE DETECTION
 
-Scope détecté : [SINGLE_FILE | DOMAIN | SEARCH | CODE_ANALYSIS | FULL_BANK]
+Arguments:
+- --file       : [PATH or NONE]
+- --domain     : [DOMAIN or NONE]
+- --search     : [KEYWORD or NONE]
+- --code-path  : [PATH or NONE]
 
-Mode : [NORMAL | VERBOSE | DRY_RUN]
-Force check : [YES | NO] (ignore fast-path si YES)
+Scope: [SINGLE_FILE | DOMAIN | SEARCH | CODE_ANALYSIS | FULL_BANK]
+Mode: [NORMAL | VERBOSE | DRY_RUN]
+Force check: [YES | NO]
 ```
 
-**Détermination du scope** :
-- Si `--file` → SINGLE_FILE
-- Si `--domain` → DOMAIN
-- Si `--search` → SEARCH
-- Si `--code-path` sans `--file/--domain` → CODE_ANALYSIS
-- Si aucun argument → FULL_BANK
+Scope determination:
+- `--file` → SINGLE_FILE
+- `--domain` → DOMAIN
+- `--search` → SEARCH
+- `--code-path` without `--file/--domain` → CODE_ANALYSIS
+- No argument → FULL_BANK
 
-### Phase 1 : Inventaire Ciblé 🤖 (agent-aikido-explore-bank)
+---
 
-**UTILISER L'AGENT** `agent-aikido-explore-bank` en mode QUICK pour inventaire selon scope :
+### Phase 1: Targeted Inventory (agent-aikido-explore-bank)
 
-```markdown
-🤖 AGENT: agent-aikido-explore-bank (QUICK MODE)
+Invoke `agent-aikido-explore-bank` in QUICK mode:
 
-**Prompt pour l'agent** :
-"FORMAT: JSON
+```
+FORMAT: JSON
 
-Inventaire ciblé pour check-truth selon scope [SCOPE].
+Targeted inventory for check-truth with scope [SCOPE].
 
-**Scope [SINGLE_FILE]** :
-- Fichier : [PATH]
-- Extraire : Header metadata (last-check, truth source, source refs)
-- Identifier : Source files référencés (code paths)
-- Retourner : Metadata + source files list
+Scope [SINGLE_FILE]:
+- File: [PATH]
+- Extract: Header metadata (last-check, truth source, source refs)
+- Identify: Referenced source files (code paths)
+- Return: Metadata + source files list
 
-**Scope [DOMAIN]** :
-- Domaine : /prompts/gen/[DOMAIN]/
-- Scanner : Tous fichiers .md (sauf index.md)
-- Extraire : Headers avec last-check metadata
-- Identifier : Documents avec/sans truth source
-- Retourner : Liste fichiers avec metadata
+Scope [DOMAIN]:
+- Domain: /prompts/gen/[DOMAIN]/
+- Scan: All .md files (except index.md)
+- Extract: Headers with last-check metadata
+- Identify: Documents with/without truth source
+- Return: File list with metadata
 
-**Scope [SEARCH]** :
-- Keyword : [KEYWORD]
-- Rechercher dans : /prompts/gen/ (concepts, techniques, use_cases)
-- Filtrer : Fichiers contenant keyword
-- Extraire : Headers avec metadata
-- Retourner : Liste fichiers matchés avec metadata
+Scope [SEARCH]:
+- Keyword: [KEYWORD]
+- Search in: /prompts/gen/ (concepts, techniques, use_cases)
+- Filter: Files containing keyword
+- Extract: Headers with metadata
+- Return: Matched files with metadata
 
-**Scope [CODE_ANALYSIS]** :
-- Code path : [PATH]
-- Scanner : Fichiers code (*.ts, *.js, *.py, etc.)
-- Identifier : Modules/fonctions principales
-- Rechercher : Documentation Memory Bank correspondante
-- Retourner : Liste code files + doc files associées (ou MISSING)
+Scope [CODE_ANALYSIS]:
+- Code path: [PATH]
+- Scan: Code files (*.ts, *.js, *.py, etc.)
+- Identify: Main modules/functions
+- Search: Corresponding Memory Bank documentation
+- Return: Code files + associated doc files (or MISSING)
 
-**Scope [FULL_BANK]** :
-- Scanner : Toute la Memory Bank /prompts/gen/
-- Extraire : Tous headers avec last-check metadata
-- Classifier : [✅ Up-to-date | ⚠️ Review | ❌ Outdated | 🆕 No metadata]
-- Retourner : Inventaire complet par statut
+Scope [FULL_BANK]:
+- Scan: Entire Memory Bank /prompts/gen/
+- Extract: All headers with last-check metadata
+- Classify: [✅ Up-to-date | ⚠️ Review | ❌ Outdated | New No metadata]
+- Return: Complete inventory by status
 
-Pour chaque fichier détecté, retourner :
+For each file, return:
 - Path
 - Header metadata (version, date, truth source, last-check, source refs)
-- Check status (✅|⚠️|❌|🆕)
-- Last check date (si existe)
-- Source refs modification dates (si existent)
-
-Tokens estimés : [1k-5k selon scope]"
-
-**Résultat attendu** : Liste fichiers avec metadata complète
+- Check status (✅|⚠️|❌|New)
+- Last check date (if exists)
+- Source refs modification dates (if available)
 ```
 
-Afficher en temps réel :
+Display in real time:
 ```
-🔍 INVENTAIRE CIBLÉ (agent-aikido-explore-bank QUICK)...
+TARGETED INVENTORY (agent-aikido-explore-bank QUICK)...
 
-Scope : [SCOPE]
-Fichiers détectés : [NOMBRE]
+Scope: [SCOPE]
+Files detected: [COUNT]
 
-Classification :
-✅ Up-to-date : [NOMBRE] (fast-path eligible)
-⚠️ Review needed : [NOMBRE] (requires validation)
-❌ Outdated : [NOMBRE] (requires immediate check)
-🆕 No metadata : [NOMBRE] (first-time validation)
+Classification:
+✅ Up-to-date     : [COUNT] (fast-path eligible)
+⚠️ Review needed  : [COUNT] (requires validation)
+❌ Outdated       : [COUNT] (requires immediate check)
+New No metadata   : [COUNT] (first-time validation)
 
-Tokens utilisés : [X]k
+Tokens used: [X]k
 ```
 
-### Phase 2 : Fast-Path Optimization 🚀 (agent-aikido-doc-header)
+---
 
-**Pour chaque fichier ✅ Up-to-date**, vérifier éligibilité fast-path :
+### Phase 2: Fast-Path Optimization (agent-aikido-doc-header)
 
-```markdown
-🚀 FAST-PATH CHECK (agent-aikido-doc-header)
+For each ✅ Up-to-date file, verify fast-path eligibility:
 
-Fichier : [PATH]
-Last check : [DATE]
-Check status : ✅ Up-to-date
-Source refs : [LIST]
+```
+FAST-PATH CHECK (agent-aikido-doc-header)
 
-Vérification :
-1. Check if --force-check flag : [YES → SKIP FAST-PATH | NO → CONTINUE]
-2. For each source ref in header :
+File: [PATH]
+Last check: [DATE]
+Check status: ✅ Up-to-date
+Source refs: [LIST]
+
+Verification:
+1. Check --force-check flag: [YES → SKIP FAST-PATH | NO → CONTINUE]
+2. For each source ref in header:
    - Extract current modification date via stat
    - Compare with recorded date in header
-   - Status : [UNCHANGED | MODIFIED]
-3. Check staleness : (today - last_check) days
+   - Status: [UNCHANGED | MODIFIED]
+3. Check staleness: (today - last_check) days
    - If > 90 days → FLAG STALE
    - Else → FRESH
 
-Decision :
-- All sources UNCHANGED + FRESH + no --force-check → ⚡ SKIP VALIDATION (save ~2k tokens)
-- Any source MODIFIED OR STALE OR --force-check → ⚠️ REQUIRES VALIDATION
+Decision:
+- All sources UNCHANGED + FRESH + no --force-check → SKIP VALIDATION (save ~2k tokens)
+- Any source MODIFIED OR STALE OR --force-check → REQUIRES VALIDATION
 
-Fast-path eligible : [X] fichiers
-Validation required : [Y] fichiers
-Tokens saved : ~[X * 2k] tokens
+Fast-path eligible: [X] files
+Validation required: [Y] files
+Tokens saved: ~[X * 2k] tokens
 ```
 
-**Liste des fichiers à valider** :
-- ⚠️ Review needed (tous)
-- ❌ Outdated (tous)
-- 🆕 No metadata (tous)
-- ✅ Up-to-date avec sources modifiées ou stale (filtrés)
+Files to validate:
+- ⚠️ Review needed (all)
+- ❌ Outdated (all)
+- New No metadata (all)
+- ✅ Up-to-date with modified or stale sources (filtered)
 
-Afficher :
+Display:
 ```
-⚡ FAST-PATH OPTIMIZATION
+FAST-PATH OPTIMIZATION
 
-Eligible pour skip : [X] fichiers (✅ + sources inchangées + fresh)
-À valider : [Y] fichiers
-Économie tokens estimée : ~[Z]k tokens
-```
-
-### Phase 3 : Validation Truth Sources 🤖 (agent-aikido-truth-evaluator)
-
-**Pour chaque fichier nécessitant validation**, invoquer truth-evaluator :
-
-```markdown
-🤖 AGENT: agent-aikido-truth-evaluator (avec optimisation last-check)
-
-**Prompt pour l'agent** :
-"FORMAT: JSON
-
-Valider la cohérence entre documentation et sources pour fichier [PATH].
-
-Context :
-- Fichier : [PATH]
-- Type : [concept|technique|use_case]
-- Truth source déclaré : [Code|Spec|Dual|Config|Tests]
-- Last check : [DATE ou NEVER]
-- Source refs : [LIST]
-
-Mode validation :
-1. **Check header metadata first** (Phase 0 de truth-evaluator) :
-   - Si last-check existe + ✅ + sources inchangées → ALREADY DONE (pas dans cette liste normalement)
-
-2. **Full validation** (car dans liste validation required) :
-   - Lire le document
-   - Lire les sources référencées (code, specs, config, tests)
-   - Classifier scenario : [NEW_FEATURE|BUG_FIX|MAINTENANCE|DOCUMENTATION|etc.]
-   - Évaluer cohérence :
-     * Documentation décrit-elle correctement l'implémentation ?
-     * Y a-t-il des contradictions specs ↔ code ?
-     * Le code a-t-il évolué depuis dernière validation ?
-     * La documentation est-elle obsolète ?
-   - Détecter conflits
-   - Scorer fiabilité (95% = parfait, <70% = problème)
-
-3. **Generate ranking** :
-   - 🥇 Primary authority (95%+)
-   - 🥈 Supporting sources (75%+)
-   - 🥉 Reference (50-75%)
-   - ❌ Deprecated (<50%)
-
-4. **Output** :
-   - Status : [✅ COHERENT | ⚠️ MINOR_DRIFT | ❌ MAJOR_CONFLICT]
-   - Confidence : [XX%]
-   - Issues : [LIST]
-   - Recommendations : [LIST]
-   - New check status : [✅|⚠️|❌]
-
-Retourner rapport structuré par fichier."
-
-**Résultat attendu** : Rapport validation pour chaque fichier
+Eligible for skip: [X] files (✅ + unchanged sources + fresh)
+To validate: [Y] files
+Estimated token savings: ~[Z]k tokens
 ```
 
-Afficher en temps réel :
-```
-⚖️ VALIDATION TRUTH SOURCES (agent-aikido-truth-evaluator)...
+---
 
-Fichiers à valider : [Y]
+### Phase 3: Truth Source Validation (agent-aikido-truth-evaluator)
+
+For each file requiring validation, invoke truth-evaluator:
+
+```
+FORMAT: JSON
+
+Validate coherence between documentation and sources for file [PATH].
+
+Context:
+- File: [PATH]
+- Type: [concept|technique|use_case]
+- Declared truth source: [Code|Spec|Dual|Config|Tests]
+- Last check: [DATE or NEVER]
+- Source refs: [LIST]
+
+Validation mode:
+1. Check header metadata first (Phase 0 of truth-evaluator):
+   - If last-check exists + ✅ + sources unchanged → ALREADY DONE
+
+2. Full validation (file is in validation required list):
+   - Read the document
+   - Read referenced sources (code, specs, config, tests)
+   - Classify scenario: [NEW_FEATURE|BUG_FIX|MAINTENANCE|DOCUMENTATION|etc.]
+   - Evaluate coherence:
+     * Does documentation correctly describe the implementation?
+     * Are there spec ↔ code contradictions?
+     * Has code evolved since last validation?
+     * Is the documentation obsolete?
+   - Detect conflicts
+   - Score reliability (95% = perfect, <70% = problem)
+
+3. Generate ranking:
+   - Primary authority (95%+)
+   - Supporting sources (75%+)
+   - Reference (50-75%)
+   - Deprecated (<50%)
+
+4. Output:
+   - Status: [✅ COHERENT | ⚠️ MINOR_DRIFT | ❌ MAJOR_CONFLICT]
+   - Confidence: [XX%]
+   - Issues: [LIST]
+   - Recommendations: [LIST]
+   - New check status: [✅|⚠️|❌]
+
+Return structured report per file.
+```
+
+Display in real time:
+```
+TRUTH SOURCE VALIDATION (agent-aikido-truth-evaluator)...
+
+Files to validate: [Y]
 
 [1/Y] /prompts/gen/concepts/oauth.md
-  - Status : ⚠️ MINOR_DRIFT
-  - Issue : Implementation uses PKCE, doc doesn't mention it
-  - Confidence : 85%
-  - Recommendation : UPDATE doc to mention PKCE
+  - Status: ⚠️ MINOR_DRIFT
+  - Issue: Implementation uses PKCE, doc doesn't mention it
+  - Confidence: 85%
+  - Recommendation: UPDATE doc to mention PKCE
 
 [2/Y] /prompts/gen/techniques/jwt-impl.md
-  - Status : ✅ COHERENT
-  - Confidence : 95%
+  - Status: ✅ COHERENT
+  - Confidence: 95%
   - No action required
 
-[...]
-
-Synthèse :
-✅ Coherent : [X] fichiers
-⚠️ Minor drift : [Y] fichiers (requires update)
-❌ Major conflict : [Z] fichiers (requires immediate attention)
+Summary:
+✅ Coherent       : [X] files
+⚠️ Minor drift    : [Y] files (requires update)
+❌ Major conflict  : [Z] files (requires immediate attention)
 ```
 
-### Phase 4 : Analyse des Manques 🤖 (agent-aikido-explore-bank + truth-evaluator)
+---
 
-**Si scope inclut CODE_ANALYSIS**, détecter documentation manquante :
+### Phase 4: Gaps Analysis (agent-aikido-explore-bank + truth-evaluator)
 
-```markdown
-🤖 WORKFLOW: Détection Documentation Manquante
+If scope includes CODE_ANALYSIS, detect missing documentation:
 
-**Étape 4.1 : Exploration code** (agent-aikido-explore-bank)
-- FORMAT: JSON
-- Code path : [PATH]
-- Scanner : Modules/classes/fonctions principales
-- Extraire : Signatures, docstrings, commentaires
-- Identifier : Éléments critiques nécessitant documentation
-- Retourner : Liste code elements
+```
+FORMAT: JSON
 
-**Étape 4.2 : Recherche doc existante** (agent-aikido-explore-bank)
-- FORMAT: JSON
-- Pour chaque code element :
-  * Rechercher dans Memory Bank via keywords
-  * Matcher avec concepts/techniques existants
-  * Status : [DOCUMENTED | PARTIAL | MISSING]
-- Retourner : Gaps list
+Step 4.1: Code exploration (agent-aikido-explore-bank)
+- Code path: [PATH]
+- Scan: Main modules/classes/functions
+- Extract: Signatures, docstrings, comments
+- Identify: Critical elements requiring documentation
+- Return: Code elements list
 
-**Étape 4.3 : Évaluation priorité** (agent-aikido-truth-evaluator)
-- FORMAT: JSON
-- Pour chaque gap :
-  * Évaluer criticité (public API = HIGH, internal = MEDIUM)
-  * Évaluer complexité (simple = LOW, complexe = HIGH)
-  * Évaluer usage (fréquent = HIGH, rare = LOW)
-  * Scorer priorité : CRITICAL | HIGH | MEDIUM | LOW
-- Retourner : Priorized gaps list
+Step 4.2: Existing doc search (agent-aikido-explore-bank)
+- For each code element:
+  * Search Memory Bank via keywords
+  * Match with existing concepts/techniques
+  * Status: [DOCUMENTED | PARTIAL | MISSING]
+- Return: Gaps list
+
+Step 4.3: Priority evaluation (agent-aikido-truth-evaluator)
+- For each gap:
+  * Evaluate criticality (public API = HIGH, internal = MEDIUM)
+  * Evaluate complexity (simple = LOW, complex = HIGH)
+  * Evaluate usage frequency (frequent = HIGH, rare = LOW)
+  * Score priority: CRITICAL | HIGH | MEDIUM | LOW
+- Return: Prioritized gaps list
 ```
 
-Afficher :
+Display:
 ```
-🔍 ANALYSE DES MANQUES
+GAPS ANALYSIS
 
-Code path : [PATH]
-Elements analysés : [NOMBRE]
+Code path: [PATH]
+Elements analyzed: [COUNT]
 
-Documentation status :
+Documentation status:
 ✅ Documented : [X] elements
-⚠️ Partial : [Y] elements (exists but incomplete)
-❌ Missing : [Z] elements
+⚠️ Partial    : [Y] elements (exists but incomplete)
+❌ Missing    : [Z] elements
 
-Gaps par priorité :
-🔴 CRITICAL : [N] (public APIs, core features)
-🟠 HIGH : [N] (important features)
-🟡 MEDIUM : [N] (secondary features)
-⚪ LOW : [N] (internal utils)
+Gaps by priority:
+CRITICAL : [N] (public APIs, core features)
+HIGH     : [N] (important features)
+MEDIUM   : [N] (secondary features)
+LOW      : [N] (internal utils)
 
-Top 5 gaps critiques :
+Top 5 critical gaps:
 1. [module/function] - [reason] - Priority: CRITICAL
 2. [module/function] - [reason] - Priority: CRITICAL
-[...]
 ```
 
-### Phase 5 : Mise à Jour Headers 🤖 (agent-aikido-doc-header)
+---
 
-**Pour tous les fichiers validés**, mettre à jour headers :
+### Phase 5: Header Update (agent-aikido-doc-header)
 
-```markdown
-🤖 AGENT: agent-aikido-doc-header (batch update)
+For all validated files, update headers:
 
-**Prompt pour l'agent** :
-"FORMAT: JSON
+```
+FORMAT: JSON
 
-Mettre à jour headers pour tous les fichiers validés.
+Update headers for all validated files.
 
-Fichiers validés : [LIST with new status]
+Validated files: [LIST with new status]
 
-Pour chaque fichier :
-1. Lire header actuel
-2. Mettre à jour :
-   - Last Check : [TODAY]
-   - Checked By : agent-aikido-truth-evaluator
-   - Check Status : [✅|⚠️|❌] (from validation result)
-   - Source Refs : refresh modification dates (via stat)
-3. Écrire header mis à jour
+For each file:
+1. Read current header
+2. Update:
+   - Last Check: [TODAY]
+   - Checked By: agent-aikido-truth-evaluator
+   - Check Status: [✅|⚠️|❌] (from validation result)
+   - Source Refs: refresh modification dates (via stat)
+3. Write updated header
 
-Mode : BATCH (tous fichiers en une seule invocation)
-Tokens estimés : ~[200 * nombre_fichiers] tokens"
-
-**Résultat attendu** : Headers mis à jour pour tous fichiers validés
+Mode: BATCH (all files in a single invocation)
+Estimated tokens: ~[200 * file_count] tokens
 ```
 
-Afficher :
+Display:
 ```
-📝 MISE À JOUR HEADERS (agent-aikido-doc-header)...
+HEADER UPDATE (agent-aikido-doc-header)...
 
-Headers à mettre à jour : [X]
+Headers to update: [X]
 
 [1/X] /prompts/gen/concepts/oauth.md → ⚠️ Review needed (updated)
 [2/X] /prompts/gen/techniques/jwt-impl.md → ✅ Up-to-date (updated)
-[...]
 
-✅ Headers mis à jour : [X]
+✅ Headers updated: [X]
 ```
 
-### Phase 6 : Génération Rapport de Redressement
+---
 
-**Compiler** le rapport complet :
+### Phase 6: Remediation Report
 
-```markdown
-📊 RAPPORT CHECK-TRUTH
+Compile the complete report:
 
-**Scope** : [SCOPE]
-**Date** : [DATE TIME]
-**Mode** : [NORMAL|VERBOSE|DRY_RUN]
+```
+CHECK-TRUTH REPORT
 
-## Résumé Exécutif
+Scope: [SCOPE]
+Date: [DATE TIME]
+Mode: [NORMAL|VERBOSE|DRY_RUN]
 
-**Fichiers analysés** : [TOTAL]
-- Fast-path skip : [X] fichiers (✅ + inchangés) → [Y]k tokens économisés
-- Validés : [Z] fichiers
+## Executive Summary
 
-**Résultat global** :
-- ✅ Coherent : [X] fichiers ([PERCENTAGE]%)
-- ⚠️ Minor drift : [Y] fichiers ([PERCENTAGE]%)
-- ❌ Major conflict : [Z] fichiers ([PERCENTAGE]%)
-- 🆕 No prior check : [N] fichiers
+Files analyzed: [TOTAL]
+- Fast-path skip: [X] files (✅ + unchanged) → [Y]k tokens saved
+- Validated: [Z] files
 
-**Performance** :
-- Tokens utilisés : [TOTAL]k
-- Tokens économisés (fast-path) : [SAVED]k
-- Efficacité : [PERCENTAGE]% d'optimisation
+Global result:
+- ✅ Coherent        : [X] files ([PERCENTAGE]%)
+- ⚠️ Minor drift     : [Y] files ([PERCENTAGE]%)
+- ❌ Major conflict   : [Z] files ([PERCENTAGE]%)
+- New No prior check : [N] files
 
-## Détails par Fichier
+Performance:
+- Tokens used: [TOTAL]k
+- Tokens saved (fast-path): [SAVED]k
+- Efficiency: [PERCENTAGE]% optimization
 
-### ✅ Fichiers Cohérents ([X])
+## Details by File
 
-| Fichier | Last Check | Truth Source | Confidence |
-|---------|------------|--------------|------------|
+### ✅ Coherent Files ([X])
+
+| File | Last Check | Truth Source | Confidence |
+|------|------------|--------------|------------|
 | [path] | [date] | Code | 95% |
-| ... | ... | ... | ... |
 
-### ⚠️ Dérivations Mineures ([Y])
+### ⚠️ Minor Drifts ([Y])
 
-| Fichier | Issue | Recommendation | Priority |
-|---------|-------|----------------|----------|
+| File | Issue | Recommendation | Priority |
+|------|-------|----------------|----------|
 | [path] | [description] | UPDATE [section] | MEDIUM |
-| ... | ... | ... | ... |
 
-### ❌ Conflits Majeurs ([Z])
+### ❌ Major Conflicts ([Z])
 
-| Fichier | Conflict | Truth Source | Action Required |
-|---------|----------|--------------|-----------------|
+| File | Conflict | Truth Source | Action Required |
+|------|----------|--------------|-----------------|
 | [path] | [description] | Code (vs doc) | REWRITE [section] |
-| ... | ... | ... | ... |
 
-### 🆕 Documentation Manquante (si CODE_ANALYSIS)
+### Missing Documentation (if CODE_ANALYSIS)
 
 | Code Element | Type | Priority | Suggested Location |
 |--------------|------|----------|-------------------|
 | [module/function] | [concept/technique] | CRITICAL | /prompts/gen/[type]/[name].md |
-| ... | ... | ... | ... |
 
-## Actions Recommandées
+## Recommended Actions
 
-**IMMÉDIATES (Conflits Majeurs)** :
-1. ❌ Corriger [fichier] : [description action]
-2. ❌ Réécrire [fichier] : [description action]
-[...]
+IMMEDIATE (Major Conflicts):
+1. ❌ Fix [file]: [action description]
+2. ❌ Rewrite [file]: [action description]
 
-**PRIORITAIRES (Dérivations + Manques Critiques)** :
-1. ⚠️ Mettre à jour [fichier] : [description action]
-2. 🆕 Créer documentation pour [code element] : [description action]
-[...]
+PRIORITY (Drifts + Critical Gaps):
+1. ⚠️ Update [file]: [action description]
+2. New Create documentation for [code element]: [action description]
 
-**MAINTENANCE (Manques Non-Critiques)** :
-1. 🟡 Documenter [code element] : [description action]
-[...]
+MAINTENANCE (Non-Critical Gaps):
+1. Document [code element]: [action description]
 
-## Proposition d'Auto-Redressement
+## Auto-Remediation Proposal
 
-Voulez-vous lancer le redressement automatique ?
+Choose an option:
 
-**Option 1 : REDRESSER TOUT** (⚠️ + ❌)
-- Mettre à jour [Y] fichiers avec dérivations mineures
-- Réécrire [Z] fichiers avec conflits majeurs
-- Invoquer agent-aikido-bank-populate pour gaps critiques
+Option 1: REMEDIATE ALL (⚠️ + ❌)
+- Update [Y] files with minor drifts
+- Rewrite [Z] files with major conflicts
+- Invoke agent-aikido-bank-populate for critical gaps
 
-**Option 2 : REDRESSER CONFLITS MAJEURS UNIQUEMENT** (❌)
-- Réécrire [Z] fichiers avec conflits majeurs
-- Laisser dérivations mineures pour revue manuelle
+Option 2: REMEDIATE MAJOR CONFLICTS ONLY (❌)
+- Rewrite [Z] files with major conflicts
+- Leave minor drifts for manual review
 
-**Option 3 : CRÉER DOCUMENTATION MANQUANTE** (🆕)
-- Analyser code en détail (via /analyse-project sur [code-path])
-- Invoquer agent-aikido-bank-populate pour tous gaps
-- Créer [N] nouveaux documents
+Option 3: CREATE MISSING DOCUMENTATION (New)
+- Analyze code in detail (via /analyse-project on [code-path])
+- Invoke agent-aikido-bank-populate for all gaps
+- Create [N] new documents
 
-**Option 4 : RAPPORT SEUL**
-- Pas d'action automatique
-- Rapport sauvegardé dans /prompts/spec/check-truth-[DATE].md
+Option 4: REPORT ONLY
+- No automatic action
+- Report saved to /prompts/spec/check-truth-[DATE].md
 
-Choix : [1|2|3|4]
+Choice: [1|2|3|4]
 ```
 
-### Phase 7 : Auto-Redressement (si choisi)
+---
 
-#### Option 1 ou 2 : Mise à Jour Fichiers Existants
+### Phase 7: Auto-Remediation (if selected)
 
-**Pour chaque fichier nécessitant correction** :
+#### Options 1 or 2: Update Existing Files
 
-```markdown
-📝 REDRESSEMENT FICHIER : [PATH]
+For each file requiring correction:
 
-**Étape 7.1 : Analyse détaillée**
-- Lire document complet
-- Lire sources (code, specs, config)
-- Identifier sections obsolètes/conflictuelles
-- Extraire informations correctes depuis sources
+```
+REMEDIATION: [PATH]
 
-**Étape 7.2 : Génération corrections**
-- Pour chaque section problématique :
-  * Section : [NAME]
-  * Issue : [DESCRIPTION]
-  * Current content : [EXTRACT]
-  * Truth source : [CODE/SPEC]
-  * Corrected content : [NEW_CONTENT]
+Step 7.1: Detailed analysis
+- Read complete document
+- Read sources (code, specs, config)
+- Identify obsolete/conflicting sections
+- Extract correct information from sources
 
-**Étape 7.3 : Application corrections**
-- Utiliser Edit tool pour chaque section
-- Préserver structure globale du document
-- Mettre à jour frontmatter (date, version++)
-- Ajouter note de révision si majeur
+Step 7.2: Generate corrections
+- For each problematic section:
+  * Section: [NAME]
+  * Issue: [DESCRIPTION]
+  * Current content: [EXTRACT]
+  * Truth source: [CODE/SPEC]
+  * Corrected content: [NEW_CONTENT]
 
-**Étape 7.4 : Validation post-correction** (agent-aikido-validator)
-- Vérifier conformité AI-KIDO (≤500 lignes, frontmatter, liens)
-- Si violations → corriger
-- Retourner : [VALID | CORRECTED]
+Step 7.3: Apply corrections
+- Use Edit tool for each section
+- Preserve global document structure
+- Update frontmatter (date, version++)
+- Add revision note if major
 
-**Étape 7.5 : Update header** (agent-aikido-doc-header)
-- Last Check : [TODAY]
-- Check Status : ✅ Up-to-date
-- Source Refs : [refresh dates]
+Step 7.4: Post-correction validation (agent-aikido-validator)
+- Verify AI-KIDO compliance (<=500 lines, frontmatter, links)
+- If violations → correct
+- Return: [VALID | CORRECTED]
+
+Step 7.5: Update header (agent-aikido-doc-header)
+- Last Check: [TODAY]
+- Check Status: ✅ Up-to-date
+- Source Refs: [refresh dates]
 ```
 
-#### Option 3 : Création Documentation Manquante 🤖 (agent-aikido-bank-populate)
+#### Option 3: Create Missing Documentation (agent-aikido-bank-populate)
 
-**Invoquer agent-aikido-bank-populate** à la FIN avec liste gaps :
+Invoke `agent-aikido-bank-populate` at END with gaps list:
 
-```markdown
-🤖 AGENT: agent-aikido-bank-populate (END OF PROCESS)
+```
+FORMAT: JSON
 
-**Prompt pour l'agent** :
-"FORMAT: JSON
+Populate Memory Bank for missing documentation detected.
 
-Peupler Memory Bank pour documentation manquante détectée.
+Detected gaps (from Phase 4):
+[PRIORITIZED_GAPS_LIST]
 
-Gaps détectés (depuis Phase 4) :
-[PRIORIZED_GAPS_LIST]
+For each priority gap:
+1. Code element: [module/function]
+2. Code path: [path:lines]
+3. Suggested type: [concept|technique]
+4. Priority: [CRITICAL|HIGH|MEDIUM]
+5. Context: [extracted from code]
 
-Pour chaque gap prioritaire :
-1. Code element : [module/function]
-2. Code path : [path:lines]
-3. Type suggéré : [concept|technique]
-4. Priority : [CRITICAL|HIGH|MEDIUM]
-5. Context : [extracted from code]
+Standard bank-populate workflow:
+- Phase 1: Validate gaps (already done)
+- Phase 2: Collect info (from code)
+- Phase 3: Truth evaluation (scenario = DOCUMENTATION)
+- Phase 4: Classification (via raci-delegator)
+- Phase 5: Expert delegation or direct write
+- Phase 6: Validation (agent-aikido-validator)
+- Phase 7: Integration (with doc-header creation)
+- Phase 8: Reporting
 
-Workflow standard bank-populate :
-- Phase 1 : Validation gaps (déjà fait)
-- Phase 2 : Collection infos (from code)
-- Phase 3 : Truth evaluation (scenario = DOCUMENTATION)
-- Phase 4 : Classification (via raci-delegator)
-- Phase 5 : Expert delegation ou direct write
-- Phase 6 : Validation (agent-aikido-validator)
-- Phase 7 : Integration (with doc-header creation)
-- Phase 8 : Reporting
-
-Retourner rapport complet création documents."
-
-**Résultat attendu** : Nouveaux documents créés avec headers complets
+Return complete document creation report.
 ```
 
-### Phase 8 : Rapport Final et Sauvegarde
+---
 
-**Générer rapport final** dans `/prompts/spec/check-truth-[DATE].md` :
+### Phase 8: Final Report and Save
 
-```markdown
-# Rapport Check-Truth - [DATE]
+Generate final report in `/prompts/spec/check-truth-[DATE].md`:
 
-> Version: 1.0 | Date: [DATE TIME] | Statut: Rapport Check-Truth
+```
+# Check-Truth Report - [DATE]
 
-## Métadonnées Exécution
+> Version: 1.0 | Date: [DATE TIME] | Status: Check-Truth Report
 
-**Commande** : /check-truth [ARGUMENTS]
-**Scope** : [SCOPE]
-**Mode** : [NORMAL|VERBOSE|DRY_RUN]
-**Force check** : [YES|NO]
+## Execution Metadata
 
-## Statistiques Performance
+Command: /check-truth [ARGUMENTS]
+Scope: [SCOPE]
+Mode: [NORMAL|VERBOSE|DRY_RUN]
+Force check: [YES|NO]
 
-**Fichiers analysés** : [TOTAL]
-- Fast-path skip : [X] ([PERCENTAGE]%)
-- Validés : [Y] ([PERCENTAGE]%)
-- Nouveaux (no metadata) : [Z]
+## Performance Statistics
 
-**Tokens** :
-- Utilisés : [TOTAL]k
-- Économisés (fast-path) : [SAVED]k
-- Efficacité : [PERCENTAGE]% optimisation
+Files analyzed: [TOTAL]
+- Fast-path skip: [X] ([PERCENTAGE]%)
+- Validated: [Y] ([PERCENTAGE]%)
+- New (no metadata): [Z]
 
-**Temps d'exécution** : [DURATION]
+Tokens:
+- Used: [TOTAL]k
+- Saved (fast-path): [SAVED]k
+- Efficiency: [PERCENTAGE]% optimization
 
-## Résultats Validation
+Execution time: [DURATION]
 
-### Distribution Status
+## Validation Results
 
-| Status | Nombre | Percentage |
-|--------|--------|------------|
+### Status Distribution
+
+| Status | Count | Percentage |
+|--------|-------|------------|
 | ✅ Coherent | [X] | [PERCENTAGE]% |
 | ⚠️ Minor drift | [Y] | [PERCENTAGE]% |
 | ❌ Major conflict | [Z] | [PERCENTAGE]% |
-| 🆕 No prior check | [N] | [PERCENTAGE]% |
+| New No prior check | [N] | [PERCENTAGE]% |
 
-### Détails Complets
+### Full Details
 
-[Inclure tableaux détaillés de Phase 6]
+[Include detailed tables from Phase 6]
 
-## Actions Effectuées (si auto-redressement)
+## Actions Performed (if auto-remediation)
 
-**Option choisie** : [OPTION]
+Option chosen: [OPTION]
 
-### Fichiers Mis à Jour
+### Updated Files
 
-| Fichier | Action | Status | Détails |
-|---------|--------|--------|---------|
+| File | Action | Status | Details |
+|------|--------|--------|---------|
 | [path] | UPDATE [section] | ✅ Success | [details] |
-| ... | ... | ... | ... |
 
-### Documents Créés
+### Created Documents
 
-| Fichier | Type | Truth Source | Status |
-|---------|------|--------------|--------|
+| File | Type | Truth Source | Status |
+|------|------|--------------|--------|
 | [path] | Concept | Code | ✅ Created |
-| ... | ... | ... | ... |
 
-## Recommandations Post-Check
+## Post-Check Recommendations
 
-**Maintenance Continue** :
-1. Exécuter `/check-truth` après chaque sprint/release
-2. Exécuter `/check-truth --code-path [PATH]` après refactoring majeur
-3. Exécuter `/check-truth --domain [DOMAIN]` mensuellement
+Continuous maintenance:
+1. Run `/check-truth` after each sprint/release
+2. Run `/check-truth --code-path [PATH]` after major refactoring
+3. Run `/check-truth --domain [DOMAIN]` monthly
 
-**Améliorations Suggérées** :
-1. [Suggestion basée sur patterns détectés]
-2. [...]
+Suggested improvements:
+1. [Suggestion based on detected patterns]
 
-**Prochaines Vérifications** :
-- [Domaine/fichier] dans [X] jours (si dérivation détectée)
-- [Domaine/fichier] dans [Y] jours (maintenance régulière)
+Next verifications:
+- [Domain/file] in [X] days (if drift detected)
+- [Domain/file] in [Y] days (regular maintenance)
 
 ---
-*Rapport généré automatiquement par check-truth le [DATE TIME]*
+*Report generated automatically by check-truth on [DATE TIME]*
 ```
 
-**Sauvegarder** le rapport :
+Display:
 ```
-💾 RAPPORT SAUVEGARDÉ
+REPORT SAVED
 
-Fichier : /prompts/spec/check-truth-[DATE].md
-Taille : [X] lignes
-```
-
-## Messages de Confirmation
-
-### Succès - Check Complet
-
-```
-✅ CHECK-TRUTH TERMINÉ AVEC SUCCÈS !
-
-Scope : [SCOPE]
-Fichiers analysés : [TOTAL]
-
-Résultats :
-✅ Coherent : [X] fichiers ([PERCENTAGE]%)
-⚠️ Minor drift : [Y] fichiers ([PERCENTAGE]%)
-❌ Major conflict : [Z] fichiers ([PERCENTAGE]%)
-
-Performance :
-⚡ Tokens économisés (fast-path) : [SAVED]k
-📊 Efficacité : [PERCENTAGE]% optimisation
-⏱️ Durée : [DURATION]
-
-Actions effectuées :
-[Liste si auto-redressement choisi]
-
-📄 Rapport détaillé : /prompts/spec/check-truth-[DATE].md
-
-💡 Recommandation : Exécuter `/check-truth` régulièrement pour maintenir cohérence
+File: /prompts/spec/check-truth-[DATE].md
+Size: [X] lines
 ```
 
-### Succès - Fast-Path Total
+## Output
+
+### Success - Full Check
 
 ```
-⚡ CHECK-TRUTH ULTRA-RAPIDE !
+CHECK-TRUTH COMPLETED SUCCESSFULLY
 
-Scope : [SCOPE]
-Fichiers analysés : [TOTAL]
+Scope: [SCOPE]
+Files analyzed: [TOTAL]
 
-Résultat : ✅ 100% UP-TO-DATE
-- Tous les fichiers sont à jour
-- Toutes les sources inchangées depuis last-check
-- Aucune validation nécessaire
+Results:
+✅ Coherent       : [X] files ([PERCENTAGE]%)
+⚠️ Minor drift    : [Y] files ([PERCENTAGE]%)
+❌ Major conflict  : [Z] files ([PERCENTAGE]%)
 
-Performance :
-⚡ Tokens économisés : [SAVED]k (~80% optimisation)
-⏱️ Durée : < 10 secondes
+Performance:
+Tokens saved (fast-path): [SAVED]k
+Efficiency: [PERCENTAGE]% optimization
+Duration: [DURATION]
 
-🎯 Memory Bank parfaitement synchronisée avec le code !
+Actions performed:
+[List if auto-remediation selected]
+
+Detailed report: /prompts/spec/check-truth-[DATE].md
 ```
 
-### Avertissements
+### Success - Full Fast-Path
 
 ```
-⚠️ CONFLITS MAJEURS DÉTECTÉS
+CHECK-TRUTH ULTRA-FAST
 
-Les fichiers suivants nécessitent une attention immédiate :
+Scope: [SCOPE]
+Files analyzed: [TOTAL]
 
-❌ [X] conflits majeurs :
-1. [fichier] - [description courte]
-2. [fichier] - [description courte]
-[...]
+Result: ✅ 100% UP-TO-DATE
+- All files are up to date
+- All sources unchanged since last-check
+- No validation required
 
-Recommandations :
-- Option 1 : Lancer auto-redressement (/check-truth [args] avec choix 1)
-- Option 2 : Révision manuelle des fichiers listés
-- Option 3 : Consulter rapport détaillé : /prompts/spec/check-truth-[DATE].md
+Performance:
+Tokens saved: [SAVED]k (~80% optimization)
+Duration: < 10 seconds
 
-⚠️ Ces conflits peuvent causer des incohérences dans les réponses du LLM
+Memory Bank perfectly synchronized with code.
 ```
 
-## 🤖 Agents AI-KIDO Utilisés
+### Warning - Major Conflicts
 
-Cette commande utilise **5 agents AI-KIDO spécialisés** pour optimisation maximale :
-
-### Phase 1 : `agent-aikido-explore-bank` (QUICK MODE)
-- **Rôle** : Inventaire ciblé selon scope (fichier, domaine, search, code, full)
-- **Output** : Liste fichiers avec metadata (last-check, truth source, source refs)
-- **Tokens** : 1k-5k (selon scope)
-- **Gain** : Extraction metadata rapide vs lecture manuelle
-
-### Phase 2 : `agent-aikido-doc-header` (fast-path check)
-- **Rôle** : Vérifier éligibilité fast-path (skip validation si ✅ + sources inchangées)
-- **Output** : Liste fichiers skip vs validate
-- **Tokens** : ~200 par fichier checké
-- **Gain** : ~70-80% tokens économisés sur fichiers à jour
-
-### Phase 3 : `agent-aikido-truth-evaluator` (validation)
-- **Rôle** : Valider cohérence doc ↔ code/specs pour fichiers nécessitant validation
-- **Output** : Status (✅|⚠️|❌), confidence, issues, recommendations
-- **Tokens** : ~2k par fichier validé
-- **Gain** : Validation automatisée avec détection conflits
-
-### Phase 4 : `agent-aikido-explore-bank` + `truth-evaluator` (gaps detection)
-- **Rôle** : Détecter documentation manquante pour code analysé
-- **Output** : Liste gaps priorisés (CRITICAL → LOW)
-- **Tokens** : Variable selon code size
-- **Gain** : Détection automatique manques vs revue manuelle
-
-### Phase 5 : `agent-aikido-doc-header` (batch update)
-- **Rôle** : Mettre à jour headers pour tous fichiers validés
-- **Output** : Headers actualisés (last-check, check status, source refs refreshed)
-- **Tokens** : ~200 par fichier
-- **Gain** : Batch update vs fichier par fichier
-
-### Phase 7 (optionnel) : `agent-aikido-bank-populate` (création docs)
-- **Rôle** : Créer documentation manquante depuis code
-- **Output** : Nouveaux documents avec headers complets
-- **Tokens** : Variable selon nombre gaps
-- **Gain** : Orchestration automatique création vs manuel
-
-### 📊 Gains d'Optimisation Estimés
-
-| Aspect | Sans Optimisation | Avec Agents + Fast-Path | Gain |
-|--------|-------------------|------------------------|------|
-| **Inventaire** | Lecture manuelle tous fichiers | explore-bank ciblé | ~60% tokens |
-| **Validation** | Tous fichiers revérifiés | Fast-path skip si ✅ | ~70-80% tokens |
-| **Détection gaps** | Revue manuelle code | Automatique (explore+truth) | ~90% temps |
-| **Mise à jour headers** | Fichier par fichier | Batch update | ~50% tokens |
-| **Création docs** | Manuel | bank-populate orchestré | ~80% temps |
-| **TOTAL WORKFLOW** | ~100k tokens | ~20-30k tokens | **70-80% efficacité** |
-
-## Options de Commande
-
-### Mode Standard
-```bash
-/check-truth
 ```
-Vérification complète Memory Bank avec fast-path.
+MAJOR CONFLICTS DETECTED
 
-### Mode Fichier Unique
-```bash
-/check-truth --file /prompts/gen/concepts/oauth.md
+Files requiring immediate attention:
+
+❌ [X] major conflicts:
+1. [file] - [short description]
+2. [file] - [short description]
+
+Recommendations:
+- Option 1: Launch auto-remediation (/check-truth [args] with choice 1)
+- Option 2: Manual review of listed files
+- Option 3: Consult detailed report: /prompts/spec/check-truth-[DATE].md
 ```
-Vérification ciblée sur un seul fichier.
 
-### Mode Domaine
-```bash
-/check-truth --domain concepts
-```
-Vérification tous fichiers d'un domaine.
+## Notes
 
-### Mode Recherche
-```bash
-/check-truth --search "authentication"
-```
-Vérification fichiers contenant keyword.
+### AI-KIDO Agents Used
 
-### Mode Analyse Code
-```bash
-/check-truth --code-path ./src/auth/
-```
-Analyse code + vérification doc associée + détection manques.
+| Phase | Agent | Role | Tokens |
+|-------|-------|------|--------|
+| 1 | `agent-aikido-explore-bank` (QUICK) | Targeted inventory by scope | 1k-5k |
+| 2 | `agent-aikido-doc-header` | Fast-path eligibility check | ~200/file |
+| 3 | `agent-aikido-truth-evaluator` | Coherence validation | ~2k/file |
+| 4 | `agent-aikido-explore-bank` + `truth-evaluator` | Gaps detection | variable |
+| 5 | `agent-aikido-doc-header` (batch) | Header update | ~200/file |
+| 7 | `agent-aikido-bank-populate` (optional) | Create missing docs | variable |
+| 7 | `agent-aikido-validator` | Post-correction compliance | ~500/file |
 
-### Mode Combiné
-```bash
-/check-truth --code-path ./src/auth/ --domain concepts
-```
-Analyse code ET vérification domaine spécifique.
+### Optimization Gains
 
-### Mode Force (sans fast-path)
-```bash
-/check-truth --force-check
-```
-Force validation complète, ignore fast-path optimization.
+| Aspect | Without optimization | With agents + fast-path | Gain |
+|--------|---------------------|------------------------|------|
+| Inventory | Manual read all files | explore-bank targeted | ~60% tokens |
+| Validation | All files re-verified | Fast-path skip if ✅ | ~70-80% tokens |
+| Gaps detection | Manual code review | Automatic (explore+truth) | ~90% time |
+| Header update | File by file | Batch update | ~50% tokens |
+| Doc creation | Manual | bank-populate orchestrated | ~80% time |
+| TOTAL WORKFLOW | ~100k tokens | ~20-30k tokens | 70-80% efficiency |
 
-### Mode Dry-Run
-```bash
-/check-truth --dry-run
-```
-Simulation sans modifications, affiche ce qui serait fait.
+### Error Handling
 
-### Mode Verbose
-```bash
-/check-truth --verbose
-```
-Affiche tous les détails en temps réel.
+- **File not found**: Skip with warning, continue other files
+- **Inaccessible source ref**: Mark as "(unavailable)" in report, flag for review
+- **Validation failed**: Mark as ❌ with detailed error, propose manual correction
+- **Agent timeout**: Retry once, then fallback to degraded mode (without agent)
+- **Permission denied**: List inaccessible files in report, suggest permission fix
 
-## Gestion des Erreurs
+### Integration with Other Commands
 
-- **Fichier introuvable** : Skip avec warning, continue autres fichiers
-- **Source ref inaccessible** : Mark as "(unavailable)" dans rapport, flag pour revue
-- **Validation échouée** : Mark as ❌ avec erreur détaillée, propose correction manuelle
-- **Agent timeout** : Retry une fois, puis fallback mode dégradé (sans agent)
-- **Permission refusée** : Lister fichiers inaccessibles dans rapport, suggérer correction permissions
+- `/analyse-project`: Analyze code to populate Memory Bank (complementary)
+- `/maj-aikido`: Update after rebase (run check-truth after for coherence)
+- `/analyse-aikido`: Full AI-KIDO audit (check-truth for code truth)
+- `/check-claude`: CLAUDE.md synchronization (check-truth for content)
 
-## Règles AI-KIDO Respectées
-
-- ✅ Utilisation maximale agents AI-KIDO (5 agents orchestrés)
-- ✅ Fast-path optimization via last-check metadata
-- ✅ Respect hiérarchie hard_points > gen > code
-- ✅ Génération rapport dans /prompts/spec/
-- ✅ Mise à jour systematic headers via doc-header
-- ✅ Invocation bank-populate à la FIN si gaps critiques
-- ✅ Format Markdown avec métadonnées
-- ✅ Traçabilité complète des vérifications
-
-## Intégration avec Autres Commandes
-
-Cette commande s'intègre avec :
-- `/analyse-project` : Analyse code pour peupler Memory Bank (complémentaire)
-- `/maj-aikido` : Mise à jour après rebase (check-truth après pour cohérence)
-- `/analyse-aikido` : Audit complet AI-KIDO (check-truth pour vérité code)
-- `/check-claude` : Synchronisation CLAUDE.md (check-truth pour contenu)
-
-**Workflow recommandé** :
-1. Développement de features → modifications code
-2. `/check-truth --code-path [PATH]` → vérifier cohérence doc
-3. Auto-redressement si nécessaire
-4. `/analyse-aikido` → audit conformité
-5. `/check-claude` → synchronisation interface
-
----
-
-*Commande créée pour maintenir la cohérence Memory Bank ↔ Code avec optimisation maximale*
+Recommended workflow:
+1. Feature development → code modifications
+2. `/check-truth --code-path [PATH]` → verify doc coherence
+3. Auto-remediation if needed
+4. `/analyse-aikido` → compliance audit
+5. `/check-claude` → interface synchronization

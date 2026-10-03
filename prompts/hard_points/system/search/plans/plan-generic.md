@@ -4,15 +4,15 @@
 
 ## 📋 Overview
 
-Plan de recherche générique pour tout type de code source. Utilisé comme fallback lorsqu'aucun plan spécifique à une technologie n'est trouvé.
+Generic search plan for any type of source code. Used as a fallback when no technology-specific plan is found.
 
-**Cas d'usage** : Projets multi-langages, technologies non supportées, découverte exploratoire sans a priori technologique.
+**Use cases**: Multi-language projects, unsupported technologies, exploratory discovery without any technology assumption.
 
 ## 🔍 File Patterns
 
-### Extensions prioritaires
+### Priority extensions
 ```bash
-# Source code (tous langages courants)
+# Source code (all common languages)
 *.js *.ts *.jsx *.tsx *.mjs *.cjs
 *.py *.pyc *.pyw
 *.java *.class *.jar
@@ -35,9 +35,9 @@ Plan de recherche générique pour tout type de code source. Utilisé comme fall
 *.md *.rst *.txt
 ```
 
-### Exclusions standards
+### Standard exclusions
 ```bash
-# Répertoires à ignorer (respecter .gitignore)
+# Directories to ignore (respect .gitignore)
 node_modules/
 vendor/
 dist/
@@ -51,7 +51,7 @@ __pycache__/
 .venv/
 venv/
 
-# Fichiers binaires
+# Binary files
 *.bin *.exe *.dll *.so *.dylib
 *.jpg *.jpeg *.png *.gif *.ico *.svg
 *.pdf *.zip *.tar *.gz
@@ -63,7 +63,7 @@ venv/
 
 ### Phase 1: Quick Discovery
 ```bash
-# Trouver tous les fichiers potentiellement pertinents
+# Find all potentially relevant files
 find . -type f \
   \( -name "*.js" -o -name "*.ts" -o -name "*.py" -o -name "*.java" -o -name "*.go" -o -name "*.rs" -o -name "*.cpp" -o -name "*.rb" -o -name "*.php" \) \
   -not -path "*/node_modules/*" \
@@ -76,15 +76,15 @@ find . -type f \
 
 ### Phase 2: Keyword Search
 ```bash
-# Recherche par mot-clé avec contexte
+# Search by keyword with context
 grep -rn --include="*.{js,ts,py,java,go,rs,cpp,rb,php}" \
   --exclude-dir={node_modules,vendor,.git,dist,build} \
   -i "$KEYWORD" .
 ```
 
-## 📦 Patterns de Recherche
+## 📦 Search Patterns
 
-### 1. Imports/Dépendances (multi-langage)
+### 1. Imports/Dependencies (multi-language)
 ```regex
 # JavaScript/TypeScript
 ^import\s+.*\s+from\s+['"](.*?)['"]
@@ -110,18 +110,18 @@ grep -rn --include="*.{js,ts,py,java,go,rs,cpp,rb,php}" \
 ^require\s+['"](.*?)['"]
 ```
 
-### 2. Déclarations Classes/Interfaces/Traits
+### 2. Class/Interface/Trait Declarations
 ```regex
-# Classes (multi-langage)
+# Classes (multi-language)
 ^(export\s+)?(public\s+|private\s+|protected\s+)?(class|interface|trait|struct|enum)\s+(\w+)
 
 # Namespace/Package
 ^(namespace|package)\s+([\w\\\.]+)
 ```
 
-### 3. Fonctions/Méthodes
+### 3. Functions/Methods
 ```regex
-# Function declarations (multi-langage)
+# Function declarations (multi-language)
 ^(export\s+)?(public\s+|private\s+|protected\s+|static\s+)?(function|def|fn|func)\s+(\w+)\s*\(
 
 # Arrow functions (JavaScript/TypeScript)
@@ -131,16 +131,16 @@ grep -rn --include="*.{js,ts,py,java,go,rs,cpp,rb,php}" \
 ^\s+(public|protected|private)\s+function\s+(\w+)\s*\(
 ```
 
-### 4. Mots-clés communs
+### 4. Common keywords
 ```text
-# Héritage/Extension
+# Inheritance/Extension
 extends
 implements
 inherits
 derive
 use (trait)
 
-# Visibilité
+# Visibility
 public
 private
 protected
@@ -159,7 +159,7 @@ enum
 
 ## 🔄 Extension Strategy
 
-### 1. Détection de Langage par Extension
+### 1. Language Detection by Extension
 ```bash
 function detect_language_from_extension() {
     local file="$1"
@@ -181,7 +181,7 @@ function detect_language_from_extension() {
 }
 ```
 
-### 2. Résolution d'Import Générique
+### 2. Generic Import Resolution
 ```bash
 function resolve_generic_import() {
     local import_path="$1"
@@ -201,7 +201,7 @@ function resolve_generic_import() {
 
 ## 📤 Output Format
 
-### Structure générique
+### Generic structure
 
 ```markdown
 # Code Search Results
@@ -307,9 +307,9 @@ graph TD
 
 ## ⚡ Performance Optimization
 
-### Commandes optimisées multi-langage
+### Optimized multi-language commands
 ```bash
-# Recherche ultra-rapide avec ripgrep
+# Ultra-fast search with ripgrep
 rg -i "$KEYWORD" \
   --type-add 'source:*.{js,ts,py,java,go,rs,php,rb}' \
   --type source \
@@ -318,26 +318,26 @@ rg -i "$KEYWORD" \
   --glob '!dist' \
   --glob '!build'
 
-# Trouver toutes les classes (multi-langage)
+# Find all classes (multi-language)
 rg -n "^(class|interface|struct)\s+(\w+)" -r '$2' --no-heading
 
-# Trouver imports (multi-langage)
+# Find imports (multi-language)
 rg -n "^(import|require|use|from)\s+" --no-heading
 
-# Statistiques par fichier
+# Statistics per file
 rg -c -i "$KEYWORD" | sort -t: -k2 -nr | head -20
 ```
 
-### Stratégies d'Optimisation
-1. **Early filtering** : Exclure répertoires dès le find
-2. **Pattern grouping** : Grouper patterns similaires pour un seul grep
-3. **Limit results** : Max 100 fichiers par recherche (configurable)
-4. **Cache .gitignore** : Parser .gitignore une fois, appliquer partout
+### Optimization Strategies
+1. **Early filtering** : Exclude directories from the start with find
+2. **Pattern grouping** : Group similar patterns into a single grep
+3. **Limit results** : Max 100 files per search (configurable)
+4. **Cache .gitignore** : Parse .gitignore once, apply everywhere
 
 ## 📋 Usage Example
 
 ```bash
-# Exemple d'utilisation du plan générique
+# Example usage of the generic plan
 KEYWORD="authenticate"
 
 # Phase 1: Auto-detect technologies
@@ -376,7 +376,7 @@ done
 
 ## 🎓 Technology Detection
 
-Auto-détection des technologies présentes dans le projet :
+Auto-detection of technologies present in the project:
 
 ```bash
 function detect_project_technologies() {
@@ -416,13 +416,13 @@ function detect_project_technologies() {
 
 ## 🔧 Customization Points
 
-Ce plan peut être étendu/personnalisé via :
-- **File patterns** : Ajouter extensions spécifiques
-- **Exclusions** : Adapter selon structure projet
-- **Regex patterns** : Affiner pour syntaxes spécifiques
-- **Output format** : Personnaliser niveau de détail
-- **Performance tuning** : Ajuster limites et parallélisme
+This plan can be extended/customized via:
+- **File patterns** : Add specific extensions
+- **Exclusions** : Adapt according to project structure
+- **Regex patterns** : Refine for specific syntaxes
+- **Output format** : Customize level of detail
+- **Performance tuning** : Adjust limits and parallelism
 
 ---
-*Plan générique créé le 2025-12-09 pour agent-aikido-explore-code*
-*Utilisé comme fallback pour technologies sans plan spécifique*
+*Generic plan created on 2025-12-09 for agent-aikido-explore-code*
+*Used as fallback for technologies without a specific plan*

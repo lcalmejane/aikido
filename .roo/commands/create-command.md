@@ -1,13 +1,7 @@
 ---
-description: "Guide interactif pour créer des commandes AI-KIDO optimisées avec détection de doublons et suggestion d'agents"
+description: "Interactive guide to create optimized AI-KIDO commands with duplicate detection and agent suggestions"
 ---
 
-# Commande create-command
-
-Cette commande exécute le fichier de commande complet depuis `prompts/hard_points/commands/create-command.md`.
-
-**EXÉCUTION** : Je vais maintenant lire et exécuter la commande complète.
-
-```
-Lecture de prompts/hard_points/commands/create-command.md et exécution des instructions...
-```
+# /create-command
+Executes `prompts/hard_points/commands/create-command.md`.
+**EXECUTION**: Read and apply the instructions from the target file.

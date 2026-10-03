@@ -1,23 +1,23 @@
-# Installation Skill Web dans AI-KIDO
+# Web Skill Installation in AI-KIDO
 
-> **Version** : 1.0.0 | **Date** : 2026-01-08 | **Statut** : Active
+> **Version**: 1.0.0 | **Date**: 2026-01-08 | **Status**: Active
 
 ## Description
 
-Ce document guide l'installation et l'intégration du Skill Web dans le système AI-KIDO. Il permet d'enregistrer la commande de téléchargement de site web dans les fichiers de configuration du système.
+This document guides the installation and integration of the Web Skill into the AI-KIDO system. It registers the website download command in the system configuration files.
 
-## Prérequis
+## Prerequisites
 
-- Système AI-KIDO installé et fonctionnel
-- Accès en écriture aux fichiers de configuration
-- Skill Web présent dans `prompts/hard_points/system/web/`
-- **Logiciels requis** : `wget`, `pandoc`
+- AI-KIDO system installed and functional
+- Write access to configuration files
+- Web Skill present in `prompts/hard_points/system/web/`
+- **Required software**: `wget`, `pandoc`
 
-## Fichiers à Modifier
+## Files to Modify
 
 ### 1. skills_list.md
 
-Ajouter le Skill Web :
+Add the Web Skill:
 
 ```markdown
 - **web** – Le Skill Web d'AI‑KIDO gère les interactions avec le Web : téléchargement de sites, extraction de contenu pertinent, normalisation du HTML et génération de réponses structurées (texte brut ou JSON). – [`prompts/hard_points/system/web/SKILL.md`](prompts/hard_points/system/web/SKILL.md)
@@ -25,40 +25,40 @@ Ajouter le Skill Web :
 
 ### 2. commands_list.md
 
-Ajouter la commande download-site (ordre alphabétique) :
+Add the download-site command (alphabetical order):
 
 ```markdown
-- **download-site** : Télécharge un site web et convertit son contenu en Markdown ([`download-site.md`](prompts/hard_points/system/web/commands/download-site.md:2))
+- **download-site**: Downloads a website and converts its content to Markdown ([`download-site.md`](prompts/hard_points/system/web/commands/download-site.md:2))
 ```
 
 ### 3. .roo/commands/
 
-Créer le fichier de mapping pour la commande :
+Create the mapping file for the command:
 
 #### .roo/commands/download-site.md
 ```markdown
 ---
-description: "Télécharge un site web et convertit son contenu en Markdown"
+description: "Downloads a website and converts its content to Markdown"
 ---
 
-# Commande download-site
+# Command download-site
 
-Cette commande exécute le fichier de commande complet depuis `prompts/hard_points/system/web/commands/download-site.md`.
+This command executes the full command file from `prompts/hard_points/system/web/commands/download-site.md`.
 
-**EXÉCUTION** : Je vais maintenant lire et exécuter la commande complète.
+**EXECUTION**: I will now read and execute the full command.
 
 \`\`\`
-Lecture de prompts/hard_points/system/web/commands/download-site.md et exécution des instructions...
+Reading prompts/hard_points/system/web/commands/download-site.md and executing instructions...
 \`\`\`
 ```
 
 ### 4. .claude/commands/
 
-Créer le même fichier de mapping dans `.claude/commands/` avec le même contenu que `.roo/commands/`.
+Create the same mapping file in `.claude/commands/` with the same content as `.roo/commands/`.
 
 ### 5. .claude/settings.local.json
 
-Ajouter les permissions nécessaires pour wget et pandoc :
+Add the required permissions for wget and pandoc:
 
 ```json
 {
@@ -72,22 +72,22 @@ Ajouter les permissions nécessaires pour wget et pandoc :
 }
 ```
 
-## Procédure d'Installation
+## Installation Procedure
 
-### Étape 1 : Vérifier les Prérequis
+### Step 1: Verify Prerequisites
 
 ```bash
-# Vérifier que le Skill Web est présent
+# Verify the Web Skill is present
 ls -la prompts/hard_points/system/web/
 
-# Vérifier wget
-which wget || echo "⚠️ wget non installé"
+# Check wget
+which wget || echo "⚠️ wget not installed"
 
-# Vérifier pandoc
-which pandoc || echo "⚠️ pandoc non installé"
+# Check pandoc
+which pandoc || echo "⚠️ pandoc not installed"
 ```
 
-**Installation des dépendances si nécessaire :**
+**Installing dependencies if needed:**
 
 ```bash
 # macOS
@@ -100,134 +100,134 @@ sudo apt-get update && sudo apt-get install -y wget pandoc
 sudo yum install -y wget pandoc
 ```
 
-### Étape 2 : Créer les Fichiers de Mapping
+### Step 2: Create Mapping Files
 
 ```bash
-# Créer les répertoires si nécessaire
+# Create directories if needed
 mkdir -p .roo/commands
 mkdir -p .claude/commands
 
-# Créer la commande dans .roo/commands/
+# Create the command in .roo/commands/
 touch .roo/commands/download-site.md
 
-# Créer la commande dans .claude/commands/
+# Create the command in .claude/commands/
 touch .claude/commands/download-site.md
 ```
 
-### Étape 3 : Remplir les Fichiers de Mapping
+### Step 3: Fill in the Mapping Files
 
-**IMPORTANT** : Les fichiers créés à l'Étape 2 doivent être remplis avec leur contenu respectif (voir sections 3 et 4 ci-dessus).
+**IMPORTANT**: The files created in Step 2 must be filled with their respective content (see sections 3 and 4 above).
 
-#### 3.1 : Remplir les commandes .roo/commands/ et .claude/commands/
-Copier le contenu de la section 3 dans chaque fichier de commande.
+#### 3.1: Fill in .roo/commands/ and .claude/commands/ commands
+Copy the content from section 3 into each command file.
 
-### Étape 4 : Mettre à Jour les Fichiers de Configuration Système
+### Step 4: Update System Configuration Files
 
-Éditer manuellement ou utiliser les commandes suivantes :
+Edit manually or use the following commands:
 
 ```bash
-# Sauvegarder les fichiers originaux
+# Back up the original files
 cp skills_list.md skills_list.md.backup
 cp commands_list.md commands_list.md.backup
 cp .claude/settings.local.json .claude/settings.local.json.backup
 ```
 
-**Ensuite :**
-1. Ajouter l'entrée dans `skills_list.md` (voir section 1)
-2. Ajouter l'entrée dans `commands_list.md` (voir section 2)
-3. Ajouter les permissions dans `.claude/settings.local.json` (voir section 5)
+**Then:**
+1. Add the entry in `skills_list.md` (see section 1)
+2. Add the entry in `commands_list.md` (see section 2)
+3. Add the permissions in `.claude/settings.local.json` (see section 5)
 
-### Étape 5 : Rendre le Script Exécutable
+### Step 5: Make the Script Executable
 
 ```bash
 chmod +x prompts/hard_points/system/web/script/download_site.sh
 ```
 
-### Étape 6 : Valider l'Installation
+### Step 6: Validate the Installation
 
 ```bash
-# Vérifier que les fichiers de mapping existent
+# Verify the mapping files exist
 ls -la .roo/commands/download-site.md
 ls -la .claude/commands/download-site.md
 
-# Vérifier que la commande est disponible
+# Verify the command is available
 /list-command | grep download-site
 
-# Vérifier que le Skill est référencé
+# Verify the Skill is referenced
 grep "web" skills_list.md
 
-# Tester la commande (exemple avec un site simple)
+# Test the command (example with a simple site)
 /download-site https://example.com 1
 ```
 
-**IMPORTANT** : Après avoir effectué toutes les modifications, **redémarrer VSCode/Claude Code** pour que les changements soient pris en compte.
+**IMPORTANT**: After making all modifications, **restart VSCode/Claude Code** for the changes to take effect.
 
-## Configuration Post-Installation
+## Post-Installation Configuration
 
-### 1. Vérifier les Dépendances
+### 1. Check Dependencies
 
 ```bash
-# Vérifier wget
+# Check wget
 wget --version
 
-# Vérifier pandoc
+# Check pandoc
 pandoc --version
 ```
 
-### 2. Tester le Script
+### 2. Test the Script
 
 ```bash
-# Test manuel du script
+# Manual script test
 cd prompts/hard_points/system/web/script
 ./download_site.sh https://example.com 1
 ```
 
-### 3. Nettoyer les Tests
+### 3. Clean Up Tests
 
 ```bash
-# Supprimer les fichiers de test si nécessaire
+# Delete test files if needed
 rm -rf prompts/hard_points/web/example.com/
 ```
 
-## Utilisation
+## Usage
 
-Une fois installé, utilisez la commande avec la syntaxe suivante :
+Once installed, use the command with the following syntax:
 
 ```bash
-# Télécharger les 2 premiers niveaux d'un site
+# Download the first 2 levels of a site
 /download-site https://example.com 2
 
-# Télécharger avec filtre de préfixe
+# Download with prefix filter
 /download-site https://example.com 3 "https://example.com/docs"
 
-# Télécharger en profondeur (attention à la taille)
+# Deep download (watch the size)
 /download-site https://example.com 5
 ```
 
-## Désinstallation
+## Uninstallation
 
-Pour désinstaller le Skill Web :
+To uninstall the Web Skill:
 
-1. Supprimer l'entrée dans `skills_list.md`
-2. Supprimer l'entrée dans `commands_list.md`
-3. Supprimer les fichiers dans `.roo/commands/download-site.md`
-4. Supprimer les fichiers dans `.claude/commands/download-site.md`
-5. Supprimer les permissions dans `.claude/settings.local.json`
-6. (Optionnel) Supprimer le répertoire `prompts/hard_points/system/web/`
+1. Remove the entry from `skills_list.md`
+2. Remove the entry from `commands_list.md`
+3. Delete the files in `.roo/commands/download-site.md`
+4. Delete the files in `.claude/commands/download-site.md`
+5. Remove the permissions from `.claude/settings.local.json`
+6. (Optional) Delete the directory `prompts/hard_points/system/web/`
 
-## Dépannage
+## Troubleshooting
 
-### Commande Non Reconnue
+### Command Not Recognized
 
-Si la commande n'est pas reconnue après installation :
+If the command is not recognized after installation:
 
-1. Vérifier que les fichiers de mapping existent dans `.roo/commands/` et `.claude/commands/`
-2. Redémarrer VSCode / Claude Code
-3. Vérifier les permissions des fichiers
+1. Check that the mapping files exist in `.roo/commands/` and `.claude/commands/`
+2. Restart VSCode / Claude Code
+3. Check file permissions
 
-### Erreur "wget not found"
+### Error "wget not found"
 
-Si wget n'est pas trouvé :
+If wget is not found:
 
 ```bash
 # macOS
@@ -240,9 +240,9 @@ sudo apt-get install -y wget
 sudo yum install -y wget
 ```
 
-### Erreur "pandoc not found"
+### Error "pandoc not found"
 
-Si pandoc n'est pas trouvé :
+If pandoc is not found:
 
 ```bash
 # macOS
@@ -257,46 +257,46 @@ sudo yum install -y pandoc
 
 ### Permission Denied
 
-Si vous obtenez une erreur de permission :
+If you get a permission error:
 
 ```bash
-# Rendre le script exécutable
+# Make the script executable
 chmod +x prompts/hard_points/system/web/script/download_site.sh
 
-# Vérifier les permissions
+# Check permissions
 ls -la prompts/hard_points/system/web/script/download_site.sh
 ```
 
-### Téléchargement Lent ou Bloqué
+### Slow or Blocked Download
 
-Certains sites peuvent bloquer ou limiter le téléchargement automatique :
+Some sites may block or rate-limit automatic downloading:
 
-- Respecter les règles robots.txt du site
-- Utiliser une profondeur faible (1-3)
-- Ajouter un délai entre les requêtes si nécessaire
+- Respect the site's robots.txt rules
+- Use a low depth (1-3)
+- Add a delay between requests if needed
 
-## Références
+## References
 
-- **[SKILL.md](SKILL.md)** - Documentation technique complète du Skill
-- **[download-site.md](commands/download-site.md)** - Documentation de la commande
-- **[download_site.sh](script/download_site.sh)** - Script bash de téléchargement
+- **[SKILL.md](SKILL.md)** - Full technical documentation of the Skill
+- **[download-site.md](commands/download-site.md)** - Command documentation
+- **[download_site.sh](script/download_site.sh)** - Bash download script
 
 ## Notes
 
-- L'installation nécessite des droits d'écriture sur les fichiers de configuration
-- Le script nécessite `bash 4.0+`, `wget`, et `pandoc`
-- Les sites téléchargés sont stockés dans `prompts/hard_points/web/<nom-du-site>/`
-- Les fichiers médias (images, CSS, JS) sont automatiquement exclus
-- Utilisez des profondeurs faibles pour éviter de télécharger des sites entiers
+- Installation requires write access to configuration files
+- The script requires `bash 4.0+`, `wget`, and `pandoc`
+- Downloaded sites are stored in `prompts/hard_points/web/<site-name>/`
+- Media files (images, CSS, JS) are automatically excluded
+- Use low depths to avoid downloading entire sites
 
 ## Limitations
 
-- **Taille** : Le téléchargement peut être volumineux selon la profondeur
-- **Durée** : La conversion peut prendre du temps selon le nombre de pages
-- **Respect** : Toujours respecter les règles robots.txt et les conditions d'utilisation
-- **Performance** : Préférer des profondeurs 1-3 pour un usage optimal
+- **Size**: The download can be large depending on depth
+- **Duration**: Conversion may take time depending on the number of pages
+- **Compliance**: Always respect robots.txt rules and terms of service
+- **Performance**: Prefer depths 1-3 for optimal usage
 
 ---
 
-**Dernière mise à jour** : 2026-01-08
-**Mainteneur** : AI-KIDO Team
+**Last updated**: 2026-01-08
+**Maintainer**: AI-KIDO Team

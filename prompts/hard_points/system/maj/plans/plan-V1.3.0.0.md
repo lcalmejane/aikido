@@ -1,126 +1,126 @@
-# Plan de migration V1.3.0.0 – Passage de `/prompts/gen/index.md` vers `/prompts/index.md`
+# Migration Plan V1.3.0.0 – Moving from `/prompts/gen/index.md` to `/prompts/index.md`
 
-## 🎯 Objectif
-Migrer le point d’entrée unique du projet de **`/prompts/gen/index.md`** vers **`/prompts/index.md`** en respectant le processus complet de mise à jour défini par la commande `maj-aikido`.  
-Le plan doit être exécuté séquentiellement par l’agent **agent‑aikido‑update‑controller** et couvrir toutes les phases de sauvegarde, bootstrap, analyse différentielle, mise à jour des hard‑points, fusion critique, synchronisation et validation finale.
+## 🎯 Objective
+Migrate the project's unique entry point from **`/prompts/gen/index.md`** to **`/prompts/index.md`** following the complete update process defined by the `maj-aikido` command.  
+The plan must be executed sequentially by the **agent‑aikido‑update‑controller** agent and cover all phases of backup, bootstrap, differential analysis, hard-point updates, critical merge, synchronization and final validation.
 
-## 📋 Étapes du plan
+## 📋 Plan Steps
 
-### -1️⃣ Phase -1 – Sélection & validation de la source
-1. **Détection d’un éventuel bootstrap**  
+### -1️⃣ Phase -1 – Source Selection & Validation
+1. **Bootstrap detection**  
    ```bash
    mkdir -p "/tmp/aikido"
    if [ -f "/tmp/aikido/aikido-bootstrap-*.env" ]; then
      source "/tmp/aikido/aikido-bootstrap-*.env"
-     echo "🔄 Reprise du bootstrap – source déjà validée"
+     echo "🔄 Resuming bootstrap – source already validated"
    fi
    ```
-2. **Sélection du type de source** (`git` | `local` | `archive`) – interaction utilisateur via le script intégré.  
-3. **Validation de la source** avec `prompts/hard_points/system/maj/scripts/validate-aikido-source.sh`.  
+2. **Source type selection** (`git` | `local` | `archive`) – user interaction via integrated script.  
+3. **Source validation** with `prompts/hard_points/system/maj/scripts/validate-aikido-source.sh`.  
    ```bash
    VALIDATE_SCRIPT="prompts/hard_points/system/maj/scripts/validate-aikido-source.sh"
    "$VALIDATE_SCRIPT" validate "$SOURCE_PATH"
    ```
 
-### -0.7️⃣ Phase -0.7 – Auto‑mise à jour de `maj-aikido` (bootstrap)
-1. **Comparaison de la version locale vs source** via `compare-command-versions.sh`.  
-2. **Si différence détectée** :  
-   - Backup du fichier actuel ` prompts/hard_points/commands/maj-aikido.md `  
-   - Remplacement par la version source  
-   - Exit 42 pour relancer le processus avec la nouvelle version.  
+### -0.7️⃣ Phase -0.7 – Auto-update of `maj-aikido` (bootstrap)
+1. **Comparison of local version vs source** via `compare-command-versions.sh`.  
+2. **If difference detected** :  
+   - Backup of current file ` prompts/hard_points/commands/maj-aikido.md `  
+   - Replacement with source version  
+   - Exit 42 to restart the process with the new version.  
 
-### -0.5️⃣ Phase -0.5 – Analyse différentielle
-1. **Détection de la version cible** (`VERSION_TARGET="1.3"`).  
-2. **Analyse des différences** avec `prompts/hard_points/system/maj/scripts/analyze-aikido-update.sh`.  
-3. **Rapport d’analyse** stocké dans `/tmp/aikido/aikido-report-data-$$.json`.
+### -0.5️⃣ Phase -0.5 – Differential Analysis
+1. **Target version detection** (`VERSION_TARGET="1.3"`).  
+2. **Differences analysis** with `prompts/hard_points/system/maj/scripts/analyze-aikido-update.sh`.  
+3. **Analysis report** stored in `/tmp/aikido/aikido-report-data-$$.json`.
 
-### -0️⃣ Phase -0 – Mise à jour des fichiers
-#### 0.1 Hard‑points (obligatoire)
+### -0️⃣ Phase -0 – Files Update
+#### 0.1 Hard-points (mandatory)
 ```bash
 for file in prompts/hard_points/ai-kido.md prompts/hard_points/ai-kido-light.md; do
-  cp "$SOURCE_PATH/$file" "$file" && echo "✅ $file remplacé"
+  cp "$SOURCE_PATH/$file" "$file" && echo "✅ $file replaced"
 done
 ```
-#### 0.2 Documentation & fichiers critiques (fusion intelligente)
-- **AGENTS.md**, **CLAUDE.md**, **.roomodes**, **README.md** → fusion via `agent-aikido-fusion`.  
-- **Documentation standard** (`prompts/index.md`, `prompts/gen/index.md`) → mise à jour avec `interactive-file-update.sh`.
+#### 0.2 Documentation & critical files (intelligent merge)
+- **AGENTS.md**, **CLAUDE.md**, **.roomodes**, **README.md** → merge via `agent-aikido-fusion`.  
+- **Standard documentation** (`prompts/index.md`, `prompts/gen/index.md`) → update with `interactive-file-update.sh`.
 
-#### 0.3 Synchronisation des nouvelles fichiers
-- Copie des fichiers inexistants localement depuis la source (`sync-files.sh`).  
+#### 0.3 New files synchronization
+- Copy of files not existing locally from the source (`sync-files.sh`).  
 
-#### 0.4 Mise à jour de la configuration `.roomodes`
-- Fusion via `merge-roomodes.sh`.
+#### 0.4 `.roomodes` configuration update
+- Merge via `merge-roomodes.sh`.
 
-#### 0.5 Génération du rapport final
+#### 0.5 Final report generation
 ```bash
 REPORT_SCRIPT="prompts/hard_points/system/maj/scripts/generate-report.sh"
 REPORT_FILE="prompts/spec/logs/maj-aikido-report-$(date +%Y%m%d-%H%M%S).md"
 "$REPORT_SCRIPT" --template update --data "$REPORT_DATA" --output "$REPORT_FILE"
 ```
 
-### 0️⃣ Phase 0 – Migration du point d’entrée
-1. **Sauvegarde de l’ancien index**  
+### 0️⃣ Phase 0 – Entry Point Migration
+1. **Backup of the old index**  
    ```bash
    cp prompts/gen/index.md "prompts/gen/index.md.bak.$(date +%Y%m%d-%H%M%S)"
-   echo "✅ Sauvegarde de prompts/gen/index.md réalisée"
+   echo "✅ Backup of prompts/gen/index.md completed"
    ```
-2. **Création du nouveau index**  
+2. **Creation of the new index**  
    ```bash
    cp prompts/gen/index.md prompts/index.md
-   # Ajout de l’en‑tête standard
+   # Adding standard header
    sed -i '1i\
 ---\nversion: "1.3.0.0"\ndate: "$(date +%Y-%m-%d)"\nstatus: "draft"\n---\n' prompts/index.md
-   echo "✅ Nouveau /prompts/index.md créé"
+   echo "✅ New /prompts/index.md created"
    ```
-3. **Mise à jour des références internes**  
+3. **Update of internal references**  
    ```bash
    grep -rl "prompts/gen/index.md" . | while read -r file; do
      sed -i "s|prompts/gen/index.md|prompts/index.md|g" "$file"
    done
-   echo "✅ Références mises à jour"
+   echo "✅ References updated"
    ```
 
-### 0.1️⃣ Phase 0.1 – Validation post‑migration
-- **Détection de résidus**  
+### 0.1️⃣ Phase 0.1 – Post-migration Validation
+- **Residuals detection**  
   ```bash
   if grep -qr "prompts/gen/index.md" .; then
-    echo "⚠️ Références restantes détectées"
+    echo "⚠️ Remaining references detected"
     exit 1
   fi
-  echo "✅ Aucun résidu trouvé"
+  echo "✅ No residuals found"
   ```
-- **Validation du nouveau index** avec l’agent `agent-aikido-validator`  
+- **New index validation** with `agent-aikido-validator`  
   ```bash
   agent-aikido-validator --path prompts/index.md
   ```
 
-### 0.2️⃣ Phase 0.2 – Nettoyage (optionnel)
-- Suppression de l’ancien index après validation réussie  
+### 0.2️⃣ Phase 0.2 – Cleanup (optional)
+- Deletion of the old index after successful validation  
   ```bash
   rm -f prompts/gen/index.md
-  echo "🗑️ Ancien /prompts/gen/index.md supprimé"
+  echo "🗑️ Old /prompts/gen/index.md deleted"
   ```
 
-### 0.3️⃣ Phase 0.3 – Validation de la structure globale
-- Exécution de `validate-structure.sh` selon le type de projet (mono)  
+### 0.3️⃣ Phase 0.3 – Global Structure Validation
+- Execution of `validate-structure.sh` according to the project type (mono)  
   ```bash
   VALIDATE_SCRIPT="prompts/hard_points/system/maj/scripts/validate-structure.sh"
   "$VALIDATE_SCRIPT" "." --type mono --version 1.3
   ```
 
-## 📦 Résultat attendu
-- `/prompts/index.md` contient le même contenu que l’ancien index, enrichi d’une en‑tête de version `1.3.0.0`.  
-- Toutes les références du projet pointent désormais vers `/prompts/index.md`.  
-- Aucun fichier ne référence plus `/prompts/gen/index.md`.  
-- Hard‑points, documentation critique et configuration sont à jour et validés.  
-- Un rapport de mise à jour complet est généré dans `prompts/spec/logs/`.  
+## 📦 Expected Result
+- `/prompts/index.md` contains the same content as the old index, enriched with a version header `1.3.0.0`.  
+- All project references now point to `/prompts/index.md`.  
+- No file references `/prompts/gen/index.md` anymore.  
+- Hard-points, critical documentation and configuration are up to date and validated.  
+- A complete update report is generated in `prompts/spec/logs/`.  
 
-## 🛠️ Exécution
-Le plan doit être invoqué par la commande :
+## 🛠️ Execution
+The plan must be invoked by the command:
 ```bash
 /maj-aikido --update
 ```
-L’agent **agent‑aikido‑update‑controller** lira ce fichier depuis `prompts/hard_points/system/maj/plans/plan-V1.3.0.0.md` et exécutera chaque phase dans l’ordre indiqué.  
+The **agent‑aikido‑update‑controller** agent will read this file from `prompts/hard_points/system/maj/plans/plan-V1.3.0.0.md` and execute each phase in the indicated order.  
 
 ---  
-*Généré par **agent‑aikido‑update‑controller** – Version 1.3.0.0*  
+*Generated by **agent‑aikido‑update‑controller** – Version 1.3.0.0*  

@@ -1,23 +1,23 @@
-# Personas AI‑KIDO
+# AI‑KIDO Personas
 
-Ce répertoire décrit les différents agents techniques AI-KIDO utilisables dans les prompts. Ajoutez ici les fichiers Markdown détaillant chaque rôle et leurs responsabilités.
+This directory describes the different AI-KIDO technical agents usable in prompts. Add Markdown files here detailing each role and their responsibilities.
 
-## Agents Techniques AI-KIDO
+## AI-KIDO Technical Agents
 
-### 🤖 Agents d'Orchestration
+### 🤖 Orchestration Agents
 
-- [`agent-aikido-bank-populate.md`](agent-aikido-bank-populate.md) - **Peupleur automatique Memory Bank** - Orchestre la création automatique de documents manquants ou invalides en collectant infos du code/contexte et déléguant à des experts
+- [`agent-aikido-bank-populate.md`](agent-aikido-bank-populate.md) - **Memory Bank Automatic Populator** - Orchestrates automatic creation of missing or invalid documents by collecting information from code/context and delegating to experts
 
-### 🔍 Agents d'Exploration et Analyse
+### 🔍 Exploration and Analysis Agents
 
-- [`agent-aikido-explore-bank.md`](agent-aikido-explore-bank.md) - **Explorateur Memory Bank** - Recherche et extraction intelligente d'informations depuis `/prompts/gen/`
-- [`agent-aikido-truth-evaluator.md`](agent-aikido-truth-evaluator.md) - **Évaluateur Sources de Vérité** - Détermine quelles sources sont autoritaires selon le scénario
-- [`agent-aikido-raci-delegator.md`](agent-aikido-raci-delegator.md) - **Classificateur RACI** - Classe et route documents vers emplacements corrects selon matrice RACI
+- [`agent-aikido-explore-bank.md`](agent-aikido-explore-bank.md) - **Memory Bank Explorer** - Intelligent search and extraction of information from `/prompts/gen/`
+- [`agent-aikido-truth-evaluator.md`](agent-aikido-truth-evaluator.md) - **Truth Source Evaluator** - Determines which sources are authoritative based on the scenario
+- [`agent-aikido-raci-delegator.md`](agent-aikido-raci-delegator.md) - **RACI Classifier** - Classifies and routes documents to correct locations according to the RACI matrix
 
-### ✅ Agents de Validation et Conformité
+### ✅ Validation and Compliance Agents
 
-- [`agent-aikido-validator.md`](agent-aikido-validator.md) - **Validateur de Conformité AI-KIDO** - Valide fichiers contre les 18 règles AI-KIDO et génère rapports de conformité avec plans de résolution détaillés
+- [`agent-aikido-validator.md`](agent-aikido-validator.md) - **AI-KIDO Compliance Validator** - Validates files against the 18 AI-KIDO rules and generates compliance reports with detailed resolution plans
 
-### 🔀 Agents de Fusion et Transformation
+### 🔀 Merge and Transformation Agents
 
-- [`agent-aikido-fusion.md`](agent-aikido-fusion.md) - **Fusionneur Intelligent** - Fusion intelligente de fichiers lors des mises à jour AI-KIDO, préservant contexte projet tout en adoptant nouveau formalisme
+- [`agent-aikido-fusion.md`](agent-aikido-fusion.md) - **Intelligent Merger** - Intelligent file merge / fusion during AI-KIDO updates, preserving project context while adopting new formalism

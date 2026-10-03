@@ -1,13 +1,7 @@
 ---
-description: Synchroniser les hard_points AI-KIDO et optimiser la memory bank lors des rebase git
+description: "Synchronize AI-KIDO hard_points and optimize the Memory Bank during git rebases"
 ---
 
-# Commande maj-aikido
-
-Cette commande exécute le fichier de commande complet depuis `prompts/hard_points/commands/maj-aikido.md`.
-
-**EXÉCUTION** : Je vais maintenant lire et exécuter la commande complète.
-
-```
-Lecture de prompts/hard_points/commands/maj-aikido.md et exécution des instructions...
-```
+# /maj-aikido
+Executes `prompts/hard_points/commands/maj-aikido.md`.
+**EXECUTION**: Read and apply the instructions from the target file.

@@ -6,18 +6,18 @@
 
 ## 📋 Overview
 
-Plan de recherche enrichi pour Infrastructure as Code Terraform (fichiers `.tf` et `.tfvars`).
+Enhanced search plan for Infrastructure as Code Terraform (`.tf` and `.tfvars` files).
 
-**Cas d'usage** :
-- Analyse de configurations Terraform
-- Détection de ressources, modules, variables, outputs, providers, data sources
-- Analyse des dépendances entre ressources
-- Audit de sécurité et conformité
-- Cartographie d'infrastructure
+**Use cases**:
+- Analysis of Terraform configurations
+- Detection of resources, modules, variables, outputs, providers, data sources
+- Dependency analysis between resources
+- Security and compliance auditing
+- Infrastructure mapping
 
 ## 🔍 File Patterns
 
-### Extensions prioritaires
+### Priority extensions
 ```bash
 *.tf          # Main Terraform configuration files
 *.tfvars      # Variable definition files  
@@ -25,7 +25,7 @@ Plan de recherche enrichi pour Infrastructure as Code Terraform (fichiers `.tf` 
 .terraform.lock.hcl  # Dependency lock file
 ```
 
-### Fichiers standards
+### Standard files
 ```bash
 main.tf           variables.tf      outputs.tf
 providers.tf      versions.tf       backend.tf
@@ -33,13 +33,13 @@ locals.tf         data.tf           terraform.tfvars
 *.auto.tfvars
 ```
 
-### Exclusions standards
+### Standard exclusions
 ```bash
-# Répertoires
+# Directories
 .terraform/          .terragrunt-cache/   .git/
 node_modules/        dist/                build/
 
-# Fichiers sensibles/temporaires
+# Sensitive/temporary files
 *.tfstate            *.tfstate.backup     crash.log
 override.tf          *_override.tf        *.pem
 *.key                *.crt                secrets.tfvars
@@ -74,7 +74,7 @@ rg -oE '\$\{[^}]+\}|([a-z_]+\.[a-z_]+\.[a-z_]+)' \
   --type-add 'tf:*.tf' --type tf --glob '!.terraform' | sort -u
 ```
 
-## 📦 Patterns de Recherche
+## 📦 Search Patterns
 
 ### 1. Resource Blocks
 ```regex
@@ -273,36 +273,36 @@ graph TD
 
 ## ⚡ Performance Optimization
 
-### Commandes optimisées
+### Optimized commands
 ```bash
-# Resources d'un type
+# Resources of a type
 rg -n "^resource\s+\"aws_instance\"" --type-add 'tf:*.tf' --type tf
 
-# Compter par type
+# Count by type
 rg "^resource\s+\"(\w+)\"" -r '$1' --type tf | sort | uniq -c | sort -rn
 
-# Refs à une variable
+# Refs to a variable
 rg "var\.region" --type tf
 
-# Modules avec sources
+# Modules with sources
 rg -A 2 "^module\s" --type tf | rg "source\s*=" 
 
-# Resources avec count/for_each
+# Resources with count/for_each
 rg -B 1 "^\s*(count|for_each)\s*=" --type tf | rg "^resource"
 
-# Outputs sensibles
+# Sensitive outputs
 rg -A 3 "^output" --type tf | rg -B 3 "sensitive\s*=\s*true"
 
-# Statistiques globales
+# Global statistics
 echo "Resources: $(rg -c '^resource\s' --type tf | awk -F: '{s+=$2} END {print s}')"
 echo "Modules: $(rg -c '^module\s' --type tf | awk -F: '{s+=$2} END {print s}')"
 ```
 
-### Stratégies
-1. **Early filtering**: Exclure `.terraform/` dès le début
-2. **Type-specific**: Utiliser `--type tf` 
-3. **Provider grouping**: Analyser par provider
-4. **Parallel processing**: GNU parallel pour grands projets
+### Strategies
+1. **Early filtering**: Exclude `.terraform/` from the start
+2. **Type-specific**: Use `--type tf` 
+3. **Provider grouping**: Analyze by provider
+4. **Parallel processing**: GNU parallel for large projects
 
 ## 🔧 Terraform-Specific Features
 

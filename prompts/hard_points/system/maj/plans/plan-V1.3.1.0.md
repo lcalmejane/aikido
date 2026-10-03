@@ -1,143 +1,143 @@
-# Plan de migration V1.3.1.0 – Passage du système de commandes **`.roo/commands/`** vers **`prompts/hard_points/commands/`**  
+# Migration Plan V1.3.1.0 – Moving the **`.roo/commands/`** command system to **`prompts/hard_points/commands/`**  
 
-## 🎯 Objectif  
+## 🎯 Objective  
 
-Migrer l’ensemble des commandes de la version **1.3** vers la version **1.3.1** en adoptant le nouveau paradigme :  
+Migrate all commands from version **1.3** to version **1.3.1** by adopting the new paradigm:  
 
-- Les fichiers de commande réels sont déplacés dans `prompts/hard_points/commands/`.  
-- Un fichier de *mapping* (wrapper) est créé dans `.roo/commands/` **et** `.claude/commands/` qui référence dynamiquement le fichier réel.  
+- The real command files are moved to `prompts/hard_points/commands/`.  
+- A *mapping* file (wrapper) is created in `.roo/commands/` **and** `.claude/commands/` that dynamically references the real file.  
 
-Le plan doit être exécuté séquentiellement par l’agent **`agent-aikido-update-controller`** via la commande `maj-aikido`.
+The plan must be executed sequentially by the **`agent-aikido-update-controller`** agent via the `maj-aikido` command.
 
-## 📋 Étapes du plan  
+## 📋 Plan Steps  
 
-### -1️⃣ Phase -1 – Sélection & validation de la source  
+### -1️⃣ Phase -1 – Source Selection & Validation  
 
-1. **Détection du bootstrap**.  
+1. **Bootstrap detection**.  
 
-2. **Sélection du type de source** (`git | local | archive`).  
-3. **Validation de la source** avec `prompts/hard_points/system/maj/scripts/validate-aikido-source.sh`.
+2. **Source type selection** (`git | local | archive`).  
+3. **Source validation** with `prompts/hard_points/system/maj/scripts/validate-aikido-source.sh`.
 
-### 0️⃣ Phase 0 – Migration des commandes  
+### 0️⃣ Phase 0 – Commands Migration  
 
-#### 0.1️⃣ Identification des commandes à migrer  
+#### 0.1️⃣ Identification of commands to migrate  
 
 ```bash
 mkdir -p "/tmp/aikido"
-# Liste les fichiers de commande réels (non‑mappings) dans .roo/commands
-# Un mapping contient la phrase « Cette commande exécute le fichier de commande complet depuis `prompts/hard_points/commands/` »
+# Lists real command files (non-mappings) in .roo/commands
+# A mapping contains the phrase "Cette commande exécute le fichier de commande complet depuis `prompts/hard_points/commands/`"
 find .roo/commands -type f -name "*.md" \
   -exec grep -L "Cette commande exécute le fichier de commande complet depuis \`prompts/hard_points/commands/" {} \; \
 
   -exec basename {} .md \; > /tmp/aikido/commands-to-migrate.txt
 ```
 
-#### 0.2️⃣ Déplacement des fichiers de commande  
+#### 0.2️⃣ Moving command files  
 
 ```bash
 while read cmd; do
-  # Crée le répertoire cible s’il n’existe pas
+  # Create target directory if it does not exist
   mkdir -p prompts/hard_points/commands
-  # Déplace le fichier réel
+  # Move the real file
   mv ".roo/commands/${cmd}.md" "prompts/hard_points/commands/${cmd}.md"
-  echo "✅ ${cmd}.md déplacé vers prompts/hard_points/commands/"
+  echo "✅ ${cmd}.md moved to prompts/hard_points/commands/"
 done < /tmp/aikido/commands-to-migrate.txt
 ```
 
-#### 0.3️⃣ Création des fichiers de mapping  
+#### 0.3️⃣ Creation of mapping files  
 
-**Template mapping Command (Roo & Claude)** :  
+**Command mapping template (Roo & Claude)** :  
 
 ```markdown
 ---
 
-description: "[description courte]"
+description: "[short description]"
 ---
 
-# Commande {{nom-commande}}
+# Command {{command-name}}
 
 
-Cette commande exécute le fichier de commande complet depuis \`prompts/hard_points/commands/{{nom-commande}}.md\`.
+Cette commande exécute le fichier de commande complet depuis \`prompts/hard_points/commands/{{command-name}}.md\`.
 
-**EXÉCUTION** : Je vais maintenant lire et exécuter la commande complète.
+**EXECUTION**: I will now read and execute the complete command.
 
 \`\`\`
 
-Lecture de prompts/hard_points/commands/{{nom-commande}}.md et exécution des instructions...
+Reading prompts/hard_points/commands/{{command-name}}.md and executing instructions...
 \`\`\`
 ```
 
-Création automatisée :  
+Automated creation:  
 
 ```bash
 while read cmd; do
-  # Mapping Roo
+  # Roo Mapping
   cat > ".roo/commands/${cmd}.md" <<EOF
 ---
-description: "[description courte]"
+description: "[short description]"
 ---
 
-# Commande ${cmd}
+# Command ${cmd}
 
 Cette commande exécute le fichier de commande complet depuis \`prompts/hard_points/commands/${cmd}.md\`.
 
-**EXÉCUTION** : Je vais maintenant lire et exécuter la commande complète.
+**EXECUTION**: I will now read and execute the complete command.
 
 \`\`\`
-Lecture de prompts/hard_points/commands/${cmd}.md et exécution des instructions...
+Reading prompts/hard_points/commands/${cmd}.md and executing instructions...
 \`\`\`
 EOF
 
-  # Mapping Claude
+  # Claude Mapping
   cat > ".claude/commands/${cmd}.md" <<EOF
 ---
-description: "[description courte]"
+description: "[short description]"
 
 ---
 
-# Commande ${cmd}
+# Command ${cmd}
 
 Cette commande exécute le fichier de commande complet depuis \`prompts/hard_points/commands/${cmd}.md\`.
 
 
-**EXÉCUTION** : Je vais maintenant lire et exécuter la commande complète.
+**EXECUTION**: I will now read and execute the complete command.
 
 
 \`\`\`
-Lecture de prompts/hard_points/commands/${cmd}.md et exécution des instructions...
+Reading prompts/hard_points/commands/${cmd}.md and executing instructions...
 \`\`\`
 EOF
 
 
-  echo "✅ Mappings créés pour ${cmd}"
+  echo "✅ Mappings created for ${cmd}"
 
 done < /tmp/aikido/commands-to-migrate.txt
 ```
 
-#### 0.4️⃣ Mise à jour des références internes  
+#### 0.4️⃣ Internal references update  
 
 ```bash
-# Remplace toutes les références .roo/commands/* par le nouveau chemin
+# Replace all .roo/commands/* references with the new path
 
   sed -i "s|.roo/commands/|prompts/hard_points/commands/|g" "$file"
 
 
 done
-echo "✅ Références internes mises à jour"
+echo "✅ Internal references updated"
 ```
 
-#### 0.5️⃣ Validation de la migration  
+#### 0.5️⃣ Migration validation  
 
-# Vérifie qu’aucun fichier .roo/commands ne reste sans mapping
+# Check that no .roo/commands file remains without a mapping
 
 if find .roo/commands -type f -name "*.md" ! -path ".roo/commands/*-mapping.md" | grep -q .; then
-  echo "⚠️ Des commandes non migrées détectées"
+  echo "⚠️ Unmigrated commands detected"
   exit 1
 fi
-echo "✅ Toutes les commandes migrées"
+echo "✅ All commands migrated"
 
 ```
-### 0.1️⃣ Phase 0.1 – Validation post‑migration (agent‑aikido‑validator)  
+### 0.1️⃣ Phase 0.1 – Post-migration Validation (agent‑aikido‑validator)  
 
 
 
@@ -147,32 +147,32 @@ agent-aikido-validator --path .roo/commands/
 agent-aikido-validator --path .claude/commands/
 ```
 
-### 0.3️⃣ Phase 0.3 – Génération du rapport de migration  
+### 0.3️⃣ Phase 0.3 – Migration Report Generation  
 
 ```bash
 REPORT_SCRIPT="prompts/hard_points/system/maj/scripts/generate-report.sh"
 REPORT_FILE="prompts/spec/logs/maj-aikido-report-$(date +%Y%m%d-%H%M%S).md"
 "$REPORT_SCRIPT" --template command-migration --data "/tmp/aikido/commands-to-migrate.txt" --output "$REPORT_FILE"
-echo "✅ Rapport généré : $REPORT_FILE"
+echo "✅ Report generated: $REPORT_FILE"
 ```
 
-## 📦 Résultat attendu  
+## 📦 Expected Result  
 
-- Tous les fichiers de commande réels sont dans `prompts/hard_points/commands/`.  
-- Deux fichiers de mapping existent pour chaque commande : `.roo/commands/<nom>.md` et `.claude/commands/<nom>.md`.  
-- Aucun fichier `.roo/commands/*.md` ne contient plus le code de la commande (seulement le wrapper).  
-- Les références du projet pointent vers le nouveau répertoire.  
-- Le rapport de migration documente les actions réalisées.
+- All real command files are in `prompts/hard_points/commands/`.  
+- Two mapping files exist for each command: `.roo/commands/<name>.md` and `.claude/commands/<name>.md`.  
+- No `.roo/commands/*.md` file contains command code anymore (only the wrapper).  
+- Project references point to the new directory.  
+- The migration report documents the actions performed.
 
-## 🛠️ Exécution  
+## 🛠️ Execution  
 
-Le plan doit être invoqué par la commande :  
+The plan must be invoked by the command:  
 
 ```bash
 /maj-aikido --update
 ```
 
-L’agent **`agent-aikido-update-controller`** lira ce fichier et exécutera chaque phase dans l’ordre indiqué.  
+The **`agent-aikido-update-controller`** agent will read this file and execute each phase in the indicated order.  
 
 ---  
-*Généré par **agent‑aikido‑update‑controller** – Version 1.3.1.0*  
+*Generated by **agent‑aikido‑update‑controller** – Version 1.3.1.0*  

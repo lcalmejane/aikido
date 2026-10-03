@@ -1,282 +1,300 @@
 ---
-description: "Gère le cycle de vie complet des skills AI-KIDO : recherche, installation, mise à jour et désinstallation depuis un groupe Git distant"
+description: "Manage the complete lifecycle of AI-KIDO skills: search, install, update, and uninstall from a remote Git group"
 ---
 
-# Commande `/skill-manage`
+# /skill-manage
 
-**Paradigme** : Exécution DIRECTE par le LLM — `ask_followup_question` + outils natifs. ❌ Pas de script bash autonome.  
-**Config** : [`skills.cfg`](prompts/hard_points/configuration/skills.cfg) · Priorité : `arg CLI` → `env AIKIDO_GIT_TOKEN` → `skills.cfg` → défaut hardcodé  
-**Raccourcis rétrocompatibles** : `/skill-get`, `/skill-update`, `/skill-uninstall` → résolus vers cette commande
+**Purpose**: Manage the full lifecycle of AI-KIDO skills — search, install, update, and uninstall from a remote Git group.
 
-**Invariants globaux** :
-- Confirmation explicite avant toute modification destructive (sauf `--dry-run`)
-- Fichiers `prompts/hard_points/commands/{cmd}.md` modifiés manuellement → confirmation séparée, jamais supprimés silencieusement
-- Scripts pré/post exécutés **avant** toute modification de fichiers
-- Registres (`skills_list.md`, `commands_list.md`) nettoyés/mis à jour après chaque opération
+**Paradigm**: Direct execution by the LLM — ask the user directly + native tools. No autonomous bash script.
+**Config**: [`skills.cfg`](prompts/hard_points/configuration/skills.cfg) · Priority: `CLI arg` → `env AIKIDO_GIT_TOKEN` → `skills.cfg` → hardcoded default
+**Backward-compatible shortcuts**: `/skill-get`, `/skill-update`, `/skill-uninstall` → resolved to this command
 
-## Syntaxe
+**Global invariants**:
+- Explicit confirmation before any destructive modification (except `--dry-run`)
+- Files `prompts/hard_points/commands/{cmd}.md` modified manually → separate confirmation, never silently deleted
+- Pre/post scripts executed **before** any file modification
+- Registries (`skills_list.md`, `commands_list.md`) cleaned/updated after each operation
+
+---
+
+## Usage
 
 ```
 /skill-manage <action> [options]
 
-  search    Recherche parmi les skills distants et/ou installés
-  get       Installe un skill depuis Git
-  update    Met à jour un ou plusieurs skills installés
-  uninstall Désinstalle un skill et nettoie les registres
+  search    Search among remote and/or installed skills
+  get       Install a skill from Git
+  update    Update one or more installed skills
+  uninstall Uninstall a skill and clean registries
 
-/skill-manage search    [--query TERME] [--scope remote|local|all] [--group URL] [--token TOKEN] [--target DIR] [--verbose]
-/skill-manage get       [--skill NOM] [--group URL] [--target DIR] [--branch REF] [--token TOKEN] [--on-conflict update|reinstall|skip|ask] [--dry-run] [--verbose]
-/skill-manage update    [--skill NOM|all] [--group URL] [--target DIR] [--branch REF] [--token TOKEN] [--strategy pull|reinstall] [--backup] [--dry-run] [--verbose]
-/skill-manage uninstall [--skill NOM] [--target DIR] [--backup] [--purge] [--dry-run] [--verbose]
+/skill-manage search    [--query TERM] [--scope remote|local|all] [--group URL] [--token TOKEN] [--target DIR] [--verbose]
+/skill-manage get       [--skill NAME] [--group URL] [--target DIR] [--branch REF] [--token TOKEN] [--on-conflict update|reinstall|skip|ask] [--dry-run] [--verbose]
+/skill-manage update    [--skill NAME|all] [--group URL] [--target DIR] [--branch REF] [--token TOKEN] [--strategy pull|reinstall] [--backup] [--dry-run] [--verbose]
+/skill-manage uninstall [--skill NAME] [--target DIR] [--backup] [--purge] [--dry-run] [--verbose]
 ```
 
-## Configuration Globale
+## Prerequisites
 
-| Clé `skills.cfg` | Arg CLI | Défaut | Description |
-|-----------------|---------|--------|-------------|
-| `GIT_GROUP` | `--group` | `git@github.com:lcalmejane/aikido-skills` | URL groupe/org Git (SSH · HTTPS · local) |
-| `GIT_TOKEN` | `--token` | *(vide)* | Token privé · masqué dans les logs · priorité env `AIKIDO_GIT_TOKEN` |
-| `GIT_DEFAULT_BRANCH` | `--branch` | `main` | Branche/tag cible |
-| `TARGET_DIR` | `--target` | `prompts/hard_points/system` | Répertoire racine des skills |
-| `AUTO_RUN_SCRIPTS` | — | `false` | Exec auto des scripts `.sh` sans confirmation |
-| `VALIDATE_AFTER_INSTALL` | — | `true` | Validation conformité AI-KIDO post-opération |
-| `VALIDATION_LEVEL` | — | `warn` | `strict` bloque · `warn` continue · `skip` désactive |
-| `AUTO_UPDATE_SKILLS_LIST` | — | `true` | MAJ `skills_list.md` |
-| `AUTO_UPDATE_COMMANDS_LIST` | — | `true` | MAJ `commands_list.md` |
-| `AUTO_CREATE_COMMAND_MAPPINGS` | — | `true` | Créer/MAJ `.roo/commands/` + `.claude/commands/` |
-| `VERBOSE` | `--verbose` | `true` | Log détaillé par fichier/opération |
-| `DISPLAY_FORMAT` | — | `table` | Format liste : `table` · `list` · `compact` |
-| `MAX_PROJECTS_DISPLAY` | — | `50` | Plafond skills affichés |
+Read and apply [`skills.cfg`](prompts/hard_points/configuration/skills.cfg) before any action. Apply CLI/env overrides on top.
 
-## Phase 0 — Bootstrap (toutes actions)
+## Global Configuration
 
-1. Charger [`skills.cfg`](prompts/hard_points/configuration/skills.cfg), appliquer surcharges CLI/env
-2. `GIT_GROUP` vide ET action nécessite Git → `ask_followup_question` URL + token (**bloquant**)
-3. `TARGET_DIR` inexistant → `❌ Répertoire introuvable` (**bloquant** pour `uninstall`) · création `mkdir -p` pour `get`
-4. Afficher résumé config active (token masqué `****`)
+| `skills.cfg` Key | CLI Arg | Default | Description |
+|-----------------|---------|---------|-------------|
+| `GIT_GROUP` | `--group` | `git@github.com:lcalmejane/aikido-skills` | Git group/org URL (SSH · HTTPS · local) |
+| `GIT_TOKEN` | `--token` | *(empty)* | Private token · masked in logs · env `AIKIDO_GIT_TOKEN` takes priority |
+| `GIT_DEFAULT_BRANCH` | `--branch` | `main` | Target branch/tag |
+| `TARGET_DIR` | `--target` | `prompts/hard_points/system` | Root directory for skills |
+| `AUTO_RUN_SCRIPTS` | — | `false` | Auto-execute `.sh` scripts without confirmation |
+| `VALIDATE_AFTER_INSTALL` | — | `true` | AI-KIDO compliance validation after operation |
+| `VALIDATION_LEVEL` | — | `warn` | `strict` blocks · `warn` continues · `skip` disables |
+| `AUTO_UPDATE_SKILLS_LIST` | — | `true` | Update `skills_list.md` |
+| `AUTO_UPDATE_COMMANDS_LIST` | — | `true` | Update `commands_list.md` |
+| `AUTO_CREATE_COMMAND_MAPPINGS` | — | `true` | Create/update `.roo/commands/` + `.claude/commands/` |
+| `VERBOSE` | `--verbose` | `true` | Detailed log per file/operation |
+| `DISPLAY_FORMAT` | — | `table` | List format: `table` · `list` · `compact` |
+| `MAX_PROJECTS_DISPLAY` | — | `50` | Maximum number of skills displayed |
 
----
+## Steps
 
-## ACTION `search` — Recherche de Skills
+### Phase 0 — Bootstrap (all actions)
 
-**Paramètres spécifiques** :
-
-| Arg CLI | Défaut | Sémantique |
-|---------|--------|------------|
-| `--query` | *(interactif)* | Terme(s) : nom, mot-clé, description, catégorie |
-| `--scope` | `all` | `local` = installés · `remote` = dépôt Git · `all` = les deux |
-
-**Pipeline** :
-
-1. **Query** — `--query` absent → `ask_followup_question`. Afficher : `🔍 "{query}" | scope: {scope}`
-2. **Local** *(scope `local`/`all`)* — `find {TARGET_DIR} -name "SKILL.md" -maxdepth 2` · extraire slug / description / commandes / version / catégorie · filtrer sur `{query}` (insensible casse) → `LOCAL_MATCHES[]`
-3. **Distant** *(scope `remote`/`all`)* — `GET /api/v4/groups/{group_encoded}/projects?search={query}&per_page=100` · fallback liste complète + filtre LLM si API indisponible · marquer `✅ INSTALLÉ` si `{TARGET_DIR}/{slug}/SKILL.md` présent → `REMOTE_MATCHES[]`
-4. **Affichage** :
-   ```
-   📦 INSTALLÉS  # │ Slug │ Version │ Description │ Commandes
-   🌐 DISTANTS   # │ Nom  │ Description │ Activité │ ✅ INSTALLÉ / ⬇️ DISPONIBLE
-   ```
-   Aucun résultat → `ℹ️ Aucun skill trouvé pour "{query}" [scope: {scope}]`
-5. **Action interactive** *(si résultats distants non installés)* → `ask_followup_question` :
-   - `1. Installer` → enchaîne `get --skill {NOM}`
-   - `2. Détails` → `GET /api/v4/projects/{id}/repository/files/SKILL.md/raw?ref={branch}` · afficher description / commandes / version / auteur
-   - `3. Nouvelle recherche` · `4. Quitter`
-
-**Erreurs** :
-
-| Erreur | Résolution | Bloquant ? |
-|--------|-----------|:---:|
-| `--query` vide | Saisie interactive | ✅ |
-| API distante inaccessible | Warning + résultats locaux si `all` | ❌ |
-| `GIT_GROUP` vide (scope `remote`/`all`) | Questionnaire URL + token | ✅ `remote` · ❌ `all` |
-| Token expiré | Demander nouveau token | ✅ distant |
+1. Load [`skills.cfg`](prompts/hard_points/configuration/skills.cfg), apply CLI/env overrides.
+2. `GIT_GROUP` empty AND action requires Git → ask the user for URL + token (**blocking**).
+3. `TARGET_DIR` does not exist → `❌ Directory not found` (**blocking** for `uninstall`) · create with `mkdir -p` for `get`.
+4. Display active config summary (token masked as `****`).
 
 ---
 
-## ACTION `get` — Installation d'un Skill
+### ACTION `search` — Search Skills
 
-**Paramètres spécifiques** :
+**Action-specific parameters**:
 
-| Arg CLI | Défaut | Sémantique |
-|---------|--------|------------|
-| `--on-conflict` | `update` | Si skill présent : `update` · `reinstall` · `skip` · `ask` |
+| CLI Arg | Default | Semantics |
+|---------|---------|-----------|
+| `--query` | *(interactive)* | Term(s): name, keyword, description, category |
+| `--scope` | `all` | `local` = installed · `remote` = Git repository · `all` = both |
 
-**Pipeline** :
+**Pipeline**:
 
-1. **Découverte** — `GET /api/v4/groups/{group_encoded}/projects?per_page=100` · afficher `# │ Nom │ Description │ Activité` · marquer `✅ INSTALLÉ` les skills avec `SKILL.md` dans `TARGET_DIR/`
-2. **Sélection** — `ask_followup_question` (numéro ou nom) · si déjà installé → `1. METTRE À JOUR` · `2. RÉINSTALLER` · `3. ANNULER` · Variables : `SELECTED_SKILL`, `SKILL_REPO_URL`, `INSTALL_MODE`
-3. **Téléchargement** :
-   - Nouveau → `git -c http.extraHeader="PRIVATE-TOKEN:{TOKEN}" clone --depth=1 {URL} {TARGET_DIR}/{SKILL}`
-   - Fallback → archive API `archive.tar.gz?sha={branch}` + extraction tar
-   - Existant → `git fetch --all --tags` + sélection branche/tag
-   - Signaler : chemin · version · nb fichiers · ✅/❌
-4. **Scripts** — détecter dans `{SKILL_PATH}/` : `SKILL.md` (**obligatoire**, absent = ⚠️ installation partielle) · `install*.md`/`INSTALL*.md` → appliquer LLM · `install*.sh`/`setup*.sh` → si `AUTO_RUN_SCRIPTS=false` : confirmation O/n · continuer sur erreur
-5. **Enregistrement AI-KIDO** — extraire depuis `SKILL.md` : nom, description, commandes (`## Commandes disponibles`)
+1. **Query** — `--query` absent → ask the user. Display: `🔍 "{query}" | scope: {scope}`
+2. **Local** *(scope `local`/`all`)* — `find {TARGET_DIR} -name "SKILL.md" -maxdepth 2` · extract slug / description / commands / version / category · filter on `{query}` (case-insensitive) → `LOCAL_MATCHES[]`
+3. **Remote** *(scope `remote`/`all`)* — `GET /api/v4/groups/{group_encoded}/projects?search={query}&per_page=100` · fallback: full list + LLM filter if API unavailable · mark `✅ INSTALLED` if `{TARGET_DIR}/{slug}/SKILL.md` present → `REMOTE_MATCHES[]`
+4. **Display**:
+   ```
+   📦 INSTALLED  # │ Slug │ Version │ Description │ Commands
+   🌐 REMOTE     # │ Name │ Description │ Activity │ ✅ INSTALLED / ⬇️ AVAILABLE
+   ```
+   No results → `ℹ️ No skill found for "{query}" [scope: {scope}]`
+5. **Interactive action** *(if uninstalled remote results exist)* → ask the user:
+   - `1. Install` → chain `get --skill {NAME}`
+   - `2. Details` → `GET /api/v4/projects/{id}/repository/files/SKILL.md/raw?ref={branch}` · display description / commands / version / author
+   - `3. New search` · `4. Quit`
 
-   | Fichier | Action |
-   |---------|--------|
-   | `skills_list.md` | Ajouter `- **{slug}** – {desc} – [{lien SKILL.md}]` |
-   | `commands_list.md` | Ajouter une entrée par commande exposée |
-   | `.roo/commands/{cmd}.md` | Créer mapping (template ci-dessous) |
-   | `.claude/commands/{cmd}.md` | Idem |
-   | `prompts/hard_points/commands/{cmd}.md` | Créer si absent |
+**Errors**:
 
-   Template mapping `.roo/` et `.claude/` :
+| Error | Resolution | Blocking? |
+|-------|-----------|:---------:|
+| `--query` empty | Interactive input | ✅ |
+| Remote API unreachable | Warning + local results if `all` | ❌ |
+| `GIT_GROUP` empty (scope `remote`/`all`) | Ask user for URL + token | ✅ `remote` · ❌ `all` |
+| Expired token | Ask user for new token | ✅ remote |
+
+---
+
+### ACTION `get` — Install a Skill
+
+**Action-specific parameters**:
+
+| CLI Arg | Default | Semantics |
+|---------|---------|-----------|
+| `--on-conflict` | `update` | If skill already present: `update` · `reinstall` · `skip` · `ask` |
+
+**Pipeline**:
+
+1. **Discovery** — `GET /api/v4/groups/{group_encoded}/projects?per_page=100` · display `# │ Name │ Description │ Activity` · mark `✅ INSTALLED` for skills with `SKILL.md` in `TARGET_DIR/`
+2. **Selection** — ask the user (number or name) · if already installed → `1. UPDATE` · `2. REINSTALL` · `3. CANCEL` · Variables: `SELECTED_SKILL`, `SKILL_REPO_URL`, `INSTALL_MODE`
+3. **Download**:
+   - New → `git -c http.extraHeader="PRIVATE-TOKEN:{TOKEN}" clone --depth=1 {URL} {TARGET_DIR}/{SKILL}`
+   - Fallback → GitLab API archive `archive.tar.gz?sha={branch}` + tar extraction
+   - Existing → `git fetch --all --tags` + branch/tag selection
+   - Report: path · version · file count · ✅/❌
+4. **Scripts** — detect in `{SKILL_PATH}/`: `SKILL.md` (**mandatory**, absent = ⚠️ partial install) · `install*.md`/`INSTALL*.md` → apply via LLM · `install*.sh`/`setup*.sh` → if `AUTO_RUN_SCRIPTS=false`: confirm Y/n · continue on error
+5. **AI-KIDO Registration** — extract from `SKILL.md`: name, description, commands (`## Available Commands`)
+
+   | File | Action |
+   |------|--------|
+   | `skills_list.md` | Add `- **{slug}** – {desc} – [{SKILL.md link}]` |
+   | `commands_list.md` | Add one entry per exposed command |
+   | `.roo/commands/{cmd}.md` | Create mapping (template below) |
+   | `.claude/commands/{cmd}.md` | Same |
+   | `prompts/hard_points/commands/{cmd}.md` | Create if absent |
+
+   Mapping template for `.roo/` and `.claude/`:
    ```markdown
    ---
-   description: "{description commande}"
+   description: "{command description}"
    ---
-   # Commande {nom}
-   Cette commande exécute `{chemin-commande}`.
-   **EXÉCUTION** : Lire et appliquer les instructions du fichier cible.
+   # Command {name}
+   This command executes `{command-path}`.
+   **EXECUTION**: Read and apply the instructions from the target file.
    ```
 
-   Agents : `agent-aikido-maj-md-index` (registres) · `agent-aikido-validator` (conformité `SKILL.md`)
+   Agents: `agent-aikido-maj-md-index` (registries) · `agent-aikido-validator` (SKILL.md compliance validation)
 
 ---
 
-## ACTION `update` — Mise à Jour de Skills
+### ACTION `update` — Update Skills
 
-**Paramètres spécifiques** :
+**Action-specific parameters**:
 
-| Arg CLI | Défaut | Sémantique |
-|---------|--------|------------|
-| `--skill` | *(interactif)* | Slug ou `all` |
+| CLI Arg | Default | Semantics |
+|---------|---------|-----------|
+| `--skill` | *(interactive)* | Slug or `all` |
 | `--strategy` | `pull` | `pull` = `fetch + merge --ff-only` · `reinstall` = `rm -rf + clone --depth=1` |
-| `--backup` | `false` | Copie `{SKILL_PATH}` → `{SKILL_PATH}_backup_{date}` avant modif · doublon → incrément `_2`, `_3`… |
-| `--dry-run` | `false` | Rapport sans écriture, arrêt après détection |
+| `--backup` | `false` | Copy `{SKILL_PATH}` → `{SKILL_PATH}_backup_{date}` before modification · duplicate → increment `_2`, `_3`… |
+| `--dry-run` | `false` | Report without writing, stop after detection |
 
-**Pipeline** :
+**Pipeline**:
 
-1. **Inventaire** — `find {TARGET_DIR} -name "SKILL.md" -maxdepth 2` · extraire slug / version (`git describe` ou `log -1`) / statut (`.git/` → `✅ géré git` · absent → `⚠️ archive`) · afficher `# │ Slug │ Version │ Statut │ Chemin` · aucun skill → suggestion `get` + **arrêt**
-2. **Scope** — `--skill all` → tous · `--skill NOM` → vérifier existence · absent → sélection interactive + `0. Tous` · Variable : `UPDATE_TARGETS[]`
-3. **Détection MAJ** :
-   - Git : `fetch --all --tags` + `log HEAD..origin/{branch} --oneline` → `✅ À jour` · `⬆️ {N} commits` · `❌ Erreur`
-   - Archive : comparer `committed_date` API vs `installed_at` SKILL.md · absent → `⚠️ reinstall recommandé`
-   - `--dry-run` → afficher rapport + **arrêt**
-4. **Confirmation & Backup** — résumé `Skills à MAJ : {N} · stratégie · backup` → `ask_followup_question` CONFIRMER/ANNULER · backup → copie avant toute écriture
-5. **Application** :
-   - `pull` : `fetch --all --tags` + `checkout {branch}` + `pull --ff-only` · divergence → `ask_followup_question` MERGE / RESET --hard / PASSER · `RESET --hard` = confirmation explicite requise
-   - `reinstall` : `rm -rf {SKILL_PATH}` + `clone --depth=1`
-   - Fallback archive : extract → `{SKILL_PATH}_tmp/` → remplacer (préserver `.git/`)
-   - Signaler : `✅ {v_before} → {v_after}` · `⚠️ partiel` · `❌ échec`
-6. **Scripts post-update** — priorité : `update*.md`/`UPDATE*.md` (LLM) → `update*.sh`/`post-update*.sh` (confirmation si `AUTO_RUN_SCRIPTS=false`) → fallback `install*.sh` · erreur → log + continuer
-7. **Sync registres** — diff `SKILL.md` avant/après :
+1. **Inventory** — `find {TARGET_DIR} -name "SKILL.md" -maxdepth 2` · extract slug / version (`git describe` or `log -1`) / status (`.git/` → `✅ git-managed` · absent → `⚠️ archive`) · display `# │ Slug │ Version │ Status │ Path` · no skill found → suggest `get` + **stop**
+2. **Scope** — `--skill all` → all · `--skill NAME` → verify existence · absent → interactive selection + `0. All` · Variable: `UPDATE_TARGETS[]`
+3. **Update detection**:
+   - Git: `fetch --all --tags` + `log HEAD..origin/{branch} --oneline` → `✅ Up to date` · `⬆️ {N} commits` · `❌ Error`
+   - Archive: compare `committed_date` API vs `installed_at` SKILL.md · absent → `⚠️ reinstall recommended`
+   - `--dry-run` → display report + **stop**
+4. **Confirmation & Backup** — summary `Skills to update: {N} · strategy · backup` → ask the user CONFIRM/CANCEL · backup → copy before any write
+5. **Apply**:
+   - `pull`: `fetch --all --tags` + `checkout {branch}` + `pull --ff-only` · divergence → ask the user MERGE / RESET --hard / SKIP · `RESET --hard` = explicit confirmation required
+   - `reinstall`: `rm -rf {SKILL_PATH}` + `clone --depth=1`
+   - Archive fallback: extract → `{SKILL_PATH}_tmp/` → replace (preserve `.git/`)
+   - Report: `✅ {v_before} → {v_after}` · `⚠️ partial` · `❌ failed`
+6. **Post-update scripts** — priority: `update*.md`/`UPDATE*.md` (LLM) → `update*.sh`/`post-update*.sh` (confirm if `AUTO_RUN_SCRIPTS=false`) → fallback `install*.sh` · error → log + continue
+7. **Sync registries** — diff `SKILL.md` before/after:
 
-   | Fichier | Condition | Action |
-   |---------|-----------|--------|
-   | `skills_list.md` | version/desc changée | MAJ ligne |
-   | `commands_list.md` | commande ±ajoutée | ajouter/supprimer |
-   | `.roo/commands/{cmd}.md` | commande modifiée/ajoutée | recréer |
-   | `.claude/commands/{cmd}.md` | idem | idem |
-   | `prompts/hard_points/commands/{cmd}.md` | nouvelle commande | créer |
+   | File | Condition | Action |
+   |------|-----------|--------|
+   | `skills_list.md` | version/desc changed | Update line |
+   | `commands_list.md` | command added/removed | add/delete |
+   | `.roo/commands/{cmd}.md` | command modified/added | recreate |
+   | `.claude/commands/{cmd}.md` | same | same |
+   | `prompts/hard_points/commands/{cmd}.md` | new command | create |
 
-   `SKILL.md` absent → sync partielle + warning · Agents : `agent-aikido-maj-md-index` · `agent-aikido-validator`
+   `SKILL.md` absent → partial sync + warning · Agents: `agent-aikido-maj-md-index` · `agent-aikido-validator`
 
-8. **Rapport** :
+8. **Report**:
    ```
    ╔══════════════════════════════════════════════════════╗
-   ║              RAPPORT SKILL-UPDATE                    ║
+   ║              SKILL-UPDATE REPORT                     ║
    ╠══════════╦════════════╦════════════╦════════════════╣
-   ║ Skill    ║ Avant      ║ Après      ║ Statut         ║
+   ║ Skill    ║ Before     ║ After      ║ Status         ║
    ╠══════════╬════════════╬════════════╬════════════════╣
-   ║ {slug}   ║ {v_before} ║ {v_after}  ║ ✅ mis à jour  ║
+   ║ {slug}   ║ {v_before} ║ {v_after}  ║ ✅ updated     ║
    ╚══════════╩════════════╩════════════╩════════════════╝
-   Durée : {t}s  |  Backups : {N}
+   Duration: {t}s  |  Backups: {N}
    ```
 
 ---
 
-## ACTION `uninstall` — Désinstallation d'un Skill
+### ACTION `uninstall` — Uninstall a Skill
 
-**Paramètres spécifiques** :
+**Action-specific parameters**:
 
-| Arg CLI | Défaut | Sémantique |
-|---------|--------|------------|
-| `--skill` | *(interactif)* | Slug cible |
-| `--backup` | `false` | Copie avant suppression · doublon → incrément `_2`, `_3`… |
-| `--purge` | `false` | Supprime aussi les backups existants `{slug}_backup_*` |
-| `--dry-run` | `false` | Rapport sans écriture, arrêt après analyse dépendances |
+| CLI Arg | Default | Semantics |
+|---------|---------|-----------|
+| `--skill` | *(interactive)* | Target slug |
+| `--backup` | `false` | Copy before deletion · duplicate → increment `_2`, `_3`… |
+| `--purge` | `false` | Also delete existing backups `{slug}_backup_*` |
+| `--dry-run` | `false` | Report without writing, stop after dependency analysis |
 
-**Pipeline** :
+**Pipeline**:
 
-1. **Inventaire** — `find {TARGET_DIR} -name "SKILL.md" -maxdepth 2` · extraire slug / description / commandes / backups existants · afficher `# │ Slug │ Description │ Commandes │ Backups │ Chemin` · aucun skill → **arrêt**
-2. **Résolution** — `--skill NOM` → vérifier `SKILL.md` · absent → erreur + liste · sans `--skill` → sélection interactive · Variables : `SELECTED_SKILL`, `SKILL_PATH`
-3. **Analyse dépendances** — extraire `COMMANDS_LIST` + `MODES_LIST` (grep `.roomodes`) · pour chaque `cmd` : détecter modification manuelle de `prompts/hard_points/commands/{cmd}.md` → marquer `⚠️ MODIFIÉ`
+1. **Inventory** — `find {TARGET_DIR} -name "SKILL.md" -maxdepth 2` · extract slug / description / commands / existing backups · display `# │ Slug │ Description │ Commands │ Backups │ Path` · no skill → **stop**
+2. **Resolution** — `--skill NAME` → verify `SKILL.md` · absent → error + list · without `--skill` → interactive selection · Variables: `SELECTED_SKILL`, `SKILL_PATH`
+3. **Dependency analysis** — extract `COMMANDS_LIST` + `MODES_LIST` (grep `.roomodes`) · for each `cmd`: detect manual modification of `prompts/hard_points/commands/{cmd}.md` → mark `⚠️ MODIFIED`
 
-   Rapport prévu :
+   Planned report:
    ```
    Skill      : {slug} → {SKILL_PATH}/
-   Commandes  : {cmd1}, {cmd2}, …
+   Commands   : {cmd1}, {cmd2}, …
    .roo       : .roo/commands/{cmd}.md, …
    .claude    : .claude/commands/{cmd}.md, …
-   hard_points: prompts/hard_points/commands/{cmd}.md  [⚠️ MODIFIÉ?]
-   Registres  : skills_list.md (1), commands_list.md ({N})
-   Backups    : {purge: liste | non}
+   hard_points: prompts/hard_points/commands/{cmd}.md  [⚠️ MODIFIED?]
+   Registries : skills_list.md (1), commands_list.md ({N})
+   Backups    : {purge: list | none}
    ```
-   `--dry-run` → **arrêt ici**
+   `--dry-run` → **stop here**
 
-4. **Confirmation & Backup** — `ask_followup_question` : CONFIRMER / CONFIRMER AVEC BACKUP / ANNULER · backup → copier avant toute suppression · fichiers `⚠️ MODIFIÉ` → confirmation individuelle (sauf `--purge`)
-5. **Script pré-suppression** — recherche : `scripts/uninstall.sh` → `uninstall.sh` → `uninstall*.md`/`UNINSTALL*.md` · `.sh` + `AUTO_RUN_SCRIPTS=false` → confirmation · `.md` → instructions LLM · erreur → log + continuer
-6. **Suppression** :
+4. **Confirmation & Backup** — ask the user: CONFIRM / CONFIRM WITH BACKUP / CANCEL · backup → copy before any deletion · `⚠️ MODIFIED` files → individual confirmation (unless `--purge`)
+5. **Pre-removal script** — search: `scripts/uninstall.sh` → `uninstall.sh` → `uninstall*.md`/`UNINSTALL*.md` · `.sh` + `AUTO_RUN_SCRIPTS=false` → confirmation · `.md` → LLM instructions · error → log + continue
+6. **Deletion**:
    ```bash
    rm -f .roo/commands/{cmd}.md .claude/commands/{cmd}.md          # mappings
-   rm -f prompts/hard_points/commands/{cmd}.md                     # si non ⚠️MODIFIÉ
-   rm -rf {SKILL_PATH}                                              # répertoire skill
-   rm -rf {TARGET_DIR}/{SELECTED_SKILL}_backup_*                   # si --purge
+   rm -f prompts/hard_points/commands/{cmd}.md                     # if not ⚠️MODIFIED
+   rm -rf {SKILL_PATH}                                              # skill directory
+   rm -rf {TARGET_DIR}/{SELECTED_SKILL}_backup_*                   # if --purge
    ```
-   Signaler : `✅ supprimé` · `❌ échec` · `⏭️ conservé (modifié manuellement)`
-7. **Nettoyage registres** — `agent-aikido-maj-md-index` : supprimer ligne `{slug}` dans `skills_list.md` + toutes entrées commandes dans `commands_list.md` · vérifier aucun doublon/orphelin
-8. **Rapport** :
+   Report: `✅ deleted` · `❌ failed` · `⏭️ preserved (manually modified)`
+7. **Registry cleanup** — `agent-aikido-maj-md-index`: delete `{slug}` line from `skills_list.md` + all command entries from `commands_list.md` · verify no duplicates/orphans remain
+8. **Report**:
    ```
    ╔══════════════════════════════════════════════════════════╗
-   ║            RAPPORT SKILL-UNINSTALL                       ║
+   ║              SKILL-UNINSTALL REPORT                      ║
    ╠══════════════════════════════════════════════════════════╣
-   ║ Skill supprimé       : {slug} ({SKILL_PATH})             ║
-   ║ Commandes            : {N} supprimées ({cmd1}, …)        ║
-   ║ Mappings .roo/.claude: {N} supprimés                     ║
-   ║ hard_points conservés: {N} (modifiés manuellement)       ║
-   ║ Registres nettoyés   : skills_list.md, commands_list.md  ║
-   ║ Backup               : {chemin | non}                    ║
-   ║ Backups purgés       : {N | non}                         ║
+   ║ Skill deleted        : {slug} ({SKILL_PATH})             ║
+   ║ Commands             : {N} deleted ({cmd1}, …)           ║
+   ║ .roo/.claude mappings: {N} deleted                       ║
+   ║ hard_points preserved: {N} (manually modified)           ║
+   ║ Registries cleaned   : skills_list.md, commands_list.md  ║
+   ║ Backup               : {path | none}                     ║
+   ║ Backups purged       : {N | none}                        ║
    ╚══════════════════════════════════════════════════════════╝
    ```
-   Rappel : `/skill-manage get {slug}` pour réinstaller · `/check-claude` pour vérifier la cohérence
+   Reminder: `/skill-manage get {slug}` to reinstall · `/check-claude` to verify consistency
 
 ---
 
-## Gestion des Erreurs (toutes actions)
+## Output
 
-| Erreur | Résolution | Bloquant ? |
-|--------|-----------|:---:|
-| `GIT_GROUP` vide (besoin Git) | Questionnaire interactif URL + token | ✅ |
-| `TARGET_DIR` inexistant | Message explicite · création auto (`get`) | ✅ (`uninstall`) |
-| Aucun skill installé | Message + suggestion `get` | ✅ |
-| Skill `{NOM}` introuvable | Erreur + liste inventaire | ✅ |
-| Clone HTTPS bloqué | Fallback archive API GitLab | ❌ |
-| Token expiré/invalide | Demander nouveau token | ✅ |
-| `SKILL.md` absent post-op | Sync partielle + warning | ❌ |
-| `git pull` en conflit | MERGE / RESET --hard / PASSER | selon choix |
-| Script `.sh` en erreur | Log warning, continuer | ❌ |
-| Backup déjà existant | Incrémenter suffixe `_2`, `_3`… | ❌ |
-| Fichier commande modifié manuellement | Confirmation séparée (sauf `--purge`) | selon choix |
+Each action produces a structured report (see report blocks above). Verbose mode logs each file/operation individually.
 
-## Règles AI-KIDO
+---
 
-- Structure `prompts/hard_points/system/{slug}/` obligatoire · `SKILL.md` requis pour opération complète
-- Mappings `.roo/commands/` + `.claude/commands/` obligatoires pour toute commande exposée
-- Détection doublons systématique avant tout ajout · contrainte ≤1000 lignes fichiers commandes
+## Notes
 
-## Intégration
+### Error Handling (all actions)
+
+| Error | Resolution | Blocking? |
+|-------|-----------|:---------:|
+| `GIT_GROUP` empty (Git required) | Interactive URL + token questionnaire | ✅ |
+| `TARGET_DIR` does not exist | Explicit message · auto-create (`get`) | ✅ (`uninstall`) |
+| No skill installed | Message + suggest `get` | ✅ |
+| Skill `{NAME}` not found | Error + inventory list | ✅ |
+| HTTPS clone blocked | Fallback GitLab API archive | ❌ |
+| Token expired/invalid | Ask user for new token | ✅ |
+| `SKILL.md` absent after operation | Partial sync + warning | ❌ |
+| `git pull` conflict | MERGE / RESET --hard / SKIP | per choice |
+| `.sh` script error | Log warning, continue | ❌ |
+| Backup already exists | Increment suffix `_2`, `_3`… | ❌ |
+| Command file manually modified | Separate confirmation (unless `--purge`) | per choice |
+
+### AI-KIDO Rules
+
+- Structure `prompts/hard_points/system/{slug}/` is mandatory · `SKILL.md` required for complete operation
+- Mappings `.roo/commands/` + `.claude/commands/` mandatory for every exposed command
+- Systematic duplicate detection before any addition · command files constrained to ≤1000 lines
+
+### Integration
 
 ```
-/skill-manage search    → découverte avant installation
-/skill-manage get       → installation initiale
-/skill-manage update    → mises à jour (ciblées ou --skill all)
-/skill-manage uninstall → désinstallation propre
-/check-claude           → vérifier cohérence post-opération
-/analyse-aikido         → audit conformité complet
+/skill-manage search    → discover before installing
+/skill-manage get       → initial installation
+/skill-manage update    → updates (targeted or --skill all)
+/skill-manage uninstall → clean uninstall
+/check-claude           → verify consistency after operation
+/analyse-aikido         → full compliance audit
 ```
 
 ---
-*Agents : `agent-aikido-validator` · `agent-aikido-maj-md-index` · Créée 2026-02-27*
+*Agents: `agent-aikido-validator` · `agent-aikido-maj-md-index` · Created 2026-02-27*

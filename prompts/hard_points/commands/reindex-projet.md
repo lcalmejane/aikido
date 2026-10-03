@@ -1,91 +1,70 @@
-# reindex-projet
+---
+description: "Launch agent-aikido-projet-index to re-index the project"
+---
 
-## Description
+# /reindex-projet
 
-Lance l'agent ou switcher dans le mode **`agent-aikido-projet-index`** generate-all-indexes-v3.1.sh en passant les paramètres pour ré-indexer le projet et génère un log de suivi dans `/prompts/spec/logs/`.
+**Purpose**: Launch `agent-aikido-projet-index` to execute generate-all-indexes-v3.1.sh and re-index the project, generating a tracking log in `/prompts/spec/logs/`.
 
-**Compatibilité** : Roo-Code + Claude Code
+---
 
-## Syntaxe
+## Usage
 
-```bash
-/reindex-projet [chemin]
-```
+[MANDATORY]
+/reindex-projet [path]
 
-- `chemin` *(optionnel)* : chemin relatif pour une indexation ciblée (ex: `src/Domain`)
-- Sans argument : indexation complète du projet
+- `path` (optional): relative path for targeted indexing (e.g., `src/Domain`)
+- Without argument: full project indexing
 
-## Instructions
+## Prerequisites
 
-**IMPORTANT** : Exécute ces actions sans poser de questions, directement. NE JAMAIS essayer d'éditer oui modifier un fichier autre que le log.
+- `agent-aikido-projet-index` agent available
 
-1. Crée le répertoire `prompts/spec/logs/` s'il n'existe pas
+## Steps
 
-2. Génère un nom de fichier log horodaté au format : `prompts/spec/logs/reindex-projet-YYYY-MM-DD_HH-MM-SS.log`
+[MANDATORY]
+1. Create directory `prompts/spec/logs/` if it does not exist.
+2. Generate a timestamped log filename: `prompts/spec/logs/reindex-projet-YYYY-MM-DD_HH-MM-SS.log`
+3. Display the start header.
+4. Launch `agent-aikido-projet-index` to execute `generate-all-indexes-v3.1.sh` in a background task with the provided path (variable `$ARGUMENTS`) if present.
+5. Display the agent ID and log path.
+6. Monitor agent progress and display in real time:
+   - Timestamp format: `[HH:MM:SS]`
+   - Status symbols: ⚙️ (in progress), ✓ (success), ⚠️ (warning), ✗ (error)
+   - Progress message
+7. Write each output line to the log file.
+8. When the agent completes, display the final summary.
 
-3. Affiche le header de démarrage :
+[OPTIONAL]
+- Do NOT edit or modify any file other than the log file.
+
+## Output
 
 ```
 ╔══════════════════════════════════════════════════════════╗
-║  📊 RÉINDEXATION DU PROJET - DÉMARRAGE                  ║
+║  PROJECT RE-INDEXING - START                             ║
 ╚══════════════════════════════════════════════════════════╝
-```
 
-4. Lance l'agent/mode `agent-aikido-projet-index` pour qu'il execute generate-all-indexes-v3.1.sh dans une nouvelle tache en arrière-plan avec le chemin fourni si présent (variable `$ARGUMENTS`)
-
-5. Affiche :
-
-```
-⚙️  Agent lancé en arrière-plan (ID: [agent-id])
+⚙️  Agent launched in background (ID: [agent-id])
 📝 Log: prompts/spec/logs/reindex-projet-[timestamp].log
-```
 
-6. Surveille la progression de l'agent/mode et affiche en temps réel :
-   - Timestamp au format `[HH:MM:SS]`
-   - Symbole de statut : ⚙️ (en cours), ✓ (succès), ⚠️ (avertissement), ✗ (erreur)
-   - Message de progression
-
-7. Écris chaque sortie dans le fichier log
-
-8. Quand l'agent/mode termine, affiche le résumé final :
-
-```
-╔══════════════════════════════════════════════════════════╗
-║  ✓ RÉINDEXATION TERMINÉE AVEC SUCCÈS                    ║
-╚══════════════════════════════════════════════════════════╝
-
-⏱️  Durée: [X] secondes
-📝 Log complet: prompts/spec/logs/reindex-projet-[timestamp].log
-```
-
-## Exemple de sortie attendue
-
-```
-╔══════════════════════════════════════════════════════════╗
-║  📊 RÉINDEXATION DU PROJET - DÉMARRAGE                  ║
-╚══════════════════════════════════════════════════════════╝
-
-⚙️  Agent lancé en arrière-plan (ID: agent-123)
-📝 Log: prompts/spec/logs/reindex-projet-2025-01-20_14-30-45.log
-
-[14:30:45] ⚙️  Analyse de la structure du projet...
-[14:30:47] ✓ Structure analysée (125 fichiers trouvés)
-[14:30:48] ⚙️  Génération de l'index JSON...
-[14:31:02] ✓ Index généré (2.4 MB)
-[14:31:03] ⚙️  Validation de la structure...
-[14:31:05] ✓ Validation terminée
+[HH:MM:SS] ⚙️  Analyzing project structure...
+[HH:MM:SS] ✓ Structure analyzed (125 files found)
+[HH:MM:SS] ⚙️  Generating JSON index...
+[HH:MM:SS] ✓ Index generated (2.4 MB)
+[HH:MM:SS] ⚙️  Validating structure...
+[HH:MM:SS] ✓ Validation complete
 
 ╔══════════════════════════════════════════════════════════╗
-║  ✓ RÉINDEXATION TERMINÉE AVEC SUCCÈS                    ║
+║  ✓ RE-INDEXING COMPLETE                                  ║
 ╚══════════════════════════════════════════════════════════╝
 
-⏱️  Durée: 20 secondes
-📝 Log complet: prompts/spec/logs/reindex-projet-2025-01-20_14-30-45.log
+⏱️  Duration: [X] seconds
+📝 Full log: prompts/spec/logs/reindex-projet-[timestamp].log
 ```
 
 ## Notes
 
-- **Compatibilité sortie** : Le format de sortie fonctionne dans les deux CLI (Roo-Code et Claude Code)
-- Le log est conservé pour traçabilité dans `/prompts/spec/logs/`
-- En cas d'erreur, le log contient les détails pour le debug
-- Les caractères Unicode (✓ ⚙️ ⚠️ ✗ ╔═╗) sont supportés par les deux terminaux
+- The log is kept for traceability in `/prompts/spec/logs/`
+- On error, the log contains details for debugging
+- Unicode characters (✓ ⚙️ ⚠️ ✗ ╔═╗) are supported by both Roo-Code and Claude Code terminals

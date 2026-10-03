@@ -1,116 +1,115 @@
-# Liste des Agents et personas AI-KIDO
+# AI-KIDO Agents and Personas List
 
-## Déclaration des Agents
+## Agent Declarations
 
-| Agent | Persona | Spécialisation |
+| Agent | Persona | Specialization |
 |-------|---------|----------------|
-| 🔍 **agent-aikido-explore-bank** | [agent-aikido-explore-bank.md](prompts/hard_points/agents/agent-aikido-explore-bank.md) | Recherche Memory Bank v5.1 strict (Grep-only) |
-| 💻 **agent-aikido-explore-code** 🆕 | [agent-aikido-explore-code.md](prompts/hard_points/agents/agent-aikido-explore-code.md) | Recherche code source avec métadonnées structurées |
-| 🔍💻 **agent-aikido-explore-all** 🆕 | [agent-aikido-explore-all.md](prompts/hard_points/agents/agent-aikido-explore-all.md) | Orchestrateur recherche parallèle Bank + Code |
-| ⚖️ **agent-aikido-truth-evaluator** | [agent-aikido-truth-evaluator.md](prompts/hard_points/agents/agent-aikido-truth-evaluator.md) | Détermine sources autoritaires avec optimisation last-check |
-| 🎯 **agent-aikido-raci-delegator** | [agent-aikido-raci-delegator.md](prompts/hard_points/agents/agent-aikido-raci-delegator.md) | Classifie et route documents selon RACI |
-| 📝 **agent-aikido-doc-header** 🆕 | [agent-aikido-doc-header.md](prompts/hard_points/agents/agent-aikido-doc-header.md) | Gestion standardisée en-têtes documents AI-KIDO |
-| 🗂️ **agent-aikido-projet-index** 🆕 | [agent-aikido-projet-index.md](prompts/hard_points/agents/agent-aikido-projet-index.md) | Gestionnaire arborescence projet avec cache 24H |
-| 🤖 **agent-aikido-bank-populate** | [agent-aikido-bank-populate.md](prompts/hard_points/agents/agent-aikido-bank-populate.md) | Peuplement automatique Memory Bank depuis code/contexte |
-| ✅ **agent-aikido-validator** | [agent-aikido-validator.md](prompts/hard_points/agents/agent-aikido-validator.md) | Validation rapide conformité AI-KIDO (<2k tokens) |
-| ⚖️ **agent-aikido-balancer** | [agent-aikido-balancer.md](prompts/hard_points/agents/agent-aikido-balancer.md) | Équilibrage arborescence Memory Bank |
-| 📑 **agent-aikido-indexer** | [agent-aikido-maj-md-index.md](prompts/hard_points/agents/agent-aikido-maj-md-index.md) | MAJ automatique index.md + AGENTS.md |
-| 🔀 **agent-aikido-fusion** | [agent-aikido-fusion.md](prompts/hard_points/agents/agent-aikido-fusion.md) | Fusion intelligente de fichiers lors mises à jour AI‑KIDO |
-| 🔧 **agent-aikido-update-controller** | [agent-aikido-update-controller.md](prompts/hard_points/agents/agent-aikido-update-controller.md) | Contrôle les mises à jour du système AI‑KIDO, sauvegarde, validation, exécution des plans de mise à jour et roll‑back. |
-| 🤖 **agent-aikido-helper** | [agent-aikido-helper.md](prompts/hard_points/agents/agent-aikido-helper.md) | Assistant pédagogique pour répondre aux questions d'usage AI‑KIDO |
+| 🔍 **agent-aikido-explore-bank** | [agent-aikido-explore-bank.md](prompts/hard_points/agents/agent-aikido-explore-bank.md) | Memory Bank search v5.2 (extended formats + filename scout) |
+| 💻 **agent-aikido-explore-code** | [agent-aikido-explore-code.md](prompts/hard_points/agents/agent-aikido-explore-code.md) | Source code search with structured metadata |
+| 🔍💻 **agent-aikido-explore-all** | [agent-aikido-explore-all.md](prompts/hard_points/agents/agent-aikido-explore-all.md) | Orchestrator: parallel Bank + Code search |
+| ⚖️ **agent-aikido-truth-evaluator** | [agent-aikido-truth-evaluator.md](prompts/hard_points/agents/agent-aikido-truth-evaluator.md) | Determines authoritative sources with last-check optimization |
+| 🎯 **agent-aikido-raci-delegator** | [agent-aikido-raci-delegator.md](prompts/hard_points/agents/agent-aikido-raci-delegator.md) | Classifies and routes documents by RACI |
+| 📝 **agent-aikido-doc-header** | [agent-aikido-doc-header.md](prompts/hard_points/agents/agent-aikido-doc-header.md) | Standardized AI-KIDO document header management |
+| 🗂️ **agent-aikido-projet-index** | [agent-aikido-projet-index.md](prompts/hard_points/agents/agent-aikido-projet-index.md) | Project tree manager with 24H cache |
+| 🤖 **agent-aikido-bank-populate** | [agent-aikido-bank-populate.md](prompts/hard_points/agents/agent-aikido-bank-populate.md) | Automatic Memory Bank population from code/context |
+| ✅ **agent-aikido-validator** | [agent-aikido-validator.md](prompts/hard_points/agents/agent-aikido-validator.md) | Rapid AI-KIDO compliance validation (<2k tokens) |
+| ⚖️ **agent-aikido-balancer** | [agent-aikido-balancer.md](prompts/hard_points/agents/agent-aikido-balancer.md) | Memory Bank tree balancing |
+| 📑 **agent-aikido-indexer** | [agent-aikido-maj-md-index.md](prompts/hard_points/agents/agent-aikido-maj-md-index.md) | Automatic index.md + AGENTS.md update |
+| 🔀 **agent-aikido-fusion** | [agent-aikido-fusion.md](prompts/hard_points/agents/agent-aikido-fusion.md) | Intelligent file fusion during AI‑KIDO updates |
+| 🔧 **agent-aikido-update-controller** | [agent-aikido-update-controller.md](prompts/hard_points/agents/agent-aikido-update-controller.md) | Controls AI‑KIDO system updates: backup, validation, plan execution, rollback |
+| 🤖 **agent-aikido-helper** | [agent-aikido-helper.md](prompts/hard_points/agents/agent-aikido-helper.md) | Pedagogical assistant for AI-KIDO usage questions |
 
-## 👥 Available Agents Personas Experts
+## 👥 Available Expert Agent Personas
 
-|Agent / Persona | Description | Lien |
-|---------|-------------|------|
+| Agent / Persona | Description | Link |
+|-----------------|-------------|------|
 
-## Utilisations des Agents
+## Agent Usage Guide
 
 ### agent-aikido-explore-bank
-- ✅ Recherche exploratoire (architecture, concepts globaux)
-- ✅ Contexte enrichi avec cross-refs
-- ✅ Filtrage auto (rapports test exclus)
-- ❌ NE PAS UTILISER: recherche simple/ponctuelle, perf critique (<0.05s), budget très strict
+- ✅ Exploratory search (architecture, global concepts)
+- ✅ Enriched context with cross-references
+- ✅ Auto-filtering (test reports excluded)
+- ❌ Skip for: simple/punctual search, performance-critical (<0.05s), very strict token budget
 
 ### agent-aikido-explore-code
-- ✅ Recherche profonde code source
-- ✅ Localiser éléments (classes, functions, interfaces) avec métadonnées
-- ✅ Analyse dépendances (imports graph)
-- ✅ Cartographie cross-file (extends, implements)
-- ❌ NE PAS UTILISER: Besoin code complet (Read direct), Recherche Memory Bank (explore-bank)
+- ✅ Deep source code search
+- ✅ Locate elements (classes, functions, interfaces) with metadata
+- ✅ Dependency analysis (imports graph)
+- ✅ Cross-file mapping (extends, implements)
+- ❌ Skip for: need full code (use Read directly), Memory Bank search (use explore-bank)
 
 ### agent-aikido-explore-all
-- ✅ Recherche générale (docs + code simultanément)
-- ✅ Vue complète documentation + implémentation
-- ✅ Vérifier cohérence specs vs code
-- ❌ NE PAS UTILISER: Savoir déjà où chercher (bank OU code), Besoin une seule source
+- ✅ General search (docs + code simultaneously)
+- ✅ Complete view: documentation + implementation
+- ✅ Verify consistency between specs and code
+- ❌ Skip when: already know where to search (bank OR code), need single source only
 
 ### agent-aikido-truth-evaluator
-- Contradictions specs/code
-- Validation sources
-- Optimisation via métadonnées last-check
+- Spec/code contradiction resolution
+- Source validation
+- Optimization via last-check metadata
 
 ### agent-aikido-raci-delegator
-- Classer documents Memory Bank
-- Organisation contenu
-- Déterminer rôle responsable
+- Classify Memory Bank documents
+- Content organization
+- Determine responsible role
 
 ### agent-aikido-doc-header
-- Création/validation/MAJ headers avec versioning
+- Create/validate/update headers with versioning
 - Truth source tracking
 - Last-check metadata
 
 ### agent-aikido-projet-index
-- Localisation fichiers
-- Exploration répertoires
-- Questions d'existence
-- Vue d'ensemble structure
-- Statistiques projet
+- File location (instant via JSON cache)
+- Directory exploration
+- Existence checks
+- Structure overview
+- Project statistics
 
 ### agent-aikido-bank-populate
-- Peuplement automatique Memory Bank depuis code/contexte
-- ⏰ FIN processus UNIQUEMENT (après rapport gaps complet, validation utilisateur)
+- Automatic Memory Bank population from code/context
+- ⏰ END OF PROCESS ONLY (after complete gap report, user validation)
 
 ### agent-aikido-validator
-- Auto-trigger create/edit/move dans `/prompts`
-- Quick checks (lignes, liens, frontmatter)
+- Auto-trigger on create/edit/move in `/prompts`
+- Quick checks (lines, links, frontmatter)
 
 ### agent-aikido-balancer
-- Fichiers >500 lignes
-- Profondeur >4
-- Branchement hors 3-7
-- Liens cassés
+- Files >500 lines
+- Depth >4
+- Branching outside 3-7
+- Broken links
 
 ### agent-aikido-indexer
-- Après ajout/modif/suppression fichiers
-- Stats obsolètes
-- Sync AGENTS.md
+- After add/modify/delete files
+- Outdated stats
+- AGENTS.md sync
 
 ### agent-aikido-fusion
-- Mises à jour externes (`/maj-aikido --update`)
-- Fusion préservant contexte projet + adopter nouveau formalisme
+- External updates (`/maj-aikido --update`)
+- Fusion preserving project context + adopting new formalism
 
+## Main Workflows
 
-## Workflows Principaux
+### Base Patterns
+1. `explore-bank → truth-evaluator → raci-delegator` (Feature with context)
+2. `truth-evaluator → doc-header` (update last-check after validation)
+3. `bank-populate → doc-header → validator` (compliance)
+4. `file operation → validator` (auto-validation)
+5. `explore-bank → bank-populate → doc-header → raci-delegator` (population END of process)
+6. `source update → fusion → truth-evaluator → doc-header → validator` (full external update)
 
-### Patterns de base
-1. explore-bank → truth-evaluator (fast-path check via doc-header) → développement → raci-delegator (Feature avec contexte)
-2. truth-evaluator → doc-header (MAJ last-check après validation)
-3. bank-populate → doc-header (création header) → validator (conformité)
-4. File operation → validator (Auto-validation)
-5. explore-bank → bank-populate → doc-header → raci-delegator (Peuplement FIN processus avec metadata)
-6. Source update → fusion → truth-evaluator → doc-header → validator (Mise à jour externe complète)
-
-**Utilisation agents** :
-- explore-bank : Extraction contextuelle Memory Bank (concepts/techniques/personas)
-- explore-code : Recherche code source avec métadonnées (classes, functions, interfaces, dependencies avec line numbers)
-- explore-all : Orchestration parallèle explore-bank + explore-code pour recherche complète (docs + code)
-- truth-evaluator : Arbitrage contradictions avec optimisation last-check (fast-path si ✅ + sources inchangées)
-- raci-delegator : Classification et routing documents par rôle
-- doc-header : Gestion headers standardisés (versioning, truth source, last-check, source refs)
-- projet-index : Localisation fichiers instantanée via cache JSON, stats projet, navigation structure
-- bank-populate : Peuplement FIN processus (après rapport gaps complet) avec headers complets
-- validator : Auto-validation (<2k tokens) sur create/edit/move dans `/prompts`
-- balancer : Équilibrage arborescence (fichiers >500 lignes, profondeur >4, branchement hors 3-7)
-- indexer : MAJ index.md et AGENTS.md après modifications
-- fusion : Fusion intelligente lors mises à jour externes (`/maj-aikido --update`)
+**Agent roles**:
+- `explore-bank`: Contextual Memory Bank extraction (concepts/techniques/personas)
+- `explore-code`: Source code search with metadata (classes, functions, interfaces, dependencies with line numbers)
+- `explore-all`: Parallel orchestration explore-bank + explore-code for complete search (docs + code)
+- `truth-evaluator`: Contradiction arbitration with last-check optimization (fast-path if ✅ + unchanged sources)
+- `raci-delegator`: Document classification and routing by role
+- `doc-header`: Standardized header management (versioning, truth source, last-check, source refs)
+- `projet-index`: Instant file location via JSON cache, project stats, structure navigation
+- `bank-populate`: Population END OF PROCESS (after complete gap report) with full headers
+- `validator`: Auto-validation (<2k tokens) on create/edit/move in `/prompts`
+- `balancer`: Tree balancing (files >500 lines, depth >4, branching outside 3-7)
+- `indexer`: Update index.md and AGENTS.md after modifications
+- `fusion`: Intelligent fusion during external updates (`/maj-aikido --update`)

@@ -1,93 +1,72 @@
-# AI‑KIDO – Guide Pratique pour LLM
+# AI‑KIDO – Practical LLM Guide
 
-> **Version**: 1.3.1‑LLM | **Usage**: Référence directe pour interactions LLM
+> **Version**: 1.3.1‑LLM | **Usage**: Direct reference for LLM interactions
 
-## PRÉFIX DE PROMPT GENERAL
+## GENERAL PROMPT PREFIX
 ```text
-Sauf pour les agents internes "agent‑aikido‑*", après analyse de la question et avant d’y répondre, utiliser le fichier prompts/index.md pour faire un parcours récursif pertinent afin de récupérer les infos strictement utiles à la compréhension de la demande.
+Except for internal "agent‑aikido‑*" agents: before answering, use prompts/index.md for a relevant recursive traversal to retrieve information strictly useful for understanding the request.
 ```
 
 ## EXCEPTIONS
-- Aux agents internes AI‑KIDO (préfixe `agent‑aikido‑*`) qui possèdent déjà les règles nécessaires
+- Internal AI‑KIDO agents (prefix `agent‑aikido‑*`) already have the necessary rules
 
-## RÈGLES FONDAMENTALES D'UTILISATION (extrait)
-1. **🌳 Arborescence Documentaire**: Parcours d'arbre récursif depuis [`/prompts/index.md`](../index.md)
-2. **📊 Séparation Théorie/Pratique**: `concepts/` + `personas/` (théorie) vs `techniques/` + `use_cases/` (pratique)
-3. **🔄 Introspection**: Les règles de gestion font partie d'elles-mêmes (ce fichier)
-4. **📏 Contrainte Lignes**: ≤100 lignes (short),≤500 lignes (standard), ≤1000 lignes (commands, personas, agents, skills). **CRITIQUE**: `/prompts/index.md.md`,`AGENTS.md`,`CLAUDE.md`,`ai-kido.md` et `ai-kido-light.md` DOIVENT rester ≤100 lignes (sinon délester fichiers details), prompts/hard_points/system/structure/index.json no limit.
-5. **✂️ Split Automatique**: Division intelligente avec liens préservés si dépassement
-6. **🔗 Liens Bidirectionnels**: Chaînage A ↔ B systématique
-7. **⚖️ Arbre Équilibré**: Facteur 3-7 enfants/parent, profondeur ≤ 4 niveaux
-8. **🏗️ Architecture Bicéphale**: `gen/` (meuble) vs `hard_points/` (rigide)
-9. **👥 Agents Spécialistes**: Personas pour optimisation requêtes LLM
-10. **🎭 Agent Orchestrateur**: Coordination des agents spécialistes
-11. **🗜️ Densité Sémantique**: Information maximale, mots minimaux
-12. **📈 Schémas Mermaid**: Compression visuelle pour densité sémantique
-13. **🔍 Indexation Vectorielle**: Mode RAG local du workspace
-14. **🔄 Amélioration Continue**: Évolution automatique selon besoins et LLM
-15. **👨‍💼 Répartition par Rôles Humains**: Sous-répertoires assignés aux membres de l'équipe
-16. **🤖 Conformité AGENTS.md**: Synchronisation obligatoire avec la norme AGENTS.md
-17. **🔄 Bidirectionnalité Agents-Personas**: Correspondance 1:1 entre agents AGENTS.md et personas AI-KIDO
-18. **⚙️ Commandes Roo**: Les commandes sont définies dans [`prompts/hard_points/commands/`](prompts/hard_points/commands/) et ne doivent être référencées que dans [`AGENTS.md`](AGENTS.md), jamais dans [`index.md`](../gen/index.md)
+## FUNDAMENTAL USAGE RULES (summary)
+1. **🌳 Document Tree**: Recursive tree traversal from [`/prompts/index.md`](../index.md)
+2. **📊 Theory/Practice Separation**: `concepts/` + `personas/` (theory) vs `techniques/` + `use_cases/` (practice)
+3. **🔄 Introspection**: Management rules are part of themselves (this file)
+4. **📏 Line Limits**: ≤100 lines (short), ≤500 lines (standard), ≤1000 lines (commands, personas, agents, skills). **CRITICAL**: `prompts/index.md`, `AGENTS.md`, `CLAUDE.md`, `ai-kido.md` and `ai-kido-light.md` MUST stay ≤100 lines (offload to `_details` files). `prompts/hard_points/system/structure/index.json` — no limit.
+5. **✂️ Auto-Split**: Intelligent split with preserved links when limit exceeded
+6. **🔗 Bidirectional Links**: Systematic A ↔ B chaining
+7. **⚖️ Balanced Tree**: Factor 3-7 children/parent, depth ≤ 4 levels
+8. **🏗️ Bicephalous Architecture**: `gen/` (mutable) vs `hard_points/` (rigid)
+9. **👥 Specialist Agents**: Personas for LLM query optimization
+10. **🎭 Orchestrator Agent**: Coordinates specialist agents
+11. **🗜️ Semantic Density**: Maximum information, minimum words
+12. **📈 Mermaid Diagrams**: Visual compression for semantic density
+13. **🔍 Vector Indexing**: Local RAG mode of the workspace
+14. **🔄 Continuous Improvement**: Automatic evolution based on needs and LLM
+15. **👨‍💼 Role-Based Distribution**: Subdirectories assigned to team members
+16. **🤖 AGENTS.md Compliance**: Mandatory sync with AGENTS.md standard
+17. **🔄 Agent-Persona Bidirectionality**: 1:1 correspondence between AGENTS.md agents and AI-KIDO personas
+18. **⚙️ Commands**: Defined in [`prompts/hard_points/commands/`](prompts/hard_points/commands/) — referenced only in [`AGENTS.md`](AGENTS.md), never in [`index.md`](../gen/index.md)
 
-## RÈGLES D'AUTO‑ALIMENTATION (résumé)
-- **Signal Utilisateur** : toute erreur signalée crée immédiatement une règle préventive.  
-- **Auto‑Détection** : 2+ erreurs similaires déclenchent la génération proactive d’une règle.  
-- **Seuils** : Critique (immédiat), Rapide (2×), Standard (3×).  
-- **Intégration** : insertion automatique dans le répertoire adéquat + mise à jour de l’index.
+## AUTO-POPULATION RULES (summary)
+- **User Signal**: any reported error immediately creates a preventive rule.
+- **Auto-Detection**: 2+ similar errors trigger proactive rule generation.
+- **Thresholds**: Critical (immediate), Fast (2×), Standard (3×).
+- **Integration**: automatic insertion in the appropriate directory + index update.
 
-## RÈGLES DE CAPITALISATION DES ANALYSES (résumé)
-1. Vérifier l’existence avant création.  
-2. Consulter systématiquement l’arborescence `/prompts/gen/`.  
-3. Maximiser la densité d’information par mot.  
-4. Enrichir continuellement les tables de vérité.  
-5. Maintenir l’alignement entre tous les éléments.  
-6. Documenter chaque décision importante.
+## ANALYSIS CAPITALIZATION RULES (summary)
+1. Check existence before creation.
+2. Systematically consult the `/prompts/gen/` tree.
+3. Maximize information density per word.
+4. Continuously enrich truth tables.
+5. Maintain alignment between all elements.
+6. Document every important decision.
 
-## STRUCTURE OBLIGATOIRE DES RÉPERTOIRES (résumé)
+## MANDATORY DIRECTORY STRUCTURE (summary)
 ```
 .claude
-├── commands/                  # Mapping des commandes AI-KIDO
-├── agents/                    # Mapping des agents AI-KIDO
-.roo
-├── commands/                  # Mapping des commandes AI-KIDO
-├── agents/                    # Mapping des agents AI-KIDO
-.roomodes
+├── commands/                  # AI-KIDO command mappings
+├── agents/                    # AI-KIDO agent mappings
 agents_list.md
 commands_list.md
-AGENTS.md
-CLAUDE.md
-README.md
+AGENTS.md / CLAUDE.md / README.md
 /prompts/
-├── index.md                    # POINT D'ENTRÉE UNIQUE
-├── gen/
-│   ├── concepts/
-│   ├── techniques/
-│   ├── agents/
-│   ├── personas/
-│   └── use_cases/
-├── hard_points/
-│   ├── index.md
-│   ├── concepts/
-│   ├── techniques/
-│   ├── commands/               # Commandes AI-KIDO
-│   ├── system/                 # Outils Systemes organisés par Skills
-│   ├── agents/
-│   ├── personas/
-│   └── use_cases/
-└── spec/
-    └── logs/
+├── index.md                    # UNIQUE ENTRY POINT
+├── gen/                        # concepts/ techniques/ agents/ personas/ use_cases/
+├── hard_points/                # index.md concepts/ techniques/ commands/ system/ agents/ personas/ use_cases/
+└── spec/logs/
 ```
-- La structure **Multi‑Projet** suit le même schéma avec un sous‑dossier `[projet‑n]` contenant `gen/` et `hard_points/`.
 
-## RÈGLES DE CONFORMITÉ (résumé)
-- **Maximum 500 lignes** par fichier hard point.  
-- **Densité sémantique** > 80 % d’information utile.  
-- **Liens bidirectionnels** obligatoires entre concepts, techniques, personas et use_cases.  
-- **Hard points** immuables sauf mise à jour via `agent‑aikido‑fusion`.  
-- **Commandes Roo** uniquement référencées dans `AGENTS.md`, jamais dans `index.md`.
+## COMPLIANCE RULES (summary)
+- **500 lines max** per hard point file.
+- **Semantic density** > 80% useful information.
+- **Bidirectional links** mandatory between concepts, techniques, personas and use_cases.
+- **Hard points** immutable except via `agent‑aikido‑fusion`.
+- **Commands** referenced only in `AGENTS.md`, never in `index.md`.
 
 <details>
-<summary>Voir le reste du document détaillé</summary>
-[Consulter le contenu complet](`prompts/hard_points/ai-kido_details.md`)
+<summary>See full detailed document</summary>
+[Full content](`prompts/hard_points/ai-kido_details.md`)
 </details>

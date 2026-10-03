@@ -4,15 +4,15 @@
 
 ## 📋 Overview
 
-Plan de recherche spécialisé pour projets JavaScript et TypeScript. Couvre ES6+, CommonJS, ES Modules, Node.js, React, Vue, Angular, et autres frameworks modernes.
+Specialized search plan for JavaScript and TypeScript projects. Covers ES6+, CommonJS, ES Modules, Node.js, React, Vue, Angular, and other modern frameworks.
 
-**Cas d'usage** : Projets frontend/backend JavaScript, TypeScript, frameworks modernes (React, Vue, Angular, Svelte, Next.js, Nuxt).
+**Use cases**: Frontend/backend JavaScript projects, TypeScript, modern frameworks (React, Vue, Angular, Svelte, Next.js, Nuxt).
 
 ## 🔍 File Patterns
 
-### Extensions JavaScript/TypeScript
+### JavaScript/TypeScript Extensions
 ```bash
-*.js       # JavaScript standard
+*.js       # Standard JavaScript
 *.mjs      # ES Module
 *.cjs      # CommonJS
 *.jsx      # React JSX
@@ -25,7 +25,7 @@ Plan de recherche spécialisé pour projets JavaScript et TypeScript. Couvre ES6
 
 ### Configuration & Metadata
 ```bash
-package.json       # Dependencies NPM/Yarn
+package.json       # NPM/Yarn dependencies
 tsconfig.json      # TypeScript config
 .eslintrc.*        # ESLint config
 .babelrc           # Babel config
@@ -35,9 +35,9 @@ next.config.*      # Next.js config
 nuxt.config.*      # Nuxt config
 ```
 
-### Exclusions JS-spécifiques
+### JS-specific Exclusions
 ```bash
-node_modules/      # Dependencies NPM
+node_modules/      # NPM dependencies
 dist/              # Build output
 build/             # Build output
 .next/             # Next.js build
@@ -81,7 +81,7 @@ function has_typescript() {
 }
 ```
 
-## 📦 Patterns de Recherche
+## 📦 Search Patterns
 
 ### 1. Imports/Exports (ES Modules)
 ```regex
@@ -245,7 +245,7 @@ function detect_js_framework() {
 
 ## 📤 Output Format
 
-### Structure spécifique JavaScript/TypeScript
+### JavaScript/TypeScript specific structure
 
 ```markdown
 # JavaScript/TypeScript Code Index
@@ -399,33 +399,33 @@ graph TD
 
 ## ⚡ Performance Optimization
 
-### Commandes optimisées JS/TS
+### Optimized JS/TS commands
 ```bash
-# Recherche ultra-rapide avec ripgrep
+# Ultra-fast search with ripgrep
 rg --type js --type ts \
   --glob '!node_modules' \
   --glob '!dist' \
   --glob '!build' \
   -i "$KEYWORD"
 
-# Trouver toutes les classes
+# Find all classes
 rg --type js --type ts -n "^(export\s+)?class\s+(\w+)" -r '$2' --no-heading --glob '!node_modules'
 
-# Trouver toutes les interfaces (TypeScript)
+# Find all interfaces (TypeScript)
 rg --type ts -n "^(export\s+)?interface\s+(\w+)" -r '$2' --no-heading --glob '!node_modules'
 
-# Trouver imports ES Module
+# Find ES Module imports
 rg --type js --type ts -n "^import\s+.*from\s+['\"]" --no-heading --glob '!node_modules'
 
-# Statistiques par fichier
+# Statistics per file
 rg --type js --type ts -c -i "$KEYWORD" --glob '!node_modules' | sort -t: -k2 -nr | head -20
 ```
 
-### Stratégies d'Optimisation
-1. **Module resolution** : Utiliser tsconfig.json paths pour résolution rapide
-2. **Exclude node_modules early** : Toujours exclure dès le find/rg
-3. **Framework patterns** : Adapter selon framework détecté (React, Vue, Angular)
-4. **Cache package.json** : Parser une fois, réutiliser pour imports
+### Optimization Strategies
+1. **Module resolution** : Use tsconfig.json paths for fast resolution
+2. **Exclude node_modules early** : Always exclude from the start with find/rg
+3. **Framework patterns** : Adapt according to detected framework (React, Vue, Angular)
+4. **Cache package.json** : Parse once, reuse for imports
 
 ## 🎓 Framework-Specific Patterns
 
@@ -478,7 +478,7 @@ const\s+\w+\s*=\s*(ref|reactive|computed|watch)\(
 ## 📋 Usage Example
 
 ```bash
-# Exemple d'utilisation du plan JavaScript/TypeScript
+# Example usage of the JavaScript/TypeScript plan
 KEYWORD="authentication"
 FRAMEWORK=$(detect_js_framework)
 
@@ -525,12 +525,12 @@ done
 
 ## 🔧 Customization Points
 
-Ce plan peut être étendu/personnalisé via :
-- **Module resolution** : Adapter tsconfig.json paths
-- **Framework patterns** : Affiner selon framework utilisé
-- **Component detection** : Patterns spécifiques React/Vue/Angular
-- **Performance tuning** : Ajuster selon taille projet
+This plan can be extended/customized via:
+- **Module resolution** : Adapt tsconfig.json paths
+- **Framework patterns** : Refine according to framework used
+- **Component detection** : React/Vue/Angular specific patterns
+- **Performance tuning** : Adjust according to project size
 
 ---
-*Plan JavaScript/TypeScript créé le 2025-12-09 pour agent-aikido-explore-code*
-*Compatible avec ES6+, CommonJS, TypeScript, React, Vue, Angular*
+*JavaScript/TypeScript plan created on 2025-12-09 for agent-aikido-explore-code*
+*Compatible with ES6+, CommonJS, TypeScript, React, Vue, Angular*

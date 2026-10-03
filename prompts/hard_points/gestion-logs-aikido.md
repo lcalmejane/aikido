@@ -1,116 +1,116 @@
-# Gestion des Logs AI‑KIDO
-> Version: 1.0 | Date: 2025-11-06 | Statut: Actif
+# AI-KIDO Log Management
+> Version: 1.0 | Date: 2025-11-06 | Status: Active
 
-## Vue d'ensemble
-Règles strictes pour la gestion des logs dans l'écosystème AI‑KIDO, incluant l'emplacement, le format et les procédures de test.
+## Overview
+Strict rules for log management in the AI-KIDO ecosystem, including location, format, and test procedures.
 
-## Définitions clés
-- **LLM_TRACIBILITY** : Variable de contrôle dans `/prompts/index.md`
-- **Logs AI‑KIDO** : Fichiers de traçabilité des interactions LLM
-- **Structure obligatoire** : `/prompts/spec/logs/prompts.log`
+## Key Definitions
+- **LLM_TRACIBILITY**: Control variable in `/prompts/index.md`
+- **AI-KIDO Logs**: LLM interaction traceability files
+- **Mandatory structure**: `/prompts/spec/logs/prompts.log`
 
-## Principes directeurs
+## Guiding Principles
 
-### 🚨 RÈGLE CRITIQUE : Emplacement des Logs
-**JAMAIS** créer de répertoire `/logs/` à la racine du projet.
+### 🚨 CRITICAL RULE: Log Location
+**NEVER** create a `/logs/` directory at the project root.
 
-**TOUJOURS** utiliser : `/prompts/spec/logs/prompts.log`
+**ALWAYS** use: `/prompts/spec/logs/prompts.log`
 
-### 🔧 Procédure de Test des Logs
+### 🔧 Log Test Procedure
 
-1. **Vérification de l'activation**
+1. **Activation check**
    ```bash
-   # Vérifier dans /prompts/index.md
+   # Check in /prompts/index.md
    grep "LLM_TRACIBILITY=TRUE" prompts/index.md
    ```
 
-2. **Activation du logger**
-   - Modifier `/prompts/index.md`
-   - Section : `### Fonctionnalité de Traçabilité des Logs`
-   - Variable : `LLM_TRACIBILITY=TRUE`
+2. **Logger activation**
+   - Edit `/prompts/index.md`
+   - Section: `### Log Traceability Feature`
+   - Variable: `LLM_TRACIBILITY=TRUE`
 
-3. **Test de fonctionnement**
-   - Générer une interaction LLM
-   - Vérifier l'écriture dans `/prompts/spec/logs/prompts.log`
+3. **Functional test**
+   - Generate an LLM interaction
+   - Verify that writing occurs in `/prompts/spec/logs/prompts.log`
 
-4. **Désactivation**
-   - Modifier : `LLM_TRACIBILITY=FALSE`
-   - Confirmer l'arrêt des logs
+4. **Deactivation**
+   - Edit: `LLM_TRACIBILITY=FALSE`
+   - Confirm that logging has stopped
 
-## Spécifications techniques
+## Technical Specifications
 
-### Format Standard des Logs
+### Standard Log Format
 ```markdown
 # DATE: YYYY-MM-DD HH-MM-SS
-## PROMPT [Mode utilisé]
-[Question de l'utilisateur]
+## PROMPT [Mode used]
+[User question]
 
 ```
 
-### Structure de Répertoire Obligatoire
+### Mandatory Directory Structure
 ```
 /prompts/
 ├── spec/
 │   └── logs/
-│       └── prompts.log    # ← SEUL emplacement autorisé
+│       └── prompts.log    # ← ONLY authorized location
 ```
 
-### Commandes de Contrôle
-- **Activation** : Commande `logllmon` (voir `prompts/hard_points/commands/logllmon.md`)
-- **Désactivation** : Commande `logllmoff` (voir `prompts/hard_points/commands/logllmoff.md`)
+### Control Commands
+- **Activation**: Command `logllmon` (see `prompts/hard_points/commands/logllmon.md`)
+- **Deactivation**: Command `logllmoff` (see `prompts/hard_points/commands/logllmoff.md`)
 
-### 🔄 Règle de Changement de Mode pour Logs - AUTOMATIQUE
-**DÉCLENCHEMENT AUTOMATIQUE :** Dès qu'une interaction utilisateur est détectée et que `LLM_TRACIBILITY=TRUE` :
+### 🔄 Mode Switch Rule for Logs — AUTOMATIC
+**AUTOMATIC TRIGGER:** As soon as a user interaction is detected and `LLM_TRACIBILITY=TRUE`:
 
-1. **Vérifier le mode actuel** : Si ce n'est pas le Mode CODE
-2. **Basculer automatiquement en Mode CODE** sans intervention manuelle
-3. **Écrire immédiatement dans `/prompts/spec/logs/prompts.log`** selon le format :
+1. **Check the current mode**: If it is not CODE Mode
+2. **Automatically switch to CODE Mode** without manual intervention
+3. **Immediately write to `/prompts/spec/logs/prompts.log`** using the format:
    ```markdown
    # DATE: YYYY-MM-DD HH:MM:SS
-   ## PROMPT [Mode d'origine]
-   [Question de l'utilisateur]
+   ## PROMPT [Origin mode]
+   [User question]
    
    ```
-4. **Revenir automatiquement au mode de départ** pour traiter la demande
+4. **Automatically return to the original mode** to process the request
 
-**RÈGLE CRITIQUE :** Cette séquence doit s'exécuter AVANT toute autre opération, garantissant une traçabilité complète sans intervention manuelle.
+**CRITICAL RULE:** This sequence must execute BEFORE any other operation, ensuring complete traceability without manual intervention.
 
-## Exemples d'application
+## Usage Examples
 
 ### ✅ Correct
 ```bash
-# Vérifier l'existence du fichier de log
+# Check that the log file exists
 ls -la prompts/spec/logs/prompts.log
 
-# Consulter les dernières entrées
+# View the latest entries
 tail -10 prompts/spec/logs/prompts.log
 ```
 
 ### ❌ Incorrect
 ```bash
-# NE JAMAIS faire ceci
+# NEVER do this
 mkdir logs
 touch logs/trace.md
 ```
 
-## Relations et dépendances
+## Relations and Dependencies
 
-### Fichiers Liés
-- [`/prompts/index.md`](../../index.md) : Configuration `LLM_TRACIBILITY`
-- [`/prompts/hard_points/ai-kido.md`](../../hard_points/ai-kido.md) : Règles fondamentales
-- [`prompts/hard_points/commands/logllmon.md`](../../prompts/hard_points/commands/logllmon.md) : Activation
-- [`prompts/hard_points/commands/logllmoff.md`](../../prompts/hard_points/commands/logllmoff.md) : Désactivation
+### Related Files
+- [`/prompts/index.md`](../../index.md): `LLM_TRACIBILITY` configuration
+- [`/prompts/hard_points/ai-kido.md`](../../hard_points/ai-kido.md): Fundamental rules
+- [`prompts/hard_points/commands/logllmon.md`](../../prompts/hard_points/commands/logllmon.md): Activation
+- [`prompts/hard_points/commands/logllmoff.md`](../../prompts/hard_points/commands/logllmoff.md): Deactivation
 
-### Règles de Validation
-1. **Avant création** : Toujours consulter `/prompts/hard_points/ai-kido.md`
-2. **Structure obligatoire** : Respecter l'arborescence définie (ligne 87)
-3. **Format standard** : Suivre le template des logs (lignes 150-155)
+### Validation Rules
+1. **Before creation**: Always consult `/prompts/hard_points/ai-kido.md`
+2. **Mandatory structure**: Respect the defined directory tree (line 87)
+3. **Standard format**: Follow the log template (lines 150-155)
 
-### Signaux d'Alerte
-- Création de répertoire `/logs/` à la racine
-- Fichiers de log en dehors de `/prompts/spec/logs/`
-- Format non conforme aux spécifications AI‑KIDO
+### Alert Signals
+- Creation of a `/logs/` directory at the project root
+- Log files outside `/prompts/spec/logs/`
+- Format non-compliant with AI-KIDO specifications
 
 ---
 
-**RAPPEL CRITIQUE** : Cette règle fait partie des mécanismes d'auto-alimentation d'AI‑KIDO pour prévenir les erreurs de structure.
+**CRITICAL REMINDER**: This rule is part of the AI-KIDO self-feeding mechanisms to prevent structural errors.

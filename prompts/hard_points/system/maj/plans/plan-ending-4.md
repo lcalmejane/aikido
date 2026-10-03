@@ -1,59 +1,59 @@
-# Plan Ending-4 – Validation Structure Projet
+# Plan Ending-4 – Project Structure Validation
 
-> **Type** : ending | **Ordre** : 4 | **Bloquant** : OUI
+> **Type** : ending | **Order** : 4 | **Blocking** : YES
 
-## 🎯 Objectif
+## 🎯 Objective
 
-Diagnostiquer la cohérence et la conformité de la structure du projet après la mise à jour des index et la synchronisation des fichiers.
+Diagnose the consistency and compliance of the project structure after the index update and file synchronization.
 
-Ce plan utilise le **script technique** `validate-structure.sh` pour vérifier que le projet respecte les règles AI-KIDO selon son type (MONO ou MULTI).
-
----
-
-## 📥 Entrées Requises
-
-- `$SOURCE` : Répertoire du projet actuel
-- `$PROJECT_TYPE` : Type de projet ("MONO" ou "MULTI" - défini par plan-beginning ou ending-3)
-- `/tmp/aikido/ending2_summary.txt` : Résumé de la phase 2 (optionnel)
+This plan uses the **technical script** `validate-structure.sh` to verify that the project follows the AI-KIDO rules according to its type (MONO or MULTI).
 
 ---
 
-## 📋 Étapes d'Exécution
+## 📥 Required Inputs
 
-### 1️⃣ Phase 1 : Vérification Prérequis (BLOQUANT)
+- `$SOURCE` : Current project directory
+- `$PROJECT_TYPE` : Project type ("MONO" or "MULTI" - defined by plan-beginning or ending-3)
+- `/tmp/aikido/ending2_summary.txt` : Phase 2 summary (optional)
 
-**Action : Vérifier que le type de projet est défini**
+---
+
+## 📋 Execution Steps
+
+### 1️⃣ Phase 1 : Prerequisites Check (BLOCKING)
+
+**Action : Verify that the project type is defined**
 
 ```bash
-echo "🔍 Vérification des prérequis..."
+echo "🔍 Checking prerequisites..."
 
 if [ -z "$PROJECT_TYPE" ]; then
-  echo "⚠️  Variable PROJECT_TYPE non définie, détection automatique..."
+  echo "⚠️  Variable PROJECT_TYPE not defined, auto-detection..."
 
-  # Utiliser le script technique de détection
+  # Use the technical detection script
   DETECT_SCRIPT="$SOURCE/prompts/hard_points/system/maj/scripts/detect-project-type.sh"
 
   if [ ! -f "$DETECT_SCRIPT" ]; then
-    echo "❌ ERREUR : Script de détection introuvable"
-    echo "   Chemin attendu : $DETECT_SCRIPT"
+    echo "❌ ERROR: Detection script not found"
+    echo "   Expected path: $DETECT_SCRIPT"
     exit 1
   fi
 
   DETECT_OUTPUT=$("$DETECT_SCRIPT" detect)
   PROJECT_TYPE=$(echo "$DETECT_OUTPUT" | head -1)
 
-  echo "✅ Type détecté : $PROJECT_TYPE"
+  echo "✅ Detected type: $PROJECT_TYPE"
   export PROJECT_TYPE
 else
-  echo "✅ Type de projet défini : $PROJECT_TYPE"
+  echo "✅ Project type defined: $PROJECT_TYPE"
 fi
 ```
 
 ---
 
-### 2️⃣ Phase 2 : Validation Structure avec Script Technique (BLOQUANT)
+### 2️⃣ Phase 2 : Structure Validation with Technical Script (BLOCKING)
 
-**Action : Exécuter le script de validation**
+**Action : Execute the validation script**
 
 ```bash
 bash prompts/hard_points/system/maj/scripts/ending-4-run-validation.sh "$SOURCE" "$PROJECT_TYPE"
@@ -66,16 +66,16 @@ else
 fi
 ```
 
-Ce script exécute validate-structure.sh avec les bons paramètres.
-- **Fonction** : Localise et lance validation structure
-- **Paramètres** : Type projet + version 1.3
-- **Exit code** : 0 si structure valide, 1 sinon (BLOQUANT)
+This script runs validate-structure.sh with the correct parameters.
+- **Function** : Locates and launches structure validation
+- **Parameters** : Project type + version 1.3
+- **Exit code** : 0 if structure is valid, 1 otherwise (BLOCKING)
 
 ---
 
-### 3️⃣ Phase 3 : Diagnostic Détaillé (SI ÉCHEC)
+### 3️⃣ Phase 3 : Detailed Diagnosis (IF FAILURE)
 
-**Action : Si validation échouée, fournir diagnostic détaillé**
+**Action : If validation failed, provide detailed diagnosis**
 
 ```bash
 if [ "$VALIDATION_STATUS" = "FAILED" ]; then
@@ -83,16 +83,16 @@ if [ "$VALIDATION_STATUS" = "FAILED" ]; then
 fi
 ```
 
-Ce script affiche un diagnostic détaillé de la structure.
-- **Fonction** : Vérifie hard points, index, répertoires essentiels
-- **Sortie** : Diagnostic complet avec ✅/❌ pour chaque élément
-- **Exit code** : 0 (toujours, diagnostic uniquement)
+This script displays a detailed diagnosis of the structure.
+- **Function** : Checks hard points, indexes, essential directories
+- **Output** : Complete diagnosis with ✅/❌ for each element
+- **Exit code** : 0 (always, diagnosis only)
 
 ---
 
-### 4️⃣ Phase 4 : Journalisation (NON BLOQUANT)
+### 4️⃣ Phase 4 : Logging (NON BLOCKING)
 
-**Action : Créer log de validation**
+**Action : Create validation log**
 
 ```bash
 mkdir -p "$SOURCE/prompts/spec/logs"
@@ -100,156 +100,156 @@ LOG_FILE="$SOURCE/prompts/spec/logs/phase-4.log"
 
 cat > "$LOG_FILE" <<LOG
 ═══════════════════════════════════════════════════════════════
-Plan Ending-4 : Validation Structure
+Plan Ending-4 : Structure Validation
 ═══════════════════════════════════════════════════════════════
-Date : $(date '+%Y-%m-%d %H:%M:%S')
+Date: $(date '+%Y-%m-%d %H:%M:%S')
 
-CONFIGURATION :
-  Type projet    : $PROJECT_TYPE
+CONFIGURATION:
+  Project type   : $PROJECT_TYPE
   Version        : 1.3
-  Répertoire     : $SOURCE
+  Directory      : $SOURCE
 
-RÉSULTAT VALIDATION :
+VALIDATION RESULT:
   Status         : $VALIDATION_STATUS
   Exit code      : $VALIDATION_EXIT
   Script         : $VALIDATE_SCRIPT
 
-$([ "$VALIDATION_STATUS" = "FAILED" ] && echo "PROBLÈMES DÉTECTÉS : Voir diagnostic ci-dessus" || echo "Structure conforme AI-KIDO")
+$([ "$VALIDATION_STATUS" = "FAILED" ] && echo "ISSUES DETECTED: See diagnosis above" || echo "Structure compliant with AI-KIDO")
 
 ═══════════════════════════════════════════════════════════════
 LOG
 
-echo "📝 Log créé : $LOG_FILE"
+echo "📝 Log created: $LOG_FILE"
 echo ""
 ```
 
 ---
 
-### 5️⃣ Phase 5 : Décision Finale (BLOQUANT)
+### 5️⃣ Phase 5 : Final Decision (BLOCKING)
 
-**Action : Décider si le workflow doit continuer ou s'arrêter**
+**Action : Decide whether the workflow should continue or stop**
 
 ```bash
 if [ "$VALIDATION_STATUS" = "SUCCESS" ]; then
   echo "═══════════════════════════════════════════════════════════════"
-  echo "✅ PLAN ENDING-4 RÉUSSI"
+  echo "✅ PLAN ENDING-4 SUCCEEDED"
   echo "═══════════════════════════════════════════════════════════════"
   echo ""
-  echo "   Structure validée avec succès"
-  echo "   Passage au plan ending-5 (optimisation)..."
+  echo "   Structure validated successfully"
+  echo "   Moving to plan ending-5 (optimization)..."
   echo ""
   exit 0
 else
   echo "═══════════════════════════════════════════════════════════════"
-  echo "❌ PLAN ENDING-4 ÉCHOUÉ"
+  echo "❌ PLAN ENDING-4 FAILED"
   echo "═══════════════════════════════════════════════════════════════"
   echo ""
-  echo "   ACTIONS RECOMMANDÉES :"
+  echo "   RECOMMENDED ACTIONS:"
   echo ""
-  echo "   1. Examiner le diagnostic détaillé ci-dessus"
-  echo "   2. Corriger les fichiers/répertoires manquants"
-  echo "   3. Si index manquants : relancer plan ending-3"
-  echo "   4. Si hard points manquants : restaurer depuis backup"
-  echo "   5. Relancer /maj-aikido après corrections"
+  echo "   1. Review the detailed diagnosis above"
+  echo "   2. Fix missing files/directories"
+  echo "   3. If indexes missing: restart plan ending-3"
+  echo "   4. If hard points missing: restore from backup"
+  echo "   5. Restart /maj-aikido after corrections"
   echo ""
-  echo "   OU"
+  echo "   OR"
   echo ""
-  echo "   6. Passer au plan ending-10 (gestion erreurs) pour diagnostic approfondi"
+  echo "   6. Move to plan ending-10 (error handling) for in-depth diagnosis"
   echo ""
   echo "═══════════════════════════════════════════════════════════════"
   echo ""
 
-  # EXIT BLOQUANT
+  # BLOCKING EXIT
   exit 1
 fi
 ```
 
 ---
 
-## 📤 Sorties Produites
+## 📤 Produced Outputs
 
-| Fichier | Description | Obligatoire |
+| File | Description | Required |
 |---------|-------------|-------------|
-| `$SOURCE/prompts/spec/logs/phase-4.log` | Log de validation | ✅ OUI |
-| stdout | Diagnostic détaillé (si échec) | ✅ OUI (si échec) |
+| `$SOURCE/prompts/spec/logs/phase-4.log` | Validation log | ✅ YES |
+| stdout | Detailed diagnosis (on failure) | ✅ YES (on failure) |
 
 ---
 
-## ✅ Conditions de Succès
+## ✅ Success Criteria
 
-Le plan **ending-4** est considéré réussi si :
+The **ending-4** plan is considered successful if:
 
-1. ✅ Script `validate-structure.sh` s'exécute sans erreur
-2. ✅ Code de sortie = 0 (structure valide)
-3. ✅ Log créé avec SUCCESS
+1. ✅ Script `validate-structure.sh` executes without error
+2. ✅ Exit code = 0 (valid structure)
+3. ✅ Log created with SUCCESS
 
-**Note** : Ce plan est **BLOQUANT**. Si la validation échoue, le workflow s'arrête.
+**Note** : This plan is **BLOCKING**. If validation fails, the workflow stops.
 
 ---
 
-## ❌ Gestion d'Échec
+## ❌ Failure Handling
 
-### Échecs bloquants :
+### Blocking failures:
 
-1. **Script validate-structure.sh introuvable**
+1. **Script validate-structure.sh not found**
    ```
-   ❌ ERREUR CRITIQUE : Script de validation manquant
+   ❌ CRITICAL ERROR: Validation script missing
 
-   Chemin attendu : prompts/hard_points/system/maj/scripts/validate-structure.sh
+   Expected path: prompts/hard_points/system/maj/scripts/validate-structure.sh
 
-   Action requise :
-     1. Vérifier intégrité du projet AI-KIDO
-     2. Restaurer depuis backup :
+   Required action:
+     1. Check AI-KIDO project integrity
+     2. Restore from backup:
         tar -xzf backups/aikido-verif-backup-*.tgz
-     3. Relancer /maj-aikido
+     3. Restart /maj-aikido
    ```
 
-2. **Validation échouée (exit code != 0)**
+2. **Validation failed (exit code != 0)**
    ```
-   ❌ ERREUR : Structure non conforme AI-KIDO V1.3
+   ❌ ERROR: Structure not compliant with AI-KIDO V1.3
 
-   Type projet : MONO
-   Problèmes détectés :
-     - /prompts/index.md manquant
-     - /prompts/hard_points/ai-kido.md manquant
+   Project type: MONO
+   Issues detected:
+     - /prompts/index.md missing
+     - /prompts/hard_points/ai-kido.md missing
 
-   Actions recommandées :
-     1. Si index manquant : Relancer plan ending-3
-     2. Si hard points manquants : Restaurer depuis TARGET
+   Recommended actions:
+     1. If index missing: Restart plan ending-3
+     2. If hard points missing: Restore from TARGET
         cp "$TARGET/prompts/hard_points/ai-kido.md" "$SOURCE/prompts/hard_points/"
-     3. Relancer validation manuelle :
+     3. Run manual validation:
         bash prompts/hard_points/system/maj/scripts/validate-structure.sh . --type MONO --version 1.3
-     4. Relancer /maj-aikido si OK
+     4. Restart /maj-aikido if OK
    ```
 
-### Cas non gérés par ce plan :
+### Cases not handled by this plan:
 
-- **Permissions insuffisantes** → Erreur script
-- **Projet corrompu gravement** → Restauration backup complète requise
-
----
-
-## 🔗 Enchaînement
-
-### Si validation réussie :
-- ✅ Structure projet conforme AI-KIDO V1.3
-- ✅ Passage au **plan ending-5** (optimisation/nettoyage)
-
-### Si validation échouée :
-- ❌ Workflow **BLOQUÉ**
-- ⚠️ **Diagnostic détaillé affiché**
-- 📋 **Actions recommandées** fournies
-- 🔄 **Correction manuelle requise**
-- 🔄 Possibilité de passer à **plan ending-10** (gestion erreurs)
+- **Insufficient permissions** → Script error
+- **Severely corrupted project** → Full backup restore required
 
 ---
 
-## 📚 Références
+## 🔗 Chaining
 
-- **Script validation** : [`prompts/hard_points/system/maj/scripts/validate-structure.sh`](../scripts/validate-structure.sh)
-- **Script détection projet** : [`prompts/hard_points/system/maj/scripts/detect-project-type.sh`](../scripts/detect-project-type.sh)
-- **Hard points AI-KIDO** : [`prompts/hard_points/ai-kido.md`](../../ai-kido.md)
+### If validation succeeded:
+- ✅ Project structure compliant with AI-KIDO V1.3
+- ✅ Move to **plan ending-5** (optimization/cleanup)
+
+### If validation failed:
+- ❌ Workflow **BLOCKED**
+- ⚠️ **Detailed diagnosis displayed**
+- 📋 **Recommended actions** provided
+- 🔄 **Manual correction required**
+- 🔄 Possibility to move to **plan ending-10** (error handling)
 
 ---
 
-*Plan ending-4 v2.0 – Validation structure bloquante avec diagnostic détaillé*
+## 📚 References
+
+- **Validation script** : [`prompts/hard_points/system/maj/scripts/validate-structure.sh`](../scripts/validate-structure.sh)
+- **Project detection script** : [`prompts/hard_points/system/maj/scripts/detect-project-type.sh`](../scripts/detect-project-type.sh)
+- **AI-KIDO hard points** : [`prompts/hard_points/ai-kido.md`](../../ai-kido.md)
+
+---
+
+*Plan ending-4 v2.0 – Blocking structure validation with detailed diagnosis*

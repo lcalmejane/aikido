@@ -1,36 +1,36 @@
 
-**Priorité** – Ces instructions prévalent sur toute instruction générale ou de mode futures et passées.
+**Priority** – These instructions take precedence over all past and future general or mode instructions.
 
-## 1️⃣ Création de sous‑tâches
+## 1️⃣ Creating sub-tasks
 
-- Utiliser l’outil **`new_task`** pour chaque sous‑tâche.  
-  Exemple : [`new_task`](.roo/rules-orchestrator/rules.md)  
-- Choisir le mode le plus adapté à l’objectif spécifique.  
-- Vérifier si le fichier de rôle (`roleDefinition`) inclut un fichier de persona :  
-  - Si oui, suivre les directives de la section **1.1️⃣** ci‑dessous.
-  - si non, fournir des instructions complètes dans le paramètre **`message`**.
+- Use the **`new_task`** tool for each sub-task.  
+  Example: [`new_task`](.roo/rules-orchestrator/rules.md)  
+- Choose the mode best suited to the specific objective.  
+- Check whether the role file (`roleDefinition`) includes a persona file:  
+  - If yes, follow the directives in section **1.1️⃣** below.
+  - If no, provide complete instructions in the **`message`** parameter.
 
-### 1.1️⃣ Si le mode choisi possède un fichier de rôle (`roleDefinition`)
+### 1.1️⃣ If the chosen mode has a role file (`roleDefinition`)
 
-- Le mode cible est celui défini dans le fichier de persona.  
-- Inclure une directive explicite : *la sous‑tâche ne doit exécuter que ce qui est décrit dans le fichier*.
+- The target mode is the one defined in the persona file.  
+- Include an explicit directive: *the sub-task must only execute what is described in the file*.
 
-### 1.2️⃣ Directives obligatoires (à répéter pour chaque sous‑tâche)
+### 1.2️⃣ Mandatory directives (to repeat for each sub-task)
 
-1. **Vérifier** que le fichier de persona est chargé ; sinon le charger.  
-2. Fournir **tout le contexte nécessaire** (fichiers inclus, informations précédentes).  
-3. Ajouter une instruction **mandataire** : la sous‑tâche doit se limiter strictement aux actions décrites dans le fichier.  
-4. Indiquer que la sous‑tâche doit signaler son achèvement via **`attempt_completion`** avec un résumé concis dans le champ **`result`**.  
-   Exemple : [`attempt_completion`](.roo/rules-orchestrator/rules.md)
-5. les instructions doivent être claires, complètes et spécifiques à l’objectif de la sous‑tâche en reprenant les points clés du fichier de persona.
+1. **Verify** that the persona file is loaded; if not, load it.  
+2. Provide **all necessary context** (included files, previous information).  
+3. Add a **mandatory** instruction: the sub-task must strictly limit itself to the actions described in the file.  
+4. Indicate that the sub-task must report its completion via **`attempt_completion`** with a concise summary in the **`result`** field.  
+   Example: [`attempt_completion`](.roo/rules-orchestrator/rules.md)
+5. Instructions must be clear, complete, and specific to the sub-task objective, restating the key points from the persona file.
 
-## 2️⃣ Verrouillage du mode
+## 2️⃣ Mode locking
 
-- Le mode déterminé par le fichier de persona est **verrouillé** pour la sous‑tâche et ne peut pas être changé.
+- The mode determined by the persona file is **locked** for the sub-task and cannot be changed.
 
-## 3️⃣ Gestion des erreurs et cas limites
+## 3️⃣ Error handling and edge cases
 
-- **Échec d’une sous‑tâche** : renvoyer un message d’erreur clair indiquant la cause (ex. : fichier de persona non chargé, contexte manquant).  
-- **Cas d’utilisation interdits** :  
-  - Ne pas dévier des instructions du fichier de persona.  
-- **Messages d’avertissement** : inclure des conseils sur les actions à éviter et les bonnes pratiques à suivre.
+- **Sub-task failure**: return a clear error message indicating the cause (e.g., persona file not loaded, missing context).  
+- **Forbidden use cases**:  
+  - Do not deviate from the persona file instructions.  
+- **Warning messages**: include advice on actions to avoid and best practices to follow.

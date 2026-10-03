@@ -1,13 +1,7 @@
 ---
-description: "Guide interactif pour créer un squelette de Skill AI-KIDO complet"
+description: "Interactive guide to create a complete AI-KIDO Skill skeleton"
 ---
 
-# Commande create-skill
-
-Cette commande exécute le fichier de commande complet depuis `prompts/hard_points/commands/create-skill.md`.
-
-**EXÉCUTION** : Je vais maintenant lire et exécuter la commande complète.
-
-```
-Lecture de prompts/hard_points/commands/create-skill.md et exécution des instructions...
-```
+# /create-skill
+Executes `prompts/hard_points/commands/create-skill.md`.
+**EXECUTION**: Read and apply the instructions from the target file.

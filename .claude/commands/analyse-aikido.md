@@ -1,13 +1,7 @@
 ---
-description: "Audit complet des tables de vérités AI-KIDO pour détecter dérivations, incohérences et liens cassés"
+description: "Complete audit of AI-KIDO truth tables to detect derivations, inconsistencies and broken links"
 ---
 
-# Commande analyse-aikido
-
-Cette commande exécute le fichier de commande complet depuis `prompts/hard_points/commands/analyse-aikido.md`.
-
-**EXÉCUTION** : Je vais maintenant lire et exécuter la commande complète.
-
-```
-Lecture de prompts/hard_points/commands/analyse-aikido.md et exécution des instructions...
-```
+# /analyse-aikido
+Executes `prompts/hard_points/commands/analyse-aikido.md`.
+**EXECUTION**: Read and apply the instructions from the target file.

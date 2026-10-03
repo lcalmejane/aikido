@@ -1,560 +1,577 @@
 ---
-description: "Mise à jour et synchronisation complète AI-KIDO via système de plans modulaires"
+description: "Update and complete AI-KIDO synchronization via modular plan system"
 ---
 
-# 🔄 COMMANDE MAJ-AIKIDO - Orchestrateur de Mise à Jour
+# /maj-aikido
 
-> **Version**: 3.0 | **Architecture**: Plans modulaires V2.0 | **Rôle**: Orchestrateur
+**Purpose**: Orchestrate AI-KIDO updates by delegating operations to modular plans.
 
-## 🎯 Vue d'ensemble
-
-Cette commande **orchestre** la mise à jour AI-KIDO en déléguant les opérations aux **plans modulaires** :
-
-- 📋 **plan-beginning.md** : Initialisation et détection versions
-- 🔄 **plan-V{version}.md** : Migration spécifique à la version cible
-- ✅ **plan-ending-{0-7}.md** : Phases finales communes (fusion, validation, peuplement)
-- ❌ **plan-ending-10.md** : Gestion erreurs centralisée
-
-**Philosophie** : La commande ne fait PAS les actions elle-même, elle **exécute les plans** dans le bon ordre.
+> **Version**: 3.0 | **Architecture**: Modular Plans V2.0 | **Role**: Orchestrator
 
 ---
 
-## 🚀 Utilisation
+## Usage
+
+[MANDATORY]
 
 ```bash
-# Mode UPDATE - Mise à jour depuis source externe
+# UPDATE mode - update from external source
 /maj-aikido --update
 
-# Mode SYNC - Synchronisation classique post-rebase
+# SYNC mode - classic post-rebase synchronization
 /maj-aikido
 ```
 
 ---
 
-## 📋 WORKFLOW GLOBAL
+## Overview
+
+This command **orchestrates** the AI-KIDO update by delegating operations to **modular plans**:
+
+- **plan-beginning.md** : Initialization and version detection
+- **plan-V{version}.md** : Version-specific migration
+- **plan-ending-{0-8}.md** : Common final phases (merge, validation, population)
+- **plan-ending-10.md** : Centralized error handling
+
+**Philosophy**: The command does NOT perform actions itself — it **executes plans** in the correct order.
+
+---
+
+## Prerequisites
+
+- AI-KIDO memory bank initialized
+- For `--update` mode: access to source (Git, local directory, or archive)
+- Plan files present in `prompts/hard_points/system/maj/plans/`
+
+---
+
+## Steps
+
+### GLOBAL WORKFLOW
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  Phase Préparatoire : Sélection & Validation Source        │
-│  (uniquement en mode --update)                              │
-└────────────────────┬────────────────────────────────────────┘
-                     │
-                     ▼
-          ┌──────────────────────┐
-          │  plan-beginning.md   │  ← Initialisation + détection versions
-          └──────────┬───────────┘
-                     │
-                     ▼
-          ┌──────────────────────┐
-          │  plan-V{version}.md  │  ← Migration spécifique
-          └──────────┬───────────┘
-                     │
-                     ▼
-          ┌──────────────────────┐
-          │  plan-ending-0.md    │  ← Fusion intelligente
-          │  plan-ending-1.md    │  ← Détection changements
-          │  plan-ending-2.md    │  ← Analyse rapport
-          │  plan-ending-3.md    │  ← Mise à jour index
-          │  plan-ending-4.md    │  ← Validation structure
-          │  plan-ending-5.md    │  ← Optimisation
-          │  plan-ending-6.md    │  ← Validation finale
-          │  plan-ending-7.md    │  ← Peuplement gaps
-          └──────────┬───────────┘
-                     │
-                     ▼
-          ┌──────────────────────┐
-          │  ✅ Mise à jour OK   │
-          └──────────────────────┘
++-------------------------------------------------------------+
+|  Preparatory Phase: Source Selection & Validation           |
+|  (only in --update mode)                                    |
++--------------------+----------------------------------------+
+                     |
+                     v
+          +----------------------+
+          |  plan-beginning.md   |  <- Initialization + version detection
+          +----------+-----------+
+                     |
+                     v
+          +----------------------+
+          |  plan-V{version}.md  |  <- Version-specific migration
+          +----------+-----------+
+                     |
+                     v
+          +----------------------+
+          |  plan-ending-0.md    |  <- Intelligent merge
+          |  plan-ending-1.md    |  <- Change detection
+          |  plan-ending-2.md    |  <- Report analysis
+          |  plan-ending-3.md    |  <- Index update
+          |  plan-ending-4.md    |  <- Structure validation
+          |  plan-ending-5.md    |  <- Optimization
+          |  plan-ending-6.md    |  <- Final validation
+          |  plan-ending-7.md    |  <- Gap population
+          |  plan-ending-8.md    |  <- Mappings deployment
+          +----------+-----------+
+                     |
+                     v
+          +----------------------+
+          |  Update complete     |
+          +----------------------+
 ```
 
 ---
 
-## 📂 PHASE PRÉPARATOIRE : Sélection & Validation Source
+### PREPARATORY PHASE: Source Selection & Validation
 
-**UNIQUEMENT SI** mode `--update` détecté.
+**ONLY IF** `--update` mode is detected.
 
-### Étape 1 : Détection Mode d'Exécution
+#### Step 1: Execution Mode Detection
 
-**Action : Détecter le mode d'exécution selon les arguments**
+**Action: Detect execution mode based on arguments**
 
-1. **Vérifier les arguments de la commande** :
-   - Si argument = `--update` OU `-u` → Mode UPDATE
-   - Sinon → Mode SYNC (synchronisation post-rebase uniquement)
+1. **Check command arguments**:
+   - If argument = `--update` OR `-u` → UPDATE mode
+   - Otherwise → SYNC mode (post-rebase synchronization only)
 
-2. **Afficher le mode détecté** :
-   - Mode UPDATE : `🔄 MODE : MISE À JOUR depuis sources externes`
-   - Mode SYNC : `🔄 MODE : SYNCHRONISATION post-rebase`
+2. **Display detected mode**:
+   - UPDATE mode: `MODE: UPDATE from external sources`
+   - SYNC mode: `MODE: SYNC post-rebase`
 
-3. **Si Mode SYNC** :
-   - Passer directement à l'orchestration des plans (section suivante)
-   - Les variables `$SOURCE` et `$TARGET` seront identiques (projet actuel)
+3. **If SYNC mode**:
+   - Skip directly to plan orchestration (next section)
+   - Variables `$SOURCE` and `$TARGET` will be identical (current project)
 
-### Étape 2 : Sélection Type de Source (Mode UPDATE uniquement)
+#### Step 2: Source Type Selection (UPDATE mode only)
 
-**Action : Demander à l'utilisateur le type de source**
+**Action: Ask the user to select a source type**
 
-1. **Afficher le menu de sélection** :
+1. **Display selection menu**:
 
 ```
-═══════════════════════════════════════════════════════════════
-🔄 SÉLECTION SOURCE DE MISE À JOUR
-═══════════════════════════════════════════════════════════════
+===============================================================
+  SOURCE SELECTION FOR UPDATE
+===============================================================
 
-Choisissez la source de mise à jour :
+Choose the update source:
 
-1. 📦 GIT AI-KIDO - Dépôt officiel AI-KIDO
-   Source : git@github.com:lcalmejane/aikido.git
+1. GIT AI-KIDO - Official AI-KIDO repository
+   Source: git@github.com:lcalmejane/aikido.git
 
-2. 📁 RÉPERTOIRE LOCAL - Répertoire déjà extrait
-   Emplacement : prompts/spec/aikido-*
+2. LOCAL DIRECTORY - Already extracted directory
+   Location: prompts/spec/aikido-*
 
-3. 🗜️  ARCHIVE - Fichier tar.gz, tgz, ou zip
-   Emplacement : prompts/spec/*.{tar.gz,tgz,zip}
+3. ARCHIVE - tar.gz, tgz, or zip file
+   Location: prompts/spec/*.{tar.gz,tgz,zip}
 
-Tapez le numéro de votre choix (1/2/3) :
+Enter your choice (1/2/3):
 ```
 
-2. **Attendre et stocker la réponse** dans `$SOURCE_TYPE` (valeurs: "1" | "2" | "3")
+2. **Wait and store response** in `$SOURCE_TYPE` (values: "1" | "2" | "3")
 
-### Étape 3 : Récupération & Validation Source selon Type
+#### Step 3: Source Retrieval & Validation by Type
 
-#### 3.1 Source GIT (si choix = 1)
+##### 3.1 GIT Source (if choice = 1)
 
-**Action : Cloner ou mettre à jour le dépôt Git AI-KIDO**
+**Action: Clone or update the aikido.fr Git repository**
 
-1. **Définir les variables** :
+1. **Define variables**:
    - `AIKIDO_REPO="git@github.com:lcalmejane/aikido.git"`
    - `TARGET_PATH="$(pwd)/prompts/spec/aikido-source-git"`
 
-2. **Vérifier si le dépôt existe déjà** :
-   - Si `TARGET_PATH/.git` existe :
-     - Afficher `✅ Dépôt existant détecté, mise à jour...`
-     - Exécuter `cd $TARGET_PATH && git fetch --all --tags && cd -`
-   - Sinon :
-     - Afficher `📥 Clonage du dépôt...`
-     - Exécuter `git clone $AIKIDO_REPO $TARGET_PATH`
+2. **Check if repository already exists**:
+   - If `TARGET_PATH/.git` exists:
+     - Display `Existing repository detected, updating...`
+     - Run via Bash tool: `cd $TARGET_PATH && git fetch --all --tags && cd -`
+   - Otherwise:
+     - Display `Cloning repository...`
+     - Run via Bash tool: `git clone $AIKIDO_REPO $TARGET_PATH`
 
-3. **Lister les branches et tags disponibles** :
-   - Branches : `cd $TARGET_PATH && git branch -r | sed 's/origin\///' | grep -v HEAD`
-   - Tags : `cd $TARGET_PATH && git tag --sort=-version:refname | head -10`
+3. **List available branches and tags**:
+   - Branches: `cd $TARGET_PATH && git branch -r | sed 's/origin\///' | grep -v HEAD`
+   - Tags: `cd $TARGET_PATH && git tag --sort=-version:refname | head -10`
 
-4. **Demander la branche souhaitée** :
-   - Afficher : `📌 Quelle branche souhaitez-vous utiliser ? (ENTRÉE pour 'main')`
-   - Stocker dans `$SELECTED_BRANCH` (défaut: "main")
+4. **Ask for desired branch**:
+   - Display: `Which branch do you want to use? (ENTER for 'main')`
+   - Store in `$SELECTED_BRANCH` (default: "main")
 
-5. **Checkout de la branche** :
-   - Exécuter : `cd $TARGET_PATH && git checkout $SELECTED_BRANCH && git pull origin $SELECTED_BRANCH && cd -`
+5. **Checkout branch**:
+   - Run via Bash tool: `cd $TARGET_PATH && git checkout $SELECTED_BRANCH && git pull origin $SELECTED_BRANCH && cd -`
 
-6. **Option tag** (optionnel) :
-   - Demander : `🏷️  Voulez-vous utiliser un tag spécifique ? (oui/non)`
-   - Si oui : lister les tags et faire checkout du tag choisi
+6. **Tag option** (optional):
+   - Ask: `Do you want to use a specific tag? (yes/no)`
+   - If yes: list tags and checkout selected tag
 
-7. **Définir TARGET** : `TARGET="$TARGET_PATH"`
+7. **Set TARGET**: `TARGET="$TARGET_PATH"`
 
-#### 3.2 Source LOCALE (si choix = 2)
+##### 3.2 LOCAL Source (if choice = 2)
 
-**Action : Sélectionner un répertoire local déjà extrait**
+**Action: Select an already-extracted local directory**
 
-1. **Lister les répertoires disponibles** :
-   - Exécuter : `ls -d prompts/spec/aikido-* 2>/dev/null`
-   - Afficher la liste ou message si aucun trouvé
+1. **List available directories**:
+   - Run via Bash tool: `ls -d prompts/spec/aikido-* 2>/dev/null`
+   - Display list or message if none found
 
-2. **Demander le nom du répertoire** :
-   - Afficher : `Entrez le nom du répertoire (ex: aikido-v1.3-custom) :`
-   - Stocker dans `$DIR_NAME`
+2. **Ask for directory name**:
+   - Display: `Enter directory name (e.g. aikido-v1.3-custom):`
+   - Store in `$DIR_NAME`
 
-3. **Vérifier l'existence** :
+3. **Verify existence**:
    - `TARGET_PATH="prompts/spec/$DIR_NAME"`
-   - Si répertoire n'existe pas → Afficher erreur et EXIT 1
+   - If directory does not exist → Display error and EXIT 1
 
-4. **Définir TARGET** : `TARGET="$TARGET_PATH"`
+4. **Set TARGET**: `TARGET="$TARGET_PATH"`
 
-#### 3.3 Source ARCHIVE (si choix = 3)
+##### 3.3 ARCHIVE Source (if choice = 3)
 
-**Action : Extraire une archive (tar.gz, tgz, zip)**
+**Action: Extract an archive (tar.gz, tgz, zip)**
 
-1. **Lister les archives disponibles** :
-   - Exécuter : `ls prompts/spec/*.{tar.gz,tgz,zip} 2>/dev/null`
-   - Afficher la liste ou message si aucune trouvée
+1. **List available archives**:
+   - Run via Bash tool: `ls prompts/spec/*.{tar.gz,tgz,zip} 2>/dev/null`
+   - Display list or message if none found
 
-2. **Demander le nom de l'archive** :
-   - Afficher : `Entrez le nom de l'archive (ex: ai-kido-v1.3.tar.gz) :`
-   - Stocker dans `$ARCHIVE_NAME`
+2. **Ask for archive name**:
+   - Display: `Enter archive name (e.g. ai-kido-v1.3.tar.gz):`
+   - Store in `$ARCHIVE_NAME`
 
-3. **Vérifier l'existence** :
+3. **Verify existence**:
    - `ARCHIVE_PATH="prompts/spec/$ARCHIVE_NAME"`
-   - Si fichier n'existe pas → Afficher erreur et EXIT 1
+   - If file does not exist → Display error and EXIT 1
 
-4. **Préparer l'extraction** :
-   - Extraire version du nom : `VERSION_FROM_FILE=$(echo "$ARCHIVE_NAME" | sed -E 's/.*-v?([0-9]+\.[0-9]+(\.[0-9]+)?).*/\1/')`
-   - Créer répertoire cible : `TARGET_PATH="prompts/spec/aikido-source-v${VERSION_FROM_FILE}-$(date +%Y%m%d)"`
-   - Exécuter : `mkdir -p "$TARGET_PATH"`
+4. **Prepare extraction**:
+   - Extract version from name: `VERSION_FROM_FILE=$(echo "$ARCHIVE_NAME" | sed -E 's/.*-v?([0-9]+\.[0-9]+(\.[0-9]+)?).*/\1/')`
+   - Create target directory: `TARGET_PATH="prompts/spec/aikido-source-v${VERSION_FROM_FILE}-$(date +%Y%m%d)"`
+   - Run via Bash tool: `mkdir -p "$TARGET_PATH"`
 
-5. **Extraire selon le format** :
-   - Si `.tar.gz` ou `.tgz` : `tar -xzf "$ARCHIVE_PATH" -C "$TARGET_PATH" --strip-components=1`
-   - Si `.zip` : `unzip -q "$ARCHIVE_PATH" -d "$TARGET_PATH"`
-   - Autre format → Erreur et EXIT 1
+5. **Extract by format**:
+   - If `.tar.gz` or `.tgz`: run via Bash tool: `tar -xzf "$ARCHIVE_PATH" -C "$TARGET_PATH" --strip-components=1`
+   - If `.zip`: run via Bash tool: `unzip -q "$ARCHIVE_PATH" -d "$TARGET_PATH"`
+   - Other format → Error and EXIT 1
 
-6. **Définir TARGET** : `TARGET="$TARGET_PATH"`
+6. **Set TARGET**: `TARGET="$TARGET_PATH"`
 
-### Étape 4 : Validation Source AI-KIDO
+#### Step 4: Source Validation
 
-**Action : Valider la source AI-KIDO (Prompt d'action - Pas de script)**
+**Action: Validate the AI-KIDO source**
 
-1. **Vérifier les fichiers obligatoires** dans `$TARGET` :
+1. **Check required files** in `$TARGET`:
    - `prompts/hard_points/ai-kido.md`
    - `prompts/hard_points/ai-kido-light.md`
    - `AGENTS.md`
    - `CLAUDE.md`
 
-2. **Extraire la version source** depuis `$TARGET/prompts/hard_points/ai-kido.md` :
-   - Chercher la ligne : `> **Version**: X.X.X-MODE`
-   - Stocker dans `$SOURCE_VERSION`
+2. **Extract source version** from `$TARGET/prompts/hard_points/ai-kido.md`:
+   - Find line: `> **Version**: X.X.X-MODE`
+   - Store in `$SOURCE_VERSION`
 
-3. **Résultat** :
-   - ✅ Si tous les fichiers existent ET version détectée :
-     - Afficher `✅ Source AI-KIDO validée (version $SOURCE_VERSION)`
-     - Afficher `   Chemin : $TARGET`
-     - Continuer à l'étape suivante
-   - ❌ Sinon :
-     - Afficher `❌ ERREUR : Source AI-KIDO invalide`
-     - Lister les fichiers manquants
+3. **Result**:
+   - If all files exist AND version detected:
+     - Display `Source AI-KIDO validated (version $SOURCE_VERSION)`
+     - Display `   Path: $TARGET`
+     - Continue to next step
+   - Otherwise:
+     - Display `ERROR: Invalid AI-KIDO source`
+     - List missing files
      - EXIT 1
 
-### Étape 5 : Export Variables Globales
+#### Step 5: Export Global Variables
 
-**Action : Exporter les variables pour tous les plans**
+**Action: Export variables for all plans**
 
-1. **Définir et exporter** :
-   - `SOURCE="$(pwd)"` (projet actuel)
-   - `TARGET` (déjà défini dans les étapes précédentes)
+1. **Define and export**:
+   - `SOURCE="$(pwd)"` (current project)
+   - `TARGET` (already defined in previous steps)
 
-2. **Afficher le résumé** :
+2. **Display summary**:
 
 ```
-═══════════════════════════════════════════════════════════════
-✅ PHASE PRÉPARATOIRE TERMINÉE
-═══════════════════════════════════════════════════════════════
+===============================================================
+  PREPARATORY PHASE COMPLETE
+===============================================================
 
-Variables exportées :
-  SOURCE (projet actuel) : $SOURCE
-  TARGET (source externe) : $TARGET
-  VERSION SOURCE         : $SOURCE_VERSION
+Exported variables:
+  SOURCE (current project)  : $SOURCE
+  TARGET (external source)  : $TARGET
+  SOURCE VERSION            : $SOURCE_VERSION
 
-Prêt pour l'orchestration des plans...
+Ready for plan orchestration...
 ```
 
 ---
 
-## 🔄 ORCHESTRATION DES PLANS
+### PLAN ORCHESTRATION
 
-### ⚠️ RÈGLE CRITIQUE D'ORCHESTRATION
+#### Critical Rule
 
-**INTERDICTION ABSOLUE** : Le LLM ne doit JAMAIS résumer, simplifier ou sauter des étapes des plans.
+**ABSOLUTE PROHIBITION**: The LLM must NEVER summarize, simplify, or skip steps from the plans.
 
-**OBLIGATION ABSOLUE** : Pour chaque plan, le LLM DOIT :
+**ABSOLUTE OBLIGATION**: For each plan, the LLM MUST:
 
-1. **Créer une sub-task dédiée** via switch de mode (orchestrator ou code selon le contexte)
-2. **Lire le plan complet** via Read tool
-3. **Exécuter TOUTES les phases** du plan dans l'ordre exact
-4. **Appeler TOUS les scripts** mentionnés dans le plan (pas de résumé)
-5. **Vérifier TOUTES les conditions** de succès avant de passer au plan suivant
-6. **Journaliser chaque action** effectuée
+1. **Create a dedicated sub-task** via Agent tool or Code sub-task
+2. **Read the complete plan** via Read tool
+3. **Execute ALL phases** of the plan in exact order
+4. **Call ALL scripts** mentioned in the plan (no summarizing)
+5. **Verify ALL success conditions** before moving to the next plan
+6. **Log every action** performed
 
-**Format d'exécution obligatoire** :
+**Mandatory execution format**:
 ```
-Pour chaque plan X :
-  1. Switch mode orchestrator/code
-  2. Read plan X complet
-  3. Exécuter phase 1 du plan X
-  4. Exécuter phase 2 du plan X
+For each plan X:
+  1. Create sub-task (Agent tool or Code mode)
+  2. Read complete plan X
+  3. Execute phase 1 of plan X
+  4. Execute phase 2 of plan X
   5. ...
-  6. Exécuter phase N du plan X
-  7. Vérifier succès complet
-  8. Passer au plan suivant
+  6. Execute phase N of plan X
+  7. Verify complete success
+  8. Move to next plan
 ```
 
-### Phase 1 : Exécution plan-beginning
+#### Phase 1: Execute plan-beginning
 
-**Action : Créer une sub-task dédiée pour exécuter le plan d'initialisation**
+**Action: Create a dedicated sub-task to execute the initialization plan**
 
-1. **Localiser le plan** : `prompts/hard_points/system/maj/plans/plan-beginning.md`
+1. **Locate the plan**: `prompts/hard_points/system/maj/plans/plan-beginning.md`
 
-2. **Vérifier son existence** :
-   - Si fichier introuvable → Afficher erreur et EXIT 1
+2. **Verify existence**:
+   - If file not found → Display error and EXIT 1
 
-3. **Créer une sub-task orchestrator** avec le message :
+3. **Create a sub-task** (via Agent tool or Code sub-task) with the message:
 ```
-Exécuter INTÉGRALEMENT le plan-beginning.md :
-- Lire le fichier prompts/hard_points/system/maj/plans/plan-beginning.md
-- Exécuter TOUTES les phases dans l'ordre exact
-- Appeler TOUS les scripts mentionnés
-- Ne RIEN résumer, ne RIEN sauter
-- Vérifier toutes les conditions de succès
-- Journaliser chaque action
-```
-
-4. **Afficher bannière** :
-```
-═══════════════════════════════════════════════════════════════
-📋 EXÉCUTION : plan-beginning.md (SUB-TASK DÉDIÉE)
-═══════════════════════════════════════════════════════════════
+Execute plan-beginning.md IN FULL:
+- Read file prompts/hard_points/system/maj/plans/plan-beginning.md
+- Execute ALL phases in exact order
+- Call ALL mentioned scripts
+- Do NOT summarize, do NOT skip anything
+- Verify all success conditions
+- Log every action
 ```
 
-5. **Attendre la fin de la sub-task** et récupérer :
-   - Variables exportées : `$MAJ_CURRENT_VERSION`, `$MAJ_TARGET_VERSION`
-   - Statut de succès de chaque phase
-   - Logs d'exécution
+4. **Display banner**:
+```
+===============================================================
+  EXECUTING: plan-beginning.md (DEDICATED SUB-TASK)
+===============================================================
+```
 
-6. **Vérifier les conditions de succès** du plan :
-   - Si phase BLOQUANTE échoue → EXIT 1
-   - Si succès → Continuer Phase 2
+5. **Wait for sub-task completion** and retrieve:
+   - Exported variables: `$MAJ_CURRENT_VERSION`, `$MAJ_TARGET_VERSION`
+   - Success status of each phase
+   - Execution logs
 
-### Phase 2 : Sélection & Exécution Plan de Version
+6. **Verify plan success conditions**:
+   - If BLOCKING phase fails → EXIT 1
+   - If success → Continue to Phase 2
 
-**Action : Créer une sub-task dédiée pour exécuter le plan de version**
+#### Phase 2: Version Plan Selection & Execution
 
-1. **Extraire le numéro de version** :
-   - Depuis `$MAJ_TARGET_VERSION`, extraire `X.X.X` (retirer le suffixe `-LLM` ou `-STANDARD`)
-   - Stocker dans `$VERSION_NUMBER`
+**Action: Create a dedicated sub-task to execute the version plan**
 
-2. **Construire le chemin du plan** :
+1. **Extract version number**:
+   - From `$MAJ_TARGET_VERSION`, extract `X.X.X` (remove `-LLM` or `-STANDARD` suffix)
+   - Store in `$VERSION_NUMBER`
+
+2. **Build plan path**:
    - `PLAN_VERSION="prompts/hard_points/system/maj/plans/plan-V${VERSION_NUMBER}.0.md"`
-   - Exemple : `1.3.1-LLM` → `plan-V1.3.1.0.md`
+   - Example: `1.3.1-LLM` → `plan-V1.3.1.0.md`
 
-3. **Vérifier l'existence du plan** :
-   - Si fichier introuvable :
-     - Afficher `⚠️  Aucun plan spécifique pour version $VERSION_NUMBER`
-     - Passer directement à la Phase 3 (plans ending)
-   - Si fichier existe :
-     - **Créer une sub-task orchestrator** avec le message :
+3. **Check plan existence**:
+   - If file not found:
+     - Display `No specific plan for version $VERSION_NUMBER`
+     - Skip directly to Phase 3 (ending plans)
+   - If file exists:
+     - **Create a sub-task** (via Agent tool or Code sub-task) with the message:
 ```
-Exécuter INTÉGRALEMENT le plan-V${VERSION_NUMBER}.0.md :
-- Lire le fichier ${PLAN_VERSION}
-- Exécuter TOUTES les phases dans l'ordre exact
-- Appeler TOUS les scripts mentionnés
-- Ne RIEN résumer, ne RIEN sauter
-- Vérifier toutes les conditions de succès
-- Journaliser chaque action
+Execute plan-V${VERSION_NUMBER}.0.md IN FULL:
+- Read file ${PLAN_VERSION}
+- Execute ALL phases in exact order
+- Call ALL mentioned scripts
+- Do NOT summarize, do NOT skip anything
+- Verify all success conditions
+- Log every action
 ```
-     - Afficher bannière avec nom du plan
-     - Attendre la fin de la sub-task
+     - Display banner with plan name
+     - Wait for sub-task completion
 
-4. **Gestion des erreurs** :
-   - Si phase BLOQUANTE échoue → Lancer `plan-ending-10.md` (diagnostic erreurs)
-   - Si succès → Continuer Phase 3
+4. **Error handling**:
+   - If BLOCKING phase fails → Launch `plan-ending-10.md` (error diagnostics)
+   - If success → Continue to Phase 3
 
-### Phase 3 : Chaînage Plans Ending (0→8)
+#### Phase 3: Ending Plans Chain (0→8)
 
-**Action : Créer une sub-task dédiée pour CHAQUE plan ending dans l'ordre strict 0→1→2→3→4→5→6→7→8**
+**Action: Create a dedicated sub-task for EACH ending plan in strict order 0→1→2→3→4→5→6→7→8**
 
-**RÈGLE CRITIQUE** : Chaque plan ending DOIT être exécuté dans une sub-task séparée.
+**Critical Rule**: Each ending plan MUST be executed in a separate sub-task.
 
-Pour **chaque plan ending** dans l'ordre (N = 0 à 8) :
+For **each ending plan** in order (N = 0 to 8):
 
-1. **Localiser le plan** : `prompts/hard_points/system/maj/plans/plan-ending-${N}.md`
+1. **Locate plan**: `prompts/hard_points/system/maj/plans/plan-ending-${N}.md`
 
-2. **Vérifier l'existence** :
-   - Si introuvable → Warning + passer au suivant
+2. **Verify existence**:
+   - If not found → Warning + skip to next
 
-3. **Créer une sub-task orchestrator/code** avec le message :
+3. **Create a sub-task** (via Agent tool or Code sub-task) with the message:
 ```
-Exécuter INTÉGRALEMENT le plan-ending-${N}.md :
-- Lire le fichier prompts/hard_points/system/maj/plans/plan-ending-${N}.md
-- Exécuter TOUTES les phases dans l'ordre exact
-- Appeler TOUS les scripts mentionnés (ne pas résumer)
-- Vérifier toutes les entrées requises (fichiers, variables)
-- Vérifier toutes les conditions de succès
-- Journaliser chaque action effectuée
-- Ne RIEN résumer, ne RIEN sauter
-```
-
-4. **Afficher bannière** avec numéro du plan :
-```
-═══════════════════════════════════════════════════════════════
-📋 EXÉCUTION : plan-ending-${N}.md (SUB-TASK DÉDIÉE)
-═══════════════════════════════════════════════════════════════
+Execute plan-ending-${N}.md IN FULL:
+- Read file prompts/hard_points/system/maj/plans/plan-ending-${N}.md
+- Execute ALL phases in exact order
+- Call ALL mentioned scripts (do not summarize)
+- Verify all required inputs (files, variables)
+- Verify all success conditions
+- Log every action performed
+- Do NOT summarize, do NOT skip anything
 ```
 
-5. **Contexte des plans ending** (pour information uniquement) :
-   - **plan-ending-0** : Fusion intelligente TARGET → SOURCE (contenu prompts/)
-   - **plan-ending-1** : Détection changements (génération rapport diff)
-   - **plan-ending-2** : Analyse rapport + préparation MAJ index
-   - **plan-ending-3** : Mise à jour index généraux (mono/multi)
-   - **plan-ending-4** : Validation structure (diagnostic cohérence)
-   - **plan-ending-5** : Optimisation (nettoyage fichiers temporaires)
-   - **plan-ending-6** : Validation finale (conformité AI-KIDO)
-   - **plan-ending-7** : Peuplement (proposition gaps via agent-aikido-bank-populate)
-   - **plan-ending-8** : Déploiement mappings et config TARGET → SOURCE (.roo/, .claude/, fichiers racine)
+4. **Display banner** with plan number:
+```
+===============================================================
+  EXECUTING: plan-ending-${N}.md (DEDICATED SUB-TASK)
+===============================================================
+```
 
-6. **Attendre la fin de la sub-task** et récupérer :
-   - Statut de succès de chaque phase du plan
-   - Fichiers générés
-   - Variables exportées
-   - Logs d'exécution
+5. **Ending plans context** (for information only):
+   - **plan-ending-0** : Intelligent merge TARGET → SOURCE (prompts/ content)
+   - **plan-ending-1** : Change detection (diff report generation)
+   - **plan-ending-2** : Report analysis + index update preparation
+   - **plan-ending-3** : General index update (mono/multi)
+   - **plan-ending-4** : Structure validation (coherence diagnostics)
+   - **plan-ending-5** : Optimization (temporary file cleanup)
+   - **plan-ending-6** : Final validation (AI-KIDO compliance)
+   - **plan-ending-7** : Population (gap proposals via agent-aikido-bank-populate)
+   - **plan-ending-8** : Deployment of mappings and config TARGET → SOURCE (.roo/, .claude/, root files)
 
-7. **Gestion des erreurs** :
-   - Plan **BLOQUANT** échoue → Lancer `plan-ending-10.md` (diagnostic)
-   - Plan **NON BLOQUANT** échoue → Warning + continuer au suivant
+6. **Wait for sub-task completion** and retrieve:
+   - Success status of each plan phase
+   - Generated files
+   - Exported variables
+   - Execution logs
 
-8. **Passer au plan ending suivant** (N+1) et répéter les étapes 1-7
+7. **Error handling**:
+   - BLOCKING plan fails → Launch `plan-ending-10.md` (diagnostics)
+   - NON-BLOCKING plan fails → Warning + continue to next
+
+8. **Move to next ending plan** (N+1) and repeat steps 1-7
 
 ---
 
-## ✅ FINALISATION
+## Output
 
-**Action : Afficher le rapport final de mise à jour**
+### Finalization
 
-1. **Afficher bannière de succès** :
+**Action: Display the final update report**
 
-```
-═══════════════════════════════════════════════════════════════
-✅ MISE À JOUR AI-KIDO TERMINÉE
-═══════════════════════════════════════════════════════════════
-```
-
-2. **Afficher le résumé** :
+1. **Display success banner**:
 
 ```
-📊 RÉSUMÉ :
-  Version avant  : $MAJ_CURRENT_VERSION
-  Version après  : $MAJ_TARGET_VERSION
-  Source (projet actuel) : $SOURCE
-  Target (source externe) : $TARGET
+===============================================================
+  AI-KIDO UPDATE COMPLETE
+===============================================================
+```
 
-📋 PLANS EXÉCUTÉS :
-  ✅ plan-beginning.md
-  ✅ plan-V${VERSION_NUMBER}.0.md (si applicable)
-  ✅ plan-ending-0.md → plan-ending-8.md
+2. **Display summary**:
 
-📂 FICHIERS GÉNÉRÉS :
-  - Logs : prompts/spec/logs/maj-aikido-*.log
-  - Structures JSON : /tmp/aikido/maj_*.json
+```
+SUMMARY:
+  Version before : $MAJ_CURRENT_VERSION
+  Version after  : $MAJ_TARGET_VERSION
+  Source (current project)  : $SOURCE
+  Target (external source)  : $TARGET
+
+PLANS EXECUTED:
+  plan-beginning.md
+  plan-V${VERSION_NUMBER}.0.md (if applicable)
+  plan-ending-0.md through plan-ending-8.md
+
+GENERATED FILES:
+  - Logs    : prompts/spec/logs/maj-aikido-*.log
+  - JSON    : /tmp/aikido/maj_*.json
   - Backups : backups/aikido-*.tgz
 
-🔍 PROCHAINES ACTIONS RECOMMANDÉES :
-  1. Vérifier les logs de validation (prompts/spec/logs/)
-  2. Tester les commandes migrées
-  3. Relancer l'indexation si nécessaire : /reindex-projet
-  4. Consulter les rapports de validation
+RECOMMENDED NEXT ACTIONS:
+  1. Check validation logs (prompts/spec/logs/)
+  2. Test migrated commands
+  3. Re-run indexing if needed: /reindex-projet
+  4. Review validation reports
 ```
 
 ---
 
-## ❌ GESTION D'ERREUR GLOBALE
+## Notes
 
-**Action : Gérer les erreurs critiques survenant durant le processus**
+### Error Handling
 
-Si une erreur critique survient à **n'importe quelle étape** :
+**Action: Handle critical errors occurring during the process**
 
-1. **Afficher bannière d'erreur** :
+If a critical error occurs at **any step**:
 
-```
-═══════════════════════════════════════════════════════════════
-❌ ERREUR CRITIQUE DÉTECTÉE
-═══════════════════════════════════════════════════════════════
-```
-
-2. **Afficher les détails de l'erreur** :
-   - Phase où l'erreur est survenue
-   - Message d'erreur complet
-   - Contexte (variables, fichiers concernés)
-
-3. **Lancer le plan de diagnostic** :
-   - Localiser : `prompts/hard_points/system/maj/plans/plan-ending-10.md`
-   - Si présent :
-     - Afficher `🔍 Lancement diagnostic erreur (plan-ending-10)...`
-     - Lire et exécuter le plan ending-10
-   - Si absent :
-     - Afficher `⚠️  Plan de diagnostic introuvable`
-     - Indiquer la procédure de restauration manuelle
-
-4. **Indiquer la procédure de récupération** :
+1. **Display error banner**:
 
 ```
-🛟 RÉCUPÉRATION :
-  1. Le backup de vérification a été créé avant modifications
-  2. Localiser : backups/aikido-verif-backup-*.tgz
-  3. Restaurer : tar -xzf backups/aikido-verif-backup-*.tgz
-  4. Analyser l'erreur dans les logs
-  5. Corriger le problème
-  6. Relancer : /maj-aikido --update
+===============================================================
+  CRITICAL ERROR DETECTED
+===============================================================
 ```
 
-5. **EXIT 1** pour arrêter le processus
+2. **Display error details**:
+   - Phase where the error occurred
+   - Full error message
+   - Context (variables, affected files)
 
----
+3. **Launch diagnostics plan**:
+   - Locate: `prompts/hard_points/system/maj/plans/plan-ending-10.md`
+   - If present:
+     - Display `Launching error diagnostics (plan-ending-10)...`
+     - Read and execute plan-ending-10
+   - If absent:
+     - Display `Diagnostics plan not found`
+     - Indicate manual recovery procedure
 
-## 📚 Références
+4. **Indicate recovery procedure**:
 
-- **Plans** : [`prompts/hard_points/system/maj/plans/`](../system/maj/plans/)
-- **Scripts techniques** : [`prompts/hard_points/system/maj/scripts/`](../system/maj/scripts/)
-- **README Plans** : [`prompts/hard_points/system/maj/plans/README.md`](../system/maj/plans/README.md)
-- **Agent Update Controller** : [`prompts/hard_points/agents/agent-aikido-update-controller.md`](../agents/agent-aikido-update-controller.md)
+```
+RECOVERY:
+  1. A verification backup was created before modifications
+  2. Locate: backups/aikido-verif-backup-*.tgz
+  3. Restore: tar -xzf backups/aikido-verif-backup-*.tgz
+  4. Analyze error in logs
+  5. Fix the problem
+  6. Restart: /maj-aikido --update
+```
 
----
+5. **EXIT 1** to stop the process
 
-## 🎯 NOTES IMPORTANTES POUR L'EXÉCUTION
+### Important Notes for Execution
 
-### Pour l'Agent LLM (Toi)
+**For the LLM Agent**
 
-Quand tu exécutes cette commande :
+When executing this command:
 
-1. **OBLIGATION ABSOLUE : CRÉER DES SUB-TASKS**
-   - **CHAQUE plan** (beginning, version, ending-0 à ending-8) DOIT être exécuté dans une **sub-task dédiée**
-   - Utiliser `switch_mode` vers orchestrator ou code selon le contexte
-   - Ne JAMAIS exécuter plusieurs plans dans la même sub-task
-   - Ne JAMAIS exécuter un plan directement sans sub-task
+1. **ABSOLUTE OBLIGATION: CREATE SUB-TASKS**
+   - **EACH plan** (beginning, version, ending-0 through ending-8) MUST be executed in a **dedicated sub-task**
+   - Create a sub-task via Agent tool or Code sub-task
+   - NEVER execute multiple plans in the same sub-task
+   - NEVER execute a plan directly without a sub-task
 
-2. **INTERDICTION ABSOLUE : RÉSUMER OU SAUTER**
-   - NE JAMAIS résumer les actions d'un plan
-   - NE JAMAIS sauter une phase d'un plan
-   - NE JAMAIS dire "j'ai exécuté les phases X à Y" sans les avoir réellement exécutées
-   - TOUJOURS lire le plan complet via Read tool
-   - TOUJOURS exécuter chaque phase séquentiellement
+2. **ABSOLUTE PROHIBITION: SUMMARIZE OR SKIP**
+   - NEVER summarize a plan's actions
+   - NEVER skip a plan phase
+   - NEVER say "I executed phases X through Y" without actually executing them
+   - ALWAYS read the complete plan via Read tool
+   - ALWAYS execute each phase sequentially
 
-3. **OBLIGATION : APPELER TOUS LES SCRIPTS**
-   - Quand un plan mentionne un script, l'appeler via `execute_command`
-   - Ne JAMAIS résumer l'appel d'un script par "j'ai vérifié..."
-   - Scripts autorisés dans les plans :
+3. **OBLIGATION: CALL ALL SCRIPTS**
+   - When a plan mentions a script, call it via Bash tool
+   - NEVER summarize a script call with "I verified..."
+   - Scripts authorized in plans:
      - `detect-project-type.sh`
      - `sync-files.sh`
      - `sync-directories.sh`
      - `validate-structure.sh`
-     - Tous les scripts dans `prompts/hard_points/system/maj/scripts/`
+     - All scripts in `prompts/hard_points/system/maj/scripts/`
 
-4. **OBLIGATION : SUIVRE L'ORDRE STRICT**
-   - Ordre obligatoire : beginning → version (si existe) → ending-0 → ending-1 → ... → ending-8
-   - Ne JAMAIS inverser l'ordre
-   - Ne JAMAIS paralléliser les plans
-   - Attendre la fin complète d'un plan avant de passer au suivant
+4. **OBLIGATION: FOLLOW STRICT ORDER**
+   - Mandatory order: beginning → version (if exists) → ending-0 → ending-1 → ... → ending-8
+   - NEVER reverse order
+   - NEVER parallelize plans
+   - Wait for complete plan completion before moving to next
 
-5. **OBLIGATION : VÉRIFIER LES CONDITIONS DE SUCCÈS**
-   - Après chaque phase d'un plan, vérifier son succès
-   - Si phase BLOQUANTE échoue → Arrêter et lancer plan-ending-10.md
-   - Si phase NON BLOQUANTE échoue → Logger warning et continuer
+5. **OBLIGATION: VERIFY SUCCESS CONDITIONS**
+   - After each plan phase, verify its success
+   - If BLOCKING phase fails → Stop and launch plan-ending-10.md
+   - If NON-BLOCKING phase fails → Log warning and continue
 
-6. **OBLIGATION : JOURNALISER CHAQUE ACTION**
-   - Logger chaque phase exécutée
-   - Logger chaque script appelé
-   - Logger chaque fichier généré
-   - Logger chaque variable exportée
+6. **OBLIGATION: LOG EVERY ACTION**
+   - Log every executed phase
+   - Log every called script
+   - Log every generated file
+   - Log every exported variable
 
-7. **OBLIGATION : MAINTENIR LE CONTEXTE**
-   - Exporter les variables entre les plans
-   - Transmettre les résultats d'un plan au suivant
-   - Conserver les logs de toutes les phases
+7. **OBLIGATION: MAINTAIN CONTEXT**
+   - Export variables between plans
+   - Pass results from one plan to the next
+   - Preserve logs of all phases
 
-### Avantages de cette Architecture
+### Benefits of this Architecture
 
-✅ **Maintenabilité** : Modifier un plan = modifier 1 fichier (pas 1860 lignes)
-✅ **Réutilisabilité** : Plans ending communs à toutes les migrations
-✅ **Testabilité** : Chaque plan peut être testé indépendamment
-✅ **Clarté** : Séparation claire des responsabilités
-✅ **Évolutivité** : Ajouter une nouvelle version = créer 1 plan-V{version}.md
+- **Maintainability**: Modifying a plan = modifying 1 file (not 1860 lines)
+- **Reusability**: Common ending plans for all migrations
+- **Testability**: Each plan can be tested independently
+- **Clarity**: Clear separation of responsibilities
+- **Scalability**: Adding a new version = create 1 plan-V{version}.md
+
+### References
+
+- **Plans**: [`prompts/hard_points/system/maj/plans/`](../system/maj/plans/)
+- **Technical scripts**: [`prompts/hard_points/system/maj/scripts/`](../system/maj/scripts/)
+- **Plans README**: [`prompts/hard_points/system/maj/plans/README.md`](../system/maj/plans/README.md)
+- **Agent Update Controller**: [`prompts/hard_points/agents/agent-aikido-update-controller.md`](../agents/agent-aikido-update-controller.md)
 
 ---
 
-**Optimisé avec système de plans modulaires V2.0 - Version 3.0**
+**Optimized with modular plan system V2.0 - Version 3.0**
 
-Cette commande est maintenant un **orchestrateur léger** (349 lignes vs 1860 avant) qui délègue aux plans spécialisés.
+This command is a **lightweight orchestrator** that delegates to specialized plans.

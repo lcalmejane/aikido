@@ -1,9 +1,9 @@
-# Concepts AI‑KIDO
+# AI-KIDO Concepts
 
-Ce répertoire regroupe les concepts fondamentaux décrits dans la base AI‑KIDO.
-Ajoutez ici les fichiers Markdown détaillant chaque concept (architecture, sécurité, etc.).
+This directory groups the fundamental concepts described in the AI-KIDO knowledge base.
+Add Markdown files here detailing each concept (architecture, security, etc.).
 
-## Fichiers Disponibles
+## Available Files
 
-- [`analyse-projet.md`](analyse-projet.md) : Concept d'analyse de projet pour synchronisation Memory Bank avec réalité code/docs/config
-- [`guideline-prompts.md`](guideline-prompts.md) : Guidelines pour la création de prompts efficaces
+- [`analyse-projet.md`](analyse-projet.md): Project analysis concept for synchronizing the Memory Bank with the reality of code/docs/config
+- [`guideline-prompts.md`](guideline-prompts.md): Guidelines for creating effective prompts

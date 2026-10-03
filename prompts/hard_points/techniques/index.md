@@ -1,77 +1,77 @@
-# Hard Points - Techniques Pratiques
+# Hard Points - Practical Techniques
 
-> **Statut**: Hard Points - Vérités immuables
-> **Priorité**: Absolue - Ne peuvent être remises en question
+> **Status**: Hard Points - Immutable truths
+> **Priority**: Absolute - Cannot be questioned
 
-## Vue d'ensemble
+## Overview
 
-Ce répertoire contient les **méthodes pratiques validées** qui ont été promues au statut de Hard Points dans le système AI‑KIDO. Ces techniques constituent des approches immuables qui ont fait leurs preuves et ne peuvent être modifiées sans validation explicite.
+This directory contains the **validated practical methods** that have been promoted to Hard Point status in the AI‑KIDO system. These techniques constitute immutable approaches that have proven themselves and cannot be modified without explicit validation.
 
-## Règles de Promotion
+## Promotion Rules
 
-Une technique devient Hard Point quand :
+A technique becomes a Hard Point when:
 
-1. **Efficacité Prouvée** : La technique a démontré son efficacité dans des contextes critiques
-2. **Reproductibilité** : Résultats constants sur 5+ implémentations différentes
-3. **Robustesse** : Résistance aux variations de contexte et d'environnement
-4. **Impact Critique** : La technique est essentielle au fonctionnement du système
-5. **Validation Terrain** : Testée et approuvée en conditions réelles
+1. **Proven Effectiveness**: The technique has demonstrated its effectiveness in critical contexts
+2. **Reproducibility**: Consistent results across 5+ different implementations
+3. **Robustness**: Resistance to context and environment variations
+4. **Critical Impact**: The technique is essential to system operation
+5. **Field Validation**: Tested and approved under real conditions
 
-## Format Standard
+## Standard Format
 
-Chaque Hard Point technique doit suivre le format :
+Each technical Hard Point must follow the format:
 
 ```markdown
-# Hard Point: [Nom de la Technique]
-> Promu le: YYYY-MM-DD | Validé par: [Autorité] | Origine: [Référence gen/techniques/]
+# Hard Point: [Technique Name]
+> Promoted on: YYYY-MM-DD | Validated by: [Authority] | Origin: [Reference gen/techniques/]
 
-## Technique figée
-[Description immuable de la méthode]
+## Frozen technique
+[Immutable description of the method]
 
-## Procédure obligatoire
-[Étapes qui ne peuvent être modifiées]
+## Mandatory procedure
+[Steps that cannot be modified]
 
-## Justification de l'immutabilité
-[Pourquoi cette technique ne peut être modifiée]
+## Justification of immutability
+[Why this technique cannot be modified]
 
-## Impact et dépendances
-[Éléments du système qui dépendent de cette technique]
+## Impact and dependencies
+[System elements that depend on this technique]
 
-## Références
-[Liens vers les tables de vérité d'origine]
+## References
+[Links to the original truth tables]
 ```
 
-## Techniques Hard Points Disponibles
+## Available Technique Hard Points
 
-- [`gestion-logs-aikido.md`](../gestion-logs-aikido.md) : **Gestion des Logs AI‑KIDO** - Règles strictes pour la traçabilité, switching automatique de mode, emplacement et format des logs
+- [`gestion-logs-aikido.md`](../gestion-logs-aikido.md) : **AI‑KIDO Log Management** - Strict rules for traceability, automatic mode switching, log location and format
 
-## Processus de Promotion
+## Promotion Process
 
-Pour promouvoir une technique de [`../gen/techniques/`](../../gen/techniques/) vers ce répertoire :
+To promote a technique from [`../gen/techniques/`](../../gen/techniques/) to this directory:
 
-1. Identifier la technique candidate dans `/gen/techniques/`
-2. Valider les critères de promotion (efficacité, reproductibilité, robustesse)
-3. Créer le fichier Hard Point avec justification détaillée
-4. Mettre à jour ce fichier index
-5. Référencer depuis [`../index.md`](../index.md)
+1. Identify the candidate technique in `/gen/techniques/`
+2. Validate the promotion criteria (effectiveness, reproducibility, robustness)
+3. Create the Hard Point file with detailed justification
+4. Update this index file
+5. Reference from [`../index.md`](../index.md)
 
-## Critères de Validation
+## Validation Criteria
 
-### Efficacité Mesurable
-- Métriques de performance documentées
-- Comparaison avec alternatives existantes
-- Validation par des experts du domaine
+### Measurable Effectiveness
+- Documented performance metrics
+- Comparison with existing alternatives
+- Validation by domain experts
 
-### Reproductibilité
-- Tests sur environnements multiples
-- Documentation complète des prérequis
-- Procédures de vérification standardisées
+### Reproducibility
+- Tests on multiple environments
+- Complete documentation of prerequisites
+- Standardized verification procedures
 
-### Robustesse
-- Tests de résistance aux variations
-- Gestion des cas d'erreur
-- Adaptabilité aux contraintes système
+### Robustness
+- Resistance tests to variations
+- Error case handling
+- Adaptability to system constraints
 
 ---
 
-**RAPPEL** : Les Hard Points techniques ont priorité absolue et définissent les méthodes obligatoires du système AI‑KIDO.
+**REMINDER**: Technical Hard Points have absolute priority and define the mandatory methods of the AI‑KIDO system.

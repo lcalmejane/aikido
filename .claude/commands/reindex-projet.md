@@ -1,13 +1,7 @@
 ---
-description: "Lance l'agent `agent-aikido-projet-index` pour ré-indexer le projet."
+description: "Launches the `agent-aikido-projet-index` agent to re-index the project."
 ---
 
-# Commande reindex-projet
-
-Cette commande exécute le fichier de commande complet depuis `prompts/hard_points/commands/reindex-projet.md`.
-
-**EXÉCUTION** : Je vais maintenant lire et exécuter la commande complète.
-
-```
-Lecture de prompts/hard_points/commands/reindex-projet.md et exécution des instructions...
-```
+# /reindex-projet
+Executes `prompts/hard_points/commands/reindex-projet.md`.
+**EXECUTION**: Read and apply the instructions from the target file.

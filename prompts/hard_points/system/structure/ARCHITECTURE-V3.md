@@ -1,49 +1,49 @@
 # Architecture V3.0 - Multi-Index Scalable
 
-> **Version**: 3.0 | **Date**: 2025-12-09 | **Statut**: Specification
+> **Version**: 3.0 | **Date**: 2025-12-09 | **Status**: Specification
 >
-> Architecture multi-index scalable pour gestion de gros volumes de fichiers (10K+) avec performances constantes O(1).
+> Scalable multi-index architecture for managing large file volumes (10K+) with constant O(1) performance.
 
-## 🎯 Objectifs V3.0
+## 🎯 V3.0 Objectives
 
-### Problèmes V2.1 (Monolithic)
+### V2.1 Problems (Monolithic)
 
-❌ **Performance dégradée** sur gros projets :
-- Projet 200 fichiers : ~100ms load
-- Projet 2000 fichiers : ~200ms load
-- Projet 5000 fichiers : ~500ms load ⚠️
-- Projet 10000 fichiers : ~1000ms load ❌❌
+❌ **Degraded performance** on large projects:
+- 200-file project: ~100ms load
+- 2000-file project: ~200ms load
+- 5000-file project: ~500ms load ⚠️
+- 10000-file project: ~1000ms load ❌❌
 
-❌ **Pas de mise à jour incrémentale** :
-- Modification 1 fichier → régénération complète (~36-360s)
-- Overhead inacceptable pour développement actif
+❌ **No incremental update**:
+- Modify 1 file → full regeneration (~36-360s)
+- Unacceptable overhead for active development
 
-❌ **Scalabilité limitée** :
-- Performance linéaire O(n) avec taille projet
-- Fichier monolithic index.json croît indéfiniment
+❌ **Limited scalability**:
+- Linear O(n) performance with project size
+- Monolithic index.json grows indefinitely
 
-### Solutions V3.0 (Multi-Index)
+### V3.0 Solutions (Multi-Index)
 
-✅ **Performance constante** O(1) :
-- Tout projet : ~55ms load (constant!)
+✅ **Constant performance** O(1):
+- Any project: ~55ms load (constant!)
 - Master index ~5ms + batch ~50ms
-- Scalabilité illimitée
+- Unlimited scalability
 
-✅ **Mise à jour incrémentale** ⚡ BREAKTHROUGH :
-- Modification 1 fichier → régénération 1-4 batches (~1-2s)
-- Speedup 10-15x vs régénération complète
+✅ **Incremental update** ⚡ BREAKTHROUGH:
+- Modify 1 file → regenerate 1-4 batches (~1-2s)
+- 10-15x speedup vs full regeneration
 
-✅ **Parallélisation** :
-- Génération concurrente tous les batches
-- Speedup 3-4x (4 cores)
+✅ **Parallelization**:
+- Concurrent generation of all batches
+- 3-4x speedup (4 cores)
 
-✅ **Mémoire optimisée** :
-- Lazy loading : master + batches nécessaires uniquement
-- Overhead mémoire constant (~50-100KB vs projet entier)
+✅ **Optimized memory**:
+- Lazy loading: master + required batches only
+- Constant memory overhead (~50-100KB vs entire project)
 
-## 📐 Architecture Fichiers
+## 📐 File Architecture
 
-### Structure Répertoires
+### Directory Structure
 
 ```
 prompts/hard_points/system/structure/
@@ -76,26 +76,26 @@ prompts/hard_points/system/structure/
     └── watch-changes.sh                   # UPDATED: Integration update-incremental
 ```
 
-### Tailles Fichiers Estimées
+### Estimated File Sizes
 
-| Taille Projet | Master Index | Batches by-path | Batches by-alpha | Batches by-dir | Batches by-type | Total |
-|---------------|--------------|-----------------|------------------|----------------|-----------------|-------|
-| 200 files     | ~10KB        | 1×~50KB         | 1×~50KB          | 1×~20KB        | 5×~10KB         | ~190KB |
-| 2000 files    | ~20KB        | 2×~100KB        | 2×~100KB         | 1×~50KB        | 10×~20KB        | ~570KB |
-| 5000 files    | ~30KB        | 5×~100KB        | 3×~100KB         | 2×~50KB        | 15×~30KB        | ~1.3MB |
-| 10000 files   | ~50KB        | 10×~100KB       | 5×~100KB         | 3×~50KB        | 20×~40KB        | ~2.4MB |
+| Project Size | Master Index | by-path Batches | by-alpha Batches | by-dir Batches | by-type Batches | Total |
+|--------------|--------------|-----------------|------------------|----------------|-----------------|-------|
+| 200 files    | ~10KB        | 1×~50KB         | 1×~50KB          | 1×~20KB        | 5×~10KB         | ~190KB |
+| 2000 files   | ~20KB        | 2×~100KB        | 2×~100KB         | 1×~50KB        | 10×~20KB        | ~570KB |
+| 5000 files   | ~30KB        | 5×~100KB        | 3×~100KB         | 2×~50KB        | 15×~30KB        | ~1.3MB |
+| 10000 files  | ~50KB        | 10×~100KB       | 5×~100KB         | 3×~50KB        | 20×~40KB        | ~2.4MB |
 
-**Observation** : Overhead modéré vs V2.1 monolithic, mais gains performance massifs.
+**Note**: Moderate overhead vs V2.1 monolithic, but massive performance gains.
 
-## 🔧 Format Fichiers JSON
+## 🔧 JSON File Formats
 
 ### 1. Master Index (index.json)
 
-**Rôle** : Table de routage centrale, métadonnées globales, références tous les batches.
+**Role**: Central routing table, global metadata, references to all batches.
 
-**Taille** : ~10-50KB (constant, indépendant taille projet)
+**Size**: ~10-50KB (constant, independent of project size)
 
-**Format** :
+**Format**:
 
 ```json
 {
@@ -142,7 +142,7 @@ prompts/hard_points/system/structure/
     }
   },
   "routing": {
-    "description": "Accès rapide en O(1) aux fichiers d'index pertinents",
+    "description": "Fast O(1) access to relevant index files",
     "examples": {
       "find_by_path": "prompts/gen/personas/agent.md → hash_tables.by_path['prompts'] → indices/by-path/index-path-001.json",
       "find_by_name": "agent-aikido-maj-md-index.md → hash_tables.by_alphabetical['a-d'] → indices/by-alphabetical/index-alpha-a-d.json",
@@ -155,11 +155,11 @@ prompts/hard_points/system/structure/
 
 ### 2. Batch Index by-path (index-path-NNN.json)
 
-**Rôle** : Index fichiers par chemin complet, lots de 1000.
+**Role**: File index by full path, batches of 1000.
 
-**Taille** : ~50-100KB par batch (1000 entrées)
+**Size**: ~50-100KB per batch (1000 entries)
 
-**Format** :
+**Format**:
 
 ```json
 {
@@ -196,23 +196,23 @@ prompts/hard_points/system/structure/
 }
 ```
 
-**Notes** :
-- `size_human` supprimé (redondant avec `size_bytes`, peut être recalculé à la demande)
-- `check_status` = "N/A" pour fichiers hors `/prompts` (pas de vérification last-check)
-- `check_status` = "✅", "⚠️ no-lastcheck", "❌ no-header", "❌ binary" pour fichiers dans `/prompts`
+**Notes**:
+- `size_human` removed (redundant with `size_bytes`, can be recalculated on demand)
+- `check_status` = "N/A" for files outside `/prompts` (no last-check verification)
+- `check_status` = "✅", "⚠️ no-lastcheck", "❌ no-header", "❌ binary" for files in `/prompts`
 
-**Stratégie découpage** :
-- Tri par chemin complet
-- Lots de 1000 fichiers
-- Hash table master : clé = top-level directory → batch
+**Splitting strategy**:
+- Sort by full path
+- Batches of 1000 files
+- Master hash table: key = top-level directory → batch
 
 ### 3. Batch Index by-alphabetical (index-alpha-RANGE.json)
 
-**Rôle** : Index fichiers par nom alphabétique, lots de 1000.
+**Role**: File index by alphabetical name, batches of 1000.
 
-**Taille** : ~50-100KB par batch (1000 entrées)
+**Size**: ~50-100KB per batch (1000 entries)
 
-**Format** :
+**Format**:
 
 ```json
 {
@@ -249,24 +249,24 @@ prompts/hard_points/system/structure/
 }
 ```
 
-**Notes** :
-- `size_human` supprimé dans tout le format JSON V3.0
-- Fichiers `prompts/hard_points/commands/` et `.claude/commands/` : `check_status` = "N/A"
-- Fichiers `prompts/` : `check_status` validé selon présence header last-check
+**Notes**:
+- `size_human` removed throughout the V3.0 JSON format
+- Files in `prompts/hard_points/commands/` and `.claude/commands/`: `check_status` = "N/A"
+- Files in `prompts/`: `check_status` validated based on header last-check presence
 
-**Stratégie découpage** :
-- Tri par nom fichier alphabétique
-- Lots de 1000 entrées
-- Plages dynamiques équilibrées (a-d, e-m, n-z, etc.)
-- Hash table master : clé = première lettre → range → batch
+**Splitting strategy**:
+- Sort by file name alphabetically
+- Batches of 1000 entries
+- Balanced dynamic ranges (a-d, e-m, n-z, etc.)
+- Master hash table: key = first letter → range → batch
 
 ### 4. Batch Index by-directory (index-dir-NNN.json)
 
-**Rôle** : Index fichiers par répertoire, sans doublons, lots de 1000 lignes JSON.
+**Role**: File index by directory, without duplicates, batches of 1000 JSON lines.
 
-**Taille** : ~20-50KB par batch (dépend densité répertoires)
+**Size**: ~20-50KB per batch (depends on directory density)
 
-**Format** :
+**Format**:
 
 ```json
 {
@@ -295,23 +295,23 @@ prompts/hard_points/system/structure/
 }
 ```
 
-**Notes** :
-- Format unifié : `size_bytes` (integer) au lieu de `size` string "35K"
-- Cohérent avec format des autres index
+**Notes**:
+- Unified format: `size_bytes` (integer) instead of `size` string "35K"
+- Consistent with the format of other indexes
 
-**Stratégie découpage** :
-- Groupe par répertoire
-- Liste fichiers contenus (sans doublons)
-- Découpage si >1000 lignes JSON totales
-- Hash table master : clé = répertoire complet → batch
+**Splitting strategy**:
+- Group by directory
+- List contained files (without duplicates)
+- Split if >1000 total JSON lines
+- Master hash table: key = full directory → batch
 
 ### 5. Batch Index by-type (index-type-TYPE.json)
 
-**Rôle** : Index fichiers par type/extension, split si >1000.
+**Role**: File index by type/extension, split if >1000.
 
-**Taille** : Variable selon type (10-100KB)
+**Size**: Variable by type (10-100KB)
 
-**Format** :
+**Format**:
 
 ```json
 {
@@ -342,23 +342,23 @@ prompts/hard_points/system/structure/
 }
 ```
 
-**Notes** :
-- `size_bytes` (integer) au lieu de `size` string
-- Tous les agents sont dans `/prompts`, donc `check_status` validé normalement
+**Notes**:
+- `size_bytes` (integer) instead of `size` string
+- All agents are in `/prompts`, so `check_status` validated normally
 
-**Stratégie découpage** :
-- Groupe par type détecté (agent, concept, technique, markdown, config, etc.)
-- Liste tous les fichiers du type
-- Split si >1000 entrées (index-type-markdown-000.json, index-type-markdown-001.json, etc.)
-- Hash table master : clé = type → batch(s)
+**Splitting strategy**:
+- Group by detected type (agent, concept, technique, markdown, config, etc.)
+- List all files of the type
+- Split if >1000 entries (index-type-markdown-000.json, index-type-markdown-001.json, etc.)
+- Master hash table: key = type → batch(s)
 
 ## 🔄 Workflows
 
-### Workflow 1 : Génération Complète (Parallel)
+### Workflow 1: Full Generation (Parallel)
 
-**Commande** : `./generate-project-tree.sh --parallel`
+**Command**: `./generate-project-tree.sh --parallel`
 
-**Steps** :
+**Steps**:
 
 ```mermaid
 graph TD
@@ -388,16 +388,16 @@ graph TD
     I --> J[End]
 ```
 
-**Performance** :
-- Parallel (4 cores) : ~15-20s (5000 files)
-- Sequential : ~60s (5000 files)
-- Speedup : **3-4x** ⚡
+**Performance**:
+- Parallel (4 cores): ~15-20s (5000 files)
+- Sequential: ~60s (5000 files)
+- Speedup: **3-4x** ⚡
 
-### Workflow 2 : Query File (Lazy Loading)
+### Workflow 2: Query File (Lazy Loading)
 
-**Query** : "Find agent-aikido-maj-md-index.md"
+**Query**: "Find agent-aikido-maj-md-index.md"
 
-**Steps** :
+**Steps**:
 
 ```mermaid
 graph TD
@@ -414,18 +414,18 @@ graph TD
     J --> K[Total: ~5ms cache HIT / ~55ms cache MISS]
 ```
 
-**Performance** :
-- Master load : ~5ms (first time)
-- Batch load : ~50ms (first time per batch)
-- Subsequent queries (cached) : <5ms
-- **Total cold** : ~55ms (constant!)
-- **Total warm** : <5ms
+**Performance**:
+- Master load: ~5ms (first time)
+- Batch load: ~50ms (first time per batch)
+- Subsequent queries (cached): <5ms
+- **Total cold**: ~55ms (constant!)
+- **Total warm**: <5ms
 
-### Workflow 3 : Incremental Update
+### Workflow 3: Incremental Update
 
-**Trigger** : File modified (detected by watch-changes.sh)
+**Trigger**: File modified (detected by watch-changes.sh)
 
-**Steps** :
+**Steps**:
 
 ```mermaid
 graph TD
@@ -451,16 +451,16 @@ graph TD
     N --> O[Total: ~1-2s]
 ```
 
-**Performance** :
-- Identify batches : ~5ms
-- Regenerate 1 batch : ~200-300ms
-- Regenerate 4 batches (typical) : ~1-2s
-- vs Full regeneration : ~15-20s
-- **Speedup : 10-15x** ⚡⚡
+**Performance**:
+- Identify batches: ~5ms
+- Regenerate 1 batch: ~200-300ms
+- Regenerate 4 batches (typical): ~1-2s
+- vs Full regeneration: ~15-20s
+- **Speedup: 10-15x** ⚡⚡
 
-## 📊 Benchmark Performance
+## 📊 Performance Benchmark
 
-### Comparaison V2.1 vs V3.0
+### V2.1 vs V3.0 Comparison
 
 #### Small Project (200 files)
 
@@ -502,242 +502,242 @@ graph TD
 | Full regeneration | ~360s ❌❌ | ~30s | **12x** ⚡⚡⚡ |
 | Incremental update | N/A ❌ | ~1-2s | **180x vs full** ⚡⚡⚡ |
 
-### Conclusion Benchmark
+### Benchmark Conclusion
 
-✅ **V3.0 = GAME CHANGER pour gros projets (5K+ files)**
-- Performance constante ~55ms quelque soit la taille
-- Speedup 9-18x sur queries
-- Speedup 9-12x sur regeneration
-- Incremental update 90-180x faster que full regeneration
+✅ **V3.0 = GAME CHANGER for large projects (5K+ files)**
+- Constant performance ~55ms regardless of size
+- 9-18x speedup on queries
+- 9-12x speedup on regeneration
+- Incremental update 90-180x faster than full regeneration
 
 ## 🚀 Migration Plan
 
-### Phase 1 : Développement Scripts (Priorité : HAUTE)
+### Phase 1: Script Development (Priority: HIGH)
 
-**Timeline** : 2-3 jours
+**Timeline**: 2-3 days
 
-**Scripts à créer** :
+**Scripts to create**:
 
-1. **generate-index-master.sh** (priorité 1)
-   - Input : Statistiques collectées, liste batches générés
-   - Output : index.json master avec hash tables
-   - Complexité : Moyenne
-   - Durée dev : 4-6h
+1. **generate-index-master.sh** (priority 1)
+   - Input: Collected statistics, list of generated batches
+   - Output: master index.json with hash tables
+   - Complexity: Medium
+   - Dev time: 4-6h
 
-2. **generate-index-by-path.sh** (priorité 2)
-   - Input : Liste tous fichiers
-   - Output : indices/by-path/index-path-NNN.json (lots de 1000)
-   - Complexité : Moyenne
-   - Durée dev : 4-6h
+2. **generate-index-by-path.sh** (priority 2)
+   - Input: List of all files
+   - Output: indices/by-path/index-path-NNN.json (batches of 1000)
+   - Complexity: Medium
+   - Dev time: 4-6h
 
-3. **generate-index-by-alpha.sh** (priorité 2)
-   - Input : Liste tous fichiers
-   - Output : indices/by-alphabetical/index-alpha-RANGE.json
-   - Complexité : Moyenne (découpage dynamique plages)
-   - Durée dev : 4-6h
+3. **generate-index-by-alpha.sh** (priority 2)
+   - Input: List of all files
+   - Output: indices/by-alphabetical/index-alpha-RANGE.json
+   - Complexity: Medium (dynamic range splitting)
+   - Dev time: 4-6h
 
-4. **generate-index-by-directory.sh** (priorité 2)
-   - Input : Liste tous répertoires
-   - Output : indices/by-directory/index-dir-NNN.json
-   - Complexité : Faible
-   - Durée dev : 3-4h
+4. **generate-index-by-directory.sh** (priority 2)
+   - Input: List of all directories
+   - Output: indices/by-directory/index-dir-NNN.json
+   - Complexity: Low
+   - Dev time: 3-4h
 
-5. **generate-index-by-type.sh** (priorité 2)
-   - Input : Liste tous fichiers groupés par type
-   - Output : indices/by-type/index-type-TYPE.json
-   - Complexité : Faible
-   - Durée dev : 3-4h
+5. **generate-index-by-type.sh** (priority 2)
+   - Input: List of all files grouped by type
+   - Output: indices/by-type/index-type-TYPE.json
+   - Complexity: Low
+   - Dev time: 3-4h
 
-6. **parallel-indexer.sh** (priorité 3)
-   - Input : Liste scripts à paralléliser
-   - Output : Orchestration parallèle (GNU parallel ou xargs -P)
-   - Complexité : Moyenne
-   - Durée dev : 3-4h
+6. **parallel-indexer.sh** (priority 3)
+   - Input: List of scripts to parallelize
+   - Output: Parallel orchestration (GNU parallel or xargs -P)
+   - Complexity: Medium
+   - Dev time: 3-4h
 
-7. **update-incremental.sh** (priorité 4 - BREAKTHROUGH)
-   - Input : Fichier modifié, opération (add/modify/delete)
-   - Output : Régénération batches ciblés + master
-   - Complexité : Haute (logique identification batches)
-   - Durée dev : 6-8h
+7. **update-incremental.sh** (priority 4 - BREAKTHROUGH)
+   - Input: Modified file, operation (add/modify/delete)
+   - Output: Targeted batch regeneration + master
+   - Complexity: High (batch identification logic)
+   - Dev time: 6-8h
 
-**Total dev** : ~30-40h (2-3 jours full-time)
+**Total dev**: ~30-40h (2-3 full days)
 
-### Phase 2 : Adaptation Scripts Existants
+### Phase 2: Adapting Existing Scripts
 
-**Timeline** : 1 jour
+**Timeline**: 1 day
 
-**Scripts à modifier** :
+**Scripts to modify**:
 
 1. **generate-project-tree.sh**
-   - Ajouter option --parallel / --sequential
-   - Orchestration appel nouveaux scripts
-   - Durée : 2-3h
+   - Add --parallel / --sequential option
+   - Orchestrate calls to new scripts
+   - Duration: 2-3h
 
 2. **watch-changes.sh**
-   - Intégration update-incremental.sh
-   - Détection changements → appel incremental
-   - Durée : 2-3h
+   - Integration of update-incremental.sh
+   - Detect changes → call incremental
+   - Duration: 2-3h
 
-**Total adaptation** : ~4-6h
+**Total adaptation**: ~4-6h
 
-### Phase 3 : Tests & Validation
+### Phase 3: Testing & Validation
 
-**Timeline** : 1-2 jours
+**Timeline**: 1-2 days
 
-**Tests à effectuer** :
+**Tests to perform**:
 
-1. **Tests unitaires scripts**
-   - Chaque script indépendamment
-   - Validation format JSON output
-   - Durée : 4-6h
+1. **Unit tests for scripts**
+   - Each script independently
+   - Validate JSON output format
+   - Duration: 4-6h
 
-2. **Tests intégration**
-   - Génération complète parallèle
-   - Génération complète séquentielle
-   - Mise à jour incrémentale
-   - Durée : 3-4h
+2. **Integration tests**
+   - Full parallel generation
+   - Full sequential generation
+   - Incremental update
+   - Duration: 3-4h
 
-3. **Benchmark performance**
-   - Petits projets (<500 files)
-   - Moyens projets (500-2000 files)
-   - Gros projets (5000+ files)
-   - Comparaison V2.1 vs V3.0
-   - Durée : 4-6h
+3. **Performance benchmark**
+   - Small projects (<500 files)
+   - Medium projects (500-2000 files)
+   - Large projects (5000+ files)
+   - V2.1 vs V3.0 comparison
+   - Duration: 4-6h
 
-4. **Tests stress**
-   - Projet 10K+ files
-   - Modifications multiples concurrentes
-   - Durée : 2-3h
+4. **Stress tests**
+   - Project 10K+ files
+   - Multiple concurrent modifications
+   - Duration: 2-3h
 
-**Total tests** : ~13-19h
+**Total tests**: ~13-19h
 
-### Phase 4 : Déploiement Progressif
+### Phase 4: Progressive Deployment
 
-**Timeline** : 1 jour
+**Timeline**: 1 day
 
-**Étapes** :
+**Steps**:
 
-1. **Projet pilote** (petit projet test)
-   - Génération V3.0
-   - Monitoring performance
-   - Validation fonctionnelle
-   - Durée : 2-3h
+1. **Pilot project** (small test project)
+   - V3.0 generation
+   - Performance monitoring
+   - Functional validation
+   - Duration: 2-3h
 
-2. **Rollout progressif**
-   - Petits projets → Moyens → Gros
-   - Monitoring erreurs
-   - Ajustements si nécessaire
-   - Durée : 3-4h
+2. **Progressive rollout**
+   - Small → Medium → Large projects
+   - Error monitoring
+   - Adjustments if necessary
+   - Duration: 3-4h
 
-3. **Documentation utilisateur**
-   - Guide migration V2.1 → V3.0
-   - FAQ troubleshooting
-   - Durée : 2-3h
+3. **User documentation**
+   - V2.1 → V3.0 migration guide
+   - Troubleshooting FAQ
+   - Duration: 2-3h
 
-**Total déploiement** : ~7-10h
+**Total deployment**: ~7-10h
 
-### Timeline Global
+### Global Timeline
 
-**Total** : 5-7 jours
+**Total**: 5-7 days
 
-| Phase | Durée | Dependencies |
-|-------|-------|--------------|
-| Phase 1 : Dev scripts | 2-3 jours | - |
-| Phase 2 : Adaptation | 1 jour | Phase 1 complète |
-| Phase 3 : Tests | 1-2 jours | Phase 2 complète |
-| Phase 4 : Déploiement | 1 jour | Phase 3 complète |
+| Phase | Duration | Dependencies |
+|-------|----------|--------------|
+| Phase 1: Script dev | 2-3 days | - |
+| Phase 2: Adaptation | 1 day | Phase 1 complete |
+| Phase 3: Tests | 1-2 days | Phase 2 complete |
+| Phase 4: Deployment | 1 day | Phase 3 complete |
 
-## ⚠️ Risques & Mitigations
+## ⚠️ Risks & Mitigations
 
-### Risque 1 : Performance parallélisation < attendue
+### Risk 1: Parallelization performance < expected
 
-**Impact** : Speedup <3x (vs 3-4x attendu)
+**Impact**: Speedup <3x (vs 3-4x expected)
 
-**Probabilité** : Moyenne
+**Probability**: Medium
 
-**Mitigation** :
-- Fallback mode séquentiel disponible
-- Benchmark précoce pour validation
-- Optimisation scripts si nécessaire
+**Mitigation**:
+- Sequential mode fallback available
+- Early benchmark for validation
+- Script optimization if needed
 
-### Risque 2 : Bugs identification batches (incremental update)
+### Risk 2: Batch identification bugs (incremental update)
 
-**Impact** : Mise à jour incrémentale incorrecte
+**Impact**: Incorrect incremental update
 
-**Probabilité** : Moyenne
+**Probability**: Medium
 
-**Mitigation** :
-- Tests unitaires exhaustifs
-- Validation integrity post-update
-- Fallback régénération complète si erreur
+**Mitigation**:
+- Exhaustive unit tests
+- Integrity validation post-update
+- Full regeneration fallback on error
 
-### Risque 3 : Overhead mémoire trop élevé
+### Risk 3: Memory overhead too high
 
-**Impact** : Consommation RAM excessive
+**Impact**: Excessive RAM consumption
 
-**Probabilité** : Faible
+**Probability**: Low
 
-**Mitigation** :
-- Lazy loading batches (déjà prévu)
-- Monitoring consommation mémoire
-- Tuning cache eviction si nécessaire
+**Mitigation**:
+- Lazy loading batches (already planned)
+- Memory consumption monitoring
+- Cache eviction tuning if needed
 
-### Risque 4 : Compatibilité scripts existants
+### Risk 4: Compatibility with existing scripts
 
-**Impact** : Breaking changes, rollback nécessaire
+**Impact**: Breaking changes, rollback needed
 
-**Probabilité** : Faible
+**Probability**: Low
 
-**Mitigation** :
-- Rétrocompatibilité V2.1 maintenue
-- Tests régression
-- Documentation migration claire
+**Mitigation**:
+- V2.1 backward compatibility maintained
+- Regression tests
+- Clear migration documentation
 
-## ✅ Checklist Implémentation
+## ✅ Implementation Checklist
 
-### Scripts Nouveaux
+### New Scripts
 
-- [ ] `generate-index-master.sh` - Génération index master
-- [ ] `generate-index-by-path.sh` - Index par chemin (lots 1000)
-- [ ] `generate-index-by-alpha.sh` - Index alphabétique
-- [ ] `generate-index-by-directory.sh` - Index par répertoire
-- [ ] `generate-index-by-type.sh` - Index par type
-- [ ] `parallel-indexer.sh` - Orchestrateur parallèle
-- [ ] `update-incremental.sh` - Mise à jour incrémentale
+- [ ] `generate-index-master.sh` - Master index generation
+- [ ] `generate-index-by-path.sh` - Path index (batches of 1000)
+- [ ] `generate-index-by-alpha.sh` - Alphabetical index
+- [ ] `generate-index-by-directory.sh` - Directory index
+- [ ] `generate-index-by-type.sh` - Type index
+- [ ] `parallel-indexer.sh` - Parallel orchestrator
+- [ ] `update-incremental.sh` - Incremental update
 
-### Scripts Adaptés
+### Adapted Scripts
 
 - [ ] `generate-project-tree.sh` - Support --parallel/--sequential
-- [ ] `watch-changes.sh` - Intégration update-incremental.sh
+- [ ] `watch-changes.sh` - Integration of update-incremental.sh
 
 ### Tests
 
-- [ ] Tests unitaires tous scripts
-- [ ] Tests intégration génération complète
-- [ ] Tests intégration mise à jour incrémentale
-- [ ] Benchmark performance petits projets
-- [ ] Benchmark performance moyens projets
-- [ ] Benchmark performance gros projets
-- [ ] Tests stress 10K+ files
+- [ ] Unit tests for all scripts
+- [ ] Integration tests for full generation
+- [ ] Integration tests for incremental update
+- [ ] Performance benchmark for small projects
+- [ ] Performance benchmark for medium projects
+- [ ] Performance benchmark for large projects
+- [ ] Stress tests 10K+ files
 
 ### Documentation
 
-- [ ] ARCHITECTURE-V3.md (ce document)
-- [ ] Guide migration V2.1 → V3.0
-- [ ] FAQ troubleshooting
-- [ ] Mise à jour AGENTS.md
-- [ ] Mise à jour persona agent-aikido-projet-index.md
+- [ ] ARCHITECTURE-V3.md (this document)
+- [ ] V2.1 → V3.0 migration guide
+- [ ] Troubleshooting FAQ
+- [ ] Update AGENTS.md
+- [ ] Update persona agent-aikido-projet-index.md
 
-### Déploiement
+### Deployment
 
-- [ ] Projet pilote test
-- [ ] Monitoring performance
-- [ ] Rollout progressif
-- [ ] Validation finale
+- [ ] Pilot test project
+- [ ] Performance monitoring
+- [ ] Progressive rollout
+- [ ] Final validation
 
 ---
 
-**Version** : 3.0
-**Date** : 2025-12-09
-**Auteur** : agent-aikido-projet-index
-**Statut** : Specification complète, implémentation pending
+**Version**: 3.0
+**Date**: 2025-12-09
+**Author**: agent-aikido-projet-index
+**Status**: Complete specification, implementation pending

@@ -1,90 +1,94 @@
 ---
-description: Valide la structure et cohérence d'un plan de recherche code par rapport aux exigences de agent-aikido-explore-code. Vérifie sections obligatoires, patterns regex, format output, et cohérence avec README.md.
+description: "Validate the structure and coherence of a code search plan against agent-aikido-explore-code requirements"
 globs: prompts/hard_points/system/search/plans/**/*.md
 ---
 
-# Validate Search Plan
+# /validate-search-plan
 
-Valide un plan de recherche code pour s'assurer qu'il respecte les exigences de `agent-aikido-explore-code` et les standards documentés dans `prompts/hard_points/system/search/plans/README.md`.
+**Purpose**: Validate a code search plan to ensure it meets `agent-aikido-explore-code` requirements and the standards documented in `prompts/hard_points/system/search/plans/README.md`.
 
-## 🎯 Objectif
+---
 
-Vérifier qu'un plan de recherche :
-- Contient toutes les sections obligatoires
-- Utilise le bon format de métadonnées
-- Fournit des patterns regex valides
-- Définit un format de sortie cohérent
-- Respecte les contraintes de l'agent
+## Usage
 
-## 📋 Processus de Validation
+[MANDATORY]
+/validate-search-plan
 
-### 1. Demander le Plan à Valider
+## Prerequisites
 
-Demander à l'utilisateur quel plan il souhaite valider :
+- A code search plan file exists in `prompts/hard_points/system/search/plans/`
+- `prompts/hard_points/system/search/plans/README.md` is available as reference
+- `prompts/hard_points/agents/agent-aikido-explore-code.md` is available
 
-**Options** :
-- Liste automatique des plans disponibles dans `prompts/hard_points/system/search/plans/`
-- Chemins possibles :
+## Steps
+
+### 1. Ask the User Which Plan to Validate
+
+Ask the user which plan they want to validate.
+
+**Options**:
+- Auto-list available plans in `prompts/hard_points/system/search/plans/`
+- Possible paths:
   - `plan-generic.md` (fallback)
   - `php/plan.md`
   - `javascript/plan.md`
   - `python/plan.md`
   - `java/plan.md`
   - etc.
-- Ou chemin personnalisé fourni par l'utilisateur
+- Or a custom path provided by the user
 
-**Question à poser** :
+**Question to ask**:
 ```
-Quel plan de recherche souhaitez-vous valider ?
+Which code search plan do you want to validate?
 
-Plans disponibles :
-1. plan-generic.md (Fallback universel)
-2. php/plan.md (PHP générique)
+Available plans:
+1. plan-generic.md (Universal fallback)
+2. php/plan.md (Generic PHP)
 3. javascript/plan.md (JavaScript/TypeScript)
-4. [autres plans détectés automatiquement]
+4. [other plans detected automatically]
 
-Entrez le numéro ou le chemin complet du plan :
+Enter the number or full path of the plan:
 ```
 
-### 2. Charger le Plan et le README
+### 2. Load the Plan and README
 
 ```bash
-# Charger le plan sélectionné
+# Load the selected plan
 PLAN_PATH="prompts/hard_points/system/search/plans/$USER_SELECTION"
 PLAN_CONTENT=$(cat "$PLAN_PATH")
 
-# Charger le README de référence
+# Load the reference README
 README_PATH="prompts/hard_points/system/search/plans/README.md"
 README_CONTENT=$(cat "$README_PATH")
 
-# Charger l'agent pour vérifier les exigences
+# Load the agent to verify requirements
 AGENT_PATH="prompts/hard_points/agents/agent-aikido-explore-code.md"
 AGENT_CONTENT=$(cat "$AGENT_PATH")
 ```
 
-### 3. Validation des Sections Obligatoires
+### 3. Validate Mandatory Sections
 
-Vérifier la présence de toutes les sections obligatoires :
+Check that all mandatory sections are present.
 
-**Checklist des sections** (selon README.md) :
+**Sections checklist** (per README.md):
 
-- [ ] **Header** : Métadonnées (Version, Date, Type, Language)
-- [ ] **Overview** : Description du plan et cas d'usage
-- [ ] **File Patterns** : Extensions prioritaires et exclusions
-- [ ] **Search Method** : Type de recherche (naive, semantic, ast-based)
-- [ ] **Patterns de Recherche** : Regex pour imports, déclarations, keywords
-- [ ] **Extension Strategy** : Comment suivre les dépendances
-- [ ] **Output Format** : Template de sortie avec exemples
-- [ ] **Context Extraction** : Métadonnées à extraire par type
-- [ ] **Performance Optimization** : Commandes optimisées
-- [ ] **Usage Example** : Exemple concret d'utilisation
+- [ ] **Header**: Metadata (Version, Date, Type, Language)
+- [ ] **Overview**: Plan description and use cases
+- [ ] **File Patterns**: Priority extensions and exclusions
+- [ ] **Search Method**: Search type (naive, semantic, ast-based)
+- [ ] **Search Patterns**: Regex for imports, declarations, keywords
+- [ ] **Extension Strategy**: How to follow dependencies
+- [ ] **Output Format**: Output template with examples
+- [ ] **Context Extraction**: Metadata to extract per type
+- [ ] **Performance Optimization**: Optimized commands
+- [ ] **Usage Example**: Concrete usage example
 
-**Validation** :
+**Validation**:
 ```bash
-# Vérifier chaque section
+# Check each section
 MISSING_SECTIONS=()
 
-for section in "Overview" "File Patterns" "Search Method" "Patterns de Recherche" \
+for section in "Overview" "File Patterns" "Search Method" "Search Patterns" \
                 "Extension Strategy" "Output Format" "Context Extraction" \
                 "Performance Optimization" "Usage Example"; do
     if ! grep -q "## .*$section" "$PLAN_PATH"; then
@@ -92,276 +96,277 @@ for section in "Overview" "File Patterns" "Search Method" "Patterns de Recherche
     fi
 done
 
-# Reporter les sections manquantes
+# Report missing sections
 if [[ ${#MISSING_SECTIONS[@]} -gt 0 ]]; then
-    echo "❌ Sections manquantes : ${MISSING_SECTIONS[@]}"
+    echo "❌ Missing sections: ${MISSING_SECTIONS[@]}"
 fi
 ```
 
-### 4. Validation des Patterns Regex
+### 4. Validate Regex Patterns
 
-Vérifier que les patterns regex sont bien formés :
+Check that regex patterns are well-formed.
 
-**Tests** :
-- Patterns imports/dépendances présents
-- Patterns déclarations (classes, functions, interfaces) présents
-- Syntaxe regex valide (pas d'erreurs de compilation)
-- Groupes de capture appropriés
+**Tests**:
+- Import/dependency patterns present
+- Declaration patterns (classes, functions, interfaces) present
+- Valid regex syntax (no compilation errors)
+- Appropriate capture groups
 
 ```bash
-# Extraire les patterns regex du plan
+# Extract regex patterns from the plan
 IMPORT_PATTERNS=$(sed -n '/### .*Imports/,/###/p' "$PLAN_PATH" | grep -E "^\^")
-DECLARATION_PATTERNS=$(sed -n '/### .*Déclarations/,/###/p' "$PLAN_PATH" | grep -E "^\^")
+DECLARATION_PATTERNS=$(sed -n '/### .*Declarations/,/###/p' "$PLAN_PATH" | grep -E "^\^")
 
-# Vérifier qu'il y a au moins 1 pattern de chaque type
-[[ -z "$IMPORT_PATTERNS" ]] && echo "⚠️  Aucun pattern d'import trouvé"
-[[ -z "$DECLARATION_PATTERNS" ]] && echo "⚠️  Aucun pattern de déclaration trouvé"
+# Check that there is at least 1 pattern of each type
+[[ -z "$IMPORT_PATTERNS" ]] && echo "⚠️  No import pattern found"
+[[ -z "$DECLARATION_PATTERNS" ]] && echo "⚠️  No declaration pattern found"
 
-# Tester la syntaxe des patterns (avec grep -E pour valider regex)
+# Test pattern syntax (using grep -E to validate regex)
 while IFS= read -r pattern; do
     if ! echo "test" | grep -E "$pattern" &>/dev/null && ! echo "" | grep -E "$pattern" &>/dev/null; then
-        echo "✅ Pattern valide: $pattern"
+        echo "✅ Valid pattern: $pattern"
     fi
 done <<< "$IMPORT_PATTERNS"
 ```
 
-### 5. Validation du Format de Sortie
+### 5. Validate Output Format
 
-Vérifier que le plan définit un format de sortie cohérent avec l'agent :
+Check that the plan defines an output format coherent with the agent.
 
-**Exigences de l'agent** (selon agent-aikido-explore-code.md) :
-- Métadonnées structurées par type (Classes, Interfaces, Functions, Dependencies)
-- Localisation avec numéros de lignes (line ranges)
-- PAS de code complet, seulement signatures
-- Format compact (~50 lignes max par fichier)
+**Agent requirements** (per agent-aikido-explore-code.md):
+- Structured metadata by type (Classes, Interfaces, Functions, Dependencies)
+- Location with line numbers (line ranges)
+- NO full code, signatures only
+- Compact format (~50 lines max per file)
 
-**Validation** :
+**Validation**:
 ```bash
-# Vérifier que la section Output Format existe et contient des exemples
+# Check that the Output Format section exists and contains examples
 if grep -q "## 📤 Output Format" "$PLAN_PATH"; then
-    # Extraire l'exemple de sortie
+    # Extract the output example
     OUTPUT_EXAMPLE=$(sed -n '/## 📤 Output Format/,/## /p' "$PLAN_PATH")
 
-    # Vérifier présence de catégories clés
+    # Check presence of key categories
     for category in "Classes" "Interfaces" "Functions" "Dependencies"; do
         if echo "$OUTPUT_EXAMPLE" | grep -q "\*\*$category\*\*"; then
-            echo "✅ Catégorie '$category' présente dans output format"
+            echo "✅ Category '$category' present in output format"
         else
-            echo "⚠️  Catégorie '$category' manquante dans output format"
+            echo "⚠️  Category '$category' missing from output format"
         fi
     done
 
-    # Vérifier que l'exemple montre des line numbers
+    # Check that the example shows line numbers
     if echo "$OUTPUT_EXAMPLE" | grep -q "(line[s]* [0-9]"; then
-        echo "✅ Line numbers présents dans output format"
+        echo "✅ Line numbers present in output format"
     else
-        echo "⚠️  Line numbers manquants dans output format"
+        echo "⚠️  Line numbers missing from output format"
     fi
 else
-    echo "❌ Section 'Output Format' manquante"
+    echo "❌ Section 'Output Format' missing"
 fi
 ```
 
-### 6. Validation de la Cohérence avec README
+### 6. Validate Coherence with README
 
-Vérifier que le plan suit le template documenté dans README.md :
+Check that the plan follows the template documented in README.md.
 
-**Checklist template README** :
-- [ ] Structure des sections conforme au template
-- [ ] Métadonnées header présentes (Version, Date, Type, Language)
-- [ ] Extensions de fichiers définies
-- [ ] Exclusions standards définies
-- [ ] Au moins un exemple d'usage fourni
+**README template checklist**:
+- [ ] Section structure conforms to template
+- [ ] Header metadata present (Version, Date, Type, Language)
+- [ ] File extensions defined
+- [ ] Standard exclusions defined
+- [ ] At least one usage example provided
 
 ```bash
-# Vérifier header métadonnées
+# Check header metadata
 if head -5 "$PLAN_PATH" | grep -q "Version:.*Date:.*Type:"; then
-    echo "✅ Header métadonnées présent"
+    echo "✅ Header metadata present"
 else
-    echo "⚠️  Header métadonnées incomplet"
+    echo "⚠️  Header metadata incomplete"
 fi
 
-# Vérifier exemple d'usage
+# Check usage example
 if grep -q "## 📋 Usage Example" "$PLAN_PATH"; then
-    echo "✅ Section Usage Example présente"
+    echo "✅ Usage Example section present"
 else
-    echo "⚠️  Section Usage Example manquante"
+    echo "⚠️  Usage Example section missing"
 fi
 ```
 
-### 7. Validation de la Compatibilité avec l'Agent
+### 7. Validate Agent Compatibility
 
-Vérifier que le plan est compatible avec les attentes de l'agent :
+Check that the plan is compatible with agent expectations.
 
-**Exigences de l'agent** :
-- Plan doit être parsable (sections détectables via sed/grep)
-- FILE_PATTERNS extractibles
-- EXCLUSIONS extractibles
-- IMPORT_PATTERNS et DECLARATION_PATTERNS extractibles
-- OUTPUT_TEMPLATE extractible
+**Agent requirements**:
+- Plan must be parsable (sections detectable via sed/grep)
+- FILE_PATTERNS extractable
+- EXCLUSIONS extractable
+- IMPORT_PATTERNS and DECLARATION_PATTERNS extractable
+- OUTPUT_TEMPLATE extractable
 
-**Test de parsing** :
+**Parsing test**:
 ```bash
-# Simuler le parsing de l'agent (Phase 1)
-echo "🔍 Test de parsing (simulation agent Phase 1)..."
+# Simulate agent parsing (Phase 1)
+echo "🔍 Parsing test (agent Phase 1 simulation)..."
 
 # Extract file patterns
 FILE_PATTERNS=$(sed -n '/## 🔍 File Patterns/,/## 🎯/p' "$PLAN_PATH" | grep -E "^\*\." | tr '\n' ' ')
 if [[ -n "$FILE_PATTERNS" ]]; then
-    echo "✅ FILE_PATTERNS extractibles: $FILE_PATTERNS"
+    echo "✅ FILE_PATTERNS extractable: $FILE_PATTERNS"
 else
-    echo "❌ FILE_PATTERNS non extractibles"
+    echo "❌ FILE_PATTERNS not extractable"
 fi
 
 # Extract exclusions
 EXCLUSIONS=$(sed -n '/### Exclusions/,/##/p' "$PLAN_PATH" | grep -E "^[a-zA-Z_]" | sed 's#/$##')
 if [[ -n "$EXCLUSIONS" ]]; then
-    echo "✅ EXCLUSIONS extractibles: $(echo "$EXCLUSIONS" | wc -l) exclusions"
+    echo "✅ EXCLUSIONS extractable: $(echo "$EXCLUSIONS" | wc -l) exclusions"
 else
-    echo "❌ EXCLUSIONS non extractibles"
+    echo "❌ EXCLUSIONS not extractable"
 fi
 
 # Extract search method
 SEARCH_METHOD=$(grep -A2 "## 🎯 Search Method" "$PLAN_PATH" | tail -1)
 if [[ -n "$SEARCH_METHOD" ]]; then
-    echo "✅ SEARCH_METHOD extractible: $SEARCH_METHOD"
+    echo "✅ SEARCH_METHOD extractable: $SEARCH_METHOD"
 else
-    echo "❌ SEARCH_METHOD non extractible"
+    echo "❌ SEARCH_METHOD not extractable"
 fi
 ```
 
-### 8. Tests Fonctionnels (Optionnel)
+### 8. Functional Tests (Optional)
 
-Si l'utilisateur le souhaite, exécuter des tests fonctionnels sur un projet réel :
+If the user wants, run functional tests on a real project.
 
-**Tests** :
-- Appliquer les patterns regex sur des fichiers d'exemple
-- Vérifier que les extensions de fichiers sont reconnues
-- Tester la résolution des imports (si fonction fournie)
+**Tests**:
+- Apply regex patterns to sample files
+- Verify file extensions are recognized
+- Test import resolution (if function provided)
 
 ```bash
-# Demander à l'utilisateur s'il veut des tests fonctionnels
+# Ask the user whether to run functional tests
 echo ""
-echo "Voulez-vous exécuter des tests fonctionnels sur un projet réel ? (y/n)"
+echo "Do you want to run functional tests on a real project? (y/n)"
 read -r RUN_FUNCTIONAL_TESTS
 
 if [[ "$RUN_FUNCTIONAL_TESTS" == "y" ]]; then
-    echo "Entrez le chemin du projet de test :"
+    echo "Enter the path to the test project:"
     read -r TEST_PROJECT_PATH
 
-    # Tester file discovery
-    echo "🧪 Test de découverte de fichiers..."
+    # Test file discovery
+    echo "🧪 Testing file discovery..."
     DISCOVERED_FILES=$(find "$TEST_PROJECT_PATH" -type f \
       $(echo "$FILE_PATTERNS" | sed 's/\*\./\-name "\*\./g;s/ /" -o /g') 2>/dev/null | wc -l)
-    echo "   Fichiers trouvés: $DISCOVERED_FILES"
+    echo "   Files found: $DISCOVERED_FILES"
 
-    # Tester pattern matching
-    echo "🧪 Test de pattern matching..."
+    # Test pattern matching
+    echo "🧪 Testing pattern matching..."
     TEST_KEYWORD="class"
     MATCHES=$(grep -r "$TEST_KEYWORD" "$TEST_PROJECT_PATH" --include="$FILE_PATTERNS" 2>/dev/null | wc -l)
-    echo "   Matches pour '$TEST_KEYWORD': $MATCHES"
+    echo "   Matches for '$TEST_KEYWORD': $MATCHES"
 fi
 ```
 
-## 📊 Rapport de Validation
+## Output
 
-Générer un rapport de validation complet :
+Generate a complete validation report:
 
 ```markdown
-# Rapport de Validation - {plan_name}
+# Validation Report - {plan_name}
 
 **Date**: {date}
 **Plan**: {plan_path}
-**Validé par**: agent-aikido-explore-code requirements
+**Validated against**: agent-aikido-explore-code requirements
 
-## ✅ Validations Réussies
+## ✅ Passed Validations
 
-- [x] Sections obligatoires présentes (X/10)
-- [x] Patterns regex valides
-- [x] Format de sortie conforme
-- [x] Header métadonnées complet
-- [x] Parsing agent compatible
+- [x] Mandatory sections present (X/10)
+- [x] Valid regex patterns
+- [x] Compliant output format
+- [x] Complete header metadata
+- [x] Agent-compatible parsing
 
-## ⚠️  Avertissements
+## ⚠️  Warnings
 
-- Catégorie 'Interfaces' manquante dans output format
-- Section 'Performance Optimization' vide
+- Category 'Interfaces' missing from output format
+- Section 'Performance Optimization' empty
 
-## ❌ Erreurs Critiques
+## ❌ Critical Errors
 
-- Section 'Extension Strategy' manquante
-- Aucun pattern de déclaration trouvé
+- Section 'Extension Strategy' missing
+- No declaration pattern found
 
-## 💡 Recommandations
+## 💡 Recommendations
 
-1. Ajouter section 'Extension Strategy' avec fonction resolve_import_path()
-2. Compléter patterns de déclaration pour interfaces et traits
-3. Enrichir section 'Performance Optimization' avec exemples rg/grep
-4. Ajouter exemple de sortie pour catégorie 'Interfaces'
+1. Add 'Extension Strategy' section with resolve_import_path() function
+2. Complete declaration patterns for interfaces and traits
+3. Enrich 'Performance Optimization' section with rg/grep examples
+4. Add output example for 'Interfaces' category
 
-## 📈 Score Global
+## 📈 Global Score
 
 **Score**: 75/100
 
-**Détail**:
-- Sections obligatoires: 8/10 (80%)
-- Patterns regex: 6/8 (75%)
-- Format sortie: 7/10 (70%)
-- Cohérence README: 9/10 (90%)
-- Compatibilité agent: 7/10 (70%)
+**Detail**:
+- Mandatory sections: 8/10 (80%)
+- Regex patterns: 6/8 (75%)
+- Output format: 7/10 (70%)
+- README coherence: 9/10 (90%)
+- Agent compatibility: 7/10 (70%)
 
-## 🎯 Statut Final
+## 🎯 Final Status
 
-⚠️  **AMÉLIORATIONS NÉCESSAIRES** - Le plan nécessite des corrections avant utilisation en production.
+⚠️  **IMPROVEMENTS REQUIRED** - The plan requires corrections before production use.
 
 ---
-*Rapport généré par /validate-search-plan le {date}*
+*Report generated by /validate-search-plan on {date}*
 ```
 
-## 🔧 Commandes Utiles
+## Notes
+
+**Useful commands**:
 
 ```bash
-# Lister tous les plans disponibles
+# List all available plans
 find prompts/hard_points/system/search/plans -name "plan.md" -o -name "plan-*.md"
 
-# Comparer deux plans
+# Compare two plans
 diff prompts/hard_points/system/search/plans/php/plan.md \
      prompts/hard_points/system/search/plans/javascript/plan.md
 
-# Extraire tous les patterns regex d'un plan
+# Extract all regex patterns from a plan
 grep -E "^\^" prompts/hard_points/system/search/plans/php/plan.md
 
-# Tester un pattern regex
+# Test a regex pattern
 echo "use App\Models\User;" | grep -E "^use\s+([\w\\]+)"
 ```
 
-## ✅ Critères de Validation (Récapitulatif)
+**Validation criteria summary**:
 
-### Obligatoires (bloquants)
-- [ ] Header avec métadonnées (Version, Date, Type)
-- [ ] Section "File Patterns" avec extensions
-- [ ] Section "Search Method" avec type
-- [ ] Section "Patterns de Recherche" avec au moins imports et déclarations
-- [ ] Section "Output Format" avec exemple structuré
-- [ ] Patterns extractibles par l'agent (sed/grep)
+Mandatory (blocking):
+- [ ] Header with metadata (Version, Date, Type)
+- [ ] "File Patterns" section with extensions
+- [ ] "Search Method" section with type
+- [ ] "Search Patterns" section with at least imports and declarations
+- [ ] "Output Format" section with structured example
+- [ ] Patterns extractable by the agent (sed/grep)
 
-### Recommandés (warnings)
-- [ ] Section "Extension Strategy" avec résolution imports
-- [ ] Section "Context Extraction" détaillée par type
-- [ ] Section "Performance Optimization" avec commandes
-- [ ] Section "Usage Example" avec cas concret
-- [ ] Output format inclut toutes les catégories (classes, interfaces, functions, deps)
-- [ ] Line numbers présents dans output format
+Recommended (warnings):
+- [ ] "Extension Strategy" section with import resolution
+- [ ] "Context Extraction" section detailed by type
+- [ ] "Performance Optimization" section with commands
+- [ ] "Usage Example" section with concrete case
+- [ ] Output format includes all categories (classes, interfaces, functions, deps)
+- [ ] Line numbers present in output format
 
-### Optionnels (bonus)
-- [ ] Section "Framework-Specific Patterns" (si applicable)
-- [ ] Tests fonctionnels réussis sur projet réel
-- [ ] Exemples multiples de patterns regex
-- [ ] Documentation des limites/edge cases
+Optional (bonus):
+- [ ] "Framework-Specific Patterns" section (if applicable)
+- [ ] Functional tests passed on real project
+- [ ] Multiple regex pattern examples
+- [ ] Edge cases and limitations documented
 
 ---
 
-**Workflow** :
-1. Demander plan à valider → 2. Charger plan + README + agent → 3. Valider sections → 4. Valider patterns → 5. Valider format output → 6. Valider cohérence → 7. Valider compatibilité agent → 8. Tests fonctionnels (opt) → 9. Générer rapport
+**Workflow**: Ask for plan → Load plan + README + agent → Validate sections → Validate patterns → Validate output format → Validate coherence → Validate agent compatibility → Functional tests (opt) → Generate report
 
-**Important** : Cette commande NE modifie PAS le plan, elle génère uniquement un rapport de validation avec recommandations.
+**Important**: This command does NOT modify the plan — it generates a validation report with recommendations only.

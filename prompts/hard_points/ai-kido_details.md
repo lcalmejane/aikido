@@ -1,49 +1,49 @@
-# AI-KIDO - Guide Pratique pour LLM
+# AI-KIDO - Practical Guide for LLMs
 
-> **Version**: 1.3.1-LLM | **Usage**: Référence directe pour interactions LLM
+> **Version**: 1.3.1-LLM | **Usage**: Direct reference for LLM interactions
 >
-> Ce document contient le detail des regles non présenten dans ai-kido.md et structures essentielles d'AI-KIDO pour usage par les LLMs.
+> This document contains the detail of rules not present in ai-kido.md and essential structures of AI-KIDO for use by LLMs.
 
-### Règles de Création et Maintenance
+### Creation and Maintenance Rules
 
-1. **Règle de l'Existant**: Toujours vérifier l'existence avant de créer
-2. **Règle de la Structure**: Consulter systématiquement l'arborescence [`/prompts/gen/`](../gen/)
-3. **Règle de Densité**: Maximiser la pertinence par mot utilisé
-4. **Règle d'Enrichissement**: Améliorer continuellement les Tables de vérité
-5. **Règle de Cohérence**: Maintenir l'alignement entre tous les éléments
-6. **Règle de Traçabilité**: Documenter toutes les décisions importantes
+1. **Existing Rule**: Always check existence before creating
+2. **Structure Rule**: Systematically consult the tree structure [`/prompts/gen/`](../gen/)
+3. **Density Rule**: Maximize relevance per word used
+4. **Enrichment Rule**: Continuously improve the truth tables
+5. **Consistency Rule**: Maintain alignment between all elements
+6. **Traceability Rule**: Document all important decisions
 
-**RÈGLE CRITIQUE V1.3** : Toujours consulter `/prompts/index.md` en premier, quel que soit le type de projet (mono ou multi).
+**CRITICAL RULE V1.3**: Always consult `/prompts/index.md` first, regardless of project type (mono or multi).
 
-**Navigation Multi-Projet** :
+**Multi-Project Navigation**:
 
-1. `/prompts/index.md` → Liste et pointe tous les projets
-2. `/prompts/[projet-n]/index.md` → Point d'entrée spécifique du projet
-3. `/prompts/[projet-n]/gen/index.md` → Navigation interne du projet
+1. `/prompts/index.md` → Lists and points to all projects
+2. `/prompts/[project-n]/index.md` → Project-specific entry point
+3. `/prompts/[project-n]/gen/index.md` → Internal project navigation
 
-### Règles de Répartition par Rôles Humains
+### Rules for Distribution by Human Roles
 
-1. **Assignation de Responsabilité**: Chaque sous-répertoire DOIT avoir un responsable humain désigné
-2. **Cycle de Vie Git**: Les responsables gèrent les MR/PR pour leur domaine
-3. **Cohérence Transversale**: Un responsable "Architecte AI-KIDO" supervise la cohérence globale
-4. **Matrice RACI des Sous-Répertoires**:
-   - **R** (Responsable): Membre de l'équipe assigné au sous-répertoire
-   - **A** (Approbateur): Architecte AI-KIDO pour validation de cohérence
-   - **C** (Consulté): Autres responsables pour impacts transversaux
-   - **I** (Informé): Toute l'équipe via notifications Git
+1. **Responsibility Assignment**: Each subdirectory MUST have a designated human owner
+2. **Git Lifecycle**: Owners manage MR/PR for their domain
+3. **Cross-cutting Consistency**: An "AI-KIDO Architect" owner supervises overall consistency
+4. **RACI Matrix for Subdirectories**:
+   - **R** (Responsible): Team member assigned to the subdirectory
+   - **A** (Accountable): AI-KIDO Architect for consistency validation
+   - **C** (Consulted): Other owners for cross-cutting impacts
+   - **I** (Informed): Entire team via Git notifications
 
-**Exemple de Répartition**:
+**Distribution Example**:
 
 ```
 concepts/
-├── architecture/     # R: Architecte Lead, A: AI-KIDO Architect
+├── architecture/     # R: Lead Architect, A: AI-KIDO Architect
 ├── business/         # R: Product Owner, A: AI-KIDO Architect
 ├── security/         # R: Security Officer, A: AI-KIDO Architect
 └── glossaire/        # R: Tech Writer, A: AI-KIDO Architect
 
 techniques/
-├── backend/          # R: Tech Lead Backend, A: AI-KIDO Architect
-├── frontend/         # R: Tech Lead Frontend, A: AI-KIDO Architect
+├── backend/          # R: Backend Tech Lead, A: AI-KIDO Architect
+├── frontend/         # R: Frontend Tech Lead, A: AI-KIDO Architect
 └── devops/           # R: DevOps Lead, A: AI-KIDO Architect
 
 use_cases/
@@ -52,366 +52,366 @@ use_cases/
 └── operational/      # R: DevOps Lead, A: AI-KIDO Architect
 ```
 
-## FORMAT STANDARD DES TABLES DE VÉRITÉ
+## STANDARD FORMAT FOR TRUTH TABLES
 
 ```markdown
-# [Titre du Concept/Composant]
-> Version: X.Y | Date: YYYY-MM-DD | Statut: [Statut]
+# [Title of Concept/Component]
+> Version: X.Y | Date: YYYY-MM-DD | Status: [Status]
 
-## Vue d'ensemble
-[Description concise du concept]
+## Overview
+[Concise description of the concept]
 
-## Définitions clés
-[Terminologie essentielle]
+## Key Definitions
+[Essential terminology]
 
-## Principes directeurs
-[Règles et axiomes]
+## Guiding Principles
+[Rules and axioms]
 
-## Spécifications techniques
-[Détails d'implémentation, contraintes, standards]
+## Technical Specifications
+[Implementation details, constraints, standards]
 
-## Exemples d'application
-[Cas d'usage concrets]
+## Application Examples
+[Concrete use cases]
 
-## Relations et dépendances
-[Connexions avec d'autres composants]
+## Relationships and Dependencies
+[Connections with other components]
 ```
 
-**CONTRAINTES DE QUALITÉ**:
+**QUALITY CONSTRAINTS**:
 
-- Format standardisé: Markdown avec métadonnées obligatoires
-- Longueur maximale: 500 lignes par fichier
-- Densité sémantique: Information maximale, mots minimaux
-- Auto-suffisance: Compréhensible sans contexte externe
+- Standardized format: Markdown with mandatory metadata
+- Maximum length: 500 lines per file
+- Semantic density: Maximum information, minimum words
+- Self-sufficiency: Understandable without external context
 
-## STRUCTURE DE PROMPT AI-KIDO STANDARD
+## STANDARD AI-KIDO PROMPT STRUCTURE
 
 ```markdown
-[PERSONA] [Référence au persona approprié dans /prompts/gen/personas/]
+[PERSONA] [Reference to the appropriate persona in /prompts/gen/personas/]
 
-[CONTEXTE]
-- Tables de vérité pertinentes: [Références spécifiques]
-- Contraintes du projet: [Issues des hard_points si applicable]
-- Informations spécifiques à cette requête
+[CONTEXT]
+- Relevant truth tables: [Specific references]
+- Project constraints: [From hard_points if applicable]
+- Information specific to this request
 
-[TÂCHE]
-[Description précise de ce qui est demandé]
+[TASK]
+[Precise description of what is requested]
 
 [FORMAT]
-[Instructions sur la présentation des résultats]
+[Instructions on how to present results]
 
 [VALIDATION]
-[Critères de qualité selon les standards établis]
+[Quality criteria according to established standards]
 ```
 
 ## LOGS
 
-**FEATURE_FLIPPING**: Ne Logger les questions que si la fonctionnalité est activée LLM_TRACIBILITY=TRUE dans le fichier [`/prompts/index.md`](../index.md).
+**FEATURE_FLIPPING**: Only log questions if the feature is enabled LLM_TRACIBILITY=TRUE in the file [`/prompts/index.md`](../index.md).
 
-**FORMAT LOGS**:
+**LOG FORMAT**:
 
 ```markdown
 # DATE: YYYY-MM-DD HH-MM-SS
-## PROMPT [Mode utilisé]
-[Question de l'utilisateur]
+## PROMPT [Mode used]
+[User's question]
 
 ```
 
-**TRAITEMENT OBLIGATOIRE**:
+**MANDATORY PROCESSING**:
 
-1. Vérifier que la fonctionnalité LLM_TRACIBILITY=TRUE est activée
-2. Créer le fichier [`/prompts/spec/logs/prompts.log`](../spec/logs/prompts.log) si il n'existe pas
-3. Logger en fin de fichier la question de l'utilisateur
+1. Verify that the LLM_TRACIBILITY=TRUE feature is enabled
+2. Create the file [`/prompts/spec/logs/prompts.log`](../spec/logs/prompts.log) if it does not exist
+3. Log the user's question at the end of the file
 
-## RÈGLES DE CONFORMITÉ AGENTS.MD
+## AGENTS.MD COMPLIANCE RULES
 
-### Règle 16 : Interface AGENTS.md pour Memory Bank Complète
+### Rule 16: AGENTS.md Interface for Complete Memory Bank
 
-**CRITIQUE** : AGENTS.md <= 100 lignes.
-**PRINCIPE** : Le fichier `AGENTS.md` sert d'**interface standardisée** exposant toute la memory bank AI-KIDO selon la norme LLM, y integrant entre autres les personas.
+**CRITICAL**: AGENTS.md <= 100 lines.
+**PRINCIPLE**: The `AGENTS.md` file serves as a **standardized interface** exposing the entire AI-KIDO Memory Bank according to the LLM standard, integrating personas among other elements.
 
-**ARCHITECTURE PAR LIENS** :
+**LINK-BASED ARCHITECTURE**:
 
-1. **Index externe** : `AGENTS.md` = **miroir** de [`/prompts/index.md`](../index.md) au format norme LLM
-2. **Navigation par liens** : Références exclusives vers [`/prompts/gen/`](../gen/) sans duplication de contenu
-3. **Synchronisation bidirectionnelle** : Cohérence automatique avec [`/prompts/index.md`](../index.md)
-4. **Interface standardisée** : Point d'entrée conforme norme AGENTS.md pour interopérabilité
+1. **External index**: `AGENTS.md` = **mirror** of [`/prompts/index.md`](../index.md) in LLM standard format
+2. **Link-based navigation**: Exclusive references to [`/prompts/gen/`](../gen/) without content duplication
+3. **Bidirectional synchronization**: Automatic consistency with [`/prompts/index.md`](../index.md)
+4. **Standardized interface**: Entry point compliant with AGENTS.md standard for interoperability
 
-### Règle 17 : Synchronisation AGENTS.md ↔ /prompts/index.md
+### Rule 17: AGENTS.md ↔ /prompts/index.md Synchronization
 
-**PRINCIPE** : AGENTS.md = **équivalent externe** de [`/prompts/index.md`](../index.md) avec liens vers la memory bank, jamais de recopie de contenu.
+**PRINCIPLE**: AGENTS.md = **external equivalent** of [`/prompts/index.md`](../index.md) with links to the Memory Bank, never a copy of content.
 
-**SYNCHRONISATION BIDIRECTIONNELLE** :
+**BIDIRECTIONAL SYNCHRONIZATION**:
 
-1. **Project Context** : **Liens** vers [`/prompts/index.md`](../index.md) et [`/prompts/gen/concepts/architecture-systeme.md`](../gen/concepts/architecture-systeme.md)
-2. **Available Agents** : **Références** vers [`/prompts/gen/concepts/`](../gen/concepts/), [`/prompts/gen/techniques/`](../gen/techniques/), [`/prompts/gen/use_cases/`](../gen/use_cases/), [`/prompts/gen/personas/`](../gen/personas/)
-3. **Agent Categories** : **Navigation** vers taxonomie AI-KIDO via liens relatifs
-4. **Knowledge Base** : **Pointeurs** exclusifs vers fichiers sources, aucune duplication
+1. **Project Context**: **Links** to [`/prompts/index.md`](../index.md) and [`/prompts/gen/concepts/architecture-systeme.md`](../gen/concepts/architecture-systeme.md)
+2. **Available Agents**: **References** to [`/prompts/gen/concepts/`](../gen/concepts/), [`/prompts/gen/techniques/`](../gen/techniques/), [`/prompts/gen/use_cases/`](../gen/use_cases/), [`/prompts/gen/personas/`](../gen/personas/)
+3. **Agent Categories**: **Navigation** to AI-KIDO taxonomy via relative links
+4. **Knowledge Base**: **Exclusive pointers** to source files, no duplication
 
-### Règle 18 : Structure AGENTS.md par Liens
+### Rule 18: AGENTS.md Structure by Links
 
-**PRINCIPE** : AGENTS.md = **index externe** avec liens exclusifs vers [`/prompts/gen/`](../gen/), aucune duplication de contenu.
+**PRINCIPLE**: AGENTS.md = **external index** with exclusive links to [`/prompts/gen/`](../gen/), no content duplication.
 
-### Structure AGENTS.md par Liens
+### AGENTS.md Structure by Links
 
-**STRUCTURE OBLIGATOIRE** :
+**MANDATORY STRUCTURE**:
 
 ```markdown
 # AI Agents Configuration
 
 ## Project Context
-- **Project Name**: [Lien vers /prompts/index.md]
-- **Domain**: [Lien vers /prompts/gen/concepts/]
-- **Architecture**: [Lien vers /prompts/gen/concepts/architecture-systeme.md]
-- **Tech Stack**: [Lien vers /prompts/gen/techniques/stack-technique.md]
+- **Project Name**: [Link to /prompts/index.md]
+- **Domain**: [Link to /prompts/gen/concepts/]
+- **Architecture**: [Link to /prompts/gen/concepts/architecture-systeme.md]
+- **Tech Stack**: [Link to /prompts/gen/techniques/stack-technique.md]
 
 ## Available Agents
 
 ### Concept Specialists
-[Liens vers /prompts/gen/concepts/*.md - expertise conceptuelle]
+[Links to /prompts/gen/concepts/*.md - conceptual expertise]
 
 ### Technical Specialists  
-[Liens vers /prompts/gen/techniques/*.md - expertise technique]
+[Links to /prompts/gen/techniques/*.md - technical expertise]
 
 ### Domain Experts
-[Liens vers /prompts/gen/use_cases/*.md - expertise métier]
+[Links to /prompts/gen/use_cases/*.md - business expertise]
 
 ### Role-Based Agents
-[Liens vers /prompts/gen/personas/*.md - rôles spécialisés]
+[Links to /prompts/gen/personas/*.md - specialized roles]
 
 ## Agent Interaction Matrix
-[Liens vers matrice-raci.md et spécifications RACI]
+[Links to matrice-raci.md and RACI specifications]
 
 ## Usage Guidelines
-[Liens vers /prompts/gen/use_cases/index.md et documentation RACI]
+[Links to /prompts/gen/use_cases/index.md and RACI documentation]
 ```
 
-**CONTRAINTES DE LIAISON** :
+**LINKING CONSTRAINTS**:
 
-- **Liens exclusifs** : Aucune recopie de contenu, que des références
-- **Synchronisation index** : Cohérence avec [`/prompts/index.md`](../index.md)
-- **Navigation externe** : Interface pour outils LLM vers memory bank AI-KIDO
-- **Mise à jour automatique** : Liens mis à jour lors de changements dans [`/prompts/gen/`](../gen/)
+- **Exclusive links**: No content copying, only references
+- **Index synchronization**: Consistency with [`/prompts/index.md`](../index.md)
+- **External navigation**: Interface for LLM tools to AI-KIDO Memory Bank
+- **Automatic updates**: Links updated when changes occur in [`/prompts/gen/`](../gen/)
 
-## TAXONOMIE DES PERSONAS AI-KIDO
+## AI-KIDO PERSONA TAXONOMY
 
-### Organisation Taxonomique Hiérarchique
+### Hierarchical Taxonomic Organization
 
 ```
-Niveau 1: Catégorie fondamentale
-└── Niveau 2: Famille fonctionnelle
-    └── Niveau 3: Persona spécifique
-        └── Niveau 4: Spécialisation contextuelle
+Level 1: Fundamental category
+└── Level 2: Functional family
+    └── Level 3: Specific persona
+        └── Level 4: Contextual specialization
 ```
 
-#### Niveau 1 : Catégories Fondamentales
+#### Level 1: Fundamental Categories
 
-- **🏗️ CONCEPTION** : Personas orientés architecture et design
-- **⚙️ DÉVELOPPEMENT** : Personas orientés implémentation technique
-- **🔒 SÉCURITÉ** : Personas orientés protection et conformité
-- **🔍 QUALITÉ** : Personas orientés validation et amélioration
-- **🚀 DÉPLOIEMENT** : Personas orientés infrastructure et livraison
+- **DESIGN**: Architecture and design-oriented personas
+- **DEVELOPMENT**: Technical implementation-oriented personas
+- **SECURITY**: Protection and compliance-oriented personas
+- **QUALITY**: Validation and improvement-oriented personas
+- **DEPLOYMENT**: Infrastructure and delivery-oriented personas
 
-#### Niveaux 2-4 : Structure Détaillée
+#### Levels 2-4: Detailed Structure
 
-**Niveau 2 - Familles** : Architecture Système, Backend Services, Audit Sécurité, Tests Automatisés, Infrastructure Cloud
-**Niveau 3 - Personas** : Architecte Solutions, Développeur API REST, Expert Sécurité Applications, QA Engineer, DevOps Engineer
-**Niveau 4 - Contextes** : Domaine Métier (Finance, Santé), Technologie (React, Node.js), Échelle (Startup, Enterprise)
+**Level 2 - Families**: System Architecture, Backend Services, Security Audit, Automated Testing, Cloud Infrastructure
+**Level 3 - Personas**: Solutions Architect, REST API Developer, Application Security Expert, QA Engineer, DevOps Engineer
+**Level 4 - Contexts**: Business Domain (Finance, Healthcare), Technology (React, Node.js), Scale (Startup, Enterprise)
 
-### Règles de Développement des Personas
+### Persona Development Rules
 
-1. **Héritage Taxonomique** : Chaque persona hérite des caractéristiques de ses niveaux parents
-2. **Spécialisation Progressive** : Chaque niveau ajoute des spécificités sans contredire les niveaux supérieurs
-3. **Évolution Contrôlée** : Modifications uniquement par versioning avec impact analysis
-4. **Documentation** : Tracer toutes les modifications taxonomiques
+1. **Taxonomic Inheritance**: Each persona inherits characteristics from its parent levels
+2. **Progressive Specialization**: Each level adds specifics without contradicting higher levels
+3. **Controlled Evolution**: Modifications only through versioning with impact analysis
+4. **Documentation**: Trace all taxonomic modifications
 
-## EXEMPLES DE PERSONAS
+## PERSONA EXAMPLES
 
-> **Note** : Ces personas sont des exemples illustratifs. AI-KIDO est adaptable à différents contextes (fonctionnel, technique, code, documentation, etc.) et ne requiert pas la création obligatoire de ces personas spécifiques.
+> **Note**: These personas are illustrative examples. AI-KIDO is adaptable to different contexts (functional, technical, code, documentation, etc.) and does not require mandatory creation of these specific personas.
 
-| Persona (Exemple) | Responsabilité | Usage Illustratif |
+| Persona (Example) | Responsibility | Illustrative Usage |
 |---------|---------------|-------|
-| **Architecte** | Structure et décisions techniques majeures | Architecture, design patterns |
-| **Développeur Backend** | Logique serveur et robustesse | APIs, bases de données, services |
-| **Développeur Frontend** | Expérience utilisateur | UI/UX, composants, interactions |
-| **Expert Sécurité** | Protection et conformité | Validation sécurité, audit |
-| **QA Engineer** | Qualité et détection de problèmes | Tests, validation, debugging |
-| **DevOps Engineer** | Automatisation et continuité | CI/CD, infrastructure, monitoring |
+| **Architect** | Structure and major technical decisions | Architecture, design patterns |
+| **Backend Developer** | Server logic and robustness | APIs, databases, services |
+| **Frontend Developer** | User experience | UI/UX, components, interactions |
+| **Security Expert** | Protection and compliance | Security validation, audit |
+| **QA Engineer** | Quality and issue detection | Testing, validation, debugging |
+| **DevOps Engineer** | Automation and continuity | CI/CD, infrastructure, monitoring |
 
-**UTILISATION**: Adapter les personas selon le contexte spécifique du projet. Consulter [`/prompts/gen/personas/`](../gen/personas/) pour les personas définis dans votre contexte.
+**USAGE**: Adapt personas according to the specific project context. Consult [`/prompts/gen/personas/`](../gen/personas/) for personas defined in your context.
 
-### Règles de Synchronisation AGENTS.md ↔ AI-KIDO
+### AGENTS.md ↔ AI-KIDO Synchronization Rules
 
-#### Synchronisation du Contexte Projet
+#### Project Context Synchronization
 
-1. **Project Name** : Extrait automatiquement de [`/prompts/index.md`](../index.md)
-2. **Domain** : Inféré du contexte métier dans [`/prompts/gen/concepts/`](../gen/concepts/)
-3. **Architecture** : Référence [`/prompts/gen/concepts/architecture-systeme.md`](../gen/concepts/architecture-systeme.md)
-4. **Tech Stack** : Référence [`/prompts/gen/techniques/stack-technique.md`](../gen/techniques/stack-technique.md)
+1. **Project Name**: Automatically extracted from [`/prompts/index.md`](../index.md)
+2. **Domain**: Inferred from the business context in [`/prompts/gen/concepts/`](../gen/concepts/)
+3. **Architecture**: References [`/prompts/gen/concepts/architecture-systeme.md`](../gen/concepts/architecture-systeme.md)
+4. **Tech Stack**: References [`/prompts/gen/techniques/stack-technique.md`](../gen/techniques/stack-technique.md)
 
-#### Synchronisation des Agents
+#### Agent Synchronization
 
-1. **Available Agents** : Générés depuis [`/prompts/gen/personas/`](../gen/personas/)
-2. **Catégorisation** : Selon taxonomie AI-KIDO (CONCEPTION, DÉVELOPPEMENT, SÉCURITÉ, QUALITÉ, DÉPLOIEMENT)
-3. **Spécialisations** : Adaptées au contexte projet détecté
-4. **Responsabilités** : Alignées avec spécifications RACI si disponibles
+1. **Available Agents**: Generated from [`/prompts/gen/personas/`](../gen/personas/)
+2. **Categorization**: According to AI-KIDO taxonomy (DESIGN, DEVELOPMENT, SECURITY, QUALITY, DEPLOYMENT)
+3. **Specializations**: Adapted to the detected project context
+4. **Responsibilities**: Aligned with RACI specifications if available
 
-#### Validation de Conformité AGENTS.md
+#### AGENTS.md Compliance Validation
 
-**Validation Structurelle** :
+**Structural Validation**:
 
-- ✅ Présence des 4 sections obligatoires
-- ✅ Format Markdown standard
-- ✅ Métadonnées de version présentes
-- ✅ Liens vers documentation AI-KIDO
+- ✅ Presence of 4 mandatory sections
+- ✅ Standard Markdown format
+- ✅ Version metadata present
+- ✅ Links to AI-KIDO documentation
 
-**Validation de Cohérence** :
+**Consistency Validation**:
 
-- ✅ Contexte projet synchronisé avec AI-KIDO
-- ✅ Agents mappés avec personas existants
-- ✅ Taxonomie AI-KIDO respectée
-- ✅ Spécifications RACI alignées
+- ✅ Project context synchronized with AI-KIDO
+- ✅ Agents mapped with existing personas
+- ✅ AI-KIDO taxonomy respected
+- ✅ RACI specifications aligned
 
-#### Format Standard de Persona
+#### Standard Persona Format
 
 ```markdown
-# [Nom du Persona]
-> Taxonomie: [Catégorie] > [Famille] > [Spécifique] > [Contextuel]
+# [Persona Name]
+> Taxonomy: [Category] > [Family] > [Specific] > [Contextual]
 > Version: X.Y | Date: YYYY-MM-DD
 
-## Identité
-- **Rôle principal** : [Responsabilité centrale]
-- **Domaine d'expertise** : [Champ de compétences]
-- **Niveau hiérarchique** : [Position dans la taxonomie]
+## Identity
+- **Primary role**: [Core responsibility]
+- **Domain of expertise**: [Field of competencies]
+- **Hierarchical level**: [Position in the taxonomy]
 
-## Caractéristiques héritées
-[Traits provenant des niveaux taxonomiques supérieurs]
+## Inherited Characteristics
+[Traits from higher taxonomic levels]
 
-## Spécialisations
-[Traits spécifiques à ce persona]
+## Specializations
+[Traits specific to this persona]
 
-## Contextes d'application
-[Situations où ce persona est optimal]
+## Application Contexts
+[Situations where this persona is optimal]
 
-## Relations taxonomiques
-- **Parent** : [Famille fonctionnelle]
-- **Enfants** : [Spécialisations contextuelles]
-- **Pairs** : [Autres personas du même niveau]
+## Taxonomic Relationships
+- **Parent**: [Functional family]
+- **Children**: [Contextual specializations]
+- **Peers**: [Other personas at the same level]
 ```
 
-### Utilisation Pratique
+### Practical Usage
 
-#### Sélection de Persona
+#### Persona Selection
 
-1. **Identifier la catégorie** : Quel type d'activité ?
-2. **Préciser la famille** : Quelle fonction spécifique ?
-3. **Choisir le persona** : Quel niveau de spécialisation ?
-4. **Adapter au contexte** : Quelles contraintes particulières ?
+1. **Identify the category**: What type of activity?
+2. **Specify the family**: What specific function?
+3. **Choose the persona**: What level of specialization?
+4. **Adapt to context**: What particular constraints?
 
-## HARD POINTS - PRIORITÉ ABSOLUE
+## HARD POINTS - ABSOLUTE PRIORITY
 
-**DÉFINITION**: Vérités immuables qui ne peuvent être remises en question.
+**DEFINITION**: Immutable truths that cannot be questioned.
 
-**TRAITEMENT OBLIGATOIRE**:
+**MANDATORY PROCESSING**:
 
-1. Vérifier existence de hard_points pour le domaine concerné
-2. Respecter ABSOLUMENT toutes les contraintes listées
-3. En cas de conflit: hard_points > tables de vérité > demande utilisateur
+1. Check existence of Hard Points for the relevant domain
+2. ABSOLUTELY respect all listed constraints
+3. In case of conflict: Hard Points > truth tables > user request
 
-**FORMAT HARD POINT**:
+**HARD POINT FORMAT**:
 
 ```markdown
-# Hard Point: [Nom de la Décision]
-> Promu le: YYYY-MM-DD | Validé par: [Autorité]
+# Hard Point: [Decision Name]
+> Promoted on: YYYY-MM-DD | Validated by: [Authority]
 
-## Décision figée
-[Ce qui ne peut être modifié]
+## Frozen Decision
+[What cannot be modified]
 
 ## Justification
-[Raisonnement détaillé]
+[Detailed reasoning]
 
-## Impact et dépendances
-[Éléments du système concernés]
+## Impact and Dependencies
+[System elements concerned]
 ```
 
-## MÉCANISMES DE VALIDATION
+## VALIDATION MECHANISMS
 
-### Validation Obligatoire
+### Mandatory Validation
 
-1. **Cohérence avec Tables de vérité**: Vérifier que la réponse respecte les standards établis
-2. **Respect des Hard Points**: Aucune violation des contraintes immuables
-3. **Conformité Persona**: La réponse correspond au rôle assigné
-4. **Traçabilité**: Références claires aux sources consultées
+1. **Consistency with truth tables**: Verify that the response respects established standards
+2. **Respect for Hard Points**: No violation of immutable constraints
+3. **Persona Compliance**: The response corresponds to the assigned role
+4. **Traceability**: Clear references to consulted sources
 
-### Signaux d'Alerte à Détecter
+### Alert Signals to Detect
 
-- Contradictions entre éléments de réponse
-- Écarts par rapport aux standards établis
-- Manque de contexte pour les décisions techniques
-- Incohérences terminologiques
+- Contradictions between response elements
+- Deviations from established standards
+- Lack of context for technical decisions
+- Terminological inconsistencies
 
-## PATTERNS D'OPTIMISATION
+## OPTIMIZATION PATTERNS
 
-### Optimisation Tokens
+### Token Optimization
 
-- Référencer les tables existantes au lieu de répéter l'information
-- Utiliser la structure hiérarchique pour navigation efficace
-- Prioriser la densité sémantique dans les réponses
+- Reference existing tables instead of repeating information
+- Use the hierarchical structure for efficient navigation
+- Prioritize semantic density in responses
 
-### Réutilisation
+### Reuse
 
-- Consulter l'existant avant création
-- Adapter plutôt que recréer
-- Maintenir la cohérence avec l'écosystème établi
+- Consult existing content before creating
+- Adapt rather than recreate
+- Maintain consistency with the established ecosystem
 
-## WORKFLOW STANDARD LLM
+## STANDARD LLM WORKFLOW
 
-1. **LOGS**: Log la question si LLM_TRACIBILITY=TRUE
-2. **ANALYSE**: Identifier le domaine et le type de demande
-3. **CONSULTATION**: Vérifier [`/prompts/index.md`](../index.md) et tables pertinentes
-4. **HARD POINTS**: Contrôler les contraintes immuables
-5. **AGENTS.md**: Consulter le registre central des agents disponibles
-6. **PERSONA**: Adopter le persona mappé depuis AGENTS.md
-7. **RÉPONSE**: Générer selon les standards établis
-8. **VALIDATION**: Vérifier cohérence et traçabilité
-9. **SYNC AGENTS.md**: Mettre à jour AGENTS.md si modification de personas
+1. **LOGS**: Log the question if LLM_TRACIBILITY=TRUE
+2. **ANALYSIS**: Identify the domain and type of request
+3. **CONSULTATION**: Check [`/prompts/index.md`](../index.md) and relevant tables
+4. **HARD POINTS**: Control immutable constraints
+5. **AGENTS.md**: Consult the central registry of available agents
+6. **PERSONA**: Adopt the persona mapped from AGENTS.md
+7. **RESPONSE**: Generate according to established standards
+8. **VALIDATION**: Verify consistency and traceability
+9. **SYNC AGENTS.md**: Update AGENTS.md if personas are modified
 
-**SPÉCIFICITÉ ROO-CODE**: Le parcours récursif depuis [`/prompts/index.md`](../index.md) doit être effectué automatiquement avant toute réponse (sauf agents aikido).
+**ROO-CODE SPECIFICITY**: The recursive traversal from [`/prompts/index.md`](../index.md) must be performed automatically before any response (except aikido agents).
 
-## ADAPTATION PAR DOMAINE
+## DOMAIN ADAPTATION
 
-| Domaine | Tables Prioritaires | Personas Principaux | Contraintes Spécifiques |
+| Domain | Priority Tables | Main Personas | Specific Constraints |
 |---------|-------------------|-------------------|------------------------|
-| **Backend** | [`/concepts/architecture_backend.md`](../gen/concepts/architecture_backend.md) | Développeur Backend, Expert Sécurité | Performance, scalabilité, sécurité |
-| **Frontend** | [`/concepts/design_system.md`](../gen/concepts/design_system.md) | Développeur Frontend, Designer UI/UX | Accessibilité, responsive, UX |
-| **Architecture** | [`/concepts/architecture_overview.md`](../gen/concepts/architecture_overview.md) | Architecte, Expert Sécurité | Cohérence globale, évolutivité |
-| **DevOps** | [`/concepts/infrastructure.md`](../gen/concepts/infrastructure.md) | DevOps Engineer | Automatisation, monitoring, fiabilité |
+| **Backend** | [`/concepts/architecture_backend.md`](../gen/concepts/architecture_backend.md) | Backend Developer, Security Expert | Performance, scalability, security |
+| **Frontend** | [`/concepts/design_system.md`](../gen/concepts/design_system.md) | Frontend Developer, UI/UX Designer | Accessibility, responsive, UX |
+| **Architecture** | [`/concepts/architecture_overview.md`](../gen/concepts/architecture_overview.md) | Architect, Security Expert | Global consistency, scalability |
+| **DevOps** | [`/concepts/infrastructure.md`](../gen/concepts/infrastructure.md) | DevOps Engineer | Automation, monitoring, reliability |
 
-## GESTION DES ERREURS
+## ERROR HANDLING
 
-### Erreurs à Corriger Automatiquement
+### Errors to Correct Automatically
 
-- Incohérences avec les tables de vérité existantes
-- Non-respect des formats standard
-- Références incorrectes ou manquantes
+- Inconsistencies with existing truth tables
+- Non-compliance with standard formats
+- Incorrect or missing references
 
-### Erreurs à Signaler
+### Errors to Report
 
-- Conflits avec les Hard Points
-- Demandes nécessitant création de nouvelles tables de vérité
-- Besoins d'expertise non couverte par les personas existants
+- Conflicts with Hard Points
+- Requests requiring creation of new truth tables
+- Expertise needs not covered by existing personas
 
-## MÉTRIQUES DE QUALITÉ
+## QUALITY METRICS
 
-- **Conformité**: % de réponses respectant les standards établis
-- **Traçabilité**: Présence de références aux sources consultées
-- **Cohérence**: Absence de contradictions internes
-- **Densité**: Rapport information utile / tokens utilisés
-- **Synchronisation AGENTS.md**: % de conformité personas ↔ agents centralisés
-- **Interopérabilité**: Compatibilité avec outils LLM standard via AGENTS.md
+- **Compliance**: % of responses respecting established standards
+- **Traceability**: Presence of references to consulted sources
+- **Consistency**: Absence of internal contradictions
+- **Density**: Ratio of useful information / tokens used
+- **AGENTS.md Synchronization**: % of compliance personas ↔ centralized agents
+- **Interoperability**: Compatibility with standard LLM tools via AGENTS.md
 
 ---
 
-**RAPPEL CRITIQUE**: Toujours commencer par consulter [`/prompts/index.md`](../index.md) pour comprendre le contexte du projet avant toute interaction.
+**CRITICAL REMINDER**: Always start by consulting [`/prompts/index.md`](../index.md) to understand the project context before any interaction.
 
-**RAPPEL CRITIQUE**: Les agents internes `agent-aikido-*` reviennent toujours au mode ou à l'agent qui les a appelés en exécutant `switch_mode` avec le `mode_slug` du caller. Les retours entre modes/agents internes se font au format JSON.(il ne peux pas s'invoquer lui-même de manière autonome).il faut toujours nomer les agents internes au complet avec le préfixe `agent-aikido-`
+**CRITICAL REMINDER**: Internal agents `agent-aikido-*` always return to the mode or agent that called them by executing `switch_mode` with the caller's `mode_slug`. Returns between internal modes/agents are done in JSON format (it cannot invoke itself autonomously). Internal agents must always be named in full with the `agent-aikido-` prefix.

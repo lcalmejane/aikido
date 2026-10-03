@@ -1,417 +1,419 @@
 ---
-description: Crée un nouveau plan d'analyse projet pour /analyse-project en guidant l'utilisateur à travers le processus. Lit README.md pour template et exigences, demande le type d'analyse et la profondeur, génère la structure complète.
+description: "Create a new project analysis plan for /analyse-project by guiding the user through the process"
 globs: prompts/hard_points/system/analyse/plans/README.md, prompts/hard_points/commands/analyse-project.md
 ---
 
-# Create Analyse Plan
+# /create-analyse-plan
 
-Crée un nouveau plan d'analyse projet pour `/analyse-project` en suivant le template et les exigences documentés dans `prompts/hard_points/system/analyse/plans/README.md`.
+**Purpose**: Create a new project analysis plan for `/analyse-project` by reading the README template and requirements, asking the user for analysis type and depth, and generating the complete plan structure.
 
-## 🎯 Objectif
+---
 
-Guider l'utilisateur dans la création d'un plan d'analyse complet et conforme, en :
-- Questionnant sur le type d'analyse cible (architecturale, technique, fonctionnelle, méthodologique)
-- Détectant le niveau de profondeur (1=Survol, 2=Standard, 3=Approfondi, 4=Expert)
-- Générant la structure complète du plan
-- Pré-remplissant avec stratégies standards quand possible
-- Proposant validation automatique du plan créé
+## Usage
 
-## 📋 Processus de Création
+/create-analyse-plan
 
-### 1. Charger le README de Référence
+## Prerequisites
+
+- `prompts/hard_points/system/analyse/plans/README.md` must exist (template and guidelines)
+- `prompts/hard_points/commands/analyse-project.md` must exist (analysis types reference)
+
+## Steps
+
+### Step 1 — Load the Reference README
 
 ```bash
-# Charger le README pour template et guidelines
+# Load the README for template and guidelines
 README_PATH="prompts/hard_points/system/analyse/plans/README.md"
 README_CONTENT=$(cat "$README_PATH")
 
-# Extraire le template de plan
+# Extract the analysis plan template
 TEMPLATE=$(sed -n '/### 2\. Template de Plan d'"'"'Analyse/,/### 3\. Checklist/p' "$README_PATH")
 
-# Charger la commande analyse-project pour comprendre les types
+# Load the analyse-project command to understand the available types
 COMMAND_PATH="prompts/hard_points/commands/analyse-project.md"
 COMMAND_CONTENT=$(cat "$COMMAND_PATH")
 ```
 
-### 2. Questionnaire Interactif
+### Step 2 — Interactive Questionnaire
 
-Poser une série de questions à l'utilisateur pour déterminer le plan à créer :
+Ask the user a series of questions to determine the plan to create.
 
-#### Question 1 : Type d'Analyse (Nature)
-
-```
-🎯 Pour quel type d'analyse souhaitez-vous créer un plan ?
-
-CATÉGORIES PRINCIPALES :
-
-1. ARCHITECTURALE (C4 Model)
-   - c1 : Contexte système (utilisateurs, interactions externes)
-   - c2 : Conteneurs (composants de haut niveau, services)
-   - c3 : Composants (classes, modules, détail architecture)
-   - c4 : Code (implémentation détaillée, patterns code)
-
-2. TECHNIQUE (Stack & Infrastructure)
-   - stack-generale : Technologies globales du projet
-   - backend : Stack serveur, APIs, données
-   - frontend : Interface, UX, client-side
-   - infrastructure : Déploiement, ops, monitoring
-   - securite : Authentification, autorisation, chiffrement
-
-3. FONCTIONNELLE (Métier & Processus)
-   - generale : Processus métier globaux
-   - domaine : Secteur d'activité particulier
-   - use-cases : Scénarios d'utilisation
-   - workflows : Processus opérationnels
-
-4. MÉTHODOLOGIQUE (Processus Dev)
-   - uml2 : Modélisation orientée objet
-   - rup : Processus unifié
-   - agile : Méthodes itératives
-   - devops : Intégration continue
-
-Entrez la catégorie et sous-type (ex: architecturale/c1, technique/backend) :
-```
-
-**Stocker** : `CATEGORY` (ex: "architecturale"), `SUB_TYPE` (ex: "c1")
-
-#### Question 2 : Profondeur d'Analyse
+#### Question 1 — Analysis Type (Category)
 
 ```
-📊 Quelle profondeur d'analyse pour ce plan ?
+For which type of analysis do you want to create a plan?
 
-1. Survol (profondeur 1) - Vue d'ensemble rapide (~5-10 min)
-   - Identification éléments principaux
-   - Cartographie de base
-   - Pas de détails techniques
+MAIN CATEGORIES:
 
-2. Standard (profondeur 2) - Détail modéré, équilibré (~10-20 min)
-   - Analyse relations et dépendances
-   - Identification problématiques
-   - Documentation choix architecturaux
+1. ARCHITECTURAL (C4 Model)
+   - c1 : System context (users, external interactions)
+   - c2 : Containers (high-level components, services)
+   - c3 : Components (classes, modules, architecture detail)
+   - c4 : Code (detailed implementation, code patterns)
 
-3. Approfondi (profondeur 3) - Détaillé, exhaustif (~20-40 min)
-   - Analyse fine implémentations
-   - Détection anti-patterns
-   - Recommandations optimisation
+2. TECHNICAL (Stack & Infrastructure)
+   - stack-general   : Global project technologies
+   - backend         : Server stack, APIs, data
+   - frontend        : UI, UX, client-side
+   - infrastructure  : Deployment, ops, monitoring
+   - security        : Authentication, authorization, encryption
 
-4. Expert (profondeur 4) - Audit complet (~40-60 min)
-   - Audit sécurité et performance
-   - Plan de refactoring
-   - Recommandations ROI
+3. FUNCTIONAL (Business & Processes)
+   - general   : Global business processes
+   - domain    : Specific business sector
+   - use-cases : Usage scenarios
+   - workflows : Operational processes
 
-Choisissez (1/2/3/4) :
+4. METHODOLOGICAL (Dev Processes)
+   - uml2   : Object-oriented modeling
+   - rup    : Unified process
+   - agile  : Iterative methods
+   - devops : Continuous integration
+
+Enter the category and sub-type (e.g. architectural/c1, technical/backend):
 ```
 
-**Stocker** : `DEPTH_LEVEL` (1-4), `DEPTH_NAME` (survol/standard/approfondi/expert)
+**Store**: `CATEGORY` (e.g. "architectural"), `SUB_TYPE` (e.g. "c1")
 
-#### Question 3 : Agents AI-KIDO à Mobiliser
-
-```
-🤖 Quels agents AI-KIDO souhaitez-vous utiliser dans ce plan ?
-
-Agents recommandés pour {CATEGORY}/{SUB_TYPE} - Profondeur {DEPTH_LEVEL} :
-- [x] explore-code (OBLIGATOIRE) - Scan automatique code source
-- [ ] explore-all (optionnel prof ≥2) - Recherche parallèle Memory Bank + Code
-- [ ] truth-evaluator (optionnel prof ≥2) - Résolution contradictions
-- [ ] raci-delegator (si RACI activé) - Classification documents
-- [ ] bank-populate (optionnel prof ≥2) - Peuplement automatique gaps
-- [x] validator (OBLIGATOIRE) - Validation conformité AI-KIDO
-
-Agents par défaut : explore-code, validator
-Utiliser la configuration recommandée ? (o/n) :
-```
-
-**Stocker** : `AGENTS_LIST` (liste des agents sélectionnés)
-
-#### Question 4 : Sources à Analyser (Spécifiques)
+#### Question 2 — Analysis Depth
 
 ```
-🔍 Quelles sources doivent être prioritaires pour cette analyse {CATEGORY}/{SUB_TYPE} ?
+What depth of analysis for this plan?
 
-Suggestions basées sur le type :
+1. Survey (depth 1)   -- Quick overview (~5-10 min)
+   - Identification of main elements
+   - Basic mapping
+   - No technical details
+
+2. Standard (depth 2) -- Moderate, balanced detail (~10-20 min)
+   - Relationship and dependency analysis
+   - Issue identification
+   - Architectural decision documentation
+
+3. In-depth (depth 3) -- Detailed, exhaustive (~20-40 min)
+   - Fine-grained implementation analysis
+   - Anti-pattern detection
+   - Optimization recommendations
+
+4. Expert (depth 4)   -- Complete audit (~40-60 min)
+   - Security and performance audit
+   - Refactoring plan
+   - ROI recommendations
+
+Choose (1/2/3/4):
+```
+
+**Store**: `DEPTH_LEVEL` (1-4), `DEPTH_NAME` (survey/standard/in-depth/expert)
+
+#### Question 3 — AI-KIDO Agents to Activate
+
+```
+Which AI-KIDO agents do you want to use in this plan?
+
+Recommended agents for {CATEGORY}/{SUB_TYPE} - Depth {DEPTH_LEVEL}:
+- [x] explore-code      (MANDATORY)         -- Automatic source code scan
+- [ ] explore-all       (optional depth >=2) -- Parallel Memory Bank + Code search
+- [ ] truth-evaluator   (optional depth >=2) -- Contradiction resolution
+- [ ] raci-delegator    (if RACI enabled)   -- Document classification
+- [ ] bank-populate     (optional depth >=2) -- Automatic gap population
+- [x] validator         (MANDATORY)         -- AI-KIDO compliance validation
+
+Default agents: explore-code, validator
+Use the recommended configuration? (y/n):
+```
+
+**Store**: `AGENTS_LIST` (list of selected agents)
+
+#### Question 4 — Sources to Analyze (Specific)
+
+```
+Which sources should be prioritized for this {CATEGORY}/{SUB_TYPE} analysis?
+
+Suggestions based on type:
 {SUGGESTIONS_SOURCES}
 
-Personnaliser les sources ? (o/n)
-Si oui, entrez répertoires prioritaires (séparés par espaces) :
+Customize sources? (y/n)
+If yes, enter priority directories (space-separated):
 ```
 
-**Stocker** : `PRIORITY_SOURCES` (liste des chemins prioritaires)
+**Store**: `PRIORITY_SOURCES` (list of priority paths)
 
-**Suggestions auto basées sur type** :
+**Auto-suggestions based on type**:
 ```bash
 case "$CATEGORY/$SUB_TYPE" in
-    architecturale/c1) SUGGESTED_SOURCES="README.md ARCHITECTURE.md docs/" ;;
-    architecturale/c2) SUGGESTED_SOURCES="src/ docker-compose.yml" ;;
-    architecturale/c3) SUGGESTED_SOURCES="src/ lib/ components/" ;;
-    architecturale/c4) SUGGESTED_SOURCES="src/**/*.{js,ts,php,py}" ;;
-    technique/backend) SUGGESTED_SOURCES="src/api/ src/services/ config/" ;;
-    technique/frontend) SUGGESTED_SOURCES="src/components/ src/views/ src/assets/" ;;
-    technique/infrastructure) SUGGESTED_SOURCES="docker-compose.yml .github/ terraform/" ;;
-    technique/securite) SUGGESTED_SOURCES="src/ config/ .env.example" ;;
-    fonctionnelle/*) SUGGESTED_SOURCES="src/ docs/business/" ;;
-    methodologique/*) SUGGESTED_SOURCES="docs/ .github/ README.md" ;;
-    *) SUGGESTED_SOURCES="src/ docs/ config/" ;;
+    architectural/c1)         SUGGESTED_SOURCES="README.md ARCHITECTURE.md docs/" ;;
+    architectural/c2)         SUGGESTED_SOURCES="src/ docker-compose.yml" ;;
+    architectural/c3)         SUGGESTED_SOURCES="src/ lib/ components/" ;;
+    architectural/c4)         SUGGESTED_SOURCES="src/**/*.{js,ts,php,py}" ;;
+    technical/backend)        SUGGESTED_SOURCES="src/api/ src/services/ config/" ;;
+    technical/frontend)       SUGGESTED_SOURCES="src/components/ src/views/ src/assets/" ;;
+    technical/infrastructure) SUGGESTED_SOURCES="docker-compose.yml .github/ terraform/" ;;
+    technical/security)       SUGGESTED_SOURCES="src/ config/ .env.example" ;;
+    functional/*)             SUGGESTED_SOURCES="src/ docs/business/" ;;
+    methodological/*)         SUGGESTED_SOURCES="docs/ .github/ README.md" ;;
+    *)                        SUGGESTED_SOURCES="src/ docs/ config/" ;;
 esac
 ```
 
-#### Question 5 : Stratégie d'Extraction Spécifique
+#### Question 5 — Specific Extraction Strategy
 
 ```
-📊 Stratégie d'extraction pour {CATEGORY}/{SUB_TYPE} - Profondeur {DEPTH_LEVEL} ?
+Extraction strategy for {CATEGORY}/{SUB_TYPE} - Depth {DEPTH_LEVEL}?
 
-Stratégies disponibles :
-1. Standard : Scan complet avec métadonnées complètes
-2. Ciblée : Focus sur éléments spécifiques (classes, interfaces, etc.)
-3. Patterns : Détection patterns architecturaux spécifiques
-4. Custom : Définir manuellement les patterns de recherche
+Available strategies:
+1. Standard : Full scan with complete metadata
+2. Targeted : Focus on specific elements (classes, interfaces, etc.)
+3. Patterns : Detection of specific architectural patterns
+4. Custom   : Manually define search patterns
 
-Utiliser stratégie standard recommandée ? (o/n) :
+Use the recommended standard strategy? (y/n):
 ```
 
-**Stocker** : `EXTRACTION_STRATEGY` (standard/targeted/patterns/custom)
+**Store**: `EXTRACTION_STRATEGY` (standard/targeted/patterns/custom)
 
-### 3. Génération de la Structure
+### Step 3 — Generate the Structure
 
-Créer la structure de répertoires et le fichier plan :
+Create the directory structure and the plan file.
 
 ```bash
-# Déterminer le chemin du plan
+# Determine the plan path
 BASE_PATH="prompts/hard_points/system/analyse/plans"
 
 if [ "$SUB_TYPE" != "" ]; then
-    # Plan spécifique : categorie/sous-type/plan-profondeur.md
+    # Specific plan: category/sub-type/plan-depth.md
     PLAN_PATH="$BASE_PATH/$CATEGORY/$SUB_TYPE/plan-$DEPTH_NAME.md"
 else
-    # Plan catégorie : categorie/plan-profondeur.md
+    # Category plan: category/plan-depth.md
     PLAN_PATH="$BASE_PATH/$CATEGORY/plan-$DEPTH_NAME.md"
 fi
 
-# Créer le répertoire parent
+# Create the parent directory
 mkdir -p "$(dirname "$PLAN_PATH")"
 
-echo "📝 Le plan sera créé à : $PLAN_PATH"
+echo "The plan will be created at: $PLAN_PATH"
 ```
 
-### 4. Génération du Contenu du Plan
+### Step 4 — Generate Plan Content
 
-Générer le contenu complet du plan en utilisant le template et les réponses :
+Generate the complete plan content using the template and user responses.
 
 ```markdown
-# Plan d'Analyse {CATEGORY_TITLE}/{SUB_TYPE_TITLE} - {DEPTH_TITLE}
+# Analysis Plan {CATEGORY_TITLE}/{SUB_TYPE_TITLE} - {DEPTH_TITLE}
 
-> **Version**: 1.0 | **Date**: {DATE} | **Type**: Analysis Plan | **Nature**: {CATEGORY}/{SUB_TYPE} | **Profondeur**: {DEPTH_LEVEL} - {DEPTH_NAME}
+> **Version**: 1.0 | **Date**: {DATE} | **Type**: Analysis Plan | **Nature**: {CATEGORY}/{SUB_TYPE} | **Depth**: {DEPTH_LEVEL} - {DEPTH_NAME}
 
-## 📋 Overview
+## Overview
 
-Plan d'analyse spécialisé pour **{CATEGORY_TITLE} {SUB_TYPE_TITLE}** avec profondeur **{DEPTH_NAME}**.
+Specialized analysis plan for **{CATEGORY_TITLE} {SUB_TYPE_TITLE}** at depth **{DEPTH_NAME}**.
 
 {TYPE_SPECIFIC_DESCRIPTION}
 
-**Philosophie {DEPTH_NAME}** :
+**{DEPTH_NAME} philosophy**:
 {DEPTH_PHILOSOPHY}
 
-## 🎯 Critères de Sélection
+## Selection Criteria
 
-Ce plan est sélectionné quand :
-- **Nature** : {NATURE_NUMERO} - {NATURE_DESCRIPTION}
-- **Profondeur** : {DEPTH_LEVEL} - {DEPTH_NAME}
-- **Contexte** : {IDEAL_CONTEXT}
+Select this plan when:
+- **Nature**: {NATURE_NUMBER} - {NATURE_DESCRIPTION}
+- **Depth**: {DEPTH_LEVEL} - {DEPTH_NAME}
+- **Context**: {IDEAL_CONTEXT}
 
-**Différence vs autres plans** :
-- vs Plan générique : {SPECIFIC_ADVANTAGES}
-- vs Profondeur inférieure : {MORE_DETAIL}
-- vs Profondeur supérieure : {LESS_COMPLEXITY}
+**Difference vs other plans**:
+- vs Generic plan: {SPECIFIC_ADVANTAGES}
+- vs Lower depth: {MORE_DETAIL}
+- vs Higher depth: {LESS_COMPLEXITY}
 
-## 🔍 Sources à Analyser
+## Sources to Analyze
 
-### Sources Prioritaires
+### Priority Sources
 
-**Code Source** :
-- Répertoires : {PRIORITY_SOURCES_DIRS}
-- Extensions : {FILE_EXTENSIONS}
-- Exclusions : {EXCLUSIONS}
+**Source Code**:
+- Directories: {PRIORITY_SOURCES_DIRS}
+- Extensions: {FILE_EXTENSIONS}
+- Exclusions: {EXCLUSIONS}
 
-**Documentation** :
-- Fichiers : {DOC_FILES}
-- Sections prioritaires : {DOC_SECTIONS}
+**Documentation**:
+- Files: {DOC_FILES}
+- Priority sections: {DOC_SECTIONS}
 
-**Configuration** :
-- Fichiers : {CONFIG_FILES}
-- Paramètres clés : {KEY_CONFIGS}
+**Configuration**:
+- Files: {CONFIG_FILES}
+- Key parameters: {KEY_CONFIGS}
 
-### Critères de Filtrage
+### Filtering Criteria
 
 {FILTERING_CRITERIA}
 
-## 🤖 Agents AI-KIDO à Mobiliser
+## AI-KIDO Agents to Activate
 
-### Phase 3.1 : Scan Code (Obligatoire)
+### Phase 3.1 - Code Scan (Mandatory)
 
-**Agent** : \`agent-aikido-explore-code\`
+**Agent**: \`agent-aikido-explore-code\`
 
-**Prompt spécialisé** :
+**Specialized prompt**:
 \`\`\`
 "FORMAT: JSON
 
-Analyse {CATEGORY}/{SUB_TYPE} profondeur {DEPTH_LEVEL} :
+Analysis {CATEGORY}/{SUB_TYPE} depth {DEPTH_LEVEL}:
 
-FOCUS :
+FOCUS:
 {FOCUS_AREAS}
 
-DÉTAIL :
+DETAIL:
 {DETAIL_LEVEL}
 
-EXCLUSIONS :
+EXCLUSIONS:
 {EXCLUSIONS}
 
-Output attendu :
+Expected output:
 {OUTPUT_FORMAT}"
 \`\`\`
 
-### Phase 3.2 : Recherche Parallèle
+### Phase 3.2 - Parallel Search
 
-**Condition** : {EXPLORE_ALL_CONDITION}
+**Condition**: {EXPLORE_ALL_CONDITION}
 
-**Agent** : \`agent-aikido-explore-all\`
+**Agent**: \`agent-aikido-explore-all\`
 
 {EXPLORE_ALL_DETAILS}
 
-### Résolution Contradictions
+### Contradiction Resolution
 
-**Condition** : {TRUTH_EVALUATOR_CONDITION}
+**Condition**: {TRUTH_EVALUATOR_CONDITION}
 
-**Agent** : \`agent-aikido-truth-evaluator\`
+**Agent**: \`agent-aikido-truth-evaluator\`
 
-**Stratégie hiérarchie** : {HIERARCHY_STRATEGY}
+**Hierarchy strategy**: {HIERARCHY_STRATEGY}
 
-### Classification RACI
+### RACI Classification
 
-**Condition** : {RACI_CONDITION}
+**Condition**: {RACI_CONDITION}
 
-**Agent** : \`agent-aikido-raci-delegator\`
+**Agent**: \`agent-aikido-raci-delegator\`
 
-**Mapping** : {RACI_MAPPING}
+**Mapping**: {RACI_MAPPING}
 
-### Peuplement Automatique
+### Automatic Population
 
-**Condition** : {BANK_POPULATE_CONDITION}
+**Condition**: {BANK_POPULATE_CONDITION}
 
-**Agent** : \`agent-aikido-bank-populate\`
+**Agent**: \`agent-aikido-bank-populate\`
 
-**Stratégie** : {POPULATE_STRATEGY}
+**Strategy**: {POPULATE_STRATEGY}
 
-### Validation Finale (Obligatoire)
+### Final Validation (Mandatory)
 
-**Agent** : \`agent-aikido-validator\`
+**Agent**: \`agent-aikido-validator\`
 
-**Règles strictes** :
+**Strict rules**:
 {VALIDATION_RULES}
 
-## 📊 Stratégie d'Extraction
+## Extraction Strategy
 
-### 1. Détection Automatique
+### 1. Automatic Detection
 
-**Algorithme {DEPTH_NAME}** :
+**{DEPTH_NAME} algorithm**:
 {DETECTION_ALGORITHM}
 
-**Patterns de recherche** :
+**Search patterns**:
 \`\`\`regex
 {SEARCH_PATTERNS}
 \`\`\`
 
-**Heuristiques** :
+**Heuristics**:
 {HEURISTICS}
 
-### 2. Extraction Métadonnées
+### 2. Metadata Extraction
 
-**Architecture** : {ARCH_METADATA}
-**Stack Technique** : {STACK_METADATA}
-**Domaine Métier** : {DOMAIN_METADATA}
-**Configuration** : {CONFIG_METADATA}
+**Architecture**: {ARCH_METADATA}
+**Technical Stack**: {STACK_METADATA}
+**Business Domain**: {DOMAIN_METADATA}
+**Configuration**: {CONFIG_METADATA}
 
-### 3. Analyse Profondeur Spécifique
+### 3. Depth-Specific Analysis
 
-**Profondeur {DEPTH_LEVEL} - {DEPTH_NAME}** :
-- **Niveau de détail** : {DETAIL_LEVEL}
-- **Métriques collectées** : {METRICS}
-- **Graphes générés** : {DIAGRAMS}
-- **Temps estimé** : {TIME_ESTIMATE}
+**Depth {DEPTH_LEVEL} - {DEPTH_NAME}**:
+- **Detail level**: {DETAIL_LEVEL}
+- **Collected metrics**: {METRICS}
+- **Generated diagrams**: {DIAGRAMS}
+- **Estimated time**: {TIME_ESTIMATE}
 
-## 🔄 Workflow Complet
+## Complete Workflow
 
-### Phases d'Exécution
+### Execution Phases
 
 \`\`\`mermaid
 {WORKFLOW_DIAGRAM}
 \`\`\`
 
-### Temps d'Exécution Estimé
+### Estimated Execution Time
 
 {TIME_BREAKDOWN}
 
-**Total** : {TOTAL_TIME}
+**Total**: {TOTAL_TIME}
 
-## 📤 Output Format
+## Output Format
 
-### Structure de Sortie
+### Output Structure
 
 \`\`\`markdown
 {OUTPUT_TEMPLATE}
 \`\`\`
 
-## 🎓 Cas d'Usage Idéaux
+## Ideal Use Cases
 
-Le plan {CATEGORY}/{SUB_TYPE} profondeur {DEPTH_NAME} est idéal pour :
+The {CATEGORY}/{SUB_TYPE} plan at depth {DEPTH_NAME} is ideal for:
 {USE_CASES}
 
-## 📚 Références
+## References
 
-- **Plan profondeur inférieure** : {LOWER_DEPTH_PLAN}
-- **Plan profondeur supérieure** : {HIGHER_DEPTH_PLAN}
-- **Plan générique** : \`plan-{DEPTH_NAME}.md\`
-- **Agents** : {AGENTS_USED}
-- **Commande** : \`prompts/hard_points/commands/analyse-project.md\`
-- **Documentation AI-KIDO** : \`prompts/hard_points/ai-kido.md\`
+- **Lower depth plan**: {LOWER_DEPTH_PLAN}
+- **Higher depth plan**: {HIGHER_DEPTH_PLAN}
+- **Generic plan**: \`plan-{DEPTH_NAME}.md\`
+- **Agents**: {AGENTS_USED}
+- **Command**: \`prompts/hard_points/commands/analyse-project.md\`
+- **AI-KIDO documentation**: \`prompts/hard_points/ai-kido.md\`
 
 ---
-*Plan {CATEGORY_TITLE}/{SUB_TYPE_TITLE} créé le {DATE} pour /analyse-project*
-*Généré automatiquement par /create-analyse-plan*
+*{CATEGORY_TITLE}/{SUB_TYPE_TITLE} plan created on {DATE} for /analyse-project*
+*Auto-generated by /create-analyse-plan*
 ```
 
-### 5. Pré-remplissage Intelligent
+### Step 5 — Intelligent Pre-fill
 
-Pré-remplir les sections avec des valeurs par défaut basées sur le type d'analyse :
+Pre-fill sections with default values based on the analysis type.
 
-#### Architecturale C1 (Contexte Système)
+#### Architectural C1 (System Context)
 
 ```bash
-FOCUS_AREAS="- Utilisateurs et acteurs externes
-- Systèmes externes et intégrations
-- Frontières du système
-- Interactions de haut niveau"
+FOCUS_AREAS="- Users and external actors
+- External systems and integrations
+- System boundaries
+- High-level interactions"
 
-SEARCH_PATTERNS="# APIs externes
+SEARCH_PATTERNS="# External APIs
 https?://[^'\"\\s]+
 
-# Intégrations
+# Integrations
 (integration|external|third-party|api)
 
-# Utilisateurs/Acteurs
+# Users/Actors
 (user|actor|role|persona)"
 
-OUTPUT_FORMAT="- Diagramme contexte C1 (Mermaid)
-- Liste utilisateurs/acteurs
-- Liste systèmes externes
-- Interfaces principales"
+OUTPUT_FORMAT="- C1 context diagram (Mermaid)
+- Users/actors list
+- External systems list
+- Main interfaces"
 ```
 
-#### Technique Backend
+#### Technical Backend
 
 ```bash
-FOCUS_AREAS="- APIs et endpoints
-- Services et logique métier
-- Accès données (ORM, queries)
-- Dépendances backend-specific"
+FOCUS_AREAS="- APIs and endpoints
+- Services and business logic
+- Data access (ORM, queries)
+- Backend-specific dependencies"
 
 SEARCH_PATTERNS="# API routes
 (get|post|put|delete|patch)\\s*\\(['\"]([^'\"]+)
@@ -422,19 +424,19 @@ SEARCH_PATTERNS="# API routes
 # Database queries
 (select|insert|update|delete).*from"
 
-OUTPUT_FORMAT="- Liste endpoints API avec méthodes
-- Architecture services (graphe Mermaid)
-- Modèles de données
-- Stack backend détaillée"
+OUTPUT_FORMAT="- API endpoints list with methods
+- Service architecture (Mermaid graph)
+- Data models
+- Detailed backend stack"
 ```
 
-#### Fonctionnelle Use Cases
+#### Functional Use Cases
 
 ```bash
-FOCUS_AREAS="- Scénarios d'utilisation principaux
-- Processus métier implémentés
-- Règles métier (validations, contraintes)
-- Workflows utilisateur"
+FOCUS_AREAS="- Main usage scenarios
+- Implemented business processes
+- Business rules (validations, constraints)
+- User workflows"
 
 SEARCH_PATTERNS="# Use case patterns
 (usecase|scenario|workflow)
@@ -445,140 +447,139 @@ SEARCH_PATTERNS="# Use case patterns
 # User flows
 (login|register|checkout|payment)"
 
-OUTPUT_FORMAT="- Liste use cases avec acteurs
-- Diagrammes de séquence (Mermaid)
-- Règles métier extraites
-- Workflows détaillés"
+OUTPUT_FORMAT="- Use cases list with actors
+- Sequence diagrams (Mermaid)
+- Extracted business rules
+- Detailed workflows"
 ```
 
-### 6. Confirmation et Création
+### Step 6 — Confirmation and Creation
 
-Afficher un résumé et demander confirmation :
+Display a summary and ask for confirmation.
 
 ```
-📋 Résumé du Plan à Créer
+Plan Summary
 
-**Type d'analyse** : {CATEGORY_TITLE} - {SUB_TYPE_TITLE}
-**Profondeur** : {DEPTH_LEVEL} - {DEPTH_NAME}
-**Chemin** : {PLAN_PATH}
-**Sources prioritaires** : {PRIORITY_SOURCES}
-**Agents** : {AGENTS_LIST}
-**Stratégie extraction** : {EXTRACTION_STRATEGY}
+**Analysis type**       : {CATEGORY_TITLE} - {SUB_TYPE_TITLE}
+**Depth**               : {DEPTH_LEVEL} - {DEPTH_NAME}
+**Path**                : {PLAN_PATH}
+**Priority sources**    : {PRIORITY_SOURCES}
+**Agents**              : {AGENTS_LIST}
+**Extraction strategy** : {EXTRACTION_STRATEGY}
 
-Le plan sera pré-rempli avec des stratégies standards pour {CATEGORY}/{SUB_TYPE}.
-Vous pourrez le personnaliser après création.
+The plan will be pre-filled with standard strategies for {CATEGORY}/{SUB_TYPE}.
+You can customize it after creation.
 
-Créer ce plan maintenant ? (y/n) :
+Create this plan now? (y/n):
 ```
 
-Si confirmation :
+If confirmed:
 
 ```bash
-# Écrire le fichier
+# Write the file
 echo "$PLAN_CONTENT" > "$PLAN_PATH"
 
-echo "✅ Plan créé avec succès : $PLAN_PATH"
+echo "Plan created successfully: $PLAN_PATH"
 echo ""
-echo "📝 Prochaines étapes :"
-echo "1. Personnaliser les prompts agents selon vos besoins"
-echo "2. Affiner les patterns de recherche"
-echo "3. Compléter les sections TODO"
-echo "4. Ajouter des exemples spécifiques"
-echo "5. Tester avec : /analyse-project (nature {NATURE_NUM}, profondeur {DEPTH_LEVEL})"
+echo "Next steps:"
+echo "1. Customize agent prompts to fit your needs"
+echo "2. Refine search patterns"
+echo "3. Complete TODO sections"
+echo "4. Add type-specific examples"
+echo "5. Test with: /analyse-project (nature {NATURE_NUM}, depth {DEPTH_LEVEL})"
 echo ""
-echo "Pour éditer le plan :"
+echo "To edit the plan:"
 echo "  \$EDITOR $PLAN_PATH"
 ```
 
-### 7. Mise à Jour du README (Automatique)
+### Step 7 — README Update (Automatic)
 
-Ajouter le nouveau plan à la liste dans README.md :
+Add the new plan to the list in README.md.
 
 ```bash
-# Ajouter le plan créé à la section "Plans Disponibles"
+# Add the created plan to the "Available Plans" section
 README_PATH="prompts/hard_points/system/analyse/plans/README.md"
 
-# Mettre à jour la section "⏳ À Créer (TODO)" → "✅ Disponibles"
-# (Script automatique de mise à jour du README)
+# Update the "To Create (TODO)" section -> "Available"
+# (Automatic README update script)
 ```
 
-### 8. Ouverture dans l'Éditeur (Optionnel)
+### Step 8 — Open in Editor (Optional)
 
-Demander si l'utilisateur veut ouvrir le plan dans un éditeur :
+Ask the user whether to open the plan in an editor.
 
 ```
-Voulez-vous ouvrir le plan dans votre éditeur pour personnalisation ? (y/n) :
+Do you want to open the plan in your editor for customization? (y/n):
 ```
 
-Si oui :
+If yes:
 
 ```bash
-# Détecter l'éditeur (EDITOR env var ou défaut)
+# Detect the editor (EDITOR env var or default)
 EDITOR="${EDITOR:-nano}"
 
-# Ouvrir le fichier
+# Open the file
 $EDITOR "$PLAN_PATH"
 ```
 
-## 📊 Templates par Type d'Analyse
+## Output
 
-Pour chaque type supporté, des templates pré-configurés sont disponibles :
+### Templates by Analysis Type
 
-| Type | Sources Prioritaires | Focus Areas | Agents Recommandés | Status |
-|------|---------------------|-------------|-------------------|--------|
-| **Architecturale C1** | README, ARCHITECTURE.md | Contexte, acteurs, intégrations | explore-code, validator | ✅ Template |
-| **Architecturale C2** | docker-compose, src/ | Conteneurs, services, déploiement | explore-code, explore-all, validator | ✅ Template |
-| **Technique Backend** | src/api, src/services | APIs, services, données | explore-code, explore-all, truth-evaluator | ✅ Template |
-| **Technique Frontend** | src/components, src/views | Composants, UX, assets | explore-code, validator | ✅ Template |
-| **Fonctionnelle Use Cases** | src/, docs/business | Scénarios, workflows, règles | explore-code, explore-all | ✅ Template |
-| **Méthodologique DevOps** | .github, Jenkinsfile | CI/CD, déploiement, monitoring | explore-code, validator | ✅ Template |
+For each supported type, pre-configured templates are available.
 
-## 🔧 Options Avancées
+| Type | Priority Sources | Focus Areas | Recommended Agents | Status |
+|------|-----------------|-------------|-------------------|--------|
+| **Architectural C1** | README, ARCHITECTURE.md | Context, actors, integrations | explore-code, validator | Template ready |
+| **Architectural C2** | docker-compose, src/ | Containers, services, deployment | explore-code, explore-all, validator | Template ready |
+| **Technical Backend** | src/api, src/services | APIs, services, data | explore-code, explore-all, truth-evaluator | Template ready |
+| **Technical Frontend** | src/components, src/views | Components, UX, assets | explore-code, validator | Template ready |
+| **Functional Use Cases** | src/, docs/business | Scenarios, workflows, rules | explore-code, explore-all | Template ready |
+| **Methodological DevOps** | .github, Jenkinsfile | CI/CD, deployment, monitoring | explore-code, validator | Template ready |
 
-### Mode Expert (Skip Questions)
-
-Créer un plan rapidement avec arguments en ligne de commande :
-
-```bash
-# Usage : /create-analyse-plan --type=architecturale/c1 --depth=2
-# Crée automatiquement avec valeurs par défaut
-```
-
-### Cloner un Plan Existant
-
-Créer un nouveau plan basé sur un existant :
-
-```bash
-# Usage : /create-analyse-plan --clone=architecturale/c1/plan-standard.md --target=architecturale/c2
-# Clone c1 et adapte pour C2
-```
-
-## ✅ Checklist de Création (Automatique)
-
-À la fin de la création, afficher une checklist :
+### Post-Creation Checklist
 
 ```markdown
-## ✅ Checklist Post-Création
+## Post-Creation Checklist
 
-- [x] Plan créé à {PLAN_PATH}
-- [x] Header métadonnées présent
-- [x] Sections obligatoires générées
-- [ ] Prompts agents personnalisés (TODO : affiner selon besoin)
-- [ ] Patterns de recherche affinés (TODO)
-- [ ] Exemples de sortie enrichis (TODO)
-- [ ] Tests fonctionnels sur projet réel (TODO)
+- [x] Plan created at {PLAN_PATH}
+- [x] Metadata header present
+- [x] Mandatory sections generated
+- [ ] Agent prompts customized (TODO: refine as needed)
+- [ ] Search patterns refined (TODO)
+- [ ] Output examples enriched (TODO)
+- [ ] Functional tests on a real project (TODO)
 
-**Prochaines Actions** :
-1. Personnaliser prompts agents section "Agents AI-KIDO à Mobiliser"
-2. Affiner patterns recherche section "Stratégie d'Extraction"
-3. Ajouter exemples spécifiques à votre type d'analyse
-4. Tester avec /analyse-project (nature {NATURE_NUM}, profondeur {DEPTH_LEVEL})
-5. Valider résultats et ajuster
+**Next Actions**:
+1. Customize agent prompts in the "AI-KIDO Agents to Activate" section
+2. Refine search patterns in the "Extraction Strategy" section
+3. Add examples specific to your analysis type
+4. Test with /analyse-project (nature {NATURE_NUM}, depth {DEPTH_LEVEL})
+5. Validate results and adjust
 ```
+
+## Notes
+
+- **Advanced options - Expert Mode (Skip Questions)**: create a plan quickly with command-line arguments:
+  ```bash
+  # Usage: /create-analyse-plan --type=architectural/c1 --depth=2
+  # Creates automatically with default values
+  ```
+- **Clone an existing plan**:
+  ```bash
+  # Usage: /create-analyse-plan --clone=architectural/c1/plan-standard.md --target=architectural/c2
+  # Clones c1 and adapts it for c2
+  ```
+- The created plan contains TODOs and requires customization, but is immediately usable with standard strategies.
 
 ---
 
-**Workflow** :
-1. Charger README + commande → 2. Questionnaire (type, profondeur, agents, sources, stratégie) → 3. Générer structure → 4. Pré-remplir contenu → 5. Confirmer création → 6. Écrire fichier → 7. Maj README → 8. Ouvrir éditeur (opt)
-
-**Important** : Le plan créé contient des TODO et nécessite personnalisation, mais est immédiatement utilisable avec stratégies standards.
+**Workflow summary**:
+1. Load README + command
+2. Interactive questionnaire (type, depth, agents, sources, strategy)
+3. Generate structure
+4. Pre-fill content
+5. Confirm creation
+6. Write file
+7. Update README
+8. Open editor (optional)

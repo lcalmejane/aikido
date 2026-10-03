@@ -1,1040 +1,641 @@
 ---
-description: "Initialiser la memory bank AI-KIDO avec les éléments fondamentaux du projet"
+description: "Initialize the AI-KIDO Memory Bank with fundamental project elements"
 ---
 
-# Commande Init-Aikido
+# Command: /init-aikido
 
-**IMPORTANT** : Cette commande doit être exécutée DIRECTEMENT par le LLM.
-- ❌ NE PAS créer de script bash/shell
-- ❌ NE PAS proposer de code à exécuter
-- ✅ UTILISER les outils Roo-Code DIRECTEMENT (ask_followup_question, write_to_file, apply_diff, read_file)
-- ✅ POSER les questions à l'utilisateur avec ask_followup_question
-- ✅ CRÉER les fichiers avec write_to_file
-- ✅ MODIFIER les fichiers existants avec apply_diff
+Initialize the AI-KIDO Memory Bank by creating base files in `/prompts/gen/` per AI-KIDO rules. Does NOT create personas — focuses on fundamental project concepts and techniques.
 
-Cette commande initialise la memory bank AI-KIDO en créant directement les fichiers de base dans `/prompts/gen/` selon les règles aikido. Cette commande ne crée pas de personas mais structure les concepts et techniques fondamentaux du projet.
+**Execute DIRECTLY** — do not create bash/shell scripts, do not propose code to run.
 
-## Exécution IMMÉDIATE
+---
 
-### Phase 0 : Choix du Mode AI-KIDO
+## Steps
 
-**PREMIÈRE ÉTAPE OBLIGATOIRE** : Utiliser l'outil `read_file` pour vérifier si AI-KIDO est déjà initialisé en testant l'existence de `/prompts/index.md`.
+### Phase 0: AI-KIDO Mode Selection [MANDATORY]
 
-**Si AI-KIDO n'est PAS initialisé**, utiliser l'outil `ask_followup_question` pour poser la **Question 0 : Mode AI-KIDO**
+Check if AI-KIDO is already initialized by reading `/prompts/index.md`.
 
-**Question** : "Quel mode AI-KIDO souhaitez-vous initialiser ?"
+**If NOT initialized**, ask **Question 0: AI-KIDO mode**
 
-**Détails** :
 ```
-🎯 INITIALISATION AI-KIDO
+🎯 AI-KIDO INITIALIZATION
 
-Choisissez le mode AI-KIDO :
+Choose AI-KIDO mode:
 
-1. Mode STANDARD
-   - Structure complète multi-agents
-   - 6-12 personas spécialisés
+1. STANDARD mode
+   - Full multi-agent structure
+   - 6-12 specialized personas
    - 8-15 use cases
-   - RACI complet multi-acteurs
-   - Fichiers multiples par domaine
-   - Recommandé pour : équipes 4+, projets complexes
+   - Full multi-actor RACI
+   - Multiple files per domain
+   - Recommended for: 4+ person teams, complex projects
 
-2. Mode LIGHT
-   - Structure minimale agent unitaire
-   - 3-5 personas maximum
-   - 3-5 use cases maximum
-   - RACI optionnel (acteur unique ou minimal)
-   - Fichiers unifiés privilégiés
-   - Recommandé pour : solo/petites équipes, prototypes, POCs
-
+2. LIGHT mode
+   - Minimal single-agent structure
+   - 3-5 personas max
+   - 3-5 use cases max
+   - Optional RACI (single actor or minimal)
+   - Unified files preferred
+   - Recommended for: solo/small teams, prototypes, POCs
 ```
 
-**Suggestions à proposer** :
-- "Mode STANDARD (structure complète, 6-12 personas, équipes 4+)"
-- "Mode LIGHT (structure minimale, 3-5 personas, solo/petites équipes)"
-
-**Si AI-KIDO est DÉJÀ initialisé**, utiliser `read_file` pour détecter le mode actuel :
-- Lire `/prompts/index.md` pour identifier le mode (présence de référence à `ai-kido-light.md` ou `ai-kido.md`)
-- Afficher le mode détecté et continuer avec ce mode
-- Ne PAS proposer de changement de mode (nécessite une migration explicite)
+**If ALREADY initialized**: read `/prompts/index.md` to detect current mode (`ai-kido-light.md` → LIGHT, `ai-kido.md` → STANDARD). Display detected mode and continue — do NOT propose mode change (requires explicit migration).
 
 ```
-ℹ️ AI-KIDO déjà initialisé en mode [STANDARD/LIGHT]
-Poursuite de l'initialisation en mode [STANDARD/LIGHT]...
+ℹ️ AI-KIDO already initialized in [STANDARD/LIGHT] mode
+Continuing initialization in [STANDARD/LIGHT] mode...
 ```
 
-**Stocker le mode choisi** pour toutes les phases suivantes : `AIKIDO_MODE = [STANDARD|LIGHT]`
+Store for all subsequent phases: `AIKIDO_MODE = [STANDARD|LIGHT]`
 
-### Phase 1 : Vérification des Sources Existantes
+### Phase 1: Existing Source Check
 
-Utiliser l'outil `ask_followup_question` pour poser la **Question 1 : Sources d'analyse**
-
-**Question** : "Quelles sources voulez-vous analyser pour initialiser AI-KIDO ?"
-
-**Détails** :
-```
-Sources disponibles :
-
-Options disponibles :
-1. Documents hard-points uniquement
-2. Sources projet existantes uniquement (src/, docs/, etc.)
-3. Analyse combinée hard-points + sources projet
-4. Initialisation manuelle (sans analyse automatique)
+Ask **Question 1: Analysis sources**
 
 ```
+Which sources do you want to analyze to initialize AI-KIDO?
 
-**Suggestions à proposer** :
-- "Documents hard-points uniquement"
-- "Sources projet existantes uniquement (src/, docs/)"
-- "Analyse combinée hard-points + sources projet"
-- "Initialisation manuelle (sans analyse automatique)"
-
-**Si choix 1** : Utiliser `ask_followup_question` pour demander les documents hard-points spécifiques
-```
-Précisez les chemins des documents hard-points à analyser (séparés par des virgules) :
-Exemple : hard-points/architecture.md, hard-points/concepts/glossaire.md
-
-Si vide, analyser tous les documents hard-points automatiquement.
+1. Hard-points documents only
+2. Existing project sources only (src/, docs/, etc.)
+3. Combined analysis: hard-points + project sources
+4. Manual initialization (no auto-analysis)
 ```
 
-**Si choix 2** : Utiliser `list_files` pour scanner le workspace et détecter les sources projet
-```
-🔍 DÉTECTION AUTOMATIQUE DES SOURCES PROJET :
+- **Choice 1**: Ask for specific hard-points paths (comma-separated) — if empty, auto-scan all hard-points
+- **Choice 2**: Scan workspace to detect project sources (src/, docs/, lib/, components/, config/, etc.)
+- **Choice 3**: Auto-combine hard-points + project sources
+- **Choice 4**: Skip to Phase 3 (manual collection)
 
-Répertoires détectés dans le workspace :
-[Liste automatique : src/, docs/, lib/, components/, config/, etc.]
+#### Auto-Extraction (choices 1, 2 or 3)
 
-Voulez-vous analyser tous ces répertoires ? (o/n)
-Si non, sélectionnez les répertoires à analyser :
-```
-
-**Si choix 3** : Combiner hard-points + sources projet automatiquement
-
-**Si choix 4** : Passer directement à l'interrogation manuelle (Phase 2)
-
-#### Extraction Automatique (choix 1, 2 ou 3)
-
-**UTILISER L'AGENT** `agent-aikido-explore-bank` pour extraction intelligente des sources :
+Invoke `agent-aikido-explore-bank` (DEEP MODE):
 
 ```markdown
 🤖 AGENT: agent-aikido-explore-bank (DEEP MODE)
 FORMAT: JSON
 
-**Prompt pour l'agent** :
-"Extrais les informations fondamentales pour initialiser la Memory Bank AI-KIDO depuis les sources suivantes :
+Prompt:
+"Extract fundamental information to initialize the AI-KIDO Memory Bank from the following sources:
 
-Sources à analyser : [hard-points / sources projet / combiné selon choix utilisateur]
+Sources: [hard-points / project sources / combined per user choice]
 
-Informations à extraire :
-1. **Contexte projet** : nom, domaine métier, objectif principal
-2. **Architecture générale** : modèle C1 (users, system, composants)
-3. **Stack technique** : frontend, backend, base de données, infrastructure
-4. **Terminologie métier** : termes spécifiques et acronymes
-5. **Contraintes** : réglementaires, techniques, temporelles
-6. **Patterns existants** : architecturaux et de développement
+Extract:
+1. Project context: name, business domain, main objective
+2. General architecture: C1 model (users, system, components)
+3. Tech stack: frontend, backend, database, infrastructure
+4. Business terminology: specific terms and acronyms
+5. Constraints: regulatory, technical, temporal
+6. Existing patterns: architectural and development
 
-Pour chaque information, indique :
-- Source (fichier/répertoire)
-- Niveau de confiance (HIGH/MEDIUM/LOW)
-- Sections de code/documentation pertinentes
+For each piece of information, indicate:
+- Source (file/directory)
+- Confidence level (HIGH/MEDIUM/LOW)
+- Relevant code/documentation sections
 
-Retourne un rapport structuré en format JSON ou Markdown avec toutes les informations extraites."
-
-**Résultat attendu** : Rapport d'extraction complet avec sources et niveau de confiance
+Return a structured report in JSON or Markdown format."
 ```
 
-**Avantages de l'agent** :
-- ✅ Extraction intelligente multi-sources (hard-points + code)
-- ✅ Détection automatique des patterns et architectures
-- ✅ Scoring de confiance pour chaque information
-- ✅ Gain de temps vs extraction manuelle (~70% tokens économisés)
+### Phase 2: Auto-Synthesis Validation (if analysis performed)
 
-### Phase 2 : Synthèse Automatique (si analyse effectuée)
+Present detected information for validation:
 
-Utiliser l'outil `ask_followup_question` pour **présenter la synthèse des informations détectées** :
 ```
-📊 SYNTHÈSE DE L'ANALYSE AUTOMATIQUE :
+📊 AUTO-ANALYSIS SUMMARY:
 
-Contexte projet détecté :
-- Nom probable : [Basé sur package.json, README, etc.]
-- Domaine métier : [Inféré des termes métier trouvés]
-- Stack technique : [Technologies détectées]
-- Architecture : [Patterns architecturaux identifiés]
+Detected project context:
+- Probable name: [Based on package.json, README, etc.]
+- Business domain: [Inferred from found business terms]
+- Tech stack: [Detected technologies]
+- Architecture: [Identified architectural patterns]
 
-Cette synthèse est-elle correcte ? (o/n)
-Si non, quels éléments corriger ?
+Is this summary correct? (y/n)
+If no, which elements to correct?
 ```
 
-### Phase 3 : Collecte des Informations Projet (si initialisation manuelle ou corrections)
+### Phase 3: Project Information Collection (if manual or corrections)
 
-Utiliser l'outil `ask_followup_question` pour poser la **Question 2 : Contexte projet**
+Ask **Question 2: Project context**
 ```
-Décrivez le contexte de votre projet :
-- Nom du projet
-- Domaine métier (finance, santé, e-commerce, etc.)
-- Objectif principal
-- Contraintes particulières (réglementaires, techniques, temporelles)
-
-Entrez la description complète :
+Describe your project context:
+- Project name
+- Business domain (finance, healthcare, e-commerce, etc.)
+- Main objective
+- Particular constraints (regulatory, technical, temporal)
 ```
 
-Utiliser l'outil `ask_followup_question` pour poser la **Question 3 : Architecture générale**
+Ask **Question 3: General architecture**
 ```
-Décrivez l'architecture générale selon le modèle C1 :
-- Users : Qui sont les utilisateurs finaux ?
-- System : Quel est le système principal ?
-- Composants : Quels sont les grands blocs fonctionnels ?
-
-Format libre, soyez précis sur les interactions :
+Describe the general architecture per C1 model:
+- Users: Who are the end users?
+- System: What is the main system?
+- Components: What are the main functional blocks?
 ```
 
-Utiliser l'outil `ask_followup_question` pour poser la **Question 4 : Stack technique cible**
+Ask **Question 4: Target tech stack**
 ```
-Quelle est votre stack technique ?
-- Frontend : Framework/technologie
-- Backend : Langage/framework
-- Base de données : Type et technologie
-- Infrastructure : Cloud, on-premise, hybride
-- Outils spécifiques : CI/CD, monitoring, etc.
-
-Entrez la stack complète :
+What is your tech stack?
+- Frontend: Framework/technology
+- Backend: Language/framework
+- Database: Type and technology
+- Infrastructure: Cloud, on-premise, hybrid
+- Specific tools: CI/CD, monitoring, etc.
 ```
 
-### Phase 4 : Génération des Use Cases de Base
+### Phase 4: Base Use Case Generation
 
-**Si AIKIDO_MODE = STANDARD** :
-Générer automatiquement **3-5 use cases fondamentaux** basés sur :
-- Le domaine métier identifié
-- L'architecture décrite
-- Les patterns courants du domaine
+**STANDARD mode**: Generate 3-5 fundamental use cases based on identified business domain, described architecture, and common domain patterns.
 
-**Si AIKIDO_MODE = LIGHT** :
-Générer automatiquement **3 use cases critiques maximum** basés sur :
-- Les 80% des besoins réels identifiés
-- Les patterns principaux du domaine
-- Les scénarios de référence pour cas similaires
+**LIGHT mode**: Generate 3 critical use cases max based on 80% of identified real needs, main domain patterns, and reference scenarios for similar cases.
 
-### Phase 5 : Vérification et Factorisation des Informations Existantes
+### Phase 5: Existing Content Check and Factorization
 
-**Avant toute génération**, utiliser `list_files` et `read_file` pour analyser le contenu existant dans `/prompts/gen/` :
+Before any generation, scan existing content in `/prompts/gen/`:
 
-1. **Scanner les fichiers existants** (avec `list_files`) :
-   - `/prompts/gen/concepts/` (tous les .md)
-   - `/prompts/gen/techniques/` (tous les .md)
-   - `/prompts/gen/use_cases/` (tous les .md)
+1. **Scan existing files**: `/prompts/gen/concepts/`, `/prompts/gen/techniques/`, `/prompts/gen/use_cases/`
 
-2. **Identifier les informations communes** :
-   - Terminologie déjà définie
-   - Architecture déjà documentée
-   - Stack technique déjà spécifiée
-   - Use cases déjà créés
+2. **Identify existing common info**: already-defined terminology, already-documented architecture, already-specified tech stack, already-created use cases
 
-3. **Détecter les contradictions** :
-   - Comparer les nouvelles informations avec l'existant
-   - Identifier les conflits de définitions, d'architecture, de stack
+3. **Detect contradictions**: compare new info with existing, identify conflicts in definitions, architecture, stack
 
-#### 5.4 Résolution Automatique des Contradictions 🤖 🆕
+#### 5.4 Automatic Contradiction Resolution 🤖
 
-**UTILISER L'AGENT** `agent-aikido-truth-evaluator` pour résolution automatique des conflits :
+Invoke `agent-aikido-truth-evaluator`:
 
 ```markdown
 🤖 AGENT: agent-aikido-truth-evaluator
 FORMAT: JSON
 
-**Prompt pour l'agent** :
-"Analyse les contradictions détectées entre informations existantes (dans /prompts/gen/) et nouvelles informations extraites.
+Prompt:
+"Analyze detected contradictions between existing information (in /prompts/gen/) and newly extracted information.
 
-Informations existantes : [Contenu des fichiers existants dans concepts/techniques/use_cases]
-Nouvelles informations : [Informations extraites par agent-explore-bank Phase 1]
+Existing information: [Content of existing files in concepts/techniques/use_cases]
+New information: [Information extracted by agent-explore-bank Phase 1]
 
-Pour chaque contradiction détectée :
-1. Identifier le type de conflit (définition, architecture, stack, terminologie)
-2. Déterminer la source autoritaire selon le scénario :
-   - Hard-points existants = autorité maximale (priorité absolue)
-   - Code source récent = autorité HIGH (Scénario Code-Driven)
-   - Documentation existante = autorité MEDIUM (peut être obsolète)
-   - Nouvelles informations sans source = autorité LOW
-3. Évaluer la crédibilité de chaque source
-4. Recommander l'action :
-   - KEEP_EXISTING : Conserver l'existant (source autoritaire)
-   - USE_NEW : Remplacer par nouvelle version (nouvelle source autoritaire)
-   - MERGE : Fusionner les deux (sources complémentaires)
-   - ASK_USER : Ambiguïté nécessitant intervention utilisateur
+For each detected contradiction:
+1. Identify conflict type (definition, architecture, stack, terminology)
+2. Determine authoritative source per scenario:
+   - Existing hard-points = maximum authority (absolute priority)
+   - Recent source code = HIGH authority (Code-Driven scenario)
+   - Existing documentation = MEDIUM authority (may be outdated)
+   - New information without source = LOW authority
+3. Evaluate each source's credibility
+4. Recommend action:
+   - KEEP_EXISTING: Keep existing (authoritative source)
+   - USE_NEW: Replace with new version (new authoritative source)
+   - MERGE: Merge both (complementary sources)
+   - ASK_USER: Ambiguity requiring user intervention
 
-Retourne liste contradictions avec :
-- Fichier existant + ligne concernée
-- Nouvelle information en conflit
-- Source autoritaire identifiée
-- Recommandation d'action (KEEP/USE_NEW/MERGE/ASK_USER)
-- Justification + niveau de confiance (HIGH/MEDIUM/LOW)"
-
-**Résultat attendu** : Liste contradictions avec recommandations actionnables et sources autoritaires
+Return contradiction list with:
+- Existing file + concerned line
+- Conflicting new information
+- Identified authoritative source
+- Action recommendation (KEEP/USE_NEW/MERGE/ASK_USER)
+- Justification + confidence level (HIGH/MEDIUM/LOW)"
 ```
 
-**Avantages de l'agent** :
-- ✅ Détection automatique contradictions existant vs nouveau
-- ✅ Hiérarchie des sources (hard-points > code > docs)
-- ✅ Recommandations claires (keep/use_new/merge/ask_user)
-- ✅ Réduction interventions utilisateur (~60% conflits résolus auto)
+For each ASK_USER conflict:
+```
+⚠️ CONFLICT REQUIRING VALIDATION in [existing file]:
 
-4. **Application des recommandations** (avec `ask_followup_question` si ASK_USER) :
-   ```
-   ⚠️ CONFLIT NÉCESSITANT VALIDATION dans [fichier existant] :
+Existing: [current content]
+New: [new content]
 
-   Information existante : [contenu actuel]
-   Nouvelle information : [nouveau contenu]
+truth-evaluator recommendation: [KEEP/USE_NEW/MERGE]
+Justification: [Agent reason] | Confidence: [HIGH/MEDIUM/LOW]
 
-   Recommandation agent-truth-evaluator : [KEEP/USE_NEW/MERGE]
-   Justification : [Raison de l'agent]
-   Niveau de confiance : [HIGH/MEDIUM/LOW]
+Follow recommendation? (y/n)
+If no, which version to prefer?
+```
 
-   Voulez-vous suivre la recommandation ? (o/n)
-   Si non, quelle version préférer ?
-   ```
+5. **Smart factorization**: enrich existing files rather than replacing them — add missing new sections, update versions and dates.
 
-5. **Factorisation intelligente** :
-   - Enrichir les fichiers existants plutôt que les remplacer
-   - Ajouter les nouvelles sections manquantes
-   - Mettre à jour les versions et dates
+#### 5.5 RACI Document Classification 🤖 (STANDARD mode only)
 
-#### 5.5 Classification RACI des Documents 🤖 🆕 (Mode STANDARD uniquement)
-
-**SI AIKIDO_MODE = STANDARD**, **UTILISER L'AGENT** `agent-aikido-raci-delegator` pour classifier automatiquement les documents créés :
+**If AIKIDO_MODE = STANDARD**, invoke `agent-aikido-raci-delegator`:
 
 ```markdown
 🤖 AGENT: agent-aikido-raci-delegator
 FORMAT: JSON
 
-**Prompt pour l'agent** :
-"Classifie tous les documents qui seront créés dans /prompts/gen/ selon la matrice RACI et recommande leur emplacement par rôle.
+Prompt:
+"Classify all documents to be created in /prompts/gen/ per RACI matrix and recommend location by role.
 
-Documents à classifier :
-- Concepts : [Liste des concepts identifiés depuis Phase 1]
-- Techniques : [Liste des techniques identifiées depuis Phase 1]
-- Use Cases : [Liste des use cases générés Phase 4]
+Documents to classify:
+- Concepts: [List from Phase 1]
+- Techniques: [List from Phase 1]
+- Use Cases: [List generated in Phase 4]
 
-Contexte projet : [Informations extraites Phase 1 - domaine, architecture, stack]
+Project context: [domain, architecture, stack from Phase 1]
 
-Pour chaque document :
-1. Analyser le contenu et déterminer le rôle responsable principal (R)
-2. Identifier les rôles consultés (C) et approbateurs (A)
-3. Déterminer si contexte mono-projet ou multi-projet
-4. Recommander le chemin cible selon la Règle AI-KIDO 15 :
-   - /prompts/gen/concepts/[role-responsable]/[concept].md
-   - /prompts/gen/techniques/[role-responsable]/[technique].md
-   - /prompts/gen/use_cases/[role-responsable]/[use-case].md
+For each document:
+1. Analyze content and determine main responsible role (R)
+2. Identify consulted (C) and accountable (A) roles
+3. Determine if mono-project or multi-project context
+4. Recommend target path per AI-KIDO Rule 15:
+   - /prompts/gen/concepts/[responsible-role]/[concept].md
+   - /prompts/gen/techniques/[responsible-role]/[technique].md
+   - /prompts/gen/use_cases/[responsible-role]/[use-case].md
 
-Rôles disponibles selon domaine métier :
-- Finance : architecte-solutions, dev-backend-securise, expert-conformite, qa-securite
-- E-commerce : architecte-microservices, dev-frontend-ux, expert-performance, devops-scalabilite
-- Santé : architecte-securite, dev-conformite-rgpd, expert-audit, qa-validation-metier
+Available roles per business domain:
+- Finance: solutions-architect, secure-backend-dev, compliance-expert, security-qa
+- E-commerce: microservices-architect, frontend-ux-dev, performance-expert, scalability-devops
+- Healthcare: security-architect, gdpr-compliance-dev, audit-expert, business-validation-qa
 
-Retourne pour chaque document :
-- Document (nom)
-- Rôle responsable (R)
-- Rôles consultés/approbateurs (C/A)
-- Chemin cible recommandé
-- Justification de l'assignation
-- Niveau de confiance (HIGH/MEDIUM/LOW)"
-
-**Résultat attendu** : Mapping complet document → rôle → chemin cible avec justifications
+Return for each document: name, responsible role (R), consulted/accountable roles (C/A),
+recommended target path, assignment justification, confidence level (HIGH/MEDIUM/LOW)"
 ```
 
-**Avantages de l'agent** :
-- ✅ Classification automatique par rôle selon contenu
-- ✅ Recommandation paths conformes Règle 15
-- ✅ Détection contexte mono/multi-projet
-- ✅ Gain efficacité (~80% classifications automatisées)
+**If AIKIDO_MODE = LIGHT**: Skip this section (RACI optional — see Phase 7.5).
 
-**SI AIKIDO_MODE = LIGHT** : Ignorer cette section (RACI optionnel, voir Phase 7.5)
+### Phase 6: AI-KIDO Structure Creation
 
-### Phase 6 : Création de la Structure AI-KIDO
+#### STANDARD mode: Full Structure
 
-**ADAPTATION SELON LE MODE** :
+**6.1 Project Glossary** (if hard-points documents available)
 
-#### Mode STANDARD : Structure Complète
-
-##### 6.1 Génération du Glossaire Projet (si documents hard-points disponibles)
-
-Utiliser l'outil `write_to_file` pour créer `/prompts/gen/concepts/glossaire-projet.md` :
+Create `/prompts/gen/concepts/glossaire-projet.md`:
 ```markdown
-# Glossaire Projet - [Nom du Projet]
-> Version: 1.0 | Date: [DATE] | Statut: Initial
+# Project Glossary — [Project Name]
+> Version: 1.0 | Date: [DATE] | Status: Initial
 
-## Vue d'ensemble
-Terminologie et concepts clés du projet [Nom].
+## Overview
+Key terminology and concepts for project [Name].
 
-## Définitions métier
-[Termes extraits des documents ou fournis par l'utilisateur]
+## Business definitions
+[Terms extracted from documents or provided by user]
 
-## Définitions techniques
-[Stack et composants techniques]
+## Technical definitions
+[Stack and technical components]
 
-## Acronymes et abréviations
-[Liste alphabétique]
+## Acronyms and abbreviations
+[Alphabetical list]
 
-## Relations conceptuelles
-```mermaid
-graph TD
-    [Diagramme des relations entre concepts clés]
-```
+## Conceptual relationships
+[Mermaid diagram of relationships between key concepts]
 
 ---
-*Généré automatiquement par init-aikido le [DATE]*
+*Auto-generated by init-aikido on [DATE]*
 ```
 
-##### 6.2 Architecture Système
+**6.2 System Architecture**
 
-Utiliser l'outil `write_to_file` pour créer `/prompts/gen/concepts/architecture-systeme.md` :
+Create `/prompts/gen/concepts/architecture-systeme.md`:
 ```markdown
-# Architecture Système - [Nom du Projet]
-> Version: 1.0 | Date: [DATE] | Statut: Initial
+# System Architecture — [Project Name]
+> Version: 1.0 | Date: [DATE] | Status: Initial
 
-## Vue d'ensemble
-Architecture générale du système [Nom].
+## Overview
+General architecture of system [Name].
 
-## Modèle C1 - Contexte
-```mermaid
-C4Context
-    title Contexte Système [Nom]
-    [Diagramme C1 basé sur les informations collectées]
-```
+## C1 Model — Context
+[C4Context Mermaid diagram based on collected information]
 
-## Utilisateurs principaux
-[Description des users identifiés]
-
-## Système principal
-[Description du system core]
-
-## Composants fonctionnels
-[Blocs fonctionnels identifiés]
-
-## Contraintes architecturales
-[Contraintes techniques et métier]
+## Main users | Main system | Functional components | Architectural constraints
 
 ---
-*Généré automatiquement par init-aikido le [DATE]*
+*Auto-generated by init-aikido on [DATE]*
 ```
 
-##### 6.3 Stack Technique
+**6.3 Tech Stack**
 
-Utiliser l'outil `write_to_file` pour créer `/prompts/gen/techniques/stack-technique.md` :
+Create `/prompts/gen/techniques/stack-technique.md`:
 ```markdown
-# Stack Technique - [Nom du Projet]
-> Version: 1.0 | Date: [DATE] | Statut: Initial
+# Tech Stack — [Project Name]
+> Version: 1.0 | Date: [DATE] | Status: Initial
 
-## Vue d'ensemble
-Technologies et outils du projet [Nom].
-
-## Architecture technique
-```mermaid
-graph TB
-    [Diagramme de la stack technique]
-```
-
-## Frontend
-[Technologies frontend]
-
-## Backend
-[Technologies backend]
-
-## Données
-[Base de données et stockage]
-
-## Infrastructure
-[Cloud, déploiement, monitoring]
-
-## Outils de développement
-[CI/CD, tests, qualité]
+## Overview | Architecture diagram (Mermaid)
+## Frontend | Backend | Data | Infrastructure | Dev tools
 
 ---
-*Généré automatiquement par init-aikido le [DATE]*
+*Auto-generated by init-aikido on [DATE]*
 ```
 
-##### 6.4 Use Cases Fondamentaux
+**6.4 Fundamental Use Cases**
 
-Utiliser l'outil `write_to_file` pour créer `/prompts/gen/use_cases/use-cases-fondamentaux.md` :
+Create `/prompts/gen/use_cases/use-cases-fondamentaux.md`:
 ```markdown
-# Use Cases Fondamentaux - [Nom du Projet]
-> Version: 1.0 | Date: [DATE] | Statut: Initial
+# Fundamental Use Cases — [Project Name]
+> Version: 1.0 | Date: [DATE] | Status: Initial
 
-## Vue d'ensemble
-Cas d'usage de base du projet [Nom].
-
-[3-5 use cases générés automatiquement selon le domaine]
+[3-5 auto-generated use cases per domain]
 
 ---
-*Généré automatiquement par init-aikido le [DATE]*
+*Auto-generated by init-aikido on [DATE]*
 ```
 
-#### Mode LIGHT : Structure Minimale
+#### LIGHT mode: Minimal Structure
 
-##### 6.1 Fichier Unifié Concepts
+**6.1 Unified Concepts File**
 
-Utiliser l'outil `write_to_file` pour créer `/prompts/gen/concepts/core-concepts.md` :
+Create `/prompts/gen/concepts/core-concepts.md`:
 ```markdown
-# Concepts Fondamentaux - [Nom du Projet] (Mode Light)
-> Version: 1.0 | Date: [DATE] | Statut: Initial | Mode: LIGHT
+# Core Concepts — [Project Name] (Light Mode)
+> Version: 1.0 | Date: [DATE] | Status: Initial | Mode: LIGHT
 
-## Vue d'ensemble
-Vision globale du projet [Nom] en mode AI-KIDO Light.
+## Overview [2-3 paragraphs max]
 
-[Description concise en 2-3 paragraphes maximum]
+## Key Concepts
+[3 concepts with ultra-dense description + Mermaid diagram if relevant]
 
-## Concepts Clés
+## Essential Glossary [10-15 most critical terms only]
 
-### Concept 1: [Nom]
-[Description ultra-dense avec schéma Mermaid si pertinent]
+## System Architecture [Simplified C1 Mermaid diagram]
 
-### Concept 2: [Nom]
-[Description ultra-dense avec schéma Mermaid si pertinent]
-
-### Concept 3: [Nom]
-[Description ultra-dense avec schéma Mermaid si pertinent]
-
-## Glossaire Essentiel
-[Uniquement les 10-15 termes les plus critiques]
-
-## Architecture Système
-```mermaid
-C4Context
-    title Contexte Système [Nom]
-    [Diagramme C1 simplifié]
-```
-
-## Relations et Dépendances
-[Schéma Mermaid de synthèse]
+## Relationships and Dependencies [Summary Mermaid diagram]
 
 ---
-*Généré automatiquement par init-aikido le [DATE] - Mode LIGHT*
+*Auto-generated by init-aikido on [DATE] — LIGHT mode*
 ```
 
-##### 6.2 Fichier Unifié Techniques
+**6.2 Unified Techniques File**
 
-Utiliser l'outil `write_to_file` pour créer `/prompts/gen/techniques/core-techniques.md` :
+Create `/prompts/gen/techniques/core-techniques.md`:
 ```markdown
-# Techniques Pratiques - [Nom du Projet] (Mode Light)
-> Version: 1.0 | Date: [DATE] | Statut: Initial | Mode: LIGHT
+# Core Techniques — [Project Name] (Light Mode)
+> Version: 1.0 | Date: [DATE] | Status: Initial | Mode: LIGHT
 
-## Vue d'ensemble
-Approche technique globale du projet [Nom] en mode AI-KIDO Light.
+## Overview [2-3 paragraphs]
 
-[Description en 2-3 paragraphes]
+## Essential Techniques [3 techniques with method + concrete example, ultra-dense]
 
-## Techniques Essentielles
+## Tech Stack [Simplified Mermaid diagram]
+Frontend | Backend | Data | Infrastructure
 
-### Technique 1: [Nom]
-[Méthode + exemple concret en format ultra-dense]
-
-### Technique 2: [Nom]
-[Méthode + exemple concret en format ultra-dense]
-
-### Technique 3: [Nom]
-[Méthode + exemple concret en format ultra-dense]
-
-## Stack Technique
-```mermaid
-graph TB
-    [Diagramme simplifié de la stack]
-```
-
-### Frontend
-[Technologies frontend essentielles]
-
-### Backend
-[Technologies backend essentielles]
-
-### Données
-[Base de données et stockage]
-
-### Infrastructure
-[Cloud, déploiement, monitoring]
-
-## Patterns et Best Practices
-[Liste condensée des patterns critiques]
+## Patterns and Best Practices [Condensed list of critical patterns]
 
 ---
-*Généré automatiquement par init-aikido le [DATE] - Mode LIGHT*
+*Auto-generated by init-aikido on [DATE] — LIGHT mode*
 ```
 
-##### 6.3 Use Cases Critiques (3 maximum)
+**6.3 Critical Use Cases (3 max)**
 
-Utiliser l'outil `write_to_file` pour créer `/prompts/gen/use_cases/use-cases-critiques.md` :
+Create `/prompts/gen/use_cases/use-cases-critiques.md`:
 ```markdown
-# Use Cases Critiques - [Nom du Projet] (Mode Light)
-> Version: 1.0 | Date: [DATE] | Statut: Initial | Mode: LIGHT
+# Critical Use Cases — [Project Name] (Light Mode)
+> Version: 1.0 | Date: [DATE] | Status: Initial | Mode: LIGHT
 
-## Vue d'ensemble
-Les 3 cas d'usage critiques couvrant 80% des besoins du projet [Nom].
+## Overview
+3 critical use cases covering 80% of project [Name] needs.
 
-## Use Case 1: [Nom]
-[Description ultra-dense du cas critique principal]
-
-## Use Case 2: [Nom]
-[Description ultra-dense du deuxième cas critique]
-
-## Use Case 3: [Nom]
-[Description ultra-dense du troisième cas critique]
+## Use Case 1: [Name] | Use Case 2: [Name] | Use Case 3: [Name]
+[Ultra-dense description for each]
 
 ---
-*Généré automatiquement par init-aikido le [DATE] - Mode LIGHT*
+*Auto-generated by init-aikido on [DATE] — LIGHT mode*
 ```
 
-### Phase 7 : Répartition par Rôles Humains (Règle AI-KIDO 15)
+### Phase 7: Role-Based Distribution (AI-KIDO Rule 15)
 
-**Si AIKIDO_MODE = STANDARD** : Appliquer la répartition complète par rôles
-**Si AIKIDO_MODE = LIGHT** : RACI optionnel ou minimal (voir Phase 7.5)
+**STANDARD mode**: Apply full role-based distribution.  
+**LIGHT mode**: Optional or minimal RACI (see 7.5).
 
-#### 7.1 Identification des Rôles Projet
+#### 7.1 Project Role Identification (STANDARD)
 
-Générer automatiquement les rôles selon le contexte et **créer les sous-répertoires correspondants** :
-- **Domaine Finance** : Architecte Solutions, Développeur Backend Sécurisé, Expert Conformité, QA Sécurité
-- **Domaine E-commerce** : Architecte Microservices, Développeur Frontend UX, Expert Performance, DevOps Scalabilité
-- **Domaine Santé** : Architecte Sécurité, Développeur Conformité RGPD, Expert Audit, QA Validation Métier
+Auto-generate roles per domain and **create corresponding subdirectories**:
+- **Finance**: solutions-architect, secure-backend-dev, compliance-expert, security-qa
+- **E-commerce**: microservices-architect, frontend-ux-dev, performance-expert, scalability-devops
+- **Healthcare**: security-architect, gdpr-compliance-dev, audit-expert, business-validation-qa
 
-#### 7.2 Création de la Structure par Rôles
+#### 7.2 Role-Based Structure Creation (STANDARD)
 
-**Créer les sous-répertoires spécialisés** dans `/prompts/gen/` selon la règle 15 :
+Create specialized subdirectories in `/prompts/gen/` per Rule 15:
 ```
 /prompts/gen/concepts/
-├── architecte-solutions/
-├── developpeur-backend/
-├── expert-conformite/
-└── qa-securite/
+├── solutions-architect/
+├── backend-developer/
+├── compliance-expert/
+└── security-qa/
 
-/prompts/gen/techniques/
-├── architecte-solutions/
-├── developpeur-backend/
-├── expert-conformite/
-└── qa-securite/
-
-/prompts/gen/use_cases/
-├── architecte-solutions/
-├── developpeur-backend/
-├── expert-conformite/
-└── qa-securite/
+/prompts/gen/techniques/  [same structure]
+/prompts/gen/use_cases/   [same structure]
 ```
 
-#### 7.3 Assignation des Responsabilités par Sous-répertoire
+#### 7.3 Responsibility Assignment per Subdirectory (STANDARD)
 
-**Répartir les concepts/techniques/use_cases** selon les responsabilités :
-- **Architecte Solutions** : Architecture système, patterns de conception, décisions techniques
-- **Développeur Backend** : Implémentation, APIs, performance, sécurité applicative
-- **Expert Conformité** : Réglementations, audits, validation métier, documentation légale
-- **QA Sécurité** : Tests sécurisés, validation, contrôles qualité, procédures de test
+- **Solutions Architect**: system architecture, design patterns, technical decisions
+- **Backend Developer**: implementation, APIs, performance, app security
+- **Compliance Expert**: regulations, audits, business validation, legal docs
+- **Security QA**: secure testing, validation, quality controls, test procedures
 
-#### 7.4 Matrice RACI par Concept/Technique
+#### 7.4 RACI Matrix (STANDARD)
 
-Utiliser l'outil `write_to_file` pour créer `/prompts/gen/concepts/matrice-raci.md` :
+Create `/prompts/gen/concepts/matrice-raci.md`:
 ```markdown
-# Matrice RACI - Responsabilités par Rôle (Règle AI-KIDO 15)
-> Version: 1.0 | Date: [DATE] | Statut: Initial
+# RACI Matrix — Responsibilities per Role (AI-KIDO Rule 15)
+> Version: 1.0 | Date: [DATE] | Status: Initial
 
-## Vue d'ensemble
-Attribution des responsabilités selon les rôles identifiés et répartition par sous-répertoires.
+## Subdirectory Structure per Role
+- `solutions-architect/`: Architecture, patterns, technical decisions
+- `backend-developer/`: Implementation, APIs, performance
+- `compliance-expert/`: Regulations, audits, business validation
+- `security-qa/`: Testing, validation, quality controls
 
-## Structure des Sous-répertoires par Rôle
+## RACI Matrix per Concept/Technique
 
-### Concepts (`/prompts/gen/concepts/`)
-- `architecte-solutions/` : Architecture, patterns, décisions techniques
-- `developpeur-backend/` : Implémentation, APIs, performance
-- `expert-conformite/` : Réglementations, audits, validation métier
-- `qa-securite/` : Tests, validation, contrôles qualité
+| Concept/Technique          | Architect | Developer | Compliance | QA  |
+|---------------------------|-----------|-----------|------------|-----|
+| System Architecture       |     R     |     A     |     C      |  I  |
+| Application Security      |     C     |     R     |     A      |  R  |
+| Performance               |     A     |     R     |     C      |  C  |
+| Regulatory Compliance     |     C     |     I     |     R      |  A  |
+| Automated Testing         |     I     |     C     |     C      |  R  |
+| Deployment                |     A     |     R     |     C      |  C  |
 
-### Techniques (`/prompts/gen/techniques/`)
-- `architecte-solutions/` : Techniques architecturales, design patterns
-- `developpeur-backend/` : Techniques de développement, optimisation
-- `expert-conformite/` : Techniques d'audit, validation réglementaire
-- `qa-securite/` : Techniques de test, sécurisation
+**Legend**: R=Responsible, A=Accountable, C=Consulted, I=Informed
 
-### Use Cases (`/prompts/gen/use_cases/`)
-- `architecte-solutions/` : Cas d'usage architecturaux, décisions de conception
-- `developpeur-backend/` : Cas d'usage d'implémentation, résolution de problèmes
-- `expert-conformite/` : Cas d'usage de conformité, validation métier
-- `qa-securite/` : Cas d'usage de test, validation sécurisée
+## Git Collaboration Rules
+- Each role is primary responsible for their subdirectory
+- MRs/PRs touching a subdirectory must be approved by the responsible role
+- Cross-cutting changes require validation by all concerned roles
 
-## Matrice RACI par Concept/Technique
-
-| Concept/Technique | Architecte | Développeur | Expert Conformité | QA Sécurité |
-|-------------------|------------|-------------|-------------------|-------------|
-| Architecture Système | R | A | C | I |
-| Sécurité Applicative | C | R | A | R |
-| Performance | A | R | C | C |
-| Conformité Réglementaire | C | I | R | A |
-| Tests Automatisés | I | C | C | R |
-| Déploiement | A | R | C | C |
-
-**Légende** : R=Responsable, A=Approbateur, C=Consulté, I=Informé
-
-## Règles de Collaboration Git
-
-### Assignation par Sous-répertoire
-- Chaque rôle est **responsable principal** de son sous-répertoire
-- Les MR/PR touchant un sous-répertoire doivent être **approuvées par le rôle responsable**
-- Les modifications transversales nécessitent **validation de tous les rôles concernés**
-
-### Workflow de Validation
-1. **Création** : Le rôle responsable crée le contenu dans son sous-répertoire
-2. **Review** : Les rôles "Consulté" et "Approbateur" valident
-3. **Merge** : Le rôle "Approbateur" final valide la fusion
-
----
-#### 7.5 RACI Minimal ou Absent (Mode LIGHT)
-
-Utiliser l'outil `ask_followup_question` pour **poser la question** :
-```
-🎯 GESTION DES RÔLES EN MODE LIGHT
-
-Le mode Light privilégie un acteur unique ou un RACI minimal.
-
-Quelle approche souhaitez-vous ?
-
-1. Acteur unique (pas de RACI)
-   - Un seul responsable pour tout
-   - Approche "solo developer"
-   - Pas de matrice RACI nécessaire
-
-2. RACI minimal (2-3 rôles maximum)
-   - Dev + Lead + Ops (exemple)
-   - Matrice simplifiée
-   - Responsabilités claires mais limitées
-
-Votre choix (1/2) :
+*Auto-generated by init-aikido on [DATE] — AI-KIDO Rule 15 applied*
 ```
 
-**Si choix 1 (Acteur unique)** : Ne pas créer de matrice RACI
+#### 7.5 Minimal or No RACI (LIGHT mode)
 
-**Si choix 2 (RACI minimal)** : Utiliser `write_to_file` pour créer `/prompts/gen/concepts/matrice-raci-light.md` :
+Ask:
+```
+🎯 ROLE MANAGEMENT IN LIGHT MODE
+
+1. Single actor (no RACI) — solo developer approach
+2. Minimal RACI (2-3 roles max) — Dev + Lead + Ops example
+
+Your choice (1/2):
+```
+
+**Choice 1**: No RACI matrix — proceed to Phase 8.  
+**Choice 2**: Create `/prompts/gen/concepts/matrice-raci-light.md` with minimal RACI (2-3 polyvalent roles, shared unified files).
+
+### Phase 8: General AI-KIDO Index Update
+
+#### 8.1 Sectoral Indexes
+
+Update with new created files:
+- `/prompts/gen/concepts/index.md`
+- `/prompts/gen/techniques/index.md`
+- `/prompts/gen/use_cases/index.md`
+
+#### 8.2 Main Index
+
+Update `/prompts/index.md`:
+- **STANDARD**: Reference `ai-kido.md`, new project context, business domain, tech stack, links to new files
+- **LIGHT**: Reference `ai-kido-light.md`, simplified structure, unified files
+
+#### 8.3 AGENTS.md Update
+
+Create or update `AGENTS.md` at project root:
+
+**STANDARD**:
 ```markdown
-# Matrice RACI Minimale - [Nom du Projet] (Mode Light)
-> Version: 1.0 | Date: [DATE] | Statut: Initial | Mode: LIGHT
-
-## Vue d'ensemble
-Attribution minimale des responsabilités en mode Light (2-3 rôles maximum).
-
-## Rôles Identifiés
-- **Dev** : Développement et implémentation
-- **Lead** : Architecture et validation
-- **Ops** : Déploiement et infrastructure (optionnel)
-
-## Matrice RACI Minimale
-
-| Tâche | Dev | Lead | Ops |
-|-------|-----|------|-----|
-| Architecture | C | R/A | I |
-| Développement | R/A | C | I |
-| Déploiement | C | C | R/A |
-| Sécurité | R | A | C |
-| Tests | R/A | C | I |
-
-**Légende** : R=Responsable, A=Approbateur, C=Consulté, I=Informé
-
----
-*Généré automatiquement par init-aikido le [DATE] - Mode LIGHT*
-```
-
-*Généré automatiquement par init-aikido le [DATE] - Règle AI-KIDO 15 appliquée*
-```
-
-### Phase 8 : Mise à Jour de l'Indexation Générale AI-KIDO
-
-#### 6.1 Mise à Jour des Index Sectoriels
-
-Utiliser l'outil `apply_diff` pour mettre à jour automatiquement avec les nouveaux fichiers créés :
-- `/prompts/gen/concepts/index.md` : Ajouter références aux nouveaux concepts
-- `/prompts/gen/techniques/index.md` : Ajouter références aux nouvelles techniques
-- `/prompts/gen/use_cases/index.md` : Ajouter références aux nouveaux use cases
-
-#### 8.2 Mise à Jour de l'Index Principal
-
-Utiliser l'outil `apply_diff` ou `write_to_file` pour mettre à jour `/prompts/index.md` avec :
-- **Mode AI-KIDO** : Référence à `ai-kido.md` (STANDARD) ou `ai-kido-light.md` (LIGHT)
-- Nouveau contexte projet identifié
-- Domaine métier ajouté
-- Stack technique référencée
-- Liens vers les nouveaux fichiers créés
-
-**Format pour Mode STANDARD** :
-```markdown
-# Index Principal - [Nom du Projet]
-> Version: 1.0 | Date: [DATE] | Mode: STANDARD
-
-## Configuration AI-KIDO
-- **Mode**: STANDARD (Structure complète multi-agents)
-- **Référence**: [ai-kido.md](../hard_points/ai-kido.md)
-- **RACI**: Complet multi-acteurs
-
-[Reste du contenu...]
-```
-
-**Format pour Mode LIGHT** :
-```markdown
-# Index Principal - [Nom du Projet]
-> Version: 1.0 | Date: [DATE] | Mode: LIGHT
-
-## Configuration AI-KIDO
-- **Mode**: LIGHT (Structure minimale agent unitaire)
-- **Référence**: [ai-kido-light.md](../hard_points/ai-kido-light.md)
-- **RACI**: [Acteur unique / Minimal 2-3 rôles]
-
-[Reste du contenu...]
-```
-
-#### 8.3 Création/Mise à Jour du Fichier AGENTS.md
-
-**Si AIKIDO_MODE = STANDARD** :
-
-Utiliser l'outil `write_to_file` ou `apply_diff` pour créer ou mettre à jour `AGENTS.md` à la racine du projet selon la norme Claude :
-
-```markdown
-# AI Agents Configuration - Mode STANDARD
+# AI Agents Configuration — STANDARD Mode
 
 ## Project Context
-- **Project Name**: [Nom du Projet]
-- **AI-KIDO Mode**: STANDARD
-- **Reference**: [prompts/hard_points/ai-kido.md](prompts/hard_points/ai-kido.md)
-- **Domain**: [Domaine Métier]
-- **Architecture**: [Type d'architecture identifié]
-- **Tech Stack**: [Stack technique principale]
+- **Project**: [Project Name] | **AI-KIDO Mode**: STANDARD
+- **Reference**: prompts/hard_points/ai-kido.md
+- **Domain**: [Business Domain] | **Architecture**: [Type] | **Stack**: [Main stack]
 
 ## Available Agents
-
-### Concept Specialists
-[Liste des agents spécialisés dans les concepts identifiés - 6-12 agents]
-
-### Technical Specialists
-[Liste des agents spécialisés dans les techniques identifiées]
-
-### Domain Experts
-[Liste des experts métier selon le domaine]
+### Concept Specialists [6-12 agents per identified concepts]
+### Technical Specialists [per identified techniques]
+### Domain Experts [per business domain]
 
 ## Agent Interaction Matrix
-
 | Agent Type | Primary Role | Interaction Context | Knowledge Base |
-|------------|--------------|-------------------|----------------|
-| [Type 1] | [Rôle] | [Contexte] | [Base de connaissances] |
-| [Type 2] | [Rôle] | [Contexte] | [Base de connaissances] |
 
 ## Usage Guidelines
-
-### When to Use Each Agent
-[Guidelines basées sur les use cases identifiés]
-
-### Agent Coordination
-[Règles de coordination entre agents selon la matrice RACI]
+[Based on identified use cases — RACI coordination rules]
 
 ---
-*Generated by init-aikido on [DATE] - Mode STANDARD*
+*Generated by init-aikido on [DATE] — STANDARD mode*
 ```
 
-**Si AIKIDO_MODE = LIGHT** :
-
-Utiliser l'outil `write_to_file` ou `apply_diff` pour créer ou mettre à jour `AGENTS.md` à la racine du projet selon la norme Claude :
-
+**LIGHT**:
 ```markdown
-# AI Agents Configuration - Mode LIGHT
+# AI Agents Configuration — LIGHT Mode
 
 ## Project Context
-- **Project Name**: [Nom du Projet]
-- **AI-KIDO Mode**: LIGHT (Agent Unitaire / Multi-agents Minimal)
-- **Reference**: [prompts/hard_points/ai-kido-light.md](prompts/hard_points/ai-kido-light.md)
-- **Domain**: [Domaine Métier]
-- **Architecture**: [Lien vers /prompts/gen/concepts/core-concepts.md]
-- **Tech Stack**: [Lien vers /prompts/gen/techniques/core-techniques.md]
+- **Project**: [Project Name] | **AI-KIDO Mode**: LIGHT
+- **Reference**: prompts/hard_points/ai-kido-light.md
+- **Architecture**: → /prompts/gen/concepts/core-concepts.md
+- **Stack**: → /prompts/gen/techniques/core-techniques.md
 
-## Available Agents (3-5 Maximum)
+## Available Agents (3-5 max)
+### Agent 1/2/3: [Name] — polyvalent responsibilities
 
-### Agent 1: [Nom]
-[Lien vers /prompts/gen/personas/agent-1.md]
-**Responsabilités**: [Liste des domaines couverts - polyvalent]
+## Agent Interaction (Optional in Light)
+[Minimal RACI matrix if applicable, else "Single Actor"]
 
-### Agent 2: [Nom]
-[Lien vers /prompts/gen/personas/agent-2.md]
-**Responsabilités**: [Liste des domaines couverts - polyvalent]
-
-### Agent 3: [Nom]
-[Lien vers /prompts/gen/personas/agent-3.md]
-**Responsabilités**: [Liste des domaines couverts - polyvalent]
-
-## Agent Interaction (Optionnel en Light)
-[Matrice RACI minimale si applicable, sinon "Agent Unitaire"]
-
-## Usage Guidelines
-[Lien vers /prompts/gen/use_cases/use-cases-critiques.md - 3 cas maximum]
+## Usage Guidelines → /prompts/gen/use_cases/use-cases-critiques.md
 
 ---
-*Generated by init-aikido on [DATE] - Mode LIGHT*
+*Generated by init-aikido on [DATE] — LIGHT mode*
 ```
 
-#### 8.4 Validation Finale AI-KIDO 🤖 🆕
+#### 8.4 Final AI-KIDO Validation 🤖
 
-**UTILISER L'AGENT** `agent-aikido-validator` pour validation complète post-initialisation :
+Invoke `agent-aikido-validator`:
 
 ```markdown
 🤖 AGENT: agent-aikido-validator
 FORMAT: JSON
 
-**Prompt pour l'agent** :
-"Valide TOUS les fichiers créés dans /prompts/ lors de l'initialisation AI-KIDO.
+Prompt:
+"Validate ALL files created in /prompts/ during AI-KIDO initialization.
 
-Fichiers à valider :
-- Mode STANDARD : /prompts/gen/concepts/*.md, /prompts/gen/techniques/*.md, /prompts/gen/use_cases/*.md, matrice-raci.md
-- Mode LIGHT : /prompts/gen/concepts/core-concepts.md, /prompts/gen/techniques/core-techniques.md, /prompts/gen/use_cases/use-cases-critiques.md
+STANDARD files: /prompts/gen/concepts/*.md, /prompts/gen/techniques/*.md, /prompts/gen/use_cases/*.md, matrice-raci.md
+LIGHT files: core-concepts.md, core-techniques.md, use-cases-critiques.md
 
-Validation conformité AI-KIDO :
-1. Règle 4 : Contraintes lignes (≤500 standard, ≤1000 commands/personas/agents, prompts/hard_points/system/structure/index.json no limit.)
-2. Règle 6 : Liens bidirectionnels (quick check seulement)
-3. Règle 2 : Emplacement correct (concepts/techniques/use_cases)
-4. Frontmatter valide (version, date, statut, mode pour Light)
-5. Détection fichiers vides ou mal formés
+AI-KIDO compliance validation:
+1. Rule 4: Line constraints (≤500 standard, ≤1000 commands/personas/agents)
+2. Rule 6: Bidirectional links (quick check only)
+3. Rule 2: Correct location (concepts/techniques/use_cases)
+4. Valid frontmatter (version, date, status, mode for Light)
+5. Detect empty or malformed files
 
-Pour chaque fichier non-conforme, retourne :
-- Fichier + violation détectée avec line numbers
-- Quick fix actionnable
+For each non-compliant file: file + detected violation with line numbers + actionable quick fix
 
-Génère score conformité :
-- Fichiers validés : [TOTAL]
-- Conformes : [NOMBRE] (✅)
-- Non-conformes : [NOMBRE] (❌)
-- Score conformité : [POURCENTAGE]%
+Generate compliance score:
+- Files validated: [TOTAL]
+- Compliant: [COUNT] ✅ | Non-compliant: [COUNT] ❌
+- Compliance score: [PERCENTAGE]%
 
-Mode rapide optimisé : <5k tokens total."
-
-**Résultat attendu** : Score conformité finale post-initialisation avec violations éventuelles
+Fast optimized mode: <5k tokens total."
 ```
 
-**Avantages de l'agent** :
-- ✅ Validation systématique tous fichiers créés
-- ✅ Score conformité immédiat
-- ✅ Quick fixes si violations détectées
-- ✅ Garantie qualité dès initialisation
+If score < 90%: display violations and propose auto-corrections.  
+If score ≥ 90%: confirm successful initialization.
 
-**Si score < 90%** : Afficher violations et proposer corrections automatiques
-**Si score ≥ 90%** : Confirmer initialisation réussie
+---
 
-#### 8.5 Indexation Vectorielle (si supportée)
+## Output
 
-Si le système supporte l'indexation vectorielle :
-- Indexer tous les nouveaux fichiers créés
-- Mettre à jour les embeddings des concepts
-- Créer les liens sémantiques entre éléments
-
-## Messages de Confirmation
-
-**Si AIKIDO_MODE = STANDARD** :
-
-Utiliser l'outil `attempt_completion` pour afficher le message de succès :
+**STANDARD — Success**:
 ```
-✅ Memory bank AI-KIDO initialisée avec succès en mode STANDARD !
+✅ AI-KIDO Memory Bank initialized in STANDARD mode!
 
-Fichiers créés :
-- /prompts/gen/concepts/glossaire-projet.md (si documents hard-points)
+Created files:
+- /prompts/gen/concepts/glossaire-projet.md (if hard-points available)
 - /prompts/gen/concepts/architecture-systeme.md
 - /prompts/gen/concepts/matrice-raci.md
 - /prompts/gen/techniques/stack-technique.md
 - /prompts/gen/use_cases/use-cases-fondamentaux.md
-- AGENTS.md (créé/mis à jour - Mode STANDARD)
+- AGENTS.md (created/updated — STANDARD mode)
 
-Index mis à jour :
-- /prompts/index.md (index principal - référence ai-kido.md)
-- /prompts/gen/index.md 
-- /prompts/gen/concepts/index.md
-- /prompts/gen/techniques/index.md
-- /prompts/gen/use_cases/index.md
+Updated indexes: index.md, gen/index.md, concepts/, techniques/, use_cases/
 
-🎯 Base AI-KIDO STANDARD prête pour la suite du développement !
-   Structure complète multi-agents avec 6-12 personas et RACI complet.
+🎯 AI-KIDO STANDARD base ready!
+   Full multi-agent structure with 6-12 personas and full RACI.
 ```
 
-**Si AIKIDO_MODE = LIGHT** :
-
-Utiliser l'outil `attempt_completion` pour afficher le message de succès :
+**LIGHT — Success**:
 ```
-✅ Memory bank AI-KIDO initialisée avec succès en mode LIGHT !
+✅ AI-KIDO Memory Bank initialized in LIGHT mode!
 
-Fichiers créés :
-- /prompts/gen/concepts/core-concepts.md (fichier unifié)
-- /prompts/gen/techniques/core-techniques.md (fichier unifié)
-- /prompts/gen/use_cases/use-cases-critiques.md (3 cas maximum)
-- /prompts/gen/concepts/matrice-raci-light.md (si RACI minimal choisi)
-- AGENTS.md (créé/mis à jour - Mode LIGHT)
+Created files:
+- /prompts/gen/concepts/core-concepts.md (unified file)
+- /prompts/gen/techniques/core-techniques.md (unified file)
+- /prompts/gen/use_cases/use-cases-critiques.md (3 cases max)
+- /prompts/gen/concepts/matrice-raci-light.md (if minimal RACI chosen)
+- AGENTS.md (created/updated — LIGHT mode)
 
-Index mis à jour :
-- /prompts/index.md (index principal - référence ai-kido-light.md)
-- /prompts/gen/index.md 
-- /prompts/gen/concepts/index.md
-- /prompts/gen/techniques/index.md
-- /prompts/gen/use_cases/index.md
+Updated indexes: index.md (references ai-kido-light.md), gen/index.md, sectoral indexes
 
-🎯 Base AI-KIDO LIGHT prête pour la suite du développement !
-   Structure minimale avec 3-5 personas maximum et fichiers unifiés.
-   Approche agent unitaire privilégiée.
+🎯 AI-KIDO LIGHT base ready!
+   Minimal structure with 3-5 personas max and unified files.
 ```
-
-## 🤖 Récapitulatif des Agents AI-KIDO Utilisés
-
-Cette commande optimise l'initialisation de la Memory Bank en utilisant **4 agents AI-KIDO spécialisés** :
-
-### Phase 1 : `agent-aikido-explore-bank` (DEEP MODE) 🆕
-- **Rôle** : Extraction intelligente des informations depuis sources (hard-points + code)
-- **Output** : Rapport structuré avec contexte projet, architecture, stack, terminologie, contraintes
-- **Tokens** : ~25-40k (DEEP mode)
-- **Gain** : ~70% tokens vs extraction manuelle
-
-### Phase 5.4 : `agent-aikido-truth-evaluator` 🆕
-- **Rôle** : Résolution automatique des contradictions entre informations existantes et nouvelles
-- **Output** : Liste contradictions avec recommandations (KEEP/USE_NEW/MERGE/ASK_USER)
-- **Tokens** : Optimisé selon nombre de conflits
-- **Gain** : ~60% conflits résolus automatiquement
-
-### Phase 5.5 : `agent-aikido-raci-delegator` (Mode STANDARD uniquement) 🆕
-- **Rôle** : Classification automatique des documents selon matrice RACI
-- **Output** : Mapping document → rôle → chemin cible avec justifications
-- **Tokens** : Optimisé selon nombre de documents
-- **Gain** : ~80% classifications automatisées
-
-### Phase 8.4 : `agent-aikido-validator` 🆕
-- **Rôle** : Validation finale conformité AI-KIDO de tous les fichiers créés
-- **Output** : Score conformité avec violations éventuelles et quick fixes
-- **Tokens** : <5k
-- **Gain** : Garantie qualité dès initialisation
-
-### 📊 Gains d'Optimisation
-
-| Aspect | Avant (manuel) | Après (agents) | Gain |
-|--------|----------------|----------------|------|
-| **Extraction sources** | Manuelle multi-outils | agent-explore-bank auto | ~70% tokens |
-| **Résolution conflits** | Questions utilisateur | agent-truth-evaluator auto | ~60% conflits auto |
-| **Classification RACI** | Manuelle | agent-raci-delegator auto | ~80% auto |
-| **Validation finale** | Absente | agent-validator systématique | +Garantie qualité |
-| **Workflow global** | ~100k tokens | ~50k tokens | ~50% efficacité |
-
-## Gestion des Erreurs
-
-- **Documents spécifiés introuvables** : Lister les fichiers manquants et proposer mode manuel
-- **Sources projet inaccessibles** : Lister les répertoires non accessibles et continuer avec les sources disponibles
-- **Documents hard-points illisibles** : Passer en mode manuel avec avertissement
-- **Chemins invalides** : Redemander avec exemples de chemins corrects
-- **Informations incomplètes** : Redemander les éléments manquants
-- **Analyse automatique échouée** : Basculer en mode manuel avec les informations partielles
-- **Stack technique non détectée** : Demander saisie manuelle
-- **Conflits d'informations** : Interroger l'utilisateur pour résoudre les contradictions
-- **Conflits de fichiers** : Proposer sauvegarde avec suffixe temporel
-- **Erreur génération Mermaid** : Créer structure textuelle de fallback
-
-## Règles AI-KIDO Respectées
-
-- ✅ Pas de création de personas (focus sur concepts/techniques)
-- ✅ Génération directe dans `/prompts/gen/`
-- ✅ Format Markdown avec métadonnées
-- ✅ Schémas Mermaid pour densité sémantique
-- ✅ Taxonomies et hiérarchies par rôles
-- ✅ Matrice RACI pour responsabilités
-- ✅ Contrainte 500 lignes par fichier
-- ✅ Auto-alimentation de la memory bank
-- 🆕 **Optimisation avec agents AI-KIDO** :
-  - agent-aikido-explore-bank (Phase 1 : extraction intelligente)
-  - agent-aikido-truth-evaluator (Phase 5.4 : résolution contradictions)
-  - agent-aikido-raci-delegator (Phase 5.5 : classification RACI)
-  - agent-aikido-validator (Phase 8.4 : validation finale)
 
 ---
+
+## Notes
+
+**Agents used**:
+
+| Agent | Phase | Role |
+|-------|-------|------|
+| **explore-bank** (DEEP) | 1 | Intelligent extraction from sources (hard-points + code) |
+| **truth-evaluator** | 5.4 | Auto-resolution of contradictions between existing and new info |
+| **raci-delegator** | 5.5 (STANDARD) | Auto-classification of documents per RACI matrix |
+| **validator** | 8.4 | Final AI-KIDO compliance validation of all created files |
+
+**Error handling**:
+- Missing specified documents: list missing files, propose manual mode
+- Inaccessible project sources: list inaccessible directories, continue with available sources
+- Unreadable hard-points: switch to manual mode with warning
+- Invalid paths: re-ask with correct path examples
+- Failed auto-analysis: switch to manual with partial info
+- Stack not detected: ask for manual input
+- Information conflicts: use truth-evaluator or ask user
+- File conflicts: propose backup with temporal suffix
+- Mermaid generation error: create text fallback structure
+
+**AI-KIDO Rules respected**:
+- No personas created (focus on concepts/techniques)
+- Direct generation in `/prompts/gen/`
+- Markdown with metadata
+- Mermaid diagrams for semantic density
+- Role-based taxonomies and hierarchies (Rule 15)
+- RACI matrix for responsibilities
+- 500-line constraint per file
+- Memory Bank auto-population
+- Agents: explore-bank (extraction), truth-evaluator (conflicts), raci-delegator (classification), validator (compliance)

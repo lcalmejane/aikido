@@ -1,41 +1,41 @@
-## HARD POINTS - PRIORITÉ ABSOLUE
+## HARD POINTS - ABSOLUTE PRIORITY
 
-**DÉFINITION**: Vérités immuables qui ne peuvent être remises en question.
+**DEFINITION**: Immutable truths that cannot be questioned.
 
-**TRAITEMENT OBLIGATOIRE**:
-1. Vérifier existence de hard_points pour le domaine concerné
-2. Respecter ABSOLUMENT toutes les contraintes listées
-3. En cas de conflit: hard_points > tables de vérité > demande utilisateur
-4. **CONSULTER AI-KIDO**: Toutes les règles architecturales et d'auto-alimentation sont dans [`ai-kido.md`](ai-kido.md)
+**MANDATORY PROCESSING**:
+1. Verify existence of hard_points for the relevant domain
+2. ABSOLUTELY respect all listed constraints
+3. In case of conflict: hard_points > truth tables > user request
+4. **CONSULT AI-KIDO**: All architectural and self-feeding rules are in [`ai-kido.md`](ai-kido.md)
 
-**FORMAT HARD POINT**:
+**HARD POINT FORMAT**:
 ```markdown
-# Hard Point: [Nom de la Décision]
-> Promu le: YYYY-MM-DD | Validé par: [Autorité]
+# Hard Point: [Decision Name]
+> Promoted on: YYYY-MM-DD | Validated by: [Authority]
 
-## Décision figée
-[Ce qui ne peut être modifié]
+## Frozen decision
+[What cannot be modified]
 
 ## Justification
-[Raisonnement détaillé]
+[Detailed reasoning]
 
-## Impact et dépendances
-[Éléments du système concernés]
+## Impact and dependencies
+[System elements concerned]
 ```
 
-## Hard Points Disponibles
+## Available Hard Points
 
-- [`ai-kido.md`](ai-kido.md) : **Guide complet AI-KIDO** - Toutes les règles architecturales, auto-alimentation, agents, amélioration continue
-- [`gestion-logs-aikido.md`](gestion-logs-aikido.md) : **Gestion des Logs AI‑KIDO** - Règles strictes pour la traçabilité, switching automatique de mode, emplacement et format des logs
+- [`ai-kido.md`](ai-kido.md) : **AI-KIDO Complete Guide** - All architectural rules, self-feeding, agents, continuous improvement
+- [`gestion-logs-aikido.md`](gestion-logs-aikido.md) : **AI‑KIDO Log Management** - Strict rules for traceability, automatic mode switching, log location and format
 
-## Structure des Hard Points
+## Hard Points Structure
 
-- [`concepts/`](concepts/index.md) : **Concepts fondamentaux validés** - Vérités conceptuelles immuables
-- [`techniques/`](techniques/index.md) : **Méthodes pratiques validées** - Techniques éprouvées et obligatoires
-- [`use_cases/`](use_cases/index.md) : **Cas d'usage validés** - Applications standards et références obligatoires
+- [`concepts/`](concepts/index.md) : **Validated fundamental concepts** - Immutable conceptual truths
+- [`techniques/`](techniques/index.md) : **Validated practical methods** - Proven and mandatory techniques
+- [`use_cases/`](use_cases/index.md) : **Validated use cases** - Standard applications and mandatory references
 
-## Exemple de configuration .roomodes
+## Example .roomodes configuration
 
-Voici un exemple de fichier de configuration `.roomodes` illustrant l’utilisation de liens dynamiques vers les personas locaux du projet :
+Here is an example `.roomodes` configuration file illustrating the use of dynamic links to local project personas:
 
 [`prompts/hard_points/.roomodes-examples`](prompts/hard_points/.roomodes-examples)

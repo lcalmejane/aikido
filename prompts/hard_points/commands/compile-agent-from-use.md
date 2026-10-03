@@ -1,423 +1,449 @@
 ---
-description: "Compilation interactive d'agents AI-KIDO spécialisés avec questionnaire utilisateur"
+description: "Interactive compilation of specialized AI-KIDO agents with user questionnaire"
 ---
 
-# Commande Compile-Agent-From-Use
+# /compile-agent-from-use
 
-Crée interactivement un agent AI-KIDO spécialisé en posant des questions à l'utilisateur pour déterminer le type de compilation souhaité, puis compile automatiquement la base de connaissances avec versioning SEMVER.
+**Purpose**: Interactively compile a specialized AI-KIDO agent by collecting user inputs to determine the compilation mode, then automatically assemble the knowledge base with SEMVER versioning.
 
-## Exécution Interactive
+---
 
-### Étape 1 : Question initiale (SANS SCAN)
-Poser directement la **Question 1 : Mode de compilation** SANS analyser aucun fichier :
+## Usage
+
+/compile-agent-from-use
+
+## Prerequisites
+
+- AI-KIDO Memory Bank initialized at `/prompts/`
+- At least one of the following available: existing agent in `/out/agents/`, command in `prompts/hard_points/commands/`, or use-case in `/prompts/gen/use_cases/`
+
+## Steps
+
+### Step 1: Initial question (NO SCAN)
+
+Ask **Question 1: Compilation mode** directly WITHOUT analyzing any files:
+
 ```
-🤖 Bonjour ! Je vais vous aider à compiler un agent AI-KIDO personnalisé.
+Hello! I will help you compile a customized AI-KIDO agent.
 
-Sélectionnez le mode de compilation :
+Select the compilation mode:
 
-1. 📋 Cas existant - Partir d'un agent déjà compilé pour le modifier
-2. ⚡ Commande - Analyser une commande .roo existante pour créer l'agent
-3. 🎯 Use-case - Créer depuis un cas d'usage AI-KIDO spécifique
-4. ✋ Manuel - Configuration manuelle complète
+1. Existing case - Start from an already compiled agent to modify it
+2. Command - Analyze an existing command to create the agent
+3. Use-case - Create from a specific AI-KIDO use case
+4. Manual - Full manual configuration
 
-Entrez votre choix (1-4) :
-```
-
-### Étape 2 : Analyse ciblée APRÈS le choix
-
-**Si choix = 1 (Cas existant)** :
-SEULEMENT MAINTENANT analyser `/out/agents/index.md` et poser :
-```
-📋 Analyse des agents existants...
-
-Agents disponibles :
-[Lister les agents trouvés avec format :]
-- agent-[nom]-v[version].md : [description courte]
-
-Sélectionnez l'agent de base (tapez le nom) ou 'nouveau' pour créer un agent différent :
-```
-
-**Si choix = 2 (Commande)** :
-SEULEMENT MAINTENANT lister `prompts/hard_points/commands/` et poser :
-```
-⚡ Analyse des commandes disponibles...
-
-Commandes trouvées dans prompts/hard_points/commands/ :
-[Lister les fichiers .md trouvés avec format :]
-- [nom-commande].md : [première ligne si accessible]
-
-Sélectionnez la commande à analyser (tapez le nom sans .md) :
+Enter your choice (1-4):
 ```
 
-**Si choix = 3 (Use-case)** :
-SEULEMENT MAINTENANT lister `/prompts/gen/use_cases/` et poser :
+### Step 2: Targeted analysis AFTER the choice
+
+**If choice = 1 (Existing case)**:
+ONLY NOW analyze `/out/agents/index.md` and ask:
+
 ```
-🎯 Analyse des cas d'usage disponibles...
+Analyzing existing agents...
 
-Use-cases trouvés dans /prompts/gen/use_cases/ :
-[Lister les fichiers .md trouvés avec format :]
-- [nom-usecase].md : [première ligne si accessible]
+Available agents:
+[List found agents with format:]
+- agent-[name]-v[version].md : [short description]
 
-Sélectionnez le cas d'usage (tapez le nom sans .md) ou 'parcourir' pour explorer les sous-dossiers :
-```
-
-**Si choix = 4 (Manuel)** :
-Poser directement les questions SANS analyser de fichiers :
-```
-✋ Configuration manuelle étape par étape :
-
-Question A - Nom de l'agent :
-Entrez le nom de votre agent (ex: diplomator, analyzer, consultant-rh) :
-
-Question B - Spécialisation :
-Décrivez la spécialisation de cet agent (ex: négociation diplomatique, analyse technique, gestion RH) :
-
-Question C - Personas requis :
-Quels personas doivent être intégrés ? (séparez par des virgules)
-Ou tapez 'auto' pour sélection automatique selon la spécialisation :
-
-Question D - Techniques spécifiques (optionnel) :
-Y a-t-il des techniques particulières à intégrer ? (tapez 'auto' pour sélection automatique ou listez-les) :
+Select the base agent (type the name) or 'new' to create a different agent:
 ```
 
-### Étape 3 : Analyse des personas (si nécessaire)
-SEULEMENT si l'utilisateur demande la liste des personas disponibles ou choisit 'auto', ALORS analyser `/prompts/gen/personas/` pour proposer les options.
+**If choice = 2 (Command)**:
+ONLY NOW list `prompts/hard_points/commands/` and ask:
 
-Poser la **Question 2 : Validation des choix**
 ```
-📋 Récapitulatif de votre sélection :
+Analyzing available commands...
 
-Mode : [mode choisi]
-Base : [élément sélectionné]
-[Détails spécifiques selon le mode]
+Commands found in prompts/hard_points/commands/:
+[List .md files found with format:]
+- [command-name].md : [first line if accessible]
 
-Confirmez-vous cette configuration ? (oui/non)
-Si non, retour à la question 1.
+Select the command to analyze (type the name without .md):
 ```
 
-## Processus de Compilation Automatique
+**If choice = 3 (Use-case)**:
+ONLY NOW list `/prompts/gen/use_cases/` and ask:
 
-Une fois les choix validés, lancer automatiquement :
+```
+Analyzing available use cases...
 
-### Phase 1 : Analyse et Collecte Ciblée 🤖 🆕
+Use-cases found in /prompts/gen/use_cases/:
+[List .md files found with format:]
+- [usecase-name].md : [first line if accessible]
 
-**UTILISER L'AGENT** `agent-aikido-explore-bank` pour extraction intelligente :
+Select the use case (type the name without .md) or 'browse' to explore subdirectories:
+```
+
+**If choice = 4 (Manual)**:
+Ask the following questions directly WITHOUT analyzing any files:
+
+```
+Manual configuration step by step:
+
+Question A - Agent name:
+Enter the name of your agent (e.g.: diplomator, analyzer, hr-consultant):
+
+Question B - Specialization:
+Describe the specialization of this agent (e.g.: diplomatic negotiation, technical analysis, HR management):
+
+Question C - Required personas:
+Which personas should be integrated? (separate with commas)
+Or type 'auto' for automatic selection based on the specialization:
+
+Question D - Specific techniques (optional):
+Are there particular techniques to integrate? (type 'auto' for automatic selection or list them):
+```
+
+### Step 3: Persona analysis (if needed)
+
+ONLY IF the user requests the list of available personas or chooses 'auto', THEN analyze `/prompts/gen/personas/` to propose options.
+
+Ask **Question 2: Validation of choices**:
+
+```
+Summary of your selection:
+
+Mode: [chosen mode]
+Base: [selected element]
+[Specific details depending on the mode]
+
+Do you confirm this configuration? (yes/no)
+If no, return to question 1.
+```
+
+### Step 4: Automatic compilation process
+
+Once choices are validated, launch automatically:
+
+#### Phase 1: Targeted analysis and information collection
+
+**USE AGENT** `agent-aikido-explore-bank` for intelligent extraction:
 
 ```markdown
-🤖 AGENT: agent-aikido-explore-bank (DEEP MODE)
+AGENT: agent-aikido-explore-bank (DEEP MODE)
 FORMAT: JSON
 
-**Prompt pour l'agent** :
-"Extrais les informations nécessaires pour compiler l'agent AI-KIDO selon la configuration suivante :
+Agent prompt:
+"Extract the information needed to compile the AI-KIDO agent according to the following configuration:
 
-Configuration utilisateur :
-- Mode : [mode choisi : cas existant/commande/use-case/manuel]
-- Base : [élément sélectionné]
-- Spécialisation : [spécialisation demandée]
-- Personas requis : [liste ou 'auto']
-- Techniques : [liste ou 'auto']
+User configuration:
+- Mode: [chosen mode: existing case / command / use-case / manual]
+- Base: [selected element]
+- Specialization: [requested specialization]
+- Required personas: [list or 'auto']
+- Techniques: [list or 'auto']
 
-Informations à extraire depuis Memory Bank :
-1. **Hard Points** : Contraintes immuables depuis /prompts/hard_points/ai-kido.md
-2. **Personas** : Descriptions complètes depuis /prompts/gen/personas/ (selon liste ou auto-sélection)
-3. **Techniques** : Méthodes pertinentes depuis /prompts/gen/techniques/ (selon contexte spécialisation)
-4. **Use-Cases** : Cas d'usage ciblés depuis /prompts/gen/use_cases/ (si pertinents)
-5. **Concepts** : Concepts fondamentaux depuis /prompts/gen/concepts/ (si nécessaires)
+Information to extract from the Memory Bank:
+1. Hard Points: Immutable constraints from /prompts/hard_points/ai-kido.md
+2. Personas: Full descriptions from /prompts/gen/personas/ (per list or auto-selection)
+3. Techniques: Relevant methods from /prompts/gen/techniques/ (per specialization context)
+4. Use-Cases: Targeted use cases from /prompts/gen/use_cases/ (if relevant)
+5. Concepts: Core concepts from /prompts/gen/concepts/ (if needed)
 
-Auto-sélection intelligente (si 'auto') :
-- Négociation/Diplomatie → personas RH + Management + Communication
-- Analyse Technique → personas Architecte + Développeur + Sécurité
-- Gestion Projet → personas Management + QA + DevOps
-- Formation/Pédagogie → personas RH + Communication + Qualité
+Intelligent auto-selection (if 'auto'):
+- Negotiation/Diplomacy -> HR + Management + Communication personas
+- Technical Analysis -> Architect + Developer + Security personas
+- Project Management -> Management + QA + DevOps personas
+- Training/Pedagogy -> HR + Communication + Quality personas
 
-Pour chaque élément extrait, retourne :
-- Contenu complet optimisé pour compilation
-- Source (fichier)
-- Pertinence par rapport à la spécialisation (HIGH/MEDIUM/LOW)
+For each extracted element, return:
+- Full content optimized for compilation
+- Source (file)
+- Relevance to the specialization (HIGH/MEDIUM/LOW)
 
-Retourne un rapport structuré JSON ou Markdown avec tous les éléments extraits, organisés par catégorie."
+Return a structured JSON or Markdown report with all extracted elements, organized by category."
 
-**Résultat attendu** : Package complet des éléments nécessaires à la compilation
+Expected result: Complete package of elements needed for compilation
 ```
 
-Afficher en temps réel :
+Display in real time:
+
 ```
-🔍 ANALYSE CIBLÉE EN COURS (agent-aikido-explore-bank)...
+TARGETED ANALYSIS IN PROGRESS (agent-aikido-explore-bank)...
 
-✓ Extraction hard points depuis /prompts/hard_points/ai-kido.md
-✓ Collecte personas sélectionnés (auto-sélection ou liste utilisateur)
-✓ Récupération techniques pertinentes (selon spécialisation)
-✓ Intégration use-cases ciblés (selon contexte)
-✓ Validation cohérence des éléments collectés
-✓ Package compilation prêt
-```
-
-**Avantages de l'agent** :
-- ✅ Extraction intelligente multi-sources
-- ✅ Auto-sélection personas selon spécialisation
-- ✅ Collecte ciblée (pas de scan exhaustif)
-- ✅ Gain : ~60% tokens vs lecture manuelle
-
-### Phase 2 : Optimisation Sémantique Avancée
-Afficher en temps réel :
-```
-⚡ OPTIMISATION EN COURS...
-
-✓ Densité maximale : Élimination redondances et doublons sémantiques
-✓ Hiérarchisation intelligente : Réorganisation par importance/fréquence
-✓ Compression sémantique : Fusion concepts similaires sans perte
-✓ Validation orale : Test prononçabilité et fluidité
-✓ Cohérence terminologique : Unification vocabulaire
-✓ Suppression historique : Élimination éléments non-opérationnels
+- Extracting hard points from /prompts/hard_points/ai-kido.md
+- Collecting selected personas (auto-selection or user list)
+- Retrieving relevant techniques (per specialization)
+- Integrating targeted use-cases (per context)
+- Validating consistency of collected elements
+- Compilation package ready
 ```
 
-### Phase 3 : Calcul Version SEMVER
-Afficher en temps réel :
+Agent advantages:
+- Intelligent multi-source extraction
+- Persona auto-selection based on specialization
+- Targeted collection (no exhaustive scan)
+- Gain: ~60% tokens vs manual reading
+
+#### Phase 2: Advanced semantic optimization
+
+Display in real time:
+
 ```
-📊 VERSIONING EN COURS...
+OPTIMIZATION IN PROGRESS...
 
-✓ Vérification agents existants dans /out/agents/
-✓ Analyse différentielle avec version précédente (si applicable)
-✓ Classification automatique des changements
-✓ Calcul version selon règles SEMVER strictes
-✓ Génération nomenclature agent-[usage]-vX.Y.Z.md
+- Maximum density: Elimination of redundancies and semantic duplicates
+- Intelligent prioritization: Reorganization by importance/frequency
+- Semantic compression: Merging similar concepts without loss
+- Oral validation: Pronunciation and fluency testing
+- Terminological consistency: Vocabulary unification
+- History removal: Elimination of non-operational elements
 ```
 
-### Phase 4 : Validation et Contrôle Qualité 🤖 🆕
+#### Phase 3: SEMVER version calculation
 
-**UTILISER L'AGENT** `agent-aikido-validator` pour validation conformité :
+Display in real time:
+
+```
+VERSIONING IN PROGRESS...
+
+- Checking existing agents in /out/agents/
+- Differential analysis with previous version (if applicable)
+- Automatic change classification
+- Version calculation per strict SEMVER rules
+- Nomenclature generation: agent-[usage]-vX.Y.Z.md
+```
+
+#### Phase 4: Validation and quality control
+
+**USE AGENT** `agent-aikido-validator` for compliance validation:
 
 ```markdown
-🤖 AGENT: agent-aikido-validator
+AGENT: agent-aikido-validator
 FORMAT: JSON
 
-**Prompt pour l'agent** :
-"Valide l'agent compilé contre les règles AI-KIDO avant finalisation.
+Agent prompt:
+"Validate the compiled agent against AI-KIDO rules before finalization.
 
-Fichier à valider : /out/agents/agent-[usage]-v[X.Y.Z].md (temporaire)
+File to validate: /out/agents/agent-[usage]-v[X.Y.Z].md (temporary)
 
-Validation conformité spécifique agents compilés :
-1. Règle 4 : Contraintes lignes (≤500 lignes pour agents compilés)
-2. Règle 11 : Densité sémantique maximale (élimination redondances)
-3. Hard Points : Conformité absolue et immuable
-4. Complétude personas : Tous personas déclarés sont intégrés
-5. Techniques cohérentes : Pas de techniques contradictoires
-6. Format ChatGPT : Template texte formaté (non-markdown brut)
-7. Tests fonctionnels : Validation sur cas d'usage types
+Compliance validation specific to compiled agents:
+1. Rule 4: Line constraints (<=500 lines for compiled agents)
+2. Rule 11: Maximum semantic density (elimination of redundancies)
+3. Hard Points: Absolute and immutable compliance
+4. Persona completeness: All declared personas are integrated
+5. Consistent techniques: No contradictory techniques
+6. Format: Formatted text template (not raw markdown)
+7. Functional tests: Validation on typical use cases
 
-Pour chaque violation détectée, retourne :
-- Violation + ligne concernée
-- Sévérité (CRITIQUE/MAJEURE/MINEURE)
-- Quick fix actionnable
+For each detected violation, return:
+- Violation + affected line
+- Severity (CRITICAL/MAJOR/MINOR)
+- Actionable quick fix
 
-Génère score conformité :
-- Contraintes lignes : ✅/❌ (X/500 lignes)
-- Densité sémantique : [POURCENTAGE]%
-- Hard points validés : X/X ✅
-- Complétude personas : ✅/❌
-- Format ChatGPT : ✅/❌
-- Score global : [POURCENTAGE]%
+Generate compliance score:
+- Line constraints: pass/fail (X/500 lines)
+- Semantic density: [PERCENTAGE]%
+- Hard points validated: X/X
+- Persona completeness: pass/fail
+- Format: pass/fail
+- Global score: [PERCENTAGE]%
 
-Mode optimisé : <3k tokens."
+Optimized mode: <3k tokens."
 
-**Résultat attendu** : Score conformité + violations éventuelles avec quick fixes
+Expected result: Compliance score + any violations with quick fixes
 ```
 
-Afficher en temps réel :
+Display in real time:
+
 ```
-🔍 VALIDATION EN COURS (agent-aikido-validator)...
+VALIDATION IN PROGRESS (agent-aikido-validator)...
 
-✓ Conformité hard points : Validation absolue et immuable
-✓ Format ChatGPT : Template texte formaté (non-markdown)
-✓ Complétude personas : Validation consultants avec techniques
-✓ Limite optimale : Respect 500 lignes max avec densité maximale
-✓ Tests fonctionnels : Validation sur cas d'usage types
-✓ Score conformité : [X]%
-```
-
-**Avantages de l'agent** :
-- ✅ Validation systématique conformité AI-KIDO
-- ✅ Score conformité immédiat
-- ✅ Détection violations avant finalisation
-- ✅ Quick fixes si problèmes détectés
-
-**Si score < 90%** : Afficher violations et proposer corrections automatiques avant Phase 5
-**Si score ≥ 90%** : Continuer vers Phase 5 (Finalisation)
-
-### Phase 5 : Génération et Finalisation
-Afficher en temps réel :
-```
-🎯 FINALISATION EN COURS...
-
-✓ Génération fichier /out/agents/agent-[usage]-vX.Y.Z.md
-✓ Mise à jour automatique /out/agents/index.md
-✓ Création rapport /out/agents/reports/[usage]-vX.Y.Z-report.md
-✓ Logs traçabilité avec timestamps détaillés
-✓ Archivage version précédente (si applicable)
+- Hard points compliance: Absolute and immutable validation
+- Format: Formatted text template (non-markdown)
+- Persona completeness: Validation of consultants with techniques
+- Optimal limit: Respect of 500 lines max with maximum density
+- Functional tests: Validation on typical use cases
+- Compliance score: [X]%
 ```
 
-## Format de Sortie Agent Compilé
+Agent advantages:
+- Systematic AI-KIDO compliance validation
+- Immediate compliance score
+- Violation detection before finalization
+- Quick fixes if issues detected
 
-### Structure Standard
+**If score < 90%**: Display violations and propose automatic corrections before Phase 5.
+**If score >= 90%**: Continue to Phase 5 (Finalization).
+
+#### Phase 5: Generation and finalization
+
+Display in real time:
+
+```
+FINALIZATION IN PROGRESS...
+
+- Generating file /out/agents/agent-[usage]-vX.Y.Z.md
+- Automatic update of /out/agents/index.md
+- Creating report /out/agents/reports/[usage]-vX.Y.Z-report.md
+- Traceability logs with detailed timestamps
+- Archiving previous version (if applicable)
+```
+
+## Output
+
+### Compiled agent standard structure
+
 ```markdown
 # Agent [Usage] - Version [X.Y.Z]
 
 ## Configuration
-- **Spécialisation** : [Domaine d'expertise]
-- **Personas Intégrés** : [Liste des consultants]
-- **Techniques Appliquées** : [Méthodes utilisées]
-- **Hard Points Respectés** : [Contraintes validées]
+- **Specialization**: [Domain of expertise]
+- **Integrated Personas**: [List of consultants]
+- **Applied Techniques**: [Methods used]
+- **Validated Hard Points**: [Validated constraints]
 
-## Prompt Système Optimisé
-[Prompt unifié et optimisé pour ChatGPT]
+## Optimized System Prompt
+[Unified and optimized prompt]
 
-## Personas Consultants
+## Consultant Personas
 
 ### [Persona 1]
-[Description et expertise condensée]
+[Condensed description and expertise]
 
-### [Persona 2] 
-[Description et expertise condensée]
+### [Persona 2]
+[Condensed description and expertise]
 
 ### [Persona 3]
-[Description et expertise condensée]
+[Condensed description and expertise]
 
-## Techniques Avancées
-[Méthodes de reformulation et persuasion intégrées]
+## Advanced Techniques
+[Integrated reformulation and persuasion methods]
 
-## Workflow Opérationnel
-[Processus step-by-step pour l'usage]
+## Operational Workflow
+[Step-by-step process for the use case]
 
-## Cas d'Usage Types
-[Exemples d'application concrets]
+## Typical Use Cases
+[Concrete application examples]
 
-## Validation et Métriques
-- **Densité sémantique** : [Score]%
-- **Cohérence terminologique** : [Score]%  
-- **Facilité orale** : [Score]%
-- **Complétude fonctionnelle** : [Score]%
-
----
-*Agent compilé le [timestamp] depuis AI-KIDO v[version]*
-```
-
-## Résultat Final
-
-Afficher le message de succès :
-```
-✅ Agent [usage] v[X.Y.Z] compilé avec succès !
-
-📁 Fichiers créés/modifiés :
-- /out/agents/agent-[usage]-v[X.Y.Z].md (agent compilé)
-- /out/agents/index.md (index mis à jour)
-- /out/agents/reports/[usage]-v[X.Y.Z]-report.md (rapport détaillé)
-
-📊 Métriques finales :
-- Taille : [X] lignes (limite 500)
-- Densité sémantique : [X]%
-- Personas intégrés : [X]
-- Techniques appliquées : [X]
-- Hard points validés : [X]/[X]
-
-🚀 Statut : PRÊT pour déploiement ChatGPT autonome
-
-💡 Prochaines étapes suggérées :
-- Testez l'agent avec des cas d'usage réels
-- Collectez les retours utilisateurs pour la prochaine version
-- Utilisez /update-agent [usage] pour les améliorations futures
-```
-
-## Gestion des Erreurs
-
-### Erreurs de Saisie Utilisateur
-- **Choix invalide** : Redemander avec options valides
-- **Fichier inexistant** : Proposer alternatives disponibles
-- **Configuration incomplète** : Guider vers saisie manquante
-
-### Erreurs de Compilation
-- **Hard Points violés** : Arrêt avec explication détaillée
-- **Personas manquants** : Proposition création automatique
-- **Limite 500 lignes dépassée** : Optimisation forcée ou alerte
-- **Techniques incompatibles** : Résolution automatique ou choix utilisateur
-
-### Messages d'Erreur Types
-```
-❌ ERREUR : [Type d'erreur]
-
-Détail : [Explication claire du problème]
-Solution : [Action recommandée]
-
-Voulez-vous :
-1. Réessayer avec correction automatique
-2. Modifier votre sélection
-3. Annuler la compilation
-```
-
-## Algorithmes de Compilation
-
-### Stratégie d'Optimisation Tokens
-
-**RÈGLE FONDAMENTALE** : Ne jamais analyser de fichiers avant que l'utilisateur ait fait ses choix.
-
-**Séquence optimisée** :
-1. **Question initiale** → AUCUN scan de fichiers
-2. **Choix utilisateur** → Analyse SEULEMENT des répertoires pertinents
-3. **Sélection spécifique** → Lecture SEULEMENT des fichiers choisis
-4. **Compilation** → Traitement SEULEMENT du contenu nécessaire
-
-### Sélection Automatique Personas (si 'auto' choisi)
-Selon la spécialisation demandée, sélectionner automatiquement :
-- **Négociation/Diplomatie** → Consultant RH + Expert Management + Spécialiste Communication
-- **Analyse Technique** → Architecte + Développeur + Expert Sécurité
-- **Gestion Projet** → Expert Management + QA Engineer + DevOps Engineer
-- **Formation/Pédagogie** → Consultant RH + Spécialiste Communication + Expert Qualité
-
-### Collecte Intelligente Contenu (phase compilation uniquement)
-
-**Remplacé par agent-aikido-explore-bank (Phase 1)** qui gère automatiquement :
-1. **Parcours obligatoire** `/prompts/index.md` (point d'entrée AI-KIDO)
-2. **Extraction Hard Points** depuis `/prompts/hard_points/ai-kido.md` (contraintes immuables)
-3. **Lecture Personas** depuis `/prompts/gen/personas/[choisis].md` (selon sélection ou auto)
-4. **Collecte Techniques** depuis `/prompts/gen/techniques/` (si pertinentes au contexte)
-5. **Intégration Use-Cases** depuis `/prompts/gen/use_cases/[choisi].md` (si sélectionné)
-
-**Économie tokens** : Lecture ciblée uniquement des fichiers nécessaires, pas de scan exhaustif.
-
-### Optimisation Automatique
-- **Suppression doublons** : Élimination contenu redondant
-- **Compression sémantique** : Fusion concepts similaires
-- **Hiérarchisation** : Réorganisation par importance
-- **Validation orale** : Test prononçabilité
-- **Standardisation** : Unification terminologique
-
-## 🤖 Récapitulatif des Agents AI-KIDO Utilisés
-
-Cette commande optimise la compilation d'agents spécialisés en utilisant **2 agents AI-KIDO** :
-
-### Phase 1 : `agent-aikido-explore-bank` (DEEP MODE) 🆕
-- **Rôle** : Extraction intelligente des éléments nécessaires (hard-points, personas, techniques, use-cases)
-- **Output** : Package compilation complet avec pertinence de chaque élément
-- **Tokens** : ~25-40k (DEEP mode, selon complexité)
-- **Gain** : ~60% tokens vs lecture manuelle multi-fichiers
-- **Auto-sélection** : Sélection intelligente personas selon spécialisation si mode 'auto'
-
-### Phase 4 : `agent-aikido-validator` 🆕
-- **Rôle** : Validation conformité AI-KIDO de l'agent compilé avant finalisation
-- **Output** : Score conformité avec violations éventuelles et quick fixes
-- **Tokens** : <3k
-- **Gain** : Garantie qualité + détection précoce violations
-- **Validations** : Contraintes lignes, densité sémantique, hard points, complétude, format ChatGPT
-
-### 📊 Gains d'Optimisation
-
-| Aspect | Avant (manuel) | Après (agents) | Gain |
-|--------|----------------|----------------|------|
-| **Extraction personas/techniques** | Lecture manuelle multi-fichiers | agent-explore-bank auto | ~60% tokens |
-| **Auto-sélection personas** | Manuelle utilisateur | agent-explore-bank intelligent | Automatisé |
-| **Validation conformité** | Manuelle ou absente | agent-validator systématique | +Garantie qualité |
-| **Détection violations** | Post-finalisation | Phase 4 pré-finalisation | Correction précoce |
-| **Workflow global** | ~80k tokens | ~45k tokens | ~45% efficacité |
+## Validation and Metrics
+- **Semantic density**: [Score]%
+- **Terminological consistency**: [Score]%
+- **Oral fluency**: [Score]%
+- **Functional completeness**: [Score]%
 
 ---
+*Agent compiled on [timestamp] from AI-KIDO v[version]*
+```
 
-*Commande interactive pour créer des agents AI-KIDO personnalisés selon les besoins utilisateur avec compilation automatique optimisée par agents spécialisés.*
+### Final success message
+
+```
+Agent [usage] v[X.Y.Z] compiled successfully!
+
+Files created/modified:
+- /out/agents/agent-[usage]-v[X.Y.Z].md (compiled agent)
+- /out/agents/index.md (updated index)
+- /out/agents/reports/[usage]-v[X.Y.Z]-report.md (detailed report)
+
+Final metrics:
+- Size: [X] lines (limit 500)
+- Semantic density: [X]%
+- Integrated personas: [X]
+- Applied techniques: [X]
+- Validated hard points: [X]/[X]
+
+Status: READY for autonomous deployment
+
+Suggested next steps:
+- Test the agent with real use cases
+- Collect user feedback for the next version
+- Use /update-agent [usage] for future improvements
+```
+
+## Notes
+
+### Error handling
+
+**User input errors**:
+- Invalid choice: Re-ask with valid options
+- Non-existent file: Propose available alternatives
+- Incomplete configuration: Guide toward missing input
+
+**Compilation errors**:
+- Hard Points violated: Stop with detailed explanation
+- Missing personas: Propose automatic creation
+- 500-line limit exceeded: Forced optimization or alert
+- Incompatible techniques: Automatic resolution or user choice
+
+**Standard error messages**:
+
+```
+ERROR: [Error type]
+
+Detail: [Clear explanation of the problem]
+Solution: [Recommended action]
+
+Do you want to:
+1. Retry with automatic correction
+2. Modify your selection
+3. Cancel the compilation
+```
+
+### Token optimization strategy
+
+**Core rule**: Never analyze files before the user has made their choices.
+
+**Optimized sequence**:
+1. Initial question -> NO file scan
+2. User choice -> Analyze ONLY the relevant directories
+3. Specific selection -> Read ONLY the chosen files
+4. Compilation -> Process ONLY the necessary content
+
+### Automatic persona selection (if 'auto' chosen)
+
+Based on the requested specialization, automatically select:
+- **Negotiation/Diplomacy** -> HR Consultant + Management Expert + Communication Specialist
+- **Technical Analysis** -> Architect + Developer + Security Expert
+- **Project Management** -> Management Expert + QA Engineer + DevOps Engineer
+- **Training/Pedagogy** -> HR Consultant + Communication Specialist + Quality Expert
+
+### Intelligent content collection (compilation phase only)
+
+Handled by `agent-aikido-explore-bank` (Phase 1), which automatically manages:
+1. Mandatory traversal of `/prompts/index.md` (AI-KIDO entry point)
+2. Hard Points extraction from `/prompts/hard_points/ai-kido.md` (immutable constraints)
+3. Persona reading from `/prompts/gen/personas/[chosen].md` (per selection or auto)
+4. Technique collection from `/prompts/gen/techniques/` (if relevant to context)
+5. Use-case integration from `/prompts/gen/use_cases/[chosen].md` (if selected)
+
+Token savings: Targeted reading of only the necessary files, no exhaustive scan.
+
+### Automatic optimization
+
+- **Duplicate removal**: Elimination of redundant content
+- **Semantic compression**: Merging of similar concepts
+- **Prioritization**: Reorganization by importance
+- **Oral validation**: Pronunciation testing
+- **Standardization**: Terminological unification
+
+### AI-KIDO agents used
+
+This command optimizes the compilation of specialized agents using **2 AI-KIDO agents**:
+
+**Phase 1: `agent-aikido-explore-bank` (DEEP MODE)**
+- Role: Intelligent extraction of needed elements (hard-points, personas, techniques, use-cases)
+- Output: Complete compilation package with relevance score for each element
+- Tokens: ~25-40k (DEEP mode, depending on complexity)
+- Gain: ~60% tokens vs manual multi-file reading
+- Auto-selection: Intelligent persona selection based on specialization if 'auto' mode
+
+**Phase 4: `agent-aikido-validator`**
+- Role: AI-KIDO compliance validation of the compiled agent before finalization
+- Output: Compliance score with any violations and quick fixes
+- Tokens: <3k
+- Gain: Quality guarantee + early violation detection
+- Validations: Line constraints, semantic density, hard points, completeness, format
+
+**Optimization gains summary**:
+
+| Aspect | Before (manual) | After (agents) | Gain |
+|--------|-----------------|----------------|------|
+| Persona/technique extraction | Manual multi-file reading | agent-explore-bank auto | ~60% tokens |
+| Persona auto-selection | Manual by user | agent-explore-bank intelligent | Automated |
+| Compliance validation | Manual or absent | agent-validator systematic | +Quality guarantee |
+| Violation detection | Post-finalization | Phase 4 pre-finalization | Early correction |
+| Global workflow | ~80k tokens | ~45k tokens | ~45% efficiency |

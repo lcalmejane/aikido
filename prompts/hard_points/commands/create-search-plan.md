@@ -1,140 +1,144 @@
 ---
-description: Crée un nouveau plan de recherche code pour agent-aikido-explore-code en guidant l'utilisateur à travers le processus. Lit README.md pour template et exigences, demande la technologie cible, génère la structure complète.
+description: "Create a new code search plan for agent-aikido-explore-code by guiding the user through the process"
 globs: prompts/hard_points/system/search/plans/README.md, prompts/hard_points/agents/agent-aikido-explore-code.md
 ---
 
-# Create Search Plan
+# /create-search-plan
 
-Crée un nouveau plan de recherche code pour `agent-aikido-explore-code` en suivant le template et les exigences documentés dans `prompts/hard_points/system/search/plans/README.md`.
+**Purpose**: Create a new code search plan for `agent-aikido-explore-code` following the template and requirements documented in `prompts/hard_points/system/search/plans/README.md`.
 
-## 🎯 Objectif
+---
 
-Guider l'utilisateur dans la création d'un plan de recherche complet et conforme, en :
-- Questionnant sur la technologie cible
-- Détectant le niveau de spécificité (générique, version, framework)
-- Générant la structure complète du plan
-- Pré-remplissant avec des patterns standards quand possible
-- Validant automatiquement le plan créé
+## Usage
 
-## 📋 Processus de Création
+```
+/create-search-plan
+```
 
-### 1. Charger le README de Référence
+## Prerequisites
+
+- `prompts/hard_points/system/search/plans/README.md` must exist and contain the plan template
+- `prompts/hard_points/agents/agent-aikido-explore-code.md` must exist
+
+## Steps
+
+### Step 1: Load the Reference README
 
 ```bash
-# Charger le README pour template et guidelines
+# Load README for template and guidelines
 README_PATH="prompts/hard_points/system/search/plans/README.md"
 README_CONTENT=$(cat "$README_PATH")
 
-# Extraire le template de plan
+# Extract the plan template
 TEMPLATE=$(sed -n '/### 2\. Template de Plan/,/### 3\. Checklist/p' "$README_PATH")
 
-# Charger l'agent pour comprendre les exigences
+# Load agent to understand requirements
 AGENT_PATH="prompts/hard_points/agents/agent-aikido-explore-code.md"
 AGENT_CONTENT=$(cat "$AGENT_PATH")
 ```
 
-### 2. Questionnaire Interactif
+### Step 2: Interactive Questionnaire
 
-Poser une série de questions à l'utilisateur pour déterminer le plan à créer :
+Ask the user a series of questions to determine the plan to create.
 
-#### Question 1 : Technologie Cible
+#### Question 1: Target Technology
 
 ```
-🎯 Pour quelle technologie/langage souhaitez-vous créer un plan de recherche ?
+For which technology/language do you want to create a search plan?
 
-Exemples :
-- python (Python générique)
-- java (Java générique)
-- go (Go générique)
-- rust (Rust générique)
-- ruby (Ruby générique)
-- csharp (C# générique)
-- typescript (TypeScript spécifique, si différent de JavaScript)
+Examples:
+- python (Generic Python)
+- java (Generic Java)
+- go (Generic Go)
+- rust (Generic Rust)
+- ruby (Generic Ruby)
+- csharp (Generic C#)
+- typescript (TypeScript-specific, if different from JavaScript)
 - kotlin (Kotlin)
 - swift (Swift)
-- autre (précisez)
+- other (specify)
 
-Technologie cible :
+Target technology:
 ```
 
-**Stocker** : `TECH_NAME` (ex: "python")
+**Store**: `TECH_NAME` (e.g. "python")
 
-#### Question 2 : Niveau de Spécificité
-
-```
-📊 Quel niveau de spécificité pour ce plan ?
-
-1. Générique (pour toute version de {TECH_NAME})
-2. Version spécifique (ex: Python 3.11, PHP 8, Java 17)
-3. Framework spécifique (ex: Django pour Python, Spring pour Java)
-
-Choisissez (1/2/3) :
-```
-
-**Stocker** : `SPECIFICITY_LEVEL`
-
-#### Question 2a : Si Version Spécifique
+#### Question 2: Specificity Level
 
 ```
-🔢 Quelle version de {TECH_NAME} ?
+What level of specificity for this plan?
 
-Exemples : 3.11, 8, 17, 2.0
+1. Generic (for any version of {TECH_NAME})
+2. Version-specific (e.g. Python 3.11, PHP 8, Java 17)
+3. Framework-specific (e.g. Django for Python, Spring for Java)
 
-Version :
+Choose (1/2/3):
 ```
 
-**Stocker** : `TECH_VERSION` (ex: "3.11")
+**Store**: `SPECIFICITY_LEVEL`
 
-#### Question 2b : Si Framework Spécifique
+#### Question 2a: If Version-specific
 
 ```
-🏗️  Quel framework {TECH_NAME} ?
+Which version of {TECH_NAME}?
 
-Exemples :
+Examples: 3.11, 8, 17, 2.0
+
+Version:
+```
+
+**Store**: `TECH_VERSION` (e.g. "3.11")
+
+#### Question 2b: If Framework-specific
+
+```
+Which {TECH_NAME} framework?
+
+Examples:
 - Python: django, flask, fastapi
 - Java: spring, hibernate
-- JavaScript: react, vue, angular (si pas déjà dans javascript/plan.md)
+- JavaScript: react, vue, angular (if not already in javascript/plan.md)
 
-Framework :
+Framework:
 ```
 
-**Stocker** : `FRAMEWORK_NAME` (ex: "django")
+**Store**: `FRAMEWORK_NAME` (e.g. "django")
 
-#### Question 3 : Type de Recherche
-
-```
-🔍 Quel type de recherche ce plan utilisera-t-il ?
-
-1. naive (grep-based, patterns regex simples) - RECOMMANDÉ
-2. semantic (compréhension sémantique, nécessite parsing)
-3. ast-based (analyse AST, nécessite parser spécifique)
-
-La plupart des plans utilisent 'naive' car c'est le plus rapide et fiable.
-
-Choisissez (1/2/3) [défaut: 1] :
-```
-
-**Stocker** : `SEARCH_METHOD` (défaut: "naive")
-
-#### Question 4 : Extensions de Fichiers
+#### Question 3: Search Type
 
 ```
-📁 Quelles extensions de fichiers pour {TECH_NAME} ?
+What search type will this plan use?
 
-Entrez les extensions séparées par des espaces (avec ou sans *.)
-Exemples :
+1. naive (grep-based, simple regex patterns) - RECOMMENDED
+2. semantic (semantic understanding, requires parsing)
+3. ast-based (AST analysis, requires specific parser)
+
+Most plans use 'naive' as it is the fastest and most reliable.
+
+Choose (1/2/3) [default: 1]:
+```
+
+**Store**: `SEARCH_METHOD` (default: "naive")
+
+#### Question 4: File Extensions
+
+```
+Which file extensions for {TECH_NAME}?
+
+Enter extensions separated by spaces (with or without *.)
+Examples:
 - Python: *.py *.pyw *.pyx
 - Java: *.java *.class
 - Go: *.go
 - Rust: *.rs
 - Ruby: *.rb *.rake
 
-Extensions [{suggestions_auto}] :
+Extensions [{auto_suggestions}]:
 ```
 
-**Stocker** : `FILE_EXTENSIONS`
+**Store**: `FILE_EXTENSIONS`
 
-**Suggestions auto basées sur tech** :
+**Auto-suggestions based on tech**:
 ```bash
 case "$TECH_NAME" in
     python) SUGGESTED_EXTS="*.py *.pyw *.pyx" ;;
@@ -149,25 +153,25 @@ case "$TECH_NAME" in
 esac
 ```
 
-#### Question 5 : Répertoires à Exclure
+#### Question 5: Directories to Exclude
 
 ```
-🚫 Quels répertoires doivent être exclus (en plus des standards) ?
+Which directories should be excluded (in addition to standard ones)?
 
-Standards (toujours exclus) : node_modules, vendor, dist, build, .git
+Standard (always excluded): node_modules, vendor, dist, build, .git
 
-Exclusions additionnelles pour {TECH_NAME} (séparées par des espaces) :
-Exemples :
+Additional exclusions for {TECH_NAME} (separated by spaces):
+Examples:
 - Python: __pycache__ *.egg-info .venv venv
 - Java: target out
 - Ruby: .bundle
 
-Exclusions [{suggestions_auto}] :
+Exclusions [{auto_suggestions}]:
 ```
 
-**Stocker** : `ADDITIONAL_EXCLUSIONS`
+**Store**: `ADDITIONAL_EXCLUSIONS`
 
-**Suggestions auto** :
+**Auto-suggestions**:
 ```bash
 case "$TECH_NAME" in
     python) SUGGESTED_EXCL="__pycache__ *.egg-info .venv venv" ;;
@@ -179,62 +183,62 @@ case "$TECH_NAME" in
 esac
 ```
 
-### 3. Génération de la Structure
+### Step 3: Generation — Directory Structure
 
-Créer la structure de répertoires et le fichier plan :
+Create the directory structure and plan file:
 
 ```bash
-# Déterminer le chemin du plan selon la spécificité
+# Determine plan path based on specificity
 BASE_PATH="prompts/hard_points/system/search/plans"
 
 case "$SPECIFICITY_LEVEL" in
-    1) # Générique
+    1) # Generic
         PLAN_PATH="$BASE_PATH/$TECH_NAME/plan.md"
         ;;
-    2) # Version spécifique
+    2) # Version-specific
         PLAN_PATH="$BASE_PATH/$TECH_NAME/$TECH_VERSION/plan.md"
         ;;
-    3) # Framework spécifique
+    3) # Framework-specific
         PLAN_PATH="$BASE_PATH/$TECH_NAME/$FRAMEWORK_NAME/plan.md"
         ;;
 esac
 
-# Créer le répertoire parent
+# Create parent directory
 mkdir -p "$(dirname "$PLAN_PATH")"
 
-echo "📝 Le plan sera créé à : $PLAN_PATH"
+echo "Plan will be created at: $PLAN_PATH"
 ```
 
-### 4. Génération du Contenu du Plan
+### Step 4: Generation — Plan Content
 
-Générer le contenu complet du plan en utilisant le template et les réponses :
+Generate the complete plan content using the template and user answers:
 
 ```markdown
 # {TECH_NAME_TITLE} Code Search Plan
 
 > **Version**: 1.0 | **Date**: {DATE} | **Type**: Search Plan | **Language**: {TECH_NAME_TITLE}
 
-## 📋 Overview
+## Overview
 
-Plan de recherche spécialisé pour projets {TECH_NAME_TITLE}. [Description à compléter selon technologie]
+Specialized search plan for {TECH_NAME_TITLE} projects. [Description to complete based on technology]
 
 {TECH_SPECIFIC_DESCRIPTION}
 
-## 🔍 File Patterns
+## File Patterns
 
-### Extensions prioritaires
+### Priority Extensions
 \`\`\`bash
 {FILE_EXTENSIONS}
 \`\`\`
 
-### Configuration & Dépendances
+### Configuration & Dependencies
 \`\`\`bash
 {TECH_CONFIG_FILES}
 \`\`\`
 
-### Exclusions standards
+### Standard Exclusions
 \`\`\`bash
-# Répertoires à ignorer (respecter .gitignore)
+# Directories to ignore (respect .gitignore)
 node_modules/
 vendor/
 dist/
@@ -245,13 +249,13 @@ target/
 .svn/
 {ADDITIONAL_EXCLUSIONS}
 
-# Fichiers binaires
+# Binary files
 *.bin *.exe *.dll *.so *.dylib
 *.jpg *.jpeg *.png *.gif *.ico *.svg
 *.pdf *.zip *.tar *.gz
 \`\`\`
 
-## 🎯 Search Method
+## Search Method
 
 **Type**: \`{SEARCH_METHOD}\`
 
@@ -259,51 +263,51 @@ target/
 
 ### Phase 1: {TECH_NAME_TITLE} Discovery
 \`\`\`bash
-# Trouver tous les fichiers {TECH_NAME_TITLE}
-find . -type f \\
-  \( {FIND_PATTERNS} \) \\
-  -not -path "*/node_modules/*" \\
-  -not -path "*/vendor/*" \\
-  -not -path "*/.git/*" \\
-  {EXCLUSION_PATHS} \\
+# Find all {TECH_NAME_TITLE} files
+find . -type f \
+  \( {FIND_PATTERNS} \) \
+  -not -path "*/node_modules/*" \
+  -not -path "*/vendor/*" \
+  -not -path "*/.git/*" \
+  {EXCLUSION_PATHS} \
   2>/dev/null
 \`\`\`
 
 ### Phase 2: Keyword Search
 \`\`\`bash
-# Recherche par mot-clé avec contexte
-grep -rn --include="{FILE_PATTERNS}" \\
-  --exclude-dir={EXCLUSIONS_LIST} \\
+# Keyword search with context
+grep -rn --include="{FILE_PATTERNS}" \
+  --exclude-dir={EXCLUSIONS_LIST} \
   -i "$KEYWORD" .
 \`\`\`
 
-## 📦 Patterns de Recherche
+## Search Patterns
 
-### 1. Imports/Dépendances {TECH_NAME_TITLE}
+### 1. {TECH_NAME_TITLE} Imports/Dependencies
 \`\`\`regex
 {IMPORT_PATTERNS}
 \`\`\`
 
-### 2. Déclarations (Classes, Interfaces, Functions)
+### 2. Declarations (Classes, Interfaces, Functions)
 \`\`\`regex
 {DECLARATION_PATTERNS}
 \`\`\`
 
-### 3. Méthodes/Fonctions
+### 3. Methods/Functions
 \`\`\`regex
 {FUNCTION_PATTERNS}
 \`\`\`
 
-### 4. Mots-clés spécifiques
+### 4. Technology-specific Keywords
 \`\`\`text
 {TECH_SPECIFIC_KEYWORDS}
 \`\`\`
 
-## 🔄 Extension Strategy
+## Extension Strategy
 
-### Résolution des Imports
+### Import Resolution
 \`\`\`bash
-# Résoudre import/require vers fichier
+# Resolve import/require to file
 function resolve_{TECH_NAME}_import() {
     local import_path="$1"
     local current_file="$2"
@@ -313,9 +317,9 @@ function resolve_{TECH_NAME}_import() {
 }
 \`\`\`
 
-## 📤 Output Format
+## Output Format
 
-### Structure spécifique {TECH_NAME_TITLE}
+### {TECH_NAME_TITLE}-specific Structure
 
 \`\`\`markdown
 # {TECH_NAME_TITLE} Code Index
@@ -324,7 +328,7 @@ function resolve_{TECH_NAME}_import() {
 **Framework**: [{FRAMEWORK_IF_ANY}]
 **Files Indexed**: X
 
-## 📄 \`{EXAMPLE_FILE_PATH}\`
+## \`{EXAMPLE_FILE_PATH}\`
 
 **Classes** (X):
   - \`{EXAMPLE_CLASS_NAME}\` (lines X-Y): Z lines
@@ -345,7 +349,7 @@ function resolve_{TECH_NAME}_import() {
 ---
 \`\`\`
 
-## 🧠 Context Extraction {TECH_NAME_TITLE}
+## Context Extraction — {TECH_NAME_TITLE}
 
 ### Classes
 \`\`\`markdown
@@ -375,29 +379,29 @@ function resolve_{TECH_NAME}_import() {
 {TECH_SPECIFIC_FUNCTION_METADATA}
 \`\`\`
 
-## ⚡ Performance Optimization
+## Performance Optimization
 
-### Commandes optimisées {TECH_NAME_TITLE}
+### Optimized {TECH_NAME_TITLE} Commands
 \`\`\`bash
-# Recherche ultra-rapide avec ripgrep
-rg --type {RG_TYPE} \\
-  --glob '!{EXCLUSIONS}' \\
+# Ultra-fast search with ripgrep
+rg --type {RG_TYPE} \
+  --glob '!{EXCLUSIONS}' \
   -i "$KEYWORD"
 
-# Trouver toutes les classes
+# Find all classes
 rg --type {RG_TYPE} -n "{CLASS_PATTERN}" -r '$1' --no-heading
 
-# Trouver imports
+# Find imports
 rg --type {RG_TYPE} -n "{IMPORT_PATTERN}" --no-heading
 
-# Statistiques par fichier
+# Statistics per file
 rg --type {RG_TYPE} -c -i "$KEYWORD" | sort -t: -k2 -nr | head -20
 \`\`\`
 
-## 📋 Usage Example
+## Usage Example
 
 \`\`\`bash
-# Exemple d'utilisation du plan {TECH_NAME_TITLE}
+# Example usage of the {TECH_NAME_TITLE} plan
 KEYWORD="{EXAMPLE_KEYWORD}"
 
 # Phase 1: Discovery
@@ -412,17 +416,17 @@ for file in $FILES; do
 done
 
 # Phase 4: Format output
-# [Générer sortie markdown selon template ci-dessus]
+# [Generate markdown output using template above]
 \`\`\`
 
 ---
-*Plan {TECH_NAME_TITLE} créé le {DATE} pour agent-aikido-explore-code*
-*Généré automatiquement par /create-search-plan*
+*{TECH_NAME_TITLE} plan created on {DATE} for agent-aikido-explore-code*
+*Auto-generated by /create-search-plan*
 ```
 
-### 5. Pré-remplissage Intelligent
+### Step 5: Intelligent Pre-fill
 
-Pré-remplir les sections avec des valeurs par défaut basées sur la technologie :
+Pre-fill sections with default values based on technology.
 
 #### Python
 ```bash
@@ -484,139 +488,140 @@ EXAMPLE_FILE_PATH="lib/services/user_service.rb"
 EXAMPLE_CLASS_NAME="UserService"
 ```
 
-### 6. Confirmation et Création
+### Step 6: Confirmation and Creation
 
-Afficher un résumé et demander confirmation :
+Display a summary and ask for confirmation:
 
 ```
-📋 Résumé du Plan à Créer
+Plan Creation Summary
 
-**Technologie**: {TECH_NAME_TITLE}
-**Spécificité**: {SPECIFICITY_LEVEL_TEXT}
-**Chemin**: {PLAN_PATH}
+**Technology**: {TECH_NAME_TITLE}
+**Specificity**: {SPECIFICITY_LEVEL_TEXT}
+**Path**: {PLAN_PATH}
 **Extensions**: {FILE_EXTENSIONS}
-**Exclusions additionnelles**: {ADDITIONAL_EXCLUSIONS}
+**Additional Exclusions**: {ADDITIONAL_EXCLUSIONS}
 **Search Method**: {SEARCH_METHOD}
 
-Le plan sera pré-rempli avec des patterns standards pour {TECH_NAME_TITLE}.
-Vous pourrez le personnaliser après création.
+The plan will be pre-filled with standard patterns for {TECH_NAME_TITLE}.
+You can customize it after creation.
 
-Créer ce plan maintenant ? (y/n) :
+Create this plan now? (y/n):
 ```
 
-Si confirmation :
+If confirmed:
 
 ```bash
-# Écrire le fichier
+# Write the file
 echo "$PLAN_CONTENT" > "$PLAN_PATH"
 
-echo "✅ Plan créé avec succès : $PLAN_PATH"
+echo "Plan created successfully: $PLAN_PATH"
 echo ""
-echo "📝 Prochaines étapes :"
-echo "1. Personnaliser les patterns regex selon vos besoins"
-echo "2. Compléter les sections TODO"
-echo "3. Ajouter des exemples spécifiques"
-echo "4. Valider avec : /validate-search-plan"
+echo "Next steps:"
+echo "1. Customize regex patterns to your needs"
+echo "2. Complete TODO sections"
+echo "3. Add specific examples"
+echo "4. Validate with: /validate-search-plan"
 echo ""
-echo "Pour éditer le plan :"
+echo "To edit the plan:"
 echo "  \$EDITOR $PLAN_PATH"
 ```
 
-### 7. Validation Automatique Post-Création
+### Step 7: Automatic Post-Creation Validation
 
-Automatiquement valider le plan créé :
+Automatically validate the created plan:
 
 ```bash
-echo "🔍 Validation automatique du plan créé..."
+echo "Running automatic validation of the created plan..."
 echo ""
 
-# Appeler /validate-search-plan sur le plan créé
-# (Simuler ou lancer réellement la commande)
+# Call /validate-search-plan on the created plan
+# (Simulate or actually run the command)
 
-echo "✅ Validation automatique terminée"
-echo "Consultez le rapport ci-dessus pour d'éventuelles améliorations."
+echo "Automatic validation complete"
+echo "Review the report above for suggested improvements."
 ```
 
-### 8. Ouverture dans l'Éditeur (Optionnel)
+### Step 8: Open in Editor (Optional)
 
-Demander si l'utilisateur veut ouvrir le plan dans un éditeur :
+Ask whether the user wants to open the plan in an editor:
 
 ```
-Voulez-vous ouvrir le plan dans votre éditeur pour personnalisation ? (y/n) :
+Do you want to open the plan in your editor for customization? (y/n):
 ```
 
-Si oui :
+If yes:
 
 ```bash
-# Détecter l'éditeur (EDITOR env var ou défaut)
+# Detect editor (EDITOR env var or default)
 EDITOR="${EDITOR:-nano}"
 
-# Ouvrir le fichier
+# Open the file
 $EDITOR "$PLAN_PATH"
 ```
 
-## 📊 Templates par Technologie
+## Output
 
-Pour chaque technologie supportée, des templates pré-configurés sont disponibles :
+A fully generated plan file at the computed path under `prompts/hard_points/system/search/plans/`, pre-filled with technology-specific patterns, and automatically validated. A post-creation checklist is displayed.
 
-| Technologie | Config Files | Import Pattern | Class Pattern | Status |
-|-------------|--------------|----------------|---------------|--------|
-| **Python** | requirements.txt, setup.py | `^import`, `^from` | `^class`, `^def` | ✅ Ready |
-| **Java** | pom.xml, build.gradle | `^import\s+([\w\.]+);` | `^class\s+(\w+)` | ✅ Ready |
-| **Go** | go.mod | `^import\s+"(.*?)"` | `^type\s+(\w+)\s+struct` | ✅ Ready |
-| **Rust** | Cargo.toml | `^use\s+(.*?);` | `^pub\s+struct\s+(\w+)` | ✅ Ready |
-| **Ruby** | Gemfile | `^require\s+['"]` | `^class\s+(\w+)` | ✅ Ready |
-| **C#** | *.csproj | `^using\s+([\w\.]+);` | `^class\s+(\w+)` | ⏳ TODO |
-| **Kotlin** | build.gradle.kts | `^import\s+([\w\.]+)` | `^class\s+(\w+)` | ⏳ TODO |
-| **Swift** | Package.swift | `^import\s+(\w+)` | `^class\s+(\w+)` | ⏳ TODO |
+## Notes
 
-## 🔧 Options Avancées
+### Templates by Technology
 
-### Mode Expert (Skip Questions)
+Pre-configured templates are available for each supported technology:
 
-Créer un plan rapidement avec arguments en ligne de commande :
+| Technology | Config Files | Import Pattern | Class Pattern | Status |
+|------------|--------------|----------------|---------------|--------|
+| **Python** | requirements.txt, setup.py | `^import`, `^from` | `^class`, `^def` | Ready |
+| **Java** | pom.xml, build.gradle | `^import\s+([\w\.]+);` | `^class\s+(\w+)` | Ready |
+| **Go** | go.mod | `^import\s+"(.*?)"` | `^type\s+(\w+)\s+struct` | Ready |
+| **Rust** | Cargo.toml | `^use\s+(.*?);` | `^pub\s+struct\s+(\w+)` | Ready |
+| **Ruby** | Gemfile | `^require\s+['"]` | `^class\s+(\w+)` | Ready |
+| **C#** | *.csproj | `^using\s+([\w\.]+);` | `^class\s+(\w+)` | TODO |
+| **Kotlin** | build.gradle.kts | `^import\s+([\w\.]+)` | `^class\s+(\w+)` | TODO |
+| **Swift** | Package.swift | `^import\s+(\w+)` | `^class\s+(\w+)` | TODO |
 
-```bash
-# Usage : /create-search-plan --tech=python --level=generic --method=naive
-# Crée automatiquement avec valeurs par défaut
-```
+### Advanced Options
 
-### Cloner un Plan Existant
-
-Créer un nouveau plan basé sur un existant :
+**Expert Mode (Skip Questions)** — Create a plan quickly with command-line arguments:
 
 ```bash
-# Usage : /create-search-plan --clone=php/plan.md --tech=hack
-# Clone php/plan.md et adapte pour Hack language
+# Usage: /create-search-plan --tech=python --level=generic --method=naive
+# Creates automatically with default values
 ```
 
-## ✅ Checklist de Création (Automatique)
+**Clone an Existing Plan** — Create a new plan based on an existing one:
 
-À la fin de la création, afficher une checklist :
+```bash
+# Usage: /create-search-plan --clone=php/plan.md --tech=hack
+# Clones php/plan.md and adapts it for the Hack language
+```
+
+### Post-Creation Checklist (Automatic)
+
+Display at the end of creation:
 
 ```markdown
-## ✅ Checklist Post-Création
+## Post-Creation Checklist
 
-- [x] Plan créé à {PLAN_PATH}
-- [x] Header métadonnées présent
-- [x] Sections obligatoires générées
-- [ ] Patterns regex personnalisés (TODO : affiner selon besoin)
-- [ ] Import resolution function complétée (TODO)
-- [ ] Exemples de sortie enrichis (TODO)
-- [ ] Tests fonctionnels sur projet réel (TODO)
-- [ ] Validation réussie (voir rapport ci-dessus)
+- [x] Plan created at {PLAN_PATH}
+- [x] Metadata header present
+- [x] Mandatory sections generated
+- [ ] Regex patterns customized (TODO: refine as needed)
+- [ ] Import resolution function completed (TODO)
+- [ ] Output examples enriched (TODO)
+- [ ] Functional tests on a real project (TODO)
+- [ ] Validation passed (see report above)
 
-**Prochaines Actions** :
-1. Personnaliser patterns regex section "Patterns de Recherche"
-2. Compléter fonction resolve_{TECH_NAME}_import()
-3. Ajouter exemples spécifiques à votre codebase
-4. Tester avec /validate-search-plan
-5. Exécuter tests fonctionnels sur projet {TECH_NAME}
+**Next Actions**:
+1. Customize regex patterns in the "Search Patterns" section
+2. Complete the resolve_{TECH_NAME}_import() function
+3. Add examples specific to your codebase
+4. Test with /validate-search-plan
+5. Run functional tests on a {TECH_NAME} project
 ```
 
 ---
 
-**Workflow** :
-1. Charger README → 2. Questionnaire (tech, niveau, méthode, extensions, exclusions) → 3. Générer structure → 4. Pré-remplir contenu → 5. Confirmer création → 6. Écrire fichier → 7. Valider auto → 8. Ouvrir éditeur (opt)
+**Workflow**: Load README -> Interactive questionnaire (tech, level, method, extensions, exclusions) -> Generate structure -> Pre-fill content -> Confirm creation -> Write file -> Auto-validate -> Open editor (optional)
 
-**Important** : Le plan créé contient des TODO et nécessite personnalisation, mais est immédiatement utilisable avec patterns standards.
+**Important**: The created plan contains TODOs and requires customization, but is immediately usable with standard patterns.

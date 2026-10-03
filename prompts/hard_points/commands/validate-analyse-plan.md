@@ -1,737 +1,728 @@
 ---
-description: Valide la structure et cohérence d'un plan d'analyse par rapport aux exigences de /analyse-project. Vérifie sections obligatoires, métadonnées, stratégies d'extraction, orchestration agents, et cohérence avec README.md.
+description: "Validate the structure and coherence of an analysis plan against /analyse-project requirements"
 globs: prompts/hard_points/system/analyse/plans/**/*.md
 ---
 
-# Validate Analyse Plan
+# /validate-analyse-plan
 
-Valide un plan d'analyse pour s'assurer qu'il respecte les exigences de `/analyse-project` et les standards documentés dans `prompts/hard_points/system/analyse/plans/README.md`.
+**Purpose**: Validate an analysis plan to ensure it meets all `/analyse-project` requirements and standards documented in `prompts/hard_points/system/analyse/plans/README.md`.
 
-## 🎯 Objectif
+---
 
-Vérifier qu'un plan d'analyse :
-- Contient toutes les sections obligatoires
-- Utilise le bon format de métadonnées (Version, Date, Type, Nature, Profondeur)
-- Fournit des stratégies d'extraction cohérentes
-- Définit une orchestration d'agents claire
-- Respecte les contraintes AI-KIDO (≤500 lignes recommandé pour plans)
-- Est compatible avec la logique de résolution de `/analyse-project`
+## Usage
 
-## 📋 Processus de Validation
+[MANDATORY]
+/validate-analyse-plan
 
-### 1. Demander le Plan à Valider
+## Prerequisites
 
-Demander à l'utilisateur quel plan il souhaite valider :
+- An analysis plan file located under `prompts/hard_points/system/analyse/plans/`
+- `prompts/hard_points/system/analyse/plans/README.md` present as reference
+- `prompts/hard_points/commands/analyse-project.md` present for compatibility checks
 
-**Options** :
-- Liste automatique des plans disponibles dans `prompts/hard_points/system/analyse/plans/`
-- Chemins possibles :
-  - `plan-survol.md`, `plan-standard.md`, `plan-approfondi.md`, `plan-expert.md` (fallbacks génériques)
-  - `architecturale/c1/plan-*.md`
-  - `technique/backend/plan-*.md`
-  - `fonctionnelle/use-cases/plan-*.md`
-  - `methodologique/devops/plan-*.md`
+## Steps
+
+### Step 1. Identify the Plan to Validate
+
+Ask the user which plan to validate.
+
+**Options**:
+- Auto-list of available plans in `prompts/hard_points/system/analyse/plans/`
+- Possible paths:
+  - `plan-overview.md`, `plan-standard.md`, `plan-deep.md`, `plan-expert.md` (generic fallbacks)
+  - `architectural/c1/plan-*.md`
+  - `technical/backend/plan-*.md`
+  - `functional/use-cases/plan-*.md`
+  - `methodological/devops/plan-*.md`
   - etc.
-- Ou chemin personnalisé fourni par l'utilisateur
+- Or a custom path provided by the user
 
-**Question à poser** :
+**Question to ask**:
 ```
-Quel plan d'analyse souhaitez-vous valider ?
+Which analysis plan do you want to validate?
 
-Plans disponibles :
-[Liste automatique générée depuis find]
+Available plans:
+[Auto-generated list from find]
 
-Exemples :
-1. plan-standard.md (Fallback générique profondeur 2)
-2. architecturale/c1/plan-standard.md (C1 Standard spécifique)
-3. technique/backend/plan-approfondi.md (Backend Approfondi)
+Examples:
+1. plan-standard.md (Generic fallback depth 2)
+2. architectural/c1/plan-standard.md (C1 Standard specific)
+3. technical/backend/plan-deep.md (Backend Deep)
 
-Entrez le numéro ou le chemin complet du plan :
+Enter the number or full path of the plan:
 ```
 
-### 2. Charger le Plan et les Références
+### Step 2. Load the Plan and Reference Files
 
 ```bash
-# Charger le plan sélectionné
+# Load the selected plan
 PLAN_PATH="prompts/hard_points/system/analyse/plans/$USER_SELECTION"
 PLAN_CONTENT=$(cat "$PLAN_PATH")
 
-# Charger le README de référence
+# Load the reference README
 README_PATH="prompts/hard_points/system/analyse/plans/README.md"
 README_CONTENT=$(cat "$README_PATH")
 
-# Charger la commande analyse-project pour vérifier compatibilité
+# Load analyse-project command to check compatibility
 COMMAND_PATH="prompts/hard_points/commands/analyse-project.md"
 COMMAND_CONTENT=$(cat "$COMMAND_PATH")
 ```
 
-### 3. Validation du Header (Métadonnées)
+### Step 3. Validate the Header (Metadata)
 
-Vérifier la présence et validité du header avec métadonnées :
+Verify the presence and validity of the metadata header.
 
-**Format attendu** (selon README.md ligne 196) :
+**Expected format** (per README.md line 196):
 ```markdown
-> **Version**: X.Y | **Date**: YYYY-MM-DD | **Type**: Analysis Plan | **Nature**: {CATEGORY}/{SUB_TYPE} | **Profondeur**: {1-4} - {NOM}
+> **Version**: X.Y | **Date**: YYYY-MM-DD | **Type**: Analysis Plan | **Nature**: {CATEGORY}/{SUB_TYPE} | **Depth**: {1-4} - {NAME}
 ```
 
-**Checklist header** :
-- [ ] **Version** : Format X.Y présent
-- [ ] **Date** : Format YYYY-MM-DD présent et valide
-- [ ] **Type** : "Analysis Plan" présent
-- [ ] **Nature** : Catégorie/sous-type cohérent avec path du fichier
-- [ ] **Profondeur** : Niveau 1-4 + nom (survol/standard/approfondi/expert)
+**Header checklist**:
+- [ ] **Version**: Format X.Y present
+- [ ] **Date**: Format YYYY-MM-DD present and valid
+- [ ] **Type**: "Analysis Plan" present
+- [ ] **Nature**: Category/sub-type consistent with file path
+- [ ] **Depth**: Level 1-4 + name (overview/standard/deep/expert)
 
-**Validation** :
+**Validation**:
 ```bash
-# Extraire header (ligne 3 typiquement)
+# Extract header (typically line 3)
 HEADER=$(sed -n '3p' "$PLAN_PATH")
 
-# Vérifier chaque composant
-if echo "$HEADER" | grep -q "Version.*Date.*Type.*Nature.*Profondeur"; then
-    echo "✅ Header métadonnées complet"
+# Check each component
+if echo "$HEADER" | grep -q "Version.*Date.*Type.*Nature.*Depth"; then
+    echo "✅ Metadata header complete"
 
-    # Extraire valeurs
+    # Extract values
     VERSION=$(echo "$HEADER" | grep -oP 'Version:\s*\K[0-9]+\.[0-9]+')
     DATE=$(echo "$HEADER" | grep -oP 'Date:\s*\K[0-9]{4}-[0-9]{2}-[0-9]{2}')
     NATURE=$(echo "$HEADER" | grep -oP 'Nature:\s*\K[a-zA-Z/\-]+')
-    PROFONDEUR=$(echo "$HEADER" | grep -oP 'Profondeur:\s*\K[0-9]')
+    DEPTH=$(echo "$HEADER" | grep -oP 'Depth:\s*\K[0-9]')
 
     echo "  Version: $VERSION"
     echo "  Date: $DATE"
     echo "  Nature: $NATURE"
-    echo "  Profondeur: $PROFONDEUR"
+    echo "  Depth: $DEPTH"
 
-    # Vérifier cohérence nature avec path
+    # Check nature consistency with path
     if echo "$PLAN_PATH" | grep -q "$NATURE"; then
-        echo "✅ Nature cohérente avec path fichier"
+        echo "✅ Nature consistent with file path"
     else
-        echo "⚠️  Nature '$NATURE' ne correspond pas au path '$PLAN_PATH'"
+        echo "⚠️  Nature '$NATURE' does not match path '$PLAN_PATH'"
     fi
 else
-    echo "❌ Header métadonnées incomplet ou malformé"
+    echo "❌ Metadata header incomplete or malformed"
 fi
 ```
 
-### 4. Validation des Sections Obligatoires
+### Step 4. Validate Mandatory Sections
 
-Vérifier la présence de toutes les sections obligatoires :
+Check that all mandatory sections are present.
 
-**Checklist des sections** (selon template README.md lignes 193-420) :
+**Section checklist** (per README.md template lines 193-420):
 
-- [ ] **Overview** : Description du plan et cas d'usage
-- [ ] **Critères de Sélection** : Quand utiliser ce plan
-- [ ] **Sources à Analyser** : Code/docs/config prioritaires
-- [ ] **Agents AI-KIDO à Mobiliser** : Orchestration agents avec prompts
-- [ ] **Stratégie d'Extraction** : Algorithmes et patterns de détection
-- [ ] **Workflow Complet** : Diagramme Mermaid des phases
-- [ ] **Output Format** : Template de sortie structuré
+- [ ] **Overview**: Plan description and use cases
+- [ ] **Selection Criteria**: When to use this plan
+- [ ] **Sources to Analyze**: Priority code/docs/config
+- [ ] **AI-KIDO Agents to Mobilize**: Agent orchestration with prompts
+- [ ] **Extraction Strategy**: Algorithms and detection patterns
+- [ ] **Full Workflow**: Mermaid diagram of phases
+- [ ] **Output Format**: Structured output template
 
-**Validation** :
+**Validation**:
 ```bash
-# Vérifier chaque section
+# Check each section
 MISSING_SECTIONS=()
 
-for section in "Overview" "Critères de Sélection" "Sources à Analyser" \
-                "Agents AI-KIDO à Mobiliser" "Stratégie d'Extraction" \
-                "Workflow Complet" "Output Format"; do
+for section in "Overview" "Selection Criteria" "Sources to Analyze" \
+                "AI-KIDO Agents to Mobilize" "Extraction Strategy" \
+                "Full Workflow" "Output Format"; do
     if ! grep -qi "## .*$section" "$PLAN_PATH"; then
         MISSING_SECTIONS+=("$section")
     fi
 done
 
-# Reporter les sections manquantes
+# Report missing sections
 if [[ ${#MISSING_SECTIONS[@]} -gt 0 ]]; then
-    echo "❌ Sections obligatoires manquantes : ${MISSING_SECTIONS[@]}"
+    echo "❌ Mandatory sections missing: ${MISSING_SECTIONS[@]}"
 else
-    echo "✅ Toutes les sections obligatoires présentes (7/7)"
+    echo "✅ All mandatory sections present (7/7)"
 fi
 ```
 
-### 5. Validation de la Section "Critères de Sélection"
+### Step 5. Validate the "Selection Criteria" Section
 
-Vérifier que le plan définit clairement quand il doit être utilisé :
+Verify the plan clearly defines when it must be used.
 
-**Exigences** (selon template lignes 204-214) :
-- Nature d'analyse (numéro 1-18 + description)
-- Profondeur d'analyse (1-4 + description)
-- Contexte idéal
-- Différences vs autres plans (générique, profondeurs inf/sup)
+**Requirements** (per template lines 204-214):
+- Analysis nature (number 1-18 + description)
+- Analysis depth (1-4 + description)
+- Ideal context
+- Differences vs other plans (generic, lower/higher depths)
 
-**Validation** :
+**Validation**:
 ```bash
-# Extraire section Critères
-CRITERES=$(sed -n '/## 🎯 Critères de Sélection/,/## /p' "$PLAN_PATH")
+# Extract Selection Criteria section
+CRITERIA=$(sed -n '/## 🎯 Selection Criteria/,/## /p' "$PLAN_PATH")
 
-if echo "$CRITERES" | grep -q "Nature.*:"; then
-    echo "✅ Critère 'Nature' présent"
+if echo "$CRITERIA" | grep -q "Nature.*:"; then
+    echo "✅ Criterion 'Nature' present"
 else
-    echo "⚠️  Critère 'Nature' manquant"
+    echo "⚠️  Criterion 'Nature' missing"
 fi
 
-if echo "$CRITERES" | grep -q "Profondeur.*:"; then
-    echo "✅ Critère 'Profondeur' présent"
+if echo "$CRITERIA" | grep -q "Depth.*:"; then
+    echo "✅ Criterion 'Depth' present"
 else
-    echo "⚠️  Critère 'Profondeur' manquant"
+    echo "⚠️  Criterion 'Depth' missing"
 fi
 
-if echo "$CRITERES" | grep -qi "vs.*plan"; then
-    echo "✅ Comparaisons avec autres plans présentes"
+if echo "$CRITERIA" | grep -qi "vs.*plan"; then
+    echo "✅ Comparisons with other plans present"
 else
-    echo "⚠️  Comparaisons avec autres plans manquantes"
+    echo "⚠️  Comparisons with other plans missing"
 fi
 ```
 
-### 6. Validation de la Section "Sources à Analyser"
+### Step 6. Validate the "Sources to Analyze" Section
 
-Vérifier que les sources prioritaires sont définies :
+Verify that priority sources are defined.
 
-**Exigences** (selon template lignes 216-236) :
-- Code source : Répertoires + Extensions + Exclusions
-- Documentation : Fichiers + Sections prioritaires
-- Configuration : Fichiers + Paramètres clés
-- Critères de filtrage
+**Requirements** (per template lines 216-236):
+- Source code: Directories + Extensions + Exclusions
+- Documentation: Files + Priority sections
+- Configuration: Files + Key parameters
+- Filtering criteria
 
-**Validation** :
+**Validation**:
 ```bash
-# Extraire section Sources
-SOURCES=$(sed -n '/## 🔍 Sources à Analyser/,/## 🤖/p' "$PLAN_PATH")
+# Extract Sources section
+SOURCES=$(sed -n '/## 🔍 Sources to Analyze/,/## 🤖/p' "$PLAN_PATH")
 
-# Vérifier sous-sections
-for subsection in "Code Source" "Documentation" "Configuration"; do
+# Check subsections
+for subsection in "Source Code" "Documentation" "Configuration"; do
     if echo "$SOURCES" | grep -qi "\*\*$subsection\*\*"; then
-        echo "✅ Sous-section '$subsection' présente"
+        echo "✅ Subsection '$subsection' present"
     else
-        echo "⚠️  Sous-section '$subsection' manquante"
+        echo "⚠️  Subsection '$subsection' missing"
     fi
 done
 
-# Vérifier présence d'au moins une extension de fichier
+# Check presence of at least one file extension
 if echo "$SOURCES" | grep -qE "(\*\.[a-z]{2,4}|Extensions)"; then
-    echo "✅ Extensions de fichiers définies"
+    echo "✅ File extensions defined"
 else
-    echo "⚠️  Aucune extension de fichier trouvée"
+    echo "⚠️  No file extensions found"
 fi
 
-# Vérifier présence d'exclusions
+# Check presence of exclusions
 if echo "$SOURCES" | grep -qi "exclusion"; then
-    echo "✅ Exclusions définies"
+    echo "✅ Exclusions defined"
 else
-    echo "⚠️  Exclusions non définies"
+    echo "⚠️  Exclusions not defined"
 fi
 ```
 
-### 7. Validation de l'Orchestration d'Agents
+### Step 7. Validate Agent Orchestration
 
-Vérifier que les agents AI-KIDO sont correctement définis :
+Verify that AI-KIDO agents are correctly defined.
 
-**Exigences** (selon template lignes 238-285) :
-- Phase 3.1 : `agent-aikido-explore-code` (OBLIGATOIRE)
-- Phase 3.2 : `agent-aikido-explore-all` (optionnel, condition définie)
-- Résolution contradictions : `agent-aikido-truth-evaluator` (optionnel)
-- Classification RACI : `agent-aikido-raci-delegator` (optionnel)
-- Peuplement : `agent-aikido-bank-populate` (optionnel)
-- Validation finale : `agent-aikido-validator` (OBLIGATOIRE)
+**Requirements** (per template lines 238-285):
+- Phase 3.1: `agent-aikido-explore-code` (MANDATORY)
+- Phase 3.2: `agent-aikido-explore-all` (optional, condition defined)
+- Conflict resolution: `agent-aikido-truth-evaluator` (optional)
+- RACI classification: `agent-aikido-raci-delegator` (optional)
+- Population: `agent-aikido-bank-populate` (optional)
+- Final validation: `agent-aikido-validator` (MANDATORY)
 
-**Validation** :
+**Validation**:
 ```bash
-# Extraire section Agents
-AGENTS=$(sed -n '/## 🤖 Agents AI-KIDO à Mobiliser/,/## 📊/p' "$PLAN_PATH")
+# Extract Agents section
+AGENTS=$(sed -n '/## 🤖 AI-KIDO Agents to Mobilize/,/## 📊/p' "$PLAN_PATH")
 
-# Vérifier agents obligatoires
+# Check mandatory agents
 if echo "$AGENTS" | grep -q "agent-aikido-explore-code"; then
-    echo "✅ Agent obligatoire 'explore-code' présent"
+    echo "✅ Mandatory agent 'explore-code' present"
 else
-    echo "❌ Agent obligatoire 'explore-code' MANQUANT"
+    echo "❌ Mandatory agent 'explore-code' MISSING"
 fi
 
 if echo "$AGENTS" | grep -q "agent-aikido-validator"; then
-    echo "✅ Agent obligatoire 'validator' présent"
+    echo "✅ Mandatory agent 'validator' present"
 else
-    echo "❌ Agent obligatoire 'validator' MANQUANT"
+    echo "❌ Mandatory agent 'validator' MISSING"
 fi
 
-# Vérifier présence de prompts pour agents
+# Check presence of prompts for each agent
 AGENT_COUNT=$(echo "$AGENTS" | grep -c '^\*\*Agent\*\*.*:')
-PROMPT_COUNT=$(echo "$AGENTS" | grep -c '\*\*Prompt spécialisé\*\*')
+PROMPT_COUNT=$(echo "$AGENTS" | grep -c '\*\*Specialized prompt\*\*')
 
-echo "  Agents définis: $AGENT_COUNT"
-echo "  Prompts fournis: $PROMPT_COUNT"
+echo "  Agents defined: $AGENT_COUNT"
+echo "  Prompts provided: $PROMPT_COUNT"
 
 if [[ $AGENT_COUNT -eq $PROMPT_COUNT ]]; then
-    echo "✅ Tous les agents ont un prompt spécialisé"
+    echo "✅ All agents have a specialized prompt"
 else
-    echo "⚠️  Certains agents n'ont pas de prompt spécialisé ($PROMPT_COUNT/$AGENT_COUNT)"
+    echo "⚠️  Some agents are missing a specialized prompt ($PROMPT_COUNT/$AGENT_COUNT)"
 fi
 ```
 
-### 8. Validation de la Stratégie d'Extraction
+### Step 8. Validate the Extraction Strategy
 
-Vérifier que la stratégie d'extraction est définie :
+Verify that the extraction strategy is defined.
 
-**Exigences** (selon template lignes 286-317) :
-- Détection automatique : Algorithme + Patterns + Heuristiques
-- Extraction métadonnées : Architecture + Stack + Domaine + Config
-- Analyse profondeur spécifique : Niveau détail + Métriques + Temps estimé
+**Requirements** (per template lines 286-317):
+- Automatic detection: Algorithm + Patterns + Heuristics
+- Metadata extraction: Architecture + Stack + Domain + Config
+- Depth-specific analysis: Detail level + Metrics + Estimated time
 
-**Validation** :
+**Validation**:
 ```bash
-# Extraire section Stratégie
-STRATEGIE=$(sed -n '/## 📊 Stratégie d'"'"'Extraction/,/## 🔄/p' "$PLAN_PATH")
+# Extract Strategy section
+STRATEGY=$(sed -n '/## 📊 Extraction Strategy/,/## 🔄/p' "$PLAN_PATH")
 
-# Vérifier détection automatique
-if echo "$STRATEGIE" | grep -qi "détection"; then
-    echo "✅ Section 'Détection Automatique' présente"
+# Check automatic detection
+if echo "$STRATEGY" | grep -qi "detection"; then
+    echo "✅ 'Automatic Detection' section present"
 else
-    echo "⚠️  Section 'Détection Automatique' manquante"
+    echo "⚠️  'Automatic Detection' section missing"
 fi
 
-# Vérifier extraction métadonnées
-for metadata in "Architecture" "Stack Technique" "Domaine" "Configuration"; then
-    if echo "$STRATEGIE" | grep -qi "$metadata"; then
-        echo "✅ Métadonnée '$metadata' couverte"
+# Check metadata extraction
+for metadata in "Architecture" "Tech Stack" "Domain" "Configuration"; do
+    if echo "$STRATEGY" | grep -qi "$metadata"; then
+        echo "✅ Metadata '$metadata' covered"
     else
-        echo "⚠️  Métadonnée '$metadata' non mentionnée"
+        echo "⚠️  Metadata '$metadata' not mentioned"
     fi
 done
 
-# Vérifier temps estimé
-if echo "$STRATEGIE" | grep -qiE "temps.*estim[ée]|durée"; then
-    echo "✅ Temps d'exécution estimé présent"
+# Check estimated execution time
+if echo "$STRATEGY" | grep -qiE "estimated.*time|duration"; then
+    echo "✅ Estimated execution time present"
 else
-    echo "⚠️  Temps d'exécution estimé manquant"
+    echo "⚠️  Estimated execution time missing"
 fi
 ```
 
-### 9. Validation du Workflow (Diagramme Mermaid)
+### Step 9. Validate the Workflow (Mermaid Diagram)
 
-Vérifier la présence et cohérence du workflow :
+Verify the presence and coherence of the workflow.
 
-**Exigences** (selon template lignes 318-360) :
-- Diagramme Mermaid complet
-- Phases d'exécution clairement définies
-- Agents en violet (style fill:#f9f)
-- Conditions et branches logiques
+**Requirements** (per template lines 318-360):
+- Complete Mermaid diagram
+- Clearly defined execution phases
+- Agents styled in purple (style fill:#f9f)
+- Conditions and logical branches
 
-**Validation** :
+**Validation**:
 ```bash
-# Extraire section Workflow
-WORKFLOW=$(sed -n '/## 🔄 Workflow Complet/,/## 📤/p' "$PLAN_PATH")
+# Extract Workflow section
+WORKFLOW=$(sed -n '/## 🔄 Full Workflow/,/## 📤/p' "$PLAN_PATH")
 
-# Vérifier présence diagramme Mermaid
+# Check for Mermaid diagram
 if echo "$WORKFLOW" | grep -q '```mermaid'; then
-    echo "✅ Diagramme Mermaid présent"
+    echo "✅ Mermaid diagram present"
 
-    # Extraire le diagramme
+    # Extract the diagram
     MERMAID=$(sed -n '/```mermaid/,/```/p' "$PLAN_PATH")
 
-    # Vérifier agents stylés
+    # Check styled agents
     STYLED_AGENTS=$(echo "$MERMAID" | grep -c 'style.*fill:#f9f')
-    echo "  Agents stylés: $STYLED_AGENTS"
+    echo "  Styled agents: $STYLED_AGENTS"
 
-    # Vérifier nœud final
+    # Check end node
     if echo "$MERMAID" | grep -q 'fill:#9f9'; then
-        echo "✅ Nœud de fin correctement stylé (vert)"
+        echo "✅ End node correctly styled (green)"
     else
-        echo "⚠️  Nœud de fin pas stylé en vert"
+        echo "⚠️  End node not styled in green"
     fi
 else
-    echo "❌ Diagramme Mermaid MANQUANT"
+    echo "❌ Mermaid diagram MISSING"
 fi
 
-# Vérifier temps d'exécution estimé
+# Check estimated execution time
 if echo "$WORKFLOW" | grep -qiE "[0-9]+ *min"; then
     TIME_ESTIMATE=$(echo "$WORKFLOW" | grep -oiE "[0-9]+-[0-9]+ min" | head -1)
-    echo "✅ Temps d'exécution estimé: $TIME_ESTIMATE"
+    echo "✅ Estimated execution time: $TIME_ESTIMATE"
 else
-    echo "⚠️  Temps d'exécution estimé manquant"
+    echo "⚠️  Estimated execution time missing"
 fi
 ```
 
-### 10. Validation du Format de Sortie
+### Step 10. Validate the Output Format
 
-Vérifier que le template de sortie est défini :
+Verify that the output template is defined.
 
-**Exigences** (selon template lignes 369-420) :
-- Structure de rapport markdown
-- Sections principales : Configuration + Résultats + Détails Techniques + Écarts + Enrichissements + Conformité
-- Métadonnées : Date, Durée, Sources analysées
-- Footer avec référence au plan utilisé
+**Requirements** (per template lines 369-420):
+- Markdown report structure
+- Main sections: Configuration + Results + Technical Details + Gaps + Enrichments + Compliance
+- Metadata: Date, Duration, Analyzed sources
+- Footer with reference to the plan used
 
-**Validation** :
+**Validation**:
 ```bash
-# Extraire section Output Format
+# Extract Output Format section
 OUTPUT=$(sed -n '/## 📤 Output Format/,/##/p' "$PLAN_PATH")
 
 if echo "$OUTPUT" | grep -q '```markdown'; then
-    echo "✅ Template de sortie markdown présent"
+    echo "✅ Markdown output template present"
 
-    # Vérifier sections clés dans template
-    for section in "Configuration" "Résultats" "Détails Techniques" \
-                   "Écarts" "Enrichissements" "Conformité"; do
+    # Check key sections in template
+    for section in "Configuration" "Results" "Technical Details" \
+                   "Gaps" "Enrichments" "Compliance"; do
         if echo "$OUTPUT" | grep -qi "$section"; then
-            echo "✅ Section '$section' dans template"
+            echo "✅ Section '$section' in template"
         else
-            echo "⚠️  Section '$section' manquante dans template"
+            echo "⚠️  Section '$section' missing from template"
         fi
     done
 else
-    echo "❌ Template de sortie markdown MANQUANT"
+    echo "❌ Markdown output template MISSING"
 fi
 ```
 
-### 11. Validation de Cohérence avec README
+### Step 11. Validate Coherence with README
 
-Vérifier que le plan suit le template documenté dans README.md :
+Verify that the plan follows the template documented in README.md.
 
-**Checklist template README** :
-- [ ] Structure des sections conforme au template
-- [ ] Nature d'analyse dans critères de sélection
-- [ ] Profondeur d'analyse dans critères de sélection
-- [ ] Agents obligatoires présents (explore-code, validator)
-- [ ] Workflow complet avec Mermaid
-- [ ] Output format défini
+**README template checklist**:
+- [ ] Section structure matches template
+- [ ] Analysis nature in selection criteria
+- [ ] Analysis depth in selection criteria
+- [ ] Mandatory agents present (explore-code, validator)
+- [ ] Full workflow with Mermaid
+- [ ] Output format defined
 
 ```bash
-# Comparer structure plan vs template README
-echo "🔍 Vérification cohérence avec README.md..."
+# Compare plan structure vs README template
+echo "🔍 Checking coherence with README.md..."
 
-# Vérifier que le plan respecte l'algorithme de résolution
-# (selon README.md lignes 86-147)
+# Verify the plan follows the resolution algorithm
+# (per README.md lines 86-147)
 PLAN_BASENAME=$(basename "$PLAN_PATH")
 PLAN_DIRNAME=$(dirname "$PLAN_PATH" | sed 's#.*/plans/##')
 
-if [[ "$PLAN_BASENAME" =~ ^plan-(survol|standard|approfondi|expert)\.md$ ]]; then
-    echo "✅ Nom de fichier conforme au pattern (fallback ou spécifique)"
+if [[ "$PLAN_BASENAME" =~ ^plan-(overview|standard|deep|expert)\.md$ ]]; then
+    echo "✅ Filename matches expected pattern (fallback or specific)"
 else
-    echo "⚠️  Nom de fichier non conforme: $PLAN_BASENAME"
+    echo "⚠️  Filename does not match pattern: $PLAN_BASENAME"
 fi
 
-# Vérifier cohérence profondeur filename <-> header
-PROFONDEUR_FILE=$(echo "$PLAN_BASENAME" | grep -oE "(survol|standard|approfondi|expert)")
-if [[ -n "$PROFONDEUR" ]]; then
-    if echo "$PLAN_CONTENT" | head -5 | grep -qi "$PROFONDEUR_FILE"; then
-        echo "✅ Profondeur filename cohérente avec header"
+# Check depth consistency between filename and header
+DEPTH_FILE=$(echo "$PLAN_BASENAME" | grep -oE "(overview|standard|deep|expert)")
+if [[ -n "$DEPTH" ]]; then
+    if echo "$PLAN_CONTENT" | head -5 | grep -qi "$DEPTH_FILE"; then
+        echo "✅ Filename depth consistent with header"
     else
-        echo "⚠️  Incohérence profondeur filename vs header"
+        echo "⚠️  Depth inconsistency between filename and header"
     fi
 fi
 ```
 
-### 12. Validation de Compatibilité avec /analyse-project
+### Step 12. Validate Compatibility with /analyse-project
 
-Vérifier que le plan est compatible avec la commande analyse-project :
+Verify the plan is compatible with the analyse-project command.
 
-**Test de parsing** :
+**Parsing test**:
 ```bash
-# Simuler le parsing de /analyse-project (Phase 1.5)
-echo "🔍 Test de parsing (simulation /analyse-project Phase 1.5)..."
+# Simulate /analyse-project parsing (Phase 1.5)
+echo "🔍 Parsing test (simulating /analyse-project Phase 1.5)..."
 
-# Vérifier que le plan est trouvable par l'algorithme de résolution
-# (Logique README.md lignes 86-147)
+# Verify the plan is findable by the resolution algorithm
+# (Logic per README.md lines 86-147)
 
 # Extract nature number from header if format "Nature: X - Description"
 NATURE_NUM=$(echo "$HEADER" | grep -oP 'Nature:\s*\K[0-9]+' || echo "")
 
 if [[ -n "$NATURE_NUM" ]]; then
-    echo "✅ Nature numérique extractible: $NATURE_NUM"
+    echo "✅ Numeric nature extractable: $NATURE_NUM"
 else
-    echo "⚠️  Nature numérique non extractible du header"
+    echo "⚠️  Numeric nature not extractable from header"
 fi
 
-# Vérifier lisibilité des sections par /analyse-project
-echo "Vérification extractibilité des sections clés..."
+# Check readability of key sections by /analyse-project
+echo "Checking extractability of key sections..."
 
-# Test extraction prompt explore-code
-EXPLORE_CODE_PROMPT=$(sed -n '/### Phase 3.1.*Scan Code/,/^$/p' "$PLAN_PATH" | \
+# Test explore-code prompt extraction
+EXPLORE_CODE_PROMPT=$(sed -n '/### Phase 3.1.*Code Scan/,/^$/p' "$PLAN_PATH" | \
                       sed -n '/```/,/```/p' | sed '1d;$d')
 
 if [[ -n "$EXPLORE_CODE_PROMPT" ]]; then
-    echo "✅ Prompt explore-code extractible"
+    echo "✅ explore-code prompt extractable"
 else
-    echo "⚠️  Prompt explore-code non extractible ou vide"
+    echo "⚠️  explore-code prompt not extractable or empty"
 fi
 ```
 
-### 13. Tests Fonctionnels (Optionnel)
+### Step 13. Functional Tests (Optional)
 
-Si l'utilisateur le souhaite, tester le plan sur un projet réel :
+If the user requests it, test the plan against a real project.
 
-**Question** :
+**Question**:
 ```
-Voulez-vous exécuter un test fonctionnel du plan sur un projet réel ? (y/n)
+Do you want to run a functional test of the plan on a real project? (y/n)
 ```
 
-Si oui :
+If yes:
 ```bash
-# Demander path du projet de test
-echo "Entrez le chemin du projet de test :"
+# Ask for test project path
+echo "Enter the path to the test project:"
 read -r TEST_PROJECT_PATH
 
 if [[ ! -d "$TEST_PROJECT_PATH" ]]; then
-    echo "❌ Projet introuvable: $TEST_PROJECT_PATH"
+    echo "❌ Project not found: $TEST_PROJECT_PATH"
     exit 1
 fi
 
-echo "🧪 Test fonctionnel sur projet: $TEST_PROJECT_PATH"
+echo "🧪 Functional test on project: $TEST_PROJECT_PATH"
 echo ""
 
-# Test 1: Vérifier que les sources définies existent
-echo "Test 1: Vérification sources prioritaires..."
-SOURCE_DIRS=$(echo "$SOURCES" | grep -oE "Répertoires.*:" -A5 | grep -oE "[a-zA-Z_/]+/" | head -3)
+# Test 1: Verify that defined sources exist
+echo "Test 1: Checking priority sources..."
+SOURCE_DIRS=$(echo "$SOURCES" | grep -oE "Directories.*:" -A5 | grep -oE "[a-zA-Z_/]+/" | head -3)
 
 for dir in $SOURCE_DIRS; do
     if [[ -d "$TEST_PROJECT_PATH/$dir" ]]; then
-        echo "  ✅ Répertoire trouvé: $dir"
+        echo "  ✅ Directory found: $dir"
     else
-        echo "  ⚠️  Répertoire non trouvé: $dir"
+        echo "  ⚠️  Directory not found: $dir"
     fi
 done
 
-# Test 2: Vérifier fichiers avec extensions définies
+# Test 2: Verify files with defined extensions
 echo ""
-echo "Test 2: Vérification extensions fichiers..."
+echo "Test 2: Checking file extensions..."
 FILE_EXTS=$(echo "$SOURCES" | grep -oE "\*\.[a-z]{2,4}" | head -3)
 
 for ext in $FILE_EXTS; do
     COUNT=$(find "$TEST_PROJECT_PATH" -name "$ext" 2>/dev/null | wc -l)
-    echo "  Fichiers $ext trouvés: $COUNT"
+    echo "  Files $ext found: $COUNT"
 done
 
-# Test 3: Simuler extraction avec patterns (si patterns regex définis)
+# Test 3: Simulate extraction with patterns (if regex patterns are defined)
 echo ""
-echo "Test 3: Test patterns de détection..."
-if echo "$STRATEGIE" | grep -q '```regex'; then
+echo "Test 3: Testing detection patterns..."
+if echo "$STRATEGY" | grep -q '```regex'; then
     PATTERNS=$(sed -n '/```regex/,/```/p' "$PLAN_PATH" | sed '1d;$d' | head -3)
-    echo "  Patterns extraits: $(echo "$PATTERNS" | wc -l)"
+    echo "  Patterns extracted: $(echo "$PATTERNS" | wc -l)"
 else
-    echo "  ⚠️  Aucun pattern regex trouvé dans plan"
+    echo "  ⚠️  No regex patterns found in plan"
 fi
 ```
 
-## 📊 Rapport de Validation
+## Output
 
-Générer un rapport de validation complet dans `/prompts/spec/` :
+Generate a complete validation report in `/prompts/spec/`:
 
 ```bash
-# Définir path du rapport
+# Define report path
 REPORT_PATH="prompts/spec/validate-analyse-plan-report-$(date +%Y%m%d-%H%M%S).md"
 PLAN_NAME=$(basename "$PLAN_PATH" .md)
 PLAN_CATEGORY=$(dirname "$PLAN_PATH" | sed 's#.*/plans/##')
 
-# Compiler scores
+# Compile scores
 TOTAL_CHECKS=13
 PASSED_CHECKS=0
 WARNING_CHECKS=0
 FAILED_CHECKS=0
 
-# (Incrémenter pendant validation)
+# (Increment during validation)
 
-# Calculer score global
+# Calculate global score
 SCORE=$((PASSED_CHECKS * 100 / TOTAL_CHECKS))
 
-# Générer rapport
+# Generate report
 cat > "$REPORT_PATH" <<EOF
-# Rapport de Validation - $PLAN_NAME
+# Validation Report - $PLAN_NAME
 
 **Date**: $(date +%Y-%m-%d\ %H:%M:%S)
 **Plan**: \`$PLAN_PATH\`
-**Catégorie**: $PLAN_CATEGORY
-**Validé par**: /validate-analyse-plan v1.0
+**Category**: $PLAN_CATEGORY
+**Validated by**: /validate-analyse-plan v1.0
 
 ---
 
-## ✅ Validations Réussies ($PASSED_CHECKS/$TOTAL_CHECKS)
+## ✅ Passed Validations ($PASSED_CHECKS/$TOTAL_CHECKS)
 
 $(list_passed_validations)
 
-## ⚠️  Avertissements ($WARNING_CHECKS)
+## ⚠️  Warnings ($WARNING_CHECKS)
 
 $(list_warnings)
 
-## ❌ Erreurs Critiques ($FAILED_CHECKS)
+## ❌ Critical Errors ($FAILED_CHECKS)
 
 $(list_errors)
 
-## 💡 Recommandations
+## 💡 Recommendations
 
 $(generate_recommendations)
 
-## 📈 Score Global
+## 📈 Global Score
 
 **Score**: $SCORE/100
 
-**Détail**:
-- Header métadonnées: $(check_header_score)/10 ($(calc_percentage))%
-- Sections obligatoires: $(check_sections_score)/15 ($(calc_percentage))%
-- Critères sélection: $(check_criteria_score)/10 ($(calc_percentage))%
-- Sources prioritaires: $(check_sources_score)/10 ($(calc_percentage))%
-- Orchestration agents: $(check_agents_score)/20 ($(calc_percentage))%
-- Stratégie extraction: $(check_strategy_score)/10 ($(calc_percentage))%
-- Workflow Mermaid: $(check_workflow_score)/10 ($(calc_percentage))%
+**Breakdown**:
+- Metadata header: $(check_header_score)/10 ($(calc_percentage))%
+- Mandatory sections: $(check_sections_score)/15 ($(calc_percentage))%
+- Selection criteria: $(check_criteria_score)/10 ($(calc_percentage))%
+- Priority sources: $(check_sources_score)/10 ($(calc_percentage))%
+- Agent orchestration: $(check_agents_score)/20 ($(calc_percentage))%
+- Extraction strategy: $(check_strategy_score)/10 ($(calc_percentage))%
+- Mermaid workflow: $(check_workflow_score)/10 ($(calc_percentage))%
 - Output format: $(check_output_score)/10 ($(calc_percentage))%
-- Cohérence README: $(check_readme_score)/10 ($(calc_percentage))%
-- Compatibilité /analyse-project: $(check_compat_score)/5 ($(calc_percentage))%
+- README coherence: $(check_readme_score)/10 ($(calc_percentage))%
+- /analyse-project compatibility: $(check_compat_score)/5 ($(calc_percentage))%
 
-## 🎯 Statut Final
+## 🎯 Final Status
 
 $(determine_final_status)
 
 ---
-*Rapport généré par /validate-analyse-plan le $(date +%Y-%m-%d)*
+*Report generated by /validate-analyse-plan on $(date +%Y-%m-%d)*
 *Plan path: \`$PLAN_PATH\`*
-*README référence: \`prompts/hard_points/system/analyse/plans/README.md\`*
+*Reference README: \`prompts/hard_points/system/analyse/plans/README.md\`*
 EOF
 
 echo ""
-echo "✅ Rapport de validation généré: $REPORT_PATH"
+echo "✅ Validation report generated: $REPORT_PATH"
 ```
 
-**Template de fonction déterminer statut** :
+**Final status function template**:
 ```bash
 determine_final_status() {
     if [[ $SCORE -ge 90 && $FAILED_CHECKS -eq 0 ]]; then
-        echo "✅ **CONFORME** - Le plan est prêt pour utilisation en production."
+        echo "✅ **COMPLIANT** - The plan is ready for production use."
     elif [[ $SCORE -ge 70 && $FAILED_CHECKS -eq 0 ]]; then
-        echo "⚠️  **AMÉLIORATIONS RECOMMANDÉES** - Le plan fonctionne mais pourrait être optimisé."
+        echo "⚠️  **IMPROVEMENTS RECOMMENDED** - The plan works but could be optimized."
     elif [[ $FAILED_CHECKS -gt 0 && $FAILED_CHECKS -le 2 ]]; then
-        echo "⚠️  **CORRECTIONS NÉCESSAIRES** - Corriger les erreurs critiques avant utilisation."
+        echo "⚠️  **CORRECTIONS REQUIRED** - Fix critical errors before use."
     else
-        echo "❌ **NON CONFORME** - Le plan nécessite des corrections majeures."
+        echo "❌ **NON-COMPLIANT** - The plan requires major corrections."
     fi
 }
 ```
 
-## 🔧 Commandes Utiles
+## Notes
+
+### Useful Commands
 
 ```bash
-# Lister tous les plans disponibles
+# List all available plans
 find prompts/hard_points/system/analyse/plans -name "plan-*.md" | sort
 
-# Comparer deux plans
+# Compare two plans
 diff prompts/hard_points/system/analyse/plans/plan-standard.md \
-     prompts/hard_points/system/analyse/plans/architecturale/c1/plan-standard.md
+     prompts/hard_points/system/analyse/plans/architectural/c1/plan-standard.md
 
-# Extraire tous les agents d'un plan
+# Extract all agents from a plan
 grep -E "agent-aikido-[a-z-]+" prompts/hard_points/system/analyse/plans/plan-standard.md
 
-# Vérifier taille d'un plan (contrainte ≤500 lignes recommandé)
+# Check plan size (constraint: recommended ≤500 lines)
 wc -l prompts/hard_points/system/analyse/plans/plan-standard.md
 ```
 
-## ✅ Critères de Validation (Récapitulatif)
+### Validation Criteria Summary
 
-### Obligatoires (bloquants)
+**Mandatory (blocking)**:
+- [ ] Header with metadata (Version, Date, Type, Nature, Depth)
+- [ ] "Overview" section with description
+- [ ] "Selection Criteria" section complete
+- [ ] "Sources to Analyze" section with code/docs/config
+- [ ] "AI-KIDO Agents to Mobilize" section with explore-code and validator
+- [ ] "Extraction Strategy" section defined
+- [ ] "Full Workflow" section with Mermaid diagram
+- [ ] "Output Format" section with markdown template
+- [ ] Mandatory agents present (explore-code, validator)
+- [ ] Specialized prompts for each agent
 
-- [ ] Header avec métadonnées (Version, Date, Type, Nature, Profondeur)
-- [ ] Section "Overview" avec description
-- [ ] Section "Critères de Sélection" complète
-- [ ] Section "Sources à Analyser" avec code/docs/config
-- [ ] Section "Agents AI-KIDO à Mobiliser" avec explore-code et validator
-- [ ] Section "Stratégie d'Extraction" définie
-- [ ] Section "Workflow Complet" avec diagramme Mermaid
-- [ ] Section "Output Format" avec template markdown
-- [ ] Agents obligatoires présents (explore-code, validator)
-- [ ] Prompts spécialisés pour chaque agent
+**Recommended (warnings)**:
+- [ ] Nature consistent with file path
+- [ ] Depth consistent between filename and header
+- [ ] Comparisons with other plans ("vs Generic Plan", etc.)
+- [ ] Complete source subsections (Code + Documentation + Configuration)
+- [ ] File extensions defined
+- [ ] Exclusions defined
+- [ ] All agents have a specialized prompt
+- [ ] Complete extraction metadata (Architecture, Stack, Domain, Config)
+- [ ] Estimated execution time
+- [ ] Mermaid diagram with styled agents (purple) and end node (green)
+- [ ] Output template with all sections (Configuration, Results, Details, Gaps, Enrichments, Compliance)
+- [ ] Footer with plan reference
 
-### Recommandés (warnings)
+**Optional (bonus)**:
+- [ ] Sections adapted to specific analysis type
+- [ ] Functional tests passed on real project
+- [ ] Regex patterns for automatic detection
+- [ ] Detailed heuristics
+- [ ] Concrete output examples
+- [ ] Documentation of edge cases/limits
+- [ ] Performance metrics
 
-- [ ] Nature cohérente avec path du fichier
-- [ ] Profondeur cohérente entre filename et header
-- [ ] Comparaisons avec autres plans ("vs Plan générique", etc.)
-- [ ] Sous-sections Sources complètes (Code + Documentation + Configuration)
-- [ ] Extensions de fichiers définies
-- [ ] Exclusions définies
-- [ ] Tous les agents ont un prompt spécialisé
-- [ ] Métadonnées d'extraction complètes (Architecture, Stack, Domaine, Config)
-- [ ] Temps d'exécution estimé
-- [ ] Diagramme Mermaid avec agents stylés (violet) et fin (vert)
-- [ ] Template output avec toutes sections (Configuration, Résultats, Détails, Écarts, Enrichissements, Conformité)
-- [ ] Footer avec référence au plan
+### AI-KIDO Agents Used
 
-### Optionnels (bonus)
+This command uses **0-1 AI-KIDO agents** for simple and efficient validation.
 
-- [ ] Sections adaptées au type d'analyse spécifique
-- [ ] Tests fonctionnels réussis sur projet réel
-- [ ] Patterns regex pour détection automatique
-- [ ] Heuristiques détaillées
-- [ ] Exemples concrets de sortie
-- [ ] Documentation des limites/edge cases
-- [ ] Métriques de performance
+**Phases 1-12**: Structure and coherence validation via bash/grep
+- **Advantages**: Fast (<1s), lightweight (<100 tokens), precise
+- **Methods**: sed, grep, regex pattern testing
+- **Output**: Binary checks (✅ / ⚠️  / ❌)
 
-## 🤖 Agents AI-KIDO Utilisés
+**Final Phase (Optional)**: `agent-aikido-validator`
 
-Cette commande utilise **0-1 agents AI-KIDO** pour validation simple et efficace :
+**Condition**: Complementary validation requested by user
 
-### Validation Manuelle (Bash/Grep)
-
-**Phases 1-12** : Validation structure et cohérence via bash/grep
-- **Avantages** : Rapide (<1s), léger (<100 tokens), précis
-- **Méthodes** : sed, grep, test de patterns regex
-- **Output** : Checks binaires (✅ / ⚠️  / ❌)
-
-### Phase Finale (Optionnelle) : `agent-aikido-validator`
-
-**Condition** : Validation complémentaire demandée par utilisateur
-
-**Agent** : `agent-aikido-validator`
-
-**Prompt** :
+**Prompt**:
 ```
-"Valider conformité AI-KIDO du plan d'analyse.
+"Validate AI-KIDO compliance of the analysis plan.
 
-Fichier : $PLAN_PATH
-Type : Plan d'analyse pour /analyse-project
+File: $PLAN_PATH
+Type: Analysis plan for /analyse-project
 
-Validations complémentaires :
-1. Conformité globale AI-KIDO (≤500 lignes recommandé pour plans)
-2. Qualité liens internes/externes
-3. Cohérence globale du document
-4. Frontmatter/métadonnées (si présents)
+Complementary validations:
+1. Global AI-KIDO compliance (recommended ≤500 lines for plans)
+2. Internal/external link quality
+3. Overall document coherence
+4. Frontmatter/metadata (if present)
 
-Retourner :
-- Status : [✅ CONFORME | ⚠️ WARNINGS | ❌ NON CONFORME]
-- Violations : [liste si applicable]
-- Quick fixes : [corrections suggérées]
+Return:
+- Status: [✅ COMPLIANT | ⚠️ WARNINGS | ❌ NON-COMPLIANT]
+- Violations: [list if applicable]
+- Quick fixes: [suggested corrections]
 
-Tokens estimés : ~1-2k"
+Estimated tokens: ~1-2k"
 ```
 
-### 📊 Performance Totale
+**Total Performance**:
+- Tokens used: ~100-2,000 (depending on whether validator is used)
+- Estimated time: 1-5 seconds (depending on plan size + optional functional tests)
+- Quality: Precise validation with detailed report
 
-**Tokens utilisés** : ~100-2,000 (selon si validator utilisé)
-**Temps estimé** : 1-5 secondes (selon taille plan + tests fonctionnels opt)
-**Qualité** : Validation précise avec rapport détaillé
+### Integration with Other Commands
 
-## Règles AI-KIDO Respectées
+This command integrates with:
 
-- ✅ Référence ressource hard point principale (README.md)
-- ✅ Validation structure conforme au template
-- ✅ Génération rapport dans /prompts/spec/
-- ✅ Intégration avec /analyse-project (consommateur)
-- ✅ Pattern similaire à /validate-search-plan (cohérence)
-- ✅ Agent validator optionnel (validation légère privilégiée)
-- ✅ Format Markdown standardisé
-- ✅ Contrainte ≤1000 lignes pour commandes respectée
+- `/analyse-project`: Consumer of validated plans
+- `/create-analyse-plan`: Complementary command (create then validate)
+- `/validate-search-plan`: Similar pattern for code search plans
+- `/check-claude`: Verify synchronization after plan creation/validation
 
-## Intégration avec Autres Commandes
+**Recommended workflow**:
+1. `/create-analyse-plan` — Create a new guided plan
+2. `/validate-analyse-plan` — Validate the created plan
+3. Fix issues according to the validation report
+4. `/validate-analyse-plan` — Re-validate after corrections
+5. `/analyse-project` (nature X, depth Y) — Use the validated plan
+6. Iterate to optimize the plan based on results
 
-Cette commande s'intègre avec :
+### AI-KIDO Rules Respected
 
-- `/analyse-project` : Consommateur des plans validés
-- `/create-analyse-plan` : Commande complémentaire (create puis validate)
-- `/validate-search-plan` : Pattern similaire pour plans de recherche code
-- `/check-claude` : Vérifier synchronisation après création/validation plans
-
-**Workflow recommandé** :
-1. `/create-analyse-plan` → Créer nouveau plan guidé
-2. `/validate-analyse-plan` → Valider plan créé
-3. Corriger selon rapport validation
-4. `/validate-analyse-plan` → Re-valider après corrections
-5. `/analyse-project` (nature X, profondeur Y) → Utiliser plan validé
-6. Itérer pour optimiser plan selon résultats
-
----
-
-*Commande créée pour valider les plans d'analyse AI-KIDO*
-*Pattern : validate-search-plan adapté pour plans d'analyse*
-*Ressources : README.md (définition plans) + /analyse-project (consommateur)*
+- References the main hard point resource (README.md)
+- Structure validation conforms to template
+- Report generated in /prompts/spec/
+- Integration with /analyse-project (consumer)
+- Pattern consistent with /validate-search-plan
+- Optional validator agent (lightweight validation preferred)
+- Standardized Markdown format
+- Command ≤1000 lines constraint respected

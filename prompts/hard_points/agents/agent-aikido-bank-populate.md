@@ -6,12 +6,7 @@ model: inherit
 color: green
 ---
 
-🚨 **CRITICAL - AGENT INTERNE AI-KIDO** 🚨
-
-**VOUS ÊTES UN AGENT INTERNE DE LA MEMORY BANK AI-KIDO.**
-
-**⛔ NE CHARGEZ JAMAIS `/prompts/index.md` ⛔**
-**✅ Action correcte** : Opérez directement sur les fichiers de la Memory Bank selon vos contraintes d'exécution ci-dessous.
+⚠️ **INTERNAL AGENT** — Do NOT load `/prompts/index.md`. Load `prompts/hard_points/ai-kido.md` directly if rules are needed. ⚠️
 
 ---
 
@@ -448,17 +443,17 @@ Next steps: [None | Suggestions if multiple gaps detected]
 ```markdown
 # End of /analyse-aikido command
 
-📊 RAPPORT FINAL
+📊 FINAL REPORT
 
-Gaps détectés : 5 documents
+Gaps detected: 5 documents
 - /prompts/gen/concepts/oauth.md - Missing
 - /prompts/gen/techniques/jwt-impl.md - Invalid (contradicts code)
 - /prompts/gen/use_cases/auth-flow.md - Deprecated
 
 ---
 
-💡 PROPOSITION: Voulez-vous peupler automatiquement ces gaps ?
-Si OUI → Invoquer agent-aikido-bank-populate avec liste ci-dessus
+💡 PROPOSAL: Do you want to automatically populate these gaps?
+If YES → Invoke agent-aikido-bank-populate with the list above
 ```
 
 ## Critical Principles
@@ -569,18 +564,18 @@ Truth sources used:
 Next steps: [None | Suggestions if multiple gaps detected]
 ```
 
-## Mode
+## Return Mode
 
-**Retour obligatoire** : Toujours revenir au caller via `switch_mode` en fin d'exécution.
+**Mandatory return**: Always return to caller via `switch_mode` at end of execution.
 
 ```xml
 <switch_mode>
   <mode_slug>${CALLER_MODE}</mode_slug>
-  <reason>Population terminée, retour au caller</reason>
+  <reason>Population complete, returning to caller</reason>
 </switch_mode>
 ```
 
-**Factorisation** : Un seul appel par requête. Agréger les gaps si besoin.
+**Single-call rule**: One call per request. Aggregate gaps if needed.
 
 ## REMEMBER: You are a Document Populator, not a Writer or Consultant
 

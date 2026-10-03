@@ -1,45 +1,45 @@
 ---
-description: "Analyser les sources projet existantes pour alimenter et mettre à jour les tables de vérités AI-KIDO"
+description: "Analyze existing project sources to populate and update AI-KIDO Truth Tables"
 ---
 
-# Commande Analyse-Project
+# Command: /analyse-project
 
-Analyse les sources projet existantes (code, documentation, configuration) pour alimenter et enrichir les tables de vérités AI-KIDO existantes dans [`/prompts/gen/`](../prompts/gen/). Cette commande priorise la vérité du code sur la documentation et gère les contradictions par validation utilisateur.
+Analyze existing project sources (code, documentation, configuration) to populate and enrich AI-KIDO Truth Tables in [`/prompts/gen/`](../prompts/gen/). Prioritizes code truth over documentation. Handles contradictions via user validation.
 
-**Concept théorique associé** : [Analyse de projet](../prompts/gen/concepts/analyse-projet.md) (Règle AI-KIDO 2 : séparation théorie/pratique)
+**Related concept**: [Project Analysis](../prompts/gen/concepts/analyse-projet.md) (AI-KIDO Rule 2: theory/practice separation)
 
-### Vue d'Ensemble du Workflow
+### Workflow Overview
 
 ```mermaid
 graph TB
-    START[Démarrage] --> P1[Phase 1: Configuration Polymorphe<br/>18 types × 4 profondeurs]
-    P1 --> P1_5[Phase 1.5: Résolution Plan 📋<br/>Validation utilisateur]
-    P1_5 -->|Plan validé| P2[Phase 2: Scan Memory Bank<br/>+ Détection RACI]
-    P1_5 -.->|Plan refusé| CREATE[/create-analyse-plan]
+    START[Start] --> P1[Phase 1: Polymorphic Config<br/>18 types × 4 depths]
+    P1 --> P1_5[Phase 1.5: Plan Resolution 📋<br/>User validation]
+    P1_5 -->|Plan accepted| P2[Phase 2: Memory Bank Scan<br/>+ RACI detection]
+    P1_5 -.->|Plan rejected| CREATE[/create-analyse-plan]
     CREATE -.-> P1
-    P2 --> P3_1[Phase 3.1: 🤖 explore-code<br/>Scan automatique code source<br/>Métadonnées + line numbers]
+    P2 --> P3_1[Phase 3.1: 🤖 explore-code<br/>Auto source scan<br/>Metadata + line numbers]
 
-    P3_1 --> DEPTH{Profondeur ≥3<br/>OU écarts complexes?}
-    DEPTH -->|OUI| P3_2[Phase 3.2: 🤖 agent-aikido-explore-all<br/>Recherche parallèle<br/>Memory Bank + Code]
-    DEPTH -->|NON| P3_3
-    P3_2 --> P3_3[Phase 3.2: Détection Écarts<br/>Code/Docs/Config]
+    P3_1 --> DEPTH{Depth ≥3<br/>OR complex gaps?}
+    DEPTH -->|YES| P3_2[Phase 3.2: 🤖 agent-aikido-explore-all<br/>Parallel search<br/>Memory Bank + Code]
+    DEPTH -->|NO| P3_3
+    P3_2 --> P3_3[Phase 3.2: Gap Detection<br/>Code/Docs/Config]
 
-    P3_3 -->|SI contradictions| A1[🤖 truth-evaluator<br/>Hiérarchie sources + justification]
+    P3_3 -->|IF contradictions| A1[🤖 truth-evaluator<br/>Source hierarchy + justification]
     A1 --> P4
-    P3_3 --> P4[Phase 4: Enrichissement<br/>Concepts/Techniques/Uses/Personas<br/>depuis métadonnées explore-code]
+    P3_3 --> P4[Phase 4: Enrichment<br/>Concepts/Techniques/Uses/Personas<br/>from explore-code metadata]
 
-    P4 --> P5[Phase 5: Répartition RACI]
-    P5 -->|SI RACI activé| A2[🤖 agent-aikido-raci-delegator<br/>Classification automatique]
+    P4 --> P5[Phase 5: RACI Distribution]
+    P5 -->|IF RACI active| A2[🤖 agent-aikido-raci-delegator<br/>Auto classification]
     A2 --> P6
-    P5 --> P6[Phase 6: Équilibrage AI-KIDO<br/>≤500 lignes, 3-7 enfants, ≤4 niveaux]
-    P6 --> P7[Phase 7: Indexation<br/>6 fichiers index]
-    P7 --> P8[Phase 8: Peuplement Automatique]
-    P8 -->|SI gaps>0 ET accepté| A3[🤖 agent-aikido-bank-populate<br/>+ raci-delegator + personas]
+    P5 --> P6[Phase 6: AI-KIDO Balancing<br/>≤500 lines, 3-7 children, ≤4 levels]
+    P6 --> P7[Phase 7: Indexing<br/>6 index files]
+    P7 --> P8[Phase 8: Auto Population]
+    P8 -->|IF gaps>0 AND accepted| A3[🤖 agent-aikido-bank-populate<br/>+ raci-delegator + personas]
     A3 --> P9
-    P8 --> P9[Phase 9: 🤖 validator<br/>Validation Conformité]
-    P9 -->|SI non conforme| FIX[Application quick fixes]
+    P8 --> P9[Phase 9: 🤖 validator<br/>Compliance Validation]
+    P9 -->|IF non-compliant| FIX[Apply quick fixes]
     FIX --> P9
-    P9 --> END[✅ Memory Bank synchronisée et validée]
+    P9 --> END[✅ Memory Bank synced and validated]
 
     style P3_1 fill:#f9f,stroke:#333,stroke-width:2px
     style P3_2 fill:#f9f,stroke:#333,stroke-width:2px
@@ -50,653 +50,438 @@ graph TB
     style END fill:#9f9,stroke:#333,stroke-width:2px
 ```
 
-## Exécution
+---
 
-### Phase 1 : Configuration de l'Analyse Polymorphe
+## Steps
 
-#### 1.1 Définition de la Nature de l'Analyse
+### Phase 1: Polymorphic Analysis Configuration
 
-Poser la **Question 1 : Nature de l'analyse**
+#### 1.1 Analysis Type
+
+Ask **Question 1: Analysis type**
 ```
-Quelle nature d'analyse souhaitez-vous effectuer ?
+What type of analysis do you want to perform?
 
-ANALYSES ARCHITECTURALES :
-1. Analyse globale simple (vue d'ensemble générale)
-2. Analyse système C1 (contexte et utilisateurs)
-3. Analyse conteneurs C2 (composants de haut niveau)
-4. Analyse composants C3 (détail des composants)
-5. Analyse code C4 (implémentation détaillée)
+ARCHITECTURAL:
+1. Simple global analysis (general overview)
+2. C1 system analysis (context and users)
+3. C2 container analysis (high-level components)
+4. C3 component analysis (component detail)
+5. C4 code analysis (detailed implementation)
 
-ANALYSES TECHNIQUES :
-6. Stack technique générale (technologies globales)
-7. Stack backend spécifique (serveur, APIs, données)
-8. Stack frontend spécifique (interface, UX, client)
-9. Stack infrastructure (déploiement, ops, monitoring)
-10. Stack sécurité (authentification, autorisation, chiffrement)
+TECHNICAL:
+6. General tech stack (global technologies)
+7. Specific backend stack (server, APIs, data)
+8. Specific frontend stack (UI, UX, client)
+9. Infrastructure stack (deployment, ops, monitoring)
+10. Security stack (auth, authorization, encryption)
 
-ANALYSES FONCTIONNELLES :
-11. Analyse fonctionnelle générale (processus métier globaux)
-12. Analyse domaine spécifique (secteur d'activité particulier)
-13. Analyse use cases (scénarios d'utilisation)
-14. Analyse workflows (processus opérationnels)
+FUNCTIONAL:
+11. General functional analysis (global business processes)
+12. Domain-specific analysis (particular activity sector)
+13. Use case analysis (usage scenarios)
+14. Workflow analysis (operational processes)
 
-ANALYSES MÉTHODOLOGIQUES :
-15. Analyse UML2 (modélisation orientée objet)
-16. Analyse RUP (processus unifié)
-17. Analyse Agile (méthodes itératives)
-18. Analyse DevOps (intégration continue)
+METHODOLOGICAL:
+15. UML2 analysis (object-oriented modeling)
+16. RUP analysis (unified process)
+17. Agile analysis (iterative methods)
+18. DevOps analysis (continuous integration)
 
-Votre choix (1-18) :
+Your choice (1-18):
 ```
 
-### Architecture de Configuration
+### Configuration Architecture
 
 ```mermaid
 graph TD
-    START[Configuration Analyse] --> Q1{Question 1<br/>Nature 1-18}
-    Q1 -->|Architecturale| ARCH[C1/C2/C3/C4<br/>4 types]
-    Q1 -->|Technique| TECH[Stack général<br/>Backend/Frontend<br/>Infra/Sécurité<br/>5 types]
-    Q1 -->|Fonctionnelle| FUNC[Générale/Domaine<br/>Use cases/Workflows<br/>4 types]
-    Q1 -->|Méthodologique| METH[UML2/RUP<br/>Agile/DevOps<br/>4 types]
+    START[Analysis Config] --> Q1{Question 1<br/>Type 1-18}
+    Q1 -->|Architectural| ARCH[C1/C2/C3/C4<br/>4 types]
+    Q1 -->|Technical| TECH[General stack<br/>Backend/Frontend<br/>Infra/Security<br/>5 types]
+    Q1 -->|Functional| FUNC[General/Domain<br/>Use cases/Workflows<br/>4 types]
+    Q1 -->|Methodological| METH[UML2/RUP<br/>Agile/DevOps<br/>4 types]
 
     ARCH --> Q2
     TECH --> Q2
     FUNC --> Q2
     METH --> Q2
 
-    Q2{Question 2<br/>Profondeur 1-4} -->|1| SURVOL[Survol<br/>Vue d'ensemble]
-    Q2 -->|2| STANDARD[Standard<br/>Détail modéré]
-    Q2 -->|3| APPROFONDI[Approfondi<br/>Exhaustif]
-    Q2 -->|4| EXPERT[Expert<br/>Audit complet]
+    Q2{Question 2<br/>Depth 1-4} -->|1| SURVEY[Survey<br/>Overview]
+    Q2 -->|2| STANDARD[Standard<br/>Moderate detail]
+    Q2 -->|3| DEEP[Deep<br/>Exhaustive]
+    Q2 -->|4| EXPERT[Expert<br/>Full audit]
 
-    SURVOL --> Q3
+    SURVEY --> Q3
     STANDARD --> Q3
-    APPROFONDI --> Q3
+    DEEP --> Q3
     EXPERT --> Q3
 
-    Q3{Question 3<br/>Sources} -->|Auto| RECO[Sources<br/>recommandées]
-    Q3 -->|Manuel| CUSTOM[Sélection<br/>personnalisée]
+    Q3{Question 3<br/>Sources} -->|Auto| RECO[Recommended<br/>sources]
+    Q3 -->|Manual| CUSTOM[Custom<br/>selection]
 
-    RECO --> CONFIG[Configuration validée<br/>18×4 = 72 possibilités]
+    RECO --> CONFIG[Config validated<br/>18×4 = 72 possibilities]
     CUSTOM --> CONFIG
 
     style CONFIG fill:#9f9,stroke:#333,stroke-width:2px
 ```
 
-#### 1.2 Définition de la Profondeur de l'Analyse
+#### 1.2 Analysis Depth
 
-Poser la **Question 2 : Profondeur de l'analyse**
+Ask **Question 2: Analysis depth**
 ```
-Quelle profondeur d'analyse souhaitez-vous appliquer ?
+What depth of analysis do you want to apply?
 
-NIVEAUX DE PROFONDEUR :
+DEPTH LEVELS:
 
-NIVEAU 1 - SURVOL (Rapide, vue d'ensemble)
-- Identification des éléments principaux
-- Cartographie de base
-- Détection des patterns majeurs
-- Durée estimée : Courte
+LEVEL 1 - SURVEY (Quick, overview)
+- Identify main elements
+- Basic mapping
+- Major pattern detection
+- Estimated duration: Short
 
-NIVEAU 2 - STANDARD (Équilibré, détail modéré)
-- Analyse des relations et dépendances
-- Identification des problématiques
-- Documentation des choix architecturaux
-- Durée estimée : Moyenne
+LEVEL 2 - STANDARD (Balanced, moderate detail)
+- Analyze relationships and dependencies
+- Identify issues
+- Document architectural decisions
+- Estimated duration: Medium
 
-NIVEAU 3 - APPROFONDI (Détaillé, exhaustif)
-- Analyse fine des implémentations
-- Détection des anti-patterns
-- Recommandations d'optimisation
-- Durée estimée : Longue
+LEVEL 3 - DEEP (Detailed, exhaustive)
+- Fine implementation analysis
+- Anti-pattern detection
+- Optimization recommendations
+- Estimated duration: Long
 
-NIVEAU 4 - EXPERT (Très détaillé, spécialisé)
-- Audit complet et recommandations
-- Analyse de performance et sécurité
-- Plan de refactoring si nécessaire
-- Durée estimée : Très longue
+LEVEL 4 - EXPERT (Very detailed, specialized)
+- Full audit and recommendations
+- Performance and security analysis
+- Refactoring plan if needed
+- Estimated duration: Very long
 
-Votre choix (1/2/3/4) :
-```
-
-#### 1.3 Sélection des Sources selon la Configuration
-
-**Adapter automatiquement les sources** selon la nature et profondeur choisies :
-```
-🎯 CONFIGURATION D'ANALYSE SÉLECTIONNÉE :
-
-Nature : [TYPE_ANALYSE] - [DESCRIPTION]
-Profondeur : Niveau [NIVEAU] - [DESCRIPTION_PROFONDEUR]
-
-Sources recommandées pour cette configuration :
-[Liste adaptée selon le type d'analyse choisi]
-
-Voulez-vous utiliser les sources recommandées ? (o/n)
-Si non, personnalisez votre sélection :
+Your choice (1/2/3/4):
 ```
 
-**Si choix personnalisé**, poser la **Question 3 : Sources d'analyse personnalisées**
+#### 1.3 Source Selection
+
+Auto-adapt sources based on type and depth chosen:
 ```
-Quelles sources voulez-vous analyser pour cette analyse [TYPE_ANALYSE] ?
+🎯 SELECTED ANALYSIS CONFIGURATION:
 
-Options disponibles :
-1. Sources code uniquement (src/, lib/, components/, etc.)
-2. Documentation uniquement (docs/, README, etc.)
-3. Configuration uniquement (package.json, docker, CI/CD, etc.)
-4. Analyse combinée complète (code + docs + config)
-5. Sélection manuelle de répertoires spécifiques
+Type: [ANALYSIS_TYPE] - [DESCRIPTION]
+Depth: Level [LEVEL] - [DEPTH_DESCRIPTION]
 
-Votre choix (1/2/3/4/5) :
-```
+Recommended sources for this configuration:
+[Adapted list based on chosen analysis type]
 
-**Si choix 1** : Scanner automatiquement les répertoires de code
-```
-🔍 DÉTECTION AUTOMATIQUE DES SOURCES CODE :
-
-Répertoires code détectés :
-[Liste automatique : src/, lib/, components/, modules/, services/, etc.]
-
-Voulez-vous analyser tous ces répertoires ? (o/n)
-Si non, sélectionnez les répertoires à analyser :
+Use recommended sources? (y/n)
+If no, customize your selection:
 ```
 
-**Si choix 2** : Scanner automatiquement la documentation
+**If custom**, ask **Question 3: Custom analysis sources**
 ```
-📚 DÉTECTION AUTOMATIQUE DE LA DOCUMENTATION :
+Which sources for [ANALYSIS_TYPE] analysis?
 
-Documentation détectée :
-[Liste automatique : docs/, README.md, CHANGELOG.md, wiki/, etc.]
+Options:
+1. Code sources only (src/, lib/, components/, etc.)
+2. Documentation only (docs/, README, etc.)
+3. Configuration only (package.json, docker, CI/CD, etc.)
+4. Full combined analysis (code + docs + config)
+5. Manual directory selection
 
-Voulez-vous analyser toute cette documentation ? (o/n)
-Si non, sélectionnez les fichiers à analyser :
-```
-
-**Si choix 3** : Scanner automatiquement la configuration
-```
-⚙️ DÉTECTION AUTOMATIQUE DE LA CONFIGURATION :
-
-Fichiers de configuration détectés :
-[Liste automatique : package.json, docker-compose.yml, .github/, etc.]
-
-Voulez-vous analyser tous ces fichiers ? (o/n)
-Si non, sélectionnez les fichiers à analyser :
+Your choice (1/2/3/4/5):
 ```
 
-**Si choix 4** : Analyse combinée complète automatique
-
-**Si choix 5** : Sélection manuelle
-```
-Listez les chemins des répertoires/fichiers à analyser (séparés par des virgules) :
-Exemple : src/components, docs/architecture.md, docker-compose.yml
-
-Votre sélection :
-```
-
-### Phase 1.5 : Résolution et Validation du Plan d'Analyse 📋
-
-**NOUVELLE PHASE V2.0** : `/analyse-project` utilise désormais un système de **plans d'analyse** (similaire aux search plans de `explore-code`) pour cibler et optimiser l'analyse.
-
-#### 1.5.1 Résolution du Plan Optimal
-
-Résoudre automatiquement le plan d'analyse le plus spécifique disponible :
-
-```bash
-# Base path des plans
-PLANS_BASE="prompts/hard_points/system/analyse/plans"
-
-# Mapper nature (1-18) → catégorie + sous-type
-case "$NATURE_CHOICE" in
-    1) CATEGORY="generale"; SUB_TYPE="" ;;
-    2) CATEGORY="architecturale"; SUB_TYPE="c1" ;;
-    3) CATEGORY="architecturale"; SUB_TYPE="c2" ;;
-    4) CATEGORY="architecturale"; SUB_TYPE="c3" ;;
-    5) CATEGORY="architecturale"; SUB_TYPE="c4" ;;
-    6) CATEGORY="technique"; SUB_TYPE="stack-generale" ;;
-    7) CATEGORY="technique"; SUB_TYPE="backend" ;;
-    8) CATEGORY="technique"; SUB_TYPE="frontend" ;;
-    9) CATEGORY="technique"; SUB_TYPE="infrastructure" ;;
-    10) CATEGORY="technique"; SUB_TYPE="securite" ;;
-    11) CATEGORY="fonctionnelle"; SUB_TYPE="generale" ;;
-    12) CATEGORY="fonctionnelle"; SUB_TYPE="domaine" ;;
-    13) CATEGORY="fonctionnelle"; SUB_TYPE="use-cases" ;;
-    14) CATEGORY="fonctionnelle"; SUB_TYPE="workflows" ;;
-    15) CATEGORY="methodologique"; SUB_TYPE="uml2" ;;
-    16) CATEGORY="methodologique"; SUB_TYPE="rup" ;;
-    17) CATEGORY="methodologique"; SUB_TYPE="agile" ;;
-    18) CATEGORY="methodologique"; SUB_TYPE="devops" ;;
-esac
-
-# Mapper profondeur (1-4) → nom
-case "$DEPTH_CHOICE" in
-    1) DEPTH_NAME="survol" ;;
-    2) DEPTH_NAME="standard" ;;
-    3) DEPTH_NAME="approfondi" ;;
-    4) DEPTH_NAME="expert" ;;
-esac
-
-# Algorithme de résolution (priorité spécificité)
-RESOLVED_PLAN=""
-
-# Niveau 1 : Catégorie + Sous-type + Profondeur (le plus spécifique)
-if [ -n "$SUB_TYPE" ]; then
-    SPECIFIC_PLAN="$PLANS_BASE/$CATEGORY/$SUB_TYPE/plan-$DEPTH_NAME.md"
-    if [ -f "$SPECIFIC_PLAN" ]; then
-        RESOLVED_PLAN="$SPECIFIC_PLAN"
-    fi
-fi
-
-# Niveau 2 : Catégorie + Profondeur (si niveau 1 pas trouvé)
-if [ -z "$RESOLVED_PLAN" ] && [ "$CATEGORY" != "generale" ]; then
-    CATEGORY_PLAN="$PLANS_BASE/$CATEGORY/plan-$DEPTH_NAME.md"
-    if [ -f "$CATEGORY_PLAN" ]; then
-        RESOLVED_PLAN="$CATEGORY_PLAN"
-    fi
-fi
-
-# Niveau 3 : Fallback générique par profondeur (toujours disponible)
-if [ -z "$RESOLVED_PLAN" ]; then
-    RESOLVED_PLAN="$PLANS_BASE/plan-$DEPTH_NAME.md"
-fi
-```
-
-#### 1.5.2 Affichage du Plan Résolu
-
-Afficher le plan trouvé avec ses caractéristiques :
-
-```
-📋 PLAN D'ANALYSE RÉSOLU
-
-**Plan sélectionné** : {RESOLVED_PLAN}
-**Type** : {PLAN_TYPE} (spécifique / catégorie / générique)
-
-**Critères de sélection du plan** :
-{PLAN_SELECTION_CRITERIA}
-
-**Stratégie d'analyse** :
-- **Sources prioritaires** : {PRIORITY_SOURCES}
-- **Agents mobilisés** : {AGENTS_LIST}
-- **Méthode extraction** : {EXTRACTION_METHOD}
-- **Durée estimée** : {ESTIMATED_TIME}
-
-**Spécificités de ce plan** :
-{PLAN_SPECIFIC_FEATURES}
-```
-
-Exemple concret :
-```
-📋 PLAN D'ANALYSE RÉSOLU
-
-**Plan sélectionné** : prompts/hard_points/system/analyse/plans/architecturale/c1/plan-standard.md
-**Type** : Plan spécifique (architecturale C1, profondeur 2)
-
-**Critères de sélection du plan** :
-- Nature : 2 - Analyse système C1 (contexte et utilisateurs)
-- Profondeur : 2 - Standard (détail modéré, équilibré)
-- Contexte : Compréhension architecture externe, intégrations
-
-**Stratégie d'analyse** :
-- **Sources prioritaires** : README.md, ARCHITECTURE.md, docs/api/, docker-compose.yml
-- **Agents mobilisés** : explore-code, truth-evaluator (si contradictions), validator
-- **Méthode extraction** : Détection utilisateurs/acteurs, systèmes externes, frontières système
-- **Durée estimée** : 10-20 minutes
-
-**Spécificités de ce plan** :
-- Focus sur interactions externes et contexte système
-- Génération diagramme contexte C1 (Mermaid)
-- Identification acteurs et intégrations
-- Pas d'analyse implémentation détaillée (voir C3/C4)
-```
-
-#### 1.5.3 Validation Utilisateur
-
-Demander confirmation d'utilisation du plan :
-
-```
-✅ Utiliser ce plan pour l'analyse ? (o/n)
-
-Options :
-  o - Oui, utiliser ce plan (RECOMMANDÉ)
-  n - Non, je souhaite un plan différent ou personnalisé
-  i - Afficher plus d'informations sur ce plan
-
-Votre choix (o/n/i) :
-```
-
-**Si choix "i"** : Afficher détails complets du plan
-```bash
-# Lire et afficher les sections clés du plan
-cat "$RESOLVED_PLAN" | grep -A 20 "## 📋 Overview"
-cat "$RESOLVED_PLAN" | grep -A 10 "## 🎯 Critères de Sélection"
-cat "$RESOLVED_PLAN" | grep -A 15 "## 🤖 Agents AI-KIDO"
-```
-
-**Si choix "n"** : Proposer alternatives
-```
-❌ Plan refusé. Options alternatives :
-
-1. Créer un plan spécifique personnalisé
-   → Lancer /create-analyse-plan pour générer un plan sur mesure
-
-2. Modifier la configuration
-   → Revenir à Phase 1 et choisir autre nature/profondeur
-
-3. Utiliser le plan fallback générique
-   → Plan générique profondeur {DEPTH_NAME} (moins ciblé)
-
-Votre choix (1/2/3) :
-```
-
-**Si choix 1** : Proposer création plan
-```bash
-echo "💡 Pour créer un plan personnalisé, exécutez :"
-echo "  /create-analyse-plan"
-echo ""
-echo "Puis relancez /analyse-project avec la même configuration."
-exit 0
-```
-
-**Si choix 3** : Utiliser fallback générique
-```bash
-RESOLVED_PLAN="$PLANS_BASE/plan-$DEPTH_NAME.md"
-echo "✅ Utilisation du plan générique : $RESOLVED_PLAN"
-```
-
-**Si choix "o"** : Continuer avec le plan sélectionné
-```
-✅ Plan validé : {RESOLVED_PLAN}
-
-📖 Chargement de la stratégie d'analyse...
-```
-
-#### 1.5.4 Chargement de la Stratégie du Plan
-
-Extraire et charger les paramètres clés du plan :
-
-```bash
-# Charger le plan complet
-PLAN_CONTENT=$(cat "$RESOLVED_PLAN")
-
-# Extraire sections clés (parsing Markdown)
-PRIORITY_SOURCES=$(echo "$PLAN_CONTENT" | sed -n '/## 🔍 Sources à Analyser/,/##/p' | grep -A 20 "### Sources Prioritaires")
-AGENTS_STRATEGY=$(echo "$PLAN_CONTENT" | sed -n '/## 🤖 Agents AI-KIDO/,/##/p')
-EXTRACTION_METHOD=$(echo "$PLAN_CONTENT" | sed -n '/## 📊 Stratégie d.Extraction/,/##/p')
-WORKFLOW=$(echo "$PLAN_CONTENT" | sed -n '/## 🔄 Workflow Complet/,/##/p')
-
-# Stocker pour utilisation dans phases suivantes
-export ANALYSIS_PLAN_PATH="$RESOLVED_PLAN"
-export ANALYSIS_PLAN_SOURCES="$PRIORITY_SOURCES"
-export ANALYSIS_PLAN_AGENTS="$AGENTS_STRATEGY"
-export ANALYSIS_PLAN_EXTRACTION="$EXTRACTION_METHOD"
-export ANALYSIS_PLAN_WORKFLOW="$WORKFLOW"
-
-echo "✅ Stratégie chargée depuis : $RESOLVED_PLAN"
-echo ""
-echo "🎯 L'analyse suivra la stratégie définie dans le plan."
-echo "   Les phases 2-9 seront adaptées selon cette stratégie."
-echo ""
-```
-
-#### 1.5.5 Adaptation des Phases Suivantes
-
-Les phases 2-9 utiliseront automatiquement la stratégie du plan :
-
-```
-📌 ADAPTATION DES PHASES SELON LE PLAN
-
-Phase 2 (Scan Memory Bank) : {ADAPTED_STRATEGY}
-Phase 3.1 (explore-code) : Prompt adapté depuis plan
-Phase 3.2 (explore-all) : {CONDITIONAL_USAGE}
-Phase 4 (Enrichissement) : Focus sur {ENRICHMENT_AREAS}
-Phase 5 (RACI) : {RACI_STRATEGY}
-Phase 8 (Peuplement) : {POPULATE_STRATEGY}
-Phase 9 (Validation) : {VALIDATION_RULES}
-
-▶️  Passage à Phase 2...
-```
-
-**Avantages du système de plans** :
-- ✅ **Analyse ciblée** : Stratégie adaptée au type d'analyse
-- ✅ **Performance** : Évite l'analyse exhaustive inutile
-- ✅ **Customisation** : Plans modifiables par projet
-- ✅ **Capitalisation** : Meilleures pratiques centralisées
-- ✅ **Validation utilisateur** : Contrôle avant exécution
+- **Choice 1**: Auto-scan code directories
+- **Choice 2**: Auto-scan documentation
+- **Choice 3**: Auto-scan configuration
+- **Choice 4**: Full combined automatic analysis
+- **Choice 5**: List paths to analyze (comma-separated)
 
 ---
 
-### Phase 2 : Analyse des Tables de Vérités et Spécifications RACI Existantes
+### Phase 1.5: Analysis Plan Resolution 📋
 
-#### 2.1 Scanner l'État Actuel de la Memory Bank
+Resolve the most specific available analysis plan:
 
-**Analyser l'état actuel des tables de vérités** :
+#### 1.5.1 Plan Resolution Logic
+
+Map nature (1-18) → category + sub-type:
+
+| Choice | Category | Sub-type |
+|--------|----------|----------|
+| 1 | generale | — |
+| 2 | architectural | c1 |
+| 3 | architectural | c2 |
+| 4 | architectural | c3 |
+| 5 | architectural | c4 |
+| 6 | technical | stack-general |
+| 7 | technical | backend |
+| 8 | technical | frontend |
+| 9 | technical | infrastructure |
+| 10 | technical | security |
+| 11 | functional | general |
+| 12 | functional | domain |
+| 13 | functional | use-cases |
+| 14 | functional | workflows |
+| 15 | methodological | uml2 |
+| 16 | methodological | rup |
+| 17 | methodological | agile |
+| 18 | methodological | devops |
+
+Map depth (1-4) → name: `1=survey`, `2=standard`, `3=deep`, `4=expert`
+
+**Resolution priority** (most specific first):
+1. `plans/{category}/{sub-type}/plan-{depth}.md`
+2. `plans/{category}/plan-{depth}.md`
+3. `plans/plan-{depth}.md` (generic fallback — always available)
+
+Base path: `prompts/hard_points/system/analyse/plans`
+
+#### 1.5.2 Display Resolved Plan
+
 ```
-📊 ÉTAT ACTUEL DES TABLES DE VÉRITÉS :
+📋 RESOLVED ANALYSIS PLAN
 
-Concepts existants : [NOMBRE] fichiers dans /prompts/gen/concepts/
-Techniques existantes : [NOMBRE] fichiers dans /prompts/gen/techniques/
-Use cases existants : [NOMBRE] fichiers dans /prompts/gen/use_cases/
-Personas existants : [NOMBRE] fichiers dans /prompts/gen/personas/
+Plan selected: {RESOLVED_PLAN}
+Type: {PLAN_TYPE} (specific / category / generic)
 
-Dernière mise à jour : [DATE]
+Selection criteria: {PLAN_SELECTION_CRITERIA}
+
+Analysis strategy:
+- Priority sources: {PRIORITY_SOURCES}
+- Agents: {AGENTS_LIST}
+- Extraction method: {EXTRACTION_METHOD}
+- Estimated duration: {ESTIMATED_TIME}
+
+Plan specifics: {PLAN_SPECIFIC_FEATURES}
 ```
 
-#### 2.2 Vérification des Spécifications RACI Organisationnelles
+#### 1.5.3 User Validation
 
-**Rechercher les spécifications RACI** dans [`/prompts/index.md`](../prompts/index.md) et [`/prompts/hard_points/index.md`](../prompts/hard_points/index.md) :
 ```
-🏗️ SPÉCIFICATIONS RACI DÉTECTÉES :
-
-Organisations configurées :
-[Liste des fichiers aikido-raci-*.md trouvés dans hard_points]
-
-Si spécifications RACI trouvées :
-- Organisation : [TEAM-NAME]
-- Rôles définis : [NOMBRE]
-- Workflow : [ÉTAPES_WORKFLOW]
-- Structure par rôles : ✅/❌
-
-Utiliser ces spécifications pour l'organisation des enrichissements ? (o/n)
+✅ Use this plan for analysis? (y/n/i)
+  y - Yes, use this plan (RECOMMENDED)
+  n - No, I want a different or custom plan
+  i - Show full plan details
 ```
 
-**Si aucune spécification RACI** :
+**If "n"** — offer alternatives:
+1. Create custom plan → run `/create-analyse-plan` then re-run `/analyse-project`
+2. Change configuration → return to Phase 1
+3. Use generic fallback plan
+
+**If "o"** — load plan strategy and proceed:
 ```
-⚠️ AUCUNE SPÉCIFICATION RACI DÉTECTÉE
-
-Aucun fichier aikido-raci-*.md trouvé dans /prompts/hard_points/
-
-Options :
-1. Continuer sans organisation par rôles (structure plate)
-2. Exécuter d'abord init-raci-aikido pour définir l'organisation
-3. Créer une organisation temporaire pour cette analyse
-
-Votre choix (1/2/3) :
+✅ Plan validated: {RESOLVED_PLAN}
+📖 Loading analysis strategy...
 ```
 
-### Phase 3 : Extraction et Analyse des Sources
+#### 1.5.4 Phase Adaptation
 
-#### 3.1 Analyse Prioritaire du Code (Vérité de référence)
+Phases 2–9 use the plan strategy automatically:
+```
+📌 PHASE ADAPTATION PER PLAN
 
-##### 3.1.1 Scan Automatique du Code Source 🤖
+Phase 2 (Memory Bank scan): {ADAPTED_STRATEGY}
+Phase 3.1 (explore-code): Prompt from plan
+Phase 3.2 (explore-all): {CONDITIONAL_USAGE}
+Phase 4 (Enrichment): Focus on {ENRICHMENT_AREAS}
+Phase 5 (RACI): {RACI_STRATEGY}
+Phase 8 (Populate): {POPULATE_STRATEGY}
+Phase 9 (Validation): {VALIDATION_RULES}
 
-**UTILISER L'AGENT** `agent-aikido-explore-code` pour analyser automatiquement le code source :
+▶️  Moving to Phase 2...
+```
+
+---
+
+### Phase 2: Memory Bank and RACI Scan
+
+#### 2.1 Current Memory Bank State
+
+```
+📊 CURRENT TRUTH TABLE STATE:
+
+Existing concepts: [COUNT] files in /prompts/gen/concepts/
+Existing techniques: [COUNT] files in /prompts/gen/techniques/
+Existing use cases: [COUNT] files in /prompts/gen/use_cases/
+Existing personas: [COUNT] files in /prompts/gen/personas/
+
+Last updated: [DATE]
+```
+
+#### 2.2 RACI Specs Check
+
+Search for RACI specs in [`/prompts/index.md`](../prompts/index.md) and [`/prompts/hard_points/index.md`](../prompts/hard_points/index.md):
+
+```
+🏗️ DETECTED RACI SPECIFICATIONS:
+
+Configured organizations:
+[List of aikido-raci-*.md files found in hard_points]
+
+If RACI specs found:
+- Organization: [TEAM-NAME]
+- Defined roles: [COUNT]
+- Workflow: [WORKFLOW_STEPS]
+- Role structure: ✅/❌
+
+Use these specs for enrichment organization? (y/n)
+```
+
+**If no RACI specs**:
+```
+⚠️ NO RACI SPECIFICATIONS DETECTED
+
+Options:
+1. Continue without role organization (flat structure)
+2. Run init-raci-aikido first
+3. Create temporary organization for this analysis
+
+Your choice (1/2/3):
+```
+
+---
+
+### Phase 3: Source Extraction and Analysis
+
+#### 3.1 Code Analysis (Primary truth source)
+
+Invoke `agent-aikido-explore-code`:
 
 ```markdown
 🤖 AGENT: agent-aikido-explore-code
 
-**Prompt pour l'agent** :
+Prompt:
 "FORMAT: JSON
 
-Analyse le code source du projet selon la configuration d'analyse sélectionnée :
+Analyze project source code per selected configuration:
 
-Configuration :
-- Nature : [TYPE_ANALYSE depuis Phase 1]
-- Profondeur : Niveau [NIVEAU depuis Phase 1]
-- Sources : [CHEMINS_SÉLECTIONNÉS depuis Phase 1]
+Configuration:
+- Type: [ANALYSIS_TYPE from Phase 1]
+- Depth: Level [LEVEL from Phase 1]
+- Sources: [SELECTED_PATHS from Phase 1]
 
-Recherche et extrait :
-1. **Architecture réelle** : Classes, interfaces, modules, composants
-2. **Dépendances** : Imports, extends, implements, uses
-3. **Stack technique** : Technologies, frameworks, versions (depuis package.json, composer.json, etc.)
-4. **Patterns** : Détection patterns architecturaux (MVC, MVVM, microservices, etc.)
+Extract:
+1. Real architecture: Classes, interfaces, modules, components
+2. Dependencies: Imports, extends, implements, uses
+3. Tech stack: Technologies, frameworks, versions (package.json, composer.json, etc.)
+4. Patterns: Architectural pattern detection (MVC, MVVM, microservices, etc.)
 
-Technology-aware :
-- Auto-détection langage principal (PHP, JavaScript/TypeScript, Python, Java, etc.)
-- Utilisation plan recherche approprié (generic/php/javascript)
-- Résolution PSR-4 (PHP) et ES Modules (JS/TS) si applicable
+Technology-aware:
+- Auto-detect main language (PHP, JavaScript/TypeScript, Python, Java, etc.)
+- Use appropriate search plan (generic/php/javascript)
+- Resolve PSR-4 (PHP) and ES Modules (JS/TS) if applicable
 
-Output attendu :
-- Métadonnées structurées avec line numbers
-- Graphe de dépendances (Mermaid)
-- ~50 lignes par fichier analysé
-- Format compact (<2500 tokens total)"
-
-**Résultat attendu** : Cartographie structurée de l'architecture réelle du code
+Output:
+- Structured metadata with line numbers
+- Dependency graph (Mermaid)
+- ~50 lines per analyzed file
+- Compact format (<2500 tokens total)"
 ```
 
-**Avantages de l'agent explore-code** :
-- ✅ **Extraction automatique** : Classes, interfaces, functions avec line numbers
-- ✅ **Technology-aware** : Plans spécialisés (PHP, JS/TS, generic)
-- ✅ **Dépendances précises** : Graphe complet extends/implements/imports
-- ✅ **Output compact** : ~50 lignes/fichier vs analyse manuelle lourde
-- ✅ **Métadonnées structurées** : Prêtes pour enrichissement Memory Bank
+#### 3.1.2 Interpret explore-code Results
 
-##### 3.1.2 Interprétation des Résultats explore-code
+**A. Real architecture** (from explore-code metadata):
+- Detected patterns: [MVC/MVVM/Microservices/etc.]
+- Directory/module organization
+- Entry points with line numbers
+- Main classes and interfaces: [LIST with lines]
+- Critical dependencies: [Mermaid graph]
 
-**A. Architecture réelle détectée** (depuis métadonnées explore-code) :
-1. **Structure des répertoires et modules** :
-   - Patterns détectés : [MVC/MVVM/Microservices/etc.]
-   - Organisation par domaine/fonctionnalité
-   - Points d'entrée identifiés avec line numbers
+**B. Real tech stack** (from explore-code metadata):
+- Main language: [PHP/JavaScript/TypeScript/etc.]
+- Detected frameworks: [Laravel/Symfony/React/Vue/etc.]
+- Versions: [From package.json/composer.json]
+- External dependencies: [LIST]
 
-2. **Composants et relations** :
-   - Classes principales : [LISTE avec lignes]
-   - Interfaces exposées : [LISTE avec lignes]
-   - Dépendances critiques : [Graphe Mermaid]
+**C. Implemented business logic** (from explore-code metadata):
+- Detected data entities: [LIST with lines]
+- Entity relationships: [Graph]
+- Detected API endpoints: [LIST]
+- Public methods: [LIST with signatures]
 
-**B. Stack technique réelle** (depuis métadonnées explore-code) :
-1. **Technologies effectivement utilisées** :
-   - Langage principal : [PHP/JavaScript/TypeScript/etc.]
-   - Frameworks détectés : [Laravel/Symfony/React/Vue/etc.]
-   - Versions : [Depuis package.json/composer.json]
+**D. Operational configuration**:
+- Configured environments
+- Services and dependencies
+- Deployment parameters
 
-2. **Dépendances externes** :
-   - Bibliothèques importées : [LISTE]
-   - Modules natifs utilisés : [LISTE]
+#### 3.2 Gap and Contradiction Detection
 
-**C. Logique métier implémentée** (depuis métadonnées explore-code) :
-1. **Modèles de données réels** :
-   - Entités détectées : [LISTE avec lignes]
-   - Relations entre entités : [Graphe]
+##### 3.2.1 Parallel Search (Optional — use if depth ≥3 or complex gaps)
 
-2. **APIs et interfaces exposées** :
-   - Endpoints détectés : [LISTE]
-   - Méthodes publiques : [LISTE avec signatures]
-
-**B. Analyse de la Documentation (Vérité déclarative)** :
-1. **Architecture documentée** :
-   - Diagrammes et spécifications
-   - Décisions architecturales
-   - Contraintes et exigences
-
-2. **Processus documentés** :
-   - Workflows décrits
-   - Procédures et guidelines
-   - Standards et conventions
-
-**D. Analyse de la Configuration (Vérité opérationnelle)** :
-1. **Infrastructure réelle** :
-   - Environnements configurés
-   - Services et dépendances
-   - Paramètres de déploiement
-
-#### 3.2 Détection Automatique des Écarts et Contradictions 🤖
-
-##### 3.2.1 Recherche Parallèle Memory Bank + Code (Optionnel)
-
-**OPTION : UTILISER L'AGENT** `agent-aikido-explore-all` pour recherche globale :
+Invoke `agent-aikido-explore-all`:
 
 ```markdown
-🤖 AGENT: agent-aikido-explore-all (OPTIONNEL)
+🤖 AGENT: agent-aikido-explore-all (OPTIONAL)
 
-**Quand utiliser cet agent** :
-- Profondeur analyse ≥ 3 (APPROFONDI ou EXPERT)
-- OU besoin vue complète documentation + implémentation
-- OU détection écarts complexes entre specs et code
+When to use:
+- Analysis depth ≥ 3 (DEEP or EXPERT)
+- OR need full documentation + implementation view
+- OR complex gap detection between specs and code
 
-**Prompt pour l'agent** :
+Prompt:
 "FORMAT: JSON
 
-Recherche parallèle dans Memory Bank ET code source pour détecter écarts :
+Parallel search in Memory Bank AND source code to detect gaps:
 
-Recherche dans Memory Bank (/prompts/gen/) :
-- Concepts architecture documentés
-- Techniques stack documentées
-- Use cases processus documentés
-- Glossaire termes métier
+Memory Bank (/prompts/gen/):
+- Documented architecture concepts
+- Documented stack techniques
+- Documented process use cases
+- Business term glossary
 
-Recherche dans Code Source (hors /prompts/) :
-- Architecture réellement implémentée
-- Stack technique réellement utilisée
-- Processus réellement codés
-- Termes métier dans le code
+Source Code (outside /prompts/):
+- Actually implemented architecture
+- Actually used tech stack
+- Actually coded processes
+- Business terms in code
 
-Keywords recherche :
-[LISTE selon TYPE_ANALYSE : architecture, stack, processus, domaine, etc.]
+Search keywords: [LIST per ANALYSIS_TYPE]
 
-Output attendu :
-- Vue complète Memory Bank + Code en parallèle
-- Cross-references entre documentation et implémentation
-- Écarts détectés automatiquement"
-
-**Résultat attendu** : Rapport complet avec écarts pré-identifiés
+Output:
+- Full Memory Bank + Code view in parallel
+- Cross-references between documentation and implementation
+- Auto-detected gaps"
 ```
 
-**Avantages de l'agent explore-all** :
-- ✅ **Recherche parallèle** : Memory Bank + Code simultanément (3-5s total)
-- ✅ **Écarts automatiques** : Détection contradictions docs ↔ code
-- ✅ **Vue complète** : Documentation + Implémentation en un seul rapport
-- ✅ **Cross-references** : Liens entre concepts documentés et code réel
+**If explore-all NOT used**: proceed directly to 3.2.2
 
-**SI explore-all NON utilisé** : Passer directement à 3.2.2 avec comparaison manuelle
+##### 3.2.2 Systematic Source Comparison
 
-##### 3.2.2 Comparaison Systématique des Sources
+Compare systematically:
+1. **Code vs Documentation**: Implemented vs documented architecture
+2. **Code vs Configuration**: Declared vs used dependencies
+3. **Documentation vs Configuration**: Described vs configured processes
+4. **Existing vs New**: Truth Tables vs detected reality
 
-**Comparer systématiquement** (avec ou sans explore-all) :
-1. **Code vs Documentation** : Architecture implémentée vs documentée
-   - Depuis métadonnées explore-code vs Memory Bank
-2. **Code vs Configuration** : Dépendances déclarées vs utilisées
-   - Depuis explore-code imports vs package.json/composer.json
-3. **Documentation vs Configuration** : Processus décrits vs configurés
-   - Depuis Memory Bank vs fichiers config
-4. **Existant vs Nouveau** : Tables de vérités vs réalité détectée
-   - Depuis Memory Bank vs résultats explore-code
-
-### Processus de Résolution des Contradictions
+### Contradiction Resolution Process
 
 ```mermaid
 graph TD
-    SCAN[Phase 3.1.1<br/>🤖 explore-code<br/>Scan code automatique] --> RESULTS[Métadonnées structurées<br/>Classes/Dépendances/Stack]
+    SCAN[Phase 3.1<br/>🤖 explore-code<br/>Auto code scan] --> RESULTS[Structured metadata<br/>Classes/Deps/Stack]
 
-    RESULTS --> OPTION{Profondeur ≥3<br/>OU écarts complexes?}
+    RESULTS --> OPTION{Depth ≥3<br/>OR complex gaps?}
 
-    OPTION -->|OUI| ALL[Phase 3.2.1<br/>🤖 explore-all<br/>Recherche parallèle<br/>Memory Bank + Code]
-    OPTION -->|NON| COMPARE
+    OPTION -->|YES| ALL[Phase 3.2.1<br/>🤖 explore-all<br/>Parallel search<br/>Memory Bank + Code]
+    OPTION -->|NO| COMPARE
 
-    ALL --> ECARTS[Écarts pré-détectés<br/>docs ↔ code]
-    ECARTS --> COMPARE
+    ALL --> GAPS[Pre-detected gaps<br/>docs ↔ code]
+    GAPS --> COMPARE
 
-    COMPARE{Comparaison<br/>4 sources}
+    COMPARE{Comparison<br/>4 sources}
     DOCS[Documentation<br/>Memory Bank] --> COMPARE
-    CONFIG[Configuration<br/>Vérité opérationnelle] --> COMPARE
+    CONFIG[Configuration<br/>Operational truth] --> COMPARE
 
-    COMPARE -->|Aucune contradiction| NEXT[Phase 4: Enrichissement]
-    COMPARE -->|Contradictions détectées| LIST[Liste des contradictions<br/>Par sujet/source]
+    COMPARE -->|No contradiction| NEXT[Phase 4: Enrichment]
+    COMPARE -->|Contradictions found| LIST[Contradiction list<br/>By topic/source]
 
-    LIST --> AGENT[🤖 agent-aikido-truth-evaluator<br/>Analyse contradictions]
+    LIST --> AGENT[🤖 agent-aikido-truth-evaluator<br/>Contradiction analysis]
 
-    AGENT --> HIERARCHY[Hiérarchie des sources<br/>Par contexte INVESTIGATION]
-    HIERARCHY --> REC[Recommandations<br/>Résolution par priorité]
+    AGENT --> HIERARCHY[Source hierarchy<br/>Per INVESTIGATION context]
+    HIERARCHY --> REC[Resolution recommendations<br/>By priority]
 
-    REC --> APPLY[Application hiérarchie<br/>aux enrichissements]
-    APPLY --> MARK[Marquage sources<br/>obsolètes/dépréciées]
+    REC --> APPLY[Apply hierarchy<br/>to enrichments]
+    APPLY --> MARK[Mark obsolete/deprecated<br/>sources]
 
     MARK --> NEXT
 
@@ -706,183 +491,169 @@ graph TD
     style NEXT fill:#9f9,stroke:#333,stroke-width:2px
 ```
 
-##### 3.2.3 Validation des Contradictions Détectées
+##### 3.2.3 Contradiction Validation
 
-**Pour chaque contradiction détectée** (depuis explore-code, explore-all, ou comparaison manuelle) :
+For each detected contradiction:
 ```
-⚠️ CONTRADICTION DÉTECTÉE :
+⚠️ CONTRADICTION DETECTED:
 
-Sujet : [Architecture/Stack/Processus/etc.]
-Source CODE (explore-code) : [Ce qui est implémenté avec line numbers]
-Source DOCS (Memory Bank) : [Ce qui est documenté]
-Source CONFIG : [Ce qui est configuré]
-Tables de vérités actuelles : [Ce qui est enregistré]
+Topic: [Architecture/Stack/Process/etc.]
+CODE source (explore-code): [What is implemented, with line numbers]
+DOCS source (Memory Bank): [What is documented]
+CONFIG source: [What is configured]
+Current Truth Tables: [What is recorded]
 
-Quelle vérité adopter ?
-1. Prioriser le code (vérité implémentée - métadonnées explore-code)
-2. Prioriser la documentation (vérité intentionnelle - Memory Bank)
-3. Prioriser la configuration (vérité opérationnelle - fichiers config)
-4. Prioriser les tables existantes (vérité établie - Memory Bank)
-5. Utiliser agent truth-evaluator (analyse automatique hiérarchie)
-
-Votre choix :
+Which truth to adopt?
+1. Prioritize code (implemented truth — explore-code metadata)
+2. Prioritize documentation (intentional truth — Memory Bank)
+3. Prioritize configuration (operational truth — config files)
+4. Prioritize existing tables (established truth — Memory Bank)
+5. Use truth-evaluator agent (automatic hierarchy analysis)
 ```
 
-##### 3.2.4 Résolution Automatique des Contradictions 🤖
+##### 3.2.4 Automatic Contradiction Resolution
 
-**SI choix 5 OU contradictions multiples complexes, UTILISER L'AGENT** `agent-aikido-truth-evaluator` :
+**If choice 5 OR multiple complex contradictions**, invoke `agent-aikido-truth-evaluator`:
 
 ```markdown
 🤖 AGENT: agent-aikido-truth-evaluator
 
-**Prompt pour l'agent** :
+Prompt:
 "FORMAT: JSON
 
-Analyse les contradictions détectées entre sources :
+Analyze detected contradictions between sources:
 
-Code (depuis explore-code) :
-- [Résumé avec line numbers des éléments contradictoires]
+Code (from explore-code):
+- [Summary with line numbers of contradictory elements]
 
-Documentation (depuis Memory Bank ou explore-all) :
-- [Résumé des éléments contradictoires]
+Documentation (from Memory Bank or explore-all):
+- [Summary of contradictory elements]
 
-Configuration :
-- [Résumé des éléments contradictoires]
+Configuration:
+- [Summary of contradictory elements]
 
-Contexte : Analyse projet existant (scénario: INVESTIGATION)
+Context: Existing project analysis (scenario: INVESTIGATION)
 
-Détermine quelle source représente la vérité pour chaque contradiction et fournis la hiérarchie des sources avec justification."
-
-**Résultat attendu** : Hiérarchie des sources avec recommandations de résolution et niveau de confiance
+Determine which source represents truth for each contradiction and provide source hierarchy with justification."
 ```
 
-**Appliquer la hiérarchie** retournée par l'agent pour :
-- Prioriser les sources fiables lors de l'extraction
-- Marquer les sources obsolètes/dépréciées dans Memory Bank
-- Orienter les mises à jour avec références précises (line numbers depuis explore-code)
+Apply the returned hierarchy to:
+- Prioritize reliable sources during extraction
+- Mark obsolete/deprecated sources in Memory Bank
+- Guide updates with precise references (line numbers from explore-code)
 
-**Exemple de résolution automatique** :
+**Resolution example**:
 ```
-✅ HIÉRARCHIE DÉTERMINÉE PAR TRUTH-EVALUATOR :
+✅ HIERARCHY DETERMINED BY TRUTH-EVALUATOR:
 
-Contradiction : Architecture backend
-Scénario : INVESTIGATION
-Hiérarchie recommandée : CODE (95%) > CONFIG (80%) > DOCS (20% - obsolète)
+Contradiction: Backend architecture
+Scenario: INVESTIGATION
+Recommended hierarchy: CODE (95%) > CONFIG (80%) > DOCS (20% - obsolete)
 
-Justification :
-- Code (src/gateway/index.ts:15) : Implémentation microservices active et testée
-- Config (docker-compose.yml) : Confirme architecture distribuée (5 services)
-- Docs (/prompts/gen/concepts/architecture.md) : Décrit architecture monolithique (outdated)
+Justification:
+- Code (src/gateway/index.ts:15): Active and tested microservices implementation
+- Config (docker-compose.yml): Confirms distributed architecture (5 services)
+- Docs (/prompts/gen/concepts/architecture.md): Describes monolithic architecture (outdated)
 
-Action : Mettre à jour Memory Bank avec réalité microservices depuis explore-code
-Sources à marquer obsolètes : concepts/architecture.md (section "Backend monolithique")
-```
-
-### Phase 4 : Enrichissement des Tables de Vérités
-
-#### 4.1 Mise à Jour des Concepts
-
-**Enrichir [`/prompts/gen/concepts/`](../prompts/gen/concepts/)** :
-- Mettre à jour l'architecture système avec la réalité détectée
-- Enrichir le glossaire avec les termes trouvés dans le code
-- Ajouter les nouveaux concepts métier identifiés
-- Corriger les définitions contradictoires
-
-#### 4.2 Mise à Jour des Techniques
-
-**Enrichir [`/prompts/gen/techniques/`](../prompts/gen/techniques/)** :
-- Mettre à jour la stack technique avec les technologies réelles
-- Ajouter les patterns et pratiques détectés dans le code
-- Documenter les techniques de déploiement configurées
-- Enrichir les méthodes de développement observées
-
-#### 4.3 Mise à Jour des Use Cases
-
-**Enrichir [`/prompts/gen/use_cases/`](../prompts/gen/use_cases/)** :
-- Ajouter les cas d'usage implémentés dans le code
-- Mettre à jour les workflows avec la réalité opérationnelle
-- Documenter les APIs et interfaces réelles
-- Corriger les scénarios obsolètes
-
-#### 4.4 Mise à Jour des Personas
-
-**Enrichir [`/prompts/gen/personas/`](../prompts/gen/personas/)** :
-- Adapter les personas aux technologies réellement utilisées
-- Mettre à jour les responsabilités selon l'architecture réelle
-- Ajouter les compétences requises par la stack détectée
-
-### Phase 5 : Répartition par Rôles selon Spécifications RACI (Règle AI-KIDO 15)
-
-#### 5.1 Chargement des Spécifications RACI Organisationnelles
-
-**Si spécifications RACI disponibles**, charger depuis [`/prompts/hard_points/aikido-raci-[TEAM-NAME].md`](../prompts/hard_points/aikido-raci-[TEAM-NAME].md) :
-```
-📋 CHARGEMENT DES SPÉCIFICATIONS RACI :
-
-Organisation : [TEAM-NAME]
-Rôles définis : [LISTE_ROLES]
-Workflow organisationnel : [ÉTAPES_WORKFLOW]
-Domaines par rôle : [MAPPING_DOMAINES]
-
-Structure existante détectée :
-- /prompts/gen/concepts/ : ✅/❌
-- /prompts/gen/techniques/ : ✅/❌
-- /prompts/gen/use_cases/ : ✅/❌
-
-Utiliser cette organisation pour les enrichissements ? (o/n)
+Action: Update Memory Bank with microservices reality from explore-code
+Sources to mark obsolete: concepts/architecture.md (section "Monolithic Backend")
 ```
 
-#### 5.2 Classification Automatique des Documents Extraits 🤖
+---
 
-**UTILISER L'AGENT** `agent-aikido-raci-delegator` pour classifier tous les documents extraits :
+### Phase 4: Truth Table Enrichment
+
+Enrich all four areas with detected reality:
+
+**[`/prompts/gen/concepts/`](../prompts/gen/concepts/)**:
+- Update system architecture with detected reality
+- Enrich glossary with terms found in code
+- Add newly identified business concepts
+- Correct contradictory definitions
+
+**[`/prompts/gen/techniques/`](../prompts/gen/techniques/)**:
+- Update tech stack with real technologies
+- Add detected patterns and practices from code
+- Document configured deployment techniques
+- Enrich observed development methods
+
+**[`/prompts/gen/use_cases/`](../prompts/gen/use_cases/)**:
+- Add use cases implemented in code
+- Update workflows with operational reality
+- Document real APIs and interfaces
+- Correct obsolete scenarios
+
+**[`/prompts/gen/personas/`](../prompts/gen/personas/)**:
+- Adapt personas to actually used technologies
+- Update responsibilities per real architecture
+- Add skills required by detected stack
+
+---
+
+### Phase 5: RACI Distribution (AI-KIDO Rule 15)
+
+#### 5.1 Load RACI Organizational Specs
+
+If RACI specs available, load from [`/prompts/hard_points/aikido-raci-[TEAM-NAME].md`](../prompts/hard_points/aikido-raci-[TEAM-NAME].md):
+```
+📋 LOADING RACI SPECIFICATIONS:
+
+Organization: [TEAM-NAME]
+Defined roles: [ROLES_LIST]
+Organizational workflow: [WORKFLOW_STEPS]
+Domain-role mapping: [DOMAIN_MAPPING]
+
+Existing structure detected:
+- /prompts/gen/concepts/: ✅/❌
+- /prompts/gen/techniques/: ✅/❌
+- /prompts/gen/use_cases/: ✅/❌
+
+Use this organization for enrichments? (y/n)
+```
+
+#### 5.2 Auto-classification
+
+Invoke `agent-aikido-raci-delegator`:
 
 ```markdown
 🤖 AGENT: agent-aikido-raci-delegator
 
-**Prompt pour l'agent** :
+Prompt:
 "FORMAT: JSON
 
-Classifie automatiquement tous les documents extraits de l'analyse projet :
-- Concepts architecturaux : [LISTE]
-- Techniques implémentées : [LISTE]
-- Use cases détectés : [LISTE]
-- Glossaire métier : [LISTE]
+Auto-classify all documents extracted from project analysis:
+- Architectural concepts: [LIST]
+- Implemented techniques: [LIST]
+- Detected use cases: [LIST]
+- Business glossary: [LIST]
 
-Contexte : [Mono/Multi-projet]
-RACI Matrix : [Chargée depuis /prompts/hard_points/ ou défaut AI-KIDO]
+Context: [Mono/Multi-project]
+RACI Matrix: [Loaded from /prompts/hard_points/ or AI-KIDO default]
 
-Pour chaque document, retourne :
-1. Type (concept/technique/use_case/glossaire)
-2. Domaine (architecture/backend/frontend/devops/business/security)
-3. Rôle responsable selon RACI
-4. Chemin cible recommandé
-5. Niveau de confiance"
-
-**Résultat attendu** : Mapping complet Document → Emplacement Memory Bank
+For each document, return:
+1. Type (concept/technique/use_case/glossary)
+2. Domain (architecture/backend/frontend/devops/business/security)
+3. Responsible role per RACI
+4. Recommended target path
+5. Confidence level"
 ```
 
-**Avantages de l'agent** :
-- ✅ Classification haute précision (near-perfect accuracy)
-- ✅ Respect automatique de la matrice RACI
-- ✅ Détection contexte mono/multi-projet
-- ✅ Alternatives suggérées avec confidence
-
-### Workflow de Classification RACI
+### RACI Classification Workflow
 
 ```mermaid
 graph LR
-    DOCS[Documents extraits] --> PREP[Préparation données<br/>Concepts/Techniques/Uses]
-    PREP --> AGENT[🤖 agent-aikido-raci-delegator<br/>Classification batch]
+    DOCS[Extracted documents] --> PREP[Data prep<br/>Concepts/Techniques/Uses]
+    PREP --> AGENT[🤖 agent-aikido-raci-delegator<br/>Batch classification]
 
-    RACI[RACI Matrix<br/>depuis hard_points] --> AGENT
-    CTX[Contexte<br/>Mono/Multi-projet] --> AGENT
+    RACI[RACI Matrix<br/>from hard_points] --> AGENT
+    CTX[Context<br/>Mono/Multi-project] --> AGENT
 
-    AGENT --> MAP[Mapping complet<br/>Document→Emplacement]
-    MAP --> TYPE[Type: concept/technique/<br/>use_case/glossaire]
-    MAP --> DOMAIN[Domaine: architecture/<br/>backend/frontend/etc.]
-    MAP --> ROLE[Rôle responsable<br/>selon RACI]
-    MAP --> PATH[Chemin cible<br/>Memory Bank]
-    MAP --> CONF[Niveau confidence<br/>+ alternatives]
+    AGENT --> MAP[Full mapping<br/>Document→Location]
+    MAP --> TYPE[Type: concept/technique/<br/>use_case/glossary]
+    MAP --> DOMAIN[Domain: architecture/<br/>backend/frontend/etc.]
+    MAP --> ROLE[Responsible role<br/>per RACI]
+    MAP --> PATH[Target path<br/>Memory Bank]
+    MAP --> CONF[Confidence level<br/>+ alternatives]
 
     TYPE --> APPLY
     DOMAIN --> APPLY
@@ -890,434 +661,354 @@ graph LR
     PATH --> APPLY
     CONF --> APPLY
 
-    APPLY[Application structure<br/>par rôles] --> CREATE[Création répertoires<br/>roles/[slug]/]
-    CREATE --> ASSIGN[Assignation docs<br/>aux répertoires]
+    APPLY[Apply role structure] --> CREATE[Create directories<br/>roles/[slug]/]
+    CREATE --> ASSIGN[Assign docs<br/>to directories]
 
     style AGENT fill:#f9f,stroke:#333,stroke-width:2px
     style ASSIGN fill:#9f9,stroke:#333,stroke-width:2px
 ```
 
-#### 5.3 Application de la Structure RACI aux Enrichissements
+#### 5.3 RACI Structure Application
 
-**Mapper les enrichissements** selon les spécifications RACI :
-- **Enrichissements détectés** → **Rôles responsables** (selon matrice RACI)
-- **Domaines de connaissance** → **Sous-répertoires appropriés**
-- **Workflow de validation** → **Processus d'approbation défini**
+Map enrichments per RACI specs:
+- Detected enrichments → Responsible roles (per RACI matrix)
+- Knowledge domains → Appropriate subdirectories
+- Validation workflow → Defined approval process
 
-#### 5.3 Création/Mise à Jour de la Structure par Rôles
-
-**Adapter les sous-répertoires** selon les spécifications RACI chargées :
+Role-based subdirectory structure:
 ```
 /prompts/gen/concepts/
-├── [role-1-slug]/           # Selon spécifications RACI
-├── [role-2-slug]/           # Selon spécifications RACI
-├── [role-3-slug]/           # Selon spécifications RACI
-└── [role-4-slug]/           # Selon spécifications RACI
+├── [role-1-slug]/
+├── [role-2-slug]/
+└── [role-N-slug]/
 
 /prompts/gen/techniques/
-├── [role-1-slug]/           # Selon spécifications RACI
-├── [role-2-slug]/           # Selon spécifications RACI
-├── [role-3-slug]/           # Selon spécifications RACI
-└── [role-4-slug]/           # Selon spécifications RACI
+└── [same structure]
 
 /prompts/gen/use_cases/
-├── [role-1-slug]/           # Selon spécifications RACI
-├── [role-2-slug]/           # Selon spécifications RACI
-├── [role-3-slug]/           # Selon spécifications RACI
-└── [role-4-slug]/           # Selon spécifications RACI
+└── [same structure]
 ```
 
-#### 5.4 Assignation des Enrichissements selon RACI
+#### 5.4 Enrichment Assignment
 
-**Répartir automatiquement** les enrichissements selon la matrice RACI :
 ```
-🎯 ASSIGNATION DES ENRICHISSEMENTS :
+🎯 ENRICHMENT ASSIGNMENT:
 
-Architecture Système détectée → [Rôle Responsable Architecture]
-Stack Technique réelle → [Rôle Responsable Développement]
-Logique Métier implémentée → [Rôle Responsable Métier]
-Configuration Opérationnelle → [Rôle Responsable Opérations]
+Detected System Architecture → [Architecture Responsible Role]
+Real Tech Stack → [Development Responsible Role]
+Implemented Business Logic → [Business Responsible Role]
+Operational Configuration → [Operations Responsible Role]
 
-Contradictions détectées → Workflow de validation RACI appliqué
-Enrichissements transversaux → Validation multi-rôles requise
+Detected contradictions → RACI validation workflow applied
+Cross-cutting enrichments → Multi-role validation required
 
-Assignation automatique validée ? (o/n)
+Confirm automatic assignment? (y/n)
 ```
 
-#### 5.5 Mise à Jour de la Matrice RACI avec les Enrichissements
+#### 5.5 Update RACI Matrix
 
-**Enrichir** [`/prompts/hard_points/aikido-raci-[TEAM-NAME].md`](../prompts/hard_points/aikido-raci-[TEAM-NAME].md) :
+Enrich [`/prompts/hard_points/aikido-raci-[TEAM-NAME].md`](../prompts/hard_points/aikido-raci-[TEAM-NAME].md):
 ```markdown
-## Enrichissements par Analyse Projet
+## Project Analysis Enrichments
 
-### Nouvelles Informations Intégrées
-- **Architecture réelle** : [Détails] → Assigné à [Rôle]
-- **Stack technique** : [Détails] → Assigné à [Rôle]
-- **Processus métier** : [Détails] → Assigné à [Rôle]
-- **Configuration ops** : [Détails] → Assigné à [Rôle]
+### Integrated New Information
+- **Real architecture**: [Details] → Assigned to [Role]
+- **Tech stack**: [Details] → Assigned to [Role]
+- **Business processes**: [Details] → Assigned to [Role]
+- **Ops configuration**: [Details] → Assigned to [Role]
 
-### Contradictions Résolues
-- **Code vs Docs** : [Résolution] → Validé par [Rôle Approbateur]
-- **Implémentation vs Intention** : [Résolution] → Validé par [Rôle Approbateur]
+### Resolved Contradictions
+- **Code vs Docs**: [Resolution] → Approved by [Approver Role]
 
-### Mise à Jour Workflow
-- **Dernière analyse** : [DATE]
-- **Enrichissements intégrés** : [NOMBRE]
-- **Rôles impliqués** : [LISTE_ROLES]
+### Workflow Update
+- **Last analysis**: [DATE]
+- **Integrated enrichments**: [COUNT]
+- **Roles involved**: [ROLES_LIST]
+```
 
 ---
-*Enrichi automatiquement par analyse-project le [DATE]*
+
+### Phase 6: AI-KIDO Balancing and Taxonomy
+
+#### 6.1 Balancing Rules Check
+
+```
+🌳 TREE BALANCING VERIFICATION:
+
+Current structure analysis:
+- Maximum depth: [LEVEL] (limit: 4 levels)
+- Branching factor: [MIN-MAX] children/parent (optimal: 3-7)
+- File sizes: [STATS] lines (limit: 500 lines)
+
+Required balancing actions:
+[List of rebalancing actions if needed]
 ```
 
-### Phase 6 : Équilibrage et Taxonomie AI-KIDO
+#### 6.2 Automatic Restructuring
 
-#### 5.1 Vérification des Règles d'Équilibrage
+If imbalance detected:
+1. **Auto-split**: Divide files > 500 lines
+2. **Smart grouping**: Merge related concepts
+3. **Taxonomic reorganization**: Adjust hierarchy
+4. **Link update**: Preserve bidirectional references
 
-**Appliquer les règles AI-KIDO** :
+#### 6.3 Taxonomy Validation
+
 ```
-🌳 VÉRIFICATION DE L'ÉQUILIBRAGE DE L'ARBRE :
+📋 TAXONOMY VALIDATION:
 
-Analyse de la structure actuelle :
-- Profondeur maximale : [NIVEAU] (limite : 4 niveaux)
-- Facteur de branchement : [MIN-MAX] enfants/parent (optimal : 3-7)
-- Taille des fichiers : [STATS] lignes (limite : 500 lignes)
+concepts/ structure:
+- [COUNT] core concepts — Coherence: ✅/❌
 
-Actions d'équilibrage nécessaires :
-[Liste des actions de rééquilibrage si nécessaire]
-```
+techniques/ structure:
+- [COUNT] practical techniques — Coherence: ✅/❌
 
-#### 5.2 Restructuration Automatique
+use_cases/ structure:
+- [COUNT] use cases — Coherence: ✅/❌
 
-**Si déséquilibre détecté** :
-1. **Split automatique** : Diviser les fichiers > 500 lignes
-2. **Regroupement intelligent** : Fusionner les concepts connexes
-3. **Réorganisation taxonomique** : Ajuster la hiérarchie
-4. **Mise à jour des liens** : Préserver les références bidirectionnelles
-
-#### 5.3 Validation de la Taxonomie
-
-**Vérifier la cohérence taxonomique** :
-```
-📋 VALIDATION DE LA TAXONOMIE :
-
-Structure concepts/ :
-- [NOMBRE] concepts fondamentaux
-- [NOMBRE] sous-concepts
-- Cohérence : ✅/❌
-
-Structure techniques/ :
-- [NOMBRE] techniques pratiques
-- [NOMBRE] sous-techniques
-- Cohérence : ✅/❌
-
-Structure use_cases/ :
-- [NOMBRE] cas d'usage
-- [NOMBRE] sous-cas
-- Cohérence : ✅/❌
-
-Structure personas/ :
-- [NOMBRE] personas
-- [NOMBRE] spécialisations
-- Cohérence : ✅/❌
+personas/ structure:
+- [COUNT] personas — Coherence: ✅/❌
 ```
 
-### Phase 7 : Mise à Jour de l'Indexation Générale AI-KIDO
+---
 
-#### 7.1 Mise à Jour des Index Sectoriels
+### Phase 7: AI-KIDO Index Update
 
-Mettre à jour automatiquement avec les modifications :
-- [`/prompts/gen/concepts/index.md`](../prompts/gen/concepts/index.md) : Nouveaux concepts et mises à jour
-- [`/prompts/gen/techniques/index.md`](../prompts/gen/techniques/index.md) : Nouvelles techniques et corrections
-- [`/prompts/gen/use_cases/index.md`](../prompts/gen/use_cases/index.md) : Nouveaux use cases et ajustements
-- [`/prompts/gen/personas/index.md`](../prompts/gen/personas/index.md) : Personas mis à jour
+Update automatically with modifications:
+- [`/prompts/gen/concepts/index.md`](../prompts/gen/concepts/index.md)
+- [`/prompts/gen/techniques/index.md`](../prompts/gen/techniques/index.md)
+- [`/prompts/gen/use_cases/index.md`](../prompts/gen/use_cases/index.md)
+- [`/prompts/gen/personas/index.md`](../prompts/gen/personas/index.md)
+- [`/prompts/index.md`](../prompts/index.md): Updated project info, confirmed real stack, updated architecture, enriched memory bank stats
+- [`AGENTS.md`](../AGENTS.md): Updated project context, agents adapted to real technologies
 
-#### 7.2 Mise à Jour de l'Index Principal
+---
 
-Mettre à jour [`/prompts/index.md`](../prompts/index.md) avec :
-- Nouvelles informations projet détectées
-- Stack technique réelle confirmée
-- Architecture mise à jour
-- Statistiques de la memory bank enrichie
+### Phase 8: Auto Population Proposal 🤖
 
-#### 7.3 Mise à Jour du Fichier AGENTS.md
+#### 8.1 Gap Inventory
 
-Mettre à jour [`AGENTS.md`](../AGENTS.md) avec :
-- Contexte projet actualisé selon la réalité détectée
-- Agents adaptés aux technologies réelles
-- Matrice d'interaction mise à jour
-- Guidelines ajustées aux pratiques observées
+```
+📋 GAPS IDENTIFIED AFTER PROJECT ANALYSIS
 
-#### 7.4 Indexation Vectorielle et Liens Sémantiques
+Undocumented code elements: [COUNT]
+- Architecture [X] detected but no corresponding concept
+- Technique [Y] implemented but no documentation
+- Use case [Z] in code but not in /use_cases/
 
-Si supporté :
-- Réindexer tous les fichiers modifiés
-- Mettre à jour les embeddings des concepts enrichis
-- Recalculer les liens sémantiques
-- Optimiser la navigation entre éléments
+Invalid documents: [COUNT]
+- /prompts/gen/concepts/[topic].md - Contradicts real implementation
+- /prompts/gen/techniques/[topic].md - Obsolete tech stack
 
-## Phase 8 : Proposition de Peuplement Automatique 🤖
+New knowledge to capitalize: [COUNT]
+- Pattern [A] detected in code (undocumented)
+- Process [B] configured (undescribed)
 
-### 8.1 Inventaire des Gaps Identifiés
-
-**Compiler la liste** des documents qui manquent toujours après l'analyse :
-
-```markdown
-📋 GAPS IDENTIFIÉS APRÈS ANALYSE PROJET
-
-Éléments du code non documentés : [NOMBRE]
-- Architecture [X] détectée mais pas de concept correspondant
-- Technique [Y] implémentée mais pas de documentation
-- Use case [Z] présent dans le code mais pas dans /use_cases/
-...
-
-Documents marqués invalides : [NOMBRE]
-- /prompts/gen/concepts/[topic].md - Contredit implémentation réelle
-- /prompts/gen/techniques/[topic].md - Stack technique obsolète
-...
-
-Nouvelles connaissances à capitaliser : [NOMBRE]
-- Pattern [A] détecté dans le code (non documenté)
-- Processus [B] configuré (non décrit)
-...
-
-Total gaps à combler : [NOMBRE]
+Total gaps to fill: [COUNT]
 ```
 
-### 8.2 Proposition de Peuplement
+#### 8.2 Population Proposal
 
-**SI des gaps existent (>0), PROPOSER** :
+**If gaps > 0**:
 
-```markdown
-💡 PROPOSITION DE PEUPLEMENT AUTOMATIQUE
+```
+💡 AUTO POPULATION PROPOSAL
 
-L'analyse projet a identifié [NOMBRE] gap(s) à combler dans la Memory Bank.
+Project analysis identified [COUNT] gap(s) in the Memory Bank.
 
-Voulez-vous invoquer agent-aikido-bank-populate pour créer automatiquement ces documents ?
+Invoke agent-aikido-bank-populate to auto-create these documents?
 
-L'agent va :
-1. Utiliser les informations collectées pendant l'analyse (code/docs/config)
-2. Classifier chaque gap via agent-aikido-raci-delegator
-3. Appliquer la hiérarchie des sources (truth-evaluator déjà exécuté)
-4. Déléguer rédaction aux expert personas appropriés
-5. Créer documents conformes AI-KIDO avec liens bidirectionnels
-6. Intégrer dans Memory Bank avec mise à jour index
+The agent will:
+1. Use information collected during analysis (code/docs/config)
+2. Classify each gap via agent-aikido-raci-delegator
+3. Apply source hierarchy (truth-evaluator already run in Phase 3)
+4. Delegate writing to appropriate expert personas
+5. Create AI-KIDO-compliant documents with bidirectional links
+6. Integrate into Memory Bank with index update
 
-Lancer le peuplement automatique ? (o/n) :
+Launch auto population? (y/n):
 ```
 
-### Orchestration Peuplement Automatique
+### Auto Population Orchestration
 
 ```mermaid
 sequenceDiagram
-    participant User as Utilisateur
+    participant User
     participant BP as 🤖 bank-populate
     participant RD as 🤖 raci-delegator
-    participant TE as Hiérarchie sources<br/>(truth-evaluator Phase 3)
+    participant TE as Source hierarchy<br/>(truth-evaluator Phase 3)
     participant EP as Expert personas
     participant MB as Memory Bank
 
-    User->>BP: Accepte peuplement<br/>(gaps>0)
-    BP->>RD: Classifier gaps
-    RD->>RD: Analyse domaines<br/>+ RACI matrix
-    RD-->>BP: Mapping Document→Emplacement
+    User->>BP: Accept population (gaps>0)
+    BP->>RD: Classify gaps
+    RD->>RD: Analyze domains + RACI matrix
+    RD-->>BP: Document→Location mapping
 
-    BP->>TE: Récupérer hiérarchie<br/>sources validée
+    BP->>TE: Retrieve validated source hierarchy
     TE-->>BP: Code>Docs>Config
 
-    loop Pour chaque gap
-        BP->>EP: Déléguer rédaction<br/>à persona expert
-        EP->>EP: Génération contenu<br/>conforme AI-KIDO
-        EP-->>BP: Document généré
-        BP->>BP: Créer liens<br/>bidirectionnels
-        BP->>MB: Intégrer document
+    loop For each gap
+        BP->>EP: Delegate writing to expert persona
+        EP->>EP: Generate AI-KIDO-compliant content
+        EP-->>BP: Document generated
+        BP->>BP: Create bidirectional links
+        BP->>MB: Integrate document
     end
 
-    BP->>MB: Mise à jour index
-    BP-->>User: [X] documents créés<br/>et intégrés
+    BP->>MB: Update indexes
+    BP-->>User: [X] documents created and integrated
 ```
 
-**SI utilisateur accepte** : Invoquer `agent-aikido-bank-populate` avec :
-- Liste des gaps
-- Informations collectées (code, docs, config)
-- Hiérarchie des sources (depuis truth-evaluator Phase 3.2.1)
+**If user accepts**: Invoke `agent-aikido-bank-populate` with gaps list, collected info, and source hierarchy from Phase 3.
 
-**SI utilisateur refuse** : Afficher "Gaps listés pour action manuelle - Info disponible dans contexte"
+**If user declines**: Display "Gaps listed for manual action — info available in context"
 
-## Phase 9 : Validation Conformité AI-KIDO 🤖
+---
 
-### 9.1 Validation Automatique des Fichiers Modifiés
+### Phase 9: AI-KIDO Compliance Validation 🤖
 
-**UTILISER L'AGENT** `agent-aikido-validator` pour valider tous les fichiers modifiés/créés :
+Invoke `agent-aikido-validator`:
 
 ```markdown
 🤖 AGENT: agent-aikido-validator
 
-**Prompt pour l'agent** :
+Prompt:
 "FORMAT: JSON
 
-Valide tous les fichiers modifiés/créés par l'analyse projet :
+Validate all files modified/created by project analysis:
 
-Fichiers à valider :
-- Concepts modifiés : [LISTE depuis Phase 4]
-- Techniques modifiées : [LISTE depuis Phase 4]
-- Use cases modifiés : [LISTE depuis Phase 4]
-- Personas modifiés : [LISTE depuis Phase 4]
-- Nouveaux documents (si Phase 8 exécutée) : [LISTE gaps comblés]
+Files to validate:
+- Modified concepts: [LIST from Phase 4]
+- Modified techniques: [LIST from Phase 4]
+- Modified use cases: [LIST from Phase 4]
+- Modified personas: [LIST from Phase 4]
+- New documents (if Phase 8 run): [LIST of filled gaps]
 
-Règles à vérifier :
-- Règle 4 : Taille ≤500 lignes
-- Règle 6 : Liens bidirectionnels complets
-- Règle 7 : Équilibrage respecté (3-7 enfants, ≤4 niveaux)
-- Frontmatter présent et valide
-- Emplacement correct dans Memory Bank
+Rules to check:
+- Rule 4: Size ≤500 lines
+- Rule 6: Complete bidirectional links
+- Rule 7: Balancing respected (3-7 children, ≤4 levels)
+- Frontmatter present and valid
+- Correct location in Memory Bank
 
-Pour chaque fichier non conforme :
-- Générer quick fix actionnable
-- Prioriser les corrections (P0/P1/P2)
+For each non-compliant file:
+- Generate actionable quick fix
+- Prioritize corrections (P0/P1/P2)
 
-Mode : Validation batch rapide (<2k tokens/fichier)"
-
-**Résultat attendu** : Rapport de conformité + quick fixes automatiques
+Mode: Fast batch validation (<2k tokens/file)"
 ```
 
-**Avantages de la validation agent** :
-- ✅ **80% plus rapide** qu'une validation manuelle
-- ✅ **0 faux négatif** (patterns optimisés)
-- ✅ **Quick fixes automatiques** pour corrections immédiates
-- ✅ **Rapport structuré** prêt à l'emploi
-
-### 9.2 Application des Quick Fixes
-
-**Pour chaque fichier non conforme** :
+For each non-compliant file:
 ```
-⚠️ FICHIER NON CONFORME DÉTECTÉ :
+⚠️ NON-COMPLIANT FILE:
 
-Fichier : /prompts/gen/concepts/[nom].md
-Problème : Dépasse 500 lignes (623 lignes détectées)
-Quick Fix : Diviser en 2 fichiers
-  - /prompts/gen/concepts/[nom].md (300 lignes)
-  - /prompts/gen/concepts/[nom]-detail.md (323 lignes)
-  - Ajouter lien bidirectionnel entre les deux
+File: /prompts/gen/concepts/[name].md
+Issue: Exceeds 500 lines (623 detected)
+Quick Fix: Split into 2 files
+  - /prompts/gen/concepts/[name].md (300 lines)
+  - /prompts/gen/concepts/[name]-detail.md (323 lines)
+  - Add bidirectional link between both
 
-Appliquer le quick fix ? (o/n)
+Apply quick fix? (y/n)
 ```
 
-### 9.3 Rapport Final de Conformité
-
-**Afficher le rapport de validation** :
+**Final validation report**:
 ```
-📊 RAPPORT DE VALIDATION AI-KIDO
+📊 AI-KIDO VALIDATION REPORT
 
-Fichiers validés : [NOMBRE]
-├─ Conformes (100%) : [NOMBRE] ✅
-├─ Conformes avec avertissements : [NOMBRE] ⚠️
-└─ Non conformes (corrections appliquées) : [NOMBRE] ✅
+Files validated: [COUNT]
+├─ Compliant (100%): [COUNT] ✅
+├─ Compliant with warnings: [COUNT] ⚠️
+└─ Non-compliant (corrections applied): [COUNT] ✅
 
-Règles vérifiées :
-✅ Règle 4 : [X]/[Y] fichiers ≤500 lignes
-✅ Règle 6 : [X]/[Y] fichiers avec liens bidirectionnels
-✅ Règle 7 : Équilibrage respecté (facteur [MIN-MAX])
-✅ Frontmatter : [X]/[Y] fichiers valides
-✅ Emplacement : [X]/[Y] fichiers correctement placés
+Rules verified:
+✅ Rule 4: [X]/[Y] files ≤500 lines
+✅ Rule 6: [X]/[Y] files with bidirectional links
+✅ Rule 7: Balancing respected (factor [MIN-MAX])
+✅ Frontmatter: [X]/[Y] valid files
+✅ Location: [X]/[Y] correctly placed files
 
-Score de conformité global : [POURCENTAGE]% ✅
-
-Quick fixes appliqués : [NOMBRE]
-Temps de validation : [SECONDES]s
+Global compliance score: [PERCENTAGE]% ✅
+Quick fixes applied: [COUNT]
 ```
-
-### 9.4 Gestion des Erreurs de Validation
-
-- **Fichiers inaccessibles** : Signaler et continuer avec les autres
-- **Erreurs de parsing** : Signaler structure invalide et proposer réparation
-- **Règles non applicables** : Documenter les exceptions (ex: hard_points non soumis à limite 500 lignes)
-- **Quick fixes impossibles** : Proposer correction manuelle guidée
-
-## Messages de Confirmation
-
-### Succès - Analyse Complète
-```
-✅ Analyse projet terminée avec succès !
-
-Sources analysées :
-- Code : [NOMBRE] fichiers dans [NOMBRE] répertoires
-- Documentation : [NOMBRE] fichiers
-- Configuration : [NOMBRE] fichiers
-
-Modifications apportées :
-- [X] concepts mis à jour
-- [Y] techniques enrichies
-- [Z] use cases ajoutés/modifiés
-- [W] personas adaptés
-
-Contradictions résolues : [NOMBRE]
-Gaps détectés : [NOMBRE]
-Gaps peuplés automatiquement : [NOMBRE si accepté]
-
-Équilibrage appliqué : ✅
-Index mis à jour : ✅
-Validation conformité : ✅ ([POURCENTAGE]% conforme)
-
-🎯 Tables de vérités AI-KIDO synchronisées avec la réalité projet !
-```
-
-### Rapport de Contradictions
-```
-📊 RAPPORT DES CONTRADICTIONS RÉSOLUES :
-
-Architecture :
-- Code vs Docs : [NOMBRE] écarts résolus
-- Implémentation vs Intention : [DÉTAILS]
-
-Stack Technique :
-- Déclarée vs Utilisée : [NOMBRE] différences corrigées
-- Versions vs Configuration : [DÉTAILS]
-
-Processus :
-- Documentés vs Configurés : [NOMBRE] ajustements
-- Théorie vs Pratique : [DÉTAILS]
-```
-
-## Gestion des Erreurs
-
-- **Sources inaccessibles** : Lister les répertoires non accessibles et continuer avec les sources disponibles
-- **Code non analysable** : Signaler les fichiers problématiques et continuer
-- **Documentation corrompue** : Ignorer les fichiers illisibles et signaler
-- **Configuration invalide** : Signaler les erreurs de parsing et continuer
-- **Contradictions non résolues** : Créer section "Conflits en attente" pour résolution ultérieure
-- **Équilibrage impossible** : Signaler les problèmes structurels et proposer solutions manuelles
-- **Index corrompus** : Recréer les index depuis les fichiers sources
-- **Erreur génération Mermaid** : Créer représentations textuelles de fallback
-
-## Agents AI-KIDO Utilisés (6 agents)
-
-| Agent | Phase | Rôle | Gain |
-|-------|-------|------|------|
-| **explore-code** 💻 | 3.1 | Scan automatique code source avec métadonnées structurées | ✅ Architecture réelle + line numbers vs analyse manuelle lourde |
-| **explore-all** 🔍💻 | 3.2 (optionnel) | Recherche parallèle Memory Bank + Code pour détection écarts | ✅ Vue complète docs + code (3-5s) vs recherches séquentielles |
-| **truth-evaluator** ⚖️ | 3.2 | Résolution contradictions avec hiérarchie sources | ✅ Décisions objectives (INVESTIGATION scenario) vs choix ad-hoc |
-| **raci-delegator** 🎯 | 5.2 | Classification automatique documents extraits | ✅ Placement précis par rôles vs organisation manuelle |
-| **bank-populate** 🤖 | 8 | Peuplement automatique gaps détectés | ✅ Capitalisation auto depuis code/docs/config |
-| **validator** ✅ | 9 | Validation conformité AI-KIDO finale | ✅ 80% plus rapide + quick fixes automatiques |
-
-**Optimisations explore-code + explore-all** :
-- **Extraction structurée** : Classes, interfaces, dependencies avec line numbers (~50 lignes/fichier)
-- **Technology-aware** : Plans spécialisés (PHP/JS/TS/generic) avec PSR-4 et ES Modules
-- **Recherche parallèle** : Memory Bank + Code simultanément (agent-aikido-explore-all) en 3-5s vs séquentiel
-- **Métadonnées prêtes** : Format compact optimisé pour enrichissement Memory Bank (<2500 tokens)
-- **Graphes dépendances** : Visualisation Mermaid extends/implements/imports automatique
-
-## Règles AI-KIDO Respectées
-
-- ✅ Priorisation de la vérité du code sur la documentation (truth-evaluator scenario INVESTIGATION)
-- ✅ Gestion des contradictions par validation utilisateur + agent (5 choix + auto si complexe)
-- ✅ Enrichissement des tables de vérités existantes (depuis métadonnées explore-code)
-- ✅ Respect des contraintes d'équilibrage d'arbre (3-7 enfants, ≤4 niveaux, ≤500 lignes)
-- ✅ Préservation des liens bidirectionnels (validator + bank-populate)
-- ✅ Taxonomie cohérente et hiérarchisée (raci-delegator)
-- ✅ Mise à jour automatique de l'indexation (6 fichiers index)
-- ✅ Format Markdown avec métadonnées (line numbers depuis explore-code)
-- ✅ Schémas Mermaid pour densité sémantique (graphes dépendances explore-code)
-- ✅ Auto-alimentation de la memory bank (bank-populate FIN processus)
 
 ---
+
+## Output
+
+### Success — Complete Analysis
+```
+✅ Project analysis completed successfully!
+
+Sources analyzed:
+- Code: [COUNT] files in [COUNT] directories
+- Documentation: [COUNT] files
+- Configuration: [COUNT] files
+
+Changes made:
+- [X] concepts updated
+- [Y] techniques enriched
+- [Z] use cases added/modified
+- [W] personas adapted
+
+Contradictions resolved: [COUNT]
+Gaps detected: [COUNT]
+Gaps auto-populated: [COUNT if accepted]
+
+Balancing applied: ✅
+Indexes updated: ✅
+Compliance validation: ✅ ([PERCENTAGE]% compliant)
+
+🎯 AI-KIDO Truth Tables synced with project reality!
+```
+
+### Contradiction Report
+```
+📊 RESOLVED CONTRADICTIONS REPORT:
+
+Architecture:
+- Code vs Docs: [COUNT] gaps resolved
+- Implementation vs Intent: [DETAILS]
+
+Tech Stack:
+- Declared vs Used: [COUNT] differences corrected
+- Versions vs Configuration: [DETAILS]
+
+Processes:
+- Documented vs Configured: [COUNT] adjustments
+- Theory vs Practice: [DETAILS]
+```
+
+---
+
+## Notes
+
+**Error handling**:
+- Inaccessible sources: List inaccessible directories and continue with available sources
+- Non-analyzable code: Report problematic files and continue
+- Corrupted documentation: Skip unreadable files and report
+- Invalid configuration: Report parsing errors and continue
+- Unresolved contradictions: Create "Pending conflicts" section for later resolution
+- Impossible balancing: Report structural issues and propose manual solutions
+- Corrupted indexes: Recreate from source files
+
+**Agents used (6 total)**:
+
+| Agent | Phase | Role |
+|-------|-------|------|
+| **explore-code** | 3.1 | Auto code scan with structured metadata |
+| **explore-all** | 3.2 (optional) | Parallel Memory Bank + Code search for gap detection |
+| **truth-evaluator** | 3.2 | Contradiction resolution with source hierarchy |
+| **raci-delegator** | 5.2 | Auto-classification of extracted documents |
+| **bank-populate** | 8 | Auto-population of detected gaps |
+| **validator** | 9 | Final AI-KIDO compliance validation |
+
+**AI-KIDO Rules respected**:
+- Code truth prioritized over documentation (truth-evaluator INVESTIGATION scenario)
+- Contradictions handled via user validation + agent (5 choices + auto if complex)
+- Existing Truth Tables enriched (from explore-code metadata)
+- Tree balancing constraints respected (3-7 children, ≤4 levels, ≤500 lines)
+- Bidirectional links preserved (validator + bank-populate)
+- Consistent taxonomic hierarchy (raci-delegator)
+- Automatic index updates (6 index files)

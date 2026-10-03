@@ -1,36 +1,36 @@
 ### Skills (Agent Skills)
 
-Les skills implémentés sont dans `skills_list.md` et suivent la norme CLAUDE.md pour les Agent Skills.
+Implemented skills are listed in `skills_list.md` and follow the CLAUDE.md standard for Agent Skills.
 
-#### Qu'est-ce qu'un Skill ?
+#### What is a Skill?
 
-Un **Skill** est un module de capacité spécialisée qui étend les fonctionnalités de Claude de manière autonome. Il s'agit d'une ressource packagée incluant des instructions, métadonnées et ressources optionnelles.
+A **Skill** is a specialized capability module that extends Claude's functionality autonomously. It is a packaged resource including instructions, metadata, and optional resources.
 
-**Source** : [Skills Overview](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview.md)
+**Source**: [Skills Overview](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview.md)
 
-#### Caractéristiques principales
+#### Key Characteristics
 
-* **Invocation autonome** : Claude décide automatiquement quand utiliser un Skill en fonction du contexte de la conversation
-* **Architecture modulaire** : Packagé comme un répertoire avec fichiers structurés
-* **Progressive disclosure** : Chargement progressif de l'information en 3 niveaux :
-  * **Niveau 1** : Métadonnées (~100 tokens, toujours chargées)
-  * **Niveau 2** : Instructions (<5k tokens, chargées à l'activation)
-  * **Niveau 3** : Ressources (illimité, chargées à la demande)
+* **Autonomous invocation**: Claude automatically decides when to use a Skill based on the conversation context
+* **Modular architecture**: Packaged as a directory with structured files
+* **Progressive disclosure**: Progressive information loading in 3 levels:
+  * **Level 1**: Metadata (~100 tokens, always loaded)
+  * **Level 2**: Instructions (<5k tokens, loaded on activation)
+  * **Level 3**: Resources (unlimited, loaded on demand)
 
-**Source** : [Skills Overview - Architecture](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview.md)
+**Source**: [Skills Overview - Architecture](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview.md)
 
-#### Structure d'un Skill
+#### Skill Structure
 
 skill-name/
-├── SKILL.md           # Fichier principal (obligatoire)
-├── references/       # Documentation de référence (optionnel)
-├── examples/        # Exemples d'usage (optionnel)
-├── personas/        # Personas (optionnel)
-├── scripts/           # Scripts utilitaires (optionnel)
+├── SKILL.md           # Main file (required)
+├── references/       # Reference documentation (optional)
+├── examples/        # Usage examples (optional)
+├── personas/        # Personas (optional)
+├── scripts/           # Utility scripts (optional)
 │   └── helper.py
-|── templates/         # Modèles de fichiers (optionnel)
+|── templates/         # File templates (optional)
 |   └── template.txt
-└── documentation/         # Documentation détaillée (optionnel)
+└── documentation/         # Detailed documentation (optional)
     └── documentation.md
 
-**Source** : [Skills Format](https://code.claude.com/docs/en/skills.md)
+**Source**: [Skills Format](https://code.claude.com/docs/en/skills.md)

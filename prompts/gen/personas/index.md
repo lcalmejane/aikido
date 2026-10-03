@@ -1,3 +1,3 @@
-# Personas AI‑KIDO
+# AI-KIDO Personas
 
-Ce répertoire décrit les différents personas (Architecte, Développeur Backend, Développeur Frontend, Expert Sécurité, QA Engineer, DevOps Engineer)  utilisables dans les prompts. Ajoutez ici les fichiers Markdown détaillant chaque rôle et leurs responsabilités.
+This directory describes the various personas (Architect, Backend Developer, Frontend Developer, Security Expert, QA Engineer, DevOps Engineer) usable in prompts. Add Markdown files here detailing each role and their responsibilities.

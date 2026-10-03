@@ -4,38 +4,38 @@
 
 ## 📋 Overview
 
-Plan de recherche spécialisé pour projets PHP générique (toutes versions). Adapté aux conventions PSR-4, Composer, et frameworks PHP courants (Laravel, Symfony, WordPress, Drupal).
+Specialized search plan for generic PHP projects (all versions). Adapted to PSR-4 conventions, Composer, and common PHP frameworks (Laravel, Symfony, WordPress, Drupal).
 
-**Cas d'usage** : Projets PHP avec ou sans framework, PSR-4 autoloading, Composer dependencies.
+**Use cases**: PHP projects with or without a framework, PSR-4 autoloading, Composer dependencies.
 
 ## 🔍 File Patterns
 
-### Extensions PHP
+### PHP Extensions
 ```bash
-*.php      # Fichiers PHP principaux
-*.phtml    # Templates PHP
-*.inc      # Includes legacy
+*.php      # Main PHP files
+*.phtml    # PHP templates
+*.inc      # Legacy includes
 *.module   # Modules (Drupal)
-*.install  # Scripts installation
-*.test     # Tests unitaires
+*.install  # Installation scripts
+*.test     # Unit tests
 ```
 
-### Configuration & Dépendances
+### Configuration & Dependencies
 ```bash
-composer.json    # Dépendances Composer
+composer.json    # Composer dependencies
 composer.lock    # Lock file
-*.env            # Variables environnement
-config/*.php     # Fichiers configuration
+*.env            # Environment variables
+config/*.php     # Configuration files
 ```
 
-### Exclusions PHP-spécifiques
+### PHP-specific Exclusions
 ```bash
-vendor/          # Dépendances Composer
+vendor/          # Composer dependencies
 storage/         # Laravel storage
-cache/           # Cache Symfony/Laravel
-var/cache/       # Cache Symfony
-bootstrap/cache/ # Cache Laravel bootstrap
-*.cache.php      # Fichiers cache générés
+cache/           # Symfony/Laravel cache
+var/cache/       # Symfony cache
+bootstrap/cache/ # Laravel bootstrap cache
+*.cache.php      # Generated cache files
 ```
 
 ## 🎯 Search Method
@@ -44,27 +44,27 @@ bootstrap/cache/ # Cache Laravel bootstrap
 
 ### Phase 1: PSR-4 Discovery
 ```bash
-# Détecter structure PSR-4 via composer.json
+# Detect PSR-4 structure via composer.json
 function detect_psr4_namespaces() {
     if [[ -f "composer.json" ]]; then
         jq -r '.autoload."psr-4" | to_entries[] | "\(.key):\(.value)"' composer.json 2>/dev/null
     fi
 }
 
-# Exemple output: "App\\:app/", "Tests\\:tests/"
+# Example output: "App\\:app/", "Tests\\:tests/"
 ```
 
 ### Phase 2: Class/Method Search
 ```bash
-# Recherche spécifique PHP avec contexte
+# PHP-specific search with context
 grep -rn --include="*.php" \
   --exclude-dir={vendor,storage,cache,var} \
   -E "(class|interface|trait|function|namespace)\s+$KEYWORD" .
 ```
 
-## 📦 Patterns de Recherche
+## 📦 Search Patterns
 
-### 1. Imports/Dépendances PHP
+### 1. PHP Imports/Dependencies
 ```regex
 # Use statements (PSR-4)
 ^use\s+([\w\\]+)(\s+as\s+\w+)?;
@@ -76,7 +76,7 @@ grep -rn --include="*.php" \
 ^require\s+__DIR__\s*\.\s*['"]/vendor/autoload\.php['"];
 ```
 
-### 2. Déclarations Classes/Interfaces/Traits
+### 2. Class/Interface/Trait Declarations
 ```regex
 # Namespace declaration
 ^namespace\s+([\w\\]+);
@@ -91,9 +91,9 @@ grep -rn --include="*.php" \
 ^trait\s+(\w+)
 ```
 
-### 3. Méthodes/Fonctions
+### 3. Methods/Functions
 ```regex
-# Method declaration (avec visibilité)
+# Method declaration (with visibility)
 ^\s*(public|protected|private|static|final|abstract)*\s*function\s+(\w+)\s*\(
 
 # Function declaration (global)
@@ -115,9 +115,9 @@ grep -rn --include="*.php" \
 ^define\(['"](.*?)['"],
 ```
 
-### 5. Mots-clés PHP spécifiques
+### 5. PHP-specific keywords
 ```text
-# Héritage/Implementation
+# Inheritance/Implementation
 extends
 implements
 
@@ -148,7 +148,7 @@ trait
 
 ### 1. PSR-4 Resolution
 ```bash
-# Résoudre namespace vers chemin fichier
+# Resolve namespace to file path
 function resolve_psr4_path() {
     local namespace="$1"
     local composer_file="composer.json"
@@ -157,15 +157,15 @@ function resolve_psr4_path() {
         return 1
     fi
 
-    # Extraire mapping PSR-4
+    # Extract PSR-4 mapping
     local psr4_map=$(jq -r '.autoload."psr-4"' "$composer_file" 2>/dev/null)
 
-    # Trouver le mapping correspondant
+    # Find the matching mapping
     local base_ns=$(echo "$namespace" | cut -d'\\' -f1)
     local base_dir=$(echo "$psr4_map" | jq -r --arg ns "$base_ns\\\\" '.[$ns] // empty')
 
     if [[ -n "$base_dir" ]]; then
-        # Convertir namespace en chemin: App\Models\User → app/Models/User.php
+        # Convert namespace to path: App\Models\User → app/Models/User.php
         local rel_path="${namespace//$base_ns/}"
         local file_path="${rel_path//\\/\/}.php"
         echo "${base_dir}${file_path}"
@@ -173,9 +173,9 @@ function resolve_psr4_path() {
 }
 ```
 
-### 2. Suivre les Use Statements
+### 2. Following Use Statements
 ```bash
-# Extraire tous les use statements d'un fichier
+# Extract all use statements from a file
 function extract_php_uses() {
     local file="$1"
     grep -E "^use\s+" "$file" | \
@@ -187,7 +187,7 @@ function extract_php_uses() {
 
 ### 3. Framework Detection
 ```bash
-# Détecter framework utilisé
+# Detect framework used
 function detect_php_framework() {
     [[ -f "artisan" ]] && echo "laravel" && return
     [[ -f "bin/console" ]] && [[ -d "vendor/symfony" ]] && echo "symfony" && return
@@ -199,7 +199,7 @@ function detect_php_framework() {
 
 ## 📤 Output Format
 
-### Structure spécifique PHP
+### PHP-specific structure
 
 ```markdown
 # PHP Code Search Results
@@ -355,33 +355,33 @@ graph TD
 
 ## ⚡ Performance Optimization
 
-### Commandes optimisées PHP
+### Optimized PHP commands
 ```bash
-# Recherche ultra-rapide avec ripgrep
+# Ultra-fast search with ripgrep
 rg --type php \
   --glob '!vendor' \
   --glob '!storage' \
   --glob '!cache' \
   -i "$KEYWORD"
 
-# Trouver toutes les classes
+# Find all classes
 rg --type php -n "^class\s+(\w+)" -r '$1' --no-heading --glob '!vendor'
 
-# Trouver namespaces
+# Find namespaces
 rg --type php -n "^namespace\s+(.*?);" -r '$1' --no-heading --glob '!vendor'
 
-# Trouver use statements
+# Find use statements
 rg --type php -n "^use\s+([\w\\]+)" --no-heading --glob '!vendor'
 
-# Statistiques par fichier
+# Statistics per file
 rg --type php -c -i "$KEYWORD" --glob '!vendor' | sort -t: -k2 -nr | head -20
 ```
 
-### Stratégies d'Optimisation
-1. **PSR-4 awareness** : Utiliser composer.json pour résolution rapide
-2. **Exclude vendor early** : Toujours exclure dès le find/rg
-3. **Framework patterns** : Adapter patterns selon framework détecté
-4. **Cache PSR-4 map** : Parser composer.json une fois, réutiliser
+### Optimization Strategies
+1. **PSR-4 awareness** : Use composer.json for fast resolution
+2. **Exclude vendor early** : Always exclude from the start with find/rg
+3. **Framework patterns** : Adapt patterns according to detected framework
+4. **Cache PSR-4 map** : Parse composer.json once, reuse
 
 ## 🎓 Framework-Specific Patterns
 
@@ -435,7 +435,7 @@ register_post_type\(['"]([^'"]+)['"]
 ## 📋 Usage Example
 
 ```bash
-# Exemple d'utilisation du plan PHP
+# Example usage of the PHP plan
 KEYWORD="authenticate"
 FRAMEWORK=$(detect_php_framework)
 
@@ -487,12 +487,12 @@ done
 
 ## 🔧 Customization Points
 
-Ce plan peut être étendu/personnalisé via :
-- **PSR-4 mapping** : Adapter selon composer.json projet
-- **Framework patterns** : Affiner selon framework utilisé
-- **Legacy patterns** : Ajouter patterns pour code legacy (non-PSR-4)
-- **Performance tuning** : Ajuster selon taille projet
+This plan can be extended/customized via:
+- **PSR-4 mapping** : Adapt according to project composer.json
+- **Framework patterns** : Refine according to framework used
+- **Legacy patterns** : Add patterns for legacy code (non-PSR-4)
+- **Performance tuning** : Adjust according to project size
 
 ---
-*Plan PHP créé le 2025-12-09 pour agent-aikido-explore-code*
-*Compatible avec PSR-4, Composer, Laravel, Symfony, WordPress*
+*PHP plan created on 2025-12-09 for agent-aikido-explore-code*
+*Compatible with PSR-4, Composer, Laravel, Symfony, WordPress*

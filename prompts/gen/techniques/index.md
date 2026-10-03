@@ -1,27 +1,27 @@
-# Techniques AI‑KIDO
+# AI-KIDO Techniques
 
-Ce répertoire contient les **méthodes pratiques** et les **techniques d'application** de la base AI‑KIDO. Chaque technique complète un concept théorique correspondant dans [`/prompts/gen/concepts/`](../concepts/).
+This directory contains the **practical methods** and **application techniques** of the AI-KIDO knowledge base. Each technique complements a corresponding theoretical concept in [`/prompts/gen/concepts/`](../concepts/).
 
-**Règle fondamentale** : Séparation théorie/pratique (Règle 2 AI-KIDO)
-- **Concepts** = Théorie, principes, définitions
-- **Techniques** = Pratique, exemples concrets, workflows
+**Fundamental rule**: Theory/practice separation (AI-KIDO Rule 2)
+- **Concepts** = Theory, principles, definitions
+- **Techniques** = Practice, concrete examples, workflows
 
-## Techniques de Création de Prompts
+## Prompt Creation Techniques
 
 ### [`guideline-prompts.md`](guideline-prompts.md)
-**Description** : Techniques pratiques pour créer des prompts efficaces avec exemples concrets et workflows
+**Description**: Practical techniques for creating effective prompts with concrete examples and workflows
 
-**Concept associé** : [`/prompts/gen/concepts/guideline-prompts.md`](../concepts/guideline-prompts.md)
+**Associated concept**: [`/prompts/gen/concepts/guideline-prompts.md`](../concepts/guideline-prompts.md)
 
-**Contenu** :
-- 3 patterns de formulation (PTC, CEA, Chain-of-Thought)
-- Exemples concrets par cas d'usage (génération code, code review, documentation)
-- 3 anti-patterns détaillés avec corrections
-- 3 workflows d'optimisation (Test-Refine-Iterate, Validation Checklist, Progressive Disclosure)
-- 3 templates réutilisables (Code Review, Documentation, Refactoring)
+**Content**:
+- 3 formulation patterns (PTC, CEA, Chain-of-Thought)
+- Concrete examples by use case (code generation, code review, documentation)
+- 3 detailed anti-patterns with corrections
+- 3 optimization workflows (Test-Refine-Iterate, Validation Checklist, Progressive Disclosure)
+- 3 reusable templates (Code Review, Documentation, Refactoring)
 
-**Conformité** : ✅ 462 lignes (respecte Règle 4 : ≤500 lignes)
+**Compliance**: ✅ 462 lines (respects Rule 4: ≤500 lines)
 
 ---
 
-**Techniques à créer** : 0 technique manquante actuellement (✅ Conformité Règle 2 : 100%)
+**Techniques to create**: 0 missing techniques currently (✅ Rule 2 Compliance: 100%)

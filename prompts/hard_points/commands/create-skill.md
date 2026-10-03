@@ -1,17 +1,34 @@
 ---
-description: "Guide interactif pour créer un squelette de Skill AI-KIDO complet"
+description: "Interactive guide to create a complete AI-KIDO Skill skeleton"
 ---
 
-# Commande `create-skill`
+# /create-skill
 
-**Paradigme** : Exécution DIRECTE par le LLM — ❌ script bash · ✅ `ask_followup_question` + `write_to_file`  
-**Référence Skill** : [`Skills.md`](prompts/hard_points/system/Skills.md) · Structure : `prompts/hard_points/system/{slug}/` · Progressive disclosure 3 niveaux (~100 tokens métadonnées / <5k instructions / ressources à la demande)
+**Purpose**: Interactively guide the user through creating a complete AI-KIDO Skill skeleton with all required files and metadata.
 
-## Pipeline
+---
 
-### Étape 0 — Détection Doublons
+## Usage
 
-Scanner les 3 sources et afficher la synthèse :
+```
+/create-skill
+```
+
+## Prerequisites
+
+- Working directory is an AI-KIDO project
+- `skills_list.md` exists and is accessible
+- `prompts/hard_points/system/` directory exists
+
+## Steps
+
+Direct LLM execution — ❌ no bash script · ✅ Ask user directly + Write tool
+
+**Skill Reference**: [`Skills.md`](prompts/hard_points/system/Skills.md) · Structure: `prompts/hard_points/system/{slug}/` · Progressive disclosure 3 levels (~100 tokens metadata / <5k instructions / resources on demand)
+
+### Step 0 — Duplicate Detection
+
+Scan the 3 sources and display the summary:
 ```bash
 find prompts/hard_points/commands -name "*.md" | while read f; do
   NAME=$(basename "$f" .md)
@@ -23,116 +40,123 @@ find .roo -name "*.md" 2>/dev/null | while read f; do echo "  [ROO] $(basename "
 find .claude -name "*.md" 2>/dev/null | while read f; do echo "  [CLAUDE] $(basename "$f" .md) : $(grep -m1 '^#' "$f" | sed 's/^#[[:space:]]*/')"; done
 ```
 
-`ask_followup_question` : `1. Non — nouveau Skill` · `2. Oui — packager [NOM]` · `3. Incertain — détails [NOM]` · `4. Étendre [NOM]`  
-Si packaging → `read_file` source → pré-remplir `SKILL_NAME/DESC/INSTRUCTIONS/SOURCE_COMMAND` → **sauter à Étape 2**
+Ask the user directly: `1. No — new Skill` · `2. Yes — package [NAME]` · `3. Uncertain — details [NAME]` · `4. Extend [NAME]`
+If packaging → Read source file → pre-fill `SKILL_NAME/DESC/INSTRUCTIONS/SOURCE_COMMAND` → **skip to Step 2**
 
-### Étape 1 — Inventaire Skills Existants
+### Step 1 — Existing Skills Inventory
 
 ```bash
 find prompts/hard_points/system -name "SKILL.md" | while read f; do
   echo "  - $(basename $(dirname $f)) : $(grep -m1 '^## Description' -A1 "$f" | tail -1 | sed 's/^[[:space:]]*//')"
 done
 ```
-Afficher liste + `📋 Référence : skills_list.md`
+Display list + `Reference: skills_list.md`
 
-### Étapes 2–8 — Questionnaire (`ask_followup_question`)
+### Steps 2–8 — Questionnaire (Ask user directly)
 
-| Étape | Question | Suggestions | Variable |
-|-------|----------|-------------|----------|
-| 2 | Nom du Skill ? (kebab-case) | `code-review` · `deploy-check` · `doc-generator` · `test-runner` | `SKILL_NAME` |
-| 3 | Description en une phrase | *(libre)* | `SKILL_DESC` |
-| 4 | Catégorie ? | `analyse/compréhension` · `génération/création` · `validation/vérification` · `recherche/exploration` | `SKILL_CATEGORY` |
-| 5 | Étapes d'exécution (liste numérotée) | *(libre)* | `SKILL_INSTRUCTIONS` |
-| 6 | Format de sortie ? | `JSON {status,result,summary,details}` · `Markdown {Résumé,Détails,Recommandations}` · `JSON {matches[],summary,total_count}` · `Texte brut UTF-8` | `SKILL_OUTPUT` |
-| 7 | Dépendances/bibliothèques ? | `Aucune` · `Bash POSIX` · `Python stdlib` · `Python NLP (nltk,spacy)` | `SKILL_RESOURCES` |
-| 8 | Agents AI-KIDO associés ? | `explore-bank` · `explore-code` · `bank-populate` · `Aucun` | `SKILL_AGENTS` |
+| Step | Question | Suggestions | Variable |
+|------|----------|-------------|----------|
+| 2 | Skill name? (kebab-case) | `code-review` · `deploy-check` · `doc-generator` · `test-runner` | `SKILL_NAME` |
+| 3 | One-sentence description | *(free text)* | `SKILL_DESC` |
+| 4 | Category? | `analysis/understanding` · `generation/creation` · `validation/verification` · `search/exploration` | `SKILL_CATEGORY` |
+| 5 | Execution steps (numbered list) | *(free text)* | `SKILL_INSTRUCTIONS` |
+| 6 | Output format? | `JSON {status,result,summary,details}` · `Markdown {Summary,Details,Recommendations}` · `JSON {matches[],summary,total_count}` · `Plain text UTF-8` | `SKILL_OUTPUT` |
+| 7 | Dependencies/libraries? | `None` · `POSIX Bash` · `Python stdlib` · `Python NLP (nltk,spacy)` | `SKILL_RESOURCES` |
+| 8 | Associated AI-KIDO agents? | `explore-bank` · `explore-code` · `bank-populate` · `None` | `SKILL_AGENTS` |
 
-Étape 2 : valider unicité (`prompts/hard_points/system/{SKILL_NAME}` inexistant) · conflit → proposer `{nom}-v2`
+Step 2: validate uniqueness (`prompts/hard_points/system/{SKILL_NAME}` must not exist) · conflict → propose `{name}-v2`
 
-### Étape 9 — Fichiers Optionnels (`ask_followup_question`)
+### Step 9 — Optional Files (Ask user directly)
 
-`1. SKILL.md uniquement` · `2. + references/` · `3. + examples/` · `4. Tout (references/ + examples/ + scripts/ + templates/ + documentation/)`  
-→ Variables booléennes : `WITH_REF` · `WITH_EX` · `WITH_SCRIPTS` · `WITH_TPL` · `WITH_DOC`
+`1. SKILL.md only` · `2. + references/` · `3. + examples/` · `4. Everything (references/ + examples/ + scripts/ + templates/ + documentation/)`
+→ Boolean variables: `WITH_REF` · `WITH_EX` · `WITH_SCRIPTS` · `WITH_TPL` · `WITH_DOC`
 
-### Étape 10 — Génération (`write_to_file`)
+### Step 10 — Generation (Write tool)
 
-Afficher récapitulatif puis créer :
+Display summary then create:
 
-**10.1 `SKILL.md`** — OBLIGATOIRE
+**10.1 `SKILL.md`** — MANDATORY
 ```markdown
-# {Nom formaté} – Skill interne d'AI‑KIDO
+# {Formatted Name} – AI-KIDO Internal Skill
 
 ## Description
 {SKILL_DESC}
 
-## Métadonnées
+## Metadata
 ```yaml
-nom: "{SKILL_NAME}"
+name: "{SKILL_NAME}"
 version: "1.0.0"
-auteur: "AI‑KIDO Team"
-catégorie: "{SKILL_CATEGORY}"
-tokens_métadonnées: ~100
-{Si SOURCE_COMMAND → source_command: "{SOURCE_COMMAND}"}
+author: "AI-KIDO Team"
+category: "{SKILL_CATEGORY}"
+metadata_tokens: ~100
+{If SOURCE_COMMAND → source_command: "{SOURCE_COMMAND}"}
 ```
 
-## Instructions (niveau 2)
-{SKILL_INSTRUCTIONS numérotées}
-4. Retourner :
+## Instructions (level 2)
+{SKILL_INSTRUCTIONS numbered}
+4. Return:
    ```{json|markdown|text}
    {SKILL_OUTPUT}
    ```
 
-## Ressources (niveau 3)
+## Resources (level 3)
 {SKILL_RESOURCES}
-{WITH_REF → - `references/` – Documentation de référence}
-{WITH_EX  → - `examples/`   – Exemples d'usage}
-{WITH_SCRIPTS → - `scripts/` – Scripts utilitaires}
-{WITH_TPL → - `templates/`  – Modèles}
-{WITH_DOC → - `documentation/documentation.md` – Documentation détaillée}
+{WITH_REF → - `references/` – Reference documentation}
+{WITH_EX  → - `examples/`   – Usage examples}
+{WITH_SCRIPTS → - `scripts/` – Utility scripts}
+{WITH_TPL → - `templates/`  – Templates}
+{WITH_DOC → - `documentation/documentation.md` – Detailed documentation}
 
-## Utilisation
-Claude invoque ce Skill lorsqu'une requête {déclencheur}.
-Progressive disclosure : métadonnées → instructions → ressources à la demande.
+## Usage
+Claude invokes this Skill when a request {trigger}.
+Progressive disclosure: metadata → instructions → resources on demand.
 
-## Remarques
-- Stateless : chaque appel est indépendant.
-- Résultats renvoyés en UTF‑8.
+## Notes
+- Stateless: each call is independent.
+- Results returned in UTF-8.
 
-## Agents Aikido associés
-{Pour chaque SKILL_AGENTS → - `{slug}` – {rôle}}
+## Associated Aikido Agents
+{For each SKILL_AGENTS → - `{slug}` – {role}}
 ```
 
-**10.2** `references/README.md` *(si `WITH_REF`)* — Sections : Vue d'ensemble / Paramètres entrée (tableau) / Format sortie / Contraintes / Voir aussi  
-**10.3** `examples/README.md` *(si `WITH_EX`)* — 2 exemples minimum : Entrée + Sortie attendue par cas d'usage  
-**10.4** `scripts/helper.sh` *(si `WITH_SCRIPTS`)* — `set -euo pipefail` + `main()` + TODO logique  
-**10.5** `templates/template.txt` *(si `WITH_TPL`)* — Sections `[SECTION_N]` + variables `{{VARIABLE_N}}`  
-**10.6** `documentation/documentation.md` *(si `WITH_DOC`)* — Architecture / Flux Mermaid / Décisions / Limitations / Historique
+**10.2** `references/README.md` *(if `WITH_REF`)* — Sections: Overview / Input parameters (table) / Output format / Constraints / See also
+**10.3** `examples/README.md` *(if `WITH_EX`)* — Minimum 2 examples: Input + Expected output per use case
+**10.4** `scripts/helper.sh` *(if `WITH_SCRIPTS`)* — `set -euo pipefail` + `main()` + TODO logic
+**10.5** `templates/template.txt` *(if `WITH_TPL`)* — `[SECTION_N]` sections + `{{VARIABLE_N}}` variables
+**10.6** `documentation/documentation.md` *(if `WITH_DOC`)* — Architecture / Mermaid flow / Decisions / Limitations / History
 
-### Étape 11 — Enregistrement (`apply_diff`)
+### Step 11 — Registration (Edit tool)
 
-Ajouter dans `skills_list.md` (ordre alphabétique) :
+Add to `skills_list.md` (alphabetical order):
 ```markdown
 - **{SKILL_NAME}** – {SKILL_DESC} – [`prompts/hard_points/system/{SKILL_NAME}/SKILL.md`](prompts/hard_points/system/{SKILL_NAME}/SKILL.md)
 ```
 
-### Étape 12 — Rapport Final (`attempt_completion`)
+### Step 12 — Final Report (Output result to user)
 
 ```
-✅ Skill "{SKILL_NAME}" créé | Catégorie: {SKILL_CATEGORY} | v1.0.0 | Stateless
+Skill "{SKILL_NAME}" created | Category: {SKILL_CATEGORY} | v1.0.0 | Stateless
 
-📁 Créés : SKILL.md {+ references/} {+ examples/} {+ scripts/} {+ templates/} {+ documentation/}
-📄 MAJ   : skills_list.md
+Files created : SKILL.md {+ references/} {+ examples/} {+ scripts/} {+ templates/} {+ documentation/}
+Updated       : skills_list.md
 
-🚀 NEXT : compléter SKILL.md → /create-persona (agents) → /analyse-aikido (conformité)
+NEXT: complete SKILL.md → /create-persona (agents) → /analyse-aikido (compliance)
 ```
 
-## Référence Rapide
+## Output
 
-| Erreur | Action |
-|--------|--------|
-| Nom invalide (pas kebab-case) | Correction automatique proposée |
-| Skill déjà existant | Proposer `{nom}-v2` ou annuler |
-| Description vide | Redemander avec exemples |
-| Erreur écriture | Signaler + retry |
+A complete Skill skeleton at `prompts/hard_points/system/{SKILL_NAME}/` with:
+- `SKILL.md` (mandatory)
+- Optional directories based on user selection
+- Entry added to `skills_list.md`
 
-**Intégration** : `/skill-manage search` (vérifier avant création) → `/create-skill` → `/create-persona` → `/create-command` → `/analyse-aikido` → `/reindex-projet`
+## Notes
+
+| Error | Action |
+|-------|--------|
+| Invalid name (not kebab-case) | Propose automatic correction |
+| Skill already exists | Propose `{name}-v2` or cancel |
+| Empty description | Ask again with examples |
+| Write error | Report + retry |
+
+**Integration**: `/skill-manage search` (verify before creation) → `/create-skill` → `/create-persona` → `/create-command` → `/analyse-aikido` → `/reindex-projet`

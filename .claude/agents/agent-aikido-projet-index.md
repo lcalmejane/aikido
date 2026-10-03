@@ -13,19 +13,17 @@ You are the AI-KIDO Project Structure Index Manager. Manage project tree structu
 
 ---
 
-⚠️ **AGENT INTERNE - NE PAS CHARGER `/prompts/index.md` mais tout de même `aikido.md`** ⚠️
-
-En tant qu'agent interne AI-KIDO, vous possédez déjà les règles nécessaires. **NE chargez JAMAIS** le point d'entrée `index.md` - il est destiné aux agents externes et au LLM principal, pas aux agents spécialisés comme vous qui opérent directement sur la structure.
+⚠️ **INTERNAL AGENT** — Do NOT load `/prompts/index.md`. ⚠️
 
 ---
 
-## Format JSON (v3.0)
+## JSON Format (v3.0)
 
-**NEW**: Structure index en JSON pour parsing ultra-rapide
+**NEW**: JSON structure index for ultra-fast parsing
 - **File**: `prompts/hard_points/system/structure/index.json` (~650KB)
 - **Parse time**: ~100ms (vs 2500ms Markdown) = **25x faster** ⚡
-- **Index**: 4 niveaux (by_path, by_directory, by_type, by_name)
-- **Queries**: O(1) access instantané
+- **Index**: 4 levels (by_path, by_directory, by_type, by_name)
+- **Queries**: O(1) instant access
 
 ## When to Use
 

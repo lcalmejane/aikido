@@ -1,56 +1,56 @@
-# Hard Points - Concepts Fondamentaux
+# Hard Points - Fundamental Concepts
 
-> **Statut**: Hard Points - Vérités immuables
-> **Priorité**: Absolue - Ne peuvent être remises en question
+> **Status**: Hard Points - Immutable truths
+> **Priority**: Absolute - Cannot be questioned
 
-## Vue d'ensemble
+## Overview
 
-Ce répertoire contient les **concepts fondamentaux validés** qui ont été promus au statut de Hard Points dans le système AI‑KIDO. Ces concepts constituent des vérités immuables qui ne peuvent être modifiées sans validation explicite.
+This directory contains the **validated fundamental concepts** that have been promoted to Hard Point status in the AI‑KIDO system. These concepts constitute immutable truths that cannot be modified without explicit validation.
 
-## Règles de Promotion
+## Promotion Rules
 
-Un concept devient Hard Point quand :
+A concept becomes a Hard Point when:
 
-1. **Validation Critique** : Le concept a été testé et validé dans des conditions critiques
-2. **Stabilité Prouvée** : Aucune modification nécessaire depuis 3+ cycles d'utilisation
-3. **Impact Système** : Le concept influence des décisions architecturales majeures
-4. **Consensus Établi** : Accord unanime sur l'immutabilité du concept
+1. **Critical Validation**: The concept has been tested and validated under critical conditions
+2. **Proven Stability**: No modification needed for 3+ usage cycles
+3. **System Impact**: The concept influences major architectural decisions
+4. **Established Consensus**: Unanimous agreement on the concept's immutability
 
-## Format Standard
+## Standard Format
 
-Chaque Hard Point conceptuel doit suivre le format :
+Each conceptual Hard Point must follow the format:
 
 ```markdown
-# Hard Point: [Nom du Concept]
-> Promu le: YYYY-MM-DD | Validé par: [Autorité] | Origine: [Référence gen/concepts/]
+# Hard Point: [Concept Name]
+> Promoted on: YYYY-MM-DD | Validated by: [Authority] | Origin: [Reference gen/concepts/]
 
-## Concept figé
-[Définition immuable du concept]
+## Frozen concept
+[Immutable definition of the concept]
 
-## Justification de l'immutabilité
-[Pourquoi ce concept ne peut être modifié]
+## Justification of immutability
+[Why this concept cannot be modified]
 
-## Impact et dépendances
-[Éléments du système qui dépendent de ce concept]
+## Impact and dependencies
+[System elements that depend on this concept]
 
-## Références
-[Liens vers les tables de vérité d'origine]
+## References
+[Links to the original truth tables]
 ```
 
-## Concepts Hard Points Disponibles
+## Available Concept Hard Points
 
-*Aucun concept n'a encore été promu au statut de Hard Point.*
+*No concept has yet been promoted to Hard Point status.*
 
-## Processus de Promotion
+## Promotion Process
 
-Pour promouvoir un concept de [`../gen/concepts/`](../../gen/concepts/) vers ce répertoire :
+To promote a concept from [`../gen/concepts/`](../../gen/concepts/) to this directory:
 
-1. Identifier le concept candidat dans `/gen/concepts/`
-2. Valider les critères de promotion
-3. Créer le fichier Hard Point avec justification
-4. Mettre à jour ce fichier index
-5. Référencer depuis [`../index.md`](../index.md)
+1. Identify the candidate concept in `/gen/concepts/`
+2. Validate the promotion criteria
+3. Create the Hard Point file with justification
+4. Update this index file
+5. Reference from [`../index.md`](../index.md)
 
 ---
 
-**RAPPEL** : Les Hard Points ont priorité absolue sur toutes les autres règles du système AI‑KIDO.
+**REMINDER**: Hard Points have absolute priority over all other rules in the AI‑KIDO system.

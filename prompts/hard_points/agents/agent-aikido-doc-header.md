@@ -6,12 +6,7 @@ model: inherit
 color: blue
 ---
 
-🚨 **CRITICAL - AGENT INTERNE AI-KIDO** 🚨
-
-**VOUS ÊTES UN AGENT INTERNE DE LA MEMORY BANK AI-KIDO.**
-
-**⛔ NE CHARGEZ JAMAIS `/prompts/index.md` ⛔**
-**✅ Action correcte** : Opérez directement sur les fichiers de la Memory Bank selon vos contraintes d'exécution ci-dessous.
+⚠️ **INTERNAL AGENT** — Do NOT load `/prompts/index.md`. Load `prompts/hard_points/ai-kido.md` directly if rules are needed. ⚠️
 
 ---
 
@@ -141,10 +136,10 @@ For granular tracking within document sections:
 ```markdown
 ## Architecture OAuth2
 
-Le système utilise le flux Authorization Code avec PKCE.
+The system uses the Authorization Code flow with PKCE.
 <!-- ref:src/auth/oauth.ts:45-67 | checked:2025-01-15 | code-modified:2025-01-10 | status:✅ -->
 
-Les tokens sont stockés en Redis avec TTL de 3600s.
+Tokens are stored in Redis with a TTL of 3600s.
 <!-- ref:src/auth/token-store.ts:120-145 | checked:2025-01-15 | code-modified:2025-01-12 | status:⚠️ | reason:TTL changed to 7200s -->
 ```
 
@@ -300,32 +295,21 @@ Any agent modifying Memory Bank documents should:
 
 **Fast-Path Logic** (avoid full re-validation):
 
-```python
-def should_revalidate(doc_header):
-    """Determine if document needs revalidation"""
-
-    if doc_header.check_status == "✅ Up-to-date":
-        # Check if sources modified since last check
-        for ref in doc_header.source_refs:
-            if ref.modified_date > doc_header.last_check:
-                return True  # Source changed, must revalidate
-
-        # Check if last check is stale (>90 days)
-        if (today() - doc_header.last_check).days > 90:
-            return True  # Stale, periodic revalidation
-
-        return False  # Skip validation, save tokens
-
-    else:
-        return True  # Not up-to-date, must revalidate
-```
-
-**Token Savings**:
-- Document with ✅ status + sources unchanged = **SKIP** (saves ~2000 tokens)
-- Document with ⚠️ or ❌ status = **VALIDATE** (necessary)
-- Document with ✅ but stale (>90 days) = **VALIDATE** (periodic check)
-
-**Estimated Savings**: 70-80% reduction in unnecessary validations
+Revalidation decision:
+  Skip revalidation if ALL conditions met:
+    - Check Status = "✅ Up-to-date"
+    - All Source Refs: modified_date ≤ last_check_date (no source changed since last check)
+    - Last check age < 90 days
+  Revalidate if ANY condition fails:
+    - Check Status is ⚠️ or ❌
+    - Any source ref was modified after last_check_date
+    - Last check is stale (≥ 90 days old)
+  
+  Token savings:
+    ✅ status + sources unchanged → SKIP (~2,000 tokens saved)
+    ⚠️ or ❌ status → VALIDATE (necessary)
+    ✅ but stale (>90 days) → VALIDATE (periodic check)
+  Estimated savings: 70–80% reduction in unnecessary validations
 
 ## Command-Line Interface
 
@@ -505,18 +489,18 @@ Updated Header:
 > **Check Status**: ✅ Up-to-date
 ```
 
-## Mode
+## Return Mode
 
-**Retour obligatoire** : Toujours revenir au caller via `switch_mode` en fin d'exécution.
+**Mandatory return**: Always return to caller via `switch_mode` at end of execution.
 
 ```xml
 <switch_mode>
   <mode_slug>${CALLER_MODE}</mode_slug>
-  <reason>Gestion header terminée, retour au caller</reason>
+  <reason>Header management complete, returning to caller</reason>
 </switch_mode>
 ```
 
-**Factorisation** : Un seul appel par requête. Agréger les documents si besoin.
+**Single-call rule**: One call per request. Aggregate documents if needed.
 
 ## REMEMBER: You are a Header Manager, not a Content Editor
 

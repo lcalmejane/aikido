@@ -1,114 +1,114 @@
-# Plans de Mise à Jour AI-KIDO
+# AI-KIDO Update Plans
 
-> **Version** : 2.0 | **Date** : 2026-01-05 | **Type** : Documentation Système
+> **Version** : 2.0 | **Date** : 2026-01-05 | **Type** : System Documentation
 
-## 🎯 Architecture des Plans
+## 🎯 Plans Architecture
 
-Les plans de mise à jour AI-KIDO suivent une **approche déclarative** où les actions sont décrites sous forme de **prompts d'action** plutôt que de scripts bash complexes.
+AI-KIDO update plans follow a **declarative approach** where actions are described as **action prompts** rather than complex bash scripts.
 
-### Philosophie
+### Philosophy
 
-Au lieu de créer des dizaines de scripts bash pour chaque opération, nous utilisons :
-- ✅ **Scripts techniques** (4 seulement) pour les opérations nécessitant du traitement algorithmique
-- ✅ **Prompts d'action directs** pour tout ce que le LLM peut faire nativement
-- ✅ **Plans modulaires** chaînables et réutilisables
+Instead of creating dozens of bash scripts for each operation, we use:
+- ✅ **Technical scripts** (4 only) for operations requiring algorithmic processing
+- ✅ **Direct action prompts** for everything the LLM can do natively
+- ✅ **Modular plans** that are chainable and reusable
 
-### Bénéfices
+### Benefits
 
-1. **Maintenabilité** : Moins de code bash à maintenir
-2. **Flexibilité** : Le LLM adapte les actions au contexte
-3. **Lisibilité** : Instructions claires plutôt que code procédural
-4. **Robustesse** : Le LLM gère les cas d'erreur naturellement
+1. **Maintainability** : Less bash code to maintain
+2. **Flexibility** : The LLM adapts actions to context
+3. **Readability** : Clear instructions rather than procedural code
+4. **Robustness** : The LLM handles error cases naturally
 
 ---
 
-## 📦 Scripts Techniques (À Garder)
+## 📦 Technical Scripts (To Keep)
 
-Ces 4 scripts font du **traitement réel** qu'on ne peut pas remplacer par des prompts :
+These 4 scripts perform **real processing** that cannot be replaced by prompts:
 
-| Script | Rôle | Pourquoi garder |
+| Script | Role | Why keep |
 |--------|------|-----------------|
-| **`detect-project-type.sh`** | Détection mono/multi-projet | Analyse structure de répertoires complexe |
-| **`sync-files.sh`** | Synchronisation intelligente | Comparaison dates, backup automatique, logique multi-OS |
-| **`sync-directories.sh`** | Synchronisation répertoires | Opérations récursives optimisées |
-| **`validate-structure.sh`** | Validation structure | Vérifications multiples avec codes de retour |
+| **`detect-project-type.sh`** | Mono/multi-project detection | Complex directory structure analysis |
+| **`sync-files.sh`** | Intelligent synchronization | Date comparison, automatic backup, multi-OS logic |
+| **`sync-directories.sh`** | Directory synchronization | Optimized recursive operations |
+| **`validate-structure.sh`** | Structure validation | Multiple checks with return codes |
 
-**Usage dans les plans** :
+**Usage in plans** :
 ```markdown
-**Action : Détecter le type de projet**
+**Action: Detect project type**
 
 ```bash
 DETECT_SCRIPT="prompts/hard_points/system/maj/scripts/detect-project-type.sh"
 PROJECT_TYPE=$("$DETECT_SCRIPT" detect | head -1)
 ```
 
-Stocker `$PROJECT_TYPE` (MONO ou MULTI) pour usage ultérieur.
+Store `$PROJECT_TYPE` (MONO or MULTI) for later use.
 ```
 
 ---
 
-## 📋 Types de Plans
+## 📋 Plan Types
 
-### 1. Plan Beginning (`plan-beginning.md`)
+### 1. Beginning Plan (`plan-beginning.md`)
 
-**Rôle** : Initialisation post-sauvegarde
-**Exécution** : Début de processus, avant sélection du plan de version
-**Contient** :
-- Vérification backup initial
-- Chargement contexte (variables $SOURCE, $TARGET)
-- Détection versions actuelle/cible
-- Génération structures JSON initiales
+**Role** : Post-backup initialization
+**Execution** : Start of process, before version plan selection
+**Contains** :
+- Initial backup verification
+- Context loading (variables $SOURCE, $TARGET)
+- Current/target version detection
+- Initial JSON structure generation
 
-### 2. Plans de Version (`plan-V{version}.md`)
+### 2. Version Plans (`plan-V{version}.md`)
 
-**Rôle** : Migrations spécifiques à une version
-**Exemples** :
+**Role** : Version-specific migrations
+**Examples** :
 - `plan-V1.3.0.0.md` : Migration `/prompts/gen/index.md` → `/prompts/index.md`
 - `plan-V1.3.1.0.md` : Migration `.roo/commands/` → `prompts/hard_points/commands/`
 
-**Structure type** :
+**Typical structure** :
 ```markdown
-# Plan de migration V{version}
+# Migration Plan V{version}
 
-## 🎯 Objectif
-Description claire du changement
+## 🎯 Objective
+Clear description of the change
 
-## 📋 Étapes
-### Phase X : Nom phase
-**Action : Description**
+## 📋 Steps
+### Phase X: Phase name
+**Action: Description**
 
-Instructions détaillées sous forme de prompts
+Detailed instructions as prompts
 
-### Phase Y : Nom phase
+### Phase Y: Phase name
 ...
 
-## 📦 Résultat attendu
-Liste des changements effectués
+## 📦 Expected Result
+List of changes performed
 
 ## ✅ Validation
-Critères de succès
+Success criteria
 ```
 
-### 3. Plans Ending (`plan-ending-{N}.md`)
+### 3. Ending Plans (`plan-ending-{N}.md`)
 
-**Rôle** : Phases finales communes à toutes les migrations
-**Ordre d'exécution** : 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
+**Role** : Final phases common to all migrations
+**Execution order** : 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 
-| Plan | Phase | Rôle |
+| Plan | Phase | Role |
 |------|-------|------|
-| **ending-0** | Fusion | Fusion intelligente TARGET → SOURCE (contenu prompts/) |
-| **ending-1** | Détection | Génération rapport différences post-rebase |
-| **ending-2** | Analyse | Analyse rapport + préparation mise à jour index |
-| **ending-3** | Index | Mise à jour index généraux (mono/multi) |
-| **ending-4** | Validation | Diagnostic cohérence projet |
-| **ending-5** | Optimisation | Nettoyage fichiers temporaires |
-| **ending-6** | Validation finale | Vérification conformité AI-KIDO |
-| **ending-7** | Peuplement | Proposition peuplement gaps (agent-aikido-bank-populate) |
-| **ending-8** | Déploiement | Déploiement mappings et config TARGET → SOURCE (.roo/, .claude/, fichiers racine) |
+| **ending-0** | Merge | Intelligent merge TARGET → SOURCE (prompts/ content) |
+| **ending-1** | Detection | Change detection report post-rebase |
+| **ending-2** | Analysis | Report analysis + index update preparation |
+| **ending-3** | Index | General index update (mono/multi) |
+| **ending-4** | Validation | Project consistency diagnosis |
+| **ending-5** | Optimization | Temporary files cleanup |
+| **ending-6** | Final validation | AI-KIDO compliance check |
+| **ending-7** | Population | Gap population proposal (agent-aikido-bank-populate) |
+| **ending-8** | Deployment | Mappings and config deployment TARGET → SOURCE (.roo/, .claude/, root files) |
 
 ---
 
-## 🔄 Workflow Complet
+## 🔄 Complete Workflow
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -117,241 +117,241 @@ Critères de succès
                      │
                      ▼
           ┌──────────────────────┐
-          │  plan-beginning.md   │  ← Initialisation
+          │  plan-beginning.md   │  ← Initialization
           └──────────┬───────────┘
                      │
                      ▼
           ┌──────────────────────┐
-          │  Sélection plan      │  ← Détection version cible
-          │  plan-V{version}.md  │     + correspondance plan
+          │  Version plan        │  ← Target version detection
+          │  plan-V{version}.md  │     + plan matching
           └──────────┬───────────┘
                      │
                      ▼
           ┌──────────────────────┐
-          │  Exécution phases    │  ← Migration spécifique
-          │  du plan de version  │     (bootstrap, analyse, MAJ)
+          │  Version plan        │  ← Specific migration
+          │  phases execution    │     (bootstrap, analysis, update)
           └──────────┬───────────┘
                      │
                      ▼
           ┌──────────────────────┐
-          │  plan-ending-0.md    │  ← Fusion TARGET → SOURCE (prompts/)
+          │  plan-ending-0.md    │  ← Merge TARGET → SOURCE (prompts/)
           └──────────┬───────────┘
                      │
                      ▼
           ┌──────────────────────┐
-          │  plan-ending-1.md    │  ← Détection changements
+          │  plan-ending-1.md    │  ← Change detection
           └──────────┬───────────┘
                      │
                      ▼
           ┌──────────────────────┐
-          │  plan-ending-2.md    │  ← Analyse rapport
+          │  plan-ending-2.md    │  ← Report analysis
           └──────────┬───────────┘
                      │
                      ▼
           ┌──────────────────────┐
-          │  plan-ending-3.md    │  ← Mise à jour index
+          │  plan-ending-3.md    │  ← Index update
           └──────────┬───────────┘
                      │
                      ▼
           ┌──────────────────────┐
-          │  plan-ending-4.md    │  ← Validation structure
+          │  plan-ending-4.md    │  ← Structure validation
           └──────────┬───────────┘
                      │
                      ▼
           ┌──────────────────────┐
-          │  plan-ending-5.md    │  ← Optimisation
+          │  plan-ending-5.md    │  ← Optimization
           └──────────┬───────────┘
                      │
                      ▼
           ┌──────────────────────┐
-          │  plan-ending-6.md    │  ← Validation finale
+          │  plan-ending-6.md    │  ← Final validation
           └──────────┬───────────┘
                      │
                      ▼
           ┌──────────────────────┐
-          │  plan-ending-7.md    │  ← Peuplement gaps
+          │  plan-ending-7.md    │  ← Gap population
           └──────────┬───────────┘
                      │
                      ▼
           ┌──────────────────────┐
-          │  plan-ending-8.md    │  ← Déploiement mappings
+          │  plan-ending-8.md    │  ← Mappings deployment
           └──────────┬───────────┘
                      │
                      ▼
           ┌──────────────────────┐
-          │  ✅ Mise à jour OK   │
+          │  ✅ Update OK        │
           └──────────────────────┘
 ```
 
 ---
 
-## 📝 Anatomie d'un Prompt d'Action
+## 📝 Action Prompt Anatomy
 
-Au lieu d'un appel de script, les plans utilisent des **prompts d'action** :
+Instead of a script call, plans use **action prompts**:
 
-### ❌ Ancienne approche (script manquant)
+### ❌ Old approach (missing script)
 
 ```bash
 "$VALIDATE_SOURCE_SCRIPT" validate "$SOURCE_PATH"
 ```
 
-### ✅ Nouvelle approche (prompt d'action)
+### ✅ New approach (action prompt)
 
 ```markdown
-**Action : Valider la source AI-KIDO**
+**Action: Validate AI-KIDO source**
 
-1. **Vérifier les fichiers obligatoires** dans `$SOURCE_PATH` :
+1. **Check mandatory files** in `$SOURCE_PATH`:
    - `prompts/hard_points/ai-kido.md`
    - `prompts/hard_points/ai-kido-light.md`
    - `AGENTS.md`
    - `CLAUDE.md`
 
-2. **Extraire la version** depuis `$SOURCE_PATH/prompts/hard_points/ai-kido.md` :
-   - Chercher la ligne : `> **Version**: X.X.X-MODE`
-   - Stocker dans `$SOURCE_VERSION`
+2. **Extract version** from `$SOURCE_PATH/prompts/hard_points/ai-kido.md`:
+   - Look for the line: `> **Version**: X.X.X-MODE`
+   - Store in `$SOURCE_VERSION`
 
-3. **Résultat** :
-   - ✅ Si tous les fichiers existent ET version détectée :
-     - Afficher "✅ Source AI-KIDO validée (version $SOURCE_VERSION)"
-     - Continuer au prochain prompt d'action
-   - ❌ Sinon :
-     - Afficher "❌ ERREUR : Source AI-KIDO invalide"
-     - Lister les fichiers manquants
+3. **Result**:
+   - ✅ If all files exist AND version detected:
+     - Display "✅ AI-KIDO source validated (version $SOURCE_VERSION)"
+     - Continue to next action prompt
+   - ❌ Otherwise:
+     - Display "❌ ERROR: Invalid AI-KIDO source"
+     - List missing files
      - EXIT 1
 ```
 
-**Avantages** :
-- Le LLM comprend l'intention
-- Adaptation au contexte réel
-- Gestion d'erreur naturelle
-- Aucun fichier bash à maintenir
+**Advantages**:
+- The LLM understands the intent
+- Adaptation to real context
+- Natural error handling
+- No bash files to maintain
 
 ---
 
-## 🎨 Template de Plan
+## 🎨 Plan Template
 
 ```markdown
-# Plan {nom}
+# Plan {name}
 
-> **Type** : {beginning|version|ending} | **Ordre** : {N} | **Bloquant** : {OUI|NON}
+> **Type**: {beginning|version|ending} | **Order**: {N} | **Blocking**: {YES|NO}
 
-## 🎯 Objectif
+## 🎯 Objective
 
-Description claire en 1-2 phrases de ce que fait ce plan.
+Clear description in 1-2 sentences of what this plan does.
 
-## 📥 Entrées
+## 📥 Inputs
 
-- `$VARIABLE1` : Description
-- `$VARIABLE2` : Description
+- `$VARIABLE1`: Description
+- `$VARIABLE2`: Description
 
-## 📋 Étapes
+## 📋 Steps
 
-### 1️⃣ Phase 1 : Nom descriptif
+### 1️⃣ Phase 1: Descriptive name
 
-**Action : Titre de l'action**
+**Action: Action title**
 
-Instructions détaillées sous forme de prompts d'action :
+Detailed instructions as action prompts:
 
-1. **Première étape** : Description précise
-   - Détail A
-   - Détail B
+1. **First step**: Precise description
+   - Detail A
+   - Detail B
 
-2. **Deuxième étape** : Description précise
+2. **Second step**: Precise description
    ```bash
-   # Si script technique nécessaire (un des 4 autorisés)
+   # If technical script needed (one of the 4 authorized)
    SCRIPT="prompts/hard_points/system/maj/scripts/{script}.sh"
    RESULT=$("$SCRIPT" {args})
    ```
 
-3. **Résultat** :
-   - ✅ Cas succès : Action
-   - ❌ Cas échec : Action
+3. **Result**:
+   - ✅ Success case: Action
+   - ❌ Failure case: Action
 
-### 2️⃣ Phase 2 : Nom descriptif
+### 2️⃣ Phase 2: Descriptive name
 
 ...
 
-## 📤 Sorties
+## 📤 Outputs
 
-- `$OUTPUT1` : Description de ce qui est produit
-- Fichiers créés : Liste
+- `$OUTPUT1`: Description of what is produced
+- Files created: List
 
-## ✅ Conditions de Succès
+## ✅ Success Criteria
 
 - Condition 1
 - Condition 2
 
-## ❌ Gestion d'Échec
+## ❌ Failure Handling
 
-Si échec détecté :
-- Action de rollback
-- Ou passage au plan ending-10 (gestion erreurs)
+If failure detected:
+- Rollback action
+- Or move to plan ending-10 (error handling)
 ```
 
 ---
 
-## 🔧 Guide d'Utilisation pour Agents
+## 🔧 Usage Guide for Agents
 
-### Pour `agent-aikido-update-controller`
+### For `agent-aikido-update-controller`
 
-Lors de l'exécution de `/maj-aikido` :
+During `/maj-aikido` execution:
 
-1. **Charger `plan-beginning.md`**
-   - Exécuter chaque prompt d'action séquentiellement
-   - Stocker les variables exportées ($SOURCE_VERSION, etc.)
+1. **Load `plan-beginning.md`**
+   - Execute each action prompt sequentially
+   - Store exported variables ($SOURCE_VERSION, etc.)
 
-2. **Sélectionner plan de version** selon `$MAJ_TARGET_VERSION`
+2. **Select version plan** according to `$MAJ_TARGET_VERSION`
    - `1.3.0.0` → `plan-V1.3.0.0.md`
    - `1.3.1.0` → `plan-V1.3.1.0.md`
 
-3. **Exécuter le plan de version**
-   - Phase par phase
-   - Si phase bloquante échoue → STOP
+3. **Execute the version plan**
+   - Phase by phase
+   - If blocking phase fails → STOP
 
-4. **Chaîner les plans ending** (0→1→2→3→4→5→6→7)
-   - Chaque plan peut décider de continuer ou stop
+4. **Chain ending plans** (0→1→2→3→4→5→6→7)
+   - Each plan can decide to continue or stop
 
-### Pour développeurs de nouveaux plans
+### For developers of new plans
 
-1. **Créer le fichier** : `plan-{nom}.md`
-2. **Suivre le template** ci-dessus
-3. **Privilégier prompts d'action** vs scripts
-4. **N'utiliser les scripts techniques** que si nécessaire
-5. **Tester le plan** avec agent-aikido-update-controller
+1. **Create the file**: `plan-{name}.md`
+2. **Follow the template** above
+3. **Prefer action prompts** over scripts
+4. **Use technical scripts** only if necessary
+5. **Test the plan** with agent-aikido-update-controller
 
 ---
 
-## 📊 Métriques
+## 📊 Metrics
 
-| Métrique | Valeur | Évolution |
+| Metric | Value | Evolution |
 |----------|--------|-----------|
-| Scripts bash totaux | 4 | ↓ 80% (20 → 4) |
-| Plans documentés | 13 | ↑ 100% (0 → 13) |
-| Taux de réussite migration | 95% | ↑ 25% |
-| Temps moyen MAJ | 8 min | ↓ 40% |
+| Total bash scripts | 4 | ↓ 80% (20 → 4) |
+| Documented plans | 13 | ↑ 100% (0 → 13) |
+| Migration success rate | 95% | ↑ 25% |
+| Average update time | 8 min | ↓ 40% |
 
 ---
 
 ## 🚀 Roadmap
 
 ### V2.1 (Q1 2026)
-- [ ] Plan ending-10 : Gestion erreurs centralisée
-- [ ] Validation automatique des plans (lint)
-- [ ] Tests automatisés des plans
+- [ ] Plan ending-10: Centralized error handling
+- [ ] Automatic plan validation (lint)
+- [ ] Automated plan tests
 
 ### V2.2 (Q2 2026)
-- [ ] Plans conditionnels (if/else)
-- [ ] Plans parallélisables
-- [ ] Rollback automatique
+- [ ] Conditional plans (if/else)
+- [ ] Parallelizable plans
+- [ ] Automatic rollback
 
 ---
 
-## 📚 Références
+## 📚 References
 
-- **Commande principale** : [`/prompts/hard_points/commands/maj-aikido.md`](../commands/maj-aikido.md)
-- **Skill MAJ** : [`/prompts/hard_points/system/maj/SKILL.md`](../SKILL.md)
-- **Scripts techniques** : [`/prompts/hard_points/system/maj/scripts/`](../scripts/)
+- **Main command** : [`/prompts/hard_points/commands/maj-aikido.md`](../commands/maj-aikido.md)
+- **Update Skill** : [`/prompts/hard_points/system/maj/SKILL.md`](../SKILL.md)
+- **Technical scripts** : [`/prompts/hard_points/system/maj/scripts/`](../scripts/)
 
 ---
 
-*Généré par AI-KIDO System – Version 2.0*
+*Generated by AI-KIDO System – Version 2.0*

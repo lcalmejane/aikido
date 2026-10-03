@@ -9,7 +9,7 @@ last_check:
   status: "✅"
   validator: "agent-aikido-doc-header"
   sources_hash: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-  notes: "Header créé selon standards AI-KIDO V1.3"
+  notes: "Header created according to AI-KIDO V1.3 standards"
 cross_refs:
   technique: "../techniques/guideline-prompts.md"
   hard_points: "../../hard_points/ai-kido.md"
@@ -19,143 +19,143 @@ source_refs:
     relation: "implementation"
   - type: "rule"
     path: "/prompts/hard_points/ai-kido.md"
-    section: "Règle 11"
-    topic: "Densité sémantique"
+    section: "Rule 11"
+    topic: "Semantic density"
 tags: ["guidelines", "prompts", "best-practices", "llm-optimization"]
 ---
 
-# Guidelines pour la Création de Prompts Efficaces
+# Guidelines for Creating Effective Prompts
 
-## Principes Fondamentaux
+## Fundamental Principles
 
-### 1. Clarté et Précision
-- **Objectif défini** : Chaque prompt doit avoir un objectif clair et mesurable
-- **Instructions explicites** : Éviter l'ambiguïté, utiliser un langage précis
-- **Contexte suffisant** : Fournir toutes les informations nécessaires à la compréhension
+### 1. Clarity and Precision
+- **Defined objective**: Each prompt must have a clear and measurable objective
+- **Explicit instructions**: Avoid ambiguity, use precise language
+- **Sufficient context**: Provide all information necessary for understanding
 
-### 2. Structure et Organisation
-- **Hiérarchisation** : Organiser les informations par ordre d'importance
-- **Sections distinctes** : Séparer les différents types d'instructions (rôle, tâche, contraintes)
-- **Format cohérent** : Utiliser une structure reproductible et logique
+### 2. Structure and Organization
+- **Prioritization**: Organize information in order of importance
+- **Distinct sections**: Separate different types of instructions (role, task, constraints)
+- **Consistent format**: Use a reproducible and logical structure
 
-### 3. Spécificité du Rôle
-- **Persona défini** : Attribuer un rôle spécifique avec expertise appropriée
-- **Compétences explicites** : Détailler les connaissances et capacités attendues
-- **Perspective claire** : Définir le point de vue et l'approche à adopter
+### 3. Role Specificity
+- **Defined persona**: Assign a specific role with appropriate expertise
+- **Explicit skills**: Detail the expected knowledge and capabilities
+- **Clear perspective**: Define the point of view and approach to adopt
 
-### 4. Contraintes et Limites
-- **Périmètre défini** : Établir clairement ce qui est inclus et exclu
-- **Règles explicites** : Spécifier les contraintes techniques, éthiques ou méthodologiques
-- **Garde-fous** : Intégrer des mécanismes de validation et de contrôle
+### 4. Constraints and Limits
+- **Defined scope**: Clearly establish what is included and excluded
+- **Explicit rules**: Specify technical, ethical, or methodological constraints
+- **Guardrails**: Integrate validation and control mechanisms
 
-### 5. Exemples et Illustrations
-- **Cas concrets** : Fournir des exemples représentatifs du résultat attendu
-- **Contre-exemples** : Montrer ce qu'il faut éviter
-- **Formats de sortie** : Illustrer la structure attendue des réponses
+### 5. Examples and Illustrations
+- **Concrete cases**: Provide representative examples of the expected result
+- **Counter-examples**: Show what to avoid
+- **Output formats**: Illustrate the expected structure of responses
 
-## Bonnes Pratiques
+## Best Practices
 
-### Formulation des Instructions
-- Utiliser l'impératif pour les actions à effectuer
-- Éviter les négations multiples qui créent de la confusion
-- Privilégier les phrases courtes et directes
-- Utiliser un vocabulaire technique approprié au domaine
+### Formulating Instructions
+- Use the imperative for actions to perform
+- Avoid multiple negations that create confusion
+- Favor short and direct sentences
+- Use technical vocabulary appropriate to the domain
 
-### Gestion du Contexte
-- Fournir le contexte nécessaire sans surcharge d'informations
-- Référencer les sources et standards pertinents
-- Maintenir la cohérence avec les instructions précédentes
-- Adapter le niveau de détail au public cible
+### Context Management
+- Provide the necessary context without information overload
+- Reference relevant sources and standards
+- Maintain consistency with previous instructions
+- Adapt the level of detail to the target audience
 
-### Validation et Itération
-- Tester le prompt avec des cas d'usage variés
-- Mesurer la qualité et la consistance des réponses
-- Itérer en fonction des résultats obtenus
-- Documenter les versions et améliorations
+### Validation and Iteration
+- Test the prompt with varied use cases
+- Measure the quality and consistency of responses
+- Iterate based on results obtained
+- Document versions and improvements
 
-## Structure Recommandée
+## Recommended Structure
 
 ```markdown
-# [Titre du Prompt]
+# [Prompt Title]
 
-## Rôle et Expertise
-[Définition du persona et de ses compétences]
+## Role and Expertise
+[Definition of the persona and their skills]
 
-## Objectif
-[Description claire de la tâche à accomplir]
+## Objective
+[Clear description of the task to accomplish]
 
-## Contexte
-[Informations de background nécessaires]
+## Context
+[Necessary background information]
 
-## Instructions Spécifiques
-[Étapes détaillées et méthodologie]
+## Specific Instructions
+[Detailed steps and methodology]
 
-## Contraintes
-[Limitations et règles à respecter]
+## Constraints
+[Limitations and rules to follow]
 
-## Format de Sortie
-[Structure attendue de la réponse]
+## Output Format
+[Expected structure of the response]
 
-## Exemples
-[Illustrations concrètes]
+## Examples
+[Concrete illustrations]
 ```
 
-## Critères de Qualité
+## Quality Criteria
 
-### Efficacité
-- Le prompt produit-il des résultats conformes aux attentes ?
-- La qualité est-elle consistante entre différentes exécutions ?
-- Le temps de traitement est-il optimal ?
+### Effectiveness
+- Does the prompt produce results consistent with expectations?
+- Is the quality consistent across different executions?
+- Is the processing time optimal?
 
-### Robustesse
-- Le prompt fonctionne-t-il avec des inputs variés ?
-- Gère-t-il correctement les cas limites ?
-- Résiste-t-il aux tentatives de contournement ?
+### Robustness
+- Does the prompt work with varied inputs?
+- Does it correctly handle edge cases?
+- Does it resist bypass attempts?
 
-### Maintenabilité
-- Le prompt est-il facile à comprendre et modifier ?
-- La documentation est-elle suffisante ?
-- Les dépendances sont-elles clairement identifiées ?
+### Maintainability
+- Is the prompt easy to understand and modify?
+- Is the documentation sufficient?
+- Are dependencies clearly identified?
 
-## Anti-Patterns à Éviter
+## Anti-Patterns to Avoid
 
-### Instructions Contradictoires
-- Éviter les consignes qui se contredisent
-- Vérifier la cohérence entre différentes sections
-- Prioriser clairement en cas de conflit potentiel
+### Contradictory Instructions
+- Avoid directives that contradict each other
+- Check consistency between different sections
+- Clearly prioritize in case of potential conflict
 
-### Surcharge Cognitive
-- Ne pas noyer l'essentiel dans les détails
-- Éviter les listes trop longues d'instructions
-- Structurer l'information de manière hiérarchique
+### Cognitive Overload
+- Do not bury the essential in details
+- Avoid overly long lists of instructions
+- Structure information hierarchically
 
-### Ambiguïté Sémantique
-- Éviter les termes polysémiques sans définition
-- Clarifier les acronymes et jargon technique
-- Utiliser des références précises plutôt que des approximations
+### Semantic Ambiguity
+- Avoid polysemous terms without definition
+- Clarify acronyms and technical jargon
+- Use precise references rather than approximations
 
-## Métriques d'Évaluation
+## Evaluation Metrics
 
-### Quantitatives
-- Taux de réussite sur des cas de test définis
-- Temps de réponse moyen
-- Consistance des outputs (variance)
+### Quantitative
+- Success rate on defined test cases
+- Average response time
+- Output consistency (variance)
 
-### Qualitatives
-- Pertinence du contenu généré
-- Respect des contraintes spécifiées
-- Adéquation avec les objectifs métier
+### Qualitative
+- Relevance of generated content
+- Compliance with specified constraints
+- Alignment with business objectives
 
-## Relations et Dépendances
+## Relations and Dependencies
 
-**Technique pratique associée** : [`/prompts/gen/techniques/guideline-prompts.md`](../techniques/guideline-prompts.md)
-- Patterns de formulation avec exemples concrets
-- Workflows d'optimisation étape par étape
-- Templates réutilisables pour code review, documentation, refactoring
+**Associated practical technique**: [`/prompts/gen/techniques/guideline-prompts.md`](../techniques/guideline-prompts.md)
+- Formulation patterns with concrete examples
+- Step-by-step optimization workflows
+- Reusable templates for code review, documentation, refactoring
 
-**Voir aussi** :
-- Hard Points AI-KIDO : [`/prompts/hard_points/ai-kido.md`](../../hard_points/ai-kido.md) (Règle 11 : Densité sémantique)
+**See also**:
+- AI-KIDO Hard Points: [`/prompts/hard_points/ai-kido.md`](../../hard_points/ai-kido.md) (Rule 11: Semantic density)
 
 ---
 
-*Ces guidelines constituent un cadre de référence pour la création de prompts efficaces, adaptables selon les contextes spécifiques d'utilisation.*
+*These guidelines constitute a reference framework for creating effective prompts, adaptable to specific usage contexts.*

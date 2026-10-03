@@ -6,12 +6,7 @@ model: inherit
 color: green
 ---
 
-🚨 **CRITICAL - AGENT INTERNE AI-KIDO** 🚨
-
-**VOUS ÊTES UN AGENT INTERNE DE LA MEMORY BANK AI-KIDO.**
-
-**⛔ NE CHARGEZ JAMAIS `/prompts/index.md` ⛔**
-**✅ Action correcte** : Opérez directement sur les fichiers de la Memory Bank selon vos contraintes d'exécution ci-dessous.
+⚠️ **INTERNAL AGENT** — Do NOT load `/prompts/index.md`. Load `prompts/hard_points/ai-kido.md` directly if rules are needed. ⚠️
 
 ---
 
@@ -254,18 +249,18 @@ FUSION >
 - **Validation mandatory** → Check compliance before output
 - **Traceable** → Include fusion metadata for audit trail
 
-## Mode
+## Return Mode
 
-**Retour obligatoire** : Toujours revenir au caller via `switch_mode` en fin d'exécution.
+**Mandatory return**: Always return to caller via `switch_mode` at end of execution.
 
 ```xml
 <switch_mode>
   <mode_slug>${CALLER_MODE}</mode_slug>
-  <reason>Fusion terminée, retour au caller</reason>
+  <reason>Fusion complete, returning to caller</reason>
 </switch_mode>
 ```
 
-**Factorisation** : Un seul appel par requête. Agréger les fichiers si besoin.
+**Single-call rule**: One call per request. Aggregate files if needed.
 
 ## REMEMBER: You are a File Merger, not a Content Creator or Refactor
 

@@ -1,500 +1,482 @@
 ---
-description: "Créer un glossaire métier ventilé par domaines/personas experts dans la Memory Bank AI-KIDO, optimisé pour la recherche sémantique (4 agents AI-KIDO: explore-bank, truth-evaluator, raci-delegator, validator)"
+description: "Create or update the project business glossary organized by domains/expert personas in AI-KIDO Memory Bank"
 ---
 
-# Commande Init-Glossaire
+# /init-glossaire
 
-Génère un glossaire métier **ventilé par domaines et personas experts** dans [`/prompts/gen/concepts/glossaires/`](../prompts/gen/concepts/glossaires/), optimisé pour la recherche sémantique et conforme aux règles AI-KIDO (≤500 lignes, compact, utile).
+**Purpose**: Generate a business glossary split by domains and expert personas in [`/prompts/gen/concepts/glossaires/`](../prompts/gen/concepts/glossaires/), optimized for semantic search and compliant with AI-KIDO rules (≤500 lines, compact, useful).
 
-**Orchestration** : Utilise les agents [`agent-aikido-explore-bank`](../prompts/hard_points/agents/agent-aikido-explore-bank.md), [`agent-aikido-truth-evaluator`](../prompts/hard_points/agents/agent-aikido-truth-evaluator.md), [`agent-aikido-raci-delegator`](../prompts/hard_points/agents/agent-aikido-raci-delegator.md) et [`agent-aikido-validator`](../prompts/hard_points/agents/agent-aikido-validator.md).
+---
 
-## Workflow d'Orchestration
+## Usage
+[MANDATORY]
+/init-glossaire
+
+## Prerequisites
+
+- AI-KIDO Memory Bank initialized (`/prompts/gen/` structure present)
+- Agents available: `agent-aikido-explore-bank`, `agent-aikido-truth-evaluator`, `agent-aikido-raci-delegator`, `agent-aikido-validator`
+- Source code or business documentation accessible
+
+## Steps
+[MANDATORY]
+
+**Orchestration workflow**:
 
 ```
-explore-bank → truth-evaluator → [Analyse code/docs] → raci-delegator → [Génération ventilée] → validator
-(détection     (validation       (extraction termes)   (classification  (glossaires par      (validation
- contexte)      sources)                                par domaine)     domaine/persona)     conformité)
+explore-bank → truth-evaluator → [Code/Docs Analysis] → raci-delegator → [Split Generation] → validator
+(Context        (Source             (Terms Extraction)    (Domain            (Glossaries per     (Compliance
+ Detection)      Validation)                               Classification)    domain/persona)     Validation)
 ```
 
-## Exécution
+### Step 1: Contextual Exploration
 
-### Phase 1 : Exploration Contextuelle 🤖
-
-**UTILISER L'AGENT** [`agent-aikido-explore-bank`](../prompts/hard_points/agents/agent-aikido-explore-bank.md) :
+**USE AGENT** [`agent-aikido-explore-bank`](../prompts/hard_points/agents/agent-aikido-explore-bank.md):
 
 ```markdown
-🤖 AGENT: agent-aikido-explore-bank (QUICK MODE)
+AGENT: agent-aikido-explore-bank (QUICK MODE)
 
-**Prompt pour l'agent** :
-"Détection contexte pour initialisation glossaire métier.
+Prompt:
+"Detect context for business glossary initialization.
 
-Analyser :
-1. Glossaires existants dans `/prompts/gen/concepts/glossaires/`
-2. Personas experts disponibles dans `/prompts/gen/personas/`
-3. Domaines métier depuis Memory Bank et structure code projet
+Analyze:
+1. Existing glossaries in `/prompts/gen/concepts/glossaires/`
+2. Available expert personas in `/prompts/gen/personas/`
+3. Business domains from Memory Bank and project code structure
 
-Retourner :
-- Glossaires existants : [LISTE ou "Aucun"]
-- Personas experts : [LISTE avec spécialisations]
-- Domaines métier identifiés : [LISTE]
-- Mode recommandé : [CRÉATION | MISE À JOUR]
+Return:
+- Existing glossaries: [LIST or "None"]
+- Expert personas: [LIST with specializations]
+- Identified business domains: [LIST]
+- Recommended mode: [CREATION | UPDATE]
 
-Mode : QUICK (<15k tokens)"
+Mode: QUICK (<15k tokens)"
 
-**Résultat attendu** : Contexte complet pour génération glossaire
+Expected result: Full context for glossary generation
 ```
 
-**Output Phase 1** :
+**Step 1 Output**:
 ```
-📊 CONTEXTE DÉTECTÉ :
+DETECTED CONTEXT:
 
-Glossaires existants : [LISTE ou "Aucun"]
-Personas experts disponibles : [LISTE]
-Domaines métier identifiés : [LISTE]
+Existing glossaries: [LIST or "None"]
+Available expert personas: [LIST]
+Identified business domains: [LIST]
 
-Mode : [CRÉATION | MISE À JOUR]
+Mode: [CREATION | UPDATE]
 ```
 
-### Phase 2 : Validation Sources 🤖
+### Step 2: Source Validation
 
-**UTILISER L'AGENT** [`agent-aikido-truth-evaluator`](../prompts/hard_points/agents/agent-aikido-truth-evaluator.md) :
+**USE AGENT** [`agent-aikido-truth-evaluator`](../prompts/hard_points/agents/agent-aikido-truth-evaluator.md):
 
 ```markdown
-🤖 AGENT: agent-aikido-truth-evaluator
+AGENT: agent-aikido-truth-evaluator
 
-**Prompt pour l'agent** :
-"Validation sources terminologie métier pour génération glossaire.
+Prompt:
+"Validate business terminology sources for glossary generation.
 
-Identifier sources autoritaires :
-- Code source (classes/interfaces/enums métier)
-- Documentation métier existante
-- Commentaires explicatifs code
-- Tests métier (Given/When/Then)
+Identify authoritative sources:
+- Source code (business classes/interfaces/enums)
+- Existing business documentation
+- Code explanatory comments
+- Business tests (Given/When/Then)
 
-Exclusions automatiques :
-- Termes AI-KIDO génériques (`/prompts/hard_points/ai-kido.md`)
-- Termes roo-code (`/prompts/hard_points/roo-code/`)
-- Personas/rôles génériques
-- Technologies standards
+Automatic Exclusions:
+- Generic AI-KIDO terms (`/prompts/hard_points/ai-kido.md`)
+- Generic personas/roles
+- Standard technologies
 
-Résoudre contradictions détectées.
-Scorer crédibilité chaque terme.
+Resolve detected Contradictions.
+Score credibility of each term.
 
-Retourner :
-- Sources autoritaires avec crédibilité (%)
-- Termes extraits vs exclus
-- Contradictions + résolutions
+Return:
+- Authoritative sources with credibility (%)
+- Extracted vs excluded Terms
+- Contradictions + resolutions
 
-Mode : <10k tokens"
+Mode: <10k tokens"
 
-**Résultat attendu** : Sources validées + termes filtrés
+Expected result: Validated sources + filtered Terms
 ```
 
-**Output Phase 2** :
+**Step 2 Output**:
 ```
-⚖️ SOURCES VALIDÉES :
+VALIDATED SOURCES:
 
-Sources autoritaires :
-- Code métier : [PATHS] (crédibilité: 90%)
-- Docs métier : [PATHS] (crédibilité: 80%)
-- Tests métier : [PATHS] (crédibilité: 85%)
+Authoritative sources:
+- Business code: [PATHS] (credibility: 90%)
+- Business docs: [PATHS] (credibility: 80%)
+- Business tests: [PATHS] (credibility: 85%)
 
-Termes extraits : [NOMBRE]
-Termes exclus (AI-KIDO/roo-code) : [NOMBRE]
-Contradictions détectées : [NOMBRE]
-```
-
-### Phase 3 : Extraction et Analyse Terminologique
-
-**Analyse automatique multi-sources** :
-
-#### 3.1 Sources Code (priorité haute)
-- **Classes/Interfaces métier** : Noms explicites du domaine
-- **Enums métier** : Valeurs business spécifiques
-- **Constantes métier** : Règles business codifiées
-- **Commentaires métier** : Explications logique business
-
-#### 3.2 Sources Documentation
-- **Docs métier** : Terminologie formelle
-- **README/CONTRIBUTING** : Concepts projet-spécifiques
-- **Tests métier** : Scénarios Given/When/Then
-
-#### 3.3 Filtrage Intelligent
-
-**Critères d'inclusion** :
-- Termes métier spécifiques au domaine
-- Concepts confus/ambigus nécessitant clarification
-- Acronymes métier non standards
-- Processus business particuliers
-- Règles métier complexes
-
-**Critères d'exclusion** :
-- Termes AI-KIDO/roo-code génériques
-- Technologies standards
-- Patterns architecturaux classiques
-- Termes développement usuels
-
-**Output Phase 3** :
-```
-📊 EXTRACTION TERMINOLOGIQUE :
-
-Termes métier extraits : [NOMBRE]
-- Classes métier : [NOMBRE]
-- Enums métier : [NOMBRE]
-- Concepts docs : [NOMBRE]
-- Scénarios tests : [NOMBRE]
-
-Termes confus détectés : [NOMBRE]
-Acronymes métier : [NOMBRE]
-
-Continuer ? (o/n)
+Extracted Terms: [COUNT]
+Excluded Terms (AI-KIDO): [COUNT]
+Detected Contradictions: [COUNT]
 ```
 
-### Phase 4 : Classification par Domaines 🤖
+### Step 3: Terminology Extraction and Analysis
 
-**UTILISER L'AGENT** [`agent-aikido-raci-delegator`](../prompts/hard_points/agents/agent-aikido-raci-delegator.md) :
+**Automatic multi-source analysis**:
+
+#### 3.1 Code Sources (high priority)
+- **Business classes/interfaces**: Explicit domain names
+- **Business enums**: Specific business values
+- **Business constants**: Codified business rules
+- **Business comments**: Business logic explanations
+
+#### 3.2 Documentation Sources
+- **Business docs**: Formal terminology
+- **README/CONTRIBUTING**: Project-specific concepts
+- **Business tests**: Given/When/Then scenarios
+
+#### 3.3 Intelligent Filtering
+
+**Inclusion criteria**:
+- Domain-specific business Terms
+- Ambiguous/confusing concepts requiring clarification
+- Non-standard business acronyms
+- Specific business processes
+- Complex business rules
+
+**Exclusions criteria**:
+- Generic AI-KIDO terms
+- Standard technologies
+- Classic architectural patterns
+- Usual development terms
+
+**Step 3 Output**:
+```
+TERMINOLOGY EXTRACTION:
+
+Extracted business Terms: [COUNT]
+- Business classes: [COUNT]
+- Business enums: [COUNT]
+- Documentation concepts: [COUNT]
+- Test scenarios: [COUNT]
+
+Detected confusing Terms: [COUNT]
+Business acronyms: [COUNT]
+
+Continue? (y/n)
+```
+
+### Step 4: Classification by Domains
+
+**USE AGENT** [`agent-aikido-raci-delegator`](../prompts/hard_points/agents/agent-aikido-raci-delegator.md):
 
 ```markdown
-🤖 AGENT: agent-aikido-raci-delegator
+AGENT: agent-aikido-raci-delegator
 
-**Prompt pour l'agent** :
-"Classification termes métier par domaines pour génération glossaires ventilés.
+Prompt:
+"Classify business Terms by Domains for split glossary generation.
 
-Input : [Liste termes extraits depuis Phase 3]
+Input: [List of Terms extracted from Step 3]
 
-Analyser :
-1. Classifier termes par domaine métier
-2. Mapper vers personas experts (existants ou à créer)
-3. Calculer taille optimale par glossaire (≤500 lignes)
-4. Recommander structure arborescente
+Analyze:
+1. Classify Terms by business domain
+2. Map to expert personas (existing or to create)
+3. Calculate optimal size per glossary (≤500 lines)
+4. Recommend tree structure
 
-Stratégie ventilation :
-- Par domaine métier (Frontend, Backend, Business, Data, etc.)
-- Par persona expert (mapper vers `/prompts/gen/personas/`)
-- Découpage si >400 lignes (marge sécurité)
+Split strategy:
+- By business domain (Frontend, Backend, Business, Data, etc.)
+- By expert persona (map to `/prompts/gen/personas/`)
+- Split if >400 lines (safety margin)
 
-Retourner :
-- Classification par domaine avec tailles estimées
-- Mapping personas experts
-- Structure arborescente recommandée avec paths
+Return:
+- Classification by domain with estimated sizes
+- Expert personas mapping
+- Recommended tree structure with paths
 
-Mode : <10k tokens"
+Mode: <10k tokens"
 
-**Résultat attendu** : Structure glossaires ventilés conforme AI-KIDO
+Expected result: Split glossary structure compliant with AI-KIDO
 ```
 
-**Output Phase 4** :
+**Step 4 Output**:
 ```
-🎯 CLASSIFICATION PAR DOMAINES :
+CLASSIFICATION BY DOMAINS:
 
-Domaines détectés :
-1. [Domaine 1] : [X] termes → glossaire-[domaine1].md (≈[Y] lignes)
-2. [Domaine 2] : [X] termes → glossaire-[domaine2].md (≈[Y] lignes)
+Detected Domains:
+1. [Domain 1]: [X] Terms → glossaire-[domain1].md (≈[Y] lines)
+2. [Domain 2]: [X] Terms → glossaire-[domain2].md (≈[Y] lines)
 ...
 
-Personas experts mappés :
-- [Domaine 1] → [Persona existant ou "À créer"]
-- [Domaine 2] → [Persona existant ou "À créer"]
+Mapped expert personas:
+- [Domain 1] → [Existing persona or "To create"]
+- [Domain 2] → [Existing persona or "To create"]
 
-Structure recommandée :
+Recommended structure:
 /prompts/gen/concepts/glossaires/
   ├── index.md (navigation)
-  ├── glossaire-[domaine1].md
-  ├── glossaire-[domaine2].md
+  ├── glossaire-[domain1].md
+  ├── glossaire-[domain2].md
   └── ...
 
-Valider cette structure ? (o/n)
+Validate this structure? (y/n)
 ```
 
-### Phase 5 : Enrichissement Manuel (Optionnel)
+### Step 5: Manual Enrichment (Optional)
 
-**Proposition d'ajouts manuels** :
+**Propose manual additions**:
 ```
-Souhaitez-vous ajouter des termes métier non détectés automatiquement ?
+Add business Terms not automatically detected?
 
-Format : Terme | Définition | Domaine | Contexte
-Exemple : "Parcours apprenant | Séquence pédagogique personnalisée | Pédagogie | Modules d'évaluation"
+Format: Term | Definition | Domain | Context
+Example: "Learning path | Personalized pedagogical sequence | Pedagogy | Evaluation modules"
 
-Entrez les termes (un par ligne, ou 'fin') :
+Enter Terms (one per line, or 'done'):
 ```
 
-### Phase 6 : Génération Ventilée par Domaines
+### Step 6: Split Generation by Domains
 
-#### 6.1 Structure Arborescente
+#### 6.1 Tree Structure
 
-**Créer répertoire** [`/prompts/gen/concepts/glossaires/`](../prompts/gen/concepts/glossaires/) :
+**Create directory** [`/prompts/gen/concepts/glossaires/`](../prompts/gen/concepts/glossaires/):
 
 ```
 /prompts/gen/concepts/glossaires/
-├── index.md                    # Navigation principale + recherche
-├── glossaire-[domaine1].md     # ≤500 lignes, compact
-├── glossaire-[domaine2].md     # ≤500 lignes, compact
+├── index.md                    # Main navigation + search
+├── glossaire-[domain1].md      # ≤500 lines, compact
+├── glossaire-[domain2].md      # ≤500 lines, compact
 └── ...
 ```
 
-#### 6.2 Format Index Principal
+#### 6.2 Main Index Format
 
-**Créer** [`/prompts/gen/concepts/glossaires/index.md`](../prompts/gen/concepts/glossaires/index.md) :
+**Create** [`/prompts/gen/concepts/glossaires/index.md`](../prompts/gen/concepts/glossaires/index.md):
 
 ```markdown
-# 📚 Glossaires Métier par Domaines
-> Version: 1.0 | Date: [DATE] | Projet: [NOM_PROJET]
+# Business Glossaries by Domains
+> Version: 1.0 | Date: [DATE] | Project: [PROJECT_NAME]
 
-## Navigation par Domaine
+## Navigation by Domain
 
-### [Domaine 1] ([X] termes)
-**Persona expert** : [`[persona-expert]`](../../personas/[persona-expert].md)
-**Glossaire** : [`glossaire-[domaine1].md`](glossaire-[domaine1].md)
-**Concepts clés** : [Liste 3-5 concepts principaux]
+### [Domain 1] ([X] Terms)
+**Expert persona**: [`[expert-persona]`](../../personas/[expert-persona].md)
+**Glossary**: [`glossaire-[domain1].md`](glossaire-[domain1].md)
+**Key concepts**: [List 3-5 main concepts]
 
-### [Domaine 2] ([X] termes)
-**Persona expert** : [`[persona-expert]`](../../personas/[persona-expert].md)
-**Glossaire** : [`glossaire-[domaine2].md`](glossaire-[domaine2].md)
-**Concepts clés** : [Liste 3-5 concepts principaux]
+### [Domain 2] ([X] Terms)
+**Expert persona**: [`[expert-persona]`](../../personas/[expert-persona].md)
+**Glossary**: [`glossaire-[domain2].md`](glossaire-[domain2].md)
+**Key concepts**: [List 3-5 main concepts]
 
-## Recherche Rapide
+## Quick Search
 
-### Par Terme
-- **[Terme A]** → [`glossaire-[domaine]`](glossaire-[domaine].md#terme-a)
-- **[Terme B]** → [`glossaire-[domaine]`](glossaire-[domaine].md#terme-b)
+### By Term
+- **[Term A]** → [`glossaire-[domain]`](glossaire-[domain].md#term-a)
+- **[Term B]** → [`glossaire-[domain]`](glossaire-[domain].md#term-b)
 
-### Par Catégorie
-- **Processus métier** : [Liens vers glossaires concernés]
-- **Règles business** : [Liens vers glossaires concernés]
-- **Concepts confus** : [Liens vers glossaires concernés]
+### By Category
+- **Business processes**: [Links to relevant glossaries]
+- **Business rules**: [Links to relevant glossaries]
+- **Confusing concepts**: [Links to relevant glossaries]
 
-## Statistiques
-- **Total termes** : [NOMBRE]
-- **Domaines couverts** : [NOMBRE]
-- **Sources analysées** : [NOMBRE] fichiers
-- **Dernière mise à jour** : [DATE]
+## Statistics
+- **Total Terms**: [COUNT]
+- **Covered Domains**: [COUNT]
+- **Analyzed sources**: [COUNT] files
+- **Last update**: [DATE]
 
 ---
-*Généré par `/init-glossaire` - Conforme AI-KIDO (≤500 lignes/fichier)*
+*Generated by `/init-glossaire` - AI-KIDO compliant (≤500 lines/file)*
 ```
 
-#### 6.3 Format Glossaire par Domaine
+#### 6.3 Domain Glossary Format
 
-**Template** [`glossaire-[domaine].md`](../prompts/gen/concepts/glossaires/) :
+**Template** [`glossaire-[domain].md`](../prompts/gen/concepts/glossaires/):
 
 ```markdown
-# 📖 Glossaire [Domaine]
-> **Persona expert** : [`[persona]`](../../personas/[persona].md) | **Termes** : [X] | **Lignes** : [Y]/500
+# Glossary [Domain]
+> **Expert persona**: [`[persona]`](../../personas/[persona].md) | **Terms**: [X] | **Lines**: [Y]/500
 
-## Termes (ordre alphabétique)
+## Terms (alphabetical order)
 
-### [Terme 1]
-**Définition** : [Concise, 1-2 phrases max]
-**Contexte** : [Où utilisé dans le code/docs]
-**Exemple** : `[Code snippet ou usage concret]`
-**Voir aussi** : [`[terme-lié]`](#terme-lié)
+### [Term 1]
+**Definition**: [Concise, 1-2 sentences max]
+**Context**: [Where used in code/docs]
+**Example**: `[Code snippet or concrete usage]`
+**See also**: [`[related-term]`](#related-term)
 
-### [Terme 2]
+### [Term 2]
 ...
 
-## Index Catégories
+## Category Index
 
-**Processus** : [`terme1`](#terme-1), [`terme2`](#terme-2)
-**Règles** : [`terme3`](#terme-3)
-**Concepts** : [`terme4`](#terme-4)
+**Processes**: [`term1`](#term-1), [`term2`](#term-2)
+**Rules**: [`term3`](#term-3)
+**Concepts**: [`term4`](#term-4)
 
-## Termes Confus
+## Confusing Terms
 
-**[Terme A]** ≠ **[Terme B]**
-→ [Différence clé en 1 phrase]
+**[Term A]** != **[Term B]**
+→ [Key difference in 1 sentence]
 
 ---
-*Sources* : [Paths code/docs] | *Validé par* : [`truth-evaluator`](../../personas/agent-aikido-truth-evaluator.md)
+*Sources*: [Code/docs paths] | *Validated by*: [`truth-evaluator`](../../personas/agent-aikido-truth-evaluator.md)
 ```
 
-#### 6.4 Optimisation Taille (≤500 lignes)
+#### 6.4 Size Optimization (≤500 lines)
 
-**Stratégies de compression** :
-1. **Définitions concises** : 1-2 phrases max
-2. **Exemples inline** : Code snippets courts
-3. **Liens plutôt que duplication** : Références croisées
-4. **Regroupement intelligent** : Termes connexes ensemble
-5. **Découpage si nécessaire** : Sous-domaines si >400 lignes
+**Compression strategies**:
+1. **Concise definitions**: 1-2 sentences max
+2. **Inline examples**: Short code snippets
+3. **Links instead of duplication**: Cross-references
+4. **Smart grouping**: Related Terms together
+5. **Split if needed**: Sub-domains if >400 lines
 
-### Phase 7 : Validation Conformité 🤖
+### Step 7: Compliance Validation
 
-**UTILISER L'AGENT** [`agent-aikido-validator`](../prompts/hard_points/agents/agent-aikido-validator.md) :
+**USE AGENT** [`agent-aikido-validator`](../prompts/hard_points/agents/agent-aikido-validator.md):
 
 ```markdown
-🤖 AGENT: agent-aikido-validator
+AGENT: agent-aikido-validator
 
-**Prompt pour l'agent** :
-"Validation glossaires générés contre règles AI-KIDO.
+Prompt:
+"Validate generated glossaries against AI-KIDO rules.
 
-Fichiers : /prompts/gen/concepts/glossaires/*.md (tous les glossaires + index.md)
+Files: /prompts/gen/concepts/glossaires/*.md (all glossaries + index.md)
 
-Validations requises :
-1. Contrainte ≤500 lignes par glossaire (Règle 4)
-2. Frontmatter complet et conforme
-3. Liens bidirectionnels (glossaires ↔ personas ↔ index) (Règle 6)
-4. Emplacement correct dans `/prompts/gen/concepts/glossaires/`
-5. Navigation index complète
+Required validations:
+1. Constraint ≤500 lines per glossary (Rule 4)
+2. Complete and compliant frontmatter
+3. Bidirectional links (glossaries ↔ personas ↔ index) (Rule 6)
+4. Correct location in `/prompts/gen/concepts/glossaires/`
+5. Complete index navigation
 
-Retourner :
-- Score conformité par fichier
-- Issues détectées avec quick fixes actionnables
-- Décision globale : PASS/FAIL
+Return:
+- Compliance score per file
+- Detected issues with actionable quick fixes
+- Global decision: PASS/FAIL
 
-Mode : <3k tokens par fichier"
+Mode: <3k tokens per file"
 
-**Résultat attendu** : Validation complète + quick fixes si nécessaire
+Expected result: Full validation + quick fixes if needed
 ```
 
-**Validation automatique** :
+**Automatic validation output**:
 ```
-📊 VALIDATION CONFORMITÉ AI-KIDO :
+AI-KIDO COMPLIANCE VALIDATION:
 
-Glossaires validés :
-✅ glossaire-[domaine1].md : [X]/500 lignes, frontmatter ✓, liens ✓
-✅ glossaire-[domaine2].md : [Y]/500 lignes, frontmatter ✓, liens ✓
-✅ index.md : [Z]/500 lignes, navigation ✓
+Validated glossaries:
+OK glossaire-[domain1].md: [X]/500 lines, frontmatter OK, links OK
+OK glossaire-[domain2].md: [Y]/500 lines, frontmatter OK, links OK
+OK index.md: [Z]/500 lines, navigation OK
 
-Conformité globale : 100% ✅
+Global compliance: 100%
 
-Issues détectées : [NOMBRE]
-- [Liste des issues avec quick fixes si nécessaire]
+Detected issues: [COUNT]
+- [List of issues with quick fixes if needed]
 
-Continuer avec l'intégration ? (o/n)
+Continue with Memory Bank integration? (y/n)
 ```
 
-**Si non-conformités détectées** :
-- Appliquer automatiquement les quick fixes proposés
-- Découper glossaires >500 lignes
-- Corriger liens bidirectionnels manquants
-- Ajouter frontmatter manquant
+**If non-compliance detected**:
+- Apply proposed quick fixes automatically
+- Split glossaries >500 lines
+- Fix missing bidirectional links
+- Add missing frontmatter
 
-### Phase 8 : Intégration Memory Bank
+### Step 8: Memory Bank Integration
 
-#### 8.1 Mise à Jour Index Concepts
+#### 8.1 Update Concepts Index
 
-**Mettre à jour** [`/prompts/gen/concepts/index.md`](../prompts/gen/concepts/index.md) :
+**Update** [`/prompts/gen/concepts/index.md`](../prompts/gen/concepts/index.md):
 ```markdown
-## Fichiers Disponibles
+## Available Files
 
-- [`guideline-prompts.md`](guideline-prompts.md) : Guidelines prompts efficaces
-- [`glossaires/`](glossaires/index.md) : **Glossaires métier ventilés par domaines** ([X] termes, [Y] domaines)
+- [`guideline-prompts.md`](guideline-prompts.md): Effective prompts guidelines
+- [`glossaires/`](glossaires/index.md): **Business glossaries split by domains** ([X] Terms, [Y] Domains)
 ```
 
-#### 7.2 Mise à Jour Index Principal
+#### 8.2 Update Main Index
 
-**Mettre à jour** [`/prompts/index.md`](../prompts/index.md) :
+**Update** [`/prompts/index.md`](../prompts/index.md):
 ```markdown
 ## Structure
 
-- [`concepts/`](concepts/index.md) : Concepts fondamentaux + **glossaires métier par domaines**
+- [`concepts/`](concepts/index.md): Core concepts + **business glossaries by domains**
 ```
 
-#### 7.3 Liens Bidirectionnels Personas
+#### 8.3 Bidirectional Links to Personas
 
-**Pour chaque persona expert mappé**, ajouter référence au glossaire :
+**For each mapped expert persona**, add glossary reference:
 ```markdown
-## Domaine d'Expertise
+## Domain of Expertise
 
-**Glossaire associé** : [`/prompts/gen/concepts/glossaires/glossaire-[domaine].md`](../../concepts/glossaires/glossaire-[domaine].md)
+**Associated glossary**: [`/prompts/gen/concepts/glossaires/glossaire-[domain].md`](../../concepts/glossaires/glossaire-[domain].md)
 ```
 
-## Messages de Confirmation
+## Output
 
-### Succès - Génération Ventilée
+**Success - Split Generation**:
 ```
-✅ Glossaires métier générés avec succès !
+Business glossaries generated successfully!
 
-📁 Structure créée :
+Created structure:
 /prompts/gen/concepts/glossaires/
-├── index.md (navigation + recherche)
-├── glossaire-[domaine1].md ([X] termes, [Y] lignes)
-├── glossaire-[domaine2].md ([X] termes, [Y] lignes)
-└── ... ([N] glossaires au total)
+├── index.md (navigation + search)
+├── glossaire-[domain1].md ([X] Terms, [Y] lines)
+├── glossaire-[domain2].md ([X] Terms, [Y] lines)
+└── ... ([N] glossaries total)
 
-📊 Statistiques :
-- Total termes : [X]
-- Domaines couverts : [Y]
-- Personas experts mappés : [Z]
-- Conformité ≤500 lignes : ✅ [100%]
+Statistics:
+- Total Terms: [X]
+- Covered Domains: [Y]
+- Mapped expert personas: [Z]
+- Compliance <=500 lines: 100%
 
-🔗 Intégration Memory Bank :
-- Index concepts mis à jour
-- Index principal mis à jour
-- Liens bidirectionnels personas créés
+Memory Bank Integration:
+- Concepts index updated
+- Main index updated
+- Bidirectional persona links created
 
-🎯 Agents utilisés :
-- explore-bank : Détection contexte
-- truth-evaluator : Validation sources
-- raci-delegator : Classification domaines
+Agents used:
+- explore-bank: Context detection
+- truth-evaluator: Source validation
+- raci-delegator: Domain Classification
+- validator: Compliance validation
 
-🚀 Glossaires optimisés pour recherche sémantique !
+Glossaries optimized for semantic search!
 ```
 
-## Gestion des Erreurs
+## Notes
 
-- **Agent explore-bank indisponible** : Mode dégradé avec scan manuel
-- **Agent truth-evaluator indisponible** : Validation manuelle sources
-- **Agent raci-delegator indisponible** : Classification manuelle domaines
-- **Agent validator indisponible** : Validation manuelle conformité (wc -l, grep)
-- **Aucun terme détecté** : Proposer saisie manuelle
-- **Persona expert manquant** : Proposer création via `/create-persona`
-- **Glossaire >500 lignes** : Découpage automatique via validator
-- **Conflits définitions** : Utiliser truth-evaluator pour arbitrage
-- **Non-conformité AI-KIDO** : Appliquer quick fixes validator automatiquement
-- **Permissions insuffisantes** : Proposer répertoire alternatif
+**Error handling**:
+- **explore-bank unavailable**: Degraded mode with manual scan
+- **truth-evaluator unavailable**: Manual source validation
+- **raci-delegator unavailable**: Manual domain Classification
+- **validator unavailable**: Manual compliance check (`wc -l`, `grep`)
+- **No Terms detected**: Propose manual entry
+- **Missing expert persona**: Propose creation via `/create-persona`
+- **Glossary >500 lines**: Automatic split via validator
+- **Definition conflicts**: Use truth-evaluator for arbitration
+- **AI-KIDO non-compliance**: Apply validator quick fixes automatically
+- **Insufficient permissions**: Propose alternative directory
 
-## 🤖 Récapitulatif des Agents AI-KIDO Utilisés
+**AI-KIDO rules respected**:
+- Rule 4: <=500 lines constraint per glossary (validated by validator)
+- Rule 6: Bidirectional links (validated by validator)
+- Rule 2: gen/hard_points separation (location validated)
+- Rules 16-18: Bidirectional links (glossaries ↔ personas ↔ index)
+- Agent orchestration: explore-bank, truth-evaluator, raci-delegator, validator
+- Automatic validation: AI-KIDO compliance verified by validator
+- Domain split: Tree optimized for semantic search
+- Expert personas mapping: Glossary ↔ expertise link
+- Semantic compression: Concise definitions, inline examples
+- AI-KIDO Exclusions: Focus on project business Terms
 
-Cette commande utilise **4 agents AI-KIDO** pour optimiser la génération du glossaire :
+**Optimization gains (4 AI-KIDO agents)**:
 
-### Phase 1 : `agent-aikido-explore-bank` (QUICK MODE)
-- **Rôle** : Détection contexte (glossaires existants, personas experts, domaines métier)
-- **Output** : Contexte complet pour génération glossaire
-- **Tokens** : <15k
-- **Gain** : ~40% vs scan manuel multi-fichiers
-
-### Phase 2 : `agent-aikido-truth-evaluator`
-- **Rôle** : Validation sources terminologie métier (code, docs, tests)
-- **Output** : Sources autoritaires + termes filtrés avec crédibilité
-- **Tokens** : <10k
-- **Gain** : ~35% vs identification manuelle sources + résolution contradictions
-
-### Phase 4 : `agent-aikido-raci-delegator`
-- **Rôle** : Classification termes par domaines + mapping personas experts
-- **Output** : Structure glossaires ventilés conforme AI-KIDO (≤500 lignes)
-- **Tokens** : <10k
-- **Gain** : ~30% vs classification manuelle + calcul tailles
-
-### Phase 7 : `agent-aikido-validator`
-- **Rôle** : Validation conformité AI-KIDO des glossaires générés
-- **Output** : Score conformité + quick fixes si nécessaire
-- **Tokens** : <3k par fichier
-- **Gain** : Garantie qualité + détection précoce violations
-
-### 📊 Gains d'Optimisation Globaux
-
-| Aspect | Avant (manuel) | Après (agents) | Gain |
-|--------|----------------|----------------|------|
-| **Détection contexte** | Scan manuel multiples fichiers | explore-bank automatique | ~40% tokens |
-| **Validation sources** | Identification manuelle + résolution | truth-evaluator intelligent | ~35% tokens |
-| **Classification domaines** | Mapping manuel + calculs | raci-delegator automatique | ~30% tokens |
-| **Validation conformité** | Vérifications manuelles | validator systématique | +Garantie qualité |
-| **Workflow global** | ~80k tokens estimés | ~36k tokens | ~55% efficacité |
-
-## Règles AI-KIDO Respectées
-
-- ✅ **Règle 4** : Contrainte ≤500 lignes par glossaire (validé par validator)
-- ✅ **Règle 6** : Liens bidirectionnels (validés par validator)
-- ✅ **Règle 2** : Séparation gen/hard_points (emplacement validé)
-- ✅ **Règle 16-18** : Liens bidirectionnels (glossaires ↔ personas ↔ index)
-- ✅ **Orchestration agents** : explore-bank, truth-evaluator, raci-delegator, validator
-- ✅ **Validation automatique** : Conformité AI-KIDO vérifiée par validator
-- ✅ **Ventilation par domaines** : Arborescence optimisée pour recherche
-- ✅ **Mapping personas experts** : Lien glossaire ↔ expertise
-- ✅ **Compression sémantique** : Définitions concises, exemples inline
-- ✅ **Exclusion AI-KIDO/roo-code** : Focus termes métier projet
-- ✅ **Intégration Memory Bank** : [`/prompts/gen/concepts/glossaires/`](../prompts/gen/concepts/glossaires/)
+| Aspect | Before (manual) | After (agents) | Gain |
+|--------|-----------------|----------------|------|
+| **Context detection** | Manual multi-file scan | explore-bank automatic | ~40% tokens |
+| **Source validation** | Manual identification + resolution | truth-evaluator intelligent | ~35% tokens |
+| **Domain Classification** | Manual mapping + calculations | raci-delegator automatic | ~30% tokens |
+| **Compliance validation** | Manual checks | validator systematic | +Quality guarantee |
+| **Global workflow** | ~80k tokens estimated | ~36k tokens | ~55% efficiency |
 
 ---
 
-*Commande optimisée avec 4 agents AI-KIDO - Gain global estimé : ~55% tokens*
+*Command optimized with 4 AI-KIDO agents - Estimated global gain: ~55% tokens*

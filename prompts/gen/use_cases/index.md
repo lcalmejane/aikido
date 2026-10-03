@@ -1,4 +1,4 @@
-# Cas d’usage AI‑KIDO
+# AI-KIDO Use Cases
 
-Ce répertoire recense les scénarios d’application concrets de la base AI‑KIDO.  
-Ajoutez ici les fichiers Markdown décrivant chaque cas d’usage (ex. intégration CI/CD, audit de sécurité, etc.).
+This directory lists concrete application scenarios for the AI-KIDO knowledge base.  
+Add Markdown files here describing each use case (e.g. CI/CD integration, security audit, etc.).

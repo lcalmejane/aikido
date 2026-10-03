@@ -1,104 +1,104 @@
-# Plan Ending-10 – Gestion Erreurs Centralisée
+# Plan Ending-10 – Centralized Error Handling
 
-> **Type** : ending-error | **Ordre** : 10 (invoqué uniquement en cas d'erreur) | **Bloquant** : NON
+> **Type** : ending-error | **Order** : 10 (invoked only on error) | **Blocking** : NO
 
-## 🎯 Objectif
+## 🎯 Objective
 
-Fournir un diagnostic centralisé des erreurs survenues durant le processus de mise à jour AI-KIDO, proposer des solutions de correction et offrir des options de rollback.
+Provide a centralized diagnosis of errors that occurred during the AI-KIDO update process, propose correction solutions and offer rollback options.
 
-Ce plan est invoqué **uniquement en cas d'échec** d'un des plans précédents (ending-0 à ending-7) ou à la demande explicite de l'utilisateur.
-
----
-
-## 📥 Entrées Requises
-
-- `$SOURCE` : Répertoire du projet actuel
-- `$FAILED_PLAN` : Nom du plan ayant échoué (ex: "ending-3")
-- `$ERROR_CODE` : Code d'erreur retourné (ex: 1, 42)
-- `$ERROR_MESSAGE` : Message d'erreur (optionnel)
-- Logs des phases précédentes dans `$SOURCE/prompts/spec/logs/`
+This plan is invoked **only on failure** of one of the previous plans (ending-0 to ending-7) or at the explicit request of the user.
 
 ---
 
-## 📋 Étapes d'Exécution
+## 📥 Required Inputs
 
-### 1️⃣ Phase 1 : Collecte Contexte Erreur (NON BLOQUANT)
+- `$SOURCE` : Current project directory
+- `$FAILED_PLAN` : Name of the failed plan (e.g. "ending-3")
+- `$ERROR_CODE` : Returned error code (e.g. 1, 42)
+- `$ERROR_MESSAGE` : Error message (optional)
+- Logs from previous phases in `$SOURCE/prompts/spec/logs/`
 
-**Action : Rassembler toutes les informations sur l'échec**
+---
+
+## 📋 Execution Steps
+
+### 1️⃣ Phase 1 : Error Context Collection (NON BLOCKING)
+
+**Action : Gather all information about the failure**
 
 ```bash
 bash prompts/hard_points/system/maj/scripts/ending-10-collect-error-context.sh "$SOURCE" "$FAILED_PLAN" "$ERROR_CODE" "$ERROR_MESSAGE"
 ```
 
-Ce script collecte le contexte complet de l'erreur.
-- **Fonction** : Affiche plan échoué, code, message, date, logs récents
-- **Sortie** : `/tmp/aikido/error-context.txt`
-- **Exit code** : 0 (toujours, non bloquant)
+This script collects the complete error context.
+- **Function** : Displays failed plan, code, message, date, recent logs
+- **Output** : `/tmp/aikido/error-context.txt`
+- **Exit code** : 0 (always, non blocking)
 
 ---
 
-### 2️⃣ Phase 2 : Diagnostic Automatique (NON BLOQUANT)
+### 2️⃣ Phase 2 : Automatic Diagnosis (NON BLOCKING)
 
-**Action : Analyser la cause probable selon le plan échoué**
+**Action : Analyze the probable cause based on the failed plan**
 
 ```bash
 bash prompts/hard_points/system/maj/scripts/ending-10-diagnostic-by-plan.sh "$FAILED_PLAN" "$SOURCE"
 ```
 
-Ce script affiche un diagnostic spécifique au plan échoué.
-- **Fonction** : Analyse par case (ending-0 à 7, beginning, unknown)
-- **Sortie** : Causes probables + solutions proposées
-- **Exit code** : 0 (toujours, non bloquant)
+This script displays a diagnosis specific to the failed plan.
+- **Function** : Analysis by case (ending-0 to 7, beginning, unknown)
+- **Output** : Probable causes + proposed solutions
+- **Exit code** : 0 (always, non blocking)
 
 ---
 
-### 3️⃣ Phase 3 : Options de Récupération (NON BLOQUANT)
+### 3️⃣ Phase 3 : Recovery Options (NON BLOCKING)
 
-**Action : Proposer actions à l'utilisateur**
+**Action : Propose actions to the user**
 
 ```bash
 echo "═══════════════════════════════════════════════════════════════"
-echo "🔧 OPTIONS DE RÉCUPÉRATION"
+echo "🔧 RECOVERY OPTIONS"
 echo "═══════════════════════════════════════════════════════════════"
 echo ""
 
-echo "1️⃣ CORRIGER ET RELANCER"
-echo "   Appliquer les solutions proposées ci-dessus puis :"
+echo "1️⃣ FIX AND RESTART"
+echo "   Apply the solutions proposed above then:"
 echo "   /maj-aikido --update"
 echo ""
 
-echo "2️⃣ ROLLBACK COMPLET"
-echo "   Restaurer l'état avant mise à jour :"
+echo "2️⃣ FULL ROLLBACK"
+echo "   Restore state before update:"
 echo "   LATEST_BACKUP=\$(ls -t backups/aikido-verif-backup-*.tgz | head -1)"
 echo "   tar -xzf \"\$LATEST_BACKUP\" -C ."
-echo "   echo \"✅ Rollback effectué depuis \$LATEST_BACKUP\""
+echo "   echo \"✅ Rollback performed from \$LATEST_BACKUP\""
 echo ""
 
-echo "3️⃣ ROLLBACK PARTIEL"
-echo "   Restaurer uniquement les fichiers critiques :"
+echo "3️⃣ PARTIAL ROLLBACK"
+echo "   Restore only critical files:"
 echo "   tar -xzf backups/aikido-verif-backup-*.tgz prompts/hard_points/"
 echo "   tar -xzf backups/aikido-verif-backup-*.tgz AGENTS.md CLAUDE.md"
 echo ""
 
-echo "4️⃣ DIAGNOSTIC APPROFONDI"
-echo "   Invoquer agent-aikido-validator pour analyse complète :"
-echo "   # Créer contexte diagnostic"
+echo "4️⃣ IN-DEPTH DIAGNOSIS"
+echo "   Invoke agent-aikido-validator for complete analysis:"
+echo "   # Create diagnostic context"
 echo "   cat > /tmp/aikido/diagnostic-context.md <<DIAG"
-echo "   # Diagnostic Erreur $FAILED_PLAN"
+echo "   # Error Diagnosis $FAILED_PLAN"
 echo "   "
-echo "   Plan échoué : $FAILED_PLAN"
-echo "   Code erreur : $ERROR_CODE"
-echo "   Message : $ERROR_MESSAGE"
+echo "   Failed plan: $FAILED_PLAN"
+echo "   Error code: $ERROR_CODE"
+echo "   Message: $ERROR_MESSAGE"
 echo "   "
-echo "   Mission : Analyser logs et proposer plan correction détaillé"
+echo "   Mission: Analyze logs and propose detailed correction plan"
 echo "   DIAG"
 echo ""
 
-echo "5️⃣ MODE MANUEL"
-echo "   Continuer manuellement sans /maj-aikido :"
-echo "   - Corriger les fichiers identifiés"
-echo "   - Valider : bash prompts/hard_points/system/maj/scripts/validate-structure.sh ."
-echo "   - Relancer plans individuels si nécessaire"
+echo "5️⃣ MANUAL MODE"
+echo "   Continue manually without /maj-aikido:"
+echo "   - Fix the identified files"
+echo "   - Validate: bash prompts/hard_points/system/maj/scripts/validate-structure.sh ."
+echo "   - Restart individual plans if necessary"
 echo ""
 
 echo "═══════════════════════════════════════════════════════════════"
@@ -107,107 +107,107 @@ echo ""
 
 ---
 
-### 4️⃣ Phase 4 : Génération Rapport Erreur (NON BLOQUANT)
+### 4️⃣ Phase 4 : Error Report Generation (NON BLOCKING)
 
-**Action : Créer rapport détaillé pour debugging**
+**Action : Create detailed report for debugging**
 
 ```bash
 ERROR_REPORT=$(bash prompts/hard_points/system/maj/scripts/ending-10-generate-error-report.sh "$SOURCE" "$FAILED_PLAN" "$ERROR_CODE" "$ERROR_MESSAGE")
 
-echo "📝 Rapport d'erreur créé : $ERROR_REPORT"
+echo "📝 Error report created: $ERROR_REPORT"
 cat "$ERROR_REPORT"
 ```
 
-Ce script génère un rapport markdown complet.
-- **Fonction** : Rapport avec contexte, diagnostic, logs, backups, actions recommandées
-- **Sortie** : `$SOURCE/prompts/spec/logs/error-report-YYYYMMDD-HHMMSS.md`
-- **Retour** : Chemin du rapport
-- **Exit code** : 0 (toujours, non bloquant)
+This script generates a complete markdown report.
+- **Function** : Report with context, diagnosis, logs, backups, recommended actions
+- **Output** : `$SOURCE/prompts/spec/logs/error-report-YYYYMMDD-HHMMSS.md`
+- **Return** : Report path
+- **Exit code** : 0 (always, non blocking)
 
 ---
 
-### 5️⃣ Phase 5 : Journalisation (NON BLOQUANT)
+### 5️⃣ Phase 5 : Logging (NON BLOCKING)
 
-**Action : Créer log centralisé de gestion erreur**
+**Action : Create centralized error handling log**
 
 ```bash
 LOG_FILE="$SOURCE/prompts/spec/logs/phase-10-error.log"
 
 cat > "$LOG_FILE" <<LOG
 ═══════════════════════════════════════════════════════════════
-Plan Ending-10 : Gestion Erreurs Centralisée
+Plan Ending-10 : Centralized Error Handling
 ═══════════════════════════════════════════════════════════════
-Date : $(date '+%Y-%m-%d %H:%M:%S')
+Date: $(date '+%Y-%m-%d %H:%M:%S')
 
-ERREUR :
-  Plan échoué    : $FAILED_PLAN
+ERROR:
+  Failed plan    : $FAILED_PLAN
   Code           : $ERROR_CODE
   Message        : $ERROR_MESSAGE
 
-DIAGNOSTIC :
-  Rapport        : $ERROR_REPORT
-  Solutions      : Voir diagnostic automatique ci-dessus
+DIAGNOSIS:
+  Report         : $ERROR_REPORT
+  Solutions      : See automatic diagnosis above
 
-OPTIONS PROPOSÉES :
-  1. Corriger et relancer
-  2. Rollback complet
-  3. Rollback partiel
-  4. Diagnostic approfondi
-  5. Mode manuel
+OPTIONS PROVIDED:
+  1. Fix and restart
+  2. Full rollback
+  3. Partial rollback
+  4. In-depth diagnosis
+  5. Manual mode
 
 ═══════════════════════════════════════════════════════════════
 LOG
 
-echo "📝 Log créé : $LOG_FILE"
+echo "📝 Log created: $LOG_FILE"
 echo ""
 ```
 
 ---
 
-## 📤 Sorties Produites
+## 📤 Produced Outputs
 
-| Fichier | Description | Obligatoire |
+| File | Description | Required |
 |---------|-------------|-------------|
-| `$SOURCE/prompts/spec/logs/error-report-*.md` | Rapport erreur complet | ✅ OUI |
-| `$SOURCE/prompts/spec/logs/phase-10-error.log` | Log gestion erreur | ✅ OUI |
-| stdout | Diagnostic + options récupération | ✅ OUI |
+| `$SOURCE/prompts/spec/logs/error-report-*.md` | Complete error report | ✅ YES |
+| `$SOURCE/prompts/spec/logs/phase-10-error.log` | Error handling log | ✅ YES |
+| stdout | Diagnosis + recovery options | ✅ YES |
 
 ---
 
-## ✅ Conditions de Succès
+## ✅ Success Criteria
 
-Le plan **ending-10** est considéré réussi dans **TOUS les cas** :
+The **ending-10** plan is considered successful in **ALL cases** :
 
-1. ✅ Diagnostic effectué
-2. ✅ Solutions proposées
-3. ✅ Rapport généré
-4. ✅ Options de récupération présentées
+1. ✅ Diagnosis performed
+2. ✅ Solutions proposed
+3. ✅ Report generated
+4. ✅ Recovery options presented
 
-**Note** : Ce plan est **NON BLOQUANT** et informatif. Il aide à résoudre l'erreur mais ne la corrige pas automatiquement.
-
----
-
-## ❌ Gestion d'Échec
-
-Ce plan **ne peut pas échouer**. Même si la génération de rapport échoue, le diagnostic s'affiche à l'écran.
+**Note** : This plan is **NON BLOCKING** and informational. It helps resolve the error but does not fix it automatically.
 
 ---
 
-## 🔗 Enchaînement
+## ❌ Failure Handling
 
-Après ce plan :
-- 🛑 **Workflow arrêté** (attente action utilisateur)
-- 🔄 **Utilisateur choisit** : Corriger/Rollback/Manuel
-- 🔄 **Relancer** `/maj-aikido --update` après correction
+This plan **cannot fail**. Even if the report generation fails, the diagnosis is displayed on screen.
 
 ---
 
-## 📚 Références
+## 🔗 Chaining
+
+After this plan:
+- 🛑 **Workflow stopped** (waiting for user action)
+- 🔄 **User chooses**: Fix/Rollback/Manual
+- 🔄 **Restart** `/maj-aikido --update` after correction
+
+---
+
+## 📚 References
 
 - **Backups** : `backups/aikido-verif-backup-*.tgz`
 - **Logs** : `prompts/spec/logs/phase-*.log`
-- **Scripts validation** : `prompts/hard_points/system/maj/scripts/`
+- **Validation scripts** : `prompts/hard_points/system/maj/scripts/`
 
 ---
 
-*Plan ending-10 v2.0 – Gestion erreurs centralisée avec diagnostic automatique*
+*Plan ending-10 v2.0 – Centralized error handling with automatic diagnosis*

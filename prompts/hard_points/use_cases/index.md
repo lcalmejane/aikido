@@ -1,87 +1,87 @@
-# Hard Points - Cas d'Usage
+# Hard Points - Use Cases
 
-> **Statut**: Hard Points - Vérités immuables
-> **Priorité**: Absolue - Ne peuvent être remises en question
+> **Status**: Hard Points - Immutable truths
+> **Priority**: Absolute - Cannot be called into question
 
-## Vue d'ensemble
+## Overview
 
-Ce répertoire contient les **cas d'usage validés** qui ont été promus au statut de Hard Points dans le système AI‑KIDO. Ces cas d'usage constituent des applications immuables qui ont fait leurs preuves et définissent les standards obligatoires d'implémentation.
+This directory contains the **validated use cases** that have been promoted to Hard Points status in the AI-KIDO system. These use cases constitute immutable applications that have proven themselves and define the mandatory implementation standards.
 
-## Règles de Promotion
+## Promotion Rules
 
-Un cas d'usage devient Hard Point quand :
+A use case becomes a Hard Point when:
 
-1. **Validation Opérationnelle** : Le cas d'usage a été testé en conditions réelles avec succès
-2. **Reproductibilité Garantie** : Résultats identiques sur 10+ implémentations
-3. **Référence Standard** : Devient la référence obligatoire pour des situations similaires
-4. **Impact Critique** : Échec du cas d'usage = échec système
-5. **Consensus Métier** : Validation par tous les stakeholders concernés
+1. **Operational Validation**: The use case has been tested successfully in real conditions
+2. **Guaranteed Reproducibility**: Identical results across 10+ implementations
+3. **Standard Reference**: Becomes the mandatory reference for similar situations
+4. **Critical Impact**: Failure of the use case = system failure
+5. **Business Consensus**: Validation by all concerned stakeholders
 
-## Format Standard
+## Standard Format
 
-Chaque Hard Point de cas d'usage doit suivre le format :
+Each Hard Point use case must follow the format:
 
 ```markdown
-# Hard Point: [Nom du Cas d'Usage]
-> Promu le: YYYY-MM-DD | Validé par: [Autorité] | Origine: [Référence gen/use_cases/]
+# Hard Point: [Use Case Name]
+> Promoted on: YYYY-MM-DD | Validated by: [Authority] | Origin: [Reference gen/use_cases/]
 
-## Cas d'usage figé
-[Description immuable du cas d'usage]
+## Frozen use case
+[Immutable description of the use case]
 
-## Scénario obligatoire
-[Étapes qui ne peuvent être modifiées]
+## Mandatory scenario
+[Steps that cannot be modified]
 
-## Critères de succès immuables
-[Conditions de réussite non négociables]
+## Immutable success criteria
+[Non-negotiable success conditions]
 
-## Justification de l'immutabilité
-[Pourquoi ce cas d'usage ne peut être modifié]
+## Justification for immutability
+[Why this use case cannot be modified]
 
-## Impact et dépendances
-[Éléments du système qui dépendent de ce cas d'usage]
+## Impact and dependencies
+[System elements that depend on this use case]
 
-## Références
-[Liens vers les tables de vérité d'origine]
+## References
+[Links to the original truth tables]
 ```
 
-## Cas d'Usage Hard Points Disponibles
+## Available Hard Point Use Cases
 
-*Aucun cas d'usage n'a encore été promu au statut de Hard Point.*
+*No use case has yet been promoted to Hard Point status.*
 
-## Processus de Promotion
+## Promotion Process
 
-Pour promouvoir un cas d'usage de [`../gen/use_cases/`](../../gen/use_cases/) vers ce répertoire :
+To promote a use case from [`../gen/use_cases/`](../../gen/use_cases/) to this directory:
 
-1. Identifier le cas d'usage candidat dans `/gen/use_cases/`
-2. Valider les critères de promotion (validation opérationnelle, reproductibilité)
-3. Créer le fichier Hard Point avec justification détaillée
-4. Mettre à jour ce fichier index
-5. Référencer depuis [`../index.md`](../index.md)
+1. Identify the candidate use case in `/gen/use_cases/`
+2. Validate the promotion criteria (operational validation, reproducibility)
+3. Create the Hard Point file with detailed justification
+4. Update this index file
+5. Reference from [`../index.md`](../index.md)
 
-## Critères de Validation
+## Validation Criteria
 
-### Validation Opérationnelle
-- Tests en environnement de production
-- Validation par les utilisateurs finaux
-- Métriques de performance documentées
+### Operational Validation
+- Tests in production environment
+- Validation by end users
+- Documented performance metrics
 
-### Reproductibilité
-- Procédures documentées étape par étape
-- Tests sur environnements multiples
-- Validation par équipes indépendantes
+### Reproducibility
+- Step-by-step documented procedures
+- Tests across multiple environments
+- Validation by independent teams
 
-### Impact Critique
-- Analyse des dépendances système
-- Évaluation des risques d'échec
-- Plan de continuité documenté
+### Critical Impact
+- System dependency analysis
+- Failure risk assessment
+- Documented continuity plan
 
-## Types de Cas d'Usage Candidats
+## Candidate Use Case Types
 
-- **Intégrations Critiques** : Connexions système essentielles
-- **Workflows Métier** : Processus business non négociables
-- **Procédures de Sécurité** : Protocoles de sécurité obligatoires
-- **Patterns d'Architecture** : Modèles d'implémentation standards
+- **Critical Integrations**: Essential system connections
+- **Business Workflows**: Non-negotiable business processes
+- **Security Procedures**: Mandatory security protocols
+- **Architecture Patterns**: Standard implementation models
 
 ---
 
-**RAPPEL** : Les Hard Points de cas d'usage définissent les standards obligatoires d'implémentation dans le système AI‑KIDO.
+**REMINDER**: Hard Point use cases define the mandatory implementation standards in the AI-KIDO system.

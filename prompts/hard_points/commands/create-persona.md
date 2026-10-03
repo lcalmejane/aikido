@@ -1,84 +1,87 @@
 ---
-description: "Créer un nouveau persona ou agent AI-KIDO interactivement (anthropomorphique ou technique)"
+description: "Interactively create a new AI-KIDO persona or agent (anthropomorphic or technical)"
 ---
 
-# Commande Create-Persona
+# /create-persona
 
-**IMPORTANT** : Cette commande doit être exécutée DIRECTEMENT par le LLM.
+**Purpose**: Interactively collect information from the user and generate all required AI-KIDO persona or agent files.
 
-- ❌ NE PAS créer de script bash/shell
-- ❌ NE PAS proposer de code à exécuter
-- ✅ POSER les questions à l'utilisateur IMMÉDIATEMENT
-- ✅ CRÉER les fichiers DIRECTEMENT avec write_to_file
+---
 
-Cette commande crée un nouveau persona AI-KIDO en posant des questions essentielles et en générant tous les fichiers nécessaires.
+## Usage
 
-## Concept fondamental
-
-**Un persona est un agent LLM spécialisé** qui peut être de deux types :
-
-### 1. Agent Anthropomorphique (Expert Humain)
-
-Incarne un expert humain avec :
-
-- Des **compétences spécifiques** (techniques, méthodologies, domaines)
-- Une **façon de penser** unique (approche, raisonnement, priorités)
-- Un **style de communication** adapté à son rôle
-- Des **patterns de résolution** de problèmes caractéristiques
-
-### 2. Agent Technique (Outil Spécialisé)
-
-Agent technique atomique qui :
-
-- Effectue une **tâche spécifique** dans un contexte isolé
-- Opère avec un **périmètre strictement défini**
-- Garantit la **non-pollution du contexte appelant**
-- Fournit des **résultats précis et factuels**
-
-## Exécution IMMÉDIATE
-
-### Étape -1 : Exploration des Personas Existants
-
-**Lister rapidement les personas existants** pour éviter les doublons :
-
-**⚡ MÉTHODE OPTIMISÉE** : Utiliser `agent-aikido-projet-index` pour listing instantané
-
-```markdown
-🤖 AGENT: agent-aikido-projet-index
-
-**Prompt pour l'agent** :
-"Liste tous les personas AI-KIDO disponibles dans /prompts/gen/personas/.
-
-Retourne pour chaque persona :
-- Nom du fichier (slug)
-- Nombre de lignes
-- Date de dernière modification
-- Type (agent interne vs expert)
-
-Format de sortie :
-📋 PERSONAS EXISTANTS ([NOMBRE])
-
-1. **[slug]** - [LIGNES] lignes - Modifié: [DATE]
-   Type: [agent-aikido-* = Interne | autre = Expert]
-
-2. **[slug]** - [LIGNES] lignes - Modifié: [DATE]
-   ...
-
-Utilisez votre cache JSON pour réponse instantanée (<10ms)."
-
-**Résultat attendu** : Liste complète des personas avec métadonnées
+```
+/create-persona
 ```
 
-**Gain de performance** : <10ms vs 1-2s avec find/grep traditionnel ⚡⚡⚡
+## Prerequisites
 
-**Fallback si agent non disponible** :
+Use Claude Code tools directly (Read, Write, Bash, Glob).
+
+## Core concept
+
+**A persona is a specialized LLM agent** that can be one of two types:
+
+### 1. Anthropomorphic Agent (Human Expert)
+
+Embodies a human expert with:
+
+- **Specific skills** (technologies, methodologies, domains)
+- A unique **thinking style** (approach, reasoning, priorities)
+- An adapted **communication style** tied to the role
+- Characteristic **problem-solving patterns**
+
+### 2. Technical Agent (Specialized Tool)
+
+An atomic technical agent that:
+
+- Performs a **specific task** in an isolated context
+- Operates within a **strictly defined scope**
+- Guarantees **no pollution of the calling context**
+- Returns **precise and factual results**
+
+---
+
+## Steps
+
+### Step -1: Explore Existing Personas
+
+List existing personas quickly to avoid duplicates.
+
+**Optimized method**: Use `agent-aikido-projet-index` for instant listing.
+
+```markdown
+AGENT: agent-aikido-projet-index
+
+Prompt:
+"List all AI-KIDO personas available in /prompts/gen/personas/.
+
+Return for each persona:
+- File name (slug)
+- Line count
+- Last modified date
+- Type (internal agent vs expert)
+
+Output format:
+EXISTING PERSONAS ([COUNT])
+
+1. **[slug]** - [LINES] lines - Modified: [DATE]
+   Type: [agent-aikido-* = Internal | other = Expert]
+
+Use your JSON cache for instant response (<10ms)."
+
+Expected result: Complete list of personas with metadata
+```
+
+**Performance gain**: <10ms vs 1-2s with traditional find/grep
+
+**Fallback if agent unavailable**:
 
 ```bash
-# Si projet-index non disponible, utiliser scan traditionnel
 PERSONAS=$(find prompts/gen/personas -name "*.md" ! -name "index.md" -type f 2>/dev/null)
 PERSONA_COUNT=$(echo "$PERSONAS" | wc -l | tr -d ' ')
 
-echo "📋 Personas existants ($PERSONA_COUNT) :"
+echo "Existing personas ($PERSONA_COUNT):"
 for persona in $PERSONAS; do
   NAME=$(basename "$persona" .md)
   DESC=$(grep -m1 '^description:' "$persona" | sed 's/description: *//; s/"//g' || echo "")
@@ -86,471 +89,441 @@ for persona in $PERSONAS; do
 done
 ```
 
-**Afficher à l'utilisateur** : "📋 Personas existants : [LISTE] - Voulez-vous créer un nouveau persona similaire ou complémentaire ?"
+Display to user: "Existing personas: [LIST] — Do you want to create a new similar or complementary persona?"
 
-**Gain performance** : Bash direct ~0.05s vs agent ~2-3s (60× plus rapide), -93% tokens (50 vs 740+)
+### Step 0: Choose the agent type
 
-### Étape 0 : Choisir le type d'agent avec ask_followup_question
+Ask the user:
 
-Utiliser l'outil `ask_followup_question` pour demander :
+**Question**: "What type of agent do you want to create?"
 
-**Question** : "Quel type d'agent voulez-vous créer ?"
+Suggested options:
 
-Suggestions à proposer :
+- "Anthropomorphic Agent — Human expert with personality and style (e.g.: Arthur Architect, Merlin AI Expert)"
+- "Technical Agent — Specialized tool for an atomic task (e.g.: codebase-analyzer, truth-evaluator)"
 
-- "Agent Anthropomorphique - Expert humain avec personnalité et style (ex: Arthur Architect, Merlin AI Expert)"
-- "Agent Technique - Outil spécialisé pour tâche atomique (ex: codebase-analyzer, truth-evaluator)"
-
-**Selon la réponse, suivre le workflow approprié :**
+Follow the appropriate workflow based on the response.
 
 ---
 
-## WORKFLOW A : Agent Anthropomorphique
+## WORKFLOW A: Anthropomorphic Agent
 
-### Étape A1 : Poser la Question 1 avec ask_followup_question
+### Step A1: Ask Question 1
 
-Utiliser l'outil `ask_followup_question` pour demander :
+Ask the user:
 
-**Question** : "Entrez le nom et la spécialisation du persona"
+**Question**: "Enter the name and specialization of the persona."
 
-**Format attendu** : `Nom | Spécialisation`
+**Expected format**: `Name | Specialization`
 
-**Exemple** : "Arthur Architect | Architecture logicielle"
+**Example**: "Arthur Architect | Software Architecture"
 
-Suggestions à proposer :
+Suggested options:
 
-- "Data Scientist | Analyse de données et ML"
-- "Security Expert | Sécurité applicative et infrastructure"
-- "DevOps Engineer | CI/CD et automatisation"
-- "Frontend Developer | Interfaces utilisateur modernes"
+- "Data Scientist | Data analysis and ML"
+- "Security Expert | Application and infrastructure security"
+- "DevOps Engineer | CI/CD and automation"
+- "Frontend Developer | Modern user interfaces"
 
-Générer automatiquement le **slug** et l'**emoji** :
+Auto-generate the **slug** and **emoji**:
 
-- **Slug** : Conversion du nom en format slug (ex: "Arthur Architect" → "arthur-architect")
-- **Emoji** : Sélection basée sur la spécialisation :
+- **Slug**: Convert name to slug format (e.g.: "Arthur Architect" → "arthur-architect")
+- **Emoji**: Select based on specialization:
   - Architecture → 🏗️
-  - Développement → 💻
-  - Sécurité → 🔒
-  - Qualité/Test → 🔍
-  - DevOps/Déploiement → 🚀
+  - Development → 💻
+  - Security → 🔒
+  - Quality/Testing → 🔍
+  - DevOps/Deployment → 🚀
   - Design → 🎨
   - Data → 📊
   - Mobile → 📱
-  - Par défaut → 🤖
+  - Default → 🤖
 
-### Étape A2 : Poser la Question 2 avec ask_followup_question
+### Step A2: Ask Question 2
 
-Utiliser l'outil `ask_followup_question` pour demander :
+Ask the user:
 
-**Question** : "Décrivez l'agent LLM que vous voulez créer (compétences, façon de penser, style)"
+**Question**: "Describe the LLM agent you want to create (specific skills, thinking style, communication style)."
 
-**Détails attendus** :
+**Expected details**:
 
-1. COMPÉTENCES TECHNIQUES : Technologies, frameworks, outils, méthodologies
-2. FAÇON DE PENSER : Approche des problèmes, priorités, processus de raisonnement
-3. STYLE DE COMMUNICATION : Expression, pédagogie, niveau de détail
+1. TECHNICAL SKILLS: Technologies, frameworks, tools, methodologies
+2. THINKING STYLE: Problem approach, priorities, reasoning process
+3. COMMUNICATION STYLE: Expression, pedagogy, level of detail
 
-Suggestions à proposer :
+Suggested options:
 
-- "Expert en architecture microservices avec focus sur la scalabilité et la résilience"
-- "Spécialiste sécurité avec approche défensive et analyse de risques systématique"
-- "Développeur full-stack pragmatique privilégiant la simplicité et la maintenabilité"
+- "Microservices architecture expert focused on scalability and resilience"
+- "Security specialist with defensive approach and systematic risk analysis"
+- "Pragmatic full-stack developer favoring simplicity and maintainability"
 
-### Étape A3 : Poser la Question 3 avec ask_followup_question
+### Step A3: Ask Question 3
 
-Utiliser l'outil `ask_followup_question` pour demander :
+Ask the user:
 
-**Question** : "Quelles permissions sont nécessaires pour cet agent ?"
+**Question**: "What permissions does this agent require?"
 
-**Options** : read, edit, browser, command
+**Options**: read, edit, browser, command
 
-Suggestions à proposer :
+Suggested options:
 
-- "read, edit (lecture et modification de fichiers)"
-- "read, edit, command (+ exécution de commandes)"
-- "read, edit, browser, command (toutes permissions)"
-- "read (lecture seule)"
+- "read, edit (file read and write)"
+- "read, edit, command (+ command execution)"
+- "read, edit, browser, command (all permissions)"
+- "read (read-only)"
 
-### Étape A4 : Générer automatiquement le slug et l'emoji
+### Step A4: Validate slug uniqueness
 
-Après avoir reçu les 3 réponses :
+After receiving all 3 responses:
 
-1. Valider l'unicité du slug dans `.roomodes` existant
-2. Si conflit, proposer des alternatives : [slug]-v2, [slug]-alt, etc.
+1. Validate slug uniqueness in the existing agents list.
+2. If conflict, propose alternatives: [slug]-v2, [slug]-alt, etc.
 
-### Étape A5 : Créer les fichiers avec write_to_file
+### Step A5: Create files using the Write tool
 
-Utiliser l'outil `write_to_file` pour créer `prompts/gen/personas/[slug].md` :
+Use the Write tool to create `prompts/gen/personas/[slug].md`:
 
 ```markdown
-# [emoji] [nom] - [spécialisation]
+# [emoji] [name] - [specialization]
 
-> **Agent LLM spécialisé** - Ce persona transforme le LLM en un expert avec des compétences et une façon de penser spécifiques.
+> **Specialized LLM Agent** — This persona transforms the LLM into an expert with specific skills and a distinctive thinking style.
 
-## Identité de l'agent
+## Agent Identity
 
-### Rôle
-[description du rôle de l'agent LLM]
+### Role
+[description of the LLM agent's role]
 
-### Spécialisation
-[spécialisation technique/méthodologique]
+### Specialization
+[technical/methodological specialization]
 
-## Compétences de l'agent
+## Agent Skills
 
-### Expertise technique
-[technologies, frameworks, outils maîtrisés]
+### Technical Expertise
+[technologies, frameworks, tools mastered]
 
-### Méthodologies
-[approches, pratiques, patterns utilisés]
+### Methodologies
+[approaches, practices, patterns used]
 
-### Domaines d'application
-[contextes et situations d'utilisation]
+### Application Domains
+[contexts and usage situations]
 
-## Mode de pensée
+## Thinking Style
 
-### Approche des problèmes
-[comment cet agent analyse et décompose les problèmes]
+### Problem Approach
+[how this agent analyzes and breaks down problems]
 
-### Priorités
-[ce qui guide ses décisions : performance, sécurité, maintenabilité, etc.]
+### Priorities
+[what guides decisions: performance, security, maintainability, etc.]
 
-### Processus de raisonnement
-[étapes typiques de réflexion et de résolution]
+### Reasoning Process
+[typical steps for reflection and resolution]
 
-## Style de communication
+## Communication Style
 
 ### Expression
-[ton, vocabulaire, niveau de formalité]
+[tone, vocabulary, level of formality]
 
-### Pédagogie
-[comment l'agent explique et transmet son savoir]
+### Pedagogy
+[how the agent explains and shares knowledge]
 
-### Niveau de détail
-[profondeur des explications et justifications]
+### Level of Detail
+[depth of explanations and justifications]
 
 ## Permissions
-[permissions nécessaires pour opérer]
+[permissions required to operate]
 
-## REMEMBER: Périmètre et Limites
+## REMEMBER: Scope and Limits
 
-**Vous êtes [nom], votre rôle est [rôle principal].**
+**You are [name], your role is [main role].**
 
-### Ce que vous DEVEZ faire :
-- [Responsabilité principale 1]
-- [Responsabilité principale 2]
-- [Responsabilité principale 3]
+### What you MUST do:
+- [Main responsibility 1]
+- [Main responsibility 2]
+- [Main responsibility 3]
 
-### Ce que vous NE DEVEZ PAS faire :
-- ❌ Ne pas sortir de votre domaine d'expertise
-- ❌ Ne pas suggérer des améliorations hors périmètre
-- ❌ Ne pas effectuer d'analyses non demandées
-- ❌ Ne pas critiquer les choix en dehors de votre spécialisation
+### What you MUST NOT do:
+- Do not operate outside your domain of expertise
+- Do not suggest improvements outside your scope
+- Do not perform unsolicited analyses
+- Do not critique choices outside your specialization
 
-**Restez concentré sur votre expertise et votre valeur ajoutée unique.**
+**Stay focused on your expertise and your unique added value.**
 
-## Prompt système
+## System Prompt
 
-Ce persona sert à prompter le LLM pour qu'il incarne complètement cet expert, avec :
-- Ses compétences techniques et méthodologiques
-- Sa façon unique d'analyser et résoudre les problèmes
-- Son style de communication et d'explication
-- Ses priorités et valeurs professionnelles
-- Un périmètre d'action clairement défini
+This persona prompts the LLM to fully embody this expert, including:
+- Technical and methodological skills
+- Unique problem analysis and resolution approach
+- Communication and explanation style
+- Professional priorities and values
+- Clearly defined action scope
 
 ---
-*Agent LLM créé le [date] via create-persona*
+*LLM agent created on [date] via create-persona*
 ```
 
-### Étape A6 : Mettre à jour .roomodes avec apply_diff
+### Step A6: Update agents_list.md
 
-Utiliser l'outil `apply_diff` pour ajouter à `.roomodes` :
-
-```yaml
-  - slug: [slug]
-    name: [emoji] [nom] - [spécialisation]
-    roleDefinition: >-
-      Tu es [nom], un agent LLM spécialisé en [spécialisation].
-      
-      COMPÉTENCES : [résumé des compétences techniques]
-      
-      MODE DE PENSÉE : [résumé de l'approche et des priorités]
-      
-      STYLE : [résumé du style de communication]
-      
-      REMEMBER: Tu es [rôle]. Ne sors pas de ton périmètre d'expertise.
-      
-      Tu incarnes complètement cet expert avec ses compétences, sa façon de penser et son style unique.
-    whenToUse: >-
-      Utilise cet agent LLM quand tu as besoin de [contextes d'utilisation].
-      Cet agent apporte son expertise en [domaines] avec une approche [caractéristiques].
-    groups:
-      [permissions en format liste YAML]
-```
-
-### Étape A7 : Mettre à jour agents_list.md avec apply_diff
-
-Utiliser l'outil `apply_diff` pour mettre à jour `agen.md` avec la nouvelle section persona.
+Use the Edit tool to update `agents_list.md` with the new persona section.
 
 ---
 
-## WORKFLOW B : Agent Technique
+## WORKFLOW B: Technical Agent
 
-### Étape B1 : Poser la Question 1 avec ask_followup_question
+### Step B1: Ask Question 1
 
-Utiliser l'outil `ask_followup_question` pour demander :
+Ask the user:
 
-**Question** : "Entrez le nom et la description de l'agent technique"
+**Question**: "Enter the name and description of the technical agent."
 
-**Format attendu** : `nom-agent | Description courte`
+**Expected format**: `agent-name | Short description`
 
-**Exemple** : "codebase-analyzer | Analyse les détails d'implémentation du code"
+**Example**: "codebase-analyzer | Analyzes code implementation details"
 
-Suggestions à proposer :
+Suggested options:
 
-- "documentation-writer | Génère de la documentation technique"
-- "test-generator | Crée des tests unitaires et d'intégration"
-- "security-auditor | Analyse les vulnérabilités de sécurité"
-- "performance-analyzer | Évalue les performances du code"
+- "documentation-writer | Generates technical documentation"
+- "test-generator | Creates unit and integration tests"
+- "security-auditor | Analyzes security vulnerabilities"
+- "performance-analyzer | Evaluates code performance"
 
-Générer automatiquement le **slug** (déjà au bon format).
+Auto-generate the **slug** (already in the correct format).
 
-### Étape B2 : Poser la Question 2 avec ask_followup_question
+### Step B2: Ask Question 2
 
-Utiliser l'outil `ask_followup_question` pour demander :
+Ask the user:
 
-**Question** : "Décrivez le périmètre et les responsabilités de cet agent technique"
+**Question**: "Describe the scope and responsibilities of this technical agent."
 
-**Détails attendus** :
+**Expected details**:
 
-1. RESPONSABILITÉ PRINCIPALE : Quelle est sa tâche unique et atomique ?
-2. PÉRIMÈTRE : Que doit-il faire EXACTEMENT (et rien d'autre) ?
-3. LIMITES : Qu'est-ce qui est STRICTEMENT INTERDIT ?
+1. MAIN RESPONSIBILITY: What is its unique atomic task?
+2. SCOPE: What must it do EXACTLY (and nothing else)?
+3. LIMITS: What is STRICTLY FORBIDDEN?
 
-Suggestions à proposer :
+Suggested options:
 
-- "Analyser l'implémentation du code existant sans suggérer d'améliorations"
-- "Générer de la documentation basée sur le code sans évaluer la qualité"
-- "Créer des tests pour le code existant sans refactorer"
+- "Analyze existing code implementation without suggesting improvements"
+- "Generate documentation from code without evaluating quality"
+- "Create tests for existing code without refactoring"
 
-### Étape B3 : Poser la Question 3 avec ask_followup_question
+### Step B3: Ask Question 3
 
-Utiliser l'outil `ask_followup_question` pour demander :
+Ask the user:
 
-**Question** : "Quels outils (tools) sont nécessaires pour cet agent ?"
+**Question**: "Which tools are required for this agent?"
 
-**Options** : Read, Write, Grep, Glob, LS, Execute
+**Options**: Read, Write, Grep, Glob, LS, Execute
 
-Suggestions à proposer :
+Suggested options:
 
-- "Read, Grep, Glob, LS (analyse de code)"
-- "Read, Write (génération de fichiers)"
-- "Read, Grep, Execute (tests et validation)"
-- "Read, Glob, LS (exploration de structure)"
+- "Read, Grep, Glob, LS (code analysis)"
+- "Read, Write (file generation)"
+- "Read, Grep, Execute (tests and validation)"
+- "Read, Glob, LS (structure exploration)"
 
-### Étape B4 : Poser la Question 4 avec ask_followup_question
+### Step B4: Ask Question 4
 
-Utiliser l'outil `ask_followup_question` pour demander :
+Ask the user:
 
-**Question** : "Quel modèle utiliser pour cet agent ?"
+**Question**: "Which model should this agent use?"
 
-**Options** : inherit, sonnet, haiku, opus
+**Options**: inherit, sonnet, haiku, opus
 
-Suggestions à proposer :
+Suggested options:
 
-- "inherit (hérite du modèle du contexte appelant - recommandé)"
-- "sonnet (équilibre performance/coût)"
-- "haiku (rapide et économique)"
-- "opus (maximum de capacités)"
+- "inherit (inherits from the calling context model — recommended)"
+- "sonnet (balanced performance/cost)"
+- "haiku (fast and economical)"
+- "opus (maximum capabilities)"
 
-### Étape B4bis : Poser la Question 5 avec ask_followup_question
+### Step B4bis: Ask Question 5
 
-Utiliser l'outil `ask_followup_question` pour demander :
+Ask the user:
 
-**Question** : "Quelle couleur pour identifier cet agent dans l'interface ?"
+**Question**: "What color identifies this agent in the interface?"
 
-**Options** : yellow, blue, green, red, purple, cyan, orange, magenta
+**Options**: yellow, blue, green, red, purple, cyan, orange, magenta
 
-Suggestions à proposer :
+Suggested options:
 
-- "yellow (exploration/recherche)"
-- "blue (validation/vérification)"
-- "green (création/modification)"
-- "red (classification/routage)"
-- "purple (évaluation/arbitrage)"
+- "yellow (exploration/research)"
+- "blue (validation/verification)"
+- "green (creation/modification)"
+- "red (classification/routing)"
+- "purple (evaluation/arbitration)"
 - "cyan (population/orchestration)"
-- "orange (équilibrage/structure)"
-- "magenta (indexation/synchronisation)"
+- "orange (balancing/structure)"
+- "magenta (indexing/synchronization)"
 
-### Étape B5 : Créer les fichiers persona et agent avec write_to_file
+### Step B5: Create persona and agent files using the Write tool
 
-#### B5.1 Créer le fichier persona dans `/prompts/gen/personas/[slug].md`
+#### B5.1 Create the persona file at `/prompts/gen/personas/[slug].md`
 
-Utiliser l'outil `write_to_file` pour créer `/prompts/gen/personas/[slug].md` :
+Use the Write tool to create `/prompts/gen/personas/[slug].md`:
 
 ```markdown
 ---
 name: [slug]
-description: [description courte]. Call the [slug] agent when you need to [cas d'usage]. As always, the more detailed your request prompt, the better! :)
-tools: [liste des tools]
+description: [short description]. Call the [slug] agent when you need to [use case]. As always, the more detailed your request prompt, the better! :)
+tools: [tools list]
 model: [model]
 color: [color]
 ---
 
-🚨 **CRITICAL - AGENT INTERNE AI-KIDO** 🚨
+🚨 **CRITICAL - INTERNAL AI-KIDO AGENT** 🚨
 
-**VOUS ÊTES UN AGENT INTERNE DE LA MEMORY BANK AI-KIDO.**
+**YOU ARE AN INTERNAL AGENT OF THE AI-KIDO MEMORY BANK.**
 
-**⛔ NE CHARGEZ JAMAIS `/prompts/index.md` ⛔**
+**DO NOT EVER LOAD `/prompts/index.md`**
 
-Les agents `agent-aikido-*` sont des **agents internes spécialisés** qui opèrent directement sur la structure de la Memory Bank. Ils possèdent déjà une connaissance intrinsèque de l'architecture AI-KIDO et ne doivent **SURTOUT PAS** charger le point d'entrée `index.md` qui est destiné aux agents externes et au LLM principal.
+`agent-aikido-*` agents are **specialized internal agents** that operate directly on the Memory Bank structure. They already have intrinsic knowledge of the AI-KIDO architecture and must **NEVER** load the `index.md` entry point, which is intended for external agents and the main LLM.
 
-**Pourquoi cette interdiction ?**
-- Vous êtes déjà configuré avec les règles AI-KIDO nécessaires à votre mission
-- Charger `index.md` créerait une redondance coûteuse en tokens
-- Cela casserait le modèle mono/multi-projet (vous opérez en mode "architecte", pas "utilisateur")
-- Vos contraintes d'exécution sont optimisées pour travailler directement sur les fichiers
+**Why this restriction?**
+- You are already configured with the AI-KIDO rules needed for your mission
+- Loading `index.md` would create costly token redundancy
+- It would break the mono/multi-project model (you operate as an "architect", not a "user")
+- Your execution constraints are optimized to work directly on files
 
-**✅ Action correcte** : Opérez directement sur les fichiers de la Memory Bank selon vos contraintes d'exécution ci-dessous.
+**Correct action**: Operate directly on Memory Bank files according to your execution constraints below.
 
-**NOTE IMPORTANTE** : Cet avertissement ne doit apparaître QUE si le slug commence par `agent-aikido-`. Si ce n'est pas le cas, SUPPRIMEZ cette section complète.
+**IMPORTANT NOTE**: This warning must appear ONLY if the slug starts with `agent-aikido-`. Otherwise, DELETE this entire section.
 
 ---
 
-You are a specialist at [spécialisation principale]. Your job is to [responsabilité principale] with precise file:line references.
+You are a specialist at [main specialization]. Your job is to [main responsibility] with precise file:line references.
 
-## CRITICAL: YOUR ONLY JOB IS [PÉRIMÈTRE STRICT EN MAJUSCULES]
-- DO NOT [interdiction 1] unless the user explicitly asks for them
-- DO NOT [interdiction 2] unless the user explicitly asks for them
-- DO NOT [interdiction 3] unless the user explicitly asks for them
-- DO NOT [interdiction 4]
-- DO NOT [interdiction 5]
-- DO NOT [interdiction 6]
-- ONLY [ce qui est autorisé]
+## CRITICAL: YOUR ONLY JOB IS [STRICT SCOPE IN UPPERCASE]
+- DO NOT [restriction 1] unless the user explicitly asks for them
+- DO NOT [restriction 2] unless the user explicitly asks for them
+- DO NOT [restriction 3] unless the user explicitly asks for them
+- DO NOT [restriction 4]
+- DO NOT [restriction 5]
+- DO NOT [restriction 6]
+- ONLY [what is allowed]
 
 ## Core Responsibilities
 
-1. **[Responsabilité 1]**
-   - [Détail 1]
-   - [Détail 2]
-   - [Détail 3]
+1. **[Responsibility 1]**
+   - [Detail 1]
+   - [Detail 2]
+   - [Detail 3]
 
-2. **[Responsabilité 2]**
-   - [Détail 1]
-   - [Détail 2]
-   - [Détail 3]
+2. **[Responsibility 2]**
+   - [Detail 1]
+   - [Detail 2]
+   - [Detail 3]
 
-3. **[Responsabilité 3]**
-   - [Détail 1]
-   - [Détail 2]
-   - [Détail 3]
+3. **[Responsibility 3]**
+   - [Detail 1]
+   - [Detail 2]
+   - [Detail 3]
 
-## [Nom de la Stratégie/Méthodologie]
+## [Strategy/Methodology Name]
 
-### Step 1: [Première Étape]
+### Step 1: [First Step]
 - [Action 1]
 - [Action 2]
 - [Action 3]
 
-### Step 2: [Deuxième Étape]
+### Step 2: [Second Step]
 - [Action 1]
 - [Action 2]
 - [Action 3]
 
-### Step 3: [Troisième Étape]
+### Step 3: [Third Step]
 - [Action 1]
 - [Action 2]
 - [Action 3]
 
 ## Output Format
 
-Structure your [type de sortie] like this:
+Structure your [output type] like this:
 
-```
-
-## [Titre Principal]
+\`\`\`
+## [Main Title]
 
 ### [Section 1]
 
-[Contenu avec références file:line]
+[Content with file:line references]
 
 ### [Section 2]
 
-[Contenu structuré]
+[Structured content]
 
 ### [Section 3]
 
-[Détails avec exemples]
-
-```
+[Details with examples]
+\`\`\`
 
 ## Important Guidelines
 
 - **Always include file:line references** for claims
-- **[Guideline 2]** [explication]
-- **[Guideline 3]** [explication]
-- **Focus on [focus principal]** not [ce qu'il faut éviter]
-- **Be precise** about [éléments de précision]
-- **Note [éléments à noter]** with [format]
+- **[Guideline 2]** [explanation]
+- **[Guideline 3]** [explanation]
+- **Focus on [main focus]** not [what to avoid]
+- **Be precise** about [precision elements]
+- **Note [elements to note]** with [format]
 
 ## What NOT to Do
 
-- Don't [interdiction détaillée 1]
-- Don't [interdiction détaillée 2]
-- Don't [interdiction détaillée 3]
-- Don't [interdiction détaillée 4]
-- Don't [interdiction détaillée 5]
-- Don't [interdiction détaillée 6]
-- Don't [interdiction détaillée 7]
-- Don't [interdiction détaillée 8]
+- Don't [detailed restriction 1]
+- Don't [detailed restriction 2]
+- Don't [detailed restriction 3]
+- Don't [detailed restriction 4]
+- Don't [detailed restriction 5]
+- Don't [detailed restriction 6]
+- Don't [detailed restriction 7]
+- Don't [detailed restriction 8]
 
-## REMEMBER: You are a [métaphore du rôle], not a [ce que vous n'êtes pas]
+## REMEMBER: You are a [role metaphor], not a [what you are not]
 
-Your sole purpose is to [objectif unique] with surgical precision and exact references. You are creating [type de livrable] of the existing [sujet], NOT performing a [ce que vous ne faites pas] or [autre chose interdite].
+Your sole purpose is to [unique objective] with surgical precision and exact references. You are creating [deliverable type] of the existing [subject], NOT performing a [forbidden action] or [another forbidden action].
 
-Think of yourself as a [analogie professionnelle] documenting an existing system for someone who needs to understand it, not as an [contre-exemple] evaluating or improving it. Help users [objectif utilisateur] exactly as it exists today, without any judgment or suggestions for change.
+Think of yourself as a [professional analogy] documenting an existing system for someone who needs to understand it, not as a [counter-example] evaluating or improving it. Help users [user objective] exactly as it exists today, without any judgment or suggestions for change.
 
 ---
-*Agent technique créé le [date] via create-persona*
+*Technical agent created on [date] via create-persona*
 ```
 
-#### B5.2 Créer le fichier mapping minimaliste dans `.claude/agents/[slug].md`
+#### B5.2 Create the minimal mapping file at `.claude/agents/[slug].md`
 
-Utiliser l'outil `write_to_file` pour créer `.claude/agents/[slug].md` avec le **format minimaliste actionnable (50-80 lignes)** :
+Use the Write tool to create `.claude/agents/[slug].md` with the **minimal actionable format (50-80 lines)**:
 
 ```markdown
 ---
 name: [slug]
-description: [description courte depuis persona frontmatter]
-tools: [liste des tools depuis persona]
-model: [model depuis persona]
+description: [short description from persona frontmatter]
+tools: [tools list from persona]
+model: [model from persona]
 ---
 
-# 🔧 [Nom Formaté Agent]
+# [Formatted Agent Name]
 
-You are the [Nom Formaté]. [Mission en 1 phrase].
+You are the [Formatted Name]. [Mission in 1 sentence].
 
 **Full specification**: `/prompts/gen/personas/[slug].md` ([X] lines)
 
 ---
 
-⚠️ **AGENT INTERNE - NE PAS CHARGER `/prompts/index.md mais tout de même `aikido.md`** ⚠️
+⚠️ **INTERNAL AGENT — DO NOT LOAD `/prompts/index.md` but do load `aikido.md`** ⚠️
 
-**UNIQUEMENT pour les agents `agent-aikido-*` (agents internes AI-KIDO)** :
+**ONLY for `agent-aikido-*` agents (internal AI-KIDO agents)**:
 
-En tant qu'agent interne AI-KIDO, vous possédez déjà les règles nécessaires. **NE chargez JAMAIS** le point d'entrée `index.md` - il est destiné aux agents externes et au LLM principal, pas aux agents spécialisés comme vous qui opérez directement sur la structure.
+As an internal AI-KIDO agent, you already have the necessary rules. **NEVER load** the `index.md` entry point — it is intended for external agents and the main LLM, not for specialized agents like you that operate directly on the structure.
 
-**Note** : Cet avertissement ne doit apparaître QUE pour les agents dont le nom commence par `agent-aikido-`. Les autres agents peuvent charger l'index normalement.
+**Note**: This warning must appear ONLY for agents whose name starts with `agent-aikido-`. Other agents may load the index normally.
 
 ---
 
 ## When to Use
 
 **Use this agent when:**
-- [Cas d'usage 1 depuis persona]
-- [Cas d'usage 2]
-- [Cas d'usage 3]
-- [Cas d'usage 4]
-- [Cas d'usage 5]
+- [Use case 1 from persona]
+- [Use case 2]
+- [Use case 3]
+- [Use case 4]
+- [Use case 5]
 
 **Don't use when:**
 - [Anti-pattern 1]
@@ -560,10 +533,10 @@ En tant qu'agent interne AI-KIDO, vous possédez déjà les règles nécessaires
 ## Usage Examples
 
 \`\`\`markdown
-"[Exemple input 1]"
-"[Exemple input 2]"
-"[Exemple input 3]"
-"[Exemple input 4]"
+"[Example input 1]"
+"[Example input 2]"
+"[Example input 3]"
+"[Example input 4]"
 \`\`\`
 
 ## Input
@@ -577,153 +550,124 @@ En tant qu'agent interne AI-KIDO, vous possédez déjà les règles nécessaires
 ## Output
 
 \`\`\`markdown
-# [Titre Output]
+# [Output Title]
 
 ## [Section 1]
-[Description structure]
+[Structure description]
 
 ## [Section 2]
-[Metrics/résultats]
+[Metrics/results]
 \`\`\`
 
 ## Performance
 
-- **Tokens**: [valeur moyenne]
-- **Time**: [valeur moyenne]
-- **[Métrique 3]**: [valeur]
-- **[Métrique 4]**: [valeur]
+- **Tokens**: [average value]
+- **Time**: [average value]
+- **[Metric 3]**: [value]
+- **[Metric 4]**: [value]
 
 ---
 
 **Full details**: Read `/prompts/gen/personas/[slug].md`
 ```
 
-**IMPORTANT** : L'avertissement "⚠️ AGENT INTERNE" ne doit apparaître QUE si le slug commence par `agent-aikido-*`. Sinon, SUPPRIMER cette section du mapping.
+**IMPORTANT**: The "INTERNAL AGENT" warning must appear ONLY if the slug starts with `agent-aikido-`. Otherwise, remove this section from the mapping.
 
-### Étape B6 : Mettre à jour .roomodes avec apply_diff
+### Step B6: Update agents_list.md
 
-Utiliser l'outil `apply_diff` pour ajouter à `.roomodes` :
-
-```yaml
-  - slug: [slug]
-    name: 🔧 [Nom Formaté] - [Description]
-    roleDefinition: >-
-      Tu es un agent technique spécialisé pour [tâche principale].
-      Tu opères dans un contexte isolé pour garantir la non-pollution du contexte appelant.
-      
-      PÉRIMÈTRE : [périmètre strict]
-      
-      INTERDICTIONS : Ne jamais [liste des interdictions principales]
-      
-      REMEMBER: Tu es un [rôle], pas un [contre-rôle]. Ta seule mission est [mission unique].
-    whenToUse: >-
-      Utilise cet agent technique dans un contexte isolé quand tu as besoin de [cas d'usage].
-      Cet agent apporte [valeur ajoutée] dans un environnement isolé, sans polluer ton contexte principal.
-    groups:
-      [permissions en format liste YAML basées sur tools]
-```
-
-### Étape B7 : Mettre à jour agents_list.md avec apply_diff
-
-Utiliser l'outil `apply_diff` pour mettre à jour `agents_list.md` avec la nouvelle section agent technique.
+Use the Edit tool to update `agents_list.md` with the new technical agent section.
 
 ---
 
-## Étape Finale : Confirmer la création avec attempt_completion
+## Output
 
-Utiliser l'outil `attempt_completion` pour afficher le message de confirmation :
-
-### Pour Agent Anthropomorphique
+### For Anthropomorphic Agent
 
 ```
-✅ Agent LLM Anthropomorphique "[nom]" créé avec succès !
+Anthropomorphic LLM Agent "[name]" created successfully!
 
-🤖 Cet agent incarne un expert en [spécialisation] avec :
-   - Compétences spécifiques en [domaines]
-   - Une façon de penser orientée [priorités]
-   - Un style de communication [caractéristiques]
-   - Un périmètre d'action clairement défini
+This agent embodies an expert in [specialization] with:
+   - Specific skills in [domains]
+   - A thinking style oriented toward [priorities]
+   - A [characteristics] communication style
+   - A clearly defined action scope
 
-📁 Fichiers créés/modifiés :
-   - prompts/gen/personas/[slug].md (définition complète de l'agent)
-   - .roomodes (configuration du mode)
+Files created/modified:
+   - prompts/gen/personas/[slug].md (full agent definition)
    - agents_list.md (documentation)
 
-🚀 Utilisez le slug "[slug]" pour activer cet agent LLM.
-   Le LLM adoptera alors les compétences et la façon de penser de cet expert.
+Use the slug "[slug]" to activate this LLM agent.
+The LLM will then adopt the skills and thinking style of this expert.
 ```
 
-### Pour Agent Technique
+### For Technical Agent
 
 ```
-✅ Agent Technique "[slug]" créé avec succès !
+Technical Agent "[slug]" created successfully!
 
-🔧 Cet agent technique effectue [tâche] dans un contexte isolé :
-   - Périmètre strict : [périmètre]
-   - Outils disponibles : [tools]
-   - Modèle : [model]
-   - Garantit la non-pollution du contexte appelant
+This technical agent performs [task] in an isolated context:
+   - Strict scope: [scope]
+   - Available tools: [tools]
+   - Model: [model]
+   - Guarantees no pollution of the calling context
 
-📁 Fichiers créés/modifiés :
-   - /prompts/gen/personas/[slug].md (persona source complet)
-   - .claude/agents/[slug].md (mapping minimaliste actionnable)
-   - .roomodes (configuration du mode)
+Files created/modified:
+   - /prompts/gen/personas/[slug].md (full source persona)
+   - .claude/agents/[slug].md (minimal actionable mapping)
    - agents_list.md (documentation)
 
-🚀 Utilisez le slug "[slug]" pour activer cet agent technique.
-   L'agent effectuera sa tâche atomique dans un contexte isolé.
+Use the slug "[slug]" to activate this technical agent.
+The agent will perform its atomic task in an isolated context.
 ```
 
-## Gestion des erreurs
+## Notes
 
-- **Slug existant** : Proposer [slug]-v2, [slug]-alt, etc.
-- **Permissions invalides** : Redemander avec liste valide
-- **Format incorrect** : Redemander avec exemple
-- **Emoji échoué** : Utiliser 🤖 par défaut (anthropomorphique) ou 🔧 (technique)
-- **Tools invalides** : Redemander avec liste valide (Read, Write, Grep, Glob, LS, Execute)
-- **Model invalide** : Redemander avec liste valide (sonnet, haiku, opus)
+### Error handling
 
-## Principes Clés
+- **Existing slug**: Propose [slug]-v2, [slug]-alt, etc.
+- **Invalid permissions**: Re-ask with valid list
+- **Incorrect format**: Re-ask with example
+- **Emoji failure**: Use 🤖 by default (anthropomorphic) or 🔧 (technical)
+- **Invalid tools**: Re-ask with valid list (Read, Write, Grep, Glob, LS, Execute)
+- **Invalid model**: Re-ask with valid list (sonnet, haiku, opus)
 
-### Section REMEMBER Obligatoire
+### Mandatory REMEMBER Section
 
-**TOUS les agents (anthropomorphiques ET techniques) DOIVENT avoir une section REMEMBER** qui :
+**ALL agents (anthropomorphic AND technical) MUST have a REMEMBER section** that:
 
-1. Rappelle le rôle principal de l'agent
-2. Liste ce qu'il DOIT faire
-3. Liste ce qu'il NE DOIT PAS faire
-4. Évite les dépassements de périmètre
+1. Restates the agent's main role
+2. Lists what it MUST do
+3. Lists what it MUST NOT do
+4. Prevents scope drift
 
-Cette section est CRITIQUE pour maintenir la spécialisation et éviter la dérive de contexte.
+This section is CRITICAL for maintaining specialization and avoiding context drift.
 
-### Avertissement Anti-Index pour Agents AI-KIDO Internes
+### Anti-Index Warning for Internal AI-KIDO Agents
 
-**TOUS les agents techniques dont le slug commence par `agent-aikido-*` DOIVENT inclure l'avertissement anti-chargement de `/prompts/index.md`** :
+**ALL technical agents whose slug starts with `agent-aikido-*` MUST include the anti-loading warning for `/prompts/index.md`**:
 
-1. **Dans le persona source** (`/prompts/gen/personas/[slug].md`) : Avertissement COMPLET avec explication détaillée
-2. **Dans le mapping** (`.claude/agents/[slug].md`) : Avertissement MINIMALISTE dans la section dédiée
-3. **Condition stricte** : Cet avertissement NE doit apparaître QUE pour les agents `agent-aikido-*` (agents internes)
-4. **Raison** : Ces agents possèdent déjà les règles AI-KIDO et charger l'index créerait une redondance coûteuse en tokens
+1. **In the source persona** (`/prompts/gen/personas/[slug].md`): FULL warning with detailed explanation
+2. **In the mapping** (`.claude/agents/[slug].md`): MINIMAL warning in the dedicated section
+3. **Strict condition**: This warning must appear ONLY for `agent-aikido-*` agents (internal agents)
+4. **Reason**: These agents already have the AI-KIDO rules and loading the index would create costly token redundancy
 
-**Pour tous les autres agents** : Pas d'avertissement, ils peuvent charger l'index normalement.
+For all other agents: no warning; they may load the index normally.
 
-### Double Fichier pour Agents Techniques
+### Dual File Requirement for Technical Agents
 
-**TOUS les agents techniques DOIVENT créer DEUX fichiers** :
+**ALL technical agents MUST create TWO files**:
 
-1. **Persona source** : `/prompts/gen/personas/[slug].md`
-   - Définition complète de l'agent avec frontmatter (name, description, tools, model, color)
-   - Section d'avertissement (si `agent-aikido-*`)
-   - Responsabilités, stratégie, format output, guidelines
-   - Section REMEMBER obligatoire
+1. **Source persona**: `/prompts/gen/personas/[slug].md`
+   - Full agent definition with frontmatter (name, description, tools, model, color)
+   - Warning section (if `agent-aikido-*`)
+   - Responsibilities, strategy, output format, guidelines
+   - Mandatory REMEMBER section
 
-2. **Mapping minimaliste** : `.claude/agents/[slug].md`
-   - Format actionnable 50-80 lignes
-   - Frontmatter identique au persona
-   - Section d'avertissement minimaliste (si `agent-aikido-*`)
+2. **Minimal mapping**: `.claude/agents/[slug].md`
+   - Actionable format 50-80 lines
+   - Frontmatter identical to persona
+   - Minimal warning section (if `agent-aikido-*`)
    - When to Use, Usage Examples, Input/Output, Performance
-   - Lien vers persona complet
+   - Link to full persona
 
-**Ne pas créer uniquement le mapping** - les deux fichiers sont nécessaires pour la cohérence et la capitalisation de connaissance.
-
----
+Do not create only the mapping — both files are required for consistency and knowledge capitalization.

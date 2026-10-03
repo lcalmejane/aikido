@@ -1,135 +1,134 @@
 ---
-description: "Analyse et met à jour le fichier CLAUDE.md en fonction de la Memory Bank AI-KIDO et des concepts CLAUDE.md"
+description: "Analyze and update CLAUDE.md based on AI-KIDO Memory Bank and CLAUDE.md concepts"
 ---
 
-# Commande Check-Claude
+# /check-claude
 
-Analyse l'état actuel de la Memory Bank AI-KIDO et met à jour le fichier [`CLAUDE.md`](../../CLAUDE.md) pour refléter le mapping réel entre votre structure et la norme CLAUDE.md. Génère également les fichiers de mapping pour Claude Code (`.claude/agents/` et `.claude/commands/`).
-
-## Objectif
-
-Maintenir la synchronisation entre :
-- La structure réelle de votre Memory Bank dans `/prompts/gen/`
-- Les personas dans `/prompts/gen/personas/` → `.claude/agents/`
-- Les commandes dans `prompts/hard_points/commands/` → `.claude/commands/`
-- Le fichier `AGENTS.md`
-- Le fichier `agents_list.md`
-- Le fichier `CLAUDE.md`
-- La compatibilité avec Claude Code (via fichiers `.claude/`) et CLAUDE.md
+**Purpose**: Analyze the current state of the AI-KIDO Memory Bank and update [`CLAUDE.md`](../../CLAUDE.md) to reflect the real mapping between your structure and the CLAUDE.md standard, then generate mapping files for Claude Code (`.claude/agents/` and `.claude/commands/`).
 
 ---
-**IMPORTANT** : Ne modifie QUE le fichier CLAUDE.md et les fichiers de mapping dans `.claude/`. Ne touche PAS aux fichiers originaux dans `/prompts/` ou `prompts/hard_points/commands/` ou AGENTS.md ou agents_list.md. CLAUDE.md <= 100 Lignes.
 
-## Exécution
+## Usage
 
-### Phase 1 à 4 : Valide le Fichier CLAUDE.md par rapport aux normes de CLAUDE CLI.
+[MANDATORY]
+/check-claude
 
-### Phase 5 : Synchronisation AGENTS.md
+## Prerequisites
 
-#### 5.1 Vérification de la Conformité
+- AI-KIDO Memory Bank initialized in `/prompts/gen/`
+- Personas present in `/prompts/gen/personas/`
+- Commands present in `prompts/hard_points/commands/`
 
-**Vérifier** que [`AGENTS.md`](../../AGENTS.md) respecte les règles 16-18 :
+## Steps
 
-```
-🔍 VÉRIFICATION AGENTS.MD
+### Phases 1 to 4: Validate CLAUDE.md against Claude CLI standards.
 
-Règle 16 (Interface unique) : [CONFORME/NON CONFORME]
-- Duplication de contenu : [OUI/NON]
-- Liens exclusifs vers /prompts/gen/ : [OUI/NON]
+### Phase 5: AGENTS.md Synchronization
 
-Règle 17 (Bidirectionnalité) : [CONFORME/NON CONFORME]
-- Agents sans persona : [LISTE]
-- Personas sans agent : [LISTE]
+#### 5.1 Compliance Verification
 
-Règle 18 (Structure standard) : [CONFORME/NON CONFORME]
-- Sections manquantes : [LISTE]
-```
-
-#### 5.2 Proposition de Corrections
-
-**Si non conforme**, proposer les corrections :
+**Verify** that [`AGENTS.md`](../../AGENTS.md) follows rules 16-18:
 
 ```
-🔧 CORRECTIONS PROPOSÉES POUR AGENTS.MD
+VERIFICATION AGENTS.MD
 
-1. Supprimer les duplications de contenu
-2. Ajouter les liens manquants vers /prompts/gen/personas/
-3. Créer les sections manquantes :
-   - [Liste des sections à ajouter]
-4. Synchroniser la liste des agents avec les personas existants
+Rule 16 (Single interface): [COMPLIANT/NON-COMPLIANT]
+- Content duplication: [YES/NO]
+- Exclusive links to /prompts/gen/: [YES/NO]
 
-Appliquer ces corrections ? (o/n) :
+Rule 17 (Bidirectionality): [COMPLIANT/NON-COMPLIANT]
+- Agents without persona: [LIST]
+- Personas without agent: [LIST]
+
+Rule 18 (Standard structure): [COMPLIANT/NON-COMPLIANT]
+- Missing sections: [LIST]
 ```
 
-#### 5.3 Application des Corrections
+#### 5.2 Proposed Corrections
 
-**Si accepté**, mettre à jour [`AGENTS.md`](../../AGENTS.md) automatiquement.
+**If non-compliant**, propose corrections:
 
-### Phase 5bis : Génération des Fichiers Agents Individuels
+```
+PROPOSED CORRECTIONS FOR AGENTS.MD
 
-#### 5bis.1 Création du Répertoire .claude/agents/
+1. Remove content duplications
+2. Add missing links to /prompts/gen/personas/
+3. Create missing sections:
+   - [List of sections to add]
+4. Synchronize agent list with existing personas
 
-**Objectif** : Créer des fichiers agents individuels pour que la commande `/agents` de Claude Code les reconnaisse
+Apply these corrections? (y/n):
+```
 
-**Créer le répertoire** si inexistant :
+#### 5.3 Apply Corrections
+
+**If accepted**, update [`AGENTS.md`](../../AGENTS.md) automatically.
+
+### Phase 5bis: Generation of Individual Agent Files
+
+#### 5bis.1 Create the .claude/agents/ Directory
+
+**Goal**: Create individual agent files so the `/agents` command in Claude Code recognizes them.
+
+**Create the directory** if it does not exist:
 ```bash
 mkdir -p .claude/agents/
 ```
 
-#### 5bis.2 Génération des Fichiers Agents (Mappings Minimalistes et Actionnables)
+#### 5bis.2 Generate Agent Files (Minimalist and Actionable Mappings)
 
-**Pour chaque persona dans `/prompts/gen/personas/`** :
+**For each persona in `/prompts/gen/personas/`**:
 
-1. **Vérifier l'existence** :
-   - Vérifier si `.claude/agents/[slug].md` existe déjà
-   - Si existe, comparer la description du front-matter avec celle du persona source
-   - Si identique et structure conforme, **IGNORER** (ne pas recréer)
-   - Si différente ou structure incorrecte, **METTRE À JOUR**
+1. **Check existence**:
+   - Check if `.claude/agents/[slug].md` already exists
+   - If it exists, compare the front-matter description with that of the source persona
+   - If identical and structure is compliant, **SKIP** (do not recreate)
+   - If different or structure is incorrect, **UPDATE**
 
-2. **Extraire les métadonnées** (seulement si fichier à créer/mettre à jour) :
-   - Slug du persona depuis le nom de fichier (ex: `expert-fonctionnel-ba.md` → `expert-fonctionnel-ba`)
-   - Description : Combiner spécialisation (persona) + conditions d'utilisation (whenToUse depuis .roomodes ou persona) sur **une seule ligne**
-   - Tools : Extraire permissions ou définir par défaut `Read, Grep, Glob, Bash`
-   - Model : Extraire depuis front-matter `model` du persona (conserver "inherit" si présent)
-   - Nom complet : Extraire depuis front-matter `name` ou titre # du persona
-   - Lignes : Compter les lignes du fichier persona source (pour métriques)
+2. **Extract metadata** (only if the file needs to be created/updated):
+   - Persona slug from the file name (e.g., `expert-fonctionnel-ba.md` → `expert-fonctionnel-ba`)
+   - Description: Combine specialization (persona) + usage conditions (whenToUse from .roomodes or persona) on **a single line**
+   - Tools: Extract permissions or set default `Read, Grep, Glob, Bash`
+   - Model: Extract from persona front-matter `model` (keep "inherit" if present)
+   - Full name: Extract from front-matter `name` or persona `#` title
+   - Lines: Count source persona file lines (for metrics)
 
-3. **Créer/Mettre à jour** un fichier `.claude/agents/[nom-agent].md` avec la **structure minimaliste actionnable** :
+3. **Create/Update** a file `.claude/agents/[agent-name].md` with the **minimalist actionable structure**:
 
 ```markdown
 ---
-name: [nom-agent]
-description: [Description UNE ligne depuis persona frontmatter]
-tools: [Tools depuis persona]
-model: [inherit/sonnet/haiku depuis persona]
+name: [agent-name]
+description: [ONE-line description from persona frontmatter]
+tools: [Tools from persona]
+model: [inherit/sonnet/haiku from persona]
 ---
 
-# [Emoji] [Nom Complet Agent]
+# [Emoji] [Agent Full Name]
 
-You are the [Nom Complet]. [Mission en 1 phrase depuis persona].
+You are the [Full Name]. [Mission in 1 sentence from persona].
 
-**Full specification**: `/prompts/gen/personas/[nom-agent].md` ([X] lines)
+**Full specification**: `/prompts/gen/personas/[agent-name].md` ([X] lines)
 
 ---
 
-⚠️ **AGENT INTERNE - NE PAS CHARGER `/prompts/index.md` mais tout de même `aikido.md`** ⚠️
+⚠️ **INTERNAL AGENT - DO NOT LOAD `/prompts/index.md` but still load `aikido.md`** ⚠️
 
-**UNIQUEMENT pour les agents `agent-aikido-*` (agents internes AI-KIDO)** :
+**ONLY for `agent-aikido-*` agents (internal AI-KIDO agents)**:
 
-En tant qu'agent interne AI-KIDO, vous possédez déjà les règles nécessaires. **NE chargez JAMAIS** le point d'entrée `index.md` - il est destiné aux agents externes et au LLM principal, pas aux agents spécialisés comme vous qui opérez directement sur la structure.
+As an internal AI-KIDO agent, you already have the necessary rules. **NEVER load** the `index.md` entry point — it is intended for external agents and the main LLM, not for specialized agents like you who operate directly on the structure.
 
-**Note** : Cet avertissement ne doit apparaître QUE pour les agents dont le nom commence par `agent-aikido-`. Les autres agents peuvent charger l'index normalement.
+**Note**: This warning must appear ONLY for agents whose name starts with `agent-aikido-`. Other agents may load the index normally.
 
 ---
 
 ## When to Use
 
 **Use this agent when:**
-- [Cas d'usage 1 depuis persona/roomodes]
-- [Cas d'usage 2]
-- [Cas d'usage 3]
-- [Cas d'usage 4]
-- [Cas d'usage 5]
+- [Use case 1 from persona/roomodes]
+- [Use case 2]
+- [Use case 3]
+- [Use case 4]
+- [Use case 5]
 
 **Don't use when:**
 - [Anti-pattern 1]
@@ -139,10 +138,10 @@ En tant qu'agent interne AI-KIDO, vous possédez déjà les règles nécessaires
 ## Usage Examples
 
 \`\`\`markdown
-"[Exemple input 1]"
-"[Exemple input 2]"
-"[Exemple input 3]"
-"[Exemple input 4]"
+"[Example input 1]"
+"[Example input 2]"
+"[Example input 3]"
+"[Example input 4]"
 \`\`\`
 
 ## Input
@@ -156,152 +155,152 @@ En tant qu'agent interne AI-KIDO, vous possédez déjà les règles nécessaires
 ## Output
 
 \`\`\`markdown
-# [Titre Output]
+# [Output Title]
 
 ## [Section 1]
-[Description structure]
+[Structure description]
 
 ## [Section 2]
-[Description structure]
+[Structure description]
 
 [Metrics section]
 \`\`\`
 
 ## Performance
 
-- **Tokens**: [valeur moyenne]
-- **Time**: [valeur moyenne]
-- **[Autre métrique]**: [valeur]
-- **[Autre métrique]**: [valeur]
+- **Tokens**: [average value]
+- **Time**: [average value]
+- **[Other metric]**: [value]
+- **[Other metric]**: [value]
 
 ---
 
-**Full details**: Read `/prompts/gen/personas/[nom-agent].md`
+**Full details**: Read `/prompts/gen/personas/[agent-name].md`
 ```
 
-**PRINCIPES STRICTES DE GÉNÉRATION MINIMALISTE** :
+**STRICT MINIMALIST GENERATION PRINCIPLES**:
 
-✅ **À INCLURE (actionnable uniquement)** :
-- Front-matter YAML (name, description, tools, model)
-- **Avertissement agents internes** (UNIQUEMENT pour agents `agent-aikido-*`)
-- When to Use (5 cas d'usage + 3 anti-patterns)
-- Usage Examples (4 exemples courts input-only)
-- Input format (paramètres attendus)
-- Output format (structure retournée)
-- Performance metrics (tokens, temps, métriques clés)
-- Lien vers persona complet
+Include (actionable only):
+- YAML front-matter (name, description, tools, model)
+- **Internal agent warning** (ONLY for `agent-aikido-*` agents)
+- When to Use (5 use cases + 3 anti-patterns)
+- Usage Examples (4 short input-only examples)
+- Input format (expected parameters)
+- Output format (returned structure)
+- Performance metrics (tokens, time, key metrics)
+- Link to full persona
 
-❌ **À EXCLURE (pas actionnable)** :
-- Process interne détaillé (étapes, algorithmes)
-- Workflows détaillés entre phases
-- Checkpoints internes
-- Explications théoriques
-- Exemples verbeux avec input → output complet
-- Tableaux de matrices complexes
-- Détails d'implémentation
+Exclude (not actionable):
+- Detailed internal process (steps, algorithms)
+- Detailed inter-phase workflows
+- Internal checkpoints
+- Theoretical explanations
+- Verbose examples with full input → output
+- Complex matrix tables
+- Implementation details
 
-**TEMPLATE GÉNÉRATION** :
+**GENERATION TEMPLATE**:
 
-Le template doit être **50-80 lignes maximum** et suivre EXACTEMENT ce format :
+The template must be **50-80 lines MAXIMUM** and follow EXACTLY this format:
 
 ```
-[FRONTMATTER YAML - 5 lignes]
+[YAML FRONTMATTER - 5 lines]
 ---
 name: [slug]
-description: [1 ligne]
-tools: [liste]
+description: [1 line]
+tools: [list]
 model: [inherit/sonnet/haiku]
 ---
 
-[HEADER - 3 lignes]
-# [Emoji] [Nom]
-You are... [1 phrase mission]
-**Full specification**: [lien] ([X] lines)
+[HEADER - 3 lines]
+# [Emoji] [Name]
+You are... [1 sentence mission]
+**Full specification**: [link] ([X] lines)
 
-[WHEN TO USE - 12 lignes]
+[WHEN TO USE - 12 lines]
 ## When to Use
 **Use this agent when:**
 - [5 bullet points]
 **Don't use when:**
 - [3 bullet points]
 
-[USAGE EXAMPLES - 8 lignes]
+[USAGE EXAMPLES - 8 lines]
 ## Usage Examples
 ```markdown
-"[4 exemples input-only]"
+"[4 input-only examples]"
 ```
 
-[INPUT - 6 lignes]
+[INPUT - 6 lines]
 ## Input
 ```markdown
-[Format paramètres]
+[Parameter format]
 ```
 
-[OUTPUT - 8 lignes]
+[OUTPUT - 8 lines]
 ## Output
 ```markdown
-[Structure retour]
+[Return structure]
 ```
 
-[PERFORMANCE - 6 lignes]
+[PERFORMANCE - 6 lines]
 ## Performance
-- [4 métriques clés]
+- [4 key metrics]
 
-[FOOTER - 2 lignes]
+[FOOTER - 2 lines]
 ---
-**Full details**: [lien]
+**Full details**: [link]
 ```
 
-**EXTRACTION DEPUIS PERSONA SOURCE** :
+**EXTRACTION FROM SOURCE PERSONA**:
 
-Pour générer le mapping minimaliste, extraire depuis le persona source :
+To generate the minimalist mapping, extract from the source persona:
 
-1. **Frontmatter** : name, description, tools, model (copie directe)
-2. **Mission** : Première phrase du persona ou section "Core Mission"
-3. **When to Use** :
-   - Extraire depuis section "When to Use" ou "Automatic triggers" (5 cas)
-   - Extraire anti-patterns ou créer génériques (3 cas)
-4. **Usage Examples** :
-   - Extraire 4 exemples depuis section "Quick Usage Examples"
-   - Format : input-only (pas de output détaillé)
-5. **Input/Output** : Extraire depuis sections "Input Format" et "Output Format"
-6. **Performance** : Extraire métriques depuis section "Performance Characteristics"
+1. **Frontmatter**: name, description, tools, model (direct copy)
+2. **Mission**: First sentence of the persona or "Core Mission" section
+3. **When to Use**:
+   - Extract from "When to Use" or "Automatic triggers" section (5 cases)
+   - Extract anti-patterns or create generic ones (3 cases)
+4. **Usage Examples**:
+   - Extract 4 examples from "Quick Usage Examples" section
+   - Format: input-only (no detailed output)
+5. **Input/Output**: Extract from "Input Format" and "Output Format" sections
+6. **Performance**: Extract metrics from "Performance Characteristics" section
 
-**RÈGLES STRICTES** :
-- ✅ Fichier final : 50-80 lignes MAXIMUM
-- ✅ Conserver le frontmatter YAML exact du persona
-- ✅ Focus 100% sur "comment utiliser" (when + input/output)
-- ✅ Aucune duplication de process/algorithmes internes
-- ✅ Lien vers persona complet pour détails
-- ✅ **Avertissement agents internes** : AJOUTER la section d'avertissement "⚠️ AGENT INTERNE - NE PAS CHARGER `/prompts/index.md`" UNIQUEMENT si le nom de l'agent commence par `agent-aikido-*`
-- ❌ Pas de descriptions de process multi-étapes
-- ❌ Pas de checkpoints/validation internes
-- ❌ Pas de tableaux complexes
-- ❌ Pas d'exemples verbeux avec output complet
+**STRICT RULES**:
+- Final file: 50-80 lines MAXIMUM
+- Preserve exact YAML frontmatter from persona
+- 100% focus on "how to use" (when + input/output)
+- No duplication of internal process/algorithms
+- Link to full persona for details
+- **Internal agent warning**: ADD the warning section "⚠️ INTERNAL AGENT - DO NOT LOAD `/prompts/index.md`" ONLY if the agent name starts with `agent-aikido-*`
+- No multi-step process descriptions
+- No internal checkpoints/validation
+- No complex tables
+- No verbose examples with full output
 
-**Algorithme de génération (scan dynamique)** :
-1. **Scanner dynamiquement** tous les fichiers `.md` dans `/prompts/gen/personas/` (sauf `index.md`)
-   - Utiliser `find` ou `glob` pour lister les fichiers au moment de l'exécution
-   - Ne pas partir d'une liste figée ou prédéfinie
-2. Pour chaque fichier persona détecté :
-   - Extraire le slug depuis le nom de fichier (ex: `expert-ba.md` → `expert-ba`)
-   - **Vérifier si `.claude/agents/[slug].md` existe déjà**
-   - Si existe, lire le front-matter pour comparer la description, tools et model
-   - Si identiques et structure conforme, **PASSER AU SUIVANT** (ne pas recréer)
-3. Pour les fichiers à créer/mettre à jour uniquement :
-   - **Description** : Extraire depuis front-matter `description` du persona (contient déjà spécialisation + whenToUse sur une ligne)
-   - **Tools** : Déduire depuis le contexte du persona ou utiliser par défaut `Read, Grep, Glob, Bash`
-   - **Model** : Extraire depuis front-matter `model` du persona (conserver "inherit" tel quel)
-   - Créer/Écraser le fichier agent `.claude/agents/[slug].md` avec :
-     - Front-matter YAML complet (name, description, tools, model)
-     - Deux sauts de ligne après `---`
-     - Instructions pour charger dynamiquement le persona (PAS le contenu intégral)
+**Generation algorithm (dynamic scan)**:
+1. **Dynamically scan** all `.md` files in `/prompts/gen/personas/` (excluding `index.md`)
+   - Use `find` or `glob` to list files at runtime
+   - Never use a hardcoded or predefined list
+2. For each detected persona file:
+   - Extract the slug from the file name (e.g., `expert-ba.md` → `expert-ba`)
+   - **Check if `.claude/agents/[slug].md` already exists**
+   - If it exists, read the front-matter to compare description, tools, and model
+   - If identical and structure is compliant, **SKIP** (do not recreate)
+3. For files to create/update only:
+   - **Description**: Extract from persona front-matter `description` (already contains specialization + whenToUse on one line)
+   - **Tools**: Deduce from persona context or use default `Read, Grep, Glob, Bash`
+   - **Model**: Extract from persona front-matter `model` (keep "inherit" as-is)
+   - Create/Overwrite agent file `.claude/agents/[slug].md` with:
+     - Complete YAML front-matter (name, description, tools, model)
+     - Two blank lines after `---`
+     - Instructions to dynamically load the persona (NOT the full content)
 
-**Important** :
-- La liste des personas n'est PAS codée en dur. Elle est découverte à chaque exécution.
-- Les fichiers agents existants et synchronisés ne sont PAS recréés (optimisation).
+**Important**:
+- The persona list is NOT hardcoded. It is discovered at each execution.
+- Existing and synchronized agent files are NOT recreated (optimization).
 
-**Exemple concret** :
+**Concrete example**:
 ```markdown
 ---
 name: agent-aikido-explore-bank
@@ -312,365 +311,377 @@ model: inherit
 
 # Agent agent-aikido-explore-bank
 
-Cet agent exécute le persona complet depuis `/prompts/hard_points/agents/agent-aikido-explore-bank.md`.
+This agent executes the full persona from `/prompts/hard_points/agents/agent-aikido-explore-bank.md`.
 
-**EXÉCUTION** : Je vais maintenant charger et activer le persona complet.
+**EXECUTION**: I will now load and activate the full persona.
 
 \`\`\`
-Chargement de /prompts/hard_points/agents/agent-aikido-explore-bank.md et activation du persona...
+Loading /prompts/hard_points/agents/agent-aikido-explore-bank.md and activating persona...
 \`\`\`
 ```
 
-3. **Validation** :
-- ✅ Un fichier par persona dans `.claude/agents/`
-- ✅ Front-matter YAML valide avec `name`, `description`, `tools` et `model`
-- ✅ Description sur UNE seule ligne combinant spécialisation + conditions d'utilisation
-- ✅ Model conservé tel quel ("inherit" si présent dans le persona)
-- ✅ Description termine par `\n\n` (deux retours à la ligne)
-- ✅ **Référence dynamique** vers `/prompts/gen/personas/` (pas de duplication)
-- ✅ Synchronisation 1:1 avec les fichiers dans `/prompts/gen/personas/`
+3. **Validation**:
+- One file per persona in `.claude/agents/`
+- Valid YAML front-matter with `name`, `description`, `tools`, and `model`
+- Description on ONE single line combining specialization + usage conditions
+- Model preserved as-is ("inherit" if present in persona)
+- Description ends with `\n\n` (two newlines)
+- **Dynamic reference** to `/prompts/gen/personas/` (no duplication)
+- 1:1 synchronization with files in `/prompts/gen/personas/`
 
-#### 5bis.3 Vérification de la Détection et Synchronisation
+#### 5bis.3 Detection and Synchronization Verification
 
-**Vérifier la cohérence** entre :
-1. `/prompts/gen/personas/*.md` (source de vérité)
-2. `.roomodes` (configuration Roo-Code)
-3. `agents_list.md` (interface des agents)
-4. `AGENTS.md` (documentation centrale)
-5. `.claude/agents/*.md` (fichiers agents pour Claude Code)
+**Verify consistency** between:
+1. `/prompts/gen/personas/*.md` (source of truth)
+2. `.roomodes` (project configuration file)
+3. `agents_list.md` (agents interface)
+4. `AGENTS.md` (central documentation)
+5. `.claude/agents/*.md` (agent files for Claude Code)
 
-**Matrice de synchronisation** :
+**Synchronization matrix**:
 
-**Scanner dynamiquement** :
-1. Lister tous les fichiers `.md` dans `/prompts/gen/personas/` (sauf `index.md`)
-2. Pour chaque fichier détecté, vérifier la présence dans :
-   - `.roomodes` (si le fichier existe)
-   - `agents_list.md` (si le fichier existe)
+**Dynamically scan**:
+1. List all `.md` files in `/prompts/gen/personas/` (excluding `index.md`)
+2. For each detected file, check presence in:
+   - `.roomodes` (if the file exists)
+   - `agents_list.md` (if the file exists)
    - `.claude/agents/`
-3. Générer une matrice avec les résultats
+3. Generate a matrix with results
 
-Exemple de format :
+Example format:
 | Persona | /prompts/gen/personas/ | .roomodes | agents_list.md | .claude/agents/ |
-|---------|------------------------|-----------|-----------|-----------------|
-| [nom-1] | ✅ | [✅/❌/N/A] | [✅/❌/N/A] | [✅/❌] |
-| [nom-2] | ✅ | [✅/❌/N/A] | [✅/❌/N/A] | [✅/❌] |
+|---------|------------------------|-----------|----------------|-----------------|
+| [name-1] | ✅ | [✅/❌/N/A] | [✅/❌/N/A] | [✅/❌] |
+| [name-2] | ✅ | [✅/❌/N/A] | [✅/❌/N/A] | [✅/❌] |
 | ... | ... | ... | ... | ... |
 
-**Alertes si désynchronisation** :
-- ⚠️ Persona dans /prompts/gen/personas/ mais absent de .claude/agents/
-- ⚠️ Agent dans .claude/agents/ mais fichier persona introuvable
-- ⚠️ Incohérence description entre .roomodes et fichier agent
+**Alerts on Desynchronization**:
+- Persona in /prompts/gen/personas/ but absent from .claude/agents/
+- Agent in .claude/agents/ but persona file not found
+- Description inconsistency between .roomodes and agent file
 
-**Afficher le résultat** :
+**Display result**:
 
 ```
-🔧 GÉNÉRATION .CLAUDE/AGENTS/
+GENERATION .CLAUDE/AGENTS/
 
-Scanner /prompts/gen/personas/ : [NOMBRE] fichier(s) détecté(s)
+Scan /prompts/gen/personas/: [NUMBER] file(s) detected
 
-Fichiers agents analysés :
-- [persona-1].md : ✅ Synchronisé (non modifié)
-- [persona-2].md : 🔄 Créé
-- [persona-3].md : 🔄 Mis à jour (description modifiée)
+Agent files analyzed:
+- [persona-1].md: Synchronized (not modified)
+- [persona-2].md: Created
+- [persona-3].md: Updated (description changed)
 - ...
 
-Statistiques :
-- Déjà synchronisés (ignorés) : [NOMBRE]
-- Créés : [NOMBRE]
-- Mis à jour : [NOMBRE]
-- Total : [NOMBRE]
+Statistics:
+- Already synchronized (skipped): [NUMBER]
+- Created: [NUMBER]
+- Updated: [NUMBER]
+- Total: [NUMBER]
 
-Répertoire : .claude/agents/
-Validation YAML : [✅ Valide / ❌ Erreur]
-Synchronisation avec /prompts/gen/personas/ : [✅ 100% / ⚠️ Désynchronisé]
+Directory: .claude/agents/
+YAML Validation: [Valid / Error]
+Synchronization with /prompts/gen/personas/: [100% / Desynchronized]
 
-💡 Les agents sont maintenant disponibles via la commande /agents dans Claude Code
+Agents are now available via the /agents command in Claude Code
 ```
 
-**Note importante** : Ces fichiers **référencent dynamiquement** les personas depuis `/prompts/gen/personas/`, instruisant Claude Code de charger le fichier persona au moment de l'activation, évitant toute duplication de contenu (conforme à la Règle 16).
+**Important note**: These files **dynamically reference** personas from `/prompts/gen/personas/`, instructing Claude Code to load the persona file at activation time, avoiding any content duplication (compliant with Rule 16).
 
-### Phase 5ter : Génération des Fichiers Commands Individuels
+### Phase 5ter: Generation of Individual Command Files
 
-#### 5ter.1 Création du Répertoire .claude/commands/
+#### 5ter.1 Create the .claude/commands/ Directory
 
-**Objectif** : Créer des fichiers de commandes pour que Claude Code les reconnaisse via la commande `/list`
+**Goal**: Create command files so Claude Code recognizes them via the `/list` command.
 
-**Créer le répertoire** si inexistant :
+**Create the directory** if it does not exist:
 ```bash
 mkdir -p .claude/commands/
 ```
 
-#### 5ter.2 Génération des Fichiers Commands
+#### 5ter.2 Generate Command Files
 
-**Pour chaque commande dans `prompts/hard_points/commands/`** :
+**For each command in `prompts/hard_points/commands/`**:
 
-1. **Vérifier l'existence** :
-   - Vérifier si `.claude/commands/[nom].md` existe déjà
-   - Si existe, comparer la description du front-matter avec celle du fichier source
-   - Si identique et structure conforme, **IGNORER** (ne pas recréer)
-   - Si différente ou structure incorrecte, **METTRE À JOUR**
+1. **Check existence**:
+   - Check if `.claude/commands/[name].md` already exists
+   - If it exists, compare the front-matter description with that of the source file
+   - If identical and structure is compliant, **SKIP** (do not recreate)
+   - If different or structure is incorrect, **UPDATE**
 
-2. **Extraire les métadonnées** (seulement si fichier à créer/mettre à jour) :
-   - Nom de la commande depuis le nom de fichier (ex: `check-claude.md` → `check-claude`)
-   - Description depuis le front-matter YAML `description` du fichier `prompts/hard_points/commands/*.md`
+2. **Extract metadata** (only if the file needs to be created/updated):
+   - Command name from file name (e.g., `check-claude.md` → `check-claude`)
+   - Description from YAML front-matter `description` of the file `prompts/hard_points/commands/*.md`
 
-3. **Créer/Mettre à jour** un fichier `.claude/commands/[nom-commande].md` avec la structure suivante :
+3. **Create/Update** a file `.claude/commands/[command-name].md` with the following structure:
 
 ```markdown
 ---
-description: [Description courte sur une seule ligne depuis prompts/hard_points/commands/[nom-commande].md]
+description: [Short description on a single line from prompts/hard_points/commands/[command-name].md]
 ---
 
-# Commande [nom-commande]
+# Command [command-name]
 
-Cette commande exécute le fichier de commande complet depuis `prompts/hard_points/commands/[nom-commande].md`.
+This command executes the full command file from `prompts/hard_points/commands/[command-name].md`.
 
-**EXÉCUTION** : Je vais maintenant lire et exécuter la commande complète.
+**EXECUTION**: I will now read and execute the full command.
 
 \`\`\`
-Lecture de prompts/hard_points/commands/[nom-commande].md et exécution des instructions...
+Reading prompts/hard_points/commands/[command-name].md and executing instructions...
 \`\`\`
 ```
 
-**IMPORTANT** : Le fichier commande doit :
-- Avoir un front-matter YAML simple avec `description` (description sur **une seule ligne**)
-- La description doit se terminer par `\n\n` (deux retours à la ligne après les `---` de fermeture du front-matter)
-- **NE PAS dupliquer le contenu** - seulement référencer dynamiquement `prompts/hard_points/commands/[nom-commande].md`
-- Instruire Claude Code de lire et exécuter le fichier source
+**IMPORTANT**: The command file must:
+- Have a simple YAML front-matter with `description` (description on **a single line**)
+- The description must end with `\n\n` (two newlines after the closing `---` of the front-matter)
+- **NOT duplicate content** — only dynamically reference `prompts/hard_points/commands/[command-name].md`
+- Instruct Claude Code to read and execute the source file
 
-**Instructions de génération (scan dynamique)** :
+**Generation instructions (dynamic scan)**:
 
-1. **Scanner dynamiquement** tous les fichiers `.md` dans `prompts/hard_points/commands/`
-   - Utiliser Glob ou Find pour lister les fichiers au moment de l'exécution
-   - Ne JAMAIS partir d'une liste figée ou prédéfinie
+1. **Dynamically scan** all `.md` files in `prompts/hard_points/commands/`
+   - Use Glob or Find to list files at runtime
+   - NEVER use a hardcoded or predefined list
 
-2. **Pour chaque fichier détecté** :
-   - Extraire le nom du fichier (ex: `analyse-aikido.md`)
-   - Extraire le nom de la commande (ex: `analyse-aikido`)
-   - **Vérifier si `.claude/commands/[nom].md` existe déjà**
-   - Si existe, lire le front-matter pour comparer la description
-   - Si identique et structure conforme, **PASSER AU SUIVANT** (ne pas recréer)
+2. **For each detected file**:
+   - Extract the file name (e.g., `analyse-aikido.md`)
+   - Extract the command name (e.g., `analyse-aikido`)
+   - **Check if `.claude/commands/[name].md` already exists**
+   - If it exists, read the front-matter to compare the description
+   - If identical and structure is compliant, **SKIP** (do not recreate)
 
-3. **Pour les fichiers à créer/mettre à jour uniquement**, créer le fichier `.claude/commands/[nom].md` en respectant EXACTEMENT ce template :
+3. **For files to create/update only**, create the file `.claude/commands/[name].md` following EXACTLY this template:
 
 ```
 ---
-description: [DESCRIPTION_EXTRAITE_DU_FICHIER_SOURCE]
+description: [DESCRIPTION_EXTRACTED_FROM_SOURCE_FILE]
 ---
-[LIGNE_VIDE_ICI]
-# Commande [nom-de-la-commande]
+[BLANK_LINE_HERE]
+# Command [command-name]
 
-Cette commande exécute le fichier de commande complet depuis `prompts/hard_points/commands/[nom-fichier].md`.
+This command executes the full command file from `prompts/hard_points/commands/[file-name].md`.
 
-**EXÉCUTION** : Je vais maintenant lire et exécuter la commande complète.
+**EXECUTION**: I will now read and execute the full command.
 
 ```
-Lecture de prompts/hard_points/commands/[nom-fichier].md et exécution des instructions...
+Reading prompts/hard_points/commands/[file-name].md and executing instructions...
 ```
 ```
 
-**RÈGLES STRICTES** :
-- ✅ Respecter EXACTEMENT le template ci-dessus
-- ✅ La description doit se terminer par `\n\n` (deux retours à la ligne après les `---` de fermeture)
-- ✅ Remplacer uniquement les placeholders entre crochets
-- ✅ Conserver la structure, les titres, le texte exact
-- ❌ NE JAMAIS dupliquer le contenu du fichier source
-- ❌ NE JAMAIS modifier le template ou ajouter du contenu supplémentaire
-- ❌ NE PAS recréer les fichiers déjà synchronisés (vérifier avant création)
+**STRICT RULES**:
+- Follow EXACTLY the template above
+- The description must end with `\n\n` (two newlines after the closing `---`)
+- Replace only the placeholders in brackets
+- Preserve the structure, headings, and exact text
+- NEVER duplicate the content of the source file
+- NEVER modify the template or add extra content
+- Do NOT recreate already synchronized files (check before creating)
 
-**Important** :
-- La liste des commandes est découverte dynamiquement à chaque exécution
-- Les fichiers commandes existants et synchronisés ne sont PAS recréés (optimisation)
+**Important**:
+- The command list is discovered dynamically at each execution
+- Existing and synchronized command files are NOT recreated (optimization)
 
-**Exemple concret** :
+**Concrete example**:
 
-Pour le fichier `prompts/hard_points/commands/analyse-aikido.md` avec description :
+For file `prompts/hard_points/commands/analyse-aikido.md` with description:
 ```markdown
 ---
-description: "Audit complet des tables de vérités AI-KIDO pour détecter dérivations, incohérences et liens cassés"
+description: "Complete audit of AI-KIDO truth tables to detect deviations, inconsistencies, and broken links"
 ---
-[... contenu complet ...]
+[... full content ...]
 ```
 
-Génère le fichier `.claude/commands/analyse-aikido.md` :
+Generates file `.claude/commands/analyse-aikido.md`:
 ```markdown
 ---
-description: "Audit complet des tables de vérités AI-KIDO pour détecter dérivations, incohérences et liens cassés"
+description: "Complete audit of AI-KIDO truth tables to detect deviations, inconsistencies, and broken links"
 ---
 
-# Commande analyse-aikido
+# Command analyse-aikido
 
-Cette commande exécute le fichier de commande complet depuis `prompts/hard_points/commands/analyse-aikido.md`.
+This command executes the full command file from `prompts/hard_points/commands/analyse-aikido.md`.
 
-**EXÉCUTION** : Je vais maintenant lire et exécuter la commande complète.
+**EXECUTION**: I will now read and execute the full command.
 
 \`\`\`
-Lecture de prompts/hard_points/commands/analyse-aikido.md et exécution des instructions...
+Reading prompts/hard_points/commands/analyse-aikido.md and executing instructions...
 \`\`\`
 ```
 
-4. **Validation** :
-- ✅ Un fichier par commande dans `.claude/commands/`
-- ✅ Front-matter YAML valide avec `description` sur 1 ligne
-- ✅ Description termine par `\n\n` (deux retours à la ligne)
-- ✅ **Référence dynamique** vers `prompts/hard_points/commands/` (pas de duplication)
-- ✅ Synchronisation 1:1 avec les fichiers dans `prompts/hard_points/commands/`
-- ✅ Fichiers déjà synchronisés non recréés
+4. **Validation**:
+- One file per command in `.claude/commands/`
+- Valid YAML front-matter with `description` on 1 line
+- Description ends with `\n\n` (two newlines)
+- **Dynamic reference** to `prompts/hard_points/commands/` (no duplication)
+- 1:1 synchronization with files in `prompts/hard_points/commands/`
+- Already synchronized files are not recreated
 
-#### 5ter.3 Vérification de la Détection et Synchronisation
+#### 5ter.3 Detection and Synchronization Verification
 
-**Vérifier la cohérence** entre :
-1. `prompts/hard_points/commands/*.md` (source de vérité)
-2. `.claude/commands/*.md` (fichiers commandes pour Claude Code)
+**Verify consistency** between:
+1. `prompts/hard_points/commands/*.md` (source of truth)
+2. `.claude/commands/*.md` (command files for Claude Code)
 
-**Matrice de synchronisation** :
+**Synchronization matrix**:
 
-**Scanner dynamiquement** :
-1. Lister tous les fichiers `.md` dans `prompts/hard_points/commands/`
-2. Pour chaque fichier détecté, vérifier la présence dans `.claude/commands/`
-3. Générer une matrice avec les résultats
+**Dynamically scan**:
+1. List all `.md` files in `prompts/hard_points/commands/`
+2. For each detected file, check presence in `.claude/commands/`
+3. Generate a matrix with results
 
-Exemple de format :
-| Commande | prompts/hard_points/commands/ | .claude/commands/ |
-|----------|----------------|-------------------|
-| [commande-1] | ✅ | [✅/❌] |
-| [commande-2] | ✅ | [✅/❌] |
+Example format:
+| Command | prompts/hard_points/commands/ | .claude/commands/ |
+|---------|-------------------------------|-------------------|
+| [command-1] | ✅ | [✅/❌] |
+| [command-2] | ✅ | [✅/❌] |
 | ... | ... | ... |
 
-**Alertes si désynchronisation** :
-- ⚠️ Commande dans prompts/hard_points/commands/ mais absente de .claude/commands/
-- ⚠️ Commande dans .claude/commands/ mais fichier source introuvable
-- ⚠️ Incohérence description entre les deux fichiers
+**Alerts on Desynchronization**:
+- Command in prompts/hard_points/commands/ but absent from .claude/commands/
+- Command in .claude/commands/ but source file not found
+- Description inconsistency between the two files
 
-**Afficher le résultat** :
+**Display result**:
 
 ```
-🔧 GÉNÉRATION .CLAUDE/COMMANDS/
+GENERATION .CLAUDE/COMMANDS/
 
-Scanner prompts/hard_points/commands/ : [NOMBRE] fichier(s) détecté(s)
+Scan prompts/hard_points/commands/: [NUMBER] file(s) detected
 
-Fichiers commandes analysés :
-- [commande-1].md : ✅ Synchronisé (non modifié)
-- [commande-2].md : 🔄 Créé
-- [commande-3].md : 🔄 Mis à jour (description modifiée)
+Command files analyzed:
+- [command-1].md: Synchronized (not modified)
+- [command-2].md: Created
+- [command-3].md: Updated (description changed)
 - ...
 
-Statistiques :
-- Déjà synchronisés (ignorés) : [NOMBRE]
-- Créés : [NOMBRE]
-- Mis à jour : [NOMBRE]
-- Total : [NOMBRE]
+Statistics:
+- Already synchronized (skipped): [NUMBER]
+- Created: [NUMBER]
+- Updated: [NUMBER]
+- Total: [NUMBER]
 
-Répertoire : .claude/commands/
-Validation YAML : [✅ Valide / ❌ Erreur]
-Synchronisation avec prompts/hard_points/commands/ : [✅ 100% / ⚠️ Désynchronisé]
+Directory: .claude/commands/
+YAML Validation: [Valid / Error]
+Synchronization with prompts/hard_points/commands/: [100% / Desynchronized]
 
-💡 Les commandes sont maintenant disponibles via la commande /list dans Claude Code
+Commands are now available via the /list command in Claude Code
 ```
 
-**Note importante** : Ces fichiers **ne dupliquent pas le contenu** mais instruisent Claude Code de lire et exécuter dynamiquement le fichier source `prompts/hard_points/commands/[nom].md`, évitant toute désynchronisation.
+**Important note**: These files **do not duplicate content** but instruct Claude Code to dynamically read and execute the source file `prompts/hard_points/commands/[name].md`, preventing any desynchronization.
 
-### Phase 6 : Génération du Rapport Final
+### Phase 6: Final Report Generation
 
-#### 6.1 Rapport de Synthèse
+#### 6.1 Summary Report
 
-**Créer** un rapport dans `/prompts/spec/check-claude-[DATE].md` :
+**Create** a report in `/prompts/spec/check-claude-[DATE].md`:
 
 ```markdown
-# Rapport Check-Claude - [DATE]
+# Check-Claude Report - [DATE]
 
-> Version: 1.0 | Date: [DATE ET HEURE] | Statut: Rapport d'Analyse
+> Version: 1.0 | Date: [DATE AND TIME] | Status: Analysis Report
 
-## Vue d'ensemble
+## Overview
 
-**Mode AI-KIDO** : [STANDARD/LIGHT]
-**Conformité globale** : [POURCENTAGE]%
-**Fichier CLAUDE.md** : ✅ Mis à jour
-**Fichier agents_list.md** : [✅ Conforme / ⚠️ Corrigé / ❌ Non conforme]
-**Fichier AGENTS.md** : [✅ Conforme / ⚠️ Corrigé / ❌ Non conforme]
+**AI-KIDO Mode**: [STANDARD/LIGHT]
+**Overall Compliance**: [PERCENTAGE]%
+**CLAUDE.md file**: Updated
+**agents_list.md file**: [Compliant / Corrected / Non-compliant]
+**AGENTS.md file**: [Compliant / Corrected / Non-compliant]
 
-## Statistiques
+## Statistics
 
-### Memory Bank AI-KIDO
-- Concepts : [NOMBRE]
-- Techniques : [NOMBRE]
-- Personas : [NOMBRE]
-- Use Cases : [NOMBRE]
-- Hard Points : [NOMBRE]
-- Commandes : [NOMBRE]
+### AI-KIDO Memory Bank
+- Concepts: [NUMBER]
+- Techniques: [NUMBER]
+- Personas: [NUMBER]
+- Use Cases: [NUMBER]
+- Hard Points: [NUMBER]
+- Commands: [NUMBER]
 
-### Équivalence CLAUDE.md
-- Skills équivalents : [NOMBRE]
-- Subagents équivalents : [NOMBRE]
-- Slash Commands : [NOMBRE]
-- Resources : [NOMBRE]
+### CLAUDE.md Equivalence
+- Equivalent Skills: [NUMBER]
+- Equivalent Subagents: [NUMBER]
+- Slash Commands: [NUMBER]
+- Resources: [NUMBER]
 
-### Conformité
-- Règle 4 (≤500 lignes) : [POURCENTAGE]%
-- Règle 6 (Liens bidirectionnels) : [POURCENTAGE]%
-- Règle 7 (Équilibrage) : [CONFORME/NON CONFORME]
-- Règles 16-18 (AGENTS.md) : [POURCENTAGE]%
+### Compliance
+- Rule 4 (<=500 lines): [PERCENTAGE]%
+- Rule 6 (Bidirectional links): [PERCENTAGE]%
+- Rule 7 (Balancing): [COMPLIANT/NON-COMPLIANT]
+- Rules 16-18 (AGENTS.md): [PERCENTAGE]%
 
-## Écarts Détectés
+## Detected Gaps
 
-### Écarts Critiques
-[Liste des écarts critiques nécessitant action immédiate]
+### Critical Gaps
+[List of critical gaps requiring immediate action]
 
-### Écarts Mineurs
-[Liste des écarts mineurs pouvant être corrigés ultérieurement]
+### Minor Gaps
+[List of minor gaps that can be addressed later]
 
-## Incohérences
+## Inconsistencies
 
-### Concepts sans Technique
-[Liste]
+### Concepts without Technique
+[List]
 
-### Techniques sans Concept
-[Liste]
+### Techniques without Concept
+[List]
 
-### Personas non Synchronisés
-[Liste]
+### Unsynchronized Personas
+[List]
 
-### Liens Manquants
-[Liste]
+### Missing Links
+[List]
 
-## Actions Effectuées
+## Actions Performed
 
-1. ✅ Analyse complète de la Memory Bank
-2. ✅ Mise à jour du fichier CLAUDE.md
-3. [✅/❌] Synchronisation agents_list.md
-4. [✅/❌] Synchronisation AGENTS.md
-5. ✅ Génération des fichiers agents individuels dans .claude/agents/
-6. ✅ Génération des fichiers commandes individuels dans .claude/commands/
-7. ✅ Génération de la matrice de correspondance
-8. ✅ Mise à jour des diagrammes
-9. ✅ Actualisation des statistiques
+1. Complete Memory Bank analysis
+2. CLAUDE.md file updated
+3. [Done/Failed] agents_list.md synchronization
+4. [Done/Failed] AGENTS.md synchronization
+5. Individual agent files generated in .claude/agents/
+6. Individual command files generated in .claude/commands/
+7. Correspondence matrix generated
+8. Diagrams updated
+9. Statistics refreshed
 
-## Recommandations
+## Recommendations
 
-### Actions Prioritaires
-1. [Action 1 avec justification]
-2. [Action 2 avec justification]
-3. [Action 3 avec justification]
+### Priority Actions
+1. [Action 1 with justification]
+2. [Action 2 with justification]
+3. [Action 3 with justification]
 
-### Actions Secondaires
+### Secondary Actions
 1. [Action 1]
 2. [Action 2]
 
-### Maintenance Continue
-- Exécuter `/check-claude` après chaque modification majeure
-- Exécuter `/maj-aikido` après chaque rebase git
-- Exécuter `/analyse-aikido` mensuellement pour audit complet
+### Ongoing Maintenance
+- Run `/check-claude` after each major modification
+- Run `/maj-aikido` after each git rebase
+- Run `/analyse-aikido` monthly for a full audit
 
-## Matrice de Correspondance
+## Correspondence Matrix
 
-[Matrice complète générée en Phase 3.2]
+[Full matrix generated in Phase 3.2]
 
-## Graphe de Dépendances
+## Dependency Graph
 
-[Diagramme Mermaid généré en Phase 3.3]
+[Mermaid diagram generated in Phase 3.3]
 
 ---
-*Rapport généré automatiquement par check-claude le [DATE ET HEURE]*
+*Report automatically generated by check-claude on [DATE AND TIME]*
 ```
 
-*Commande créée pour maintenir la synchronisation entre AI-KIDO et CLAUDE.md*
+## Output
+
+- Updated `CLAUDE.md` (CLAUDE.md <= 100 Lines)
+- Generated/updated files in `.claude/agents/` (one per persona)
+- Generated/updated files in `.claude/commands/` (one per command)
+- Summary report in `/prompts/spec/check-claude-[DATE].md`
+- Synchronization matrices displayed in console
+
+## Notes
+
+[IMPORTANT]: Only modifies CLAUDE.md and .claude/ mapping files. Does NOT touch files in /prompts/ or AGENTS.md or agents_list.md.
+
+*Command created to maintain synchronization between AI-KIDO and CLAUDE.md*

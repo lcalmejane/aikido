@@ -1,61 +1,61 @@
-# Techniques Pratiques de Création de Prompts Efficaces
+# Practical Techniques for Creating Effective Prompts
 
-> Version: 1.0 | Date: 2025-12-05 | Statut: Technique Pratique
+> Version: 1.0 | Date: 2025-12-05 | Status: Practical Technique
 
-Ce document fournit des **méthodes concrètes** et **exemples pratiques** pour appliquer les guidelines théoriques de création de prompts. Il complète [`/prompts/gen/concepts/guideline-prompts.md`](../concepts/guideline-prompts.md).
+This document provides **concrete methods** and **practical examples** to apply the theoretical guidelines for prompt creation. It complements [`/prompts/gen/concepts/guideline-prompts.md`](../concepts/guideline-prompts.md).
 
-## Vue d'ensemble
+## Overview
 
-**Objectif** : Transformer les principes théoriques en techniques opérationnelles avec exemples concrets et workflows pratiques.
+**Objective**: Transform theoretical principles into operational techniques with concrete examples and practical workflows.
 
-**Public cible** : Développeurs, architectes, product owners créant des prompts pour LLM
+**Target audience**: Developers, architects, product owners creating prompts for LLMs
 
-## Patterns de Formulation Efficaces
+## Effective Formulation Patterns
 
-### Pattern 1 : Structure Persona-Tâche-Contraintes (PTC)
+### Pattern 1: Persona-Task-Constraints Structure (PTC)
 
-**Template** :
+**Template**:
 ```markdown
-Tu es [PERSONA avec expertise spécifique].
-Ta tâche est de [ACTION PRÉCISE avec OBJECTIF MESURABLE].
-Contraintes : [LISTE EXPLICITE].
-Format attendu : [STRUCTURE DE SORTIE].
+You are [PERSONA with specific expertise].
+Your task is to [PRECISE ACTION with MEASURABLE OBJECTIVE].
+Constraints: [EXPLICIT LIST].
+Expected format: [OUTPUT STRUCTURE].
 ```
 
-**✅ Exemple BON** :
+**✅ Good Example**:
 ```markdown
-Tu es un architecte logiciel senior spécialisé en microservices.
-Ta tâche est d'analyser ce fichier docker-compose.yml et d'identifier les problèmes de sécurité critiques.
-Contraintes :
-- Focus uniquement sur les vulnérabilités OWASP Top 10
-- Ignorer les warnings de performance
-- Fournir une recommandation par vulnérabilité
-Format attendu : Liste numérotée avec [Vulnérabilité] - [Impact] - [Recommandation]
+You are a senior software architect specializing in microservices.
+Your task is to analyze this docker-compose.yml file and identify critical security issues.
+Constraints:
+- Focus only on OWASP Top 10 vulnerabilities
+- Ignore performance warnings
+- Provide one recommendation per vulnerability
+Expected format: Numbered list with [Vulnerability] - [Impact] - [Recommendation]
 ```
 
-**❌ Exemple MAUVAIS** :
+**❌ Bad Example**:
 ```markdown
-Analyse ce docker-compose et dis-moi ce qui ne va pas.
+Analyze this docker-compose and tell me what's wrong.
 ```
 
-**Problèmes** : Pas de rôle, objectif flou, aucune contrainte, format non défini.
+**Problems**: No role, vague objective, no constraints, undefined format.
 
-### Pattern 2 : Contexte-Exemples-Action (CEA)
+### Pattern 2: Context-Examples-Action (CEA)
 
-**Template** :
+**Template**:
 ```markdown
-Contexte : [SITUATION SPÉCIFIQUE]
-Exemples de résultats attendus :
-<example>[EXEMPLE CONCRET]</example>
-<example>[EXEMPLE CONCRET]</example>
-Action : [INSTRUCTION AVEC ÉTAPES]
+Context: [SPECIFIC SITUATION]
+Examples of expected results:
+<example>[CONCRETE EXAMPLE]</example>
+<example>[CONCRETE EXAMPLE]</example>
+Action: [INSTRUCTION WITH STEPS]
 ```
 
-**✅ Exemple BON** :
+**✅ Good Example**:
 ```markdown
-Contexte : Tu dois créer des tests unitaires pour une API REST qui gère des utilisateurs.
+Context: You need to create unit tests for a REST API that manages users.
 
-Exemples de résultats attendus :
+Examples of expected results:
 <example>
 describe('GET /users/:id', () => {
   it('should return user when ID exists', async () => {
@@ -74,389 +74,389 @@ it('should return 404 when user not found', async () => {
 });
 </example>
 
-Action : Génère 5 tests unitaires couvrant les cas suivants :
-1. Succès avec ID valide
-2. Erreur 404 avec ID inexistant
-3. Erreur 400 avec ID invalide
-4. Erreur 401 sans authentification
-5. Erreur 500 avec erreur serveur
+Action: Generate 5 unit tests covering the following cases:
+1. Success with valid ID
+2. 404 error with non-existent ID
+3. 400 error with invalid ID
+4. 401 error without authentication
+5. 500 error with server error
 ```
 
-**❌ Exemple MAUVAIS** :
+**❌ Bad Example**:
 ```markdown
-Écris des tests pour mon API utilisateurs.
+Write tests for my user API.
 ```
 
-### Pattern 3 : Itération Progressive (Chain-of-Thought)
+### Pattern 3: Progressive Iteration (Chain-of-Thought)
 
-**Template** :
+**Template**:
 ```markdown
-Étape 1 : [ANALYSE]
-Étape 2 : [RÉFLEXION]
-Étape 3 : [DÉCISION]
-Étape 4 : [ACTION]
+Step 1: [ANALYSIS]
+Step 2: [REFLECTION]
+Step 3: [DECISION]
+Step 4: [ACTION]
 
-Pour chaque étape, explique ton raisonnement avant de passer à la suivante.
+For each step, explain your reasoning before moving to the next one.
 ```
 
-**✅ Exemple BON** :
+**✅ Good Example**:
 ```markdown
-Tu dois refactoriser cette fonction complexe en plusieurs fonctions plus simples.
+You need to refactor this complex function into several simpler functions.
 
-Étape 1 : Analyse le code et identifie les responsabilités distinctes
-Étape 2 : Propose une décomposition en fonctions avec leurs signatures
-Étape 3 : Évalue si la décomposition respecte le Single Responsibility Principle
-Étape 4 : Implémente le refactoring
+Step 1: Analyze the code and identify distinct responsibilities
+Step 2: Propose a decomposition into functions with their signatures
+Step 3: Evaluate whether the decomposition respects the Single Responsibility Principle
+Step 4: Implement the refactoring
 
-Pour chaque étape, explique ton raisonnement avant de passer à la suivante.
+For each step, explain your reasoning before moving to the next one.
 ```
 
-## Exemples Concrets par Cas d'Usage
+## Concrete Examples by Use Case
 
-### Cas 1 : Génération de Code
+### Case 1: Code Generation
 
-**❌ Prompt inefficace** :
+**❌ Ineffective prompt**:
 ```markdown
-Crée une fonction pour calculer la distance entre deux points.
+Create a function to calculate the distance between two points.
 ```
 
-**✅ Prompt optimisé** :
+**✅ Optimized prompt**:
 ```markdown
-Tu es un développeur TypeScript expérimenté.
+You are an experienced TypeScript developer.
 
-Tâche : Créer une fonction pure qui calcule la distance euclidienne entre deux points 2D.
+Task: Create a pure function that calculates the Euclidean distance between two 2D points.
 
-Signature attendue :
+Expected signature:
 ```typescript
 function calculateDistance(p1: Point, p2: Point): number
 ```
 
-Contraintes :
+Constraints:
 - Type Point = { x: number; y: number }
-- Formule : sqrt((x2-x1)² + (y2-y1)²)
-- Gérer les coordonnées négatives
-- Retourner un nombre arrondi à 2 décimales
-- Inclure JSDoc avec @param et @returns
+- Formula: sqrt((x2-x1)² + (y2-y1)²)
+- Handle negative coordinates
+- Return a number rounded to 2 decimal places
+- Include JSDoc with @param and @returns
 
-Exemple d'utilisation :
+Usage example:
 ```typescript
 const distance = calculateDistance({x: 0, y: 0}, {x: 3, y: 4});
-// Résultat attendu : 5.00
+// Expected result: 5.00
 ```
 
-Fournis le code TypeScript complet avec gestion d'erreurs.
+Provide the complete TypeScript code with error handling.
 ```
 
-**Amélioration** : +300% de qualité de la sortie (persona, contraintes précises, exemple, format attendu)
+**Improvement**: +300% output quality (persona, precise constraints, example, expected format)
 
-### Cas 2 : Revue de Code
+### Case 2: Code Review
 
-**❌ Prompt inefficace** :
+**❌ Ineffective prompt**:
 ```markdown
-Review ce code et dis-moi s'il est bon.
+Review this code and tell me if it's good.
 ```
 
-**✅ Prompt optimisé** :
+**✅ Optimized prompt**:
 ```markdown
-Tu es un senior developer faisant une code review avec les critères suivants :
-1. Sécurité (vulnérabilités OWASP)
-2. Performance (complexité algorithmique)
-3. Maintenabilité (lisibilité, tests)
-4. Best practices du langage
+You are a senior developer doing a code review with the following criteria:
+1. Security (OWASP vulnerabilities)
+2. Performance (algorithmic complexity)
+3. Maintainability (readability, tests)
+4. Language best practices
 
-Code à reviewer :
+Code to review:
 ```python
-[CODE ICI]
+[CODE HERE]
 ```
 
-Pour chaque critère, fournis :
-- ✅ Points positifs
-- ⚠️ Points d'amélioration (avec suggestion de correction)
-- 🔴 Problèmes critiques (avec code corrigé)
+For each criterion, provide:
+- ✅ Positive points
+- ⚠️ Improvement points (with correction suggestion)
+- 🔴 Critical issues (with corrected code)
 
-Format de sortie :
-## Sécurité
+Output format:
+## Security
 ...
 ## Performance
 ...
-## Maintenabilité
+## Maintainability
 ...
 ## Best Practices
 ...
-## Score Global : X/10
+## Overall Score: X/10
 ```
 
-### Cas 3 : Documentation Technique
+### Case 3: Technical Documentation
 
-**❌ Prompt inefficace** :
+**❌ Ineffective prompt**:
 ```markdown
-Documente cette fonction.
+Document this function.
 ```
 
-**✅ Prompt optimisé** :
+**✅ Optimized prompt**:
 ```markdown
-Tu es un technical writer créant de la documentation API de qualité production.
+You are a technical writer creating production-quality API documentation.
 
-Tâche : Documenter cette fonction avec le format suivant :
+Task: Document this function using the following format:
 
-**Description** : [1 phrase résumant l'objectif]
-**Signature** : [Code avec types]
-**Paramètres** :
-- `param1` (type) : [Description]
-**Retour** : [Type et description]
-**Exceptions** : [Liste des erreurs possibles]
-**Exemples** :
-```[langage]
-// Cas nominal
-[EXEMPLE]
+**Description**: [1 sentence summarizing the objective]
+**Signature**: [Code with types]
+**Parameters**:
+- `param1` (type): [Description]
+**Return**: [Type and description]
+**Exceptions**: [List of possible errors]
+**Examples**:
+```[language]
+// Nominal case
+[EXAMPLE]
 
-// Cas limite
-[EXEMPLE]
+// Edge case
+[EXAMPLE]
 ```
-**Notes** : [Remarques importantes, performance, limitations]
+**Notes**: [Important remarks, performance, limitations]
 
-Fonction à documenter :
+Function to document:
 ```javascript
-[CODE ICI]
+[CODE HERE]
 ```
 
-Assure-toi que les exemples sont exécutables et couvrent les cas limites.
+Make sure the examples are executable and cover edge cases.
 ```
 
-## Anti-Patterns à Éviter avec Exemples
+## Anti-Patterns to Avoid with Examples
 
-### Anti-Pattern 1 : Instructions Contradictoires
+### Anti-Pattern 1: Contradictory Instructions
 
-**❌ Mauvais** :
+**❌ Bad**:
 ```markdown
-Sois concis dans ta réponse.
-Explique en détail chaque étape.
-Limite-toi à 50 mots maximum.
-Fournis des exemples complets pour chaque point.
+Be concise in your response.
+Explain each step in detail.
+Limit yourself to 50 words maximum.
+Provide complete examples for each point.
 ```
 
-**Problème** : Contradiction entre "concis", "détail", "50 mots" et "exemples complets"
+**Problem**: Contradiction between "concise", "detail", "50 words" and "complete examples"
 
-**✅ Bon** :
+**✅ Good**:
 ```markdown
-Fournis une réponse structurée en 3 parties :
-1. Résumé (50 mots max)
-2. Explication détaillée (200-300 mots)
-3. Exemples concrets (2-3 exemples courts)
+Provide a structured response in 3 parts:
+1. Summary (50 words max)
+2. Detailed explanation (200-300 words)
+3. Concrete examples (2-3 short examples)
 ```
 
-### Anti-Pattern 2 : Surcharge Cognitive
+### Anti-Pattern 2: Cognitive Overload
 
-**❌ Mauvais** :
+**❌ Bad**:
 ```markdown
-Analyse ce code en vérifiant : sécurité, performance, lisibilité, tests, documentation,
-architecture, patterns, SOLID, DRY, KISS, YAGNI, complexité cyclomatique, couplage,
-cohésion, injection de dépendances, gestion d'erreurs, logging, monitoring, scalabilité,
-maintenabilité, évolutivité, réutilisabilité, et conformité aux standards de l'équipe.
+Analyze this code by checking: security, performance, readability, tests, documentation,
+architecture, patterns, SOLID, DRY, KISS, YAGNI, cyclomatic complexity, coupling,
+cohesion, dependency injection, error handling, logging, monitoring, scalability,
+maintainability, evolvability, reusability, and team standard compliance.
 ```
 
-**Problème** : 20+ critères simultanés, impossible à traiter efficacement
+**Problem**: 20+ simultaneous criteria, impossible to process effectively
 
-**✅ Bon** :
+**✅ Good**:
 ```markdown
-Analyse ce code selon 3 axes prioritaires :
-1. **Sécurité** : Vulnérabilités OWASP Top 5
-2. **Performance** : Complexité O(n) et optimisations évidentes
-3. **Maintenabilité** : Respect SOLID et lisibilité
+Analyze this code along 3 priority axes:
+1. **Security**: OWASP Top 5 vulnerabilities
+2. **Performance**: O(n) complexity and obvious optimizations
+3. **Maintainability**: SOLID compliance and readability
 
-Pour les autres aspects (tests, docs, etc.), mentionne uniquement les problèmes critiques.
+For other aspects (tests, docs, etc.), mention only critical issues.
 ```
 
-### Anti-Pattern 3 : Ambiguïté Sémantique
+### Anti-Pattern 3: Semantic Ambiguity
 
-**❌ Mauvais** :
+**❌ Bad**:
 ```markdown
-Optimise ce code pour qu'il soit meilleur.
+Optimize this code to make it better.
 ```
 
-**Problème** : "Optimise" peut signifier performance, lisibilité, taille, complexité... "Meilleur" est subjectif
+**Problem**: "Optimize" can mean performance, readability, size, complexity... "Better" is subjective
 
-**✅ Bon** :
+**✅ Good**:
 ```markdown
-Améliore la performance de ce code en réduisant sa complexité temporelle :
-- Objectif : Passer de O(n²) à O(n log n) ou mieux
-- Mesure : Temps d'exécution sur 10,000 éléments < 100ms
-- Maintiens la lisibilité (pas de micro-optimisations obscures)
+Improve the performance of this code by reducing its time complexity:
+- Objective: Move from O(n²) to O(n log n) or better
+- Measure: Execution time on 10,000 elements < 100ms
+- Maintain readability (no obscure micro-optimizations)
 ```
 
-## Workflows d'Optimisation de Prompts
+## Prompt Optimization Workflows
 
-### Workflow 1 : Test-Refine-Iterate
+### Workflow 1: Test-Refine-Iterate
 
-**Étapes** :
-1. **Version initiale** : Prompt basique avec objectif clair
-2. **Test** : Exécuter sur 3-5 cas d'usage représentatifs
-3. **Analyse des échecs** : Identifier les ambiguïtés et outputs incorrects
-4. **Refinement** : Ajouter contraintes, exemples, clarifications
-5. **Re-test** : Valider amélioration
-6. **Itération** : Répéter 3-5 jusqu'à 90%+ de réussite
+**Steps**:
+1. **Initial version**: Basic prompt with a clear objective
+2. **Test**: Run on 3-5 representative use cases
+3. **Failure analysis**: Identify ambiguities and incorrect outputs
+4. **Refinement**: Add constraints, examples, clarifications
+5. **Re-test**: Validate improvement
+6. **Iteration**: Repeat 3-5 times until 90%+ success
 
-**Exemple pratique** :
+**Practical example**:
 
-**v1.0** (baseline) :
+**v1.0** (baseline):
 ```markdown
-Crée un test unitaire pour cette fonction.
+Create a unit test for this function.
 ```
-→ Résultat : Tests génériques, cas limites manquants (40% qualité)
+→ Result: Generic tests, missing edge cases (40% quality)
 
-**v1.1** (ajout contexte) :
+**v1.1** (adding context):
 ```markdown
-Tu es un QA engineer. Crée un test unitaire pour cette fonction avec cas nominaux et limites.
+You are a QA engineer. Create a unit test for this function with nominal and edge cases.
 ```
-→ Résultat : Tests mieux structurés mais format inconsistant (60% qualité)
+→ Result: Better structured tests but inconsistent format (60% quality)
 
-**v1.2** (ajout contraintes + format) :
+**v1.2** (adding constraints + format):
 ```markdown
-Tu es un QA engineer utilisant Jest.
-Crée des tests unitaires pour cette fonction couvrant :
-- 1 cas nominal
-- 2 cas limites (null, undefined, valeurs extrêmes)
-- 1 cas d'erreur
+You are a QA engineer using Jest.
+Create unit tests for this function covering:
+- 1 nominal case
+- 2 edge cases (null, undefined, extreme values)
+- 1 error case
 
-Format : describe() avec it() pour chaque cas.
+Format: describe() with it() for each case.
 ```
-→ Résultat : Tests complets et bien structurés (90% qualité) ✅
+→ Result: Complete and well-structured tests (90% quality) ✅
 
-### Workflow 2 : Validation par Checklist
+### Workflow 2: Checklist Validation
 
-**Avant d'utiliser un prompt, vérifier** :
+**Before using a prompt, check**:
 
-- [ ] **Persona** : Rôle et expertise définis ?
-- [ ] **Objectif** : Tâche claire et mesurable ?
-- [ ] **Contexte** : Informations suffisantes ?
-- [ ] **Contraintes** : Limitations explicites ?
-- [ ] **Format** : Structure de sortie définie ?
-- [ ] **Exemples** : Au moins 1 exemple fourni ?
-- [ ] **Testabilité** : Critères de succès clairs ?
+- [ ] **Persona**: Role and expertise defined?
+- [ ] **Objective**: Clear and measurable task?
+- [ ] **Context**: Sufficient information?
+- [ ] **Constraints**: Explicit limitations?
+- [ ] **Format**: Output structure defined?
+- [ ] **Examples**: At least 1 example provided?
+- [ ] **Testability**: Clear success criteria?
 
-**Si 6+/7 ✅ → Prompt prêt | Si <6/7 → Amélioration nécessaire**
+**If 6+/7 ✅ → Prompt ready | If <6/7 → Improvement needed**
 
-### Workflow 3 : Progressive Disclosure
+### Workflow 3: Progressive Disclosure
 
-**Principe** : Décomposer un prompt complexe en étapes progressives
+**Principle**: Decompose a complex prompt into progressive steps
 
-**Prompt monolithique (difficile)** :
+**Monolithic prompt (difficult)**:
 ```markdown
-Analyse ce projet, identifie les problèmes, propose des solutions, implémente les correctifs,
-crée les tests, et documente le tout.
-```
-
-**Prompt progressif (efficace)** :
-```markdown
-**Phase 1** : Analyse le projet et liste les 5 problèmes critiques avec leur impact.
-[Attendre réponse]
-
-**Phase 2** : Pour chaque problème, propose 2-3 solutions avec avantages/inconvénients.
-[Attendre réponse]
-
-**Phase 3** : Implémente la solution choisie pour le problème N°1.
-[Attendre réponse]
-
-**Phase 4** : Crée les tests unitaires pour valider le correctif.
-[Attendre réponse]
-
-**Phase 5** : Documente les changements et leur justification.
+Analyze this project, identify the issues, propose solutions, implement the fixes,
+create the tests, and document everything.
 ```
 
-**Bénéfice** : Contrôle à chaque étape, possibilité d'ajuster, meilleure qualité finale
+**Progressive prompt (effective)**:
+```markdown
+**Phase 1**: Analyze the project and list the 5 critical issues with their impact.
+[Wait for response]
 
-## Templates Réutilisables
+**Phase 2**: For each issue, propose 2-3 solutions with advantages/disadvantages.
+[Wait for response]
 
-### Template A : Code Review
+**Phase 3**: Implement the chosen solution for issue #1.
+[Wait for response]
+
+**Phase 4**: Create unit tests to validate the fix.
+[Wait for response]
+
+**Phase 5**: Document the changes and their justification.
+```
+
+**Benefit**: Control at each step, ability to adjust, better final quality
+
+## Reusable Templates
+
+### Template A: Code Review
 
 ```markdown
-Tu es un [RÔLE] senior faisant une code review.
+You are a senior [ROLE] doing a code review.
 
-Code à reviewer :
-```[LANGAGE]
+Code to review:
+```[LANGUAGE]
 [CODE]
 ```
 
-Critères d'évaluation :
-1. [CRITÈRE 1] : [DESCRIPTION]
-2. [CRITÈRE 2] : [DESCRIPTION]
-3. [CRITÈRE 3] : [DESCRIPTION]
+Evaluation criteria:
+1. [CRITERION 1]: [DESCRIPTION]
+2. [CRITERION 2]: [DESCRIPTION]
+3. [CRITERION 3]: [DESCRIPTION]
 
-Pour chaque critère, fournis :
-- ✅ Points conformes
-- ⚠️ Améliorations suggérées (avec exemple de code)
-- 🔴 Problèmes bloquants (avec correction complète)
+For each criterion, provide:
+- ✅ Compliant points
+- ⚠️ Suggested improvements (with code example)
+- 🔴 Blocking issues (with complete fix)
 
-Score final : X/10 avec justification.
+Final score: X/10 with justification.
 ```
 
-### Template B : Génération de Documentation
+### Template B: Documentation Generation
 
 ```markdown
-Tu es un technical writer créant de la documentation [TYPE].
+You are a technical writer creating [TYPE] documentation.
 
-Élément à documenter : [NOM]
-Source : [LIEN ou CODE]
+Element to document: [NAME]
+Source: [LINK or CODE]
 
-Structure attendue :
-## Titre
-[Description 1-2 phrases]
+Expected structure:
+## Title
+[Description 1-2 sentences]
 
-## Utilisation
-```[LANGAGE]
-[Exemple code]
+## Usage
+```[LANGUAGE]
+[Code example]
 ```
 
-## Paramètres
-[Tableau : Nom | Type | Description | Obligatoire]
+## Parameters
+[Table: Name | Type | Description | Required]
 
-## Retour
-[Type et description]
+## Return
+[Type and description]
 
-## Exemples
-### Cas nominal
-[Code exécutable]
+## Examples
+### Nominal case
+[Executable code]
 
-### Cas d'erreur
-[Code exécutable]
+### Error case
+[Executable code]
 
 ## Notes
-[Remarques importantes]
+[Important remarks]
 ```
 
-### Template C : Refactoring Guidé
+### Template C: Guided Refactoring
 
 ```markdown
-Tu es un [RÔLE] expert en clean code.
+You are a [ROLE] expert in clean code.
 
-Code à refactoriser :
-```[LANGAGE]
+Code to refactor:
+```[LANGUAGE]
 [CODE]
 ```
 
-Processus étape par étape :
-**Étape 1** : Identifie les code smells (liste numérotée)
-**Étape 2** : Propose une architecture cible (diagramme textuel)
-**Étape 3** : Crée les nouvelles fonctions/classes avec signatures
-**Étape 4** : Implémente le refactoring complet
-**Étape 5** : Vérifie que les tests existants passent toujours
+Step-by-step process:
+**Step 1**: Identify code smells (numbered list)
+**Step 2**: Propose a target architecture (text diagram)
+**Step 3**: Create the new functions/classes with signatures
+**Step 4**: Implement the complete refactoring
+**Step 5**: Verify that existing tests still pass
 
-Contraintes :
-- Maintenir la compatibilité API
-- Respecter [PRINCIPLES : SOLID/DRY/KISS]
-- Améliorer la testabilité
+Constraints:
+- Maintain API compatibility
+- Respect [PRINCIPLES: SOLID/DRY/KISS]
+- Improve testability
 
-Explique chaque décision de refactoring.
+Explain each refactoring decision.
 ```
 
-## Relations et Dépendances
+## Relations and Dependencies
 
-**Référence théorique** : [`/prompts/gen/concepts/guideline-prompts.md`](../concepts/guideline-prompts.md)
+**Theoretical reference**: [`/prompts/gen/concepts/guideline-prompts.md`](../concepts/guideline-prompts.md)
 
-**Voir aussi** :
-- Hard Points AI-KIDO : [`/prompts/hard_points/ai-kido.md`](../../hard_points/ai-kido.md) (Règle 11 : Densité sémantique)
-- Personas AI-KIDO : [`/prompts/gen/personas/`](../personas/) pour exemples de prompts système avancés
+**See also**:
+- AI-KIDO Hard Points: [`/prompts/hard_points/ai-kido.md`](../../hard_points/ai-kido.md) (Rule 11: Semantic density)
+- AI-KIDO Personas: [`/prompts/gen/personas/`](../personas/) for examples of advanced system prompts
 
 ---
 
-*Cette technique fournit des méthodes concrètes et réutilisables pour créer des prompts efficaces. Utilisez les templates et workflows selon vos besoins spécifiques.*
+*This technique provides concrete and reusable methods for creating effective prompts. Use the templates and workflows according to your specific needs.*

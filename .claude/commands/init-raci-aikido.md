@@ -1,18 +1,7 @@
 ---
-description: Initialiser la matrice RACI et les spécifications d'équipe AI-KIDO pour définir la hiérarchie des sous-répertoires par rôles (optimisé avec 3 agents AI-KIDO)
+description: "Initialize the RACI matrix and AI-KIDO team specifications to define the subdirectory hierarchy by roles (optimized with 3 AI-KIDO agents)"
 ---
 
-# Commande init-raci-aikido
-
-Cette commande exécute le fichier de commande complet depuis `prompts/hard_points/commands/init-raci-aikido.md`.
-
-**🤖 AGENTS UTILISÉS** :
-- `agent-aikido-explore-bank` (Phase 3 : extraction rôles et responsabilités)
-- `agent-aikido-raci-delegator` (Phase 5.2 : génération hiérarchie et slugification)
-- `agent-aikido-validator` (Phase 8 : validation conformité RACI finale)
-
-**EXÉCUTION** : Je vais maintenant lire et exécuter la commande complète.
-
-```
-Lecture de prompts/hard_points/commands/init-raci-aikido.md et exécution des instructions...
-```
+# /init-raci-aikido
+Executes `prompts/hard_points/commands/init-raci-aikido.md`.
+**EXECUTION**: Read and apply the instructions from the target file.

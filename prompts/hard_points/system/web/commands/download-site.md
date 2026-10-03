@@ -1,16 +1,16 @@
 ---
 name: download-site
-description: Télécharge un site web et convertit son contenu en Markdown
+description: Downloads a website and converts its content to Markdown
 category: web
 ---
 
-# Commande: /download-site
+# Command: /download-site
 
 ## Description
 
-Télécharge récursivement le contenu d'un site web en utilisant `wget`, puis convertit tous les fichiers HTML en format Markdown avec `pandoc`. Le contenu est stocké dans `prompts/hard_points/web/<nom-du-site>`.
+Recursively downloads the content of a website using `wget`, then converts all HTML files to Markdown format with `pandoc`. The content is stored in `prompts/hard_points/web/<site-name>`.
 
-> **⚠️ MODE READ-ONLY** : Cette commande télécharge uniquement du contenu public accessible via HTTP/HTTPS. Respecte les règles robots.txt du site.
+> **⚠️ READ-ONLY MODE**: This command only downloads publicly accessible content via HTTP/HTTPS. Respects the site's robots.txt rules.
 
 ## Usage
 
@@ -18,66 +18,66 @@ Télécharge récursivement le contenu d'un site web en utilisant `wget`, puis c
 /download-site <url> <depth> [prefix]
 ```
 
-## Paramètres
+## Parameters
 
-| Paramètre | Type | Obligatoire | Description |
-|-----------|------|-------------|-------------|
-| `url` | string | Oui | URL du site à télécharger (ex: https://example.com) |
-| `depth` | integer | Oui | Profondeur maximale de téléchargement récursif (1-5 recommandé) |
-| `prefix` | string | Non | Préfixe d'URL à accepter (regex). Par défaut: `https?://<host>` |
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `url` | string | Yes | URL of the site to download (e.g.: https://example.com) |
+| `depth` | integer | Yes | Maximum depth for recursive download (1-5 recommended) |
+| `prefix` | string | No | URL prefix to accept (regex). Default: `https?://<host>` |
 
-## Comportement
+## Behavior
 
-1. Vérifie les paramètres fournis (URL et profondeur obligatoires)
-2. Extrait le nom d'hôte depuis l'URL
-3. Crée un répertoire temporaire pour le téléchargement
-4. Télécharge le site avec `wget` :
-   - Récursif jusqu'à la profondeur spécifiée
-   - Convertit les liens pour navigation locale
-   - Ignore les fichiers médias (images, CSS, JS, polices)
-   - Applique le filtre de préfixe si fourni
-5. Convertit tous les fichiers HTML en Markdown avec `pandoc`
-6. Stocke le résultat dans `prompts/hard_points/web/<nom-du-site>`
-7. Nettoie le répertoire temporaire
+1. Validates the provided parameters (URL and depth are required)
+2. Extracts the hostname from the URL
+3. Creates a temporary directory for the download
+4. Downloads the site with `wget`:
+   - Recursive up to the specified depth
+   - Converts links for local navigation
+   - Ignores media files (images, CSS, JS, fonts)
+   - Applies the prefix filter if provided
+5. Converts all HTML files to Markdown with `pandoc`
+6. Stores the result in `prompts/hard_points/web/<site-name>`
+7. Cleans up the temporary directory
 
-## Sortie
+## Output
 
-### Succès
+### Success
 
 ```
-Début du téléchargement avec wget...
-Fin du téléchargement avec wget.
-Creation du répertoire cible : /path/to/prompts/hard_points/web/
-Conversion des fichiers HTML en Markdown...
-Nombre de fichiers HTML à convertir : 15
-Traitement de : /path/to/temp/index.html
-Converti : example.com/index.html -> example.com/index.md
+Starting download with wget...
+Download with wget complete.
+Creating target directory: /path/to/prompts/hard_points/web/
+Converting HTML files to Markdown...
+Number of HTML files to convert: 15
+Processing: /path/to/temp/index.html
+Converted: example.com/index.html -> example.com/index.md
 ...
-Téléchargement et conversion terminés : /path/to/prompts/hard_points/web/
+Download and conversion complete: /path/to/prompts/hard_points/web/
 ```
 
-### Échec
+### Failure
 
 ```
 Usage: download_site.sh <url> <depth> [prefix]
 ```
 
-ou
+or
 
 ```
-Erreur : pandoc n'est pas installé ou introuvable dans le PATH.
-Installation recommandée :
-  macOS : brew install pandoc
-  Linux (apt) : sudo apt-get update && sudo apt-get install -y pandoc
-  Linux (yum) : sudo yum install -y pandoc
+Error: pandoc is not installed or not found in PATH.
+Recommended installation:
+  macOS: brew install pandoc
+  Linux (apt): sudo apt-get update && sudo apt-get install -y pandoc
+  Linux (yum): sudo yum install -y pandoc
 ```
 
-## Prérequis
+## Prerequisites
 
-### Logiciels requis
+### Required Software
 
-- **wget** : téléchargement récursif de sites web
-- **pandoc** : conversion HTML → Markdown
+- **wget**: recursive website downloading
+- **pandoc**: HTML → Markdown conversion
 
 ### Installation
 
@@ -97,53 +97,53 @@ sudo apt-get install -y wget pandoc
 sudo yum install -y wget pandoc
 ```
 
-## Scripts associés
+## Associated Scripts
 
 - [`../script/download_site.sh`](../script/download_site.sh)
 
-## Dépendances
+## Dependencies
 
 - wget
 - pandoc
 - bash (>=4.0)
 
-## Exemples
+## Examples
 
-### Exemple 1 : Téléchargement simple
+### Example 1: Simple Download
 
 ```bash
-# Télécharger les 2 premiers niveaux d'un site
+# Download the first 2 levels of a site
 /download-site https://example.com 2
 ```
 
-### Exemple 2 : Téléchargement avec filtre de préfixe
+### Example 2: Download with Prefix Filter
 
 ```bash
-# Télécharger uniquement la section /docs/
+# Download only the /docs/ section
 /download-site https://example.com 3 "https://example.com/docs"
 ```
 
-### Exemple 3 : Téléchargement en profondeur
+### Example 3: Deep Download
 
 ```bash
-# Télécharger jusqu'à 5 niveaux (attention à la taille)
+# Download up to 5 levels (watch the size)
 /download-site https://example.com 5
 ```
 
-## Codes de Retour
+## Return Codes
 
-- `0` : Téléchargement et conversion réussis
-- `1` : Paramètres invalides ou dépendances manquantes
+- `0`: Download and conversion successful
+- `1`: Invalid parameters or missing dependencies
 
-## Fichiers exclus
+## Excluded Files
 
-Les types de fichiers suivants sont automatiquement exclus du téléchargement :
-- Images : jpg, jpeg, gif, png, svg, ico
-- Styles : css
-- Scripts : js
-- Polices : woff, woff2, ttf, eot
+The following file types are automatically excluded from the download:
+- Images: jpg, jpeg, gif, png, svg, ico
+- Styles: css
+- Scripts: js
+- Fonts: woff, woff2, ttf, eot
 
-## Structure de sortie
+## Output Structure
 
 ```
 prompts/hard_points/web/
@@ -158,15 +158,15 @@ prompts/hard_points/web/
 
 ## Notes
 
-- **Limites** : Utilisez des profondeurs faibles (1-3) pour éviter de télécharger des sites entiers
-- **Respect des robots.txt** : Le script respecte les règles d'exclusion des sites
-- **Performance** : La conversion peut prendre du temps selon le nombre de pages
-- **Stockage** : Les fichiers sont stockés de manière persistante dans `prompts/hard_points/web/`
-- **Médias** : Les images et médias extraits sont placés dans des sous-dossiers `*_media/`
+- **Limits**: Use low depths (1-3) to avoid downloading entire sites
+- **robots.txt compliance**: The script respects site exclusion rules
+- **Performance**: Conversion may take time depending on the number of pages
+- **Storage**: Files are stored persistently in `prompts/hard_points/web/`
+- **Media**: Extracted images and media are placed in `*_media/` subdirectories
 
-## Cas d'usage
+## Use Cases
 
-1. **Documentation technique** : Télécharger une documentation en ligne pour consultation offline
-2. **Analyse de contenu** : Extraire le contenu d'un site pour analyse par un LLM
-3. **Archivage** : Sauvegarder une version statique d'un site web
-4. **Knowledge base** : Intégrer du contenu web dans la Memory Bank AI-KIDO
+1. **Technical documentation**: Download online documentation for offline consultation
+2. **Content analysis**: Extract website content for analysis by an LLM
+3. **Archiving**: Save a static version of a website
+4. **Knowledge base**: Integrate web content into the AI-KIDO Memory Bank

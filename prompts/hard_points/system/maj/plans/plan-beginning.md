@@ -1,21 +1,21 @@
-# Plan Beginning – Initialisation Post-Sauvegarde
+# Plan Beginning – Post-Backup Initialization
 
 > **Type** : beginning | **Ordre** : -1 | **Bloquant** : OUI
 
-## 🎯 Objectif
+## 🎯 Objective
 
-Préparer l'environnement de mise à jour AI-KIDO en vérifiant les backups, chargeant le contexte et générant les structures initiales pour comparaison.
+Prepare the AI-KIDO update environment by verifying backups, loading context, and generating initial structures for comparison.
 
-Ce plan s'exécute **immédiatement après** la création du backup initial et **avant** la sélection du plan de version.
+This plan executes **immediately after** the initial backup is created and **before** the version plan selection.
 
 ---
 
-## 📥 Entrées Requises
+## 📥 Required Inputs
 
-- `$SOURCE` : Chemin absolu du répertoire contenant la base AI-KIDO actuelle (projet en cours)
-- `$TARGET` : Chemin absolu du répertoire contenant les fichiers de mise à jour (source externe validée)
+- `$SOURCE` : Absolute path to the directory containing the current AI-KIDO base (current project)
+- `$TARGET` : Absolute path to the directory containing the update files (validated external source)
 
-**Exemple** :
+**Example** :
 ```bash
 export SOURCE="/Users/lcare/workspace/best-p/ai-kido-best-practices"
 export TARGET="/Users/lcare/workspace/best-p/ai-kido-best-practices/prompts/spec/aikido-source-git"
@@ -23,41 +23,41 @@ export TARGET="/Users/lcare/workspace/best-p/ai-kido-best-practices/prompts/spec
 
 ---
 
-## 📋 Étapes d'Exécution
+## 📋 Execution Steps
 
-### 1️⃣ Phase 1.1 : Vérification Backup Initial (NON BLOQUANT)
+### 1️⃣ Phase 1.1 : Initial Backup Verification (NON-BLOCKING)
 
-**Action : Vérifier l'existence d'un backup récent**
+**Action : Verify the existence of a recent backup**
 
 ```bash
 LATEST_BACKUP=$(bash prompts/hard_points/system/maj/scripts/beginning-check-backup.sh)
 ```
 
-Ce script cherche le backup le plus récent dans `backups/aikido-backup-*.tgz`.
-- **Sortie** : Chemin du backup ou message d'avertissement
-- **Exit code** : 0 (toujours, non bloquant)
+This script searches for the most recent backup in `backups/aikido-backup-*.tgz`.
+- **Output** : Path to backup or warning message
+- **Exit code** : 0 (always, non-blocking)
 
 ---
 
-### 1️⃣ Phase 1.2 : Création Backup de Vérification (BLOQUANT)
+### 1️⃣ Phase 1.2 : Verification Backup Creation (BLOCKING)
 
-**Action : Créer un backup de vérification avant toute modification**
+**Action : Create a verification backup before any modification**
 
 ```bash
 bash prompts/hard_points/system/maj/scripts/create-backup.sh "$SOURCE" "aikido-verif-backup"
 VERIF_BACKUP_EXIT=$?
 ```
 
-Ce script crée un backup complet du projet avec timestamp.
-- **Fichiers sauvegardés** : `.claude .roo .roomodes agents_list.md commands_list.md AGENTS.md CLAUDE.md README.md prompts`
-- **Sortie** : `backups/aikido-verif-backup-YYYYMMDD-HHMMSS.tgz`
-- **Exit code** : 0 si succès, 1 si échec (BLOQUANT)
+This script creates a complete project backup with timestamp.
+- **Files saved** : `.claude .roo .roomodes agents_list.md commands_list.md AGENTS.md CLAUDE.md README.md prompts`
+- **Output** : `backups/aikido-verif-backup-YYYYMMDD-HHMMSS.tgz`
+- **Exit code** : 0 on success, 1 on failure (BLOCKING)
 
 ---
 
-### 2️⃣ Phase 2 : Chargement Contexte de Mise à Jour (BLOQUANT)
+### 2️⃣ Phase 2 : Update Context Loading (BLOCKING)
 
-**Action : Charger ou détecter les versions actuelle et cible**
+**Action : Load or detect current and target versions**
 
 ```bash
 VERSION_OUTPUT=$(bash prompts/hard_points/system/maj/scripts/beginning-detect-versions.sh "$SOURCE" "$TARGET")
@@ -67,23 +67,23 @@ if [ $VERSION_EXIT -eq 0 ]; then
   MAJ_CURRENT_VERSION=$(echo "$VERSION_OUTPUT" | awk '{print $1}')
   MAJ_TARGET_VERSION=$(echo "$VERSION_OUTPUT" | awk '{print $2}')
 else
-  echo "❌ ERREUR : Échec détection versions"
+  echo "❌ ERROR : Version detection failed"
   exit 1
 fi
 ```
 
-Ce script détecte automatiquement les versions depuis `prompts/hard_points/ai-kido.md`.
-- **Sortie** : `CURRENT_VERSION TARGET_VERSION` (format: "1.3.0 1.3.1")
-- **Export** : Variables `$MAJ_CURRENT_VERSION` et `$MAJ_TARGET_VERSION`
-- **Exit code** : 0 si succès, 1 si échec (BLOQUANT)
+This script automatically detects versions from `prompts/hard_points/ai-kido.md`.
+- **Output** : `CURRENT_VERSION TARGET_VERSION` (format: "1.3.0 1.3.1")
+- **Export** : Variables `$MAJ_CURRENT_VERSION` and `$MAJ_TARGET_VERSION`
+- **Exit code** : 0 on success, 1 on failure (BLOCKING)
 
 ---
 
-### 3️⃣ Phase 3 : Export Variables pour Plans Suivants (BLOQUANT)
+### 3️⃣ Phase 3 : Variable Export for Subsequent Plans (BLOCKING)
 
-**Action : Exporter les variables globales**
+**Action : Export global variables**
 
-**Objectif** : Rendre les variables disponibles pour tous les plans suivants.
+**Objective** : Make variables available for all subsequent plans.
 
 ```bash
 export MAJ_CURRENT_VERSION
@@ -92,7 +92,7 @@ export LATEST_BACKUP
 export SOURCE
 export TARGET
 
-echo "✅ Variables exportées pour plans suivants"
+echo "✅ Variables exported for subsequent plans"
 echo "   MAJ_CURRENT_VERSION = $MAJ_CURRENT_VERSION"
 echo "   MAJ_TARGET_VERSION  = $MAJ_TARGET_VERSION"
 echo "   SOURCE              = $SOURCE"
@@ -101,126 +101,126 @@ echo "   TARGET              = $TARGET"
 
 ---
 
-### 4️⃣ Phase 4 : Log de Démarrage (NON BLOQUANT)
+### 4️⃣ Phase 4 : Startup Log (NON-BLOCKING)
 
-**Action : Créer le fichier de log initial**
+**Action : Create the initial log file**
 
 ```bash
 LOG_FILE="prompts/spec/logs/maj-aikido-start-$(date +%Y%m%d-%H%M%S).log"
-LOG_CONTENT="Démarrage Mise à Jour AI-KIDO
+LOG_CONTENT="AI-KIDO Update Start
 
-CONTEXTE :
-  Backup utilisé      : ${LATEST_BACKUP:-Aucun}
-  Backup vérification : ${VERIF_BACKUP:-Non créé}
-  Version actuelle    : $MAJ_CURRENT_VERSION
-  Version cible       : $MAJ_TARGET_VERSION
+CONTEXT :
+  Backup used           : ${LATEST_BACKUP:-None}
+  Verification backup   : ${VERIF_BACKUP:-Not created}
+  Current version       : $MAJ_CURRENT_VERSION
+  Target version        : $MAJ_TARGET_VERSION
 
-RÉPERTOIRES :
+DIRECTORIES :
   Source : $SOURCE
   Target : $TARGET"
 
-bash prompts/hard_points/system/maj/scripts/create-log.sh "$LOG_FILE" "Démarrage MAJ" "$LOG_CONTENT"
+bash prompts/hard_points/system/maj/scripts/create-log.sh "$LOG_FILE" "Update Start" "$LOG_CONTENT"
 ```
 
-Ce script crée un log formaté pour tracer le début du processus.
-- **Sortie** : `prompts/spec/logs/maj-aikido-start-YYYYMMDD-HHMMSS.log`
-- **Exit code** : 0 (toujours, non bloquant)
+This script creates a formatted log to trace the start of the process.
+- **Output** : `prompts/spec/logs/maj-aikido-start-YYYYMMDD-HHMMSS.log`
+- **Exit code** : 0 (always, non-blocking)
 
 ---
 
-### 5️⃣ Phase 5 : Génération Structure Initiale Projet (NON BLOQUANT)
+### 5️⃣ Phase 5 : Initial Project Structure Generation (NON-BLOCKING)
 
-**Action : Générer les index JSON pour comparaison future**
+**Action : Generate JSON indexes for future comparison**
 
 ```bash
 bash prompts/hard_points/system/maj/scripts/beginning-generate-structure.sh "$SOURCE" "$TARGET"
 ```
 
-Ce script génère les structures JSON des projets TARGET et SOURCE (before).
-- **Sorties** :
-  - `/tmp/aikido/maj_target.json` : Structure du projet externe
-  - `/tmp/aikido/maj_before.json` : Structure du projet actuel avant MAJ
-- **Exit code** : 0 (toujours, non bloquant - affiche warnings si échec)
+This script generates JSON structures for TARGET and SOURCE projects (before).
+- **Outputs** :
+  - `/tmp/aikido/maj_target.json` : External project structure
+  - `/tmp/aikido/maj_before.json` : Current project structure before update
+- **Exit code** : 0 (always, non-blocking - displays warnings on failure)
 
 ---
 
-## 📤 Sorties Produites
+## 📤 Produced Outputs
 
-| Variable/Fichier | Description | Portée |
+| Variable/File | Description | Scope |
 |------------------|-------------|--------|
-| `$MAJ_CURRENT_VERSION` | Version AI-KIDO actuelle (ex: `1.3.0-LLM`) | Globale (exportée) |
-| `$MAJ_TARGET_VERSION` | Version AI-KIDO cible (ex: `1.3.1-LLM`) | Globale (exportée) |
-| `$LATEST_BACKUP` | Chemin backup initial | Globale (exportée) |
-| `$VERIF_BACKUP` | Chemin backup vérification | Locale |
-| `$LOG_FILE` | Fichier log démarrage | Locale |
-| `/tmp/aikido/maj_target.json` | Structure TARGET (JSON) | Fichier temporaire |
-| `/tmp/aikido/maj_before.json` | Structure SOURCE avant MAJ (JSON) | Fichier temporaire |
+| `$MAJ_CURRENT_VERSION` | Current AI-KIDO version (ex: `1.3.0-LLM`) | Global (exported) |
+| `$MAJ_TARGET_VERSION` | Target AI-KIDO version (ex: `1.3.1-LLM`) | Global (exported) |
+| `$LATEST_BACKUP` | Initial backup path | Global (exported) |
+| `$VERIF_BACKUP` | Verification backup path | Local |
+| `$LOG_FILE` | Startup log file | Local |
+| `/tmp/aikido/maj_target.json` | TARGET structure (JSON) | Temporary file |
+| `/tmp/aikido/maj_before.json` | SOURCE structure before update (JSON) | Temporary file |
 
 ---
 
-## ✅ Conditions de Succès
+## ✅ Success Conditions
 
-Le plan `beginning` est considéré réussi si **TOUTES** ces conditions sont remplies :
+The `beginning` plan is considered successful if **ALL** these conditions are met:
 
-1. ✅ Un backup de vérification a été créé (`$VERIF_BACKUP` existe)
-2. ✅ Les versions CURRENT et TARGET sont détectées (non vides)
-3. ✅ Les variables sont exportées correctement
-4. ✅ Le log de démarrage est créé
+1. ✅ A verification backup was created (`$VERIF_BACKUP` exists)
+2. ✅ CURRENT and TARGET versions are detected (non-empty)
+3. ✅ Variables are correctly exported
+4. ✅ The startup log is created
 
-**Conditions non bloquantes** (warnings seulement) :
-- ⚠️  Backup initial non trouvé
-- ⚠️  Échec génération structures JSON
+**Non-blocking conditions** (warnings only) :
+- ⚠️  Initial backup not found
+- ⚠️  JSON structure generation failed
 
 ---
 
-## ❌ Gestion d'Échec
+## ❌ Failure Handling
 
-Si une phase **BLOQUANTE** échoue :
+If a **BLOCKING** phase fails:
 
-1. **Afficher message d'erreur clair** avec cause exacte
-2. **NE PAS continuer** vers la sélection du plan de version
-3. **EXIT 1** pour arrêter le processus
-4. **L'utilisateur doit** :
-   - Corriger le problème (permissions, fichiers manquants)
-   - Relancer `/maj-aikido --update`
+1. **Display a clear error message** with exact cause
+2. **DO NOT continue** toward version plan selection
+3. **EXIT 1** to stop the process
+4. **The user must** :
+   - Fix the problem (permissions, missing files)
+   - Relaunch `/maj-aikido --update`
 
-**Exemple de message d'échec** :
+**Failure message example** :
 ```
-❌ ERREUR CRITIQUE : Phase 1.2 (Backup vérification) échouée
+❌ CRITICAL ERROR : Phase 1.2 (Verification backup) failed
 
-Cause : Impossible de créer backups/aikido-verif-backup-20260105-143022.tgz
-Raison possible : Permissions insuffisantes sur le répertoire backups/
+Cause : Unable to create backups/aikido-verif-backup-20260105-143022.tgz
+Possible reason : Insufficient permissions on the backups/ directory
 
-Action requise :
-  1. Vérifier les permissions : ls -la backups/
-  2. Créer le répertoire si nécessaire : mkdir -p backups && chmod 755 backups
-  3. Relancer : /maj-aikido --update
+Required action :
+  1. Check permissions : ls -la backups/
+  2. Create directory if necessary : mkdir -p backups && chmod 755 backups
+  3. Relaunch : /maj-aikido --update
 
 ═══════════════════════════════════════════════════════════════
 ```
 
 ---
 
-## 🔗 Enchaînement
+## 🔗 Chaining
 
-Une fois ce plan réussi, le système passe à :
+Once this plan succeeds, the system moves to:
 
-1. **Sélection automatique du plan de version** selon `$MAJ_TARGET_VERSION`
+1. **Automatic version plan selection** according to `$MAJ_TARGET_VERSION`
    - Ex: `1.3.0.0` → `plan-V1.3.0.0.md`
    - Ex: `1.3.1.0` → `plan-V1.3.1.0.md`
 
-2. **Exécution du plan de version** (phases spécifiques à la migration)
+2. **Version plan execution** (migration-specific phases)
 
-3. **Chaînage plans ending** : 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7
-
----
-
-## 📚 Références
-
-- **Script génération structure** : [`prompts/hard_points/system/structure/scripts/generate-all-indexes-v3.1.sh`](../../structure/scripts/generate-all-indexes-v3.1.sh)
-- **Format index.json** : [`prompts/hard_points/system/structure/SKILL.md`](../../structure/SKILL.md)
-- **Plans de version** : [`prompts/hard_points/system/maj/plans/plan-V*.md`](.)
+3. **Ending plan chaining** : 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 ---
 
-*Plan beginning v2.0 – Approche déclarative avec prompts d'action*
+## 📚 References
+
+- **Structure generation script** : [`prompts/hard_points/system/structure/scripts/generate-all-indexes-v3.1.sh`](../../structure/scripts/generate-all-indexes-v3.1.sh)
+- **index.json format** : [`prompts/hard_points/system/structure/SKILL.md`](../../structure/SKILL.md)
+- **Version plans** : [`prompts/hard_points/system/maj/plans/plan-V*.md`](.)
+
+---
+
+*Plan beginning v2.0 – Declarative approach with action prompts*

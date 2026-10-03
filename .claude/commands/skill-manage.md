@@ -1,6 +1,7 @@
 ---
-description: "Gère le cycle de vie complet des skills AI-KIDO : installation (get), mise à jour (update) et désinstallation (uninstall) depuis un groupe Git distant"
+description: "Manages the complete lifecycle of AI-KIDO skills: installation (get), update (update) and uninstallation (uninstall) from a remote Git group"
 ---
-# Commande skill-manage
-Cette commande exécute `prompts/hard_points/commands/skill-manage.md`.
-**EXÉCUTION** : Lire et appliquer les instructions du fichier cible.
+
+# /skill-manage
+Executes `prompts/hard_points/commands/skill-manage.md`.
+**EXECUTION**: Read and apply the instructions from the target file.

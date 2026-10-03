@@ -1,200 +1,200 @@
-# Plan d'Analyse Générique - Expert (Profondeur 4)
+# Generic Analysis Plan - Expert (Depth 4)
 
-> **Version**: 1.0 | **Date**: 2025-12-10 | **Type**: Analysis Plan | **Nature**: Générique | **Profondeur**: 4 - Expert
+> **Version**: 1.0 | **Date**: 2025-12-10 | **Type**: Analysis Plan | **Nature**: Generic | **Profondeur**: 4 - Expert
 
 ## 📋 Overview
 
-Plan d'analyse **générique expert** offrant un audit complet du projet incluant sécurité, performance, et plan de refactoring détaillé. **Analyse la plus poussée** avec recommandations actionnables et ROI estimé. Utilisé comme **fallback** pour profondeur 4 quand aucun plan spécifique n'existe.
+**Generic expert** analysis plan offering a full audit of the project including security, performance, and a detailed refactoring plan. **Most thorough analysis** with actionable recommendations and estimated ROI. Used as **fallback** for depth 4 when no specific plan exists.
 
-**Philosophie Expert** :
-- ✅ Audit complet (~40-60 min)
-- ✅ Analyse sécurité (OWASP, CVE)
-- ✅ Analyse performance (bottlenecks, optimisations)
-- ✅ Plan refactoring détaillé (étapes, ROI)
-- ✅ Recommandations priorisées avec effort/impact
-- ✅ Roadmap technique
+**Expert Philosophy** :
+- ✅ Full Audit (~40-60 min)
+- ✅ Security analysis (OWASP, CVE)
+- ✅ Performance analysis (bottlenecks, optimizations)
+- ✅ Detailed refactoring plan (steps, ROI)
+- ✅ Prioritized recommendations with effort/impact
+- ✅ Technical roadmap
 
-## 🎯 Critères de Sélection
+## 🎯 Selection Criteria
 
-Ce plan est sélectionné quand :
-- **Nature** : N'importe quel type d'analyse (1-18)
-- **Profondeur** : 4 - Expert (audit complet, sécurité, performance, refactoring)
-- **Contexte** : Audit pré-production, certification, migration critique, due diligence technique
+This plan is selected when:
+- **Nature** : Any analysis type (1-18)
+- **Depth** : 4 - Expert (full audit, security, performance, refactoring)
+- **Context** : Pre-production audit, certification, critical migration, technical due diligence
 
-**Différence vs autres profondeurs** :
-- vs Survol (1) : Audit complet vs vue d'ensemble
-- vs Standard (2) : + Sécurité + Performance + Refactoring
-- vs Approfondi (3) : + Audit sécurité/perfs complet + Plan refactoring étape par étape + ROI
+**Difference vs other depths** :
+- vs Overview (1) : Full Audit vs high-level view
+- vs Standard (2) : + Security + Performance + Refactoring
+- vs In-depth (3) : + Full security/performance audit + Step-by-step refactoring plan + ROI
 
-## 🔍 Sources à Analyser
+## 🔍 Sources to Analyze
 
-### Sources Prioritaires (Exhaustives + Sécurité/Performance)
+### Priority Sources (Exhaustive + Security/Performance)
 
-**Code Source** (audit complet) :
-- **Tous** fichiers (source + tests + scripts + config)
-- **Analyse sécurité** : Recherche vulnérabilités (injection, XSS, CSRF, etc.)
-- **Analyse performance** : Détection bottlenecks (N+1, memory leaks, etc.)
-- **Aucune exclusion** sauf binaires
+**Source Code** (full audit) :
+- **All** files (source + tests + scripts + config)
+- **Security analysis** : Vulnerabilities detection (injection, XSS, CSRF, etc.)
+- **Performance analysis** : Bottlenecks detection (N+1, memory leaks, etc.)
+- **No exclusion** except binaries
 
-**Documentation** (exhaustive + historique) :
-- Toute documentation technique
-- Historique décisions (ADRs si présents)
-- Security policies (si existantes)
-- Performance requirements (si documentées)
-- Changelog complet (analyse évolution)
+**Documentation** (exhaustive + historical) :
+- All technical documentation
+- Decision history (ADRs if present)
+- Security policies (if existing)
+- Performance requirements (if documented)
+- Full changelog (evolution analysis)
 
-**Configuration** (audit sécurité/performance) :
-- **Sécurité** : Secrets management, permissions, network policies
+**Configuration** (security/performance audit) :
+- **Security** : Secrets management, permissions, network policies
 - **Performance** : Cache configs, pool sizes, timeout settings
 - **Infrastructure** : Scaling policies, resource limits
 - **Monitoring** : Logs, metrics, alerting
 
-**Externes** (si applicable) :
-- CVE databases (vulnérabilités connues)
-- Benchmarks performance (comparaisons industry)
+**External** (if applicable) :
+- CVE databases (known vulnerabilities)
+- Performance benchmarks (industry comparisons)
 - Best practices (OWASP, SANS, etc.)
 
-### Critères de Filtrage
+### Filtering Criteria
 
-**Aucune limite** :
-- Analyse exhaustive de tous fichiers
-- Analyse historique (git history si accessible)
-- Analyse dépendances transitives (multi-niveaux)
-- Recherche patterns sécurité/performance
+**No limit** :
+- Exhaustive analysis of all files
+- Historical analysis (git history if accessible)
+- Transitive dependency analysis (multi-level)
+- Security/performance pattern search
 
-## 🤖 Agents AI-KIDO à Mobiliser
+## 🤖 AI-KIDO Agents to Mobilize
 
-### Phase 3.1 : Scan Code (Obligatoire - Audit Complet)
+### Phase 3.1 : Code Scan (Mandatory - Full Audit)
 
 **Agent** : `agent-aikido-explore-code`
 
-**Prompt spécialisé** :
+**Specialized prompt** :
 ```
 "FORMAT: JSON
 
-Analyse expert (profondeur 4) - Audit complet :
+Expert analysis (depth 4) - Full audit:
 
-FOCUS PRINCIPAL :
-- (Tout de profondeur 3) +
-- SÉCURITÉ : Patterns vulnérabilités (injection, XSS, CSRF, auth bypass, etc.)
-- PERFORMANCE : Bottlenecks (N+1, loops inefficients, memory leaks potentiels)
-- CONFIGURATION : Hardcoded secrets, insecure settings
+MAIN FOCUS:
+- (All from depth 3) +
+- SECURITY: Vulnerability patterns (injection, XSS, CSRF, auth bypass, etc.)
+- PERFORMANCE: Bottlenecks (N+1, inefficient loops, potential memory leaks)
+- CONFIGURATION: Hardcoded secrets, insecure settings
 
-DÉTAIL AUDIT :
-- Tous éléments profondeur 3 +
-- Security patterns : SQL injection, XSS, CSRF, auth/authz issues
-- Performance patterns : N+1 queries, inefficient loops, large data loads
-- Insecure configurations : Hardcoded credentials, weak crypto, permissive CORS
-- Deprecated APIs : Usage fonctions obsolètes/insecure
-- Error handling : Try/catch coverage, error exposure
+AUDIT DETAIL:
+- All depth 3 elements +
+- Security patterns: SQL injection, XSS, CSRF, auth/authz issues
+- Performance patterns: N+1 queries, inefficient loops, large data loads
+- Insecure configurations: Hardcoded credentials, weak crypto, permissive CORS
+- Deprecated APIs: Usage of obsolete/insecure functions
+- Error handling: Try/catch coverage, error exposure
 
-MÉTADONNÉES AUDIT :
-- Security score par fichier (heuristique)
-- Performance score par fichier (heuristique)
-- Critical issues avec severity (CRITICAL/HIGH/MEDIUM/LOW)
+AUDIT METADATA:
+- Security score per file (heuristic)
+- Performance score per file (heuristic)
+- Critical issues with severity (CRITICAL/HIGH/MEDIUM/LOW)
 
-Output attendu :
-- Index exhaustif + audit sécurité/performance
-- Issues critiques avec localisation exacte
-- ~120-150 lignes par fichier analysé
-- Budget total < 30k tokens"
+Expected output:
+- Exhaustive index + security/performance audit
+- Critical issues with exact location
+- ~120-150 lines per analyzed file
+- Total budget < 30k tokens"
 ```
 
-**Résultat attendu** : Index exhaustif + audit sécurité/perfs en < 30k tokens
+**Expected Result** : Exhaustive index + security/performance audit in < 30k tokens
 
-### Phase 3.2 : Recherche Parallèle (Obligatoire)
+### Phase 3.2 : Parallel Search (Mandatory)
 
-**Condition** : **OBLIGATOIRE** en profondeur 4
+**Condition** : **MANDATORY** at depth 4
 
 **Agent** : `agent-aikido-explore-all`
 
-**Prompt spécialisé** :
+**Specialized prompt** :
 ```
 "FORMAT: JSON
 
-Recherche parallèle exhaustive avec focus sécurité/performance :
+Exhaustive parallel search with security/performance focus:
 
-Memory Bank :
-- (Tout de profondeur 3) +
-- Security policies documentées
-- Performance requirements documentés
+Memory Bank:
+- (All from depth 3) +
+- Documented security policies
+- Documented performance requirements
 
-Code Source :
-- (Tout de profondeur 3) +
-- Vulnérabilités potentielles vs policies
+Source Code:
+- (All from depth 3) +
+- Potential vulnerabilities vs policies
 - Bottlenecks vs requirements
 
-Keywords recherche :
-- Patterns sécurité : password, token, secret, auth, crypto, hash, sql, query, input, sanitize
-- Patterns performance : cache, pool, connection, query, loop, memory, async, promise
+Search keywords:
+- Security patterns: password, token, secret, auth, crypto, hash, sql, query, input, sanitize
+- Performance patterns: cache, pool, connection, query, loop, memory, async, promise
 
-Output attendu :
-- Écarts sécurité (policies vs implémentation)
-- Écarts performance (requirements vs implémentation)
-- Vulnérabilités potentielles détectées"
+Expected output:
+- Security gaps (policies vs implementation)
+- Performance gaps (requirements vs implementation)
+- Detected potential vulnerabilities"
 ```
 
-**Résultat attendu** : Rapport audit exhaustif avec focus sécurité/perfs
+**Expected Result** : Exhaustive audit report with security/performance focus
 
-### Résolution Contradictions (Obligatoire)
+### Contradiction Resolution (Mandatory)
 
 **Agent** : `agent-aikido-truth-evaluator`
 
-**Stratégie hiérarchie** : Scénario INVESTIGATION + pondération sécurité/performance
-- Sécurité : Policies > Code > Config > Docs
+**Hierarchy strategy** : INVESTIGATION scenario + security/performance weighting
+- Security : Policies > Code > Config > Docs
 - Performance : Requirements > Code > Config > Docs
 
-### Classification RACI (Obligatoire si existant)
+### RACI Classification (Mandatory if existing)
 
 **Agent** : `agent-aikido-raci-delegator`
 
-**Mapping** : Classification exhaustive + assignation responsabilités sécurité/performance
+**Mapping** : Exhaustive classification + security/performance responsibility assignment
 
-### Peuplement Automatique (Fortement Recommandé)
+### Automatic Population (Strongly Recommended)
 
-**Condition** : **FORTEMENT RECOMMANDÉ** si gaps > 3
+**Condition** : **STRONGLY RECOMMENDED** if gaps > 3
 
 **Agent** : `agent-aikido-bank-populate`
 
-**Stratégie** : Capitalisation exhaustive incluant :
-- Security policies extraites du code
-- Performance patterns détectés
-- Best practices identifiées
+**Strategy** : Exhaustive capitalization including :
+- Security policies extracted from code
+- Performance patterns detected
+- Best practices identified
 
-### Validation Finale (Obligatoire - Très Stricte)
+### Final Validation (Mandatory - Very Strict)
 
 **Agent** : `agent-aikido-validator`
 
-**Règles strictes** :
-- Toutes règles profondeur 3 +
-- Validation sécurité documentation
-- Validation performance documentation
-- Liens vers issues critiques
+**Strict rules** :
+- All depth 3 rules +
+- Security documentation validation
+- Performance documentation validation
+- Links to critical issues
 
-## 📊 Stratégie d'Extraction
+## 📊 Extraction Strategy
 
-### 1. Détection Automatique (Audit Complet)
+### 1. Automatic Detection (Full Audit)
 
-**Algorithme expert** :
-1. (Tout de profondeur 3) +
-2. **Scan sécurité** : Patterns vulnérabilités OWASP Top 10
-3. **Scan performance** : Bottlenecks connus (N+1, memory leaks, etc.)
-4. **Analyse dépendances** : CVE checking (si data disponible)
-5. **Analyse configuration** : Security misconfigurations
-6. **Analyse historique** : Evolution code (git blame sur zones critiques)
+**Expert algorithm** :
+1. (All from depth 3) +
+2. **Security scan** : OWASP Top 10 vulnerability patterns
+3. **Performance scan** : Known bottlenecks (N+1, memory leaks, etc.)
+4. **Dependency analysis** : CVE checking (if data available)
+5. **Configuration analysis** : Security misconfigurations
+6. **Historical analysis** : Code evolution (git blame on critical areas)
 
-**Patterns de recherche** (sécurité/performance) :
+**Search patterns** (security/performance) :
 ```regex
-# (Tout de profondeur 3) +
+# (All from depth 3) +
 
-# SÉCURITÉ
+# SECURITY
 
-# SQL Injection potentiel
+# Potential SQL Injection
 (query|execute|prepare)\s*\(\s*[^\?].*\+.*\)
 SELECT.*WHERE.*\$.*\+
 INSERT.*VALUES.*\$.*\+
 
-# XSS potentiel
+# Potential XSS
 innerHTML\s*=
 dangerouslySetInnerHTML
 eval\(
@@ -215,7 +215,7 @@ if\s*\(\s*true\s*\).*admin
 
 # PERFORMANCE
 
-# N+1 queries potentiel
+# Potential N+1 queries
 for.*\n.*query|select
 forEach.*\n.*find|findOne
 
@@ -223,7 +223,7 @@ forEach.*\n.*find|findOne
 for.*for.*for  # nested loops 3+
 while.*\n.*sleep
 
-# Memory leaks potentiels
+# Potential memory leaks
 addEventListener.*\n(?!.*removeEventListener)
 setInterval.*\n(?!.*clearInterval)
 
@@ -235,92 +235,92 @@ SELECT\s+\*\s+FROM  # select all
 findAll\(\)  # ORM load all
 ```
 
-**Heuristiques avancées** :
-- (Tout de profondeur 3) +
-- **Security score** : Nombre issues / LOC * 1000
-- **Performance score** : Nombre bottlenecks / LOC * 1000
-- **Criticality** : Localisation (auth, payment, admin = CRITICAL)
+**Advanced heuristics** :
+- (All from depth 3) +
+- **Security score** : Number of issues / LOC * 1000
+- **Performance score** : Number of bottlenecks / LOC * 1000
+- **Criticality** : Location (auth, payment, admin = CRITICAL)
 
-### 2. Extraction Métadonnées (Audit)
+### 2. Metadata Extraction (Audit)
 
-**(Tout de profondeur 3) +**
+**(All from depth 3) +**
 
-**Sécurité** :
-- Vulnérabilités détectées avec severity (CRITICAL/HIGH/MEDIUM/LOW)
-- CVE matches (si dépendances connues)
+**Security** :
+- Detected vulnerabilities with severity (CRITICAL/HIGH/MEDIUM/LOW)
+- CVE matches (if known dependencies)
 - Security misconfigurations
-- Hardcoded secrets localisés
+- Localized hardcoded secrets
 - Insecure crypto usage
 - Missing security headers/validations
 
 **Performance** :
-- Bottlenecks détectés avec impact estimé
-- Inefficient queries/loops localisés
+- Detected bottlenecks with estimated impact
+- Localized inefficient queries/loops
 - Memory leak risks
 - Missing caching opportunities
 - Synchronous blocking operations
 - Resource limits (connections, memory)
 
-### 3. Analyse Profondeur Spécifique
+### 3. Depth-Specific Analysis
 
-**Profondeur 4 - Expert** :
-- **Niveau de détail** : Audit complet sécurité + performance + refactoring
-- **Métriques collectées** :
-  - (Toutes métriques profondeur 3) +
-  - Security score global + par catégorie
-  - Performance score global + par zone
-  - Issues CRITICAL count
-  - CVE count (si data disponible)
-  - Effort refactoring estimé (heures)
-  - ROI refactoring (impact vs effort)
-- **Graphes générés** :
-  - (Tous graphes profondeur 3) +
-  - Heatmap sécurité (zones vulnérables)
-  - Heatmap performance (bottlenecks)
-  - Roadmap refactoring (timeline)
-- **Temps estimé** : 40-60 minutes
+**Depth 4 - Expert** :
+- **Level of detail** : Full audit security + performance + refactoring
+- **Metrics collected** :
+  - (All metrics from depth 3) +
+  - Global security score + by category
+  - Global performance score + by area
+  - CRITICAL issues count
+  - CVE count (if data available)
+  - Estimated refactoring effort (hours)
+  - Refactoring ROI (impact vs effort)
+- **Generated graphs** :
+  - (All graphs from depth 3) +
+  - Security heatmap (vulnerable areas)
+  - Performance heatmap (bottlenecks)
+  - Refactoring roadmap (timeline)
+- **Estimated time** : 40-60 minutes
 
-## 🔄 Workflow Complet
+## 🔄 Complete Workflow
 
-### Phases d'Exécution (Audit Complet)
+### Execution Phases (Full Audit)
 
 ```mermaid
 graph TB
-    START[Début Expert] --> DETECT[Détection Sources<br/>Exhaustive all files + historique]
-    DETECT --> SCAN[🤖 explore-code<br/>AUDIT COMPLET<br/>Sécurité + Performance]
+    START[Expert Start] --> DETECT[Source Detection<br/>Exhaustive all files + history]
+    DETECT --> SCAN[🤖 explore-code<br/>FULL AUDIT<br/>Security + Performance]
 
-    SCAN --> PARALLEL[🤖 explore-all<br/>OBLIGATOIRE<br/>MB+Code focus Sécu/Perfs]
+    SCAN --> PARALLEL[🤖 explore-all<br/>MANDATORY<br/>MB+Code focus Secu/Perf]
 
-    PARALLEL --> EXTRACT[Extraction Métadonnées<br/>Tout prof 3 + Audit]
+    PARALLEL --> EXTRACT[Metadata Extraction<br/>All depth 3 + Audit]
 
-    EXTRACT --> AUDIT[Analyse Sécurité/Performance<br/>Patterns vulnérabilités<br/>Bottlenecks détection]
+    EXTRACT --> AUDIT[Security/Performance Analysis<br/>Vulnerability patterns<br/>Bottlenecks detection]
 
-    AUDIT --> GAPS[Détection Écarts<br/>+ Vulnérabilités<br/>+ Déviation best practices]
+    AUDIT --> GAPS[Gaps Detection<br/>+ Vulnerabilities<br/>+ Best practices deviation]
 
-    GAPS --> TRUTH[🤖 truth-evaluator<br/>OBLIGATOIRE<br/>Hiérarchie pondérée Sécu/Perfs]
+    GAPS --> TRUTH[🤖 truth-evaluator<br/>MANDATORY<br/>Weighted hierarchy Secu/Perf]
 
-    TRUTH --> ENRICH[Enrichissement Memory Bank<br/>Tout prof 3 + Policies + Perfs]
+    TRUTH --> ENRICH[Memory Bank Enrichment<br/>All depth 3 + Policies + Perf]
 
-    ENRICH --> RACI{RACI existant?}
-    RACI -->|OUI| CLASSIFY[🤖 raci-delegator<br/>OBLIGATOIRE<br/>+ Responsabilités Sécu/Perfs]
-    RACI -->|NON| BALANCE
+    ENRICH --> RACI{RACI existing?}
+    RACI -->|YES| CLASSIFY[🤖 raci-delegator<br/>MANDATORY<br/>+ Security/Perf responsibilities]
+    RACI -->|NO| BALANCE
 
-    CLASSIFY --> BALANCE[Équilibrage AI-KIDO<br/>Strict + Division auto]
+    CLASSIFY --> BALANCE[AI-KIDO Balancing<br/>Strict + Auto division]
 
-    BALANCE --> INDEX[Mise à jour Index<br/>6 fichiers + Audit summary]
+    BALANCE --> INDEX[Index Update<br/>6 files + Audit summary]
 
-    INDEX --> PLAN[Génération Plan Refactoring<br/>Priorités + ROI]
+    INDEX --> PLAN[Refactoring Plan Generation<br/>Priorities + ROI]
 
     PLAN --> POPULATE{Gaps>3?}
-    POPULATE -->|OUI - Fortement Recommandé| BANKPOP[🤖 bank-populate<br/>Capitalisation exhaustive]
-    POPULATE -->|NON| VALIDATE
+    POPULATE -->|YES - Strongly Recommended| BANKPOP[🤖 bank-populate<br/>Exhaustive capitalization]
+    POPULATE -->|NO| VALIDATE
 
-    BANKPOP --> VALIDATE[🤖 validator<br/>Validation TRÈS stricte]
+    BANKPOP --> VALIDATE[🤖 validator<br/>VERY strict validation]
 
-    VALIDATE -->|Non conforme| FIX[Quick Fixes<br/>Automatiques + Manuels]
+    VALIDATE -->|Non-compliant| FIX[Quick Fixes<br/>Automatic + Manual]
     FIX --> VALIDATE
 
-    VALIDATE --> END[✅ Audit expert terminé]
+    VALIDATE --> END[✅ Expert audit complete]
 
     style SCAN fill:#f9f,stroke:#333,stroke-width:2px
     style PARALLEL fill:#f9f,stroke:#333,stroke-width:2px
@@ -331,77 +331,77 @@ graph TB
     style END fill:#9f9,stroke:#333,stroke-width:2px
 ```
 
-**Phase unique Expert** :
-- ✅ Génération Plan Refactoring (après index, avant peuplement)
+**Expert-only phase** :
+- ✅ Refactoring Plan Generation (after index, before population)
 
-### Temps d'Exécution Estimé
+### Estimated Execution Time
 
-- **Détection sources** : ~4 min
-- **Scan audit (explore-code)** : ~12-18 min
-- **Recherche parallèle sécu/perfs** : ~8-12 min
-- **Analyse sécurité/performance** : ~5-8 min
-- **Résolution contradictions** : ~5 min
-- **Enrichissement exhaustif** : ~8-12 min
-- **Génération plan refactoring** : ~5-8 min
-- **Classification RACI** : ~4 min
-- **Peuplement** : ~8-12 min
-- **Validation très stricte** : ~3-5 min
+- **Source detection** : ~4 min
+- **Audit scan (explore-code)** : ~12-18 min
+- **Parallel search secu/perf** : ~8-12 min
+- **Security/performance analysis** : ~5-8 min
+- **Contradiction resolution** : ~5 min
+- **Exhaustive enrichment** : ~8-12 min
+- **Refactoring plan generation** : ~5-8 min
+- **RACI classification** : ~4 min
+- **Population** : ~8-12 min
+- **Very strict validation** : ~3-5 min
 
 **Total** : ~40-60 minutes
 
 ## 📤 Output Format
 
-### Structure de Sortie (Audit Complet)
+### Output Structure (Full Audit)
 
 ```markdown
-# Rapport d'Audit Expert (Profondeur 4)
+# Expert Audit Report (Depth 4)
 
 **Date** : {DATE}
-**Durée** : {DURATION}
-**Sources analysées** : {SOURCE_COUNT} fichiers (100% + historique)
+**Duration** : {DURATION}
+**Sources analyzed** : {SOURCE_COUNT} files (100% + history)
 
 ## 🎯 Configuration
 
 - **Nature** : {ANALYSIS_TYPE_DESCRIPTION}
-- **Profondeur** : 4 - Expert (audit complet, sécurité, performance, refactoring)
-- **Plan utilisé** : `plans/plan-expert.md`
+- **Depth** : 4 - Expert (full audit, security, performance, refactoring)
+- **Plan used** : `plans/plan-expert.md`
 
-## 🔒 Analyse Sécurité
+## 🔒 Security Analysis
 
-### Score Sécurité Global
+### Global Security Score
 
 **Score** : {SECURITY_SCORE}/100
-- ✅ Vert (80-100) : Sécurité solide
-- ⚠️  Orange (50-79) : Améliorations nécessaires
-- 🔴 Rouge (0-49) : Risques critiques
+- ✅ Green (80-100) : Solid security
+- ⚠️  Orange (50-79) : Improvements needed
+- 🔴 Red (0-49) : Critical risks
 
-### Issues Critiques (CRITICAL) 🔴
+### Critical Issues (CRITICAL) 🔴
 
-**{CRITICAL_COUNT} issue(s) critique(s) détectée(s)** :
+**{CRITICAL_COUNT} critical issue(s) detected** :
 
 1. **{ISSUE_TYPE}** ({FILE}:{LINE}) - Severity: CRITICAL
    - **Description** : {DESCRIPTION}
    - **Impact** : {IMPACT}
    - **Exploitation** : {EXPLOIT_SCENARIO}
-   - **Recommandation** : {FIX}
+   - **Recommendation** : {FIX}
    - **Effort** : {EFFORT}
-   - **Priorité** : P0 - Immédiat
+   - **Priority** : P0 - Immediate
 
-### Issues Haute Priorité (HIGH) ⚠️
+### High Priority Issues (HIGH) ⚠️
 
-**{HIGH_COUNT} issue(s) haute priorité** :
+**{HIGH_COUNT} high priority issue(s)** :
 
 1. **{ISSUE_TYPE}** ({FILE}:{LINE}) - Severity: HIGH
    - **Description** : {DESCRIPTION}
    - **Impact** : {IMPACT}
-   - **Recommandation** : {FIX}
+   - **Recommendation** : {FIX}
    - **Effort** : {EFFORT}
-   - **Priorité** : P1 - Court terme
+   - **Priority** : P1 - Short term
 
-### Vulnérabilités par Catégorie (OWASP Top 10)
+### Vulnerabilities by Category (OWASP Top 10)
 
-| Catégorie OWASP | Issues | Severity Max | Fichiers Affectés |
-|-----------------|--------|--------------|-------------------|
+| OWASP Category | Issues | Max Severity | Affected Files |
+|----------------|--------|--------------|----------------|
 | A01: Broken Access Control | {COUNT} | {MAX_SEV} | {FILES} |
 | A02: Cryptographic Failures | {COUNT} | {MAX_SEV} | {FILES} |
 | A03: Injection | {COUNT} | {MAX_SEV} | {FILES} |
@@ -409,153 +409,153 @@ graph TB
 | A05: Security Misconfiguration | {COUNT} | {MAX_SEV} | {FILES} |
 | ... | | | |
 
-### Dépendances Vulnérables (CVE)
+### Vulnerable Dependencies (CVE)
 
-**{CVE_COUNT} dépendance(s) avec CVE connue(s)** :
+**{CVE_COUNT} dependency(ies) with known CVE(s)** :
 
 - **{LIBRARY} {VERSION}** - CVE-{YEAR}-{ID} (Severity: {CRITICAL/HIGH/MEDIUM})
   - Description : {CVE_DESC}
   - Fix : Upgrade to {VERSION_FIXED}
 
-### Heatmap Sécurité
+### Security Heatmap
 
 ```mermaid
 {SECURITY_HEATMAP}
 ```
 
-Zones critiques (rouge) :
+Critical areas (red) :
 - `{CRITICAL_ZONE_1}` - {ISSUE_COUNT} issues
 - `{CRITICAL_ZONE_2}` - {ISSUE_COUNT} issues
 
-## ⚡ Analyse Performance
+## ⚡ Performance Analysis
 
-### Score Performance Global
+### Global Performance Score
 
 **Score** : {PERFORMANCE_SCORE}/100
-- ✅ Vert (80-100) : Performance optimale
-- ⚠️  Orange (50-79) : Optimisations possibles
-- 🔴 Rouge (0-49) : Bottlenecks critiques
+- ✅ Green (80-100) : Optimal performance
+- ⚠️  Orange (50-79) : Possible optimizations
+- 🔴 Red (0-49) : Critical bottlenecks
 
-### Bottlenecks Critiques 🔴
+### Critical Bottlenecks 🔴
 
-**{CRITICAL_BOTTLENECK_COUNT} bottleneck(s) critique(s)** :
+**{CRITICAL_BOTTLENECK_COUNT} critical bottleneck(s)** :
 
 1. **{BOTTLENECK_TYPE}** ({FILE}:{LINE})
    - **Description** : {DESCRIPTION}
-   - **Impact** : {IMPACT_DESCRIPTION} (ex: +{MS}ms par requête)
-   - **Fréquence** : {FREQUENCY} (si détectable)
-   - **Recommandation** : {FIX}
-   - **Gain estimé** : {GAIN_MS}ms ({GAIN_PERCENT}%)
+   - **Impact** : {IMPACT_DESCRIPTION} (ex: +{MS}ms per request)
+   - **Frequency** : {FREQUENCY} (if detectable)
+   - **Recommendation** : {FIX}
+   - **Estimated gain** : {GAIN_MS}ms ({GAIN_PERCENT}%)
    - **Effort** : {EFFORT}
    - **ROI** : {ROI_SCORE}/10
 
-### Bottlenecks Haute Priorité ⚠️
+### High Priority Bottlenecks ⚠️
 
-**{HIGH_BOTTLENECK_COUNT} bottleneck(s) haute priorité** :
+**{HIGH_BOTTLENECK_COUNT} high priority bottleneck(s)** :
 
 1. **{BOTTLENECK_TYPE}** ({FILE}:{LINE})
    - **Description** : {DESCRIPTION}
    - **Impact** : {IMPACT}
-   - **Recommandation** : {FIX}
-   - **Gain estimé** : {GAIN}
+   - **Recommendation** : {FIX}
+   - **Estimated gain** : {GAIN}
    - **Effort** : {EFFORT}
 
-### Opportunités Caching
+### Caching Opportunities
 
-**{CACHE_OPP_COUNT} opportunité(s) caching détectée(s)** :
+**{CACHE_OPP_COUNT} caching opportunity(ies) detected** :
 
-- **{FUNCTION}** ({FILE}:{LINE}) - Gain estimé : {GAIN_MS}ms
-  - Appels : {CALL_COUNT}/min (si détectable)
-  - Stratégie : {CACHE_STRATEGY}
+- **{FUNCTION}** ({FILE}:{LINE}) - Estimated gain : {GAIN_MS}ms
+  - Calls : {CALL_COUNT}/min (if detectable)
+  - Strategy : {CACHE_STRATEGY}
 
-### Heatmap Performance
+### Performance Heatmap
 
 ```mermaid
 {PERFORMANCE_HEATMAP}
 ```
 
-Zones critiques (rouge) :
+Critical areas (red) :
 - `{CRITICAL_ZONE_1}` - {BOTTLENECK_COUNT} bottlenecks
 - `{CRITICAL_ZONE_2}` - {BOTTLENECK_COUNT} bottlenecks
 
-## 📊 (Toutes sections profondeur 3)
+## 📊 (All depth 3 sections)
 
-[Architecture, Stack, Qualité, Écarts, etc. depuis plan-approfondi.md]
+[Architecture, Stack, Quality, Gaps, etc. from plan-approfondi.md]
 
-## 🛠️  Plan de Refactoring Détaillé
+## 🛠️  Detailed Refactoring Plan
 
-### Vue d'Ensemble
+### Overview
 
-**Effort total estimé** : {HOURS}h ({DAYS} jours-homme)
-**ROI global** : {ROI_SCORE}/10
-**Priorités** :
-- P0 (Immédiat) : {P0_COUNT} items - {P0_HOURS}h
-- P1 (Court terme) : {P1_COUNT} items - {P1_HOURS}h
-- P2 (Moyen terme) : {P2_COUNT} items - {P2_HOURS}h
+**Total estimated effort** : {HOURS}h ({DAYS} man-days)
+**Global ROI** : {ROI_SCORE}/10
+**Priorities** :
+- P0 (Immediate) : {P0_COUNT} items - {P0_HOURS}h
+- P1 (Short term) : {P1_COUNT} items - {P1_HOURS}h
+- P2 (Medium term) : {P2_COUNT} items - {P2_HOURS}h
 
-### Phase 1 : Sécurité (Immédiat - P0)
+### Phase 1 : Security (Immediate - P0)
 
-**Durée** : {PHASE1_DURATION}
+**Duration** : {PHASE1_DURATION}
 **Effort** : {PHASE1_EFFORT}h
 
-**Étapes** :
+**Steps** :
 1. **Fix {CRITICAL_ISSUE_1}** ({FILE}:{LINE})
    - Action : {ACTION_STEPS}
    - Tests : {TEST_STEPS}
    - Validation : {VALIDATION_STEPS}
    - Effort : {EFFORT}h
-   - Impact : 🔴 Critique
+   - Impact : 🔴 Critical
 
 2. **Fix {CRITICAL_ISSUE_2}** ({FILE}:{LINE})
    - Action : {ACTION_STEPS}
    - Tests : {TEST_STEPS}
    - Validation : {VALIDATION_STEPS}
    - Effort : {EFFORT}h
-   - Impact : 🔴 Critique
+   - Impact : 🔴 Critical
 
-### Phase 2 : Performance (Court terme - P1)
+### Phase 2 : Performance (Short term - P1)
 
-**Durée** : {PHASE2_DURATION}
+**Duration** : {PHASE2_DURATION}
 **Effort** : {PHASE2_EFFORT}h
 
-**Étapes** :
-1. **Optimiser {BOTTLENECK_1}** ({FILE}:{LINE})
-   - Stratégie : {OPTIMIZATION_STRATEGY}
-   - Gain estimé : {GAIN_MS}ms ({GAIN_PERCENT}%)
-   - Tests performance : {PERF_TEST_STEPS}
+**Steps** :
+1. **Optimize {BOTTLENECK_1}** ({FILE}:{LINE})
+   - Strategy : {OPTIMIZATION_STRATEGY}
+   - Estimated gain : {GAIN_MS}ms ({GAIN_PERCENT}%)
+   - Performance tests : {PERF_TEST_STEPS}
    - Effort : {EFFORT}h
    - ROI : {ROI}/10
 
-### Phase 3 : Qualité (Moyen terme - P2)
+### Phase 3 : Quality (Medium term - P2)
 
-**Durée** : {PHASE3_DURATION}
+**Duration** : {PHASE3_DURATION}
 **Effort** : {PHASE3_EFFORT}h
 
-**Étapes** :
+**Steps** :
 1. **Refactor {ANTI_PATTERN_1}** ({FILE}:{LINE})
-   - Stratégie : {REFACTOR_STRATEGY}
-   - Impact qualité : {QUALITY_IMPACT}
+   - Strategy : {REFACTOR_STRATEGY}
+   - Quality impact : {QUALITY_IMPACT}
    - Effort : {EFFORT}h
 
-### Roadmap Visuelle
+### Visual Roadmap
 
 ```mermaid
 gantt
-    title Plan Refactoring
+    title Refactoring Plan
     dateFormat YYYY-MM-DD
-    section Phase 1 Sécurité
+    section Phase 1 Security
     {TASK_1} :crit, {START}, {DURATION}d
     {TASK_2} :crit, {START}, {DURATION}d
     section Phase 2 Performance
     {TASK_3} : {START}, {DURATION}d
     {TASK_4} : {START}, {DURATION}d
-    section Phase 3 Qualité
+    section Phase 3 Quality
     {TASK_5} : {START}, {DURATION}d
 ```
 
-### Checklist Complète
+### Complete Checklist
 
-**Phase 1 - Sécurité** :
+**Phase 1 - Security** :
 - [ ] {TASK_1} ({EFFORT}h) - {OWNER}
 - [ ] {TASK_2} ({EFFORT}h) - {OWNER}
 
@@ -563,83 +563,83 @@ gantt
 - [ ] {TASK_1} ({EFFORT}h) - {OWNER}
 - [ ] {TASK_2} ({EFFORT}h) - {OWNER}
 
-**Phase 3 - Qualité** :
+**Phase 3 - Quality** :
 - [ ] {TASK_1} ({EFFORT}h) - {OWNER}
 - [ ] {TASK_2} ({EFFORT}h) - {OWNER}
 
-## 💡 Recommandations Stratégiques
+## 💡 Strategic Recommendations
 
-### Sécurité
+### Security
 
-**Immédiat (P0)** :
+**Immediate (P0)** :
 - {SECURITY_REC_1}
 
-**Court terme (P1)** :
+**Short term (P1)** :
 - {SECURITY_REC_2}
 
-**Politiques à établir** :
+**Policies to establish** :
 - {POLICY_REC_1}
 
 ### Performance
 
-**Quick Wins (ROI élevé, effort faible)** :
+**Quick Wins (high ROI, low effort)** :
 - {PERF_QUICKWIN_1} - Gain : {GAIN}, Effort : {EFFORT}h, ROI : {ROI}/10
 
-**Optimisations majeures (ROI moyen, effort élevé)** :
+**Major optimizations (medium ROI, high effort)** :
 - {PERF_MAJOR_1} - Gain : {GAIN}, Effort : {EFFORT}h, ROI : {ROI}/10
 
 ### Architecture
 
-**Evolution recommandée** :
+**Recommended evolution** :
 - {ARCH_REC_1}
 
-**Migration suggérée** :
+**Suggested migration** :
 - {MIGRATION_REC_1}
 
-## 📝 Enrichissements Appliqués
+## 📝 Applied Enrichments
 
-[Section similaire profondeur 3 + policies sécurité + patterns performance]
+[Similar section to depth 3 + security policies + performance patterns]
 
-## ✅ Conformité AI-KIDO (Très Stricte)
+## ✅ AI-KIDO Compliance (Very Strict)
 
-[Section similaire profondeur 3 avec validation renforcée]
+[Similar section to depth 3 with reinforced validation]
 
-## 📊 Métriques Finales
+## 📊 Final Metrics
 
-- **Fichiers analysés** : {COUNT} (100% exhaustif)
-- **LOC auditées** : {LOC}
+- **Files analyzed** : {COUNT} (100% exhaustive)
+- **LOC audited** : {LOC}
 - **Security issues** : {COUNT} ({CRITICAL}🔴 / {HIGH}⚠️  / {MEDIUM}/ {LOW})
 - **Performance issues** : {COUNT} ({CRITICAL}🔴 / {HIGH}⚠️)
-- **Dette technique** : {DEBT_HOURS}h
-- **Effort refactoring** : {REFACTOR_HOURS}h
-- **ROI refactoring** : {ROI}/10
-- **Agents utilisés** : 6 (tous agents AI-KIDO)
-- **Temps total** : {DURATION}
-- **Budget tokens** : ~{TOKENS} (< 30k cible)
+- **Technical debt** : {DEBT_HOURS}h
+- **Refactoring effort** : {REFACTOR_HOURS}h
+- **Refactoring ROI** : {ROI}/10
+- **Agents used** : 6 (all AI-KIDO agents)
+- **Total time** : {DURATION}
+- **Token budget** : ~{TOKENS} (< 30k target)
 
 ---
-*Généré par /analyse-project avec plan plan-expert.md*
-*Audit complet : sécurité + performance + refactoring*
+*Generated by /analyse-project with plan plan-expert.md*
+*Full audit : security + performance + refactoring*
 ```
 
-## 🎓 Cas d'Usage Idéaux
+## 🎓 Ideal Use Cases
 
-Le plan expert est idéal pour :
-- ✅ Audit pré-production (go/no-go critique)
-- ✅ Certification sécurité (SOC2, ISO27001, etc.)
-- ✅ Due diligence technique (M&A)
-- ✅ Migration critique (refonte majeure)
-- ✅ Optimisation performance (SLA critiques)
-- ✅ Réduction dette technique (planning pluriannuel)
+The expert plan is ideal for :
+- ✅ Pre-production audit (critical go/no-go)
+- ✅ Security certification (SOC2, ISO27001, etc.)
+- ✅ Technical due diligence (M&A)
+- ✅ Critical migration (major overhaul)
+- ✅ Performance optimization (critical SLAs)
+- ✅ Technical debt reduction (multi-year planning)
 
-## 📚 Références
+## 📚 References
 
-- **Plan profondeur inférieure** : `plan-approfondi.md` (profondeur 3)
-- **Agents** : Tous agents AI-KIDO (6 agents)
-- **Commande** : `prompts/hard_points/commands/analyse-project.md`
+- **Lower depth plan** : `plan-approfondi.md` (depth 3)
+- **Agents** : All AI-KIDO agents (6 agents)
+- **Command** : `prompts/hard_points/commands/analyse-project.md`
 - **OWASP Top 10** : https://owasp.org/Top10/
-- **Documentation AI-KIDO** : `prompts/hard_points/ai-kido.md`
+- **AI-KIDO Documentation** : `prompts/hard_points/ai-kido.md`
 
 ---
-*Plan Expert créé le 2025-12-10 pour /analyse-project*
-*Audit complet : sécurité + performance + refactoring + ROI*
+*Expert Plan created on 2025-12-10 for /analyse-project*
+*Full audit : security + performance + refactoring + ROI*

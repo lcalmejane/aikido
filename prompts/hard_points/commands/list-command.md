@@ -1,69 +1,56 @@
 ---
-description: "Affiche la liste des commandes AI-KIDO disponibles depuis commands_list.md"
+description: "Display the list of available AI-KIDO commands from commands_list.md"
 ---
 
-# Commande List-Command
+# /list-command
 
-Liste les commandes AI-KIDO disponibles en lisant directement commands_list.md (source autoritaire).
+**Purpose**: Display available AI-KIDO commands as declared in commands_list.md.
 
-## Objectif
+---
 
-Afficher rapidement les commandes disponibles telles que déclarées dans commands_list.md, en partant du principe que ce fichier est à jour.
-## Syntaxe
+## Usage
 
-```bash
+[MANDATORY]
 /list-command
+
+## Prerequisites
+
+- `commands_list.md` must exist at project root
+
+## Steps
+
+[MANDATORY]
+1. Read `commands_list.md` and extract the commands section.
+2. Display all listed commands with their description.
+
+Output format:
+```
+AI-KIDO COMMANDS AVAILABLE
+
+(Source: commands_list.md)
+
+Available commands in prompts/hard_points/commands/ :
+
+- /init-raci-aikido : Initialize RACI matrix and team specifications
+- /init-glossaire : Create or update the business glossary
+- /create-persona : Create a new AI-KIDO persona
+- /check-claude : Analyze and update CLAUDE.md
+- /check-truth : Verify coherence between documentation and code
+- /compile-agent-from-use : Compile agents from usage
+- /create-command : Create optimized AI-KIDO commands
+- /analyse-project : Analyze project sources
+- /maj-aikido : Sync hard_points during rebase
+- /init-aikido : Initialize AI-KIDO Memory Bank
+- /analyse-aikido : Complete audit of Truth Tables
+- /optimize-command-with-aikido-agents : Optimize commands with agents
+
+For more details, consult commands_list.md or prompts/hard_points/commands/[command-name].md
 ```
 
-## Exécution
+## Output
 
-### Étape 1 : Lecture commands_list.md
+List of available AI-KIDO commands with descriptions.
 
-Lire le fichier `commands_list.md` et extraire la section "🚀 Getting Started" qui référence les commandes disponibles.
+## Notes
 
-### Étape 2 : Affichage
-
-Afficher les commandes listées dans commands_list.md avec leur description.
-
-```markdown
-📋 COMMANDES AI-KIDO DISPONIBLES
-
-(Source : commands_list.md)
-
-Commandes disponibles dans prompts/hard_points/commands/ :
-
-- /init-raci-aikido : Initialiser la matrice RACI et les spécifications d'équipe
-- /init-glossaire : Créer ou mettre à jour le glossaire métier
-- /create-persona : Créer un nouveau persona AI-KIDO
-- /check-claude : Analyser et mettre à jour CLAUDE.md
-- /logllmon : Activer la traçabilité des interactions LLM
-- /check-truth : Vérifier cohérence entre documentation et code
-- /compile-agent-from-use : Compiler des agents depuis l'usage
-- /create-command : Créer des commandes AI-KIDO optimisées
-- /analyse-project : Analyser les sources projet
-- /maj-aikido : Synchroniser hard_points lors des rebase
-- /init-aikido : Initialiser la Memory Bank AI-KIDO
-- /analyse-aikido : Audit complet des tables de vérités
-- /logllmoff : Désactiver la traçabilité LLM
-- /optimize-command-with-aikido-agents : Optimiser commandes avec agents
-
-📚 Pour plus de détails, consultez commands_list.md ou prompts/hard_points/commands/[nom-commande].md
-```
-
-## Messages
-
-### Succès
-
-```
-✅ Liste des commandes affichée depuis commands_list.md
-```
-
-### Erreur
-
-```
-❌ commands_list.md introuvable
-```
-
----
-
-*Commande simple de lecture commands_list.md*
+- If `commands_list.md` is not found, report: "commands_list.md not found"

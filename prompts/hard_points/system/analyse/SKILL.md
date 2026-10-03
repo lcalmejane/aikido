@@ -1,24 +1,24 @@
-# Analyse – Skill interne d’AI‑KIDO
+# Analyse – AI-KIDO Internal Skill
 
 ## Description
-Ce Skill fournit les capacités d’analyse de texte, de code et de données structurées.  
-Il permet à Claude d’interpréter, de résumer et d’extraire des informations pertinentes à partir de documents variés.
+This Skill provides analysis capabilities for text, code, and structured data.
+It enables Claude to interpret, summarize, and extract relevant information from various documents.
 
-## Métadonnées
-- **Nom** : analyse
-- **Version** : 1.0.0
-- **Auteur** : AI‑KIDO Team
-- **Catégorie** : analyse / compréhension
-- **Tokens métadonnées** : ~100 (chargés à chaque invocation)
+## Metadata
+- **Name**: analyse
+- **Version**: 1.0.0
+- **Author**: AI-KIDO Team
+- **Category**: analysis / comprehension
+- **Metadata tokens**: ~100 (loaded on each invocation)
 
-## Instructions (niveau 2)
-1. Recevoir le texte ou le fichier à analyser.
-2. Déterminer le type de contenu (plain‑text, code, JSON, etc.).
-3. Appliquer les algorithmes d’extraction :
-   - Résumé succinct (max 3 phrases).
-   - Extraction des entités clés.
-   - Détection des sections importantes.
-4. Retourner un objet JSON contenant :
+## Instructions (level 2)
+1. Receive the text or file to analyse.
+2. Determine the content type (plain-text, code, JSON, etc.).
+3. Apply extraction algorithms:
+   - Concise summary (max 3 sentences).
+   - Key entity extraction.
+   - Detection of important sections.
+4. Return a JSON object containing:
    ```json
    {
      "summary": "...",
@@ -27,23 +27,23 @@ Il permet à Claude d’interpréter, de résumer et d’extraire des informatio
    }
    ```
 
-## Ressources (niveau 3)
-- Bibliothèques Python : `nltk`, `spacy`, `tree‑sitter` (pour le code).
-- Prompt templates : `templates/analysis_prompt.txt` (optionnel).
-- Exemples d’usage : `examples.md` (optionnel).
+## Resources (level 3)
+- Python libraries: `nltk`, `spacy`, `tree-sitter` (for code).
+- Prompt templates: `templates/analysis_prompt.txt` (optional).
+- Usage examples: `examples.md` (optional).
 
-## Utilisation
-Claude invoque ce Skill automatiquement lorsqu’une requête nécessite une compréhension approfondie du contenu fourni.  
-Le Skill charge d’abord les métadonnées, puis les instructions, et enfin les ressources supplémentaires uniquement si nécessaire (progressive disclosure).
+## Usage
+Claude invokes this Skill automatically when a query requires deep understanding of the provided content.
+The Skill first loads metadata, then instructions, and finally additional resources only if needed (progressive disclosure).
 
-## Remarques
-- Le Skill est **stateless** : chaque appel est indépendant.
-- Limite de taille : jusqu’à 10 k tokens d’entrée (au‑delà, le texte doit être découpé).
-- Les résultats sont renvoyés en UTF‑8 sans formatage supplémentaire.
+## Notes
+- The Skill is **stateless**: each call is independent.
+- Size limit: up to 10k input tokens (beyond that, the text must be split).
+- Results are returned in UTF-8 without additional formatting.
 
-## Agents Aikido associés
-- `agent-aikido-update-controller` – gère le processus de mise à jour et utilise le Skill analyse.
-- `agent-aikido-bank-populate` – utilise le Skill analyse pour extraire et analyser le contenu du projet.
-- `agent-aikido-explore-all` – combine recherche et analyse, incluant le Skill analyse.
-- `agent-aikido-explore-code` – explore le code source et applique le Skill analyse.
-- `agent-aikido-explore-bank` – explore la Memory Bank et utilise le Skill analyse.
+## Associated Aikido Agents
+- `agent-aikido-update-controller` – manages the update process and uses the analyse Skill.
+- `agent-aikido-bank-populate` – uses the analyse Skill to extract and analyse project content.
+- `agent-aikido-explore-all` – combines search and analysis, including the analyse Skill.
+- `agent-aikido-explore-code` – explores source code and applies the analyse Skill.
+- `agent-aikido-explore-bank` – explores the Memory Bank and uses the analyse Skill.

@@ -1,13 +1,7 @@
 ---
-description: Analyse et optimise les commandes AI-KIDO avec les agents techniques disponibles (meta-commande dynamique et pérenne utilisant 2 agents AI-KIDO)
+description: "Analyze and optimize AI-KIDO commands with available technical agents (dynamic and durable meta-command using 2 AI-KIDO agents)"
 ---
 
-# Commande optimize-command-with-aikido-agents
-
-Cette commande exécute le fichier de commande complet depuis `prompts/hard_points/commands/optimize-command-with-aikido-agents.md`.
-
-**EXÉCUTION** : Je vais maintenant lire et exécuter la commande complète.
-
-```
-Lecture de prompts/hard_points/commands/optimize-command-with-aikido-agents.md et exécution des instructions...
-```
+# /optimize-command-with-aikido-agents
+Executes `prompts/hard_points/commands/optimize-command-with-aikido-agents.md`.
+**EXECUTION**: Read and apply the instructions from the target file.

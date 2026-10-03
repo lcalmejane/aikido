@@ -1,619 +1,616 @@
 ---
-description: "Audit complet des tables de vérités AI-KIDO pour détecter dérivations, incohérences et liens cassés"
+description: "Complete audit of AI-KIDO Truth Tables to detect drifts, inconsistencies, and broken links"
 ---
-# Commande Analyse-Aikido - Version Intégrée
->
-> **Objectif** : Audit et redressage automatique de la base AI-KIDO avec corrections directes selon les règles 1-18
-> **Principe** : Corrections directes dans `/prompts/gen/` et synchronisation `AGENTS.md` selon règles AI-KIDO
 
-## Vue d'ensemble
+# /analyse-aikido
 
-Cette commande effectue un audit complet des tables de vérités dans `/prompts/gen/` et `/prompts/hard_points/`, détecte les incohérences selon les règles AI-KIDO 1-18, puis applique automatiquement les corrections nécessaires pour maintenir la cohérence de la memory bank.
+**Purpose**: Complete audit and automatic correction of the AI-KIDO base according to rules 1-18.
 
-**PRINCIPE FONDAMENTAL** : Pas de répertoires d'analyse séparés - corrections directes dans la base AI-KIDO existante selon les règles établies.
+**Principle**: Direct corrections in `/prompts/gen/` and synchronization of `AGENTS.md` according to AI-KIDO rules.
 
-## Phase 1 : Audit Structurel selon Règles AI-KIDO
+---
 
-### 1.0 Exploration Automatique de la Memory Bank 🤖
+## Usage
 
-**UTILISER L'AGENT** `agent-aikido-explore-bank` pour scanner intelligemment la structure :
+```
+/analyse-aikido
+/analyse-aikido --dry-run
+/analyse-aikido --report-only
+/analyse-aikido --sync-agents
+```
+
+- `--dry-run` : Simulate without applying modifications
+- `--report-only` : Generate report only, no corrections
+- `--sync-agents` : Synchronize AGENTS.md only
+
+## Prerequisites
+
+- Access to `/prompts/gen/` and `/prompts/hard_points/`
+- AI-KIDO rules 1-18 loaded from [`hard_points/ai-kido.md`](../ai-kido.md)
+
+**FUNDAMENTAL PRINCIPLE**: No separate analysis directories — direct corrections in the existing AI-KIDO base according to established rules.
+
+---
+
+## Steps
+
+### Phase 1: Structural Audit according to AI-KIDO Rules
+
+#### 1.0 Automatic Memory Bank Exploration
+
+USE AGENT `agent-aikido-explore-bank` to intelligently scan the structure:
 
 ```markdown
-🤖 AGENT: agent-aikido-explore-bank (DEEP MODE)
+AGENT: agent-aikido-explore-bank (DEEP MODE)
 FORMAT: JSON
 
-**Prompt pour l'agent** :
-"Effectue un scan DEEP de la Memory Bank AI-KIDO. Analyse :
-1. Structure complète de /prompts/gen/ et /prompts/hard_points/
-2. Tous les fichiers avec leurs métadonnées (taille, date modification, version)
-3. L\iens bidirectionnels entre fichiers
-4. Répartition par rôles si applicable (Règle 15)
-5. Violations potentielles des règles AI-KIDO 1-18
+Prompt for the agent:
+"Perform a DEEP scan of the AI-KIDO Memory Bank. Analyze:
+1. Complete structure of /prompts/gen/ and /prompts/hard_points/
+2. All files with their metadata (size, modification date, version)
+3. Bidirectional links between files
+4. Distribution by roles if applicable (Rule 15)
+5. Potential violations of AI-KIDO rules 1-18
 
-Retourne un inventaire complet avec paths + line numbers pour chaque élément."
+Return a complete inventory with paths + line numbers for each element."
 
-**Résultat attendu** : Inventaire structuré de la Memory Bank avec métriques
+Expected result: Structured inventory of the Memory Bank with metrics
 ```
 
-**Avantages de l'agent** :
-- ✅ Scan optimisé (<40% contexte)
-- ✅ Métadonnées automatiques (dates, versions, dépréc ation)
-- ✅ Détection patterns et anomalies
-- ✅ Références précises (file_path:line_number)
+Agent benefits:
+- Optimized scan (<40% context)
+- Automatic metadata (dates, versions, deprecation)
+- Pattern and anomaly detection
+- Precise references (file_path:line_number)
 
-### 1.1 Validation de la Structure Obligatoire (Règles 1-2, 8, 15)
+#### 1.1 Validation of Mandatory Structure (Rules 1-2, 8, 15)
 
-**Analyser les résultats de l'agent** et vérifier la conformité à [`ai-kido.md`](../prompts/hard_points/ai-kido.md) lignes 79-105 :
+Analyze agent results and verify compliance with [`ai-kido.md`](../ai-kido.md) lines 79-105:
 
 ```markdown
-🔍 AUDIT STRUCTUREL AI-KIDO
+STRUCTURAL AUDIT AI-KIDO
 
-Structure obligatoire vérifiée :
-✅ /prompts/index.md (point d'entrée principal - Règle 1)
-✅ /prompts/gen/concepts/ (théorie - Règle 2)
-✅ /prompts/gen/techniques/ (pratique - Règle 2)  
-✅ /prompts/gen/personas/ (agents spécialisés - Règle 9)
-✅ /prompts/gen/use_cases/ (applications - Règle 2)
-✅ /prompts/hard_points/ (vérités immuables - Règle 8)
+Mandatory structure verified:
+- /prompts/index.md (main entry point - Rule 1)
+- /prompts/gen/concepts/ (theory - Rule 2)
+- /prompts/gen/techniques/ (practice - Rule 2)
+- /prompts/gen/personas/ (specialized agents - Rule 9)
+- /prompts/gen/use_cases/ (applications - Rule 2)
+- /prompts/hard_points/ (immutable truths - Rule 8)
 
-Répartition par rôles (Règle 15) :
-✅ Sous-répertoires avec responsables assignés
-✅ Matrice RACI respectée
+Distribution by roles (Rule 15):
+- Sub-directories with assigned owners
+- RACI matrix respected
 
-❌ Corrections automatiques appliquées : [LISTE]
+Automatic corrections applied: [LIST]
 ```
 
-### 1.2 Validation des Contraintes d'Équilibrage (Règles 4, 7) 🤖
+#### 1.2 Validation of Balancing Constraints (Rules 4, 7)
 
-**UTILISER L'AGENT** `agent-aikido-validator` pour validation rapide des contraintes :
+USE AGENT `agent-aikido-validator` for rapid constraint validation:
 
 ```markdown
-🤖 AGENT: agent-aikido-validator
+AGENT: agent-aikido-validator
 FORMAT: JSON
 
-**Prompt pour l'agent** :
-"Valide TOUS les fichiers de /prompts/gen/ et /prompts/hard_points/ pour conformité :
-1. Règle 4 : Contrainte lignes (≤500 standard, ≤1000 commands/personas/agents, EXEMPT ai-kido*.md, prompts/hard_points/system/structure/index.json no limit.)
-2. Règle 7 : Profondeur arborescence ≤4 niveaux, facteur branchement 3-7
-3. Règle 6 : Liens bidirectionnels (quick check)
-4. Règle 2 : Emplacement correct (concepts/techniques/personas/use_cases)
-5. Frontmatter valide (name, description, tools pour agents/personas)
+Prompt for the agent:
+"Validate ALL files from /prompts/gen/ and /prompts/hard_points/ for compliance:
+1. Rule 4: Line constraints (<=500 standard, <=1000 commands/personas/agents,
+   EXEMPT ai-kido*.md, prompts/hard_points/system/structure/index.json no limit.)
+2. Rule 7: Tree depth <=4 levels, branching factor 3-7
+3. Rule 6: Bidirectional links (quick check)
+4. Rule 2: Correct placement (concepts/techniques/personas/use_cases)
+5. Valid frontmatter (name, description, tools for agents/personas)
 
-Pour chaque fichier non-conforme, retourne :
-- Fichier + nombre lignes actuel / limite
-- Violations détectées avec références line
-- Plan de résolution rapide (split, move, fix frontmatter)
+For each non-compliant file, return:
+- File + current line count / limit
+- Violations detected with line references
+- Quick resolution plan (split, move, fix frontmatter)
 
-Utilise quick checks (<2k tokens par batch)."
+Use quick checks (<2k tokens per batch)."
 
-**Résultat attendu** : Liste fichiers non-conformes avec plans de correction
+Expected result: List of non-compliant files with correction plans
 ```
 
-**Avantages de l'agent** :
-- ⚡ Validation rapide (<2k tokens par batch)
-- ✅ Détection automatique mono/multi-projet
-- ✅ Gestion exceptions (ai-kido.md exempt)
-- ✅ Plans de résolution actionnables
-- ✅ Rapports concis (✅/❌ par fichier)
+Agent benefits:
+- Fast validation (<2k tokens per batch)
+- Automatic mono/multi-project detection
+- Exception handling (ai-kido.md exempt)
+- Actionable resolution plans
+- Concise reports (pass/fail per file)
 
-## Phase 2 : Validation et Correction des Formats (Règles 4, 11, 12)
+---
 
-### 2.1 Format Standard AI-KIDO
+### Phase 2: Format Correction (Rules 4, 11, 12)
 
-**Corriger automatiquement** tous les fichiers non conformes au format [`ai-kido.md`](../prompts/hard_points/ai-kido.md) lignes 140-163 :
+#### 2.1 Standard AI-KIDO Format
+
+Automatically correct all files that do not conform to the format in [`ai-kido.md`](../ai-kido.md) lines 140-163:
 
 ```markdown
-📋 CORRECTIONS DE FORMAT APPLIQUÉES
+FORMAT CORRECTIONS APPLIED
 
-Format standard AI-KIDO imposé :
-✅ Métadonnées ajoutées : > Version: X.Y | Date: YYYY-MM-DD | Statut: [Statut]
-✅ Sections obligatoires créées : Vue d'ensemble, Définitions clés, etc.
-✅ Densité sémantique optimisée (Règle 11)
-✅ Schémas Mermaid ajoutés si pertinent (Règle 12)
+Standard AI-KIDO format enforced:
+- Metadata added: > Version: X.Y | Date: YYYY-MM-DD | Status: [Status]
+- Mandatory sections created: Overview, Key Definitions, etc.
+- Semantic density optimized (Rule 11)
+- Mermaid diagrams added where relevant (Rule 12)
 
-Fichiers corrigés automatiquement : [NOMBRE]
+Files automatically corrected: [COUNT]
 ```
 
-### 2.2 Liens Bidirectionnels (Règle 6)
+#### 2.2 Bidirectional Links (Rule 6)
 
-**Créer automatiquement** tous les liens bidirectionnels manquants :
+Automatically create all missing bidirectional links:
 
 ```markdown
-🔗 LIENS BIDIRECTIONNELS RESTAURÉS
+BIDIRECTIONAL LINKS RESTORED
 
-Règle 6 appliquée - Chaînage A ↔ B systématique :
-✅ Liens retour créés automatiquement
-✅ Navigation hiérarchique rétablie
-✅ Références croisées ajoutées
+Rule 6 applied - Systematic A <-> B chaining:
+- Return links created automatically
+- Hierarchical navigation restored
+- Cross-references added
 
-Liens bidirectionnels ajoutés : [NOMBRE]
+Bidirectional links added: [COUNT]
 ```
 
-### 2.3 Validation Post-Correction 🤖 🆕
+#### 2.3 Post-Correction Validation
 
-**UTILISER L'AGENT** `agent-aikido-validator` pour valider les corrections appliquées :
+USE AGENT `agent-aikido-validator` to validate the applied corrections:
 
 ```markdown
-🤖 AGENT: agent-aikido-validator
+AGENT: agent-aikido-validator
 FORMAT: JSON
 
-**Prompt pour l'agent** :
-"Valide TOUS les fichiers modifiés pendant les corrections de format (Phase 2).
-Pour chaque fichier corrigé :
-1. Vérifie conformité frontmatter ajouté
-2. Vérifie liens bidirectionnels créés
-3. Vérifie densité sémantique
-4. Vérifie contraintes lignes toujours respectées
+Prompt for the agent:
+"Validate ALL files modified during format corrections (Phase 2).
+For each corrected file:
+1. Verify added frontmatter compliance
+2. Verify created bidirectional links
+3. Verify semantic density
+4. Verify line constraints still respected
 
-Retourne rapport de validation concis :
-- ✅ [fichier] CONFORME (corrections OK)
-- ❌ [fichier] NON-CONFORME (corrections insuffisantes) + quick fix
+Return concise validation report:
+- [file] COMPLIANT (corrections OK)
+- [file] NON-COMPLIANT (corrections insufficient) + quick fix
 
-Mode rapide : <2k tokens total."
+Fast mode: <2k tokens total."
 
-**Résultat attendu** : Validation des corrections avec taux de réussite
+Expected result: Corrections validation with success rate
 ```
 
-**Garantie qualité** :
-- ✅ Corrections validées immédiatement
-- ✅ Ré-application automatique si échec
-- ✅ Conformité garantie avant phase suivante
+Quality guarantee:
+- Corrections validated immediately
+- Automatic re-application on failure
+- Compliance guaranteed before next phase
 
-## Phase 3 : Synchronisation AGENTS.md ↔ AI-KIDO (Règles 16-18)
+---
 
-### 3.0 Validation RACI Automatique 🤖
+### Phase 3: Synchronization AGENTS.md <-> AI-KIDO (Rules 16-18)
 
-**UTILISER L'AGENT** `agent-aikido-raci-delegator` pour valider la cohérence RACI :
+#### 3.0 Automatic RACI Validation
+
+USE AGENT `agent-aikido-raci-delegator` to validate RACI consistency:
 
 ```markdown
-🤖 AGENT: agent-aikido-raci-delegator
+AGENT: agent-aikido-raci-delegator
 FORMAT: JSON
 
-**Prompt pour l'agent** :
-"Analyse tous les fichiers de /prompts/gen/ détectés dans l'inventaire précédent.
-Pour chaque fichier :
-1. Vérifie que le placement respecte la matrice RACI
-2. Identifie les documents mal classés (mauvais répertoire/rôle)
-3. Détecte les documents sans responsable assigné
-4. Propose les reclassifications nécessaires avec confidence
+Prompt for the agent:
+"Analyze all files from /prompts/gen/ detected in the previous inventory.
+For each file:
+1. Verify that placement respects the RACI matrix
+2. Identify misclassified documents (wrong directory/role)
+3. Detect documents without assigned owner
+4. Propose necessary reclassifications with confidence score
 
-Retourne la liste des incohérences RACI avec chemins actuels et recommandés."
+Return the list of RACI inconsistencies with current and recommended paths."
 
-**Résultat attendu** : Liste des documents à reclasser selon RACI
+Expected result: List of documents to reclassify according to RACI
 ```
 
-**Avantages de l'agent** :
-- ✅ Classification automatique haute précision
-- ✅ Détection contexte mono/multi-projet
-- ✅ Recommandations avec alternatives
-- ✅ Respect strict des règles AI-KIDO
+Agent benefits:
+- High-precision automatic classification
+- Mono/multi-project context detection
+- Recommendations with alternatives
+- Strict respect of AI-KIDO rules
 
-### 3.1 Mise à Jour Automatique AGENTS.md
+#### 3.1 Automatic Update of AGENTS.md
 
-**Synchroniser automatiquement** [`AGENTS.md`](../AGENTS.md) avec `/prompts/gen/` selon règles 16-18 :
+Automatically synchronize [`AGENTS.md`](../../../AGENTS.md) with `/prompts/gen/` according to rules 16-18:
 
 ```markdown
-🤖 SYNCHRONISATION AGENTS.MD
+AGENTS.MD SYNCHRONIZATION
 
-Règles 16-18 appliquées :
-✅ Project Context synchronisé avec /prompts/index.md
-✅ Available Agents générés depuis /prompts/gen/personas/
-✅ Agent Interaction Matrix mise à jour
-✅ Usage Guidelines alignées avec use_cases/
+Rules 16-18 applied:
+- Project Context synchronized with /prompts/index.md
+- Available Agents generated from /prompts/gen/personas/
+- Agent Interaction Matrix updated
+- Usage Guidelines aligned with use_cases/
 
-Correspondance 1:1 Agents ↔ Personas : [POURCENTAGE]%
+1:1 Agents <-> Personas correspondence: [PERCENTAGE]%
 ```
 
-### 3.2 Validation de Conformité
+#### 3.2 Compliance Validation
 
-**Vérifier et corriger** la conformité AGENTS.md :
+Verify and correct AGENTS.md compliance:
 
-- ✅ Structure standardisée respectée
-- ✅ Liens exclusifs vers `/prompts/gen/` (pas de duplication)
-- ✅ Taxonomie AI-KIDO préservée
-- ✅ Spécifications RACI alignées
+- Standardized structure respected
+- Exclusive links to `/prompts/gen/` (no duplication)
+- AI-KIDO taxonomy preserved
+- RACI specifications aligned
 
-## Phase 4 : Détection et Correction des Incohérences
+---
 
-### 4.1 Résolution des Contradictions 🤖 🆕
+### Phase 4: Detection and Correction of Inconsistencies
 
-**UTILISER L'AGENT** `agent-aikido-truth-evaluator` pour arbitrer les contradictions :
+#### 4.1 Contradiction Resolution
+
+USE AGENT `agent-aikido-truth-evaluator` to arbitrate contradictions:
 
 ```markdown
-🤖 AGENT: agent-aikido-truth-evaluator
+AGENT: agent-aikido-truth-evaluator
 FORMAT: JSON
 
-**Prompt pour l'agent** :
-"Analyse tous les documents de /prompts/gen/ détectés avec contradictions potentielles.
-Pour chaque contradiction (specs vs code, docs legacy vs implementation, conflits entre sources) :
+Prompt for the agent:
+"Analyze all documents from /prompts/gen/ detected with potential contradictions.
+For each contradiction (specs vs code, legacy docs vs implementation, source conflicts):
 
-1. Identifier le scénario de développement (new feature, bug fix, refactoring, etc.)
-2. Déterminer la source autoritaire selon le scénario
-3. Scorer la crédibilité de chaque source (code, specs, docs, tests, config)
-4. Détecter conflits entre sources
-5. Fournir recommandation avec niveau de confiance
+1. Identify the development scenario (new feature, bug fix, refactoring, etc.)
+2. Determine the authoritative source according to the scenario
+3. Score the credibility of each source (code, specs, docs, tests, config)
+4. Detect conflicts between sources
+5. Provide recommendation with confidence level
 
-Respecte hiérarchie : /prompts/hard_points/ > /prompts/gen/ > code/docs > JAMAIS /prompts/spec/
+Respect hierarchy: /prompts/hard_points/ > /prompts/gen/ > code/docs > NEVER /prompts/spec/
 
-Retourne arbitrages clairs pour chaque contradiction :
-- Source autoritaire identifiée
-- Justification selon scénario
-- Recommandation d'action (conserver source X, ignorer source Y)
-- Niveau de confiance (HIGH/MEDIUM/LOW)"
+Return clear arbitrations for each contradiction:
+- Authoritative source identified
+- Justification according to scenario
+- Action recommendation (keep source X, ignore source Y)
+- Confidence level (HIGH/MEDIUM/LOW)"
 
-**Résultat attendu** : Arbitrage de contradictions avec recommandations actionnables
+Expected result: Contradiction arbitration with actionable recommendations
 ```
 
-**Avantages de l'agent** :
-- ✅ Classification automatique de 8 scénarios
-- ✅ Scoring objectif de crédibilité
-- ✅ Détection conflicts systématique
-- ✅ Recommandations avec niveau de confiance
-- ✅ Respect hiérarchie AI-KIDO
+Agent benefits:
+- Automatic classification of 8 scenarios
+- Objective credibility scoring
+- Systematic conflict detection
+- Recommendations with confidence level
+- Respect of AI-KIDO hierarchy
 
-### 4.2 Incohérences Terminologiques
+#### 4.2 Terminology Inconsistencies
 
-**Harmoniser automatiquement** la terminologie :
+Automatically harmonize terminology:
 
 ```markdown
-📚 HARMONISATION TERMINOLOGIQUE
+TERMINOLOGY HARMONIZATION
 
-Glossaire unifié appliqué :
-✅ Termes standardisés dans toute la base
-✅ Acronymes harmonisés
-✅ Définitions cohérentes
+Unified glossary applied:
+- Terms standardized throughout the base
+- Acronyms harmonized
+- Consistent definitions
 
-Corrections terminologiques : [NOMBRE]
+Terminology corrections: [COUNT]
 ```
 
-### 4.3 Incohérences Architecturales
+#### 4.3 Architectural Inconsistencies
 
-**Aligner automatiquement** architecture et implémentation :
+Automatically align architecture and implementation:
 
 ```markdown
-🏗️ COHÉRENCE ARCHITECTURALE
+ARCHITECTURAL CONSISTENCY
 
-Alignement automatique :
-✅ Architecture ↔ Stack technique
-✅ Composants ↔ Use cases
-✅ Personas ↔ Workflows
+Automatic alignment:
+- Architecture <-> Tech stack
+- Components <-> Use cases
+- Personas <-> Workflows
 
-Alignements effectués : [NOMBRE]
-```
-
-## Phase 5 : Mise à Jour des Index (Règle 1)
-
-### 5.1 Régénération Automatique des Index
-
-**Mettre à jour automatiquement** tous les fichiers d'index :
-
-```markdown
-📇 INDEX RÉGÉNÉRÉS
-
-Navigation hiérarchique restaurée (Règle 1) :
-✅ /prompts/index.md mis à jour
-✅ /prompts/gen/index.md mis à jour
-✅ /prompts/gen/concepts/index.md régénéré
-✅ /prompts/gen/techniques/index.md régénéré
-✅ /prompts/gen/personas/index.md régénéré
-✅ /prompts/gen/use_cases/index.md régénéré
-
-Parcours récursif optimisé depuis point d'entrée principal.
-```
-
-### 5.2 Validation de la Navigation
-
-**Vérifier** que le parcours récursif depuis [`/prompts/index.md`](../prompts/index.md) fonctionne correctement :
-
-- ✅ Tous les fichiers accessibles depuis le point d'entrée
-- ✅ Navigation hiérarchique cohérente
-- ✅ Liens de retour fonctionnels
-
-## Phase 6 : Application des Règles d'Auto-Alimentation
-
-### 6.1 Capitalisation des Analyses (Règles de Capitalisation)
-
-**Créer automatiquement** les fichiers manquants selon les règles de capitalisation :
-
-```markdown
-💾 CAPITALISATION AUTOMATIQUE
-
-Règles de capitalisation appliquées :
-✅ Analyses conceptuelles → /concepts/
-✅ Analyses techniques → /techniques/
-✅ Analyses de cas → /use_cases/
-✅ Définitions de rôles → /personas/
-
-Fichiers créés automatiquement : [NOMBRE]
-```
-
-### 6.2 Traçabilité et Versioning
-
-**Appliquer** le versioning automatique :
-
-- ✅ Horodatage des modifications
-- ✅ Versioning des analyses sauvegardées
-- ✅ Traçabilité des corrections appliquées
-
-## Phase 7 : Validation des Hard Points (Règle 8)
-
-### 7.1 Respect des Vérités Immuables
-
-**Vérifier** que toutes les corrections respectent les [`hard_points`](../prompts/hard_points/) :
-
-```markdown
-🔒 HARD POINTS RESPECTÉS
-
-Vérités immuables préservées :
-✅ Aucune violation des contraintes hard_points
-✅ Hiérarchie hard_points > gen/ > demandes respectée
-✅ Décisions figées maintenues
-
-Conformité hard_points : 100%
-```
-
-### 7.2 Validation Finale Complète 🤖 🆕
-
-**UTILISER L'AGENT** `agent-aikido-validator` pour audit final avant rapport :
-
-```markdown
-🤖 AGENT: agent-aikido-validator
-FORMAT: JSON
-
-**Prompt pour l'agent** :
-"Valide la TOTALITÉ de /prompts/ après toutes les corrections appliquées (Phases 1-7).
-Audit final de conformité AI-KIDO :
-
-1. Règle 4 : Contraintes lignes sur TOUS les fichiers
-2. Règle 6 : Liens bidirectionnels complets
-3. Règle 2 : Séparation théorie/pratique correcte
-4. Règle 7 : Arborescence équilibrée
-5. Frontmatter valide sur tous agents/personas/commands
-6. Emplacement correct de tous fichiers
-
-Génère score de conformité global :
-- Fichiers validés : [TOTAL]
-- Conformes : [NOMBRE] (✅)
-- Non-conformes : [NOMBRE] (❌)
-- Score conformité : [POURCENTAGE]%
-
-Pour chaque fichier non-conforme, liste violation + fix rapide.
-
-Mode complet mais optimisé : <5k tokens total."
-
-**Résultat attendu** : Score de conformité final + liste violations résiduelles
-```
-
-**Garantie qualité finale** :
-- ✅ Conformité globale mesurée précisément
-- ✅ Violations résiduelles identifiées
-- ✅ Score prêt pour le rapport
-- ✅ Validation indépendante de toutes les phases précédentes
-
-## Phase 8 : Génération du Rapport de Synthèse
-
-### 8.1 Rapport Intégré dans la Base AI-KIDO
-
-**Créer** le rapport dans [`/prompts/spec/audit-aikido-[DATE].md`](../prompts/spec/) :
-
-```markdown
-# Audit AI-KIDO - [DATE]
-
-> Version: 1.0 | Date: YYYY-MM-DD | Statut: Rapport d'Audit
-> Conforme aux règles AI-KIDO 1-18
-
-## Vue d'ensemble
-
-**Statut global** : [EXCELLENT/BON/MOYEN/CRITIQUE]
-**Conformité règles 1-18** : [X]%
-**Corrections automatiques appliquées** : [NOMBRE]
-
-## Métriques de Conformité
-
-### Règles Structurelles (1-8)
-- Règle 1 (Arborescence) : ✅ Conforme
-- Règle 2 (Séparation) : ✅ Conforme
-- Règle 4 (500 lignes) : ✅ [X] fichiers divisés
-- Règle 6 (Bidirectionnalité) : ✅ [Y] liens ajoutés
-- Règle 7 (Équilibrage) : ✅ Conforme
-- Règle 8 (Hard Points) : ✅ Respectés
-
-### Règles d'Optimisation (9-15)
-- Règle 9 (Agents) : ✅ [Z] personas validés
-- Règle 11 (Densité) : ✅ Optimisée
-- Règle 12 (Mermaid) : ✅ [W] schémas ajoutés
-- Règle 15 (Rôles) : ✅ RACI respecté
-
-### Règles AGENTS.md (16-18)
-- Règle 16 (Interface) : ✅ Synchronisée
-- Règle 17 (Bidirectionnalité) : ✅ Conforme
-- Règle 18 (Structure) : ✅ Standard respecté
-
-## Corrections Appliquées
-
-### Corrections Automatiques
-- Formats standardisés : [NOMBRE]
-- Liens bidirectionnels créés : [NOMBRE]
-- Fichiers divisés (>500 lignes) : [NOMBRE]
-- Index régénérés : [NOMBRE]
-- AGENTS.md synchronisé : ✅
-
-### Améliorations Apportées
-- Densité sémantique optimisée
-- Navigation hiérarchique restaurée
-- Cohérence terminologique établie
-- Architecture alignée
-
-## État Post-Audit
-
-**Base AI-KIDO** : ✅ Conforme aux 18 règles
-**AGENTS.md** : ✅ Synchronisé et conforme
-**Navigation** : ✅ Parcours récursif fonctionnel
-**Liens** : ✅ Bidirectionnalité complète
-
-## Relations et dépendances
-
-- Référence : [ai-kido.md](../hard_points/ai-kido.md)
-- Synchronisé avec : [AGENTS.md](../../AGENTS.md)
-- Point d'entrée : [index.md](index.md)
-```
-
-## Workflow d'Exécution
-
-### Commande Unique
-
-```bash
-analyse-aikido
-```
-
-### Séquence d'Exécution Automatique (Optimisée avec Agents 🤖)
-
-1. **Audit structurel** → agent-aikido-explore-bank (DEEP) + Corrections immédiates
-2. **Validation contraintes** → agent-aikido-validator (Règles 4, 6, 7)
-3. **Validation formats** → Standardisation automatique
-4. **Validation post-correction** → agent-aikido-validator (vérification corrections)
-5. **Résolution contradictions** → agent-aikido-truth-evaluator (arbitrage)
-6. **Validation RACI** → agent-aikido-raci-delegator (cohérence)
-7. **Synchronisation AGENTS.md** → Mise à jour automatique
-8. **Index et navigation** → Régénération automatique
-9. **Validation finale** → agent-aikido-validator (audit complet)
-10. **Rapport intégré** → Création dans `/spec/` avec score conformité
-11. **Peuplement gaps (opt.)** → agent-aikido-bank-populate si accepté
-
-### Options de Commande
-
-- `analyse-aikido` : Audit complet avec corrections automatiques
-- `analyse-aikido --dry-run` : Simulation sans modifications
-- `analyse-aikido --report-only` : Génération de rapport uniquement
-- `analyse-aikido --sync-agents` : Synchronisation AGENTS.md uniquement
-
-## Phase 9 : Proposition de Peuplement Automatique 🤖
-
-### 9.1 Inventaire des Gaps Détectés
-
-**Compiler la liste complète** des gaps détectés pendant l'audit :
-
-```markdown
-📋 GAPS DÉTECTÉS PENDANT L'AUDIT
-
-Documents manquants : [NOMBRE]
-- /prompts/gen/concepts/[topic-1].md - Référencé mais absent
-- /prompts/gen/techniques/[topic-2].md - Référencé mais absent
-...
-
-Documents invalides/dépréciés : [NOMBRE]
-- /prompts/gen/concepts/[topic-3].md - Flaggé faux par truth-evaluator
-- /prompts/gen/use_cases/[topic-4].md - Déprecié (>6 mois)
-...
-
-Contradictions non résolues : [NOMBRE]
-- Topic [X] - Code vs Documentation (pas de source autoritaire)
-...
-
-Total gaps : [NOMBRE]
-```
-
-### 9.2 Proposition de Peuplement
-
-**SI des gaps sont détectés (>0), PROPOSER** :
-
-```markdown
-💡 PROPOSITION DE PEUPLEMENT AUTOMATIQUE
-
-L'audit a détecté [NOMBRE] gap(s) dans la Memory Bank.
-
-Voulez-vous invoquer agent-aikido-bank-populate pour combler automatiquement ces gaps ?
-
-L'agent va :
-1. Collecter informations depuis code/contexte pour chaque gap
-2. Classifier via agent-aikido-raci-delegator
-3. Résoudre contradictions via agent-aikido-truth-evaluator
-4. Déléguer rédaction aux expert personas appropriés
-5. Valider conformité AI-KIDO (≤500 lignes, liens bidirectionnels)
-6. Intégrer dans Memory Bank avec mise à jour index
-
-Lancer le peuplement automatique ? (o/n) :
-```
-
-**SI utilisateur accepte** : Invoquer `agent-aikido-bank-populate` avec la liste des gaps
-
-**SI utilisateur refuse** : Afficher message "Gaps listés dans le rapport pour action manuelle ultérieure"
-
-## 🤖 Récapitulatif des Agents AI-KIDO Utilisés
-
-Cette commande optimise l'audit en utilisant **4 agents AI-KIDO spécialisés** :
-
-### Phase 1.0 : `agent-aikido-explore-bank` (DEEP MODE)
-- **Rôle** : Scan intelligent de la Memory Bank
-- **Output** : Inventaire structuré avec métadonnées
-- **Tokens** : ~25-40k (DEEP mode)
-
-### Phase 1.2 + 2.3 + 7.2 : `agent-aikido-validator` (3 invocations) 🆕
-- **Phase 1.2** : Validation contraintes (Règles 4, 6, 7, frontmatter)
-- **Phase 2.3** : Validation post-correction des formats
-- **Phase 7.2** : Validation finale complète avant rapport
-- **Output** : Rapports conformité concis (✅/❌ par fichier)
-- **Tokens** : <2k par validation (optimisé)
-
-### Phase 3.0 : `agent-aikido-raci-delegator`
-- **Rôle** : Validation cohérence RACI
-- **Output** : Documents à reclasser avec recommandations
-- **Tokens** : Optimisé selon nombre de fichiers
-
-### Phase 4.1 : `agent-aikido-truth-evaluator` 🆕
-- **Rôle** : Arbitrage des contradictions (specs vs code, docs legacy, etc.)
-- **Output** : Arbitrages avec niveau de confiance
-- **Tokens** : Optimisé selon nombre de contradictions
-
-### Phase 9 : `agent-aikido-bank-populate` (optionnel)
-- **Rôle** : Peuplement automatique des gaps détectés
-- **Trigger** : Si utilisateur accepte après inventaire gaps
-- **Output** : Documents créés et intégrés dans Memory Bank
-
-### 📊 Gains d'Optimisation
-
-| Aspect | Avant (scripts bash) | Après (agents) | Gain |
-|--------|---------------------|----------------|------|
-| **Validation contraintes** | Scripts manuels lourds | agent-validator rapide | ~80% tokens |
-| **Résolution contradictions** | Manuelle | agent-truth-evaluator auto | 100% automatisé |
-| **Validation post-correction** | Absente | agent-validator systématique | +Garantie qualité |
-| **Validation finale** | Partielle | agent-validator complète | 100% couverture |
-| **Précision** | Détection basique | Classification ML haute précision | +60% précision |
-
-## Résultat Final
-
-```markdown
-✅ AUDIT AI-KIDO TERMINÉ
-
-Base AI-KIDO auditée et corrigée :
-- Conformité règles 1-18 : [X]%
-- Corrections automatiques : [Y] appliquées
-- AGENTS.md synchronisé : ✅
-- Navigation optimisée : ✅
-
-Gaps détectés : [NOMBRE]
-Gaps peuplés automatiquement : [NOMBRE si accepté, 0 si refusé]
-
-Rapport disponible : /prompts/gen/concepts/audit-aikido-[DATE].md
-
-🎯 Memory Bank AI-KIDO maintenue et optimisée !
+Alignments applied: [COUNT]
 ```
 
 ---
 
-**RÈGLES APPLIQUÉES** :
+### Phase 5: Index Update (Rule 1)
 
-- ✅ **Corrections directes** : Modifications dans `/prompts/gen/` selon règles AI-KIDO
-- ✅ **Pas de répertoires d'analyse** : Intégration complète dans la base existante
-- ✅ **Synchronisation AGENTS.md** : Conformité règles 16-18
-- ✅ **Auto-alimentation** : Capitalisation selon règles établies
-- ✅ **Hard Points respectés** : Priorité absolue aux vérités immuables
-- ✅ **Format standard** : Conformité au template AI-KIDO
-- ✅ **Liens bidirectionnels** : Règle 6 appliquée systématiquement
-- ✅ **Navigation hiérarchique** : Parcours récursif depuis index principal
-- ✅ **Rapport intégré** : Documentation dans `/spec/` selon standards
-- 🤖 **Optimisation agents** : Utilisation de 4 agents AI-KIDO spécialisés pour efficacité maximale
-- 🆕 **Validation continue** : agent-validator en 3 points clés (contraintes, post-correction, finale)
-- 🆕 **Arbitrage contradictions** : agent-truth-evaluator pour résolution automatique
-- 🆕 **Cohérence RACI** : agent-raci-delegator pour classification précise
-- 🆕 **Scan intelligent** : agent-explore-bank en DEEP mode pour inventaire complet
+#### 5.1 Automatic Index Regeneration
+
+Automatically update all index files:
+
+```markdown
+INDEXES REGENERATED
+
+Hierarchical navigation restored (Rule 1):
+- /prompts/index.md updated
+- /prompts/gen/index.md updated
+- /prompts/gen/concepts/index.md regenerated
+- /prompts/gen/techniques/index.md regenerated
+- /prompts/gen/personas/index.md regenerated
+- /prompts/gen/use_cases/index.md regenerated
+
+Recursive traversal optimized from main entry point.
+```
+
+#### 5.2 Navigation Validation
+
+Verify that recursive traversal from [`/prompts/index.md`](../../index.md) works correctly:
+
+- All files accessible from the entry point
+- Consistent hierarchical navigation
+- Functional return links
+
+---
+
+### Phase 6: Auto-population Rules Application
+
+#### 6.1 Capitalization of Analyses (Capitalization Rules)
+
+Automatically create missing files according to capitalization rules:
+
+```markdown
+AUTOMATIC CAPITALIZATION
+
+Capitalization rules applied:
+- Conceptual analyses -> /concepts/
+- Technical analyses -> /techniques/
+- Case analyses -> /use_cases/
+- Role definitions -> /personas/
+
+Files automatically created: [COUNT]
+```
+
+#### 6.2 Traceability and Versioning
+
+Apply automatic versioning:
+
+- Modification timestamps applied
+- Saved analyses versioned
+- Applied corrections traceable
+
+---
+
+### Phase 7: Hard Points Validation (Rule 8)
+
+#### 7.1 Respect of Immutable Truths
+
+Verify that all corrections respect the [`hard_points`](../):
+
+```markdown
+HARD POINTS RESPECTED
+
+Immutable truths preserved:
+- No hard_points constraint violations
+- Hierarchy hard_points > gen/ > requests respected
+- Frozen decisions maintained
+
+Hard points compliance: 100%
+```
+
+#### 7.2 Final Complete Validation
+
+USE AGENT `agent-aikido-validator` for final audit before report:
+
+```markdown
+AGENT: agent-aikido-validator
+FORMAT: JSON
+
+Prompt for the agent:
+"Validate the ENTIRETY of /prompts/ after all corrections applied (Phases 1-7).
+Final AI-KIDO compliance audit:
+
+1. Rule 4: Line constraints on ALL files
+2. Rule 6: Complete bidirectional links
+3. Rule 2: Correct theory/practice separation
+4. Rule 7: Balanced tree structure
+5. Valid frontmatter on all agents/personas/commands
+6. Correct placement of all files
+
+Generate global compliance score:
+- Files validated: [TOTAL]
+- Compliant: [COUNT] (pass)
+- Non-compliant: [COUNT] (fail)
+- Compliance score: [PERCENTAGE]%
+
+For each non-compliant file, list violation + quick fix.
+
+Full but optimized mode: <5k tokens total."
+
+Expected result: Final compliance score + list of residual violations
+```
+
+Final quality guarantee:
+- Global compliance precisely measured
+- Residual violations identified
+- Score ready for the report
+- Independent validation of all previous phases
+
+---
+
+### Phase 8: Summary Report Generation
+
+#### 8.1 Report Integrated in the AI-KIDO Base
+
+Create the report in [`/prompts/spec/audit-aikido-[DATE].md`](../../spec/):
+
+```markdown
+# AI-KIDO Audit - [DATE]
+
+> Version: 1.0 | Date: YYYY-MM-DD | Status: Audit Report
+> Compliant with AI-KIDO rules 1-18
+
+## Overview
+
+**Global status**: [EXCELLENT/GOOD/AVERAGE/CRITICAL]
+**Rules 1-18 compliance**: [X]%
+**Automatic corrections applied**: [COUNT]
+
+## Compliance Metrics
+
+### Structural Rules (1-8)
+- Rule 1 (Tree structure): compliant
+- Rule 2 (Separation): compliant
+- Rule 4 (500 lines): [X] files split
+- Rule 6 (Bidirectionality): [Y] links added
+- Rule 7 (Balancing): compliant
+- Rule 8 (Hard Points): respected
+
+### Optimization Rules (9-15)
+- Rule 9 (Agents): [Z] personas validated
+- Rule 11 (Density): optimized
+- Rule 12 (Mermaid): [W] diagrams added
+- Rule 15 (Roles): RACI respected
+
+### AGENTS.md Rules (16-18)
+- Rule 16 (Interface): synchronized
+- Rule 17 (Bidirectionality): compliant
+- Rule 18 (Structure): standard respected
+
+## Applied Corrections
+
+### Automatic Corrections
+- Standardized formats: [COUNT]
+- Bidirectional links created: [COUNT]
+- Files split (>500 lines): [COUNT]
+- Indexes regenerated: [COUNT]
+- AGENTS.md synchronized: yes
+
+### Improvements Made
+- Semantic density optimized
+- Hierarchical navigation restored
+- Terminology consistency established
+- Architecture aligned
+
+## Post-Audit State
+
+**AI-KIDO Base**: Compliant with all 18 rules
+**AGENTS.md**: Synchronized and compliant
+**Navigation**: Recursive traversal functional
+**Links**: Complete bidirectionality
+
+## Relations and Dependencies
+
+- Reference: [ai-kido.md](../ai-kido.md)
+- Synchronized with: [AGENTS.md](../../../AGENTS.md)
+- Entry point: [index.md](../../index.md)
+```
+
+---
+
+### Phase 9: Auto-population Proposal
+
+#### 9.1 Inventory of Detected Gaps
+
+Compile the complete list of gaps detected during the audit:
+
+```markdown
+GAPS DETECTED DURING AUDIT
+
+Missing documents: [COUNT]
+- /prompts/gen/concepts/[topic-1].md - Referenced but absent
+- /prompts/gen/techniques/[topic-2].md - Referenced but absent
+...
+
+Invalid/deprecated documents: [COUNT]
+- /prompts/gen/concepts/[topic-3].md - Flagged false by truth-evaluator
+- /prompts/gen/use_cases/[topic-4].md - Deprecated (>6 months)
+...
+
+Unresolved contradictions: [COUNT]
+- Topic [X] - Code vs Documentation (no authoritative source)
+...
+
+Total gaps: [COUNT]
+```
+
+#### 9.2 Auto-population Proposal
+
+IF gaps are detected (>0), PROPOSE:
+
+```markdown
+AUTO-POPULATION PROPOSAL
+
+The audit detected [COUNT] gap(s) in the Memory Bank.
+
+Do you want to invoke agent-aikido-bank-populate to automatically fill these gaps?
+
+The agent will:
+1. Collect information from code/context for each gap
+2. Classify via agent-aikido-raci-delegator
+3. Resolve contradictions via agent-aikido-truth-evaluator
+4. Delegate writing to appropriate expert personas
+5. Validate AI-KIDO compliance (<=500 lines, bidirectional links)
+6. Integrate into Memory Bank with index update
+
+Launch automatic auto-population? (y/n):
+```
+
+IF user accepts: Invoke `agent-aikido-bank-populate` with the list of gaps.
+
+IF user declines: Display message "Gaps listed in the report for later manual action."
+
+---
+
+## Output
+
+### Final Result
+
+```markdown
+AUDIT AI-KIDO COMPLETE
+
+AI-KIDO base audited and corrected:
+- Rules 1-18 compliance: [X]%
+- Automatic corrections: [Y] applied
+- AGENTS.md synchronized: yes
+- Navigation optimized: yes
+
+Gaps detected: [COUNT]
+Gaps automatically filled: [COUNT if accepted, 0 if declined]
+
+Report available: /prompts/spec/audit-aikido-[DATE].md
+
+Memory Bank AI-KIDO maintained and optimized.
+```
+
+---
+
+## Notes
+
+### AI-KIDO Agents Used
+
+This command uses **5 specialized AI-KIDO agents**:
+
+| Phase | Agent | Role | Tokens |
+|-------|-------|------|--------|
+| 1.0 | `agent-aikido-explore-bank` (DEEP) | Intelligent Memory Bank scan — structured inventory with metadata | ~25-40k |
+| 1.2 + 2.3 + 7.2 | `agent-aikido-validator` (3 invocations) | Constraint validation (rules 4/6/7), post-correction check, final audit | <2k per call |
+| 3.0 | `agent-aikido-raci-delegator` | RACI consistency validation — reclassification recommendations | optimized |
+| 4.1 | `agent-aikido-truth-evaluator` | Contradiction arbitration (specs vs code, legacy docs) | optimized |
+| 9 (optional) | `agent-aikido-bank-populate` | Auto-population of detected gaps — triggered only if user accepts | varies |
+
+### Optimization Gains
+
+| Aspect | Before (manual) | After (agents) | Gain |
+|--------|-----------------|----------------|------|
+| Constraint validation | Heavy manual scripts | agent-validator fast | ~80% tokens |
+| Contradiction resolution | Manual | agent-truth-evaluator auto | 100% automated |
+| Post-correction validation | Absent | agent-validator systematic | +Quality guarantee |
+| Final validation | Partial | agent-validator complete | 100% coverage |
+| Precision | Basic detection | High-precision classification | +60% precision |
+
+### Rules Applied
+
+- Direct corrections: Modifications in `/prompts/gen/` according to AI-KIDO rules
+- No analysis directories: Full integration in the existing base
+- AGENTS.md synchronization: Compliance with rules 16-18
+- Auto-population: Capitalization according to established rules
+- Hard Points respected: Absolute priority to immutable truths
+- Standard format: Compliance with AI-KIDO template
+- Bidirectional links: Rule 6 applied systematically
+- Hierarchical navigation: Recursive traversal from main index
+- Integrated report: Documentation in `/spec/` according to standards
+- Agent optimization: Use of 5 specialized AI-KIDO agents for maximum efficiency
+- Continuous validation: agent-validator at 3 key points (constraints, post-correction, final)
+- Contradiction arbitration: agent-truth-evaluator for automatic resolution
+- RACI consistency: agent-raci-delegator for precise classification
+- Smart scan: agent-explore-bank in DEEP mode for complete inventory
