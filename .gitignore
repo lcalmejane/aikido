@@ -7,3 +7,11 @@ prompts/hard_points/system/structure/index.json
 prompts/hard_points/system/structure/index.json
 .claude/worktrees
 .claude/worktrees/*
+
+# Secrets / local configuration (never commit)
+prompts/hard_points/configuration/*.local.cfg
+.env
+.env.*
+*.pem
+*.key
+.claude/settings.local.json

@@ -34,8 +34,3 @@
 - [`techniques/`](techniques/index.md) : **Validated practical methods** - Proven and mandatory techniques
 - [`use_cases/`](use_cases/index.md) : **Validated use cases** - Standard applications and mandatory references
 
-## Example .roomodes configuration
-
-Here is an example `.roomodes` configuration file illustrating the use of dynamic links to local project personas:
-
-[`prompts/hard_points/.roomodes-examples`](prompts/hard_points/.roomodes-examples)

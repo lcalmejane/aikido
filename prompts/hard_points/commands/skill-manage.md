@@ -7,7 +7,7 @@ description: "Manage the complete lifecycle of AI-KIDO skills: search, install, 
 **Purpose**: Manage the full lifecycle of AI-KIDO skills — search, install, update, and uninstall from a remote Git group.
 
 **Paradigm**: Direct execution by the LLM — ask the user directly + native tools. No autonomous bash script.
-**Config**: [`skills.cfg`](prompts/hard_points/configuration/skills.cfg) · Priority: `CLI arg` → `env AIKIDO_GIT_TOKEN` → `skills.cfg` → hardcoded default
+**Config**: [`skills.cfg`](prompts/hard_points/configuration/skills.cfg) · Priority: `CLI arg` → `env AIKIDO_GIT_TOKEN` → `skills.local.cfg` (untracked, secrets) → `skills.cfg` → hardcoded default
 **Backward-compatible shortcuts**: `/skill-get`, `/skill-update`, `/skill-uninstall` → resolved to this command
 
 **Global invariants**:
@@ -43,7 +43,7 @@ Read and apply [`skills.cfg`](prompts/hard_points/configuration/skills.cfg) befo
 | `skills.cfg` Key | CLI Arg | Default | Description |
 |-----------------|---------|---------|-------------|
 | `GIT_GROUP` | `--group` | `git@github.com:lcalmejane/aikido-skills` | Git group/org URL (SSH · HTTPS · local) |
-| `GIT_TOKEN` | `--token` | *(empty)* | Private token · masked in logs · env `AIKIDO_GIT_TOKEN` takes priority |
+| `GIT_TOKEN` | `--token` | *(empty)* | Private token · masked in logs · env `AIKIDO_GIT_TOKEN` takes priority · never store in versioned `skills.cfg` (use `skills.local.cfg`, git-ignored) |
 | `GIT_DEFAULT_BRANCH` | `--branch` | `main` | Target branch/tag |
 | `TARGET_DIR` | `--target` | `prompts/hard_points/system` | Root directory for skills |
 | `AUTO_RUN_SCRIPTS` | — | `false` | Auto-execute `.sh` scripts without confirmation |
