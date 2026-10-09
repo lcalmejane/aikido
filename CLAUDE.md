@@ -4,6 +4,17 @@
 @prompts/hard_points/aikido.md
 @prompts/index.md
 
+## Orchestrator
+
+Claude Code retains native orchestration. The
+[AI-KIDO orchestrator wrapper](.claude/agents/agent-aikido-orchestrator.md)
+collaborates with it: it returns a JSON plan, runs direct tasks and validates
+replies, while Claude Code dispatches the subagents. Kiro and Codex also keep
+their native coordinators. The
+[canonical persona](prompts/hard_points/agents/agent-aikido-orchestrator.md)
+leads only when no other general orchestrator exists, and all exchanges follow
+the [JSON contract](prompts/hard_points/system/orchestrator/contract.schema.json).
+
 ## 1. Core Concepts Mapping
 
 | CLAUDE.md | AI-KIDO | Location | Key Mapping |

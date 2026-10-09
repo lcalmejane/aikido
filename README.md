@@ -1636,6 +1636,28 @@ Wait → Combine → Return structured output
 
 **Automatic update**: `watch-changes.sh` detects file changes → asynchronous JSON regeneration (~36s in the background)
 
+### Adaptive Orchestrator
+
+[agent-aikido-orchestrator](prompts/hard_points/agents/agent-aikido-orchestrator.md)
+always works and adapts to the orchestrator already in the system:
+`lead` when none exists (complete agent-and-Tool inventory), `collaborate` with an
+existing native orchestrator (Claude Code, Kiro, Codex, Roo, or any registered
+one: it follows its definition, guides it with a JSON plan, runs direct/MCP tasks
+itself, and takes over only what it verifiably cannot do, e.g. a parallel batch
+the native orchestrator cannot run), or `direct` when the host is unknown.
+The [system skill](prompts/hard_points/system/orchestrator/SKILL.md) binds work
+to the context's actual Tools and MCP capabilities, including each worker's.
+It sequences dependencies and shared-resource work, and parallelizes independent
+tasks only when an executor really supports concurrency and resource budgets allow.
+Every exchange with agents, threads, MCP tools and direct tools is one strict JSON
+object defined by the [contract](prompts/hard_points/system/orchestrator/contract.schema.json)
+(`task-request/2` in, `task-result/1` out).
+The orchestrator can also run commands and code, and journals every task and
+sub-task with [tracker.mjs](prompts/hard_points/system/orchestrator/tracker.mjs):
+state, attempts, bounded retries, stale-task detection and the tokens and cost
+that executors actually report (never estimated). `tracker.mjs status` returns
+one JSON summary used to relaunch failed work and follow consumption.
+
 ### 🔄 Inter-Agent Integration: Projet-Index as an Accelerator
 
 The **agent-aikido-projet-index** agent acts as a **performance accelerator** for the other agents by providing a pre-computed JSON cache of the project structure.

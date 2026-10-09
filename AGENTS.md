@@ -10,6 +10,18 @@ Internal `agent-aikido-*` agents are simultaneously **tools**, **agents** and **
 All return interactions between a mode and an internal Aikido agent **must be encoded as JSON**.
 **Single JSON call per request** — aggregate multiple calls into one request with combined parameters.
 
+**Orchestration**: [agent-aikido-orchestrator](prompts/hard_points/agents/agent-aikido-orchestrator.md)
+always works and adapts to the orchestrator already present: it **leads** when no
+other general orchestrator exists (complete inventory), **collaborates** with an
+existing native orchestrator (Claude Code, Kiro, Codex, Roo, or any registered
+one: it follows its definition, guides it with a JSON plan, runs direct/MCP tasks
+itself and takes over only what it verifiably cannot do, e.g. parallel tasks), or
+**works directly** when the host is unknown. Native orchestration and host
+instructions retain priority.
+Use its [system skill](prompts/hard_points/system/orchestrator/SKILL.md),
+[JSON contract](prompts/hard_points/system/orchestrator/contract.schema.json) and
+[routing policy](prompts/hard_points/system/orchestrator/policy.json); never invent model availability or costs.
+
 - **Project Name**: AI-KIDO Best Practices
 - **Description**: Memory Bank construction method optimized for LLMs
 - **AI-KIDO Mode**: STANDARD (vs LIGHT)

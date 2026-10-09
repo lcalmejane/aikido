@@ -30,7 +30,8 @@
 
 ## Hard Points Structure
 
+- [`agents/`](agents/index.md) : **Technical personas**, including the conditional Copilot orchestrator
+- [`system/Skills.md`](system/Skills.md) : **Internal system skills**, including orchestration and routing
 - [`concepts/`](concepts/index.md) : **Validated fundamental concepts** - Immutable conceptual truths
 - [`techniques/`](techniques/index.md) : **Validated practical methods** - Proven and mandatory techniques
 - [`use_cases/`](use_cases/index.md) : **Validated use cases** - Standard applications and mandatory references
-

@@ -6,6 +6,7 @@ This directory describes the different AI-KIDO technical agents usable in prompt
 
 ### 🤖 Orchestration Agents
 
+- [`agent-aikido-orchestrator.md`](agent-aikido-orchestrator.md) - **Conditional Runtime Coordinator** - Copilot only, without another general orchestrator; [system skill](../system/orchestrator/SKILL.md)
 - [`agent-aikido-bank-populate.md`](agent-aikido-bank-populate.md) - **Memory Bank Automatic Populator** - Orchestrates automatic creation of missing or invalid documents by collecting information from code/context and delegating to experts
 
 ### 🔍 Exploration and Analysis Agents

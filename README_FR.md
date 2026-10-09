@@ -1636,6 +1636,17 @@ Wait → Combine → Return structured output
 
 **Mise à jour automatique** : `watch-changes.sh` détecte modifications fichiers → régénération JSON asynchrone (~36s en arrière-plan)
 
+### Orchestrateur conditionnel pour Copilot
+
+[agent-aikido-orchestrator](prompts/hard_points/agents/agent-aikido-orchestrator.md)
+ne s'active dans Copilot qu'après un inventaire complet des agents et Tools
+confirmant l'absence d'un autre orchestrateur général. Il reste inactif sous
+Claude Code, Kiro, Codex et Roo.
+Le [Skill System](prompts/hard_points/system/orchestrator/SKILL.md) lie les tâches
+aux Tools et capacités MCP réellement présents dans le contexte, y compris ceux
+de chaque agent délégué. Il séquence dépendances et ressources partagées, et
+ne parallélise que les tâches indépendantes permises par le harnais et ses limites.
+
 ### 🔄 Intégration Inter-Agents : Projet-Index comme Accélérateur
 
 L'agent **agent-aikido-projet-index** agit comme un **accélérateur de performance** pour les autres agents en fournissant un cache JSON pré-calculé de la structure du projet.

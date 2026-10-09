@@ -2,6 +2,14 @@
 
 Implemented skills are listed in `skills_list.md` and follow the CLAUDE.md standard for Agent Skills.
 
+#### Conditional Orchestration
+
+The [aikido-orchestrator system skill](orchestrator/SKILL.md) supports the
+[conditional runtime persona](../agents/agent-aikido-orchestrator.md).
+It gates activation on verified Copilot capabilities and routes eligible work by
+measured cost/quality using a configurable JSON policy. It does not replace a
+native general orchestrator. See the [registry](../../../skills_list.md).
+
 #### What is a Skill?
 
 A **Skill** is a specialized capability module that extends Claude's functionality autonomously. It is a packaged resource including instructions, metadata, and optional resources.
