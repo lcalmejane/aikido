@@ -10,6 +10,11 @@ Except for internal "agent‑aikido‑*" agents: before answering, use prompts/i
 ## EXCEPTIONS
 - Internal AI‑KIDO agents (prefix `agent‑aikido‑*`) already have the necessary rules
 
+## NATURE: METHOD + META-HARNESS
+- **AI‑KIDO is a method**: rules, truth hierarchy, single entry point — tool- and model-agnostic.
+- **The tools are a meta-harness**: the functions built into the knowledge base agents, skills and tools assemble an ad-hoc harness on the fly (context, agents, tools, checks) per task.
+- **Generated use cases**: each harness becomes a use case capitalized in `use_cases/`. Details: [Method and meta-harness](ai-kido_details.md#method-and-meta-harness)
+
 ## FUNDAMENTAL USAGE RULES (summary)
 1. **🌳 Document Tree**: Recursive tree traversal from [`/prompts/index.md`](../index.md)
 2. **📊 Theory/Practice Separation**: `concepts/` + `personas/` (theory) vs `techniques/` + `use_cases/` (practice)

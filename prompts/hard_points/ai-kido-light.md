@@ -10,6 +10,9 @@ Except for internal "agent‑aikido‑*" agents, after analyzing the question an
 ## EXCEPTIONS
 - Internal AI‑KIDO agents (prefix `agent‑aikido‑*`) which already possess the necessary rules
 
+## NATURE: METHOD + META-HARNESS
+AI‑KIDO is a **method**; its tools are a **meta-harness** whose agents, skills and tools build an ad-hoc harness on the fly per task, each harness yielding a reusable use case. See [Method and meta-harness](ai-kido_details.md#method-and-meta-harness).
+
 ## KEY PRINCIPLES OF LIGHT MODE
 1. **Lightness / Minimal footprint**: Minimum files, maximum efficiency.  
 2. **Density**: Maximum information per file.  

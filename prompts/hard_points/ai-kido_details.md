@@ -4,6 +4,32 @@
 >
 > This document contains the detail of rules not present in ai-kido.md and essential structures of AI-KIDO for use by LLMs.
 
+### Method and Meta-Harness
+
+**AI-KIDO is a method, not a tool.** The method is the set of rules (tree, truth hierarchy, bidirectional links, capitalization) that frames any collaboration with an LLM, whatever the assistant, model or host.
+
+**The tools form a meta-harness.** A harness is the context, agents, tools and checks wrapped around a model for a given task. AI-KIDO does not ship one fixed harness: the functions built into the knowledge base generate the right harness on the fly.
+
+| Meta-harness function | Provided by | Role in the generated harness |
+|---|---|---|
+| Context selection | `prompts/index.md`, `agent-aikido-explore-*` | Loads only the knowledge useful to the task |
+| Truth arbitration | `agent-aikido-truth-evaluator`, `hard_points/` | Sets the authoritative sources and constraints |
+| Composition and routing | `agent-aikido-orchestrator`, `agents_list.md`, `skills_list.md` | Picks agents, personas, skills, tools and model routes |
+| Control | `agent-aikido-validator`, `agent-aikido-doc-header` | Checks compliance of every output |
+| Capitalization | `agent-aikido-bank-populate`, `agent-aikido-raci-delegator` | Stores the result back in the Memory Bank |
+| Extension | `/create-persona`, `/create-skill`, `/create-command`, `/compile-agent-from-use` | Adds new building blocks to future harnesses |
+
+**Generated use cases.** Each harness assembled for a task is captured as a use case (`gen/use_cases/`, then `hard_points/use_cases/` once validated). The base therefore grows its own catalogue of reusable harnesses: the more it is used, the more use cases it can generate.
+
+```mermaid
+flowchart LR
+  M[Method: rules + truth hierarchy] --> KB[Knowledge base: agents, skills, tools]
+  KB --> H[Harness built on the fly]
+  H --> T[Task executed]
+  T --> UC[New use case capitalized]
+  UC --> KB
+```
+
 ### Creation and Maintenance Rules
 
 1. **Existing Rule**: Always check existence before creating

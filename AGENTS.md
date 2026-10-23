@@ -23,7 +23,7 @@ Use its [system skill](prompts/hard_points/system/orchestrator/SKILL.md),
 [routing policy](prompts/hard_points/system/orchestrator/policy.json); never invent model availability or costs.
 
 - **Project Name**: AI-KIDO Best Practices
-- **Description**: Memory Bank construction method optimized for LLMs
+- **Description**: AI Memory Bank Construction Method by Meta-Harness
 - **AI-KIDO Mode**: STANDARD (vs LIGHT)
 - **Hard Points**: [`/prompts/hard_points/`](prompts/hard_points/) (Immutable truths — ABSOLUTE PRIORITY)
 
