@@ -159,7 +159,8 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
   ]) {
     if (!ledger.has(path)) error(`package runtime is missing: ${path}`);
   }
-  if (pkg.host === 'claude-code') {
+  if (pkg.host === 'claude-code' || pkg.host === 'claude-cowork') {
+    const label = pkg.host === 'claude-cowork' ? 'Claude Cowork' : 'Claude Code';
     for (const path of [
       '.claude-plugin/plugin.json',
       '.claude-plugin/marketplace.json',
@@ -168,15 +169,15 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
       'TRADEMARK.md',
       'assets/aikido.png',
     ]) {
-      if (!ledger.has(path)) error(`Claude Code plugin file is missing: ${path}`);
+      if (!ledger.has(path)) error(`${label} plugin file is missing: ${path}`);
     }
     try {
-      const plugin = readJson(packageFile(root, '.claude-plugin/plugin.json'), 'Claude Code plugin manifest');
+      const plugin = readJson(packageFile(root, '.claude-plugin/plugin.json'), `${label} plugin manifest`);
       if (plugin.name !== 'aikido' || plugin.version !== pkg.version || plugin.license !== 'MIT') {
-        error('Claude Code plugin name, version and license must match the package manifest');
+        error(`${label} plugin name, version and license must match the package manifest`);
       }
       if (plugin.icon !== './assets/aikido.png') {
-        error('Claude Code plugin icon must point to the bundled PNG');
+        error(`${label} plugin icon must point to the bundled PNG`);
       }
     } catch (exception) {
       error(exception.message);
@@ -184,30 +185,60 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
     try {
       const marketplace = readJson(
         packageFile(root, '.claude-plugin/marketplace.json'),
-        'Claude Code marketplace manifest',
+        `${label} marketplace manifest`,
       );
       if (marketplace.name !== 'aikido' || marketplace.owner?.name !== 'AI-KIDO Team') {
-        error('Claude Code marketplace name and owner are invalid');
+        error(`${label} marketplace name and owner are invalid`);
       }
       if (!marketplace.plugins?.some((plugin) => plugin.name === 'aikido' && plugin.source === '.')) {
-        error('Claude Code marketplace must expose the local aikido plugin source');
+        error(`${label} marketplace must expose the local aikido plugin source`);
       }
     } catch (exception) {
       error(exception.message);
     }
     try {
       const readme = readFileSync(packageFile(root, 'README.md'), 'utf8');
-      if (readme.trim().split(/\s+/).length < 40) error('Claude Code plugin README must contain at least 40 words');
+      if (readme.trim().split(/\s+/).length < 40) error(`${label} plugin README must contain at least 40 words`);
       const icon = readFileSync(packageFile(root, 'assets/aikido.png'));
       if (icon.length > 2 * 1024 * 1024 || !icon.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) {
-        error('Claude Code plugin icon must be a PNG under 2 MB');
+        error(`${label} plugin icon must be a PNG under 2 MB`);
       } else if (icon.readUInt32BE(16) < 512 || icon.readUInt32BE(16) > 2048
         || icon.readUInt32BE(20) < 512 || icon.readUInt32BE(20) > 2048
         || icon.readUInt32BE(16) !== icon.readUInt32BE(20)) {
-        error('Claude Code plugin icon must be square and between 512 and 2048 pixels');
+        error(`${label} plugin icon must be square and between 512 and 2048 pixels`);
       }
     } catch (exception) {
       error(exception.message);
+    }
+  }
+  if (pkg.host === 'claude-cowork') {
+    if (readdirSync(root).includes('bin')) error('Cowork plugins must not contain a top-level bin entry');
+    const wrappers = [
+      ...catalog.commands.map((item) => ({ ...item, path: `commands/${item.name}.md`, role: 'command' })),
+      ...catalog.systemSkills.map((item) => ({
+        ...item, source: `${item.source}/SKILL.md`, path: `skills/${item.name}/SKILL.md`, role: 'system-skill',
+      })),
+      ...catalog.agents.map((item) => ({ ...item, path: `agents/${item.name}.md`, role: 'agent' })),
+    ];
+    for (const wrapper of wrappers) {
+      if (ledger.get(wrapper.path)?.role !== wrapper.role) {
+        error(`Cowork plugin wrapper is missing: ${wrapper.path}`);
+        continue;
+      }
+      const text = readFileSync(packageFile(root, wrapper.path), 'utf8');
+      const fields = text.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? '';
+      if (!new RegExp(`^name:\\s*${wrapper.name}\\s*$`, 'm').test(fields)
+        || !/^description:\s*.+$/m.test(fields)
+        || !text.includes(wrapper.source)
+        || !text.includes('## Cowork execution boundary')
+        || !text.includes('AIKIDO_COWORK_UNAVAILABLE')) {
+        error(`Cowork wrapper metadata, canonical source or execution boundary is missing: ${wrapper.path}`);
+      }
+    }
+    for (const command of catalog.commands) {
+      if (ledger.has(`skills/${command.name}/SKILL.md`)) {
+        error(`Cowork command must not also be delivered as a fallback Skill: ${command.name}`);
+      }
     }
   }
   if (pkg.host === 'copilot-vscode') {
@@ -446,6 +477,11 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
   }
   try {
     const actualFiles = new Set(packageFiles(root));
+    if (pkg.host === 'claude-cowork') {
+      if (actualFiles.size > 5000) error('Cowork plugins must contain at most 5000 files');
+      const bytes = [...actualFiles].reduce((total, path) => total + lstatSync(packageFile(root, path)).size, 0);
+      if (bytes > 200_000_000) error('Cowork plugins must not exceed 200 MB');
+    }
     actualFiles.delete('package-manifest.json');
     for (const path of actualFiles) if (!ledger.has(path)) error(`unlisted package file: ${path}`);
     for (const path of ledger.keys()) if (!actualFiles.has(path)) error(`ledger file is missing from package tree: ${path}`);

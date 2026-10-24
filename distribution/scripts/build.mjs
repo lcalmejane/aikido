@@ -446,6 +446,31 @@ function claudePluginSkill(skill, contents) {
   return `---\nname: ${skill.name}\ndescription: "AI-KIDO ${skill.name} system skill."\n---\n\n${guidance}${contents}`;
 }
 
+function coworkWrapper(contents) {
+  const frontmatter = contents.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n/);
+  if (!frontmatter) throw new Error('Cowork wrappers require YAML frontmatter');
+  const guidance = '## Cowork execution boundary\n\n'
+    + 'Before following the canonical instructions, verify that the plugin root '
+    + '`${CLAUDE_PLUGIN_ROOT}` resolves to a readable installed package. Resolve relative references '
+    + 'from the canonical source file, not this generated wrapper. Use only tools actually exposed '
+    + 'in this Cowork session; Claude Code tool names do not prove that those tools are available here.\n\n'
+    + 'Before any project write, confirm the user-selected persistent project folder and its access '
+    + 'permissions. Do not assume `${CLAUDE_PROJECT_DIR}`, a host filesystem path, or a temporary '
+    + 'session directory is the intended project. Bootstrap, migration, update and removal additionally '
+    + 'require an available command tool and Node.js. Use the packaged runtime with explicit '
+    + '`--root` and `--package` paths where applicable; review its plan and obtain confirmation '
+    + 'of the exact plan ID before applying it. Do not replace the runtime with manual copies.\n\n'
+    + 'For `/aikido:init-aikido` without an installed lock, first choose STANDARD, LIGHT or UNSET '
+    + 'with the user and run `node "<plugin-root>/scripts/bootstrap-plan.mjs" --root "<project-root>" '
+    + '--package "<plugin-root>" --mode <mode>`. Apply only after confirmation using '
+    + '`--apply --confirm <plan-id>`, then follow the canonical initialization command.\n\n'
+    + 'If a required path, tool, runtime or permission is unavailable, stop before writing and report '
+    + '`AIKIDO_COWORK_UNAVAILABLE` with the missing prerequisite. Do not install dependencies, '
+    + 'change permissions or claim success to bypass the restriction. Never write into the plugin cache. '
+    + 'These are prompt instructions, not a host-enforced sandbox.\n\n';
+  return `${frontmatter[0]}\n${guidance}${contents.slice(frontmatter[0].length)}`;
+}
+
 function writeOutput(root, path, text, outputFiles, role = 'adapter') {
   const absolute = within(root, path);
   mkdirSync(dirname(absolute), { recursive: true });
@@ -534,10 +559,12 @@ export function buildDistribution({
       writeUnique(packagePath, readFileSync(assertSourcePath(path, 'file')), 'runtime');
     }
     writeUnique('catalog.json', readFileSync(assertSourcePath('distribution/catalog.json', 'file')), 'runtime');
-    if (hostId === 'claude-code') {
+    if (host.agentFormat === 'claude-plugin') {
       writeUnique('.claude-plugin/plugin.json', claudePluginManifest(version), 'plugin-manifest');
       writeUnique('.claude-plugin/marketplace.json', claudeMarketplaceManifest(), 'marketplace-manifest');
-      writeUnique('README.md', claudePluginReadme(), 'plugin-readme');
+      writeUnique('README.md', hostId === 'claude-cowork'
+        ? readFileSync(assertSourcePath('distribution/adapters/claude-cowork/README.md', 'file'))
+        : claudePluginReadme(), 'plugin-readme');
       writeUnique('LICENSE', readFileSync(assertSourcePath('LICENSE', 'file')), 'legal');
       writeUnique('TRADEMARK.md', readFileSync(assertSourcePath('TRADEMARK.md', 'file')), 'legal');
       writeUnique('assets/aikido.png', claudePluginIcon(), 'plugin-asset');
@@ -587,7 +614,7 @@ export function buildDistribution({
       commandPaths.add(target);
       writeUnique(
         target,
-        contents,
+        hostId === 'claude-cowork' ? coworkWrapper(contents) : contents,
         'command',
         host.projectCommandFiles ? target : null,
         'adapter',
@@ -602,7 +629,7 @@ export function buildDistribution({
           const suffix = relative(source, file).split(sep).join('/');
           const target = `${host.systemSkillTarget}/${skill.name}/${suffix}`;
           const contents = readFileSync(file);
-          let skillContents = ['copilot-vscode', 'copilot-github', 'codex', 'kiro-cli', 'antigravity'].includes(hostId) && suffix === 'SKILL.md'
+          let skillContents = ['copilot-vscode', 'copilot-github', 'codex', 'kiro-cli', 'antigravity', 'claude-cowork'].includes(hostId) && suffix === 'SKILL.md'
             ? portableSkill(skill, contents.toString('utf8'))
             : contents;
           if (host.projectSystemSkillFiles && suffix.endsWith('.md')) {
@@ -613,11 +640,13 @@ export function buildDistribution({
               skill.source,
             );
           }
+          if (host.agentFormat === 'claude-plugin' && suffix === 'SKILL.md') {
+            skillContents = claudePluginSkill(skill, skillContents.toString('utf8'));
+            if (hostId === 'claude-cowork') skillContents = coworkWrapper(skillContents);
+          }
           writeUnique(
             target,
-            hostId === 'claude-code' && suffix === 'SKILL.md'
-              ? claudePluginSkill(skill, contents.toString('utf8'))
-              : skillContents,
+            skillContents,
             'system-skill',
             host.projectSystemSkillFiles ? target : null,
             'adapter',
@@ -641,9 +670,10 @@ export function buildDistribution({
         const suffix = { codex: '.toml', copilot: '.agent.md' }[host.agentFormat] ?? '.md';
         for (const profile of profiles) {
           const target = `${host.agentTarget}/${profile.name}${suffix}`;
+          const contents = agentWrapper(host.agentFormat, profile, profiles);
           writeUnique(
             target,
-            agentWrapper(host.agentFormat, profile, profiles),
+            hostId === 'claude-cowork' ? coworkWrapper(contents) : contents,
             'agent',
             host.projectAgentFiles ? target : null,
             'adapter',

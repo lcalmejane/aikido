@@ -46,7 +46,7 @@ host supports that restriction.
 | Host | Commands | Agents | Qualification |
 |---|---|---|---|
 | Claude Code | Native plugin command | Plugin `agents/*.md` | Qualified, not tested end to end |
-| Claude Cowork | Native plugin command | Plugin `agents/*.md` | Qualified with conditions, not tested |
+| Claude Cowork | Native account-plugin command | Plugin `agents/*.md` | Package/runtime tested; native acceptance blocked |
 | VS Code / Copilot | Agent Plugins 1.0: slash prompts, Skills | `com.github.copilot/agents/*.agent.md` | Qualified, not tested end to end |
 | GitHub Copilot coding agent | Fallback Skills in `.github/skills/`, `AGENTS.md` block | `.github/agents/*.agent.md` | Qualified, not tested end to end |
 | Codex | Fallback Skill | `.codex/agents/*.toml` | Qualified, not tested end to end |
@@ -62,6 +62,13 @@ though their currently documented workspace paths overlap. Zoo Code is the maint
 the Roo package is best-effort against archived documentation, not evidence of active support.
 Select only one of those packages for a workspace; their `.roo/commands/` and `.roomodes` targets
 overlap and are not co-installable.
+
+The [Cowork package](adapters/claude-cowork/README.md) has its own manifest,
+account-installation guide and execution-prerequisite instructions. Installing
+the Claude Code plugin locally does not install it in Cowork. A readable
+plugin root, persistent project access and Node.js must be verified before
+running its project lifecycle scripts; native Cowork acceptance remains blocked,
+not inferred from the shared plugin format or Node tests.
 
 ## Bootstrap plan and application
 
