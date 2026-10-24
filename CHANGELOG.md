@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 | Version | Date | Highlights |
 |---------|------|-----------|
-| **Unreleased** | - | Distribution groundwork (project templates, lock schema, managed blocks); bundled Roo Code reference docs removed |
+| **Unreleased** | - | Multi-host distribution groundwork (templates, bootstrap, updates, catalog, Claude Code and VS Code plugin packages); bundled Roo Code reference docs removed |
 | **1.4** | 2026-10-03 | First public release. English-language baseline, MIT license, secrets hardening |
 | **1.3.3** | 2026-02-27 | Skill lifecycle management (install, update, uninstall from a Git group) |
 | **1.3.1** | 2026-01-16 | External skills integration, `create-skill` command, technical audit plan |
@@ -32,6 +32,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 - `distribution/`: groundwork for installing AI-KIDO into any project from several AI hosts. Blank project templates per mode (STANDARD, LIGHT, not initialized), managed instruction blocks for `AGENTS.md`, `CLAUDE.md` and `.gitignore`, the `.aikido/lock.json` schema, merge policy, and dependency-free Node helpers with tests. Nothing is published yet.
+- Read-only bootstrap planning and a catalog-driven deterministic staging build. Per-host command delivery avoids native-command/Skill duplicates; unverified host surfaces and missing agent wrappers remain explicit. Generated packages are not installable releases.
+- Confirmed bootstrap application with package validation, rollback and an idempotent lock; package-based `/maj-aikido --update` with three-way merge, explicit conflicts, backups and recovery, legacy migration and adapter-only uninstall.
+- Generated host plugins: Claude Code plugin (strict native validation) and VS Code/Copilot Agent Plugins 1.0 package (slash prompts, Skills, namespaced agent). Host end-to-end recipes are not yet run.
 
 ### Changed
 
