@@ -338,10 +338,18 @@ function claudePluginCommand(command, sourceText) {
   const sourceRule = isUpdater
     ? `For this update command, always use the bundled command at \`${pluginSource}\` so it can update projects that contain older AI-KIDO instructions.`
     : `If the project has \`${projectSource}\`, use that project-pinned command. Otherwise use the bundled command at \`${pluginSource}\`. Never write into the plugin cache.`;
+  const bootstrapRule = command.name === 'init-aikido'
+    ? `If \`.aikido/lock.json\` is missing, install the project files before initializing: ask the user `
+      + `to choose STANDARD, LIGHT or UNSET, then run \`node "\${CLAUDE_PLUGIN_ROOT}/scripts/bootstrap-plan.mjs" `
+      + `--root "<project-root>" --package "\${CLAUDE_PLUGIN_ROOT}" --mode <mode>\`. Show the plan, and only after `
+      + `the user confirms its exact plan ID rerun it with \`--apply --confirm <plan-id>\`. Never copy payload files `
+      + `manually. Then continue with the project-pinned command.\n\n`
+    : '';
   return `---\nname: ${command.name}\ndescription: "${commandDescription(sourceText, command.name)}"\n---\n\n`
     + `# /aikido:${command.name}\n\n`
     + `Check whether the current project has an AI-KIDO installation and read its \`.aikido/lock.json\` first. `
     + `${sourceRule}\n\n`
+    + bootstrapRule
     + `Follow that command's instructions exactly. A plugin install does not initialize or update the project by itself.`;
 }
 

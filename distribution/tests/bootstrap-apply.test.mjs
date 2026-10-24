@@ -52,6 +52,8 @@ test('validates extracted packages and rejects damaged payload hashes', () => {
   assert.ok(marketplace.plugins.some((plugin) => plugin.name === 'aikido' && plugin.source === '.'));
   assert.match(initCommand, /\/aikido:init-aikido/);
   assert.match(initCommand, /CLAUDE_PLUGIN_ROOT.*payload\/prompts\/hard_points\/commands\/init-aikido\.md/s);
+  assert.match(initCommand, /CLAUDE_PLUGIN_ROOT\}\/scripts\/bootstrap-plan\.mjs.*--apply --confirm <plan-id>/s);
+  assert.doesNotMatch(readFileSync(join(packageRoot, 'commands/check-truth.md'), 'utf8'), /bootstrap-plan/);
   assert.ok(packageManifest.files.some((file) => file.path === 'scripts/bootstrap-plan.mjs'));
   assert.ok(packageManifest.files.some((file) => file.path === 'scripts/update-plan.mjs'));
   assert.ok(packageManifest.files.some((file) => file.path === 'lib/update-plan.mjs'));
