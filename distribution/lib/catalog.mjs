@@ -23,6 +23,7 @@ const HOST_LABELS = {
 function commandInvocation(name, hostId, delivery) {
   if (hostId === 'copilot-github') return `ask Copilot to use the \`${name}\` Skill`;
   if (hostId === 'codex') return `\`$${name}\` (Skill; also available in \`/skills\`)`;
+  if (hostId === 'kiro-cli') return `\`/${name}\` (Skill)`;
   const invocation = hostId === 'claude-code' || hostId === 'claude-cowork'
     ? `/aikido:${name}`
     : `/${name}`;

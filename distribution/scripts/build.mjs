@@ -241,7 +241,7 @@ function yamlList(key, values) {
   return values.length ? `${key}:\n${values.map((value) => `  - ${value}`).join('\n')}\n` : '';
 }
 
-export function agentWrapper(format, profile) {
+export function agentWrapper(format, profile, profiles = []) {
   const name = `name: ${profile.name}\ndescription: ${JSON.stringify(profile.description)}\n`;
   const body = agentInstructions(profile, format);
   if (format === 'claude-plugin') {
@@ -254,8 +254,18 @@ export function agentWrapper(format, profile) {
     return `---\n${name}${tools}${invocation}---\n\n${body}`;
   }
   if (format === 'kiro') {
-    const tools = profile.inheritTools ? ['*'] : hostTools(format, profile);
-    return `---\n${name}${yamlList('tools', tools.map((tool) => JSON.stringify(tool)))}---\n\n${body}`;
+    const tools = profile.inheritTools ? '' : yamlList(
+      'tools',
+      hostTools(format, profile).map((tool) => JSON.stringify(tool)),
+    );
+    const resources = yamlList('resources', [`file://./${profile.source}`].map((resource) => JSON.stringify(resource)));
+    const availableAgents = profiles
+      .filter((candidate) => candidate.name !== profile.name && !candidate.topLevelOnly)
+      .map((candidate) => candidate.name);
+    const toolsSettings = profile.capabilities.includes('delegate') || profile.inheritTools
+      ? `toolsSettings:\n  subagent:\n${yamlList('availableAgents', availableAgents.map((agent) => JSON.stringify(agent))).trimEnd().replace(/^/gm, '    ')}\n`
+      : '';
+    return `---\n${name}${tools}${resources}${toolsSettings}---\n\n${body}`;
   }
   if (format === 'antigravity') {
     const subagent = profile.topLevelOnly ? 'subagent: false\n' : '';
@@ -536,6 +546,9 @@ export function buildDistribution({
     if (hostId === 'codex') {
       writeUnique('README.md', readFileSync(assertSourcePath('distribution/adapters/codex/README.md', 'file')), 'adapter');
     }
+    if (hostId === 'kiro-cli') {
+      writeUnique('README.md', readFileSync(assertSourcePath('distribution/adapters/kiro-cli/README.md', 'file')), 'adapter');
+    }
 
     const commandPaths = new Set();
     for (const command of catalog.commands) {
@@ -578,7 +591,7 @@ export function buildDistribution({
           const suffix = relative(source, file).split(sep).join('/');
           const target = `${host.systemSkillTarget}/${skill.name}/${suffix}`;
           const contents = readFileSync(file);
-          let skillContents = ['copilot-vscode', 'copilot-github', 'codex'].includes(hostId) && suffix === 'SKILL.md'
+          let skillContents = ['copilot-vscode', 'copilot-github', 'codex', 'kiro-cli'].includes(hostId) && suffix === 'SKILL.md'
             ? portableSkill(skill, contents.toString('utf8'))
             : contents;
           if (host.projectSystemSkillFiles && suffix.endsWith('.md')) {
@@ -619,7 +632,7 @@ export function buildDistribution({
           const target = `${host.agentTarget}/${profile.name}${suffix}`;
           writeUnique(
             target,
-            agentWrapper(host.agentFormat, profile),
+            agentWrapper(host.agentFormat, profile, profiles),
             'agent',
             host.projectAgentFiles ? target : null,
             'adapter',

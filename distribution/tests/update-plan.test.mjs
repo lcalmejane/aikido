@@ -29,8 +29,8 @@ before(() => {
   basePackage = join(baseOutput, 'claude-code');
   updateCli = join(basePackage, 'scripts/update-plan.mjs');
   nextPackage = join(nextOutput, 'claude-code');
-  adapterBasePackage = join(baseOutput, 'kiro-cli');
-  adapterNextPackage = join(nextOutput, 'kiro-cli');
+  adapterBasePackage = join(baseOutput, 'antigravity');
+  adapterNextPackage = join(nextOutput, 'antigravity');
   blockUpdatePackage = join(blockOutput, 'claude-code');
   mutatePayload(nextPackage, 'prompts/hard_points/ai-kido.md', (text) => `${text}\nUpstream update.\n`);
   mutatePackagedFile(
@@ -184,8 +184,8 @@ test('an upstream-removed adapter file is deleted only while it still matches th
   const root = newProject();
   try {
     const removed = JSON.parse(readFileSync(join(adapterBasePackage, 'package-manifest.json'), 'utf8'))
-      .projectFiles.find((file) => !file.target.startsWith('.kiro/agents/'));
-    assert.ok(removed, 'Kiro package must include project adapter files');
+      .projectFiles.find((file) => !file.target.startsWith('.agents/agents/'));
+    assert.ok(removed, 'Antigravity package must include project adapter files');
     removeProjectFile(adapterNextPackage, removed.target);
     const installOptions = {
       root,
@@ -216,7 +216,7 @@ test('an upstream-removed adapter preserves locally modified content as an orpha
   const root = newProject();
   try {
     const removed = JSON.parse(readFileSync(join(adapterBasePackage, 'package-manifest.json'), 'utf8'))
-      .projectFiles.find((file) => !file.target.startsWith('.kiro/agents/'));
+      .projectFiles.find((file) => !file.target.startsWith('.agents/agents/'));
     removeProjectFile(adapterNextPackage, removed.target);
     const installOptions = {
       root,
@@ -375,8 +375,8 @@ test('adapter uninstall preserves modified wrappers and method knowledge, with r
   const root = newProject();
   try {
     const manifest = JSON.parse(readFileSync(join(adapterBasePackage, 'package-manifest.json'), 'utf8'));
-    const wrappers = manifest.projectFiles.filter((item) => item.target.startsWith('.kiro/skills/'));
-    assert.ok(wrappers.length >= 2, 'Kiro package must include multiple project command files');
+    const wrappers = manifest.projectFiles.filter((item) => item.target.startsWith('.agents/skills/'));
+    assert.ok(wrappers.length >= 2, 'Antigravity package must include multiple project Skill files');
     const installOptions = {
       root,
       packageRoot: adapterBasePackage,

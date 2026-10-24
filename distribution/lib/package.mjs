@@ -300,12 +300,25 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
           error(`Codex generated agent TOML is invalid: ${path}: ${exception.message}`);
         }
       }
+      if (pkg.host === 'kiro-cli') {
+        const frontmatter = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+        if (!frontmatter
+          || !new RegExp(`^name:\\s*${agent.name}\\s*$`, 'm').test(frontmatter[1])
+          || !/^description:\s*.+$/m.test(frontmatter[1])
+          || !frontmatter[1].split(/\r?\n/).includes(`  - "file://./${agent.source}"`)) {
+          error(`Kiro agent configuration is invalid or missing its canonical role resource: ${path}`);
+        }
+        if (agent.topLevelOnly && /^tools:/m.test(frontmatter?.[1] ?? '')) {
+          error(`Kiro top-level agent must inherit tools rather than use an unverified wildcard: ${path}`);
+        }
+      }
     }
   }
-  if (pkg.host === 'copilot-github' || pkg.host === 'codex') {
+  if (pkg.host === 'copilot-github' || pkg.host === 'codex' || pkg.host === 'kiro-cli') {
     const host = catalog.hosts[pkg.host];
-    const label = pkg.host === 'codex' ? 'Codex' : 'GitHub Copilot';
+    const label = pkg.host === 'codex' ? 'Codex' : pkg.host === 'kiro-cli' ? 'Kiro CLI' : 'GitHub Copilot';
     if (pkg.host === 'codex' && !ledger.has('README.md')) error('Codex workspace adapter instructions are missing: README.md');
+    if (pkg.host === 'kiro-cli' && !ledger.has('README.md')) error('Kiro CLI adapter instructions are missing: README.md');
     const projectTargets = new Set(pkg.projectFiles.map((file) => file.target));
     const skillNames = [
       ...catalog.commands.map((command) => ({ name: command.name, source: command.source, role: 'command' })),
