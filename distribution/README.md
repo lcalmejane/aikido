@@ -2,7 +2,7 @@
 
 Packaging sources that will install the AI-KIDO method into any project and expose it to
 several AI hosts (Claude Code, VS Code / Copilot, GitHub coding agent, Codex, Kiro CLI,
-Zoo Code / Roo, Google Antigravity, Claude Cowork).
+Zoo Code, legacy Roo Code, Google Antigravity, Claude Cowork).
 
 The canonical method stays in [`prompts/hard_points/`](../prompts/hard_points/index.md).
 This directory only contains what is needed to copy it into a project and keep it updatable.
@@ -50,12 +50,17 @@ the host allows that restriction.
 | GitHub Copilot coding agent | Fallback Skills in `.github/skills/`, `AGENTS.md` block | `.github/agents/*.agent.md` | Qualified, not tested end to end |
 | Codex | Fallback Skill | `.codex/agents/*.toml` | Qualified, not tested end to end |
 | Kiro CLI | Native Skill-command (one file, not a second fallback Skill) | `.kiro/agents/*.md` | Qualified, not tested end to end |
-| Roo/Zoo Code | Native command in `.roo/commands/` | One custom mode per agent in `.roomodes` | Format identified, not tested |
+| Zoo Code | Native command in `.roo/commands/` | One custom mode per agent in `.roomodes` | Qualified, not tested end to end |
+| Roo Code (legacy) | Native command in `.roo/commands/` | One custom mode per agent in `.roomodes` | Legacy/archive format, not tested |
 | Google Antigravity | Fallback Skill | `.agents/agents/*.md` (documented tool names only) | Qualified, not tested end to end |
 | Copilot Cowork | Not generated | Not generated | Optional final target, unverified |
 
 `.roomodes` is a shared user file: install refuses to overwrite a foreign one and uninstall keeps
-it.
+it. Zoo Code and legacy Roo Code have separate package identities and qualification records even
+though their currently documented workspace paths overlap. Zoo Code is the maintained target;
+the Roo package is best-effort against archived documentation, not evidence of active support.
+Select only one of those packages for a workspace; their `.roo/commands/` and `.roomodes` targets
+overlap and are not co-installable.
 
 ## Bootstrap plan and application
 
@@ -152,9 +157,9 @@ node distribution/scripts/build.mjs --out /tmp/aikido-dist --revision <40-charac
 ```
 
 The current staging mappings cover Claude Code command wrappers, a VS Code Agent Plugins 1.0 plugin,
-Codex, GitHub coding agent and Antigravity fallback Skills, Kiro native Skill-commands, Roo/Zoo command
-wrappers, and generated agent wrappers for every enabled host. These are build mappings, not tested
-host integrations.
+Codex, GitHub coding agent and Antigravity fallback Skills, Kiro native Skill-commands, separate
+Zoo Code and legacy Roo command wrappers, and generated agent wrappers for every enabled host.
+These are build mappings, not tested host integrations.
 Generated packages are staging outputs, not installable releases. Package integrity is validated
 after extraction; host-specific end-to-end testing and release publication remain future work.
 

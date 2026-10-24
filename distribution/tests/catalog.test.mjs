@@ -161,7 +161,10 @@ test('every enabled host package generates a native wrapper for every agent', ()
     assert.match(dist('kiro-cli/.kiro/agents/agent-aikido-bank-populate.md'), /tools:\n  - "read"\n  - "write"\n  - "shell"\nresources:/);
     assert.match(dist('antigravity/.agents/agents/agent-aikido-explore-all.md'), /tools:\n  - view_file\n  - grep_search\n  - invoke_subagent\n---/);
     assert.match(dist('antigravity/.agents/agents/agent-aikido-orchestrator.md'), /subagent: false/);
-    assert.match(dist('roo-zoo/.roo/commands/init-aikido.md'), /^---\ndescription: ".+"\n---\n\n# \/init-aikido\n/);
+    assert.match(dist('zoo-code/.roo/commands/init-aikido.md'), /^---\ndescription: ".+"\n---\n\n# \/init-aikido\n/);
+    assert.match(dist('roo-code-legacy/.roo/commands/init-aikido.md'), /^---\ndescription: ".+"\n---\n\n# \/init-aikido\n/);
+    assert.match(dist('zoo-code/README.md'), /maintained Zoo Code project/);
+    assert.match(dist('roo-code-legacy/README.md'), /best-effort target/);
     assert.deepEqual(agentProfile(catalog.agents.find((agent) => agent.name === 'agent-aikido-helper')).capabilities, ['read']);
   } finally {
     rmSync(root, { recursive: true, force: true });

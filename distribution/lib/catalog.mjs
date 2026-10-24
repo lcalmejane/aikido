@@ -15,7 +15,8 @@ const HOST_LABELS = {
   'copilot-github': 'GitHub Copilot',
   codex: 'Codex',
   'kiro-cli': 'Kiro CLI',
-  'roo-zoo': 'Roo/Zoo Code',
+  'zoo-code': 'Zoo Code',
+  'roo-code-legacy': 'Roo Code (legacy)',
   antigravity: 'Antigravity',
   'copilot-cowork': 'Copilot Cowork',
 };

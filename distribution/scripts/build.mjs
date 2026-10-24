@@ -284,6 +284,7 @@ export function rooModes(profiles) {
     const groups = profile.inheritTools ? [...hostTools('roomodes', profile), 'mcp'] : hostTools('roomodes', profile);
     return `  - slug: ${profile.name}\n`
       + `    name: ${JSON.stringify(`AI-KIDO ${profile.name.replace(/^agent-aikido-/, '')}`)}\n`
+      + `    description: ${JSON.stringify(profile.description)}\n`
       + `    roleDefinition: |-\n${block(agentInstructions(profile, 'roomodes'))}\n`
       + `    whenToUse: |-\n${block(profile.description)}\n`
       + `    groups:\n${[...new Set(groups)].map((group) => `      - ${group}`).join('\n')}\n`;
@@ -548,6 +549,12 @@ export function buildDistribution({
     }
     if (hostId === 'kiro-cli') {
       writeUnique('README.md', readFileSync(assertSourcePath('distribution/adapters/kiro-cli/README.md', 'file')), 'adapter');
+    }
+    if (hostId === 'zoo-code') {
+      writeUnique('README.md', readFileSync(assertSourcePath('distribution/adapters/zoo-code/README.md', 'file')), 'adapter');
+    }
+    if (hostId === 'roo-code-legacy') {
+      writeUnique('README.md', readFileSync(assertSourcePath('distribution/adapters/roo-code-legacy/README.md', 'file')), 'adapter');
     }
 
     const commandPaths = new Set();

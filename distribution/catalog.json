@@ -125,9 +125,22 @@
       "projectSystemSkillFiles": true,
       "projectAgentFiles": true
     },
-    "roo-zoo": {
+    "zoo-code": {
       "enabled": true,
-      "qualification": "identified-format-not-tested",
+      "qualification": "qualified-not-tested",
+      "commandDelivery": "native-command",
+      "commandTarget": ".roo/commands",
+      "commandSuffix": ".md",
+      "systemSkillTarget": null,
+      "agentFormat": "roomodes",
+      "agentTarget": ".roomodes",
+      "projectCommandFiles": true,
+      "projectSystemSkillFiles": false,
+      "projectAgentFiles": true
+    },
+    "roo-code-legacy": {
+      "enabled": true,
+      "qualification": "legacy-format-not-tested",
       "commandDelivery": "native-command",
       "commandTarget": ".roo/commands",
       "commandSuffix": ".md",

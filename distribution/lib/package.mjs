@@ -260,9 +260,14 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
     else {
       const text = readFileSync(packageFile(root, packageHost.agentTarget), 'utf8');
       for (const agent of catalog.agents) {
-        if (!text.includes(`  - slug: ${agent.name}\n`) || !text.includes(`\`${agent.source}\``)) {
+        if (!text.includes(`  - slug: ${agent.name}\n`)
+          || !text.includes(`    description: `)
+          || !text.includes(`\`${agent.source}\``)) {
           error(`Generated agent mode is missing or detached: ${agent.name}`);
         }
+      }
+      if (['zoo-code', 'roo-code-legacy'].includes(pkg.host) && !ledger.has('README.md')) {
+        error(`${pkg.host} adapter instructions are missing: README.md`);
       }
     }
   } else if (packageHost?.agentFormat) {

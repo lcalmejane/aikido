@@ -10,7 +10,8 @@ export const HOSTS = [
   'copilot-github',
   'codex',
   'kiro-cli',
-  'roo-zoo',
+  'zoo-code',
+  'roo-code-legacy',
   'antigravity',
   'copilot-cowork',
 ];
