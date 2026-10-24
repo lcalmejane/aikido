@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 | Version | Date | Highlights |
 |---------|------|-----------|
-| **Unreleased** | - | - |
+| **Unreleased** | - | Bundled Roo Code reference docs removed |
 | **1.4** | 2026-10-03 | First public release. English-language baseline, MIT license, secrets hardening |
 | **1.3.3** | 2026-02-27 | Skill lifecycle management (install, update, uninstall from a Git group) |
 | **1.3.1** | 2026-01-16 | External skills integration, `create-skill` command, technical audit plan |
@@ -29,7 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-Nothing yet.
+### Removed
+
+- Bundled Roo Code reference documentation (`prompts/hard_points/roo-code/docs/`). It is no longer needed in the Memory Bank; Roo Code integration (`.roomodes`, `.roo/`) is unchanged.
 
 ---
 
