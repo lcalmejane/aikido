@@ -317,13 +317,36 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
           error(`Kiro top-level agent must inherit tools rather than use an unverified wildcard: ${path}`);
         }
       }
+      if (pkg.host === 'antigravity') {
+        const frontmatter = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+        const fields = frontmatter?.[1] ?? '';
+        const tools = [...fields.matchAll(/^\s+-\s+([a-z_]+)\s*$/gm)].map((match) => match[1]);
+        if (!frontmatter
+          || !new RegExp(`^name:\\s*${agent.name}\\s*$`, 'm').test(fields)
+          || !/^description:\s*.+$/m.test(fields)
+          || !/^mainAgent:\s*true$/m.test(fields)
+          || !new RegExp(`^subagent:\\s*${agent.topLevelOnly ? 'false' : 'true'}$`, 'm').test(fields)
+          || !/^commandExecutionPolicy:\s*sandbox$/m.test(fields)
+          || !tools.includes('view_file')
+          || tools.some((tool) => !['view_file', 'grep_search', 'replace_file_content', 'run_command', 'invoke_subagent'].includes(tool))
+          || new Set(tools).size !== tools.length) {
+          error(`Antigravity agent metadata or documented tool allowlist is invalid: ${path}`);
+        }
+      }
     }
   }
-  if (pkg.host === 'copilot-github' || pkg.host === 'codex' || pkg.host === 'kiro-cli') {
+  if (pkg.host === 'copilot-github' || pkg.host === 'codex' || pkg.host === 'kiro-cli' || pkg.host === 'antigravity') {
     const host = catalog.hosts[pkg.host];
-    const label = pkg.host === 'codex' ? 'Codex' : pkg.host === 'kiro-cli' ? 'Kiro CLI' : 'GitHub Copilot';
+    const label = pkg.host === 'codex'
+      ? 'Codex'
+      : pkg.host === 'kiro-cli'
+        ? 'Kiro CLI'
+        : pkg.host === 'antigravity'
+          ? 'Antigravity'
+          : 'GitHub Copilot';
     if (pkg.host === 'codex' && !ledger.has('README.md')) error('Codex workspace adapter instructions are missing: README.md');
     if (pkg.host === 'kiro-cli' && !ledger.has('README.md')) error('Kiro CLI adapter instructions are missing: README.md');
+    if (pkg.host === 'antigravity' && !ledger.has('README.md')) error('Antigravity workspace adapter instructions are missing: README.md');
     const projectTargets = new Set(pkg.projectFiles.map((file) => file.target));
     const skillNames = [
       ...catalog.commands.map((command) => ({ name: command.name, source: command.source, role: 'command' })),

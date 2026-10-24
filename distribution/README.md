@@ -39,8 +39,9 @@ not distribution sources. Each enabled host receives one native wrapper for **ev
 agent. A wrapper only points to its canonical role file; its tool list is derived from the
 canonical `tools` frontmatter mapped to portable capabilities (read, write, shell, delegate), and
 an unknown tool fails the build instead of being guessed. Agents always keep read access to load
-their role file. The orchestrator inherits the parent tools and is not exposed as a sub-agent where
-the host allows that restriction.
+their role file. The orchestrator inherits parent tools only on hosts that support inheritance;
+other hosts receive explicit mapped tool allowlists. It is not exposed as a sub-agent where the
+host supports that restriction.
 
 | Host | Commands | Agents | Qualification |
 |---|---|---|---|

@@ -18,6 +18,7 @@ let basePackage;
 let nextPackage;
 let adapterBasePackage;
 let adapterNextPackage;
+let antigravityBasePackage;
 let blockUpdatePackage;
 let updateCli;
 
@@ -29,8 +30,9 @@ before(() => {
   basePackage = join(baseOutput, 'claude-code');
   updateCli = join(basePackage, 'scripts/update-plan.mjs');
   nextPackage = join(nextOutput, 'claude-code');
-  adapterBasePackage = join(baseOutput, 'antigravity');
-  adapterNextPackage = join(nextOutput, 'antigravity');
+  adapterBasePackage = join(baseOutput, 'zoo-code');
+  adapterNextPackage = join(nextOutput, 'zoo-code');
+  antigravityBasePackage = join(baseOutput, 'antigravity');
   blockUpdatePackage = join(blockOutput, 'claude-code');
   mutatePayload(nextPackage, 'prompts/hard_points/ai-kido.md', (text) => `${text}\nUpstream update.\n`);
   mutatePackagedFile(
@@ -184,8 +186,8 @@ test('an upstream-removed adapter file is deleted only while it still matches th
   const root = newProject();
   try {
     const removed = JSON.parse(readFileSync(join(adapterBasePackage, 'package-manifest.json'), 'utf8'))
-      .projectFiles.find((file) => !file.target.startsWith('.agents/agents/'));
-    assert.ok(removed, 'Antigravity package must include project adapter files');
+      .projectFiles.find((file) => file.target.startsWith('.roo/commands/'));
+    assert.ok(removed, 'Zoo Code package must include native command adapters');
     removeProjectFile(adapterNextPackage, removed.target);
     const installOptions = {
       root,
@@ -216,7 +218,7 @@ test('an upstream-removed adapter preserves locally modified content as an orpha
   const root = newProject();
   try {
     const removed = JSON.parse(readFileSync(join(adapterBasePackage, 'package-manifest.json'), 'utf8'))
-      .projectFiles.find((file) => !file.target.startsWith('.agents/agents/'));
+      .projectFiles.find((file) => file.target.startsWith('.roo/commands/'));
     removeProjectFile(adapterNextPackage, removed.target);
     const installOptions = {
       root,
@@ -374,12 +376,12 @@ test('legacy migration records a source baseline without rewriting project-owned
 test('adapter uninstall preserves modified wrappers and method knowledge, with recoverable changes', () => {
   const root = newProject();
   try {
-    const manifest = JSON.parse(readFileSync(join(adapterBasePackage, 'package-manifest.json'), 'utf8'));
+    const manifest = JSON.parse(readFileSync(join(antigravityBasePackage, 'package-manifest.json'), 'utf8'));
     const wrappers = manifest.projectFiles.filter((item) => item.target.startsWith('.agents/skills/'));
     assert.ok(wrappers.length >= 2, 'Antigravity package must include multiple project Skill files');
     const installOptions = {
       root,
-      packageRoot: adapterBasePackage,
+      packageRoot: antigravityBasePackage,
       mode: 'STANDARD',
       projectName: 'Update test project',
     };

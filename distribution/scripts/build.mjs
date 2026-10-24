@@ -268,8 +268,9 @@ export function agentWrapper(format, profile, profiles = []) {
     return `---\n${name}${tools}${resources}${toolsSettings}---\n\n${body}`;
   }
   if (format === 'antigravity') {
-    const subagent = profile.topLevelOnly ? 'subagent: false\n' : '';
-    return `---\n${name}${yamlList('tools', hostTools(format, profile))}${subagent}---\n\n${body}`;
+    const subagent = profile.topLevelOnly ? 'subagent: false\n' : 'subagent: true\n';
+    return `---\n${name}${yamlList('tools', hostTools(format, profile))}`
+      + `mainAgent: true\n${subagent}commandExecutionPolicy: sandbox\n---\n\n${body}`;
   }
   if (format === 'codex') {
     return `name = ${JSON.stringify(profile.name)}\ndescription = ${JSON.stringify(profile.description)}\n`
@@ -556,6 +557,9 @@ export function buildDistribution({
     if (hostId === 'roo-code-legacy') {
       writeUnique('README.md', readFileSync(assertSourcePath('distribution/adapters/roo-code-legacy/README.md', 'file')), 'adapter');
     }
+    if (hostId === 'antigravity') {
+      writeUnique('README.md', readFileSync(assertSourcePath('distribution/adapters/antigravity/README.md', 'file')), 'adapter');
+    }
 
     const commandPaths = new Set();
     for (const command of catalog.commands) {
@@ -598,7 +602,7 @@ export function buildDistribution({
           const suffix = relative(source, file).split(sep).join('/');
           const target = `${host.systemSkillTarget}/${skill.name}/${suffix}`;
           const contents = readFileSync(file);
-          let skillContents = ['copilot-vscode', 'copilot-github', 'codex', 'kiro-cli'].includes(hostId) && suffix === 'SKILL.md'
+          let skillContents = ['copilot-vscode', 'copilot-github', 'codex', 'kiro-cli', 'antigravity'].includes(hostId) && suffix === 'SKILL.md'
             ? portableSkill(skill, contents.toString('utf8'))
             : contents;
           if (host.projectSystemSkillFiles && suffix.endsWith('.md')) {
