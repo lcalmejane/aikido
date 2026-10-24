@@ -46,6 +46,19 @@ export function assertReleaseSource(revision, { repo = REPO } = {}) {
   if (head !== revision) throw new Error(`Release revision ${revision} does not match checked-out HEAD ${head}`);
   const dirty = execFileSync('git', ['status', '--porcelain', '--', ...SOURCE_PATHS], { cwd: repo, encoding: 'utf8' });
   if (dirty.trim()) throw new Error(`Release sources differ from ${revision}:\n${dirty.trimEnd()}`);
+  // git status ignores line-ending conversions (core.autocrlf); the build reads raw bytes.
+  const indexed = execFileSync('git', ['ls-files', '-s', '-z', '--', ...SOURCE_PATHS], { cwd: repo, encoding: 'utf8' })
+    .split('\0').filter(Boolean).map((line) => {
+      const [meta, path] = line.split('\t');
+      return { path, blob: meta.split(' ')[1], mode: meta.split(' ')[0] };
+    }).filter(({ mode }) => mode !== '160000');
+  const hashes = execFileSync('git', ['hash-object', '--no-filters', '--stdin-paths'], {
+    cwd: repo, encoding: 'utf8', input: `${indexed.map(({ path }) => path).join('\n')}\n`,
+  }).trim().split('\n');
+  const converted = indexed.filter(({ blob }, i) => blob !== hashes[i]).map(({ path }) => path);
+  if (converted.length) {
+    throw new Error(`Working tree bytes differ from ${revision} (line-ending conversion?); restore them from Git:\n${converted.join('\n')}`);
+  }
 }
 
 function rootMarketplace(version) {

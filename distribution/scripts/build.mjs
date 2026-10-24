@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { deflateSync } from 'node:zlib';
 import {
   existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, writeFileSync,
 } from 'node:fs';
@@ -378,7 +377,7 @@ function claudeMarketplaceManifest() {
   }, null, 2)}\n`;
 }
 
-function claudePluginReadme() {
+function claudePluginReadme(version) {
   return `# AI-KIDO\n\n`
     + `AI-KIDO is an AI Memory Bank Construction Method by Meta harness. This plugin supplies the `
     + `AI-KIDO commands, system skills and available specialist agents for Claude Code. Its bundled `
@@ -389,59 +388,15 @@ function claudePluginReadme() {
     + `After initialization, project-pinned instructions and the version in \`.aikido/lock.json\` `
     + `remain authoritative. Use \`/aikido:maj-aikido --update\` to plan a method update; plugin `
     + `updates and project method updates are separate. Local project knowledge is never written `
-    + `back into this plugin package. This staging package is not a published release.\n`;
-}
-
-function crc32(bytes) {
-  let crc = 0xffffffff;
-  for (const byte of bytes) {
-    crc ^= byte;
-    for (let bit = 0; bit < 8; bit += 1) crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
-  }
-  return (crc ^ 0xffffffff) >>> 0;
-}
-
-function pngChunk(type, data) {
-  const typeBytes = Buffer.from(type);
-  const length = Buffer.alloc(4);
-  length.writeUInt32BE(data.length);
-  const crc = Buffer.alloc(4);
-  crc.writeUInt32BE(crc32(Buffer.concat([typeBytes, data])));
-  return Buffer.concat([length, typeBytes, data, crc]);
-}
-
-function claudePluginIcon() {
-  const width = 512;
-  const height = 512;
-  const pixels = Buffer.alloc(height * (1 + width * 4));
-  for (let y = 0; y < height; y += 1) {
-    const row = y * (1 + width * 4);
-    pixels[row] = 0;
-    for (let x = 0; x < width; x += 1) {
-      const progress = y - 112;
-      const left = 256 - progress * 0.43;
-      const right = 256 + progress * 0.43;
-      const mark = y >= 112 && y <= 390 && (Math.abs(x - left) <= 20 || Math.abs(x - right) <= 20)
-        || y >= 278 && y <= 312 && x >= 155 && x <= 357;
-      const offset = row + 1 + x * 4;
-      pixels[offset] = mark ? 244 : 16;
-      pixels[offset + 1] = mark ? 249 : 37;
-      pixels[offset + 2] = mark ? 255 : 67;
-      pixels[offset + 3] = 255;
-    }
-  }
-  const header = Buffer.alloc(13);
-  header.writeUInt32BE(width, 0);
-  header.writeUInt32BE(height, 4);
-  header[8] = 8;
-  header[9] = 6;
-  const signature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
-  return Buffer.concat([
-    signature,
-    pngChunk('IHDR', header),
-    pngChunk('IDAT', deflateSync(pixels)),
-    pngChunk('IEND', Buffer.alloc(0)),
-  ]);
+    + `back into this plugin package.\n\n`
+    + `## Install\n\n`
+    + `Add the marketplace pinned to the immutable release tag, then install the plugin:\n\n`
+    + `\`\`\`bash\n`
+    + `claude plugin marketplace add https://github.com/lcalmejane/aikido.git#aikido-dist-v${version}\n`
+    + `claude plugin install aikido@aikido\n`
+    + `\`\`\`\n\n`
+    + `The repository default branch holds sources, not the marketplace, so always pass a release tag. `
+    + `To roll back, remove the marketplace and add it again with an earlier tag.\n`;
 }
 
 function claudePluginSkill(skill, contents) {
@@ -572,10 +527,10 @@ export function buildDistribution({
       writeUnique('.claude-plugin/marketplace.json', claudeMarketplaceManifest(), 'marketplace-manifest');
       writeUnique('README.md', hostId === 'claude-cowork'
         ? readFileSync(assertSourcePath('distribution/adapters/claude-cowork/README.md', 'file'))
-        : claudePluginReadme(), 'plugin-readme');
+        : claudePluginReadme(version), 'plugin-readme');
       writeUnique('LICENSE', readFileSync(assertSourcePath('LICENSE', 'file')), 'legal');
       writeUnique('TRADEMARK.md', readFileSync(assertSourcePath('TRADEMARK.md', 'file')), 'legal');
-      writeUnique('assets/aikido.png', claudePluginIcon(), 'plugin-asset');
+      writeUnique('assets/aikido.png', readFileSync(assertSourcePath('distribution/adapters/claude-code/aikido.png', 'file')), 'plugin-asset');
     }
     if (hostId === 'copilot-vscode') {
       writeUnique('plugin.json', copilotPluginManifest(version), 'plugin-manifest');

@@ -254,6 +254,26 @@ node distribution/scripts/prepare-release.mjs --verify /path/to/dist-checkout
 Preparation refuses a revision other than the checked-out `HEAD` or uncommitted changes in the
 release sources. The tree adds a root `.claude-plugin/marketplace.json` pointing to
 `./claude-code`, a `README.md`, a `.gitattributes` that disables line-ending conversion, and
-`release-manifest.json`, which records the source commit and the SHA-256 of every file. Installing
-from GitHub and checking rollback in a clean environment are separate follow-up checks; they have
-not been run yet.
+`release-manifest.json`, which records the source commit and the SHA-256 of every file. Preparation
+also refuses working-tree bytes that differ from the commit even when `git status` hides them
+(line-ending conversion), and the plugin icon is a versioned asset, so a release rebuilt on another
+platform from the same commit and version is byte-identical.
+
+### Installing a published release
+
+Claude Code installs from the pinned tag; the default branch holds sources, not the marketplace:
+
+```bash
+claude plugin marketplace add https://github.com/lcalmejane/aikido.git#aikido-dist-v<version>
+claude plugin install aikido@aikido
+```
+
+Other hosts use their package directory from a checkout of the same tag. Check provenance with
+`prepare-release.mjs --verify <checkout>`, then bootstrap the project from the installed package.
+Roll back the project with the update runtime and the earlier package (`update-plan.mjs --package
+<earlier-package>`); roll back the plugin by re-adding the marketplace with the earlier tag.
+
+`1.5.0-rc.1` (`aikido-dist-v1.5.0-rc.1`, source `5e1adb7`) was installed this way in an isolated
+Claude Code home. The installed cache matched the published `claude-code` package; bootstrap,
+upgrade, rollback to the GitHub package, backup recovery and uninstall preserved local knowledge.
+Native command invocation and the other hosts' native recipes remain untested.

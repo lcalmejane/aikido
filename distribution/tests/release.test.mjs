@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { prepareRelease, releaseTag, verifyRelease } from '../scripts/prepare-release.mjs';
+import { assertReleaseSource, prepareRelease, releaseTag, verifyRelease } from '../scripts/prepare-release.mjs';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const HEAD = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: REPO, encoding: 'utf8' }).trim();
@@ -31,6 +31,10 @@ test('release tree is deterministic, validated and pinned to its source commit',
     assert.deepEqual(marketplace.plugins.map(({ name, source }) => [name, source]), [['aikido', './claude-code']]);
     assert.match(readFileSync(join(out, 'README.md'), 'utf8'), new RegExp(`aikido@${HEAD}`));
     assert.equal(readFileSync(join(out, '.gitattributes'), 'utf8'), '* -text\n');
+    const icon = readFileSync(join(REPO, 'distribution/adapters/claude-code/aikido.png'));
+    for (const host of ['claude-code', 'claude-cowork']) {
+      assert.ok(readFileSync(join(out, host, 'assets/aikido.png')).equals(icon), `${host} icon is copied byte for byte`);
+    }
     assert.deepEqual(verifyRelease(out), {
       version: '1.5.0-test.1', tag: manifest.tag, commit: HEAD, files: manifest.files.length,
     });
@@ -59,6 +63,29 @@ test('release preparation requires an immutable revision, a semantic version and
     /does not match checked-out HEAD/,
   );
   assert.equal(releaseTag('1.5.0'), 'aikido-dist-v1.5.0');
+});
+
+test('release source check detects bytes hidden from git status by line-ending conversion', () => {
+  const repo = mkdtempSync(join(tmpdir(), 'aikido-release-eol-'));
+  try {
+    const git = (...args) => execFileSync('git', ['-c', 'commit.gpgsign=false', '-c', 'core.autocrlf=input', ...args], {
+      cwd: repo, encoding: 'utf8',
+    });
+    git('init', '-q');
+    mkdirSync(join(repo, 'distribution'));
+    writeFileSync(join(repo, 'distribution/prices.csv'), 'a,b\n1,2\n');
+    git('add', '.');
+    git('-c', 'user.name=t', '-c', 'user.email=t@example.invalid', 'commit', '-qm', 'init');
+    const head = git('rev-parse', 'HEAD').trim();
+    git('config', 'core.autocrlf', 'input');
+    assert.doesNotThrow(() => assertReleaseSource(head, { repo }));
+    writeFileSync(join(repo, 'distribution/prices.csv'), 'a,b\r\n1,2\r\n');
+    git('add', '.');
+    assert.equal(git('status', '--porcelain'), '');
+    assert.throws(() => assertReleaseSource(head, { repo }), /line-ending conversion\?[^]*distribution\/prices\.csv/);
+  } finally {
+    rmSync(repo, { recursive: true, force: true });
+  }
 });
 
 test('publication workflow is manual and CI cannot write to the repository', () => {
