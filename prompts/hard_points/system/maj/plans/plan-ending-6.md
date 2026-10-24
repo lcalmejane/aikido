@@ -146,8 +146,8 @@ Once this plan succeeds:
 
 ## 📚 References
 
-- **Validator agent** : [`prompts/hard_points/agents/agent-aikido-validator.md`](../../agents/agent-aikido-validator.md)
-- **AI-KIDO hard points** : [`prompts/hard_points/ai-kido.md`](../../ai-kido.md)
+- **Validator agent** : [`prompts/hard_points/agents/agent-aikido-validator.md`](../../../agents/agent-aikido-validator.md)
+- **AI-KIDO hard points** : [`prompts/hard_points/ai-kido.md`](../../../ai-kido.md)
 
 ---
 

@@ -56,8 +56,8 @@ Strict rules for log management in the AI-KIDO ecosystem, including location, fo
 ```
 
 ### Control Commands
-- **Activation**: Command `logllmon` (see `prompts/hard_points/commands/logllmon.md`)
-- **Deactivation**: Command `logllmoff` (see `prompts/hard_points/commands/logllmoff.md`)
+- **Activation / deactivation**: set `LLM_TRACIBILITY=TRUE` or `FALSE` in `/prompts/index.md`.
+- The `logllmon` / `logllmoff` commands are no longer part of the core (moved to an external skill in 1.3.3); install it with `/skill-manage` if needed.
 
 ### 🔄 Mode Switch Rule for Logs — AUTOMATIC
 **AUTOMATIC TRIGGER:** As soon as a user interaction is detected and `LLM_TRACIBILITY=TRUE`:
@@ -96,10 +96,9 @@ touch logs/trace.md
 ## Relations and Dependencies
 
 ### Related Files
-- [`/prompts/index.md`](../../index.md): `LLM_TRACIBILITY` configuration
-- [`/prompts/hard_points/ai-kido.md`](../../hard_points/ai-kido.md): Fundamental rules
-- [`prompts/hard_points/commands/logllmon.md`](../../prompts/hard_points/commands/logllmon.md): Activation
-- [`prompts/hard_points/commands/logllmoff.md`](../../prompts/hard_points/commands/logllmoff.md): Deactivation
+- [`/prompts/index.md`](../index.md): `LLM_TRACIBILITY` configuration
+- [`/prompts/hard_points/ai-kido.md`](ai-kido.md): Fundamental rules
+- [`/prompts/hard_points/commands/skill-manage.md`](commands/skill-manage.md): Install the external `logllm` skill
 
 ### Validation Rules
 1. **Before creation**: Always consult `/prompts/hard_points/ai-kido.md`

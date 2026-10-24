@@ -33,6 +33,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - Bundled Roo Code reference documentation (`prompts/hard_points/roo-code/docs/`). It is no longer needed in the Memory Bank; Roo Code integration (`.roomodes`, `.roo/`) is unchanged.
 
+### Fixed
+
+- Broken relative links in the `maj` and `audit-complet` analysis plans and in `gestion-logs-aikido.md`.
+- `gestion-logs-aikido.md` no longer points to the `logllmon`/`logllmoff` core commands, which moved to an external skill in 1.3.3.
+
 ---
 
 ## [1.4] - 2026-10-03

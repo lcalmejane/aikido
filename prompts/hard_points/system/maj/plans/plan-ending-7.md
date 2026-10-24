@@ -129,7 +129,7 @@ Once this plan succeeds:
 
 ## 📚 References
 
-- **Populate agent** : [`prompts/hard_points/agents/agent-aikido-bank-populate.md`](../../agents/agent-aikido-bank-populate.md)
+- **Populate agent** : [`prompts/hard_points/agents/agent-aikido-bank-populate.md`](../../../agents/agent-aikido-bank-populate.md)
 - **bank-populate command** : `/bank-populate` (to create if necessary)
 
 ---

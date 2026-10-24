@@ -348,7 +348,7 @@ During `/maj-aikido` execution:
 
 ## 📚 References
 
-- **Main command** : [`/prompts/hard_points/commands/maj-aikido.md`](../commands/maj-aikido.md)
+- **Main command** : [`/prompts/hard_points/commands/maj-aikido.md`](../../../commands/maj-aikido.md)
 - **Update Skill** : [`/prompts/hard_points/system/maj/SKILL.md`](../SKILL.md)
 - **Technical scripts** : [`/prompts/hard_points/system/maj/scripts/`](../scripts/)
 
