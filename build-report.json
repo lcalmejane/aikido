@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "sourceRevision": "5e1adb76f5f6641b1c7082ecd88f4a02d6e782e7",
+  "hosts": [
+    {
+      "host": "antigravity",
+      "status": "qualified-not-tested",
+      "generated": true,
+      "commandDelivery": "fallback-skill",
+      "fileCount": 324,
+      "agentFormat": "antigravity",
+      "agentCount": 15
+    },
+    {
+      "host": "claude-code",
+      "status": "qualified-not-tested",
+      "generated": true,
+      "commandDelivery": "native-command",
+      "fileCount": 329,
+      "agentFormat": "claude-plugin",
+      "agentCount": 15
+    },
+    {
+      "host": "claude-cowork",
+      "status": "qualified-with-conditions-not-tested",
+      "generated": true,
+      "commandDelivery": "native-command",
+      "fileCount": 329,
+      "agentFormat": "claude-plugin",
+      "agentCount": 15
+    },
+    {
+      "host": "codex",
+      "status": "qualified-not-tested",
+      "generated": true,
+      "commandDelivery": "fallback-skill",
+      "fileCount": 324,
+      "agentFormat": "codex",
+      "agentCount": 15
+    },
+    {
+      "host": "copilot-cowork",
+      "status": "optional-unverified",
+      "generated": false,
+      "reason": "Optional final target; product availability and supported formats remain unverified."
+    },
+    {
+      "host": "copilot-github",
+      "status": "qualified-not-tested",
+      "generated": true,
+      "commandDelivery": "fallback-skill",
+      "fileCount": 323,
+      "agentFormat": "copilot",
+      "agentCount": 15
+    },
+    {
+      "host": "copilot-vscode",
+      "status": "qualified-not-tested",
+      "generated": true,
+      "commandDelivery": "native-plugin-prompt",
+      "fileCount": 324,
+      "agentFormat": "copilot",
+      "agentCount": 15
+    },
+    {
+      "host": "kiro-cli",
+      "status": "qualified-not-tested",
+      "generated": true,
+      "commandDelivery": "native-skill-command",
+      "fileCount": 324,
+      "agentFormat": "kiro",
+      "agentCount": 15
+    },
+    {
+      "host": "roo-code-legacy",
+      "status": "legacy-format-not-tested",
+      "generated": true,
+      "commandDelivery": "native-command",
+      "fileCount": 206,
+      "agentFormat": "roomodes",
+      "agentCount": 15
+    },
+    {
+      "host": "zoo-code",
+      "status": "qualified-not-tested",
+      "generated": true,
+      "commandDelivery": "native-command",
+      "fileCount": 206,
+      "agentFormat": "roomodes",
+      "agentCount": 15
+    }
+  ]
+}

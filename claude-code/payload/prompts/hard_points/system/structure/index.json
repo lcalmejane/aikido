@@ -1,0 +1,84 @@
+{
+  "metadata": {
+    "version": "3.1-hash-id",
+    "id_format": {
+      "algorithm": "sha256",
+      "length": 12,
+      "charset": "hex",
+      "example": "525bd3752a90"
+    },
+    "last_check": {
+      "timestamp": "2026-02-20T13:00:35.859Z",
+      "generator": "agent-aikido-projet-index",
+      "version": "3.1"
+    },
+    "statistics": {
+      "total_files": 356,
+      "total_dirs": 52,
+      "total_lines": 58104,
+      "index_files_count": 28
+    },
+    "batching": {
+      "batch_size": 1000,
+      "by_id_batches": 16,
+      "by_path_batches": 1,
+      "by_alphabetical_batches": 1,
+      "by_directory_batches": 1,
+      "by_type_batches": 9
+    }
+  },
+  "hash_tables": {
+    "by_id": {
+    "0": {"batch": "indices/by-id/index-id-0.json", "count": 28},
+    "1": {"batch": "indices/by-id/index-id-1.json", "count": 18},
+    "2": {"batch": "indices/by-id/index-id-2.json", "count": 27},
+    "3": {"batch": "indices/by-id/index-id-3.json", "count": 24},
+    "4": {"batch": "indices/by-id/index-id-4.json", "count": 16},
+    "5": {"batch": "indices/by-id/index-id-5.json", "count": 27},
+    "6": {"batch": "indices/by-id/index-id-6.json", "count": 20},
+    "7": {"batch": "indices/by-id/index-id-7.json", "count": 21},
+    "8": {"batch": "indices/by-id/index-id-8.json", "count": 27},
+    "9": {"batch": "indices/by-id/index-id-9.json", "count": 21},
+    "a": {"batch": "indices/by-id/index-id-a.json", "count": 25},
+    "b": {"batch": "indices/by-id/index-id-b.json", "count": 26},
+    "c": {"batch": "indices/by-id/index-id-c.json", "count": 20},
+    "d": {"batch": "indices/by-id/index-id-d.json", "count": 10},
+    "e": {"batch": "indices/by-id/index-id-e.json", "count": 28},
+    "f": {"batch": "indices/by-id/index-id-f.json", "count": 18}
+    },
+    "by_path": {
+    "agents_list.md": {"batch": "indices/by-path/index-path-000.json", "offset": 0, "count": 356},
+    "AGENTS.md": {"batch": "indices/by-path/index-path-000.json", "offset": 0, "count": 356},
+    "CHANGELOG.md": {"batch": "indices/by-path/index-path-000.json", "offset": 0, "count": 356},
+    ".claude": {"batch": "indices/by-path/index-path-000.json", "offset": 0, "count": 356},
+    "CLAUDE.md": {"batch": "indices/by-path/index-path-000.json", "offset": 0, "count": 356}
+    },
+    "by_alphabetical": {
+    "a-y": {"batch": "indices/by-alphabetical/index-alpha-0.json", "range": ["a","y"], "count": 266}
+    },
+    "by_directory": {
+    ".": {"batch": "indices/by-directory/index-dir-000.json", "offset": 0, "files_count": 9},
+    ".claude/agents": {"batch": "indices/by-directory/index-dir-000.json", "offset": 0, "files_count": 15},
+    ".claude/commands": {"batch": "indices/by-directory/index-dir-000.json", "offset": 0, "files_count": 25}
+    },
+    "by_type": {
+    "agent": {"batch": "indices/by-type/index-type-agent.json", "count": 35},
+    "concept": {"batch": "indices/by-type/index-type-concept.json", "count": 5},
+    "config": {"batch": "indices/by-type/index-type-config.json", "count": 19},
+    "file": {"batch": "indices/by-type/index-type-file.json", "count": 5},
+    "hard_point": {"batch": "indices/by-type/index-type-hard_point.json", "count": 169},
+    "markdown": {"batch": "indices/by-type/index-type-markdown.json", "count": 59},
+    "script": {"batch": "indices/by-type/index-type-script.json", "count": 59},
+    "technique": {"batch": "indices/by-type/index-type-technique.json", "count": 3},
+    "use_case": {"batch": "indices/by-type/index-type-use_case.json", "count": 2}
+    }
+  },
+  "routing": {
+    "description": "Hash-based ID routing en O(1) - Calcul ID puis lookup direct",
+    "examples": {
+      "find_by_path": "prompts/gen/personas/agent.md → hash(path) → ID → extract first char → by-id/index-id-X.json",
+      "find_by_name": "agent.md → by-alphabetical → ID → by-id/index-id-X.json",
+      "direct_by_id": "ID → extract first char → by-id/index-id-X.json (O(1))"
+    }
+  }
+}

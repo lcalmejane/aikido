@@ -1,0 +1,7 @@
+# AI-KIDO local state (the method and .aikido/lock.json are versioned)
+.aikido/state/
+.aikido/backups/
+backups/aikido-backup-*.tgz
+prompts/spec/logs/
+prompts/hard_points/system/structure/indices/
+prompts/hard_points/system/structure/index.json

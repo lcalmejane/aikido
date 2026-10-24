@@ -1,0 +1,53 @@
+{
+  "version": 2,
+  "activation": {
+    "self": "agent-aikido-orchestrator",
+    "lead_hosts": ["copilot", "copilot-sdk", "copilot-cli", "vscode-copilot"],
+    "native_hosts": ["claude-code", "kiro", "codex", "roo-code"]
+  },
+  "limits": {
+    "coordinator_output_tokens": 800,
+    "max_parallel_tasks": 3,
+    "max_retries_per_task": 1,
+    "result_summary_chars": 2000
+  },
+  "observability": {
+    "journal_dir": "prompts/spec/logs/orchestrator",
+    "stale_after_seconds": 900,
+    "exec_timeout_seconds": 120,
+    "exec_output_chars": 4000,
+    "token_budget": {"request": null, "task": null},
+    "non_retryable_codes": [
+      "unavailable_or_unauthorized_tool", "unauthorized_tool", "permission_denied", "invalid_request"
+    ]
+  },
+  "routing": {
+    "currency": "USD",
+    "min_samples": 20,
+    "price_sources": [
+      {
+        "id": "llm-pricing-5143",
+        "file": "sources/llm-pricing-5143-2026-10-09.csv",
+        "date": "2026-10-09",
+        "max_age_days": 30,
+        "volatile": true
+      }
+    ],
+    "score_to_quality": [
+      {"min_score": 70, "quality": 4},
+      {"min_score": 58, "quality": 3},
+      {"min_score": 50, "quality": 2},
+      {"min_score": 0, "quality": 1}
+    ],
+    "cold_start": {"enabled": true, "excluded_classes": ["critical"]},
+    "classes": {
+      "coordination": {"min_quality": 1, "min_success_rate": 0.95},
+      "lookup": {"min_quality": 1, "min_success_rate": 0.9},
+      "documentation": {"min_quality": 2, "min_success_rate": 0.95},
+      "analysis": {"min_quality": 2, "min_success_rate": 0.95},
+      "implementation": {"min_quality": 3, "min_success_rate": 0.95},
+      "critical": {"min_quality": 4, "min_success_rate": 0.99}
+    },
+    "models": []
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "aikido-orchestrator-contract/2",
+  "title": "AI-KIDO orchestrator JSON contract (task-request/2 and task-result/1)",
+  "description": "Every exchange between the AI-KIDO orchestrator and any executor (agent, thread, MCP tool, direct tool, native orchestrator) is one JSON object conforming to this file. Reference validator: runtime.mjs (validateRequest, validateResult).",
+  "$defs": {
+    "text": {"type": "string", "minLength": 1},
+    "textList": {"type": "array", "items": {"$ref": "#/$defs/text"}, "uniqueItems": true},
+    "transport": {
+      "oneOf": [
+        {
+          "title": "agent: one-shot isolated worker",
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "dispatch_tool", "agent"],
+          "properties": {
+            "kind": {"const": "agent"},
+            "dispatch_tool": {"$ref": "#/$defs/text", "description": "Exact id of the host delegation tool (new_task, Task, agent, ...)"},
+            "agent": {"$ref": "#/$defs/text"},
+            "persona": {"type": ["string", "null"]}
+          }
+        },
+        {
+          "title": "thread: retained conversation (follow-up) or new thread",
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "dispatch_tool", "agent", "thread_id"],
+          "properties": {
+            "kind": {"const": "thread"},
+            "dispatch_tool": {"$ref": "#/$defs/text"},
+            "agent": {"$ref": "#/$defs/text"},
+            "persona": {"type": ["string", "null"]},
+            "thread_id": {"type": ["string", "null"], "description": "null = open a new thread; string = follow-up. Treated as an exclusive write lock thread/<id>."}
+          }
+        },
+        {
+          "title": "mcp: exact registered MCP server/tool call",
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "server", "tool", "arguments"],
+          "properties": {
+            "kind": {"const": "mcp"},
+            "server": {"$ref": "#/$defs/text"},
+            "tool": {"$ref": "#/$defs/text", "description": "Exact tool id; must also appear in task.tools"},
+            "arguments": {"type": "object", "description": "Validated against the tool's own input schema by the host before the call"}
+          }
+        },
+        {
+          "title": "direct: native/host tool called by the coordinator itself",
+          "type": "object", "additionalProperties": false,
+          "required": ["kind", "tool", "arguments"],
+          "properties": {
+            "kind": {"const": "direct"},
+            "tool": {"$ref": "#/$defs/text"},
+            "arguments": {"type": "object"}
+          }
+        }
+      ]
+    },
+    "task": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "depends_on", "transport", "tools", "resources", "state", "acceptance", "return"],
+      "properties": {
+        "id": {"$ref": "#/$defs/text"},
+        "depends_on": {"$ref": "#/$defs/textList"},
+        "transport": {"$ref": "#/$defs/transport"},
+        "executor": {"enum": ["aikido", "native", null], "description": "Who runs it under collaborate; set from runtime assignments"},
+        "persona": {"type": ["string", "null"]},
+        "skills": {"$ref": "#/$defs/textList"},
+        "tools": {"$ref": "#/$defs/textList"},
+        "resources": {
+          "type": "object", "additionalProperties": false, "required": ["read", "write"],
+          "properties": {"read": {"$ref": "#/$defs/textList"}, "write": {"$ref": "#/$defs/textList"}}
+        },
+        "state": {"enum": ["pending", "running", "ok", "partial", "blocked", "error"]},
+        "acceptance_verified": {"type": "boolean"},
+        "reason": {"type": "string"},
+        "route": {"type": "object"},
+        "context": {"type": "object"},
+        "acceptance": {"allOf": [{"$ref": "#/$defs/textList"}, {"minItems": 1}]},
+        "return": {"const": "task-result/1"}
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "title": "task-request/2",
+      "type": "object", "additionalProperties": false,
+      "required": ["version", "request_id", "caller", "coordination", "objective", "constraints", "tasks"],
+      "properties": {
+        "version": {"const": 2},
+        "request_id": {"$ref": "#/$defs/text"},
+        "caller": {
+          "type": "object", "additionalProperties": false, "required": ["agent", "return_mode"],
+          "properties": {"agent": {"$ref": "#/$defs/text"}, "return_mode": {"type": ["string", "null"]}}
+        },
+        "coordination": {"enum": ["lead", "collaborate", "direct"]},
+        "objective": {"$ref": "#/$defs/text"},
+        "constraints": {"type": "array", "items": {"$ref": "#/$defs/text"}},
+        "tasks": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/task"}}
+      }
+    },
+    {
+      "title": "task-result/1",
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "status", "summary", "artifacts", "errors", "next"],
+      "properties": {
+        "id": {"$ref": "#/$defs/text"},
+        "status": {"enum": ["ok", "partial", "blocked", "error"]},
+        "summary": {"type": "string", "maxLength": 2000},
+        "thread_id": {"type": ["string", "null"], "description": "Required for a thread transport unless blocked"},
+        "usage": {
+          "type": "object", "additionalProperties": false, "required": ["input_tokens", "output_tokens"],
+          "description": "Optional, only what the executor really measured. Never estimated by the coordinator.",
+          "properties": {
+            "input_tokens": {"type": "integer", "minimum": 0},
+            "output_tokens": {"type": "integer", "minimum": 0},
+            "cost_usd": {"type": "number", "minimum": 0},
+            "model": {"$ref": "#/$defs/text"}
+          }
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {"type": "object", "additionalProperties": false, "required": ["type", "ref"],
+            "properties": {"type": {"$ref": "#/$defs/text"}, "ref": {"$ref": "#/$defs/text"}}}
+        },
+        "errors": {
+          "type": "array",
+          "items": {"type": "object", "additionalProperties": false, "required": ["code", "message"],
+            "properties": {"code": {"$ref": "#/$defs/text"}, "message": {"type": "string"}}}
+        },
+        "next": {"type": "array", "items": {"$ref": "#/$defs/text"}}
+      }
+    }
+  ]
+}

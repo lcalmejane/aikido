@@ -1,0 +1,3 @@
+## AI-KIDO
+
+@AGENTS.md

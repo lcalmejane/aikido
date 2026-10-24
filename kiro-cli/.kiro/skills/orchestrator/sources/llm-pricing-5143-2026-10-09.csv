@@ -1,0 +1,31 @@
+﻿Model,Score,Prix d'entrée,Prix de sortie
+Claude Opus 5.5,78,$4.00,$20.00
+GPT-6 Astra,74,$10.00,$50.00
+GPT-6.1 Sol,74,$2.00,$10.00
+Claude Sonnet 5.5,74,$2.00,$10.00
+Claude Fable 5.1,74,$10.00,$50.00
+GPT-6 Sol,70,$2.00,$10.00
+Claude Opus 5,68,$5.00,$25.00
+Gemini 3.7 Flash,61,$0.38,$1.88
+Grok 4.6,60,$2.00,$6.00
+Qwen3.8 Max,60,$2.00,$6.00
+MiMo-V2.6-Pro,60,$0.43,$0.87
+Muse Spark 1.3,60,$1.25,$4.25
+Gemini 3.8 Flash,59,$0.38,$1.88
+Kimi K3,58,$1.15,$14.25
+GPT-6 Luna,58,$0.10,$0.50
+Qwen3.8 2.4T A95B,57,$2.00,$6.00
+Muse Spark 1.2,57,$1.25,$4.25
+DeepSeek V4.1 Flash,56,$0.14,$0.28
+Qwen3.8 Max (0902),56,$2.00,$6.00
+GLM 5.3,55,$0.56,$2.20
+Muse Spark 1.1,55,$1.25,$4.25
+Qwen3.8 Flash,55,$0.15,$0.47
+Gemini 3.6 Flash,54,$0.38,$1.88
+GLM 5.3 Flash,54,$0.07,$0.25
+Grok 4.7,54,$2.00,$6.00
+Qwen3.8 27B,51,$0.02,$1.49
+DeepSeek V4 Pro 0813,51,$0.45,$2.60
+DeepSeek V4 Flash 0731,49,$0.06,$0.18
+Gemini 3.5 Flash Lite,43,$0.15,$1.25
+Solar Pro 4,39,$0.09,$0.36

@@ -1,0 +1,506 @@
+import { createHash } from 'node:crypto';
+import { lstatSync, readFileSync, readdirSync, realpathSync } from 'node:fs';
+import { dirname, join, posix, resolve, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { HOSTS, isSafeRelativePath } from './lock.mjs';
+import { loadCatalog, renderCatalogEntries } from './catalog.mjs';
+import { loadManifest, readTemplate, render, selectTemplates, validateManifest } from './templates.mjs';
+
+const DISTRIBUTION_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+const SHA256 = /^[0-9a-f]{64}$/;
+const COMMIT = /^[0-9a-f]{40}$/;
+const VERSION = /^\d+\.\d+(\.\d+)?(-[0-9A-Za-z.-]+)?$/;
+
+function packageFile(root, path) {
+  if (!isSafeRelativePath(path)) throw new Error(`Unsafe package path: ${path}`);
+  let current = root;
+  const parts = path.split('/');
+  let info;
+  for (let i = 0; i < parts.length; i += 1) {
+    current = join(current, parts[i]);
+    info = lstatSync(current);
+    if (info.isSymbolicLink()) throw new Error(`Symlink in package path: ${parts.slice(0, i + 1).join('/')}`);
+    if (i < parts.length - 1 && !info.isDirectory()) throw new Error(`Non-directory package path: ${parts.slice(0, i + 1).join('/')}`);
+  }
+  if (!info.isFile()) throw new Error(`Package entry is not a regular file: ${path}`);
+  return current;
+}
+
+function sha256(bytes) {
+  return createHash('sha256').update(bytes).digest('hex');
+}
+
+function readJson(path, label) {
+  try {
+    return JSON.parse(readFileSync(path, 'utf8'));
+  } catch (error) {
+    throw new Error(`Cannot read ${label}: ${error.message}`);
+  }
+}
+
+function packageFiles(directory, prefix = '') {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const childPrefix = prefix ? `${prefix}/${entry.name}` : entry.name;
+    const absolute = join(directory, entry.name);
+    if (entry.isSymbolicLink()) throw new Error(`Symlink in package tree: ${childPrefix}`);
+    if (entry.isDirectory()) return packageFiles(absolute, childPrefix);
+    return entry.isFile() ? [childPrefix] : [];
+  });
+}
+
+function validateLinks(templateRoot, templates, packageManifest, catalog) {
+  const errors = [];
+  const projectTargets = new Set([
+    ...packageManifest.payloadFiles.map((entry) => entry.target),
+    ...packageManifest.projectFiles.map((entry) => entry.target),
+  ]);
+  for (const mode of ['STANDARD', 'LIGHT', 'UNSET']) {
+    for (const template of selectTemplates(templates, { mode, hosts: [packageManifest.host] })) {
+      projectTargets.add(template.target);
+    }
+  }
+  const existsTarget = (path) => projectTargets.has(path) || [...projectTargets].some((target) => target.startsWith(`${path}/`));
+  for (const mode of ['STANDARD', 'LIGHT', 'UNSET']) {
+    const values = {
+      PROJECT_NAME: 'External project',
+      AIKIDO_VERSION: packageManifest.version,
+      ENTRIES: '',
+    };
+    const chosen = selectTemplates(templates, { mode, hosts: [packageManifest.host] });
+    for (const template of chosen) {
+      let text = render(readTemplate(template, templateRoot), {
+        ...values,
+        ENTRIES: ['agents-list', 'commands-list', 'skills-list'].includes(template.id)
+          ? renderCatalogEntries(
+            template.id === 'agents-list' ? 'agents' : template.id === 'commands-list' ? 'commands' : 'skills',
+            { hosts: [packageManifest.host], catalog },
+          )
+          : '',
+      });
+      if (template.kind === 'managed-block') text = text.replace(/\r\n/g, '\n');
+      const base = template.kind === 'managed-block' || template.kind === 'generated' ? '' : posix.dirname(template.target);
+      for (const [, link] of text.matchAll(/\]\(([^)\s]+)\)/g)) {
+        if (/^[a-z][a-z0-9+.-]*:/i.test(link) || link.startsWith('#')) continue;
+        const target = posix.normalize(posix.join(base, link)).replace(/\/$/, '');
+        if (target === '..' || target.startsWith('../') || !existsTarget(target)) {
+          errors.push(`${template.id}: link ${link} resolves to missing project path ${target}`);
+        }
+      }
+    }
+  }
+  return errors;
+}
+
+export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
+  const root = realpathSync(resolve(packageRoot));
+  if (!lstatSync(root).isDirectory()) throw new Error('Package root must be a directory');
+  const manifestPath = packageFile(root, 'package-manifest.json');
+  const pkg = readJson(manifestPath, 'package-manifest.json');
+  const errors = [];
+  const error = (message) => errors.push(message);
+  if (pkg.schemaVersion !== 1) error('package schemaVersion must be 1');
+  if (!HOSTS.includes(pkg.host)) error(`unknown host: ${pkg.host}`);
+  if (!catalog.hosts?.[pkg.host]?.enabled) error(`host is not enabled in the distribution catalog: ${pkg.host}`);
+  if (catalog.hosts?.[pkg.host]?.commandDelivery !== pkg.commandDelivery) error('command delivery differs from the distribution catalog');
+  if (!VERSION.test(pkg.version ?? '')) error('version must be semantic');
+  if (typeof pkg.source?.ref !== 'string' || !pkg.source.ref || /^(\/|~|file:|[A-Za-z]:)/.test(pkg.source.ref)) {
+    error('source.ref must be portable and non-empty');
+  }
+  if (pkg.sourceRevision === 'uncommitted') {
+    if (pkg.source?.type !== 'local' || !pkg.source?.ref) error('uncommitted package needs a local source reference');
+  } else if (!COMMIT.test(pkg.sourceRevision ?? '') || pkg.source?.type !== 'git' || pkg.source?.commit !== pkg.sourceRevision) {
+    error('package source must match a full immutable Git commit');
+  }
+  if (!Array.isArray(pkg.files) || !Array.isArray(pkg.payloadFiles) || !Array.isArray(pkg.projectFiles)) {
+    error('files, payloadFiles and projectFiles must be arrays');
+    throw new Error(`Invalid package:\n${errors.join('\n')}`);
+  }
+
+  const ledger = new Map();
+  for (const entry of pkg.files) {
+    if (!entry || !isSafeRelativePath(entry.path)) {
+      error(`unsafe package file path: ${entry?.path}`);
+      continue;
+    }
+    if (ledger.has(entry.path)) {
+      error(`duplicate package file path: ${entry.path}`);
+      continue;
+    }
+    if (![
+      'payload', 'template', 'command', 'system-skill', 'agent', 'agent-configuration',
+      'adapter', 'runtime', 'plugin-manifest', 'marketplace-manifest', 'plugin-readme',
+      'plugin-asset', 'legal',
+    ].includes(entry.role)) {
+      error(`unknown package file role: ${entry.path}`);
+    }
+    if (!SHA256.test(entry.sha256 ?? '')) error(`invalid hash for ${entry.path}`);
+    try {
+      const contents = readFileSync(packageFile(root, entry.path));
+      if (sha256(contents) !== entry.sha256) error(`hash mismatch: ${entry.path}`);
+      ledger.set(entry.path, entry);
+    } catch (exception) {
+      error(exception.message);
+    }
+  }
+  if (!ledger.has('templates/manifest.json')) error('template manifest is missing');
+  if (!ledger.has('payload/LICENSE') || !ledger.has('payload/TRADEMARK.md')) error('LICENSE and TRADEMARK.md must be packaged');
+  for (const path of [
+    'catalog.json',
+    'lib/bootstrap-plan.mjs',
+    'lib/catalog.mjs',
+    'lib/lock.mjs',
+    'lib/managed-blocks.mjs',
+    'lib/package.mjs',
+    'lib/templates.mjs',
+    'lib/update-plan.mjs',
+    'scripts/bootstrap-plan.mjs',
+    'scripts/update-plan.mjs',
+    'scripts/validate-package.mjs',
+  ]) {
+    if (!ledger.has(path)) error(`package runtime is missing: ${path}`);
+  }
+  if (pkg.host === 'claude-code' || pkg.host === 'claude-cowork') {
+    const label = pkg.host === 'claude-cowork' ? 'Claude Cowork' : 'Claude Code';
+    for (const path of [
+      '.claude-plugin/plugin.json',
+      '.claude-plugin/marketplace.json',
+      'README.md',
+      'LICENSE',
+      'TRADEMARK.md',
+      'assets/aikido.png',
+    ]) {
+      if (!ledger.has(path)) error(`${label} plugin file is missing: ${path}`);
+    }
+    try {
+      const plugin = readJson(packageFile(root, '.claude-plugin/plugin.json'), `${label} plugin manifest`);
+      if (plugin.name !== 'aikido' || plugin.version !== pkg.version || plugin.license !== 'MIT') {
+        error(`${label} plugin name, version and license must match the package manifest`);
+      }
+      if (plugin.icon !== './assets/aikido.png') {
+        error(`${label} plugin icon must point to the bundled PNG`);
+      }
+    } catch (exception) {
+      error(exception.message);
+    }
+    try {
+      const marketplace = readJson(
+        packageFile(root, '.claude-plugin/marketplace.json'),
+        `${label} marketplace manifest`,
+      );
+      if (marketplace.name !== 'aikido' || marketplace.owner?.name !== 'AI-KIDO Team') {
+        error(`${label} marketplace name and owner are invalid`);
+      }
+      if (!marketplace.plugins?.some((plugin) => plugin.name === 'aikido' && plugin.source === '.')) {
+        error(`${label} marketplace must expose the local aikido plugin source`);
+      }
+    } catch (exception) {
+      error(exception.message);
+    }
+    try {
+      const readme = readFileSync(packageFile(root, 'README.md'), 'utf8');
+      if (readme.trim().split(/\s+/).length < 40) error(`${label} plugin README must contain at least 40 words`);
+      const icon = readFileSync(packageFile(root, 'assets/aikido.png'));
+      if (icon.length > 2 * 1024 * 1024 || !icon.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) {
+        error(`${label} plugin icon must be a PNG under 2 MB`);
+      } else if (icon.readUInt32BE(16) < 512 || icon.readUInt32BE(16) > 2048
+        || icon.readUInt32BE(20) < 512 || icon.readUInt32BE(20) > 2048
+        || icon.readUInt32BE(16) !== icon.readUInt32BE(20)) {
+        error(`${label} plugin icon must be square and between 512 and 2048 pixels`);
+      }
+    } catch (exception) {
+      error(exception.message);
+    }
+  }
+  if (pkg.host === 'claude-cowork') {
+    if (readdirSync(root).includes('bin')) error('Cowork plugins must not contain a top-level bin entry');
+    const wrappers = [
+      ...catalog.commands.map((item) => ({ ...item, path: `commands/${item.name}.md`, role: 'command' })),
+      ...catalog.systemSkills.map((item) => ({
+        ...item, source: `${item.source}/SKILL.md`, path: `skills/${item.name}/SKILL.md`, role: 'system-skill',
+      })),
+      ...catalog.agents.map((item) => ({ ...item, path: `agents/${item.name}.md`, role: 'agent' })),
+    ];
+    for (const wrapper of wrappers) {
+      if (ledger.get(wrapper.path)?.role !== wrapper.role) {
+        error(`Cowork plugin wrapper is missing: ${wrapper.path}`);
+        continue;
+      }
+      const text = readFileSync(packageFile(root, wrapper.path), 'utf8');
+      const fields = text.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? '';
+      if (!new RegExp(`^name:\\s*${wrapper.name}\\s*$`, 'm').test(fields)
+        || !/^description:\s*.+$/m.test(fields)
+        || !text.includes(wrapper.source)
+        || !text.includes('## Cowork execution boundary')
+        || !text.includes('AIKIDO_COWORK_UNAVAILABLE')) {
+        error(`Cowork wrapper metadata, canonical source or execution boundary is missing: ${wrapper.path}`);
+      }
+    }
+    for (const command of catalog.commands) {
+      if (ledger.has(`skills/${command.name}/SKILL.md`)) {
+        error(`Cowork command must not also be delivered as a fallback Skill: ${command.name}`);
+      }
+    }
+  }
+  if (pkg.host === 'copilot-vscode') {
+    if (!ledger.has('plugin.json')) error('VS Code Agent Plugins manifest is missing');
+    try {
+      const plugin = readJson(packageFile(root, 'plugin.json'), 'VS Code Agent Plugins manifest');
+      if (plugin.$schema !== 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json'
+        || plugin.name !== 'aikido' || plugin.version !== pkg.version || plugin.license !== 'MIT') {
+        error('VS Code Agent Plugins manifest schema, name, version and license must match the package');
+      }
+    } catch (exception) {
+      error(exception.message);
+    }
+    const host = catalog.hosts['copilot-vscode'];
+    for (const command of catalog.commands) {
+      const path = `${host.commandTarget}/${command.name}${host.commandSuffix}`;
+      const entry = ledger.get(path);
+      if (entry?.role !== 'command') error(`VS Code plugin command is missing: ${path}`);
+      if (pkg.projectFiles.some((file) => file.target === path || file.target === `.github/prompts/${command.name}.prompt.md`)) {
+        error(`VS Code plugin command must not also be installed as a project prompt: ${command.name}`);
+      }
+      if (entry) {
+        const text = readFileSync(packageFile(root, path), 'utf8');
+        if (!new RegExp(`^name:\\s*${command.name}\\s*$`, 'm').test(text)
+          || !/^description:\s*.+$/m.test(text)
+          || !text.includes(`\`${command.source}\``)) {
+          error(`VS Code plugin prompt is invalid or detached from its canonical command: ${path}`);
+        }
+      }
+    }
+    for (const skill of catalog.systemSkills) {
+      const path = `${host.systemSkillTarget}/${skill.name}/SKILL.md`;
+      const entry = ledger.get(path);
+      if (entry?.role !== 'system-skill') error(`VS Code plugin Skill is missing: ${path}`);
+      if (entry) {
+        const text = readFileSync(packageFile(root, path), 'utf8');
+        const frontmatter = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+        if (!frontmatter
+          || !new RegExp(`^name:\\s*${skill.name}\\s*$`, 'm').test(frontmatter[1])
+          || !/^description:\s*.+$/m.test(frontmatter[1])) {
+          error(`VS Code plugin Skill metadata must match its directory: ${path}`);
+        }
+      }
+    }
+  }
+  const packageHost = catalog.hosts[pkg.host];
+  if (packageHost?.agentFormat === 'roomodes') {
+    const entry = ledger.get(packageHost.agentTarget);
+    if (entry?.role !== 'agent-configuration') error(`Generated agent configuration is missing: ${packageHost.agentTarget}`);
+    else {
+      const text = readFileSync(packageFile(root, packageHost.agentTarget), 'utf8');
+      for (const agent of catalog.agents) {
+        if (!text.includes(`  - slug: ${agent.name}\n`)
+          || !text.includes(`    description: `)
+          || !text.includes(`\`${agent.source}\``)) {
+          error(`Generated agent mode is missing or detached: ${agent.name}`);
+        }
+      }
+      if (['zoo-code', 'roo-code-legacy'].includes(pkg.host) && !ledger.has('README.md')) {
+        error(`${pkg.host} adapter instructions are missing: README.md`);
+      }
+    }
+  } else if (packageHost?.agentFormat) {
+    const suffix = { codex: '.toml', copilot: '.agent.md' }[packageHost.agentFormat] ?? '.md';
+    const projectTargets = new Set(pkg.projectFiles.map((file) => file.target));
+    for (const agent of catalog.agents) {
+      const path = `${packageHost.agentTarget}/${agent.name}${suffix}`;
+      const entry = ledger.get(path);
+      if (entry?.role !== 'agent') {
+        error(`Generated agent wrapper is missing: ${path}`);
+        continue;
+      }
+      if (packageHost.projectAgentFiles !== projectTargets.has(path)) error(`Agent wrapper install target is inconsistent: ${path}`);
+      const text = readFileSync(packageFile(root, path), 'utf8');
+      if (!text.includes(agent.name) || !text.includes(`\`${agent.source}\``)) {
+        error(`Generated agent wrapper is detached from its canonical agent: ${path}`);
+      }
+      if (pkg.host === 'codex') {
+        // The generator emits only these three single-line TOML basic strings.
+        const keys = ['name', 'description', 'developer_instructions'];
+        const lines = text.trimEnd().split('\n');
+        try {
+          if (lines.length !== keys.length) throw new Error('expected three TOML fields');
+          const values = lines.map((line, index) => {
+            const prefix = `${keys[index]} = `;
+            if (!line.startsWith(prefix)) throw new Error(`expected ${keys[index]}`);
+            const value = JSON.parse(line.slice(prefix.length));
+            if (typeof value !== 'string' || !value.trim()) throw new Error(`empty ${keys[index]}`);
+            return value;
+          });
+          if (values[0] !== agent.name || !values[2].includes(`\`${agent.source}\``)) {
+            throw new Error('name or canonical role does not match');
+          }
+        } catch (exception) {
+          error(`Codex generated agent TOML is invalid: ${path}: ${exception.message}`);
+        }
+      }
+      if (pkg.host === 'kiro-cli') {
+        const frontmatter = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+        if (!frontmatter
+          || !new RegExp(`^name:\\s*${agent.name}\\s*$`, 'm').test(frontmatter[1])
+          || !/^description:\s*.+$/m.test(frontmatter[1])
+          || !frontmatter[1].split(/\r?\n/).includes(`  - "file://./${agent.source}"`)) {
+          error(`Kiro agent configuration is invalid or missing its canonical role resource: ${path}`);
+        }
+        if (agent.topLevelOnly && /^tools:/m.test(frontmatter?.[1] ?? '')) {
+          error(`Kiro top-level agent must inherit tools rather than use an unverified wildcard: ${path}`);
+        }
+      }
+      if (pkg.host === 'antigravity') {
+        const frontmatter = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+        const fields = frontmatter?.[1] ?? '';
+        const tools = [...fields.matchAll(/^\s+-\s+([a-z_]+)\s*$/gm)].map((match) => match[1]);
+        if (!frontmatter
+          || !new RegExp(`^name:\\s*${agent.name}\\s*$`, 'm').test(fields)
+          || !/^description:\s*.+$/m.test(fields)
+          || !/^mainAgent:\s*true$/m.test(fields)
+          || !new RegExp(`^subagent:\\s*${agent.topLevelOnly ? 'false' : 'true'}$`, 'm').test(fields)
+          || !/^commandExecutionPolicy:\s*sandbox$/m.test(fields)
+          || !tools.includes('view_file')
+          || tools.some((tool) => !['view_file', 'grep_search', 'replace_file_content', 'run_command', 'invoke_subagent'].includes(tool))
+          || new Set(tools).size !== tools.length) {
+          error(`Antigravity agent metadata or documented tool allowlist is invalid: ${path}`);
+        }
+      }
+    }
+  }
+  if (pkg.host === 'copilot-github' || pkg.host === 'codex' || pkg.host === 'kiro-cli' || pkg.host === 'antigravity') {
+    const host = catalog.hosts[pkg.host];
+    const label = pkg.host === 'codex'
+      ? 'Codex'
+      : pkg.host === 'kiro-cli'
+        ? 'Kiro CLI'
+        : pkg.host === 'antigravity'
+          ? 'Antigravity'
+          : 'GitHub Copilot';
+    if (pkg.host === 'codex' && !ledger.has('README.md')) error('Codex workspace adapter instructions are missing: README.md');
+    if (pkg.host === 'kiro-cli' && !ledger.has('README.md')) error('Kiro CLI adapter instructions are missing: README.md');
+    if (pkg.host === 'antigravity' && !ledger.has('README.md')) error('Antigravity workspace adapter instructions are missing: README.md');
+    const projectTargets = new Set(pkg.projectFiles.map((file) => file.target));
+    const skillNames = [
+      ...catalog.commands.map((command) => ({ name: command.name, source: command.source, role: 'command' })),
+      ...catalog.systemSkills.map((skill) => ({ name: skill.name, role: 'system-skill' })),
+    ];
+    for (const skill of skillNames) {
+      const target = skill.role === 'command' ? host.commandTarget : host.systemSkillTarget;
+      const path = `${target}/${skill.name}/SKILL.md`;
+      const entry = ledger.get(path);
+      if (entry?.role !== skill.role || !projectTargets.has(path)) {
+        error(`${label} project Skill is missing: ${path}`);
+        continue;
+      }
+      const text = readFileSync(packageFile(root, path), 'utf8');
+      const frontmatter = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+      if (!frontmatter
+        || !new RegExp(`^name:\\s*${skill.name}\\s*$`, 'm').test(frontmatter[1])
+        || !/^description:\s*.+$/m.test(frontmatter[1])
+        || (skill.source && !text.includes(`\`${skill.source}\``))) {
+        error(`${label} Skill metadata must match its directory and canonical source: ${path}`);
+      }
+    }
+    for (const file of pkg.projectFiles) {
+      if (pkg.host === 'copilot-github' && file.target.startsWith('.github/prompts/')) {
+        error(`GitHub Copilot cloud agent does not run prompt files: ${file.target}`);
+      }
+      if (pkg.host === 'codex' && /^\.codex\/(?:prompts\/|config\.toml$)/.test(file.target)) {
+        error(`Codex adapter must not install deprecated prompts or change user configuration: ${file.target}`);
+      }
+    }
+  }
+
+  const payloadTargets = new Set();
+  for (const entry of pkg.payloadFiles) {
+    if (!entry || !isSafeRelativePath(entry.source) || !isSafeRelativePath(entry.target)
+      || !isSafeRelativePath(entry.packagePath)) {
+      error(`unsafe payload entry: ${entry?.target}`);
+      continue;
+    }
+    if (payloadTargets.has(entry.target)) error(`duplicate payload target: ${entry.target}`);
+    payloadTargets.add(entry.target);
+    if (entry.source !== entry.target || entry.packagePath !== `payload/${entry.target}`) {
+      error(`payload path mapping is not portable: ${entry.target}`);
+    }
+    if (entry.origin !== 'payload' || entry.policy !== 'three-way') error(`invalid payload policy: ${entry.target}`);
+    if (!SHA256.test(entry.sha256 ?? '')) error(`invalid payload hash: ${entry.target}`);
+    const packaged = ledger.get(entry.packagePath);
+    if (!packaged || packaged.sha256 !== entry.sha256 || packaged.role !== 'payload') {
+      error(`payload is not covered by the package file ledger: ${entry.target}`);
+    }
+    if (entry.target.endsWith('.test.mjs') || /(^|\/)(gen|spec|logs|dist)(\/|$)/.test(entry.target)) {
+      error(`private, generated or test content is in the payload: ${entry.target}`);
+    }
+  }
+  const ledgerPayload = [...ledger.values()].filter((entry) => entry.role === 'payload');
+  if (ledgerPayload.length !== payloadTargets.size) error('payload file ledger contains missing or unlisted payload files');
+  const hardPoints = [...payloadTargets].filter((path) => path.startsWith('prompts/hard_points/'));
+  if (hardPoints.length !== 151) error(`expected 151 hard_points payload files, found ${hardPoints.length}`);
+  if (payloadTargets.size !== 153 || !payloadTargets.has('LICENSE') || !payloadTargets.has('TRADEMARK.md')) {
+    error('payload must contain the 151 hard_points files and both legal notices');
+  }
+  const targets = new Set(payloadTargets);
+  for (const entry of pkg.projectFiles) {
+    if (!entry || !isSafeRelativePath(entry.source) || !isSafeRelativePath(entry.target)) {
+      error(`unsafe project file mapping: ${entry?.target}`);
+      continue;
+    }
+    if (targets.has(entry.target)) error(`duplicate project file target: ${entry.target}`);
+    targets.add(entry.target);
+    if (!['three-way', 'create-only'].includes(entry.policy)) error(`invalid project file policy: ${entry.target}`);
+    if (!['template', 'generated', 'adapter', 'payload'].includes(entry.origin)) error(`invalid project file origin: ${entry.target}`);
+    const packaged = ledger.get(entry.source);
+    if (!packaged || packaged.sha256 !== entry.sha256) error(`project file source/hash mismatch: ${entry.source}`);
+    else if (['payload', 'template'].includes(packaged.role)) error(`project file must point to an adapter artifact: ${entry.source}`);
+  }
+  let templates = null;
+  const templateRoot = join(root, 'templates');
+  try {
+    const rawManifest = readJson(packageFile(root, 'templates/manifest.json'), 'templates/manifest.json');
+    const templateErrors = validateManifest(rawManifest);
+    if (templateErrors.length) templateErrors.forEach((message) => error(`template manifest: ${message}`));
+    for (const template of rawManifest.templates ?? []) {
+      const packagedPath = `templates/${template.source}`;
+      if (!ledger.has(packagedPath)) error(`template source is absent from package: ${packagedPath}`);
+    }
+    templates = rawManifest;
+  } catch (exception) {
+    error(exception.message);
+  }
+  if (templates) {
+    for (const mode of ['STANDARD', 'LIGHT', 'UNSET']) {
+      for (const template of selectTemplates(templates, { mode, hosts: [pkg.host] })) {
+        if (targets.has(template.target)) error(`template target collides with package project file: ${template.target}`);
+      }
+    }
+    errors.push(...validateLinks(templateRoot, templates, pkg, catalog));
+  }
+  try {
+    const actualFiles = new Set(packageFiles(root));
+    if (pkg.host === 'claude-cowork') {
+      if (actualFiles.size > 5000) error('Cowork plugins must contain at most 5000 files');
+      const bytes = [...actualFiles].reduce((total, path) => total + lstatSync(packageFile(root, path)).size, 0);
+      if (bytes > 200_000_000) error('Cowork plugins must not exceed 200 MB');
+    }
+    actualFiles.delete('package-manifest.json');
+    for (const path of actualFiles) if (!ledger.has(path)) error(`unlisted package file: ${path}`);
+    for (const path of ledger.keys()) if (!actualFiles.has(path)) error(`ledger file is missing from package tree: ${path}`);
+  } catch (exception) {
+    error(exception.message);
+  }
+
+  if (errors.length) throw new Error(`Invalid package ${pkg.host ?? '(unknown host)'}:\n${errors.join('\n')}`);
+  return {
+    valid: true,
+    host: pkg.host,
+    version: pkg.version,
+    sourceRevision: pkg.sourceRevision,
+    packageFiles: ledger.size,
+    payloadFiles: pkg.payloadFiles.length,
+    projectFiles: pkg.projectFiles.length,
+  };
+}
+
+export function packageManifestPath(packageRoot) {
+  return join(resolve(packageRoot), 'package-manifest.json');
+}

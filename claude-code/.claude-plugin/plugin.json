@@ -1,0 +1,11 @@
+{
+  "name": "aikido",
+  "version": "1.5.0-rc.1",
+  "description": "AI-KIDO — AI Memory Bank Construction Method by Meta harness",
+  "author": {
+    "name": "AI-KIDO Team",
+    "url": "https://github.com/lcalmejane/aikido"
+  },
+  "license": "MIT",
+  "icon": "./assets/aikido.png"
+}

@@ -1,0 +1,211 @@
+customModes:
+  - slug: agent-aikido-balancer
+    name: "AI-KIDO balancer"
+    description: "Automatically balances the AI-KIDO Memory Bank tree structure according to dynamic AI-KIDO rules (mode-aware depth/branching, ≤500 lines per file). Adapts to Standard/Light modes and mono/multi-project contexts. Call the agent-aikido-balancer when you need to rebalance the Memory Bank after significant modifications. As always, the more detailed your request prompt, the better! :)"
+    roleDefinition: |-
+      # agent-aikido-balancer
+
+      Read `prompts/hard_points/agents/agent-aikido-balancer.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Follow that file as your complete role definition, then perform the delegated task.
+    whenToUse: |-
+      Automatically balances the AI-KIDO Memory Bank tree structure according to dynamic AI-KIDO rules (mode-aware depth/branching, ≤500 lines per file). Adapts to Standard/Light modes and mono/multi-project contexts. Call the agent-aikido-balancer when you need to rebalance the Memory Bank after significant modifications. As always, the more detailed your request prompt, the better! :)
+    groups:
+      - read
+      - edit
+  - slug: agent-aikido-bank-populate
+    name: "AI-KIDO bank-populate"
+    description: "Automatically populates AI-KIDO Memory Bank from code/context when documents are missing or invalid. Orchestrates truth-evaluator, raci-delegator, and expert personas to create compliant documentation. INVOKE AT END OF PROCESS after final gap report, not immediately upon detection."
+    roleDefinition: |-
+      # agent-aikido-bank-populate
+
+      Read `prompts/hard_points/agents/agent-aikido-bank-populate.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Follow that file as your complete role definition, then perform the delegated task.
+    whenToUse: |-
+      Automatically populates AI-KIDO Memory Bank from code/context when documents are missing or invalid. Orchestrates truth-evaluator, raci-delegator, and expert personas to create compliant documentation. INVOKE AT END OF PROCESS after final gap report, not immediately upon detection.
+    groups:
+      - read
+      - edit
+      - command
+  - slug: agent-aikido-doc-header
+    name: "AI-KIDO doc-header"
+    description: "Standardizes and manages AI-KIDO document headers with versioning, truth validation metadata, and source traceability. Ensures consistent header format across all Memory Bank documents."
+    roleDefinition: |-
+      # agent-aikido-doc-header
+
+      Read `prompts/hard_points/agents/agent-aikido-doc-header.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Follow that file as your complete role definition, then perform the delegated task.
+    whenToUse: |-
+      Standardizes and manages AI-KIDO document headers with versioning, truth validation metadata, and source traceability. Ensures consistent header format across all Memory Bank documents.
+    groups:
+      - read
+      - edit
+  - slug: agent-aikido-explore-all
+    name: "AI-KIDO explore-all"
+    description: "Orchestrates parallel search in both Memory Bank (explore-bank) and source code (explore-code) simultaneously. Launches both agents in parallel via Task tool with CASE_SENSITIVITY:BOTH (handles case-sensitive and case-insensitive in single pass), waits for results, combines output. Use when search scope is unclear or when need comprehensive view (docs + code). Minimal overhead, pure orchestration, no chaining."
+    roleDefinition: |-
+      # agent-aikido-explore-all
+
+      Read `prompts/hard_points/agents/agent-aikido-explore-all.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Follow that file as your complete role definition, then perform the delegated task.
+    whenToUse: |-
+      Orchestrates parallel search in both Memory Bank (explore-bank) and source code (explore-code) simultaneously. Launches both agents in parallel via Task tool with CASE_SENSITIVITY:BOTH (handles case-sensitive and case-insensitive in single pass), waits for results, combines output. Use when search scope is unclear or when need comprehensive view (docs + code). Minimal overhead, pure orchestration, no chaining.
+    groups:
+      - read
+  - slug: agent-aikido-explore-bank
+    name: "AI-KIDO explore-bank"
+    description: "Searches and extracts information from AI-KIDO Memory Bank (v5.2 extended-formats + filename-scout). Supports 100+ file types (code, config, docs, data, web, build). Filename scout via projet-index for instant prioritization. Invoke when:"
+    roleDefinition: |-
+      # agent-aikido-explore-bank
+
+      Read `prompts/hard_points/agents/agent-aikido-explore-bank.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Follow that file as your complete role definition, then perform the delegated task.
+    whenToUse: |-
+      Searches and extracts information from AI-KIDO Memory Bank (v5.2 extended-formats + filename-scout). Supports 100+ file types (code, config, docs, data, web, build). Filename scout via projet-index for instant prioritization. Invoke when:
+    groups:
+      - read
+      - command
+  - slug: agent-aikido-explore-code
+    name: "AI-KIDO explore-code"
+    description: "Searches and indexes project source code with structured metadata extraction (NOT full code). Technology-aware using search plans. Returns concise categorized info (classes:lines, functions:signatures, dependencies:imports) to help commands/prompts locate relevant code. Respects .gitignore. Deep exploration but compact output. Invoke when:"
+    roleDefinition: |-
+      # agent-aikido-explore-code
+
+      Read `prompts/hard_points/agents/agent-aikido-explore-code.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Follow that file as your complete role definition, then perform the delegated task.
+    whenToUse: |-
+      Searches and indexes project source code with structured metadata extraction (NOT full code). Technology-aware using search plans. Returns concise categorized info (classes:lines, functions:signatures, dependencies:imports) to help commands/prompts locate relevant code. Respects .gitignore. Deep exploration but compact output. Invoke when:
+    groups:
+      - read
+      - command
+  - slug: agent-aikido-fusion
+    name: "AI-KIDO fusion"
+    description: "Intelligent file merger for AI-KIDO updates preserving project context while adopting new formalism. Call during /maj-aikido FUSIONNER option or manual merge conflicts."
+    roleDefinition: |-
+      # agent-aikido-fusion
+
+      Read `prompts/hard_points/agents/agent-aikido-fusion.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Follow that file as your complete role definition, then perform the delegated task.
+    whenToUse: |-
+      Intelligent file merger for AI-KIDO updates preserving project context while adopting new formalism. Call during /maj-aikido FUSIONNER option or manual merge conflicts.
+    groups:
+      - read
+      - edit
+  - slug: agent-aikido-helper
+    name: "AI-KIDO helper"
+    description: "Guides users in understanding and applying the AI-KIDO Memory Bank, its hard points, agents and techniques."
+    roleDefinition: |-
+      # agent-aikido-helper
+
+      Read `prompts/hard_points/agents/agent-aikido-helper.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Follow that file as your complete role definition, then perform the delegated task.
+    whenToUse: |-
+      Guides users in understanding and applying the AI-KIDO Memory Bank, its hard points, agents and techniques.
+    groups:
+      - read
+  - slug: agent-aikido-maj-md-index
+    name: "AI-KIDO maj-md-index"
+    description: "Automatically updates all AI-KIDO Memory Bank index files (index.md) across all domains. Mode-aware (Standard/Light templates), adapts to mono/multi-project contexts. Scans structure, generates navigation links, calculates statistics, maintains AGENTS.md. Call the agent-aikido-maj-md-index when you need to synchronize index files after modifications. As always, the more detailed your request prompt, the better! :)"
+    roleDefinition: |-
+      # agent-aikido-maj-md-index
+
+      Read `prompts/hard_points/agents/agent-aikido-maj-md-index.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Follow that file as your complete role definition, then perform the delegated task.
+    whenToUse: |-
+      Automatically updates all AI-KIDO Memory Bank index files (index.md) across all domains. Mode-aware (Standard/Light templates), adapts to mono/multi-project contexts. Scans structure, generates navigation links, calculates statistics, maintains AGENTS.md. Call the agent-aikido-maj-md-index when you need to synchronize index files after modifications. As always, the more detailed your request prompt, the better! :)
+    groups:
+      - read
+      - edit
+  - slug: agent-aikido-orchestrator
+    name: "AI-KIDO orchestrator"
+    description: "AI-KIDO orchestrator that always works: leads when no general orchestrator exists, collaborates with (guides, delegates to, or takes over parallel work from) an existing native orchestrator, or executes directly. Every exchange with agents, threads, MCP and tools is strict JSON."
+    roleDefinition: |-
+      # agent-aikido-orchestrator
+
+      Read `prompts/hard_points/agents/agent-aikido-orchestrator.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Follow that file as your complete role definition, then perform the delegated task.
+    whenToUse: |-
+      AI-KIDO orchestrator that always works: leads when no general orchestrator exists, collaborates with (guides, delegates to, or takes over parallel work from) an existing native orchestrator, or executes directly. Every exchange with agents, threads, MCP and tools is strict JSON.
+    groups:
+      - read
+      - edit
+      - command
+      - mcp
+  - slug: agent-aikido-projet-index
+    name: "AI-KIDO projet-index"
+    description: "Fast service to search and locate a file or directory by name, type, directory or path. Generates and maintains the project tree as a scalable multi-index JSON V3.1 (prompts/hard_points/system/structure/) via parallelized bash scripts. Answers project structure questions instantly. Targeted incremental updates."
+    roleDefinition: |-
+      # agent-aikido-projet-index
+
+      Read `prompts/hard_points/agents/agent-aikido-projet-index.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Follow that file as your complete role definition, then perform the delegated task.
+    whenToUse: |-
+      Fast service to search and locate a file or directory by name, type, directory or path. Generates and maintains the project tree as a scalable multi-index JSON V3.1 (prompts/hard_points/system/structure/) via parallelized bash scripts. Answers project structure questions instantly. Targeted incremental updates.
+    groups:
+      - read
+      - edit
+      - command
+  - slug: agent-aikido-raci-delegator
+    name: "AI-KIDO raci-delegator"
+    description: "Classifies and routes documents to correct Memory Bank locations based on RACI matrix and AI-KIDO rules. Analyzes document content, determines responsible role, detects mono/multi-project context, and recommends precise target path. High accuracy classifier for Memory Bank organization."
+    roleDefinition: |-
+      # agent-aikido-raci-delegator
+
+      Read `prompts/hard_points/agents/agent-aikido-raci-delegator.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Follow that file as your complete role definition, then perform the delegated task.
+    whenToUse: |-
+      Classifies and routes documents to correct Memory Bank locations based on RACI matrix and AI-KIDO rules. Analyzes document content, determines responsible role, detects mono/multi-project context, and recommends precise target path. High accuracy classifier for Memory Bank organization.
+    groups:
+      - read
+  - slug: agent-aikido-truth-evaluator
+    name: "AI-KIDO truth-evaluator"
+    description: "Determines authoritative sources of truth (specs, code, docs, tests) based on development scenario. Ranks sources by reliability and detects conflicts. Use before starting work, when sources contradict, during reviews, or when documentation seems outdated."
+    roleDefinition: |-
+      # agent-aikido-truth-evaluator
+
+      Read `prompts/hard_points/agents/agent-aikido-truth-evaluator.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Follow that file as your complete role definition, then perform the delegated task.
+    whenToUse: |-
+      Determines authoritative sources of truth (specs, code, docs, tests) based on development scenario. Ranks sources by reliability and detects conflicts. Use before starting work, when sources contradict, during reviews, or when documentation seems outdated.
+    groups:
+      - read
+  - slug: agent-aikido-update-controller
+    name: "AI-KIDO update-controller"
+    description: "Manages backup, validation, and application of AI-KIDO system update plans"
+    roleDefinition: |-
+      # agent-aikido-update-controller
+
+      Read `prompts/hard_points/agents/agent-aikido-update-controller.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Follow that file as your complete role definition, then perform the delegated task.
+    whenToUse: |-
+      Manages backup, validation, and application of AI-KIDO system update plans
+    groups:
+      - read
+      - edit
+      - command
+  - slug: agent-aikido-validator
+    name: "AI-KIDO validator"
+    description: "Validates files against AI-KIDO rules. Invoke automatically when creating, modifying, or moving files in /prompts. Lightweight validation with minimal token usage."
+    roleDefinition: |-
+      # agent-aikido-validator
+
+      Read `prompts/hard_points/agents/agent-aikido-validator.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Follow that file as your complete role definition, then perform the delegated task.
+    whenToUse: |-
+      Validates files against AI-KIDO rules. Invoke automatically when creating, modifying, or moving files in /prompts. Lightweight validation with minimal token usage.
+    groups:
+      - read

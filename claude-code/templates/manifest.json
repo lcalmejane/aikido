@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "placeholders": {
+    "PROJECT_NAME": "Human-readable project name chosen at bootstrap",
+    "AIKIDO_VERSION": "AI-KIDO version being installed, e.g. 1.5.0",
+    "ENTRIES": "Generated rows from distribution/catalog.json (lists only)"
+  },
+  "templates": [
+    { "id": "index-standard", "source": "project/prompts/index.standard.md", "target": "prompts/index.md", "kind": "file", "policy": "create-only", "modes": ["STANDARD"] },
+    { "id": "index-light", "source": "project/prompts/index.light.md", "target": "prompts/index.md", "kind": "file", "policy": "create-only", "modes": ["LIGHT"] },
+    { "id": "index-unset", "source": "project/prompts/index.unset.md", "target": "prompts/index.md", "kind": "file", "policy": "create-only", "modes": ["UNSET"] },
+    { "id": "gen-index", "source": "project/prompts/gen/index.md", "target": "prompts/gen/index.md", "kind": "file", "policy": "create-only" },
+    { "id": "gen-concepts", "source": "project/prompts/gen/concepts/index.md", "target": "prompts/gen/concepts/index.md", "kind": "file", "policy": "create-only" },
+    { "id": "gen-techniques", "source": "project/prompts/gen/techniques/index.md", "target": "prompts/gen/techniques/index.md", "kind": "file", "policy": "create-only" },
+    { "id": "gen-personas", "source": "project/prompts/gen/personas/index.md", "target": "prompts/gen/personas/index.md", "kind": "file", "policy": "create-only" },
+    { "id": "gen-use-cases", "source": "project/prompts/gen/use_cases/index.md", "target": "prompts/gen/use_cases/index.md", "kind": "file", "policy": "create-only" },
+    { "id": "gen-agents", "source": "project/prompts/gen/agents/index.md", "target": "prompts/gen/agents/index.md", "kind": "file", "policy": "create-only" },
+    { "id": "spec-index", "source": "project/prompts/spec/index.md", "target": "prompts/spec/index.md", "kind": "file", "policy": "create-only" },
+    { "id": "agents-list", "source": "project/lists/agents_list.md", "target": "agents_list.md", "kind": "generated", "policy": "three-way" },
+    { "id": "commands-list", "source": "project/lists/commands_list.md", "target": "commands_list.md", "kind": "generated", "policy": "three-way" },
+    { "id": "skills-list", "source": "project/lists/skills_list.md", "target": "skills_list.md", "kind": "generated", "policy": "three-way" },
+    { "id": "agents-block", "source": "instructions/agents-block.md", "target": "AGENTS.md", "kind": "managed-block", "policy": "managed-block", "blockId": "core", "style": "html" },
+    { "id": "claude-block", "source": "instructions/claude-block.md", "target": "CLAUDE.md", "kind": "managed-block", "policy": "managed-block", "blockId": "core", "style": "html", "hosts": ["claude-code", "claude-cowork"] },
+    { "id": "gitignore-block", "source": "instructions/gitignore-block.txt", "target": ".gitignore", "kind": "managed-block", "policy": "managed-block", "blockId": "state", "style": "hash" }
+  ]
+}

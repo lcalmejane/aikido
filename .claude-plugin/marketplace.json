@@ -1,0 +1,19 @@
+{
+  "name": "aikido",
+  "owner": {
+    "name": "AI-KIDO Team"
+  },
+  "description": "AI-KIDO plugin and project bootstrap tools",
+  "plugins": [
+    {
+      "name": "aikido",
+      "source": "./claude-code",
+      "version": "1.5.0-rc.1",
+      "description": "AI-KIDO — AI Memory Bank Construction Method by Meta harness",
+      "author": {
+        "name": "AI-KIDO Team",
+        "url": "https://github.com/lcalmejane/aikido"
+      }
+    }
+  ]
+}

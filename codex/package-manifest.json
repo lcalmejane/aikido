@@ -1,0 +1,3847 @@
+{
+  "schemaVersion": 1,
+  "host": "codex",
+  "qualification": "qualified-not-tested",
+  "version": "1.5.0-rc.1",
+  "sourceRevision": "5e1adb76f5f6641b1c7082ecd88f4a02d6e782e7",
+  "source": {
+    "type": "git",
+    "ref": "github:lcalmejane/aikido",
+    "commit": "5e1adb76f5f6641b1c7082ecd88f4a02d6e782e7"
+  },
+  "commandDelivery": "fallback-skill",
+  "files": [
+    {
+      "path": ".agents/skills/analyse-aikido/SKILL.md",
+      "role": "command",
+      "sha256": "749e87ecab48ecb57a64d52765ceaf30c521cf9b4f8aeefafa9aed5c6fc72b4a"
+    },
+    {
+      "path": ".agents/skills/analyse-project/SKILL.md",
+      "role": "command",
+      "sha256": "ea4a9db1c198bfdcb5485fda5d727325fb0b2afe8880a977a838f58644cef712"
+    },
+    {
+      "path": ".agents/skills/analyse/SKILL.md",
+      "role": "system-skill",
+      "sha256": "7285c3cbde6819ac63e3a16e15efd2b404e88e23b9ca568fc7b4806620a572da"
+    },
+    {
+      "path": ".agents/skills/analyse/plans/README.md",
+      "role": "system-skill",
+      "sha256": "2c44af1f29411dc760a41bf03c541580f5e25821a046c6073f5951be7b1a2d5c"
+    },
+    {
+      "path": ".agents/skills/analyse/plans/plan-approfondi.md",
+      "role": "system-skill",
+      "sha256": "5b56c19ed1908cee3113b985b1ca9c8108e82cea681474d5243b29053a4e7117"
+    },
+    {
+      "path": ".agents/skills/analyse/plans/plan-expert.md",
+      "role": "system-skill",
+      "sha256": "61c2ed73447a4a2d037bd46d3365375cf1b28299f61cbe7fd776c3f3e99acf7f"
+    },
+    {
+      "path": ".agents/skills/analyse/plans/plan-standard.md",
+      "role": "system-skill",
+      "sha256": "a80073ca30a02240a43db7457e301145602e15b6b2dc267d2a4c0166ebf77e0a"
+    },
+    {
+      "path": ".agents/skills/analyse/plans/plan-survol.md",
+      "role": "system-skill",
+      "sha256": "07b924adfd97a1b9a4019c99d0277079d263413b09a79973e4697ae7d1ff153a"
+    },
+    {
+      "path": ".agents/skills/analyse/plans/technique/audit-complet/README.md",
+      "role": "system-skill",
+      "sha256": "54e3ef5d4d90bb4f031574bb928c651cb89f6874b856eb35cc8bb360f5f55d47"
+    },
+    {
+      "path": ".agents/skills/analyse/plans/technique/audit-complet/config-example.yml",
+      "role": "system-skill",
+      "sha256": "8c8dfec9ac1a448c68c33a9f667a1ce52111f42b22d35a5c344917b8d8c4e7e9"
+    },
+    {
+      "path": ".agents/skills/analyse/plans/technique/audit-complet/plan-expert.md",
+      "role": "system-skill",
+      "sha256": "b56200ba96a84b613adc518bd9d7c8867e967f7f361aa7468861bf9a6ed72607"
+    },
+    {
+      "path": ".agents/skills/check-claude/SKILL.md",
+      "role": "command",
+      "sha256": "b00c91a1d9d592e6aab8915b653d8e3595aa9cd1a0cb3078fa799e3d7dee0240"
+    },
+    {
+      "path": ".agents/skills/check-truth/SKILL.md",
+      "role": "command",
+      "sha256": "6fc2027459034e35ab846ec74b213f06b307573db8fd43803f935bcff63ef443"
+    },
+    {
+      "path": ".agents/skills/clean-index/SKILL.md",
+      "role": "command",
+      "sha256": "b564a6965e89a36555acd2cca0813ce9dc8edb2b177948fa2a8c173c3486e964"
+    },
+    {
+      "path": ".agents/skills/compile-agent-from-use/SKILL.md",
+      "role": "command",
+      "sha256": "ec62f52a0063beb9c071c5d2ee0d5e6c5c3ab22694e5ad6a98b817d7709a2193"
+    },
+    {
+      "path": ".agents/skills/create-analyse-plan/SKILL.md",
+      "role": "command",
+      "sha256": "c4c77ef9a2b6d4902314fa907ac3eeaa2bd48c18a1a1b823b4296f6c8c1249be"
+    },
+    {
+      "path": ".agents/skills/create-command/SKILL.md",
+      "role": "command",
+      "sha256": "6fad1044f93a66e2c1e29657860af69ac1d00d4a09f0f9923835c28832ef7fc9"
+    },
+    {
+      "path": ".agents/skills/create-persona/SKILL.md",
+      "role": "command",
+      "sha256": "c2c586bd9f59b026f29455b7a47aadff52b04110c3e284a0b0daf166117c3cb1"
+    },
+    {
+      "path": ".agents/skills/create-search-plan/SKILL.md",
+      "role": "command",
+      "sha256": "09206904815c3c8361318dd169aedc54c653648ea08cfadc0e5ba5c94f363c6e"
+    },
+    {
+      "path": ".agents/skills/create-skill/SKILL.md",
+      "role": "command",
+      "sha256": "1206df0e4b1773f0a3254844a8236e586b8a295e2e6ae3e00db4e6abf8581d4b"
+    },
+    {
+      "path": ".agents/skills/download-site/SKILL.md",
+      "role": "command",
+      "sha256": "ad7188a4e8379a8ba0e257ab0c498979c7b12f9bc2a9f05223d60769cf390fcc"
+    },
+    {
+      "path": ".agents/skills/init-aikido/SKILL.md",
+      "role": "command",
+      "sha256": "b40050e1c80fea3d67a2a14c9168bea6f4a5d8f653e0db51e419a0393522d9be"
+    },
+    {
+      "path": ".agents/skills/init-glossaire/SKILL.md",
+      "role": "command",
+      "sha256": "8e95533e391ffcef91c6042d57ada786e94a9e8aa61f02b77729f4de70f132a5"
+    },
+    {
+      "path": ".agents/skills/init-raci-aikido/SKILL.md",
+      "role": "command",
+      "sha256": "270b32cc62aab284ac635ee8d75e8fb3687c0016e1d1dd239889d290c264a867"
+    },
+    {
+      "path": ".agents/skills/list-command/SKILL.md",
+      "role": "command",
+      "sha256": "348cea3b2a0150c33af7c5f9879ce4e7e254a58cc9fa6823fe31c1767db34f3b"
+    },
+    {
+      "path": ".agents/skills/maj-aikido/SKILL.md",
+      "role": "command",
+      "sha256": "8c8aaa9a74fa9ce222860cf50e7daf97561642ad3f0914ce79031727d3bbaa5d"
+    },
+    {
+      "path": ".agents/skills/maj/SKILL.md",
+      "role": "system-skill",
+      "sha256": "e03939092b1ca34250ce397fe2712dea9e285a7ac80d19d6cf342385882d0c56"
+    },
+    {
+      "path": ".agents/skills/maj/plans/README.md",
+      "role": "system-skill",
+      "sha256": "e9902373787fa83fde02c4a5d24eba03e9a8b97cab1c5b61e16a4fd6bbd64625"
+    },
+    {
+      "path": ".agents/skills/maj/plans/plan-V1.3.0.0.md",
+      "role": "system-skill",
+      "sha256": "42890206427e38397214c43d7b8f849cfa3d5cebb25364d145eb39fcf1627860"
+    },
+    {
+      "path": ".agents/skills/maj/plans/plan-V1.3.1.0.md",
+      "role": "system-skill",
+      "sha256": "ff0ccdb4f619fc15fcaf6cbe94f5fd647d9b21349569f8c4be791b998b60c836"
+    },
+    {
+      "path": ".agents/skills/maj/plans/plan-beginning.md",
+      "role": "system-skill",
+      "sha256": "b3cb475d8927892c3bc21348504d05e2717f852f78eeb18536a6ad80a87cc692"
+    },
+    {
+      "path": ".agents/skills/maj/plans/plan-ending-0.md",
+      "role": "system-skill",
+      "sha256": "f3c71935d6b75779b154683ea0bfafe99e048596f424697e5fdccac53ab294ec"
+    },
+    {
+      "path": ".agents/skills/maj/plans/plan-ending-1.md",
+      "role": "system-skill",
+      "sha256": "efd0c385d2ce36bf411c8de9a76d45792e4260defcd169299dd4bab4525fc1c4"
+    },
+    {
+      "path": ".agents/skills/maj/plans/plan-ending-10.md",
+      "role": "system-skill",
+      "sha256": "64abbdfc2b2f56edf1bc244e830021b75a1c689541b097e6fbae70ff4c2294be"
+    },
+    {
+      "path": ".agents/skills/maj/plans/plan-ending-2.md",
+      "role": "system-skill",
+      "sha256": "0620a88a290d888ffc33ca5119488ad37c3a0b2dea70ba9060ff293c51614a60"
+    },
+    {
+      "path": ".agents/skills/maj/plans/plan-ending-3.md",
+      "role": "system-skill",
+      "sha256": "5c978aaed746779ecc43f0425549d214360bf567da42e78f216da40fe3546c8b"
+    },
+    {
+      "path": ".agents/skills/maj/plans/plan-ending-4.md",
+      "role": "system-skill",
+      "sha256": "fb8011b3f636525d239ce4a50b1398e8be6ffc500108cc0c6e08cabd96941551"
+    },
+    {
+      "path": ".agents/skills/maj/plans/plan-ending-5.md",
+      "role": "system-skill",
+      "sha256": "9df5c7264ddb5f45156097ddc8a82a88c99b98f980bc3d832a84c4e51e7b40af"
+    },
+    {
+      "path": ".agents/skills/maj/plans/plan-ending-6.md",
+      "role": "system-skill",
+      "sha256": "0a9cc7aee365f84da2306726472b07877a57be8cd55bb89c2edfe952b5b296e7"
+    },
+    {
+      "path": ".agents/skills/maj/plans/plan-ending-7.md",
+      "role": "system-skill",
+      "sha256": "266cb982a44c2fe334bb5b19d1c519b42bc4c59951767eb96aadcdf05e6a6d08"
+    },
+    {
+      "path": ".agents/skills/maj/plans/plan-ending-8.md",
+      "role": "system-skill",
+      "sha256": "fb48804a809ce983a0bb18f2933df262496cc3c09b842d42672df2bea19394c3"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/beginning-check-backup.sh",
+      "role": "system-skill",
+      "sha256": "6f2f832b19714b757f6e62e89a87dd7f9befdae13d53fa6984932f6f978ff6d3"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/beginning-detect-versions.sh",
+      "role": "system-skill",
+      "sha256": "3b8a641e0713d8f707c37c9407efc48bfda7c47ddf116ac314712ec619f77fb7"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/beginning-generate-structure.sh",
+      "role": "system-skill",
+      "sha256": "98595042afcdc1eeea4d502d01ccf3c922d8f2e8db824c3dba100ed06df44c3f"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/check-file-exists.sh",
+      "role": "system-skill",
+      "sha256": "50463bba75f5116e979d06e91225ece877a3920272144ed0415609fdde2aa9e8"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/create-backup.sh",
+      "role": "system-skill",
+      "sha256": "02909d076503635e1380651896fb7394378a58161d716c79105f31f36b2b4189"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/create-log.sh",
+      "role": "system-skill",
+      "sha256": "02ab1fd2894243ecc91305dc0ccf28180f37880d3125ffdf3615a4421bbbd8f1"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/detect-project-type.sh",
+      "role": "system-skill",
+      "sha256": "030635438620dc5a152c367eafa240337392ec56509d16939a8c06ae2b2bbc5e"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/detect-version.sh",
+      "role": "system-skill",
+      "sha256": "3bc1d999ad683a50970af57a1622f9380606b33010283685a10bb631116a3842"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-0-ask-llm-capability.sh",
+      "role": "system-skill",
+      "sha256": "777465414e86d11a4aea24f22a4982cdfa9760ef19e06053c995c9555b1111c3"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-0-check-json-files.sh",
+      "role": "system-skill",
+      "sha256": "8a700841de9087704d98a88838b2394ef1fe2ba57dae6defee97be2344cb060d"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-0-generate-diff-report.sh",
+      "role": "system-skill",
+      "sha256": "59fbebde1fdc150b91fb9a245685d28a02a217fd2f69a4e71e2a055cb8f4e78a"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-0-process-fusion.sh",
+      "role": "system-skill",
+      "sha256": "10e1148704d45e6ec83b82b85c8df75807dbdb790b01037daad5861934e394f7"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-1-check-before-json.sh",
+      "role": "system-skill",
+      "sha256": "c1b7a021cddbf03901add9f197b13c65b6c6d30102dc0b728a7a4edacd681a5c"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-1-compare-structures.sh",
+      "role": "system-skill",
+      "sha256": "68cbbf6abe079ff8d483841d7f70a6c6be1d2b0922c834351765b6e207f380d6"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-1-display-statistics.sh",
+      "role": "system-skill",
+      "sha256": "acbcacfadf614fc91416fa0b88101f06463a19de4a8e0ffb97215c3ba251788b"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-1-generate-after-structure.sh",
+      "role": "system-skill",
+      "sha256": "e5286178bf8f8d0b18fda9b557a6cacbc10d1b9e039827522fed1b6d74c51880"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-10-collect-error-context.sh",
+      "role": "system-skill",
+      "sha256": "1cd66f8a44602f21eeb516b734897517174a83ebae6b880521a1bd82abca469c"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-10-diagnostic-by-plan.sh",
+      "role": "system-skill",
+      "sha256": "567ad4f07e6ee4f26cdeb2451ac8dc02472002bca18cd1f998cddfea4b937233"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-10-generate-error-report.sh",
+      "role": "system-skill",
+      "sha256": "d92ba9fac4570de47f9722b9c66aa9c1e2e1fd87dedf714965be7b530927a416"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-2-analyze-changes.sh",
+      "role": "system-skill",
+      "sha256": "0226ed51458553c72aefa6ce9e2cf5ca5953ba610995ff77994e5993cde9a213"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-2-check-diff-report.sh",
+      "role": "system-skill",
+      "sha256": "039de874a503ab3ddeab31c8023922119a50c6a128dd4b4fe96e0c34c9d8eb5d"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-2-detect-backups.sh",
+      "role": "system-skill",
+      "sha256": "a100bc96dd8e4cc5dbf16826944fd9037ce85748c7a71b3dc2e2a469872890e4"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-2-validate-json.sh",
+      "role": "system-skill",
+      "sha256": "4b4e6f71e262cc1bda6c36a609ed93113648b25c93240ba8714ad5fdb90113f8"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-3-generate-mono-index.sh",
+      "role": "system-skill",
+      "sha256": "43c8774cb14ffb38660cca5ad1f73c237600a0bde3786401a4421d8342c22fe9"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-3-generate-multi-index.sh",
+      "role": "system-skill",
+      "sha256": "b3db1a9a5453fc14d27b9a29459590ade55c8d8f19a4e6b1f0d43095f5de2ee4"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-3-validate-indexes.sh",
+      "role": "system-skill",
+      "sha256": "a875ff7611c97ecdf87844be0fca2ce95eb8a4f000ac5d2c8f7575e57b1d9ad9"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-4-diagnostic-structure.sh",
+      "role": "system-skill",
+      "sha256": "a2c38044628b3c2ffa50173c87d7c928acb682f9ac3433a461f4199ecd055223"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-4-run-validation.sh",
+      "role": "system-skill",
+      "sha256": "5c1fd32dd0f0eff7673ff71c07cbcfa6c77330ca46354a1861190521db6cbea6"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-5-analyze-backups.sh",
+      "role": "system-skill",
+      "sha256": "6fac26f8507e12e538b9260bc30d8e0d25faabbd45da07cb4ecb73efd60780d9"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-5-cleanup-tmp-files.sh",
+      "role": "system-skill",
+      "sha256": "dca0e7c0a9aba6bdf1d5aeea3cb3d9a8c6a85d0a35d45df9462b5f39fffb128f"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-5-display-tmp-aikido.sh",
+      "role": "system-skill",
+      "sha256": "487a46f3f790dd64611c4d9f1f314cdb7fbad522ac395908c0fbbadfe202c2ed"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-6-analyze-validation-report.sh",
+      "role": "system-skill",
+      "sha256": "d76deaf071c86a472246ca3c7e879e3f73a94804f2d1eb262f035cd27212f430"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-6-invoke-validator.sh",
+      "role": "system-skill",
+      "sha256": "ef84f0f4654893895eb0a6a23a59bf552822e64272cd390be8421aac458ed75b"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-6-list-critical-files.sh",
+      "role": "system-skill",
+      "sha256": "ef3b1b0c9dfffa234dee1b31fc86cad75428fd806d5d6178786327e2d89c90f6"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-7-detect-gaps.sh",
+      "role": "system-skill",
+      "sha256": "2947e677a8d5888d1c05700cd7606276efaf7acb1c806537afba32ee73a8bf0d"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-7-propose-populate.sh",
+      "role": "system-skill",
+      "sha256": "aaa5c6e73b37c5098b079a4f33e3b47ac972ac53e2158f442e88183a36811ed4"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-8-deploy-agents.sh",
+      "role": "system-skill",
+      "sha256": "00c549d23a2853d3693145fc1158de0d23221cee52f123ee8760a1ec1c6ab562"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-8-deploy-commands.sh",
+      "role": "system-skill",
+      "sha256": "bffbb6ea002e753b47a241fa7dbb85f30785c308265d8b70c444b1030c9e2217"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-8-deploy-root-files.sh",
+      "role": "system-skill",
+      "sha256": "78ffab9b82335ac1e91e20c2f5ea61307d3352664875c91ffe69d0223a53741d"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/ending-8-validate-deployment.sh",
+      "role": "system-skill",
+      "sha256": "074a96aa3cc34d1dedfc668058cf7204f9f41b41131403a6d2b940fb9971462b"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/sync-directories.sh",
+      "role": "system-skill",
+      "sha256": "10dfc3f50119617d0a77ee8fc902fdcae2d0b49bb8640e0be7198b8bc3026549"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/sync-files.sh",
+      "role": "system-skill",
+      "sha256": "ad40ac58d584afd3736907f07526a7fe9aab3b903122b2013f6aa10959570b7b"
+    },
+    {
+      "path": ".agents/skills/maj/scripts/validate-structure.sh",
+      "role": "system-skill",
+      "sha256": "9976ebcea341ce6993438f274cc7fe2780266e99d292c63f3e644d40fc92cb07"
+    },
+    {
+      "path": ".agents/skills/optimize-command-with-aikido-agents/SKILL.md",
+      "role": "command",
+      "sha256": "85ab82b781af5cfe9f05f126f189b03c1c3fa9bb72c9b4aef37c603382e21550"
+    },
+    {
+      "path": ".agents/skills/orchestrator/SKILL.md",
+      "role": "system-skill",
+      "sha256": "8a95854a09cca0d024d3256e1f5be816e9458233043554280e21a829dc4ae3bd"
+    },
+    {
+      "path": ".agents/skills/orchestrator/contract.schema.json",
+      "role": "system-skill",
+      "sha256": "0b351bd18d7dece878419f5e12266e681c11f153f858e49dcda4c1e4901ed826"
+    },
+    {
+      "path": ".agents/skills/orchestrator/policy.json",
+      "role": "system-skill",
+      "sha256": "c8ada4c7f77a0eb5088e5f0e0f83451fd33935c1fc14d040380da88f18a1ee43"
+    },
+    {
+      "path": ".agents/skills/orchestrator/runtime.mjs",
+      "role": "system-skill",
+      "sha256": "f57804eaaeec34067f746b07a51c12d6dfcd1bce3e209bd853117efbcf2ba7b5"
+    },
+    {
+      "path": ".agents/skills/orchestrator/runtime.test.mjs",
+      "role": "system-skill",
+      "sha256": "f604f539a959a1b84c01f263894d386edbf335e33cd5b7b3fca6742bf6f341d0"
+    },
+    {
+      "path": ".agents/skills/orchestrator/sources/llm-pricing-5143-2026-10-09.csv",
+      "role": "system-skill",
+      "sha256": "5a589e0cabc94948d94921205259d061deb20f7c99727928b264010de25f300f"
+    },
+    {
+      "path": ".agents/skills/orchestrator/tracker.mjs",
+      "role": "system-skill",
+      "sha256": "3901582b8f8d614ba3f37d50bb11c4e9dfc6cbcb5c3f6171b57ce87185d98218"
+    },
+    {
+      "path": ".agents/skills/orchestrator/tracker.test.mjs",
+      "role": "system-skill",
+      "sha256": "685fb8a03b8f57a98c71a01db8406b183515cb85f9d78b0ae0703782dbc0be22"
+    },
+    {
+      "path": ".agents/skills/reindex-projet/SKILL.md",
+      "role": "command",
+      "sha256": "e7631e0a24b49f6d8dc0c1737abe7cb9449a5007aefdb5e0f40808a7418cc138"
+    },
+    {
+      "path": ".agents/skills/search/SKILL.md",
+      "role": "system-skill",
+      "sha256": "b704f2549d42eed35c04bdc9d2f24a81836a5cd63136c082439e945afcf5276b"
+    },
+    {
+      "path": ".agents/skills/search/plans/README.md",
+      "role": "system-skill",
+      "sha256": "d0d3dc01699741fb7c329886b984c807e8d0d9f255e066ac984f606b64fc708d"
+    },
+    {
+      "path": ".agents/skills/search/plans/javascript/plan.md",
+      "role": "system-skill",
+      "sha256": "f7c91408def6a55e1f4ae7d76f1697df3685370196470b667aed95b25620ae75"
+    },
+    {
+      "path": ".agents/skills/search/plans/php/plan.md",
+      "role": "system-skill",
+      "sha256": "d8ef5552bed160a4b67bfbe8d2f1670e76e111f8f3152ff144e30456bd9b5d44"
+    },
+    {
+      "path": ".agents/skills/search/plans/plan-generic.md",
+      "role": "system-skill",
+      "sha256": "3e718f5d0602483149176b21274a4bddd0c890ef9e213a8de7ddacec7e075d4f"
+    },
+    {
+      "path": ".agents/skills/search/plans/terraform/plan.md",
+      "role": "system-skill",
+      "sha256": "0548b4c490343e4069bd29aebe99174913bed42c7798aba99a15c58f4088a26e"
+    },
+    {
+      "path": ".agents/skills/skill-manage/SKILL.md",
+      "role": "command",
+      "sha256": "3e694375c87f7af4160672a3321bde4d344d33ae24a0d61977a220a8f8d8faba"
+    },
+    {
+      "path": ".agents/skills/structure/ARCHITECTURE-V3.1-HASH-ID.md",
+      "role": "system-skill",
+      "sha256": "21fbe90928d84da7ffd707b5324dbf4d3f7a7544818c757ef12d412a9382b456"
+    },
+    {
+      "path": ".agents/skills/structure/ARCHITECTURE-V3.md",
+      "role": "system-skill",
+      "sha256": "c5f9e0b7df9f29f26b4c5d23950f07ab88cbbe924189e8deb8c6286dc74f523c"
+    },
+    {
+      "path": ".agents/skills/structure/SKILL.md",
+      "role": "system-skill",
+      "sha256": "909eba69e539a1eb8e94f27256069c268b938cc557cafbd851ef4b4175d0fd14"
+    },
+    {
+      "path": ".agents/skills/structure/index.json",
+      "role": "system-skill",
+      "sha256": "5871d5691b4e4a3ed475594996375408812c7d1bbe7578fef2b48d212ed4871b"
+    },
+    {
+      "path": ".agents/skills/structure/scripts/clean-orphans.sh",
+      "role": "system-skill",
+      "sha256": "860813962798f4d4fa6fcd32f5fe0e9619a69be128bb780395785c2e54ac86b6"
+    },
+    {
+      "path": ".agents/skills/structure/scripts/format-file-metadata.sh",
+      "role": "system-skill",
+      "sha256": "c6e647a60359e862350d6fe59f509b5aa8b8e304cc09da96b9b8a85380b0b4ef"
+    },
+    {
+      "path": ".agents/skills/structure/scripts/generate-all-indexes-v3.1.sh",
+      "role": "system-skill",
+      "sha256": "db884caf41af525324f5fbe0a79d1cb9d063113dbed124c15e246b1d4bac65b3"
+    },
+    {
+      "path": ".agents/skills/structure/scripts/generate-index-by-alpha.sh",
+      "role": "system-skill",
+      "sha256": "182cb5604513347dd6e7c8a2646c59d025333a13a685227dc7fb81a57e4494f3"
+    },
+    {
+      "path": ".agents/skills/structure/scripts/generate-index-by-directory.sh",
+      "role": "system-skill",
+      "sha256": "574dce1dc5ed6ad54439cb28d97fd40d5620912adec3b189d882869200e04dc3"
+    },
+    {
+      "path": ".agents/skills/structure/scripts/generate-index-by-id-parallel.sh",
+      "role": "system-skill",
+      "sha256": "ecb2a9acbe32480f2d7726af240402a30a81cb57f9f1dacdc815df78a9c97d3a"
+    },
+    {
+      "path": ".agents/skills/structure/scripts/generate-index-by-id.sh",
+      "role": "system-skill",
+      "sha256": "b7c8bf19bb90033eca877d1103630ce508be300e053cb0a97c91307a0354c998"
+    },
+    {
+      "path": ".agents/skills/structure/scripts/generate-index-by-path.sh",
+      "role": "system-skill",
+      "sha256": "21b3b74b67cf1553545f2500fa45c5ccb03d8205a09ca557eebb9f1bae0c73b2"
+    },
+    {
+      "path": ".agents/skills/structure/scripts/generate-index-by-type.sh",
+      "role": "system-skill",
+      "sha256": "6261b4fd20e58af6df157aed04254813d53d0bc7f1247b5b43145e2c449f1d69"
+    },
+    {
+      "path": ".agents/skills/structure/scripts/generate-index-master.sh",
+      "role": "system-skill",
+      "sha256": "f1e01cbfbd297cf669e271f946a8a4c51150dd1d09bd2e8a9390752efb2de1d8"
+    },
+    {
+      "path": ".agents/skills/structure/scripts/generate-project-tree-json.sh",
+      "role": "system-skill",
+      "sha256": "cf22630a88abb81258fc797ce4aed70754b06d4d99a13962f5540186ce974079"
+    },
+    {
+      "path": ".agents/skills/structure/scripts/generate-project-tree.sh",
+      "role": "system-skill",
+      "sha256": "8f9d81c3b7208141f7ba389de88bcc6705743619605568be817d3daf0618e0e8"
+    },
+    {
+      "path": ".agents/skills/structure/scripts/lib/hash-utils.sh",
+      "role": "system-skill",
+      "sha256": "a63173e2ed78da1694329d3708c2489234ecc2b8fec61c0ab93fd85a48d98dd0"
+    },
+    {
+      "path": ".agents/skills/structure/scripts/update-incremental.sh",
+      "role": "system-skill",
+      "sha256": "216a94798e45d618d73563e6e3b6992c4fd7c85741cfd20b62b52da2b8c9e8fd"
+    },
+    {
+      "path": ".agents/skills/structure/scripts/watch-changes.sh",
+      "role": "system-skill",
+      "sha256": "d5aa9ec534371f55411a80a692af1477920563a8401e4f29b51613068be1526d"
+    },
+    {
+      "path": ".agents/skills/validate-analyse-plan/SKILL.md",
+      "role": "command",
+      "sha256": "ae17a217494c903d5234bbb2aa33ad823a5766f2ab9ad38b3b5772db58b6d663"
+    },
+    {
+      "path": ".agents/skills/validate-search-plan/SKILL.md",
+      "role": "command",
+      "sha256": "d12599c4e5b32a8bb295365884df347277af79b72288c15a39e580b0ab513a43"
+    },
+    {
+      "path": ".agents/skills/web/SKILL.md",
+      "role": "system-skill",
+      "sha256": "6b868dd9731266ab7a4fecea73659a84b0e0f8cee46a05445fd77165634efe44"
+    },
+    {
+      "path": ".agents/skills/web/commands/download-site.md",
+      "role": "system-skill",
+      "sha256": "2c22551c13765adf0e1165415e9aeed86b0615e21114bf2b18ae6863c208c78c"
+    },
+    {
+      "path": ".agents/skills/web/install-aikido.md",
+      "role": "system-skill",
+      "sha256": "06ea8c9acd3af3f1b8e474b7bf0995b21ea55a967097c66734f2e7ef3b9ec15a"
+    },
+    {
+      "path": ".agents/skills/web/script/download_site.sh",
+      "role": "system-skill",
+      "sha256": "39b82b4b7cec230eff7034ae77998f2e7def2c043dd6e15bf926a5478455710e"
+    },
+    {
+      "path": ".codex/agents/agent-aikido-balancer.toml",
+      "role": "agent",
+      "sha256": "b641da677df0ff14e63eb644dfa5635e985ff177bc8661a0563b01e08c56eebd"
+    },
+    {
+      "path": ".codex/agents/agent-aikido-bank-populate.toml",
+      "role": "agent",
+      "sha256": "8671cd806bd7b06adb3c541094a1a8f7b38b04719c9247597d9d958c2f49ba0a"
+    },
+    {
+      "path": ".codex/agents/agent-aikido-doc-header.toml",
+      "role": "agent",
+      "sha256": "90d49d23552c8294e4c69f813c01789c3ed0a487fbfa2e30ae6f2ffb1a75fe60"
+    },
+    {
+      "path": ".codex/agents/agent-aikido-explore-all.toml",
+      "role": "agent",
+      "sha256": "95de3bb8ed6ad35301b703d0dc93d817a1f2b4d40304dd006562af1d4c0a13e8"
+    },
+    {
+      "path": ".codex/agents/agent-aikido-explore-bank.toml",
+      "role": "agent",
+      "sha256": "b5d8f1d2eb19b22e7ff82f8c4cbd844de4292cfa7805bbbfb48c59802e664225"
+    },
+    {
+      "path": ".codex/agents/agent-aikido-explore-code.toml",
+      "role": "agent",
+      "sha256": "33e889e368de02f90b0195c04544f7040b0d649f8ed14c54a478de9bd8acc1f7"
+    },
+    {
+      "path": ".codex/agents/agent-aikido-fusion.toml",
+      "role": "agent",
+      "sha256": "2c0a88a0b20053d0b2ab33065b62791ad76aa65667636412836da05937ada89e"
+    },
+    {
+      "path": ".codex/agents/agent-aikido-helper.toml",
+      "role": "agent",
+      "sha256": "54d386ac0e11c5a864dfea33bd0b82e6a173f28bbb8e3d8d3c59caff24bffc1a"
+    },
+    {
+      "path": ".codex/agents/agent-aikido-maj-md-index.toml",
+      "role": "agent",
+      "sha256": "1483be908c2984916a88a133835ce5288210ea0e0d99ee7db7e36f17b41eb78b"
+    },
+    {
+      "path": ".codex/agents/agent-aikido-orchestrator.toml",
+      "role": "agent",
+      "sha256": "158aa7c4a803629723d710c60200052281cc3fa10ab38f3fc800658099690b2f"
+    },
+    {
+      "path": ".codex/agents/agent-aikido-projet-index.toml",
+      "role": "agent",
+      "sha256": "75a09c7b4cf53dfd93c25ab93a309aa3d9a6c85cc3c56853f6ccbec36644f153"
+    },
+    {
+      "path": ".codex/agents/agent-aikido-raci-delegator.toml",
+      "role": "agent",
+      "sha256": "124b6cbe8171a5beefd85fa7b1f6b55ae1faf07a3f7f7883f1e2e47d4416c8ed"
+    },
+    {
+      "path": ".codex/agents/agent-aikido-truth-evaluator.toml",
+      "role": "agent",
+      "sha256": "8c0319509e2647645acbcde1551ba5d745526c5f2d9b0e7017446ed13fa6bcc5"
+    },
+    {
+      "path": ".codex/agents/agent-aikido-update-controller.toml",
+      "role": "agent",
+      "sha256": "dab250122e2ee1a1d7c88a4cf8b1a80be20a8ad857fd7ad64ac64eaa57c612b3"
+    },
+    {
+      "path": ".codex/agents/agent-aikido-validator.toml",
+      "role": "agent",
+      "sha256": "de44da80839b4a999751db78594fcf9cf298bb1c123799d6643771a3160fc0b3"
+    },
+    {
+      "path": "README.md",
+      "role": "adapter",
+      "sha256": "499c803efbdff780d95004d2af740e853e48910b385e2d7d0dd5f84b6ceede20"
+    },
+    {
+      "path": "catalog.json",
+      "role": "runtime",
+      "sha256": "4658d7b0348b28dcb107599006ab36ebabd4c88fd7ee8c37d878e5022cecfd58"
+    },
+    {
+      "path": "lib/bootstrap-plan.mjs",
+      "role": "runtime",
+      "sha256": "ff2d8a517ed1a49f29c3997b99ecd7e2f7712862663541e692f4d527e55f0803"
+    },
+    {
+      "path": "lib/catalog.mjs",
+      "role": "runtime",
+      "sha256": "9bb5ab985d32c1d3d6b0f542d3bdd296431fedc47cc520d7c0d5d73f02d6c1a2"
+    },
+    {
+      "path": "lib/lock.mjs",
+      "role": "runtime",
+      "sha256": "13afd4623d667e6268de96dfabfdf843aacceafdd44d6ea89b63027b2316b5d9"
+    },
+    {
+      "path": "lib/managed-blocks.mjs",
+      "role": "runtime",
+      "sha256": "5abeeb22b2ed4738f6511ef3a8adb189cd614985013d2a839ff05dbd109c7f08"
+    },
+    {
+      "path": "lib/package.mjs",
+      "role": "runtime",
+      "sha256": "7357d58b77fab7eea3b4dc3dbf3942e71d49771a28c736da64362e8dadd33340"
+    },
+    {
+      "path": "lib/templates.mjs",
+      "role": "runtime",
+      "sha256": "1445b3ee0ddbec805b0dae1740c3e29d644e4807106b084491bec49efbdcdf57"
+    },
+    {
+      "path": "lib/update-plan.mjs",
+      "role": "runtime",
+      "sha256": "2442799e86640803e81efb65ae83287a837cc16bce34a1f97aa46852f7fc72b7"
+    },
+    {
+      "path": "payload/LICENSE",
+      "role": "payload",
+      "sha256": "56f56a19b92d41f97f55f79f14afa8bb14af443063c96c693c255efdde70b784"
+    },
+    {
+      "path": "payload/TRADEMARK.md",
+      "role": "payload",
+      "sha256": "6406f4949c554826232aaa9c2f5f986722611aae497b093af172de7bc17afa4b"
+    },
+    {
+      "path": "payload/prompts/hard_points/agents/agent-aikido-balancer.md",
+      "role": "payload",
+      "sha256": "e7451819a2f4f53b38b2e2663364dfc7f015d4676e11f56f1309d30ad906a4b7"
+    },
+    {
+      "path": "payload/prompts/hard_points/agents/agent-aikido-bank-populate.md",
+      "role": "payload",
+      "sha256": "6d9b30bb2b4445d28e3a46270e0b12ed4f12f932439dd79b56817a0fbfd71430"
+    },
+    {
+      "path": "payload/prompts/hard_points/agents/agent-aikido-doc-header.md",
+      "role": "payload",
+      "sha256": "6c1dfae9dea1e69d2ea1b7f6661c695ac4ea579d1de1dac1db424e23551c42e3"
+    },
+    {
+      "path": "payload/prompts/hard_points/agents/agent-aikido-explore-all.md",
+      "role": "payload",
+      "sha256": "15fa4a5bad4e586c7572bc842b30943839d536edc6e8d89e66edfe2e1f600bc1"
+    },
+    {
+      "path": "payload/prompts/hard_points/agents/agent-aikido-explore-bank.md",
+      "role": "payload",
+      "sha256": "bdfa11bf7a6f9e94b03520033c662cebc0cc975929a5706a2087aeac8a55a43b"
+    },
+    {
+      "path": "payload/prompts/hard_points/agents/agent-aikido-explore-code.md",
+      "role": "payload",
+      "sha256": "89695994768adcd90f033e19051e2bdb49f96ebefa5f889db390c11adf7e24c4"
+    },
+    {
+      "path": "payload/prompts/hard_points/agents/agent-aikido-fusion.md",
+      "role": "payload",
+      "sha256": "9177ba3ab94149fa37547c6b9ee50c1c0eabab0c4b2d1ec03b6db921b02b2fb0"
+    },
+    {
+      "path": "payload/prompts/hard_points/agents/agent-aikido-helper.md",
+      "role": "payload",
+      "sha256": "cda9056b188e563b1c96da83a40579160727fe07af10f961107fce6c9aa189aa"
+    },
+    {
+      "path": "payload/prompts/hard_points/agents/agent-aikido-maj-md-index.md",
+      "role": "payload",
+      "sha256": "7f5be154177d38f18bb3699a207d98ac0d498f3610b83036e094557e2240f427"
+    },
+    {
+      "path": "payload/prompts/hard_points/agents/agent-aikido-orchestrator.md",
+      "role": "payload",
+      "sha256": "8432134c8048b9340a83e724643138df62deb1d8055452e7388b3743429b57c3"
+    },
+    {
+      "path": "payload/prompts/hard_points/agents/agent-aikido-projet-index.md",
+      "role": "payload",
+      "sha256": "2f6c6c0fafed4a108b1539e9cddf668ecc9368c50d8ac2aff4dca5ee16f9ec48"
+    },
+    {
+      "path": "payload/prompts/hard_points/agents/agent-aikido-raci-delegator.md",
+      "role": "payload",
+      "sha256": "dd9bc2f7320004f0a3b4c27fdb185c724056b07ec52df637e9b5c97e00cc682d"
+    },
+    {
+      "path": "payload/prompts/hard_points/agents/agent-aikido-truth-evaluator.md",
+      "role": "payload",
+      "sha256": "6fd28576f04b9c8c18f9728e3eed37ebfc3543620d103b813fbea745fef7437d"
+    },
+    {
+      "path": "payload/prompts/hard_points/agents/agent-aikido-update-controller.md",
+      "role": "payload",
+      "sha256": "92e823eb95b50ad2e8151764748114c75658fece15414b790c5fb29c561b0dc5"
+    },
+    {
+      "path": "payload/prompts/hard_points/agents/agent-aikido-validator.md",
+      "role": "payload",
+      "sha256": "6bba44b8e65eaeb9eaab3912162c58e8e878bdd7e40aa33c1008f9111acb4a05"
+    },
+    {
+      "path": "payload/prompts/hard_points/agents/index.md",
+      "role": "payload",
+      "sha256": "42f2dbfcd21ff16ee751f592772309ec3b5c00af0d05c08b3d3c2581ceb6873b"
+    },
+    {
+      "path": "payload/prompts/hard_points/ai-kido-light.md",
+      "role": "payload",
+      "sha256": "d99a19911fd14bba44eef17e3cfad98dfa5b06aa9f70b24df0f6bc54cac37940"
+    },
+    {
+      "path": "payload/prompts/hard_points/ai-kido-light_details.md",
+      "role": "payload",
+      "sha256": "4f48db44c3baa78a5318d885027ef4d9257e1f3c570283757f5cfd1eab1ebcbd"
+    },
+    {
+      "path": "payload/prompts/hard_points/ai-kido.md",
+      "role": "payload",
+      "sha256": "71d206257e087f09df60bb4d5b29b72e5c4c46b769537e5b07d611b27ad90766"
+    },
+    {
+      "path": "payload/prompts/hard_points/ai-kido_details.md",
+      "role": "payload",
+      "sha256": "0a74c7fca31aca9b25e79f63b3b9733b5b63c043b856b27434806bd40f3cab62"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/analyse-aikido.md",
+      "role": "payload",
+      "sha256": "9656f9e790a177d4412bbfcd5b9f5ff93db27cee8adead1dc528f9e0ab630c77"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/analyse-project.md",
+      "role": "payload",
+      "sha256": "ded1c4d068ffdfd7afd463208ae088b896e6b28a6445c95903b3f3ab703bc2bc"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/check-claude.md",
+      "role": "payload",
+      "sha256": "337ddc601e486a5635a286f57a76b03ee2c0d4d578f4f9987e826cee9a9171dc"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/check-truth.md",
+      "role": "payload",
+      "sha256": "9dae0d693380f333ec2736b7d734cbba6f19628afb0f26f27776a4911e702ab4"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/clean-index.md",
+      "role": "payload",
+      "sha256": "d164bc1d9d396671263c61cc2186f8d27b512426fb7af437bc09da9c11039a1a"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/compile-agent-from-use.md",
+      "role": "payload",
+      "sha256": "4a21bf4c4a2775ca56046b8960a69d906d23d2c0f90e522bc494780b0cc49352"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/create-analyse-plan.md",
+      "role": "payload",
+      "sha256": "98743cd703e3fb26924de7688d4eaac1afbe4014d2f0401c70dac41ef3d3f62a"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/create-command.md",
+      "role": "payload",
+      "sha256": "12229de24ce3f723b6ebc4f68d319be84e0e2eb28b38b5c5c5727dcba702b5a7"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/create-persona.md",
+      "role": "payload",
+      "sha256": "d088fbfac8a2687c1c8ef6f8d35235c32af3739ab6bef376c48d39a7f72d8b7c"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/create-search-plan.md",
+      "role": "payload",
+      "sha256": "973d019096342deed71a3311991158c233df33e2da90837ecd9bee38a6d29690"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/create-skill.md",
+      "role": "payload",
+      "sha256": "80c478c123e30151f875b5c0399bf1b9bc064f2d49fd0f2950e2f43af580794c"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/init-aikido.md",
+      "role": "payload",
+      "sha256": "3533fa919791deaef3616a3356f47e02b8bacdd9e4d5b4d87ac1018e2289d7b9"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/init-glossaire.md",
+      "role": "payload",
+      "sha256": "d19e216c2ac0d0b5f7d8e283ff1db124247c9cff5698f573d1007a7ccd5f514b"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/init-raci-aikido.md",
+      "role": "payload",
+      "sha256": "370d0a5dfd6d2b001aeaa3f9cac8d53d5aa8c2aac9b42ca15959a7faea2ffb48"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/list-command.md",
+      "role": "payload",
+      "sha256": "4706c9ed6475498dbe6b56bfb45ab4e6e97c755c1e0b2a191fa2b983769b5b68"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/maj-aikido.md",
+      "role": "payload",
+      "sha256": "27282a70f8b3bf77f76618b6f07ee016211e77fb510a60ff68025fd79bb92def"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/optimize-command-with-aikido-agents.md",
+      "role": "payload",
+      "sha256": "99a0cf1a241e5c64c70bf1acf31fc22d89220bffd53370100e548ebfbd348827"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/reindex-projet.md",
+      "role": "payload",
+      "sha256": "c27e6dd133f0b8342b2fa1b047c703a073d23917b145a20b7d2f04e2c6b9ece8"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/skill-manage.md",
+      "role": "payload",
+      "sha256": "b8e8b06693050d721e3bc5495ba1e9c20326d2e1ae68063814797aa37e3c3e46"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/validate-analyse-plan.md",
+      "role": "payload",
+      "sha256": "37f28a9e60c9861bbbf925d0231db29a75c746babf92e51a4a0032dc84efca68"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/validate-search-plan.md",
+      "role": "payload",
+      "sha256": "28fb9a8b1e7871de157b9bb2e109b5cb765eafc6f3a32850a6480db2808cd907"
+    },
+    {
+      "path": "payload/prompts/hard_points/concepts/index.md",
+      "role": "payload",
+      "sha256": "ff04416b62966ea9cbc9da3838def62f4d01fc0e107764b1d592e1de0ce98c0c"
+    },
+    {
+      "path": "payload/prompts/hard_points/configuration/skills.cfg",
+      "role": "payload",
+      "sha256": "a02576786e08ba9abf5b6bc15819a6c8aeb1aa63da9a78593a2d02d9ccd0634f"
+    },
+    {
+      "path": "payload/prompts/hard_points/gestion-logs-aikido.md",
+      "role": "payload",
+      "sha256": "bafc2b7499d1f36f1ad77d4e8a3811006049b08b6d725d5f05720728d975be2c"
+    },
+    {
+      "path": "payload/prompts/hard_points/index.md",
+      "role": "payload",
+      "sha256": "a1415fe0a3b88a20f23184ce4e2d8ab66dac879aed316504c3f2e839f16d6cc0"
+    },
+    {
+      "path": "payload/prompts/hard_points/personas/index.md",
+      "role": "payload",
+      "sha256": "d5f9224eab7e261ca13ea58401a95b7a64f71c6c9913f884dfb63fd5f33182f6"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/Skills.md",
+      "role": "payload",
+      "sha256": "a2df820e9f8e8df603876e446229e400cc46400956fc5d6780648c44abdbeb03"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/analyse/SKILL.md",
+      "role": "payload",
+      "sha256": "94358a99dc86d06a294a9b5a8170d7006b90c229be8141283acaea58ff3faade"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/analyse/plans/README.md",
+      "role": "payload",
+      "sha256": "2c44af1f29411dc760a41bf03c541580f5e25821a046c6073f5951be7b1a2d5c"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/analyse/plans/plan-approfondi.md",
+      "role": "payload",
+      "sha256": "5b56c19ed1908cee3113b985b1ca9c8108e82cea681474d5243b29053a4e7117"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/analyse/plans/plan-expert.md",
+      "role": "payload",
+      "sha256": "61c2ed73447a4a2d037bd46d3365375cf1b28299f61cbe7fd776c3f3e99acf7f"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/analyse/plans/plan-standard.md",
+      "role": "payload",
+      "sha256": "a80073ca30a02240a43db7457e301145602e15b6b2dc267d2a4c0166ebf77e0a"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/analyse/plans/plan-survol.md",
+      "role": "payload",
+      "sha256": "07b924adfd97a1b9a4019c99d0277079d263413b09a79973e4697ae7d1ff153a"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/analyse/plans/technique/audit-complet/README.md",
+      "role": "payload",
+      "sha256": "99621a9a4fe2844b3894600ae0940073c05fbe9a63b75d7ce8a1a697844caae4"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/analyse/plans/technique/audit-complet/config-example.yml",
+      "role": "payload",
+      "sha256": "8c8dfec9ac1a448c68c33a9f667a1ce52111f42b22d35a5c344917b8d8c4e7e9"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/analyse/plans/technique/audit-complet/plan-expert.md",
+      "role": "payload",
+      "sha256": "b56200ba96a84b613adc518bd9d7c8867e967f7f361aa7468861bf9a6ed72607"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/SKILL.md",
+      "role": "payload",
+      "sha256": "c5de02ceeb71e571c3c9dfcbad125b6031c9918cfc112fcd87bf6fb3a684d46a"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/plans/README.md",
+      "role": "payload",
+      "sha256": "8286ae66b18acbfd5722b3e1db6ed6f4f3fc16c3f6594cc1561bac70473ce57a"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/plans/plan-V1.3.0.0.md",
+      "role": "payload",
+      "sha256": "42890206427e38397214c43d7b8f849cfa3d5cebb25364d145eb39fcf1627860"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/plans/plan-V1.3.1.0.md",
+      "role": "payload",
+      "sha256": "ff0ccdb4f619fc15fcaf6cbe94f5fd647d9b21349569f8c4be791b998b60c836"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/plans/plan-beginning.md",
+      "role": "payload",
+      "sha256": "671ac34b58c090c8f65c511f30be9221a5859e0ff6f5f973b138a44b320c1405"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/plans/plan-ending-0.md",
+      "role": "payload",
+      "sha256": "a3b5b23c22cd6de87e35efc77880e1bfeebb91accf9fe4972136b9f601cf7400"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/plans/plan-ending-1.md",
+      "role": "payload",
+      "sha256": "b246b180bead28172d2ba9ae0c5462096f493da1c890b84f7d1eefe7870a9da4"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/plans/plan-ending-10.md",
+      "role": "payload",
+      "sha256": "64abbdfc2b2f56edf1bc244e830021b75a1c689541b097e6fbae70ff4c2294be"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/plans/plan-ending-2.md",
+      "role": "payload",
+      "sha256": "0620a88a290d888ffc33ca5119488ad37c3a0b2dea70ba9060ff293c51614a60"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/plans/plan-ending-3.md",
+      "role": "payload",
+      "sha256": "098d3ee995414716f172dce50391ecd131b47af167aaa58f689b2fe0dc5cbd80"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/plans/plan-ending-4.md",
+      "role": "payload",
+      "sha256": "e43a9f7dfceb43bd8de5c7a1dd17c1df85619ae3ad5490ecbd246dc0f7d0a05e"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/plans/plan-ending-5.md",
+      "role": "payload",
+      "sha256": "9df5c7264ddb5f45156097ddc8a82a88c99b98f980bc3d832a84c4e51e7b40af"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/plans/plan-ending-6.md",
+      "role": "payload",
+      "sha256": "eb61d0888c3d6545cecbd223ec6c79de976aaf0613f793b126ccef360f168445"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/plans/plan-ending-7.md",
+      "role": "payload",
+      "sha256": "2c1e81e7e24bd1253851d3f42b8ca72e475d07df04735b57ac38ee124a765ffb"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/plans/plan-ending-8.md",
+      "role": "payload",
+      "sha256": "fb48804a809ce983a0bb18f2933df262496cc3c09b842d42672df2bea19394c3"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/beginning-check-backup.sh",
+      "role": "payload",
+      "sha256": "6f2f832b19714b757f6e62e89a87dd7f9befdae13d53fa6984932f6f978ff6d3"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/beginning-detect-versions.sh",
+      "role": "payload",
+      "sha256": "3b8a641e0713d8f707c37c9407efc48bfda7c47ddf116ac314712ec619f77fb7"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/beginning-generate-structure.sh",
+      "role": "payload",
+      "sha256": "98595042afcdc1eeea4d502d01ccf3c922d8f2e8db824c3dba100ed06df44c3f"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/check-file-exists.sh",
+      "role": "payload",
+      "sha256": "50463bba75f5116e979d06e91225ece877a3920272144ed0415609fdde2aa9e8"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/create-backup.sh",
+      "role": "payload",
+      "sha256": "02909d076503635e1380651896fb7394378a58161d716c79105f31f36b2b4189"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/create-log.sh",
+      "role": "payload",
+      "sha256": "02ab1fd2894243ecc91305dc0ccf28180f37880d3125ffdf3615a4421bbbd8f1"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/detect-project-type.sh",
+      "role": "payload",
+      "sha256": "030635438620dc5a152c367eafa240337392ec56509d16939a8c06ae2b2bbc5e"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/detect-version.sh",
+      "role": "payload",
+      "sha256": "3bc1d999ad683a50970af57a1622f9380606b33010283685a10bb631116a3842"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-0-ask-llm-capability.sh",
+      "role": "payload",
+      "sha256": "777465414e86d11a4aea24f22a4982cdfa9760ef19e06053c995c9555b1111c3"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-0-check-json-files.sh",
+      "role": "payload",
+      "sha256": "8a700841de9087704d98a88838b2394ef1fe2ba57dae6defee97be2344cb060d"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-0-generate-diff-report.sh",
+      "role": "payload",
+      "sha256": "59fbebde1fdc150b91fb9a245685d28a02a217fd2f69a4e71e2a055cb8f4e78a"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-0-process-fusion.sh",
+      "role": "payload",
+      "sha256": "10e1148704d45e6ec83b82b85c8df75807dbdb790b01037daad5861934e394f7"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-1-check-before-json.sh",
+      "role": "payload",
+      "sha256": "c1b7a021cddbf03901add9f197b13c65b6c6d30102dc0b728a7a4edacd681a5c"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-1-compare-structures.sh",
+      "role": "payload",
+      "sha256": "68cbbf6abe079ff8d483841d7f70a6c6be1d2b0922c834351765b6e207f380d6"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-1-display-statistics.sh",
+      "role": "payload",
+      "sha256": "acbcacfadf614fc91416fa0b88101f06463a19de4a8e0ffb97215c3ba251788b"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-1-generate-after-structure.sh",
+      "role": "payload",
+      "sha256": "e5286178bf8f8d0b18fda9b557a6cacbc10d1b9e039827522fed1b6d74c51880"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-10-collect-error-context.sh",
+      "role": "payload",
+      "sha256": "1cd66f8a44602f21eeb516b734897517174a83ebae6b880521a1bd82abca469c"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-10-diagnostic-by-plan.sh",
+      "role": "payload",
+      "sha256": "567ad4f07e6ee4f26cdeb2451ac8dc02472002bca18cd1f998cddfea4b937233"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-10-generate-error-report.sh",
+      "role": "payload",
+      "sha256": "d92ba9fac4570de47f9722b9c66aa9c1e2e1fd87dedf714965be7b530927a416"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-2-analyze-changes.sh",
+      "role": "payload",
+      "sha256": "0226ed51458553c72aefa6ce9e2cf5ca5953ba610995ff77994e5993cde9a213"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-2-check-diff-report.sh",
+      "role": "payload",
+      "sha256": "039de874a503ab3ddeab31c8023922119a50c6a128dd4b4fe96e0c34c9d8eb5d"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-2-detect-backups.sh",
+      "role": "payload",
+      "sha256": "a100bc96dd8e4cc5dbf16826944fd9037ce85748c7a71b3dc2e2a469872890e4"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-2-validate-json.sh",
+      "role": "payload",
+      "sha256": "4b4e6f71e262cc1bda6c36a609ed93113648b25c93240ba8714ad5fdb90113f8"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-3-generate-mono-index.sh",
+      "role": "payload",
+      "sha256": "43c8774cb14ffb38660cca5ad1f73c237600a0bde3786401a4421d8342c22fe9"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-3-generate-multi-index.sh",
+      "role": "payload",
+      "sha256": "b3db1a9a5453fc14d27b9a29459590ade55c8d8f19a4e6b1f0d43095f5de2ee4"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-3-validate-indexes.sh",
+      "role": "payload",
+      "sha256": "a875ff7611c97ecdf87844be0fca2ce95eb8a4f000ac5d2c8f7575e57b1d9ad9"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-4-diagnostic-structure.sh",
+      "role": "payload",
+      "sha256": "a2c38044628b3c2ffa50173c87d7c928acb682f9ac3433a461f4199ecd055223"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-4-run-validation.sh",
+      "role": "payload",
+      "sha256": "5c1fd32dd0f0eff7673ff71c07cbcfa6c77330ca46354a1861190521db6cbea6"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-5-analyze-backups.sh",
+      "role": "payload",
+      "sha256": "6fac26f8507e12e538b9260bc30d8e0d25faabbd45da07cb4ecb73efd60780d9"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-5-cleanup-tmp-files.sh",
+      "role": "payload",
+      "sha256": "dca0e7c0a9aba6bdf1d5aeea3cb3d9a8c6a85d0a35d45df9462b5f39fffb128f"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-5-display-tmp-aikido.sh",
+      "role": "payload",
+      "sha256": "487a46f3f790dd64611c4d9f1f314cdb7fbad522ac395908c0fbbadfe202c2ed"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-6-analyze-validation-report.sh",
+      "role": "payload",
+      "sha256": "d76deaf071c86a472246ca3c7e879e3f73a94804f2d1eb262f035cd27212f430"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-6-invoke-validator.sh",
+      "role": "payload",
+      "sha256": "ef84f0f4654893895eb0a6a23a59bf552822e64272cd390be8421aac458ed75b"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-6-list-critical-files.sh",
+      "role": "payload",
+      "sha256": "ef3b1b0c9dfffa234dee1b31fc86cad75428fd806d5d6178786327e2d89c90f6"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-7-detect-gaps.sh",
+      "role": "payload",
+      "sha256": "2947e677a8d5888d1c05700cd7606276efaf7acb1c806537afba32ee73a8bf0d"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-7-propose-populate.sh",
+      "role": "payload",
+      "sha256": "aaa5c6e73b37c5098b079a4f33e3b47ac972ac53e2158f442e88183a36811ed4"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-8-deploy-agents.sh",
+      "role": "payload",
+      "sha256": "00c549d23a2853d3693145fc1158de0d23221cee52f123ee8760a1ec1c6ab562"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-8-deploy-commands.sh",
+      "role": "payload",
+      "sha256": "bffbb6ea002e753b47a241fa7dbb85f30785c308265d8b70c444b1030c9e2217"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-8-deploy-root-files.sh",
+      "role": "payload",
+      "sha256": "78ffab9b82335ac1e91e20c2f5ea61307d3352664875c91ffe69d0223a53741d"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/ending-8-validate-deployment.sh",
+      "role": "payload",
+      "sha256": "074a96aa3cc34d1dedfc668058cf7204f9f41b41131403a6d2b940fb9971462b"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/sync-directories.sh",
+      "role": "payload",
+      "sha256": "10dfc3f50119617d0a77ee8fc902fdcae2d0b49bb8640e0be7198b8bc3026549"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/sync-files.sh",
+      "role": "payload",
+      "sha256": "ad40ac58d584afd3736907f07526a7fe9aab3b903122b2013f6aa10959570b7b"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/maj/scripts/validate-structure.sh",
+      "role": "payload",
+      "sha256": "9976ebcea341ce6993438f274cc7fe2780266e99d292c63f3e644d40fc92cb07"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/orchestrator/SKILL.md",
+      "role": "payload",
+      "sha256": "4967079ff8daded18bd5848959dabba391ab660c74de8f1aed0fb8e88c9bbfe9"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/orchestrator/contract.schema.json",
+      "role": "payload",
+      "sha256": "0b351bd18d7dece878419f5e12266e681c11f153f858e49dcda4c1e4901ed826"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/orchestrator/policy.json",
+      "role": "payload",
+      "sha256": "c8ada4c7f77a0eb5088e5f0e0f83451fd33935c1fc14d040380da88f18a1ee43"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/orchestrator/runtime.mjs",
+      "role": "payload",
+      "sha256": "f57804eaaeec34067f746b07a51c12d6dfcd1bce3e209bd853117efbcf2ba7b5"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/orchestrator/sources/llm-pricing-5143-2026-10-09.csv",
+      "role": "payload",
+      "sha256": "5a589e0cabc94948d94921205259d061deb20f7c99727928b264010de25f300f"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/orchestrator/tracker.mjs",
+      "role": "payload",
+      "sha256": "3901582b8f8d614ba3f37d50bb11c4e9dfc6cbcb5c3f6171b57ce87185d98218"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/search/SKILL.md",
+      "role": "payload",
+      "sha256": "f66310a905364d2c049727417fb8a8cea605edce5dcd955aad11ac944a5b3730"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/search/plans/README.md",
+      "role": "payload",
+      "sha256": "d0d3dc01699741fb7c329886b984c807e8d0d9f255e066ac984f606b64fc708d"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/search/plans/javascript/plan.md",
+      "role": "payload",
+      "sha256": "f7c91408def6a55e1f4ae7d76f1697df3685370196470b667aed95b25620ae75"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/search/plans/php/plan.md",
+      "role": "payload",
+      "sha256": "d8ef5552bed160a4b67bfbe8d2f1670e76e111f8f3152ff144e30456bd9b5d44"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/search/plans/plan-generic.md",
+      "role": "payload",
+      "sha256": "3e718f5d0602483149176b21274a4bddd0c890ef9e213a8de7ddacec7e075d4f"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/search/plans/terraform/plan.md",
+      "role": "payload",
+      "sha256": "0548b4c490343e4069bd29aebe99174913bed42c7798aba99a15c58f4088a26e"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/structure/ARCHITECTURE-V3.1-HASH-ID.md",
+      "role": "payload",
+      "sha256": "21fbe90928d84da7ffd707b5324dbf4d3f7a7544818c757ef12d412a9382b456"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/structure/ARCHITECTURE-V3.md",
+      "role": "payload",
+      "sha256": "c5f9e0b7df9f29f26b4c5d23950f07ab88cbbe924189e8deb8c6286dc74f523c"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/structure/SKILL.md",
+      "role": "payload",
+      "sha256": "1f4e763403f31bc3e274352e8611038d84542674503394da2151a0dd29f157a6"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/structure/index.json",
+      "role": "payload",
+      "sha256": "5871d5691b4e4a3ed475594996375408812c7d1bbe7578fef2b48d212ed4871b"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/structure/scripts/clean-orphans.sh",
+      "role": "payload",
+      "sha256": "860813962798f4d4fa6fcd32f5fe0e9619a69be128bb780395785c2e54ac86b6"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/structure/scripts/format-file-metadata.sh",
+      "role": "payload",
+      "sha256": "c6e647a60359e862350d6fe59f509b5aa8b8e304cc09da96b9b8a85380b0b4ef"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/structure/scripts/generate-all-indexes-v3.1.sh",
+      "role": "payload",
+      "sha256": "db884caf41af525324f5fbe0a79d1cb9d063113dbed124c15e246b1d4bac65b3"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/structure/scripts/generate-index-by-alpha.sh",
+      "role": "payload",
+      "sha256": "182cb5604513347dd6e7c8a2646c59d025333a13a685227dc7fb81a57e4494f3"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/structure/scripts/generate-index-by-directory.sh",
+      "role": "payload",
+      "sha256": "574dce1dc5ed6ad54439cb28d97fd40d5620912adec3b189d882869200e04dc3"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/structure/scripts/generate-index-by-id-parallel.sh",
+      "role": "payload",
+      "sha256": "ecb2a9acbe32480f2d7726af240402a30a81cb57f9f1dacdc815df78a9c97d3a"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/structure/scripts/generate-index-by-id.sh",
+      "role": "payload",
+      "sha256": "b7c8bf19bb90033eca877d1103630ce508be300e053cb0a97c91307a0354c998"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/structure/scripts/generate-index-by-path.sh",
+      "role": "payload",
+      "sha256": "21b3b74b67cf1553545f2500fa45c5ccb03d8205a09ca557eebb9f1bae0c73b2"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/structure/scripts/generate-index-by-type.sh",
+      "role": "payload",
+      "sha256": "6261b4fd20e58af6df157aed04254813d53d0bc7f1247b5b43145e2c449f1d69"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/structure/scripts/generate-index-master.sh",
+      "role": "payload",
+      "sha256": "f1e01cbfbd297cf669e271f946a8a4c51150dd1d09bd2e8a9390752efb2de1d8"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/structure/scripts/generate-project-tree-json.sh",
+      "role": "payload",
+      "sha256": "cf22630a88abb81258fc797ce4aed70754b06d4d99a13962f5540186ce974079"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/structure/scripts/generate-project-tree.sh",
+      "role": "payload",
+      "sha256": "8f9d81c3b7208141f7ba389de88bcc6705743619605568be817d3daf0618e0e8"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/structure/scripts/lib/hash-utils.sh",
+      "role": "payload",
+      "sha256": "a63173e2ed78da1694329d3708c2489234ecc2b8fec61c0ab93fd85a48d98dd0"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/structure/scripts/update-incremental.sh",
+      "role": "payload",
+      "sha256": "216a94798e45d618d73563e6e3b6992c4fd7c85741cfd20b62b52da2b8c9e8fd"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/structure/scripts/watch-changes.sh",
+      "role": "payload",
+      "sha256": "d5aa9ec534371f55411a80a692af1477920563a8401e4f29b51613068be1526d"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/web/SKILL.md",
+      "role": "payload",
+      "sha256": "aca8e3911be730fe15d512f3f508e07b4e946b7337bc835d4cac469f8107843f"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/web/commands/download-site.md",
+      "role": "payload",
+      "sha256": "2c22551c13765adf0e1165415e9aeed86b0615e21114bf2b18ae6863c208c78c"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/web/install-aikido.md",
+      "role": "payload",
+      "sha256": "06ea8c9acd3af3f1b8e474b7bf0995b21ea55a967097c66734f2e7ef3b9ec15a"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/web/script/download_site.sh",
+      "role": "payload",
+      "sha256": "39b82b4b7cec230eff7034ae77998f2e7def2c043dd6e15bf926a5478455710e"
+    },
+    {
+      "path": "payload/prompts/hard_points/techniques/index.md",
+      "role": "payload",
+      "sha256": "c6e5ce680d870ef1c6cc6f4b8a500ea852568103452c2f587f119c1c2fd503de"
+    },
+    {
+      "path": "payload/prompts/hard_points/use_cases/index.md",
+      "role": "payload",
+      "sha256": "885133587d5c692f12a46ad9327ff2ec038941b419d2843d59e41c9c6ec16ca5"
+    },
+    {
+      "path": "scripts/bootstrap-plan.mjs",
+      "role": "runtime",
+      "sha256": "1f9f325e862865214dcba405fb4b57c0a6cf9a88d3475478c5edfb0524d1e382"
+    },
+    {
+      "path": "scripts/update-plan.mjs",
+      "role": "runtime",
+      "sha256": "cf02cc9b92d90d4df5b79febf9cbc7abb2afe36347ab33ab910a78f3ef95eb53"
+    },
+    {
+      "path": "scripts/validate-package.mjs",
+      "role": "runtime",
+      "sha256": "e62a8305ea14269a90cd3ca8cf974b49416d5a0bb613182db57f8ddd178e0360"
+    },
+    {
+      "path": "templates/instructions/agents-block.md",
+      "role": "template",
+      "sha256": "a635fa36be7c9de95b01230c9d9437415c418a71a8daeb46e0c3a6bbb75714bc"
+    },
+    {
+      "path": "templates/instructions/claude-block.md",
+      "role": "template",
+      "sha256": "0f030a5ad8b3950cc01e509e7aab029975b72e4b797c9a4a79f64068feba44b9"
+    },
+    {
+      "path": "templates/instructions/gitignore-block.txt",
+      "role": "template",
+      "sha256": "c2a46ef877e70b720a24dffe74a792e0e2c6f756e7b3f36b73a0f098ac6227fe"
+    },
+    {
+      "path": "templates/manifest.json",
+      "role": "template",
+      "sha256": "c04601853655e9bef60beb2441a9ece9bfdb4c8b245b23e03c089134034f0df8"
+    },
+    {
+      "path": "templates/project/lists/agents_list.md",
+      "role": "template",
+      "sha256": "adc6a7e65beb432e7c7c85f8fb74a36551e354b40fa052e6e0e452c19ca043e0"
+    },
+    {
+      "path": "templates/project/lists/commands_list.md",
+      "role": "template",
+      "sha256": "7b0f181cc5744b796a0f05ed07a7f41610174922977127f78c93aa7df35a1ec1"
+    },
+    {
+      "path": "templates/project/lists/skills_list.md",
+      "role": "template",
+      "sha256": "77eff10ae8cfe292323272392f9560b6e51ea22c1e6e826ac0833c49bc59a5eb"
+    },
+    {
+      "path": "templates/project/prompts/gen/agents/index.md",
+      "role": "template",
+      "sha256": "7b45e4754d1ba1fd11ce2644f01599bd37f306ec526faef830d45423227ea620"
+    },
+    {
+      "path": "templates/project/prompts/gen/concepts/index.md",
+      "role": "template",
+      "sha256": "716cbbd0bfd35718c13e30225121d7cda24d5c550614f52228e36f4d99847c2f"
+    },
+    {
+      "path": "templates/project/prompts/gen/index.md",
+      "role": "template",
+      "sha256": "c22305f4d7daf32fef7b94ee536438068681de67dfed0c02ba0f71216b7c510a"
+    },
+    {
+      "path": "templates/project/prompts/gen/personas/index.md",
+      "role": "template",
+      "sha256": "c0700db522eab8d36f8c26a311db6391f44ae953ec627ad00080c504dfaadb89"
+    },
+    {
+      "path": "templates/project/prompts/gen/techniques/index.md",
+      "role": "template",
+      "sha256": "d25ddb0edabcf58901b3e76bf1135b4c70bf96da8a09493c4896b23151583c32"
+    },
+    {
+      "path": "templates/project/prompts/gen/use_cases/index.md",
+      "role": "template",
+      "sha256": "2575f282d8c96e987d9d63885a4a5e6d643c2876b9af68b5fe758aea79d44b05"
+    },
+    {
+      "path": "templates/project/prompts/index.light.md",
+      "role": "template",
+      "sha256": "f525c016a8d3923fc94e9760120ff1af3f2a98bb6313a034d6b794052f914890"
+    },
+    {
+      "path": "templates/project/prompts/index.standard.md",
+      "role": "template",
+      "sha256": "2759d7a5a3d40f4c108e78140bb1e5ec103077660fd46392ec54c48386fc1e1e"
+    },
+    {
+      "path": "templates/project/prompts/index.unset.md",
+      "role": "template",
+      "sha256": "771994107b7281cd206e24f08d71ad94896452c2a06b58d5c4186b7674cb2e6b"
+    },
+    {
+      "path": "templates/project/prompts/spec/index.md",
+      "role": "template",
+      "sha256": "84bbd837d5095865b0fb982f2d26ed1bd2e31ca6adbb6a2e0ccc27537b27b474"
+    }
+  ],
+  "payloadFiles": [
+    {
+      "source": "LICENSE",
+      "target": "LICENSE",
+      "packagePath": "payload/LICENSE",
+      "sha256": "56f56a19b92d41f97f55f79f14afa8bb14af443063c96c693c255efdde70b784",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "TRADEMARK.md",
+      "target": "TRADEMARK.md",
+      "packagePath": "payload/TRADEMARK.md",
+      "sha256": "6406f4949c554826232aaa9c2f5f986722611aae497b093af172de7bc17afa4b",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/agents/agent-aikido-balancer.md",
+      "target": "prompts/hard_points/agents/agent-aikido-balancer.md",
+      "packagePath": "payload/prompts/hard_points/agents/agent-aikido-balancer.md",
+      "sha256": "e7451819a2f4f53b38b2e2663364dfc7f015d4676e11f56f1309d30ad906a4b7",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/agents/agent-aikido-bank-populate.md",
+      "target": "prompts/hard_points/agents/agent-aikido-bank-populate.md",
+      "packagePath": "payload/prompts/hard_points/agents/agent-aikido-bank-populate.md",
+      "sha256": "6d9b30bb2b4445d28e3a46270e0b12ed4f12f932439dd79b56817a0fbfd71430",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/agents/agent-aikido-doc-header.md",
+      "target": "prompts/hard_points/agents/agent-aikido-doc-header.md",
+      "packagePath": "payload/prompts/hard_points/agents/agent-aikido-doc-header.md",
+      "sha256": "6c1dfae9dea1e69d2ea1b7f6661c695ac4ea579d1de1dac1db424e23551c42e3",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/agents/agent-aikido-explore-all.md",
+      "target": "prompts/hard_points/agents/agent-aikido-explore-all.md",
+      "packagePath": "payload/prompts/hard_points/agents/agent-aikido-explore-all.md",
+      "sha256": "15fa4a5bad4e586c7572bc842b30943839d536edc6e8d89e66edfe2e1f600bc1",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/agents/agent-aikido-explore-bank.md",
+      "target": "prompts/hard_points/agents/agent-aikido-explore-bank.md",
+      "packagePath": "payload/prompts/hard_points/agents/agent-aikido-explore-bank.md",
+      "sha256": "bdfa11bf7a6f9e94b03520033c662cebc0cc975929a5706a2087aeac8a55a43b",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/agents/agent-aikido-explore-code.md",
+      "target": "prompts/hard_points/agents/agent-aikido-explore-code.md",
+      "packagePath": "payload/prompts/hard_points/agents/agent-aikido-explore-code.md",
+      "sha256": "89695994768adcd90f033e19051e2bdb49f96ebefa5f889db390c11adf7e24c4",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/agents/agent-aikido-fusion.md",
+      "target": "prompts/hard_points/agents/agent-aikido-fusion.md",
+      "packagePath": "payload/prompts/hard_points/agents/agent-aikido-fusion.md",
+      "sha256": "9177ba3ab94149fa37547c6b9ee50c1c0eabab0c4b2d1ec03b6db921b02b2fb0",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/agents/agent-aikido-helper.md",
+      "target": "prompts/hard_points/agents/agent-aikido-helper.md",
+      "packagePath": "payload/prompts/hard_points/agents/agent-aikido-helper.md",
+      "sha256": "cda9056b188e563b1c96da83a40579160727fe07af10f961107fce6c9aa189aa",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/agents/agent-aikido-maj-md-index.md",
+      "target": "prompts/hard_points/agents/agent-aikido-maj-md-index.md",
+      "packagePath": "payload/prompts/hard_points/agents/agent-aikido-maj-md-index.md",
+      "sha256": "7f5be154177d38f18bb3699a207d98ac0d498f3610b83036e094557e2240f427",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/agents/agent-aikido-orchestrator.md",
+      "target": "prompts/hard_points/agents/agent-aikido-orchestrator.md",
+      "packagePath": "payload/prompts/hard_points/agents/agent-aikido-orchestrator.md",
+      "sha256": "8432134c8048b9340a83e724643138df62deb1d8055452e7388b3743429b57c3",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/agents/agent-aikido-projet-index.md",
+      "target": "prompts/hard_points/agents/agent-aikido-projet-index.md",
+      "packagePath": "payload/prompts/hard_points/agents/agent-aikido-projet-index.md",
+      "sha256": "2f6c6c0fafed4a108b1539e9cddf668ecc9368c50d8ac2aff4dca5ee16f9ec48",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/agents/agent-aikido-raci-delegator.md",
+      "target": "prompts/hard_points/agents/agent-aikido-raci-delegator.md",
+      "packagePath": "payload/prompts/hard_points/agents/agent-aikido-raci-delegator.md",
+      "sha256": "dd9bc2f7320004f0a3b4c27fdb185c724056b07ec52df637e9b5c97e00cc682d",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/agents/agent-aikido-truth-evaluator.md",
+      "target": "prompts/hard_points/agents/agent-aikido-truth-evaluator.md",
+      "packagePath": "payload/prompts/hard_points/agents/agent-aikido-truth-evaluator.md",
+      "sha256": "6fd28576f04b9c8c18f9728e3eed37ebfc3543620d103b813fbea745fef7437d",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/agents/agent-aikido-update-controller.md",
+      "target": "prompts/hard_points/agents/agent-aikido-update-controller.md",
+      "packagePath": "payload/prompts/hard_points/agents/agent-aikido-update-controller.md",
+      "sha256": "92e823eb95b50ad2e8151764748114c75658fece15414b790c5fb29c561b0dc5",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/agents/agent-aikido-validator.md",
+      "target": "prompts/hard_points/agents/agent-aikido-validator.md",
+      "packagePath": "payload/prompts/hard_points/agents/agent-aikido-validator.md",
+      "sha256": "6bba44b8e65eaeb9eaab3912162c58e8e878bdd7e40aa33c1008f9111acb4a05",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/agents/index.md",
+      "target": "prompts/hard_points/agents/index.md",
+      "packagePath": "payload/prompts/hard_points/agents/index.md",
+      "sha256": "42f2dbfcd21ff16ee751f592772309ec3b5c00af0d05c08b3d3c2581ceb6873b",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/ai-kido-light.md",
+      "target": "prompts/hard_points/ai-kido-light.md",
+      "packagePath": "payload/prompts/hard_points/ai-kido-light.md",
+      "sha256": "d99a19911fd14bba44eef17e3cfad98dfa5b06aa9f70b24df0f6bc54cac37940",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/ai-kido-light_details.md",
+      "target": "prompts/hard_points/ai-kido-light_details.md",
+      "packagePath": "payload/prompts/hard_points/ai-kido-light_details.md",
+      "sha256": "4f48db44c3baa78a5318d885027ef4d9257e1f3c570283757f5cfd1eab1ebcbd",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/ai-kido.md",
+      "target": "prompts/hard_points/ai-kido.md",
+      "packagePath": "payload/prompts/hard_points/ai-kido.md",
+      "sha256": "71d206257e087f09df60bb4d5b29b72e5c4c46b769537e5b07d611b27ad90766",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/ai-kido_details.md",
+      "target": "prompts/hard_points/ai-kido_details.md",
+      "packagePath": "payload/prompts/hard_points/ai-kido_details.md",
+      "sha256": "0a74c7fca31aca9b25e79f63b3b9733b5b63c043b856b27434806bd40f3cab62",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/analyse-aikido.md",
+      "target": "prompts/hard_points/commands/analyse-aikido.md",
+      "packagePath": "payload/prompts/hard_points/commands/analyse-aikido.md",
+      "sha256": "9656f9e790a177d4412bbfcd5b9f5ff93db27cee8adead1dc528f9e0ab630c77",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/analyse-project.md",
+      "target": "prompts/hard_points/commands/analyse-project.md",
+      "packagePath": "payload/prompts/hard_points/commands/analyse-project.md",
+      "sha256": "ded1c4d068ffdfd7afd463208ae088b896e6b28a6445c95903b3f3ab703bc2bc",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/check-claude.md",
+      "target": "prompts/hard_points/commands/check-claude.md",
+      "packagePath": "payload/prompts/hard_points/commands/check-claude.md",
+      "sha256": "337ddc601e486a5635a286f57a76b03ee2c0d4d578f4f9987e826cee9a9171dc",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/check-truth.md",
+      "target": "prompts/hard_points/commands/check-truth.md",
+      "packagePath": "payload/prompts/hard_points/commands/check-truth.md",
+      "sha256": "9dae0d693380f333ec2736b7d734cbba6f19628afb0f26f27776a4911e702ab4",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/clean-index.md",
+      "target": "prompts/hard_points/commands/clean-index.md",
+      "packagePath": "payload/prompts/hard_points/commands/clean-index.md",
+      "sha256": "d164bc1d9d396671263c61cc2186f8d27b512426fb7af437bc09da9c11039a1a",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/compile-agent-from-use.md",
+      "target": "prompts/hard_points/commands/compile-agent-from-use.md",
+      "packagePath": "payload/prompts/hard_points/commands/compile-agent-from-use.md",
+      "sha256": "4a21bf4c4a2775ca56046b8960a69d906d23d2c0f90e522bc494780b0cc49352",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/create-analyse-plan.md",
+      "target": "prompts/hard_points/commands/create-analyse-plan.md",
+      "packagePath": "payload/prompts/hard_points/commands/create-analyse-plan.md",
+      "sha256": "98743cd703e3fb26924de7688d4eaac1afbe4014d2f0401c70dac41ef3d3f62a",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/create-command.md",
+      "target": "prompts/hard_points/commands/create-command.md",
+      "packagePath": "payload/prompts/hard_points/commands/create-command.md",
+      "sha256": "12229de24ce3f723b6ebc4f68d319be84e0e2eb28b38b5c5c5727dcba702b5a7",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/create-persona.md",
+      "target": "prompts/hard_points/commands/create-persona.md",
+      "packagePath": "payload/prompts/hard_points/commands/create-persona.md",
+      "sha256": "d088fbfac8a2687c1c8ef6f8d35235c32af3739ab6bef376c48d39a7f72d8b7c",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/create-search-plan.md",
+      "target": "prompts/hard_points/commands/create-search-plan.md",
+      "packagePath": "payload/prompts/hard_points/commands/create-search-plan.md",
+      "sha256": "973d019096342deed71a3311991158c233df33e2da90837ecd9bee38a6d29690",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/create-skill.md",
+      "target": "prompts/hard_points/commands/create-skill.md",
+      "packagePath": "payload/prompts/hard_points/commands/create-skill.md",
+      "sha256": "80c478c123e30151f875b5c0399bf1b9bc064f2d49fd0f2950e2f43af580794c",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/init-aikido.md",
+      "target": "prompts/hard_points/commands/init-aikido.md",
+      "packagePath": "payload/prompts/hard_points/commands/init-aikido.md",
+      "sha256": "3533fa919791deaef3616a3356f47e02b8bacdd9e4d5b4d87ac1018e2289d7b9",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/init-glossaire.md",
+      "target": "prompts/hard_points/commands/init-glossaire.md",
+      "packagePath": "payload/prompts/hard_points/commands/init-glossaire.md",
+      "sha256": "d19e216c2ac0d0b5f7d8e283ff1db124247c9cff5698f573d1007a7ccd5f514b",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/init-raci-aikido.md",
+      "target": "prompts/hard_points/commands/init-raci-aikido.md",
+      "packagePath": "payload/prompts/hard_points/commands/init-raci-aikido.md",
+      "sha256": "370d0a5dfd6d2b001aeaa3f9cac8d53d5aa8c2aac9b42ca15959a7faea2ffb48",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/list-command.md",
+      "target": "prompts/hard_points/commands/list-command.md",
+      "packagePath": "payload/prompts/hard_points/commands/list-command.md",
+      "sha256": "4706c9ed6475498dbe6b56bfb45ab4e6e97c755c1e0b2a191fa2b983769b5b68",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/maj-aikido.md",
+      "target": "prompts/hard_points/commands/maj-aikido.md",
+      "packagePath": "payload/prompts/hard_points/commands/maj-aikido.md",
+      "sha256": "27282a70f8b3bf77f76618b6f07ee016211e77fb510a60ff68025fd79bb92def",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/optimize-command-with-aikido-agents.md",
+      "target": "prompts/hard_points/commands/optimize-command-with-aikido-agents.md",
+      "packagePath": "payload/prompts/hard_points/commands/optimize-command-with-aikido-agents.md",
+      "sha256": "99a0cf1a241e5c64c70bf1acf31fc22d89220bffd53370100e548ebfbd348827",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/reindex-projet.md",
+      "target": "prompts/hard_points/commands/reindex-projet.md",
+      "packagePath": "payload/prompts/hard_points/commands/reindex-projet.md",
+      "sha256": "c27e6dd133f0b8342b2fa1b047c703a073d23917b145a20b7d2f04e2c6b9ece8",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/skill-manage.md",
+      "target": "prompts/hard_points/commands/skill-manage.md",
+      "packagePath": "payload/prompts/hard_points/commands/skill-manage.md",
+      "sha256": "b8e8b06693050d721e3bc5495ba1e9c20326d2e1ae68063814797aa37e3c3e46",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/validate-analyse-plan.md",
+      "target": "prompts/hard_points/commands/validate-analyse-plan.md",
+      "packagePath": "payload/prompts/hard_points/commands/validate-analyse-plan.md",
+      "sha256": "37f28a9e60c9861bbbf925d0231db29a75c746babf92e51a4a0032dc84efca68",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/validate-search-plan.md",
+      "target": "prompts/hard_points/commands/validate-search-plan.md",
+      "packagePath": "payload/prompts/hard_points/commands/validate-search-plan.md",
+      "sha256": "28fb9a8b1e7871de157b9bb2e109b5cb765eafc6f3a32850a6480db2808cd907",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/concepts/index.md",
+      "target": "prompts/hard_points/concepts/index.md",
+      "packagePath": "payload/prompts/hard_points/concepts/index.md",
+      "sha256": "ff04416b62966ea9cbc9da3838def62f4d01fc0e107764b1d592e1de0ce98c0c",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/configuration/skills.cfg",
+      "target": "prompts/hard_points/configuration/skills.cfg",
+      "packagePath": "payload/prompts/hard_points/configuration/skills.cfg",
+      "sha256": "a02576786e08ba9abf5b6bc15819a6c8aeb1aa63da9a78593a2d02d9ccd0634f",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/gestion-logs-aikido.md",
+      "target": "prompts/hard_points/gestion-logs-aikido.md",
+      "packagePath": "payload/prompts/hard_points/gestion-logs-aikido.md",
+      "sha256": "bafc2b7499d1f36f1ad77d4e8a3811006049b08b6d725d5f05720728d975be2c",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/index.md",
+      "target": "prompts/hard_points/index.md",
+      "packagePath": "payload/prompts/hard_points/index.md",
+      "sha256": "a1415fe0a3b88a20f23184ce4e2d8ab66dac879aed316504c3f2e839f16d6cc0",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/personas/index.md",
+      "target": "prompts/hard_points/personas/index.md",
+      "packagePath": "payload/prompts/hard_points/personas/index.md",
+      "sha256": "d5f9224eab7e261ca13ea58401a95b7a64f71c6c9913f884dfb63fd5f33182f6",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/Skills.md",
+      "target": "prompts/hard_points/system/Skills.md",
+      "packagePath": "payload/prompts/hard_points/system/Skills.md",
+      "sha256": "a2df820e9f8e8df603876e446229e400cc46400956fc5d6780648c44abdbeb03",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/analyse/SKILL.md",
+      "target": "prompts/hard_points/system/analyse/SKILL.md",
+      "packagePath": "payload/prompts/hard_points/system/analyse/SKILL.md",
+      "sha256": "94358a99dc86d06a294a9b5a8170d7006b90c229be8141283acaea58ff3faade",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/analyse/plans/README.md",
+      "target": "prompts/hard_points/system/analyse/plans/README.md",
+      "packagePath": "payload/prompts/hard_points/system/analyse/plans/README.md",
+      "sha256": "2c44af1f29411dc760a41bf03c541580f5e25821a046c6073f5951be7b1a2d5c",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/analyse/plans/plan-approfondi.md",
+      "target": "prompts/hard_points/system/analyse/plans/plan-approfondi.md",
+      "packagePath": "payload/prompts/hard_points/system/analyse/plans/plan-approfondi.md",
+      "sha256": "5b56c19ed1908cee3113b985b1ca9c8108e82cea681474d5243b29053a4e7117",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/analyse/plans/plan-expert.md",
+      "target": "prompts/hard_points/system/analyse/plans/plan-expert.md",
+      "packagePath": "payload/prompts/hard_points/system/analyse/plans/plan-expert.md",
+      "sha256": "61c2ed73447a4a2d037bd46d3365375cf1b28299f61cbe7fd776c3f3e99acf7f",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/analyse/plans/plan-standard.md",
+      "target": "prompts/hard_points/system/analyse/plans/plan-standard.md",
+      "packagePath": "payload/prompts/hard_points/system/analyse/plans/plan-standard.md",
+      "sha256": "a80073ca30a02240a43db7457e301145602e15b6b2dc267d2a4c0166ebf77e0a",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/analyse/plans/plan-survol.md",
+      "target": "prompts/hard_points/system/analyse/plans/plan-survol.md",
+      "packagePath": "payload/prompts/hard_points/system/analyse/plans/plan-survol.md",
+      "sha256": "07b924adfd97a1b9a4019c99d0277079d263413b09a79973e4697ae7d1ff153a",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/analyse/plans/technique/audit-complet/README.md",
+      "target": "prompts/hard_points/system/analyse/plans/technique/audit-complet/README.md",
+      "packagePath": "payload/prompts/hard_points/system/analyse/plans/technique/audit-complet/README.md",
+      "sha256": "99621a9a4fe2844b3894600ae0940073c05fbe9a63b75d7ce8a1a697844caae4",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/analyse/plans/technique/audit-complet/config-example.yml",
+      "target": "prompts/hard_points/system/analyse/plans/technique/audit-complet/config-example.yml",
+      "packagePath": "payload/prompts/hard_points/system/analyse/plans/technique/audit-complet/config-example.yml",
+      "sha256": "8c8dfec9ac1a448c68c33a9f667a1ce52111f42b22d35a5c344917b8d8c4e7e9",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/analyse/plans/technique/audit-complet/plan-expert.md",
+      "target": "prompts/hard_points/system/analyse/plans/technique/audit-complet/plan-expert.md",
+      "packagePath": "payload/prompts/hard_points/system/analyse/plans/technique/audit-complet/plan-expert.md",
+      "sha256": "b56200ba96a84b613adc518bd9d7c8867e967f7f361aa7468861bf9a6ed72607",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/SKILL.md",
+      "target": "prompts/hard_points/system/maj/SKILL.md",
+      "packagePath": "payload/prompts/hard_points/system/maj/SKILL.md",
+      "sha256": "c5de02ceeb71e571c3c9dfcbad125b6031c9918cfc112fcd87bf6fb3a684d46a",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/plans/README.md",
+      "target": "prompts/hard_points/system/maj/plans/README.md",
+      "packagePath": "payload/prompts/hard_points/system/maj/plans/README.md",
+      "sha256": "8286ae66b18acbfd5722b3e1db6ed6f4f3fc16c3f6594cc1561bac70473ce57a",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/plans/plan-V1.3.0.0.md",
+      "target": "prompts/hard_points/system/maj/plans/plan-V1.3.0.0.md",
+      "packagePath": "payload/prompts/hard_points/system/maj/plans/plan-V1.3.0.0.md",
+      "sha256": "42890206427e38397214c43d7b8f849cfa3d5cebb25364d145eb39fcf1627860",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/plans/plan-V1.3.1.0.md",
+      "target": "prompts/hard_points/system/maj/plans/plan-V1.3.1.0.md",
+      "packagePath": "payload/prompts/hard_points/system/maj/plans/plan-V1.3.1.0.md",
+      "sha256": "ff0ccdb4f619fc15fcaf6cbe94f5fd647d9b21349569f8c4be791b998b60c836",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/plans/plan-beginning.md",
+      "target": "prompts/hard_points/system/maj/plans/plan-beginning.md",
+      "packagePath": "payload/prompts/hard_points/system/maj/plans/plan-beginning.md",
+      "sha256": "671ac34b58c090c8f65c511f30be9221a5859e0ff6f5f973b138a44b320c1405",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/plans/plan-ending-0.md",
+      "target": "prompts/hard_points/system/maj/plans/plan-ending-0.md",
+      "packagePath": "payload/prompts/hard_points/system/maj/plans/plan-ending-0.md",
+      "sha256": "a3b5b23c22cd6de87e35efc77880e1bfeebb91accf9fe4972136b9f601cf7400",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/plans/plan-ending-1.md",
+      "target": "prompts/hard_points/system/maj/plans/plan-ending-1.md",
+      "packagePath": "payload/prompts/hard_points/system/maj/plans/plan-ending-1.md",
+      "sha256": "b246b180bead28172d2ba9ae0c5462096f493da1c890b84f7d1eefe7870a9da4",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/plans/plan-ending-10.md",
+      "target": "prompts/hard_points/system/maj/plans/plan-ending-10.md",
+      "packagePath": "payload/prompts/hard_points/system/maj/plans/plan-ending-10.md",
+      "sha256": "64abbdfc2b2f56edf1bc244e830021b75a1c689541b097e6fbae70ff4c2294be",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/plans/plan-ending-2.md",
+      "target": "prompts/hard_points/system/maj/plans/plan-ending-2.md",
+      "packagePath": "payload/prompts/hard_points/system/maj/plans/plan-ending-2.md",
+      "sha256": "0620a88a290d888ffc33ca5119488ad37c3a0b2dea70ba9060ff293c51614a60",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/plans/plan-ending-3.md",
+      "target": "prompts/hard_points/system/maj/plans/plan-ending-3.md",
+      "packagePath": "payload/prompts/hard_points/system/maj/plans/plan-ending-3.md",
+      "sha256": "098d3ee995414716f172dce50391ecd131b47af167aaa58f689b2fe0dc5cbd80",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/plans/plan-ending-4.md",
+      "target": "prompts/hard_points/system/maj/plans/plan-ending-4.md",
+      "packagePath": "payload/prompts/hard_points/system/maj/plans/plan-ending-4.md",
+      "sha256": "e43a9f7dfceb43bd8de5c7a1dd17c1df85619ae3ad5490ecbd246dc0f7d0a05e",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/plans/plan-ending-5.md",
+      "target": "prompts/hard_points/system/maj/plans/plan-ending-5.md",
+      "packagePath": "payload/prompts/hard_points/system/maj/plans/plan-ending-5.md",
+      "sha256": "9df5c7264ddb5f45156097ddc8a82a88c99b98f980bc3d832a84c4e51e7b40af",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/plans/plan-ending-6.md",
+      "target": "prompts/hard_points/system/maj/plans/plan-ending-6.md",
+      "packagePath": "payload/prompts/hard_points/system/maj/plans/plan-ending-6.md",
+      "sha256": "eb61d0888c3d6545cecbd223ec6c79de976aaf0613f793b126ccef360f168445",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/plans/plan-ending-7.md",
+      "target": "prompts/hard_points/system/maj/plans/plan-ending-7.md",
+      "packagePath": "payload/prompts/hard_points/system/maj/plans/plan-ending-7.md",
+      "sha256": "2c1e81e7e24bd1253851d3f42b8ca72e475d07df04735b57ac38ee124a765ffb",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/plans/plan-ending-8.md",
+      "target": "prompts/hard_points/system/maj/plans/plan-ending-8.md",
+      "packagePath": "payload/prompts/hard_points/system/maj/plans/plan-ending-8.md",
+      "sha256": "fb48804a809ce983a0bb18f2933df262496cc3c09b842d42672df2bea19394c3",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/beginning-check-backup.sh",
+      "target": "prompts/hard_points/system/maj/scripts/beginning-check-backup.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/beginning-check-backup.sh",
+      "sha256": "6f2f832b19714b757f6e62e89a87dd7f9befdae13d53fa6984932f6f978ff6d3",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/beginning-detect-versions.sh",
+      "target": "prompts/hard_points/system/maj/scripts/beginning-detect-versions.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/beginning-detect-versions.sh",
+      "sha256": "3b8a641e0713d8f707c37c9407efc48bfda7c47ddf116ac314712ec619f77fb7",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/beginning-generate-structure.sh",
+      "target": "prompts/hard_points/system/maj/scripts/beginning-generate-structure.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/beginning-generate-structure.sh",
+      "sha256": "98595042afcdc1eeea4d502d01ccf3c922d8f2e8db824c3dba100ed06df44c3f",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/check-file-exists.sh",
+      "target": "prompts/hard_points/system/maj/scripts/check-file-exists.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/check-file-exists.sh",
+      "sha256": "50463bba75f5116e979d06e91225ece877a3920272144ed0415609fdde2aa9e8",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/create-backup.sh",
+      "target": "prompts/hard_points/system/maj/scripts/create-backup.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/create-backup.sh",
+      "sha256": "02909d076503635e1380651896fb7394378a58161d716c79105f31f36b2b4189",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/create-log.sh",
+      "target": "prompts/hard_points/system/maj/scripts/create-log.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/create-log.sh",
+      "sha256": "02ab1fd2894243ecc91305dc0ccf28180f37880d3125ffdf3615a4421bbbd8f1",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/detect-project-type.sh",
+      "target": "prompts/hard_points/system/maj/scripts/detect-project-type.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/detect-project-type.sh",
+      "sha256": "030635438620dc5a152c367eafa240337392ec56509d16939a8c06ae2b2bbc5e",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/detect-version.sh",
+      "target": "prompts/hard_points/system/maj/scripts/detect-version.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/detect-version.sh",
+      "sha256": "3bc1d999ad683a50970af57a1622f9380606b33010283685a10bb631116a3842",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-0-ask-llm-capability.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-0-ask-llm-capability.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-0-ask-llm-capability.sh",
+      "sha256": "777465414e86d11a4aea24f22a4982cdfa9760ef19e06053c995c9555b1111c3",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-0-check-json-files.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-0-check-json-files.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-0-check-json-files.sh",
+      "sha256": "8a700841de9087704d98a88838b2394ef1fe2ba57dae6defee97be2344cb060d",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-0-generate-diff-report.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-0-generate-diff-report.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-0-generate-diff-report.sh",
+      "sha256": "59fbebde1fdc150b91fb9a245685d28a02a217fd2f69a4e71e2a055cb8f4e78a",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-0-process-fusion.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-0-process-fusion.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-0-process-fusion.sh",
+      "sha256": "10e1148704d45e6ec83b82b85c8df75807dbdb790b01037daad5861934e394f7",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-1-check-before-json.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-1-check-before-json.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-1-check-before-json.sh",
+      "sha256": "c1b7a021cddbf03901add9f197b13c65b6c6d30102dc0b728a7a4edacd681a5c",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-1-compare-structures.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-1-compare-structures.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-1-compare-structures.sh",
+      "sha256": "68cbbf6abe079ff8d483841d7f70a6c6be1d2b0922c834351765b6e207f380d6",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-1-display-statistics.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-1-display-statistics.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-1-display-statistics.sh",
+      "sha256": "acbcacfadf614fc91416fa0b88101f06463a19de4a8e0ffb97215c3ba251788b",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-1-generate-after-structure.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-1-generate-after-structure.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-1-generate-after-structure.sh",
+      "sha256": "e5286178bf8f8d0b18fda9b557a6cacbc10d1b9e039827522fed1b6d74c51880",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-10-collect-error-context.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-10-collect-error-context.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-10-collect-error-context.sh",
+      "sha256": "1cd66f8a44602f21eeb516b734897517174a83ebae6b880521a1bd82abca469c",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-10-diagnostic-by-plan.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-10-diagnostic-by-plan.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-10-diagnostic-by-plan.sh",
+      "sha256": "567ad4f07e6ee4f26cdeb2451ac8dc02472002bca18cd1f998cddfea4b937233",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-10-generate-error-report.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-10-generate-error-report.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-10-generate-error-report.sh",
+      "sha256": "d92ba9fac4570de47f9722b9c66aa9c1e2e1fd87dedf714965be7b530927a416",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-2-analyze-changes.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-2-analyze-changes.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-2-analyze-changes.sh",
+      "sha256": "0226ed51458553c72aefa6ce9e2cf5ca5953ba610995ff77994e5993cde9a213",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-2-check-diff-report.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-2-check-diff-report.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-2-check-diff-report.sh",
+      "sha256": "039de874a503ab3ddeab31c8023922119a50c6a128dd4b4fe96e0c34c9d8eb5d",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-2-detect-backups.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-2-detect-backups.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-2-detect-backups.sh",
+      "sha256": "a100bc96dd8e4cc5dbf16826944fd9037ce85748c7a71b3dc2e2a469872890e4",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-2-validate-json.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-2-validate-json.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-2-validate-json.sh",
+      "sha256": "4b4e6f71e262cc1bda6c36a609ed93113648b25c93240ba8714ad5fdb90113f8",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-3-generate-mono-index.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-3-generate-mono-index.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-3-generate-mono-index.sh",
+      "sha256": "43c8774cb14ffb38660cca5ad1f73c237600a0bde3786401a4421d8342c22fe9",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-3-generate-multi-index.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-3-generate-multi-index.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-3-generate-multi-index.sh",
+      "sha256": "b3db1a9a5453fc14d27b9a29459590ade55c8d8f19a4e6b1f0d43095f5de2ee4",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-3-validate-indexes.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-3-validate-indexes.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-3-validate-indexes.sh",
+      "sha256": "a875ff7611c97ecdf87844be0fca2ce95eb8a4f000ac5d2c8f7575e57b1d9ad9",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-4-diagnostic-structure.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-4-diagnostic-structure.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-4-diagnostic-structure.sh",
+      "sha256": "a2c38044628b3c2ffa50173c87d7c928acb682f9ac3433a461f4199ecd055223",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-4-run-validation.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-4-run-validation.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-4-run-validation.sh",
+      "sha256": "5c1fd32dd0f0eff7673ff71c07cbcfa6c77330ca46354a1861190521db6cbea6",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-5-analyze-backups.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-5-analyze-backups.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-5-analyze-backups.sh",
+      "sha256": "6fac26f8507e12e538b9260bc30d8e0d25faabbd45da07cb4ecb73efd60780d9",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-5-cleanup-tmp-files.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-5-cleanup-tmp-files.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-5-cleanup-tmp-files.sh",
+      "sha256": "dca0e7c0a9aba6bdf1d5aeea3cb3d9a8c6a85d0a35d45df9462b5f39fffb128f",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-5-display-tmp-aikido.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-5-display-tmp-aikido.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-5-display-tmp-aikido.sh",
+      "sha256": "487a46f3f790dd64611c4d9f1f314cdb7fbad522ac395908c0fbbadfe202c2ed",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-6-analyze-validation-report.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-6-analyze-validation-report.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-6-analyze-validation-report.sh",
+      "sha256": "d76deaf071c86a472246ca3c7e879e3f73a94804f2d1eb262f035cd27212f430",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-6-invoke-validator.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-6-invoke-validator.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-6-invoke-validator.sh",
+      "sha256": "ef84f0f4654893895eb0a6a23a59bf552822e64272cd390be8421aac458ed75b",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-6-list-critical-files.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-6-list-critical-files.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-6-list-critical-files.sh",
+      "sha256": "ef3b1b0c9dfffa234dee1b31fc86cad75428fd806d5d6178786327e2d89c90f6",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-7-detect-gaps.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-7-detect-gaps.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-7-detect-gaps.sh",
+      "sha256": "2947e677a8d5888d1c05700cd7606276efaf7acb1c806537afba32ee73a8bf0d",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-7-propose-populate.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-7-propose-populate.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-7-propose-populate.sh",
+      "sha256": "aaa5c6e73b37c5098b079a4f33e3b47ac972ac53e2158f442e88183a36811ed4",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-8-deploy-agents.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-8-deploy-agents.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-8-deploy-agents.sh",
+      "sha256": "00c549d23a2853d3693145fc1158de0d23221cee52f123ee8760a1ec1c6ab562",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-8-deploy-commands.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-8-deploy-commands.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-8-deploy-commands.sh",
+      "sha256": "bffbb6ea002e753b47a241fa7dbb85f30785c308265d8b70c444b1030c9e2217",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-8-deploy-root-files.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-8-deploy-root-files.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-8-deploy-root-files.sh",
+      "sha256": "78ffab9b82335ac1e91e20c2f5ea61307d3352664875c91ffe69d0223a53741d",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/ending-8-validate-deployment.sh",
+      "target": "prompts/hard_points/system/maj/scripts/ending-8-validate-deployment.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/ending-8-validate-deployment.sh",
+      "sha256": "074a96aa3cc34d1dedfc668058cf7204f9f41b41131403a6d2b940fb9971462b",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/sync-directories.sh",
+      "target": "prompts/hard_points/system/maj/scripts/sync-directories.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/sync-directories.sh",
+      "sha256": "10dfc3f50119617d0a77ee8fc902fdcae2d0b49bb8640e0be7198b8bc3026549",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/sync-files.sh",
+      "target": "prompts/hard_points/system/maj/scripts/sync-files.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/sync-files.sh",
+      "sha256": "ad40ac58d584afd3736907f07526a7fe9aab3b903122b2013f6aa10959570b7b",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/maj/scripts/validate-structure.sh",
+      "target": "prompts/hard_points/system/maj/scripts/validate-structure.sh",
+      "packagePath": "payload/prompts/hard_points/system/maj/scripts/validate-structure.sh",
+      "sha256": "9976ebcea341ce6993438f274cc7fe2780266e99d292c63f3e644d40fc92cb07",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/orchestrator/SKILL.md",
+      "target": "prompts/hard_points/system/orchestrator/SKILL.md",
+      "packagePath": "payload/prompts/hard_points/system/orchestrator/SKILL.md",
+      "sha256": "4967079ff8daded18bd5848959dabba391ab660c74de8f1aed0fb8e88c9bbfe9",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/orchestrator/contract.schema.json",
+      "target": "prompts/hard_points/system/orchestrator/contract.schema.json",
+      "packagePath": "payload/prompts/hard_points/system/orchestrator/contract.schema.json",
+      "sha256": "0b351bd18d7dece878419f5e12266e681c11f153f858e49dcda4c1e4901ed826",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/orchestrator/policy.json",
+      "target": "prompts/hard_points/system/orchestrator/policy.json",
+      "packagePath": "payload/prompts/hard_points/system/orchestrator/policy.json",
+      "sha256": "c8ada4c7f77a0eb5088e5f0e0f83451fd33935c1fc14d040380da88f18a1ee43",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/orchestrator/runtime.mjs",
+      "target": "prompts/hard_points/system/orchestrator/runtime.mjs",
+      "packagePath": "payload/prompts/hard_points/system/orchestrator/runtime.mjs",
+      "sha256": "f57804eaaeec34067f746b07a51c12d6dfcd1bce3e209bd853117efbcf2ba7b5",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/orchestrator/sources/llm-pricing-5143-2026-10-09.csv",
+      "target": "prompts/hard_points/system/orchestrator/sources/llm-pricing-5143-2026-10-09.csv",
+      "packagePath": "payload/prompts/hard_points/system/orchestrator/sources/llm-pricing-5143-2026-10-09.csv",
+      "sha256": "5a589e0cabc94948d94921205259d061deb20f7c99727928b264010de25f300f",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/orchestrator/tracker.mjs",
+      "target": "prompts/hard_points/system/orchestrator/tracker.mjs",
+      "packagePath": "payload/prompts/hard_points/system/orchestrator/tracker.mjs",
+      "sha256": "3901582b8f8d614ba3f37d50bb11c4e9dfc6cbcb5c3f6171b57ce87185d98218",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/search/SKILL.md",
+      "target": "prompts/hard_points/system/search/SKILL.md",
+      "packagePath": "payload/prompts/hard_points/system/search/SKILL.md",
+      "sha256": "f66310a905364d2c049727417fb8a8cea605edce5dcd955aad11ac944a5b3730",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/search/plans/README.md",
+      "target": "prompts/hard_points/system/search/plans/README.md",
+      "packagePath": "payload/prompts/hard_points/system/search/plans/README.md",
+      "sha256": "d0d3dc01699741fb7c329886b984c807e8d0d9f255e066ac984f606b64fc708d",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/search/plans/javascript/plan.md",
+      "target": "prompts/hard_points/system/search/plans/javascript/plan.md",
+      "packagePath": "payload/prompts/hard_points/system/search/plans/javascript/plan.md",
+      "sha256": "f7c91408def6a55e1f4ae7d76f1697df3685370196470b667aed95b25620ae75",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/search/plans/php/plan.md",
+      "target": "prompts/hard_points/system/search/plans/php/plan.md",
+      "packagePath": "payload/prompts/hard_points/system/search/plans/php/plan.md",
+      "sha256": "d8ef5552bed160a4b67bfbe8d2f1670e76e111f8f3152ff144e30456bd9b5d44",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/search/plans/plan-generic.md",
+      "target": "prompts/hard_points/system/search/plans/plan-generic.md",
+      "packagePath": "payload/prompts/hard_points/system/search/plans/plan-generic.md",
+      "sha256": "3e718f5d0602483149176b21274a4bddd0c890ef9e213a8de7ddacec7e075d4f",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/search/plans/terraform/plan.md",
+      "target": "prompts/hard_points/system/search/plans/terraform/plan.md",
+      "packagePath": "payload/prompts/hard_points/system/search/plans/terraform/plan.md",
+      "sha256": "0548b4c490343e4069bd29aebe99174913bed42c7798aba99a15c58f4088a26e",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/structure/ARCHITECTURE-V3.1-HASH-ID.md",
+      "target": "prompts/hard_points/system/structure/ARCHITECTURE-V3.1-HASH-ID.md",
+      "packagePath": "payload/prompts/hard_points/system/structure/ARCHITECTURE-V3.1-HASH-ID.md",
+      "sha256": "21fbe90928d84da7ffd707b5324dbf4d3f7a7544818c757ef12d412a9382b456",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/structure/ARCHITECTURE-V3.md",
+      "target": "prompts/hard_points/system/structure/ARCHITECTURE-V3.md",
+      "packagePath": "payload/prompts/hard_points/system/structure/ARCHITECTURE-V3.md",
+      "sha256": "c5f9e0b7df9f29f26b4c5d23950f07ab88cbbe924189e8deb8c6286dc74f523c",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/structure/SKILL.md",
+      "target": "prompts/hard_points/system/structure/SKILL.md",
+      "packagePath": "payload/prompts/hard_points/system/structure/SKILL.md",
+      "sha256": "1f4e763403f31bc3e274352e8611038d84542674503394da2151a0dd29f157a6",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/structure/index.json",
+      "target": "prompts/hard_points/system/structure/index.json",
+      "packagePath": "payload/prompts/hard_points/system/structure/index.json",
+      "sha256": "5871d5691b4e4a3ed475594996375408812c7d1bbe7578fef2b48d212ed4871b",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/structure/scripts/clean-orphans.sh",
+      "target": "prompts/hard_points/system/structure/scripts/clean-orphans.sh",
+      "packagePath": "payload/prompts/hard_points/system/structure/scripts/clean-orphans.sh",
+      "sha256": "860813962798f4d4fa6fcd32f5fe0e9619a69be128bb780395785c2e54ac86b6",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/structure/scripts/format-file-metadata.sh",
+      "target": "prompts/hard_points/system/structure/scripts/format-file-metadata.sh",
+      "packagePath": "payload/prompts/hard_points/system/structure/scripts/format-file-metadata.sh",
+      "sha256": "c6e647a60359e862350d6fe59f509b5aa8b8e304cc09da96b9b8a85380b0b4ef",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/structure/scripts/generate-all-indexes-v3.1.sh",
+      "target": "prompts/hard_points/system/structure/scripts/generate-all-indexes-v3.1.sh",
+      "packagePath": "payload/prompts/hard_points/system/structure/scripts/generate-all-indexes-v3.1.sh",
+      "sha256": "db884caf41af525324f5fbe0a79d1cb9d063113dbed124c15e246b1d4bac65b3",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/structure/scripts/generate-index-by-alpha.sh",
+      "target": "prompts/hard_points/system/structure/scripts/generate-index-by-alpha.sh",
+      "packagePath": "payload/prompts/hard_points/system/structure/scripts/generate-index-by-alpha.sh",
+      "sha256": "182cb5604513347dd6e7c8a2646c59d025333a13a685227dc7fb81a57e4494f3",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/structure/scripts/generate-index-by-directory.sh",
+      "target": "prompts/hard_points/system/structure/scripts/generate-index-by-directory.sh",
+      "packagePath": "payload/prompts/hard_points/system/structure/scripts/generate-index-by-directory.sh",
+      "sha256": "574dce1dc5ed6ad54439cb28d97fd40d5620912adec3b189d882869200e04dc3",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/structure/scripts/generate-index-by-id-parallel.sh",
+      "target": "prompts/hard_points/system/structure/scripts/generate-index-by-id-parallel.sh",
+      "packagePath": "payload/prompts/hard_points/system/structure/scripts/generate-index-by-id-parallel.sh",
+      "sha256": "ecb2a9acbe32480f2d7726af240402a30a81cb57f9f1dacdc815df78a9c97d3a",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/structure/scripts/generate-index-by-id.sh",
+      "target": "prompts/hard_points/system/structure/scripts/generate-index-by-id.sh",
+      "packagePath": "payload/prompts/hard_points/system/structure/scripts/generate-index-by-id.sh",
+      "sha256": "b7c8bf19bb90033eca877d1103630ce508be300e053cb0a97c91307a0354c998",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/structure/scripts/generate-index-by-path.sh",
+      "target": "prompts/hard_points/system/structure/scripts/generate-index-by-path.sh",
+      "packagePath": "payload/prompts/hard_points/system/structure/scripts/generate-index-by-path.sh",
+      "sha256": "21b3b74b67cf1553545f2500fa45c5ccb03d8205a09ca557eebb9f1bae0c73b2",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/structure/scripts/generate-index-by-type.sh",
+      "target": "prompts/hard_points/system/structure/scripts/generate-index-by-type.sh",
+      "packagePath": "payload/prompts/hard_points/system/structure/scripts/generate-index-by-type.sh",
+      "sha256": "6261b4fd20e58af6df157aed04254813d53d0bc7f1247b5b43145e2c449f1d69",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/structure/scripts/generate-index-master.sh",
+      "target": "prompts/hard_points/system/structure/scripts/generate-index-master.sh",
+      "packagePath": "payload/prompts/hard_points/system/structure/scripts/generate-index-master.sh",
+      "sha256": "f1e01cbfbd297cf669e271f946a8a4c51150dd1d09bd2e8a9390752efb2de1d8",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/structure/scripts/generate-project-tree-json.sh",
+      "target": "prompts/hard_points/system/structure/scripts/generate-project-tree-json.sh",
+      "packagePath": "payload/prompts/hard_points/system/structure/scripts/generate-project-tree-json.sh",
+      "sha256": "cf22630a88abb81258fc797ce4aed70754b06d4d99a13962f5540186ce974079",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/structure/scripts/generate-project-tree.sh",
+      "target": "prompts/hard_points/system/structure/scripts/generate-project-tree.sh",
+      "packagePath": "payload/prompts/hard_points/system/structure/scripts/generate-project-tree.sh",
+      "sha256": "8f9d81c3b7208141f7ba389de88bcc6705743619605568be817d3daf0618e0e8",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/structure/scripts/lib/hash-utils.sh",
+      "target": "prompts/hard_points/system/structure/scripts/lib/hash-utils.sh",
+      "packagePath": "payload/prompts/hard_points/system/structure/scripts/lib/hash-utils.sh",
+      "sha256": "a63173e2ed78da1694329d3708c2489234ecc2b8fec61c0ab93fd85a48d98dd0",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/structure/scripts/update-incremental.sh",
+      "target": "prompts/hard_points/system/structure/scripts/update-incremental.sh",
+      "packagePath": "payload/prompts/hard_points/system/structure/scripts/update-incremental.sh",
+      "sha256": "216a94798e45d618d73563e6e3b6992c4fd7c85741cfd20b62b52da2b8c9e8fd",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/structure/scripts/watch-changes.sh",
+      "target": "prompts/hard_points/system/structure/scripts/watch-changes.sh",
+      "packagePath": "payload/prompts/hard_points/system/structure/scripts/watch-changes.sh",
+      "sha256": "d5aa9ec534371f55411a80a692af1477920563a8401e4f29b51613068be1526d",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/web/SKILL.md",
+      "target": "prompts/hard_points/system/web/SKILL.md",
+      "packagePath": "payload/prompts/hard_points/system/web/SKILL.md",
+      "sha256": "aca8e3911be730fe15d512f3f508e07b4e946b7337bc835d4cac469f8107843f",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/web/commands/download-site.md",
+      "target": "prompts/hard_points/system/web/commands/download-site.md",
+      "packagePath": "payload/prompts/hard_points/system/web/commands/download-site.md",
+      "sha256": "2c22551c13765adf0e1165415e9aeed86b0615e21114bf2b18ae6863c208c78c",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/web/install-aikido.md",
+      "target": "prompts/hard_points/system/web/install-aikido.md",
+      "packagePath": "payload/prompts/hard_points/system/web/install-aikido.md",
+      "sha256": "06ea8c9acd3af3f1b8e474b7bf0995b21ea55a967097c66734f2e7ef3b9ec15a",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/web/script/download_site.sh",
+      "target": "prompts/hard_points/system/web/script/download_site.sh",
+      "packagePath": "payload/prompts/hard_points/system/web/script/download_site.sh",
+      "sha256": "39b82b4b7cec230eff7034ae77998f2e7def2c043dd6e15bf926a5478455710e",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/techniques/index.md",
+      "target": "prompts/hard_points/techniques/index.md",
+      "packagePath": "payload/prompts/hard_points/techniques/index.md",
+      "sha256": "c6e5ce680d870ef1c6cc6f4b8a500ea852568103452c2f587f119c1c2fd503de",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/use_cases/index.md",
+      "target": "prompts/hard_points/use_cases/index.md",
+      "packagePath": "payload/prompts/hard_points/use_cases/index.md",
+      "sha256": "885133587d5c692f12a46ad9327ff2ec038941b419d2843d59e41c9c6ec16ca5",
+      "origin": "payload",
+      "policy": "three-way"
+    }
+  ],
+  "projectFiles": [
+    {
+      "source": ".agents/skills/analyse-aikido/SKILL.md",
+      "target": ".agents/skills/analyse-aikido/SKILL.md",
+      "sha256": "749e87ecab48ecb57a64d52765ceaf30c521cf9b4f8aeefafa9aed5c6fc72b4a",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/analyse-project/SKILL.md",
+      "target": ".agents/skills/analyse-project/SKILL.md",
+      "sha256": "ea4a9db1c198bfdcb5485fda5d727325fb0b2afe8880a977a838f58644cef712",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/analyse/SKILL.md",
+      "target": ".agents/skills/analyse/SKILL.md",
+      "sha256": "7285c3cbde6819ac63e3a16e15efd2b404e88e23b9ca568fc7b4806620a572da",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/analyse/plans/README.md",
+      "target": ".agents/skills/analyse/plans/README.md",
+      "sha256": "2c44af1f29411dc760a41bf03c541580f5e25821a046c6073f5951be7b1a2d5c",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/analyse/plans/plan-approfondi.md",
+      "target": ".agents/skills/analyse/plans/plan-approfondi.md",
+      "sha256": "5b56c19ed1908cee3113b985b1ca9c8108e82cea681474d5243b29053a4e7117",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/analyse/plans/plan-expert.md",
+      "target": ".agents/skills/analyse/plans/plan-expert.md",
+      "sha256": "61c2ed73447a4a2d037bd46d3365375cf1b28299f61cbe7fd776c3f3e99acf7f",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/analyse/plans/plan-standard.md",
+      "target": ".agents/skills/analyse/plans/plan-standard.md",
+      "sha256": "a80073ca30a02240a43db7457e301145602e15b6b2dc267d2a4c0166ebf77e0a",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/analyse/plans/plan-survol.md",
+      "target": ".agents/skills/analyse/plans/plan-survol.md",
+      "sha256": "07b924adfd97a1b9a4019c99d0277079d263413b09a79973e4697ae7d1ff153a",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/analyse/plans/technique/audit-complet/README.md",
+      "target": ".agents/skills/analyse/plans/technique/audit-complet/README.md",
+      "sha256": "54e3ef5d4d90bb4f031574bb928c651cb89f6874b856eb35cc8bb360f5f55d47",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/analyse/plans/technique/audit-complet/config-example.yml",
+      "target": ".agents/skills/analyse/plans/technique/audit-complet/config-example.yml",
+      "sha256": "8c8dfec9ac1a448c68c33a9f667a1ce52111f42b22d35a5c344917b8d8c4e7e9",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/analyse/plans/technique/audit-complet/plan-expert.md",
+      "target": ".agents/skills/analyse/plans/technique/audit-complet/plan-expert.md",
+      "sha256": "b56200ba96a84b613adc518bd9d7c8867e967f7f361aa7468861bf9a6ed72607",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/check-claude/SKILL.md",
+      "target": ".agents/skills/check-claude/SKILL.md",
+      "sha256": "b00c91a1d9d592e6aab8915b653d8e3595aa9cd1a0cb3078fa799e3d7dee0240",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/check-truth/SKILL.md",
+      "target": ".agents/skills/check-truth/SKILL.md",
+      "sha256": "6fc2027459034e35ab846ec74b213f06b307573db8fd43803f935bcff63ef443",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/clean-index/SKILL.md",
+      "target": ".agents/skills/clean-index/SKILL.md",
+      "sha256": "b564a6965e89a36555acd2cca0813ce9dc8edb2b177948fa2a8c173c3486e964",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/compile-agent-from-use/SKILL.md",
+      "target": ".agents/skills/compile-agent-from-use/SKILL.md",
+      "sha256": "ec62f52a0063beb9c071c5d2ee0d5e6c5c3ab22694e5ad6a98b817d7709a2193",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/create-analyse-plan/SKILL.md",
+      "target": ".agents/skills/create-analyse-plan/SKILL.md",
+      "sha256": "c4c77ef9a2b6d4902314fa907ac3eeaa2bd48c18a1a1b823b4296f6c8c1249be",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/create-command/SKILL.md",
+      "target": ".agents/skills/create-command/SKILL.md",
+      "sha256": "6fad1044f93a66e2c1e29657860af69ac1d00d4a09f0f9923835c28832ef7fc9",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/create-persona/SKILL.md",
+      "target": ".agents/skills/create-persona/SKILL.md",
+      "sha256": "c2c586bd9f59b026f29455b7a47aadff52b04110c3e284a0b0daf166117c3cb1",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/create-search-plan/SKILL.md",
+      "target": ".agents/skills/create-search-plan/SKILL.md",
+      "sha256": "09206904815c3c8361318dd169aedc54c653648ea08cfadc0e5ba5c94f363c6e",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/create-skill/SKILL.md",
+      "target": ".agents/skills/create-skill/SKILL.md",
+      "sha256": "1206df0e4b1773f0a3254844a8236e586b8a295e2e6ae3e00db4e6abf8581d4b",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/download-site/SKILL.md",
+      "target": ".agents/skills/download-site/SKILL.md",
+      "sha256": "ad7188a4e8379a8ba0e257ab0c498979c7b12f9bc2a9f05223d60769cf390fcc",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/init-aikido/SKILL.md",
+      "target": ".agents/skills/init-aikido/SKILL.md",
+      "sha256": "b40050e1c80fea3d67a2a14c9168bea6f4a5d8f653e0db51e419a0393522d9be",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/init-glossaire/SKILL.md",
+      "target": ".agents/skills/init-glossaire/SKILL.md",
+      "sha256": "8e95533e391ffcef91c6042d57ada786e94a9e8aa61f02b77729f4de70f132a5",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/init-raci-aikido/SKILL.md",
+      "target": ".agents/skills/init-raci-aikido/SKILL.md",
+      "sha256": "270b32cc62aab284ac635ee8d75e8fb3687c0016e1d1dd239889d290c264a867",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/list-command/SKILL.md",
+      "target": ".agents/skills/list-command/SKILL.md",
+      "sha256": "348cea3b2a0150c33af7c5f9879ce4e7e254a58cc9fa6823fe31c1767db34f3b",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj-aikido/SKILL.md",
+      "target": ".agents/skills/maj-aikido/SKILL.md",
+      "sha256": "8c8aaa9a74fa9ce222860cf50e7daf97561642ad3f0914ce79031727d3bbaa5d",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/SKILL.md",
+      "target": ".agents/skills/maj/SKILL.md",
+      "sha256": "e03939092b1ca34250ce397fe2712dea9e285a7ac80d19d6cf342385882d0c56",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/plans/README.md",
+      "target": ".agents/skills/maj/plans/README.md",
+      "sha256": "e9902373787fa83fde02c4a5d24eba03e9a8b97cab1c5b61e16a4fd6bbd64625",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/plans/plan-V1.3.0.0.md",
+      "target": ".agents/skills/maj/plans/plan-V1.3.0.0.md",
+      "sha256": "42890206427e38397214c43d7b8f849cfa3d5cebb25364d145eb39fcf1627860",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/plans/plan-V1.3.1.0.md",
+      "target": ".agents/skills/maj/plans/plan-V1.3.1.0.md",
+      "sha256": "ff0ccdb4f619fc15fcaf6cbe94f5fd647d9b21349569f8c4be791b998b60c836",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/plans/plan-beginning.md",
+      "target": ".agents/skills/maj/plans/plan-beginning.md",
+      "sha256": "b3cb475d8927892c3bc21348504d05e2717f852f78eeb18536a6ad80a87cc692",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/plans/plan-ending-0.md",
+      "target": ".agents/skills/maj/plans/plan-ending-0.md",
+      "sha256": "f3c71935d6b75779b154683ea0bfafe99e048596f424697e5fdccac53ab294ec",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/plans/plan-ending-1.md",
+      "target": ".agents/skills/maj/plans/plan-ending-1.md",
+      "sha256": "efd0c385d2ce36bf411c8de9a76d45792e4260defcd169299dd4bab4525fc1c4",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/plans/plan-ending-10.md",
+      "target": ".agents/skills/maj/plans/plan-ending-10.md",
+      "sha256": "64abbdfc2b2f56edf1bc244e830021b75a1c689541b097e6fbae70ff4c2294be",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/plans/plan-ending-2.md",
+      "target": ".agents/skills/maj/plans/plan-ending-2.md",
+      "sha256": "0620a88a290d888ffc33ca5119488ad37c3a0b2dea70ba9060ff293c51614a60",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/plans/plan-ending-3.md",
+      "target": ".agents/skills/maj/plans/plan-ending-3.md",
+      "sha256": "5c978aaed746779ecc43f0425549d214360bf567da42e78f216da40fe3546c8b",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/plans/plan-ending-4.md",
+      "target": ".agents/skills/maj/plans/plan-ending-4.md",
+      "sha256": "fb8011b3f636525d239ce4a50b1398e8be6ffc500108cc0c6e08cabd96941551",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/plans/plan-ending-5.md",
+      "target": ".agents/skills/maj/plans/plan-ending-5.md",
+      "sha256": "9df5c7264ddb5f45156097ddc8a82a88c99b98f980bc3d832a84c4e51e7b40af",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/plans/plan-ending-6.md",
+      "target": ".agents/skills/maj/plans/plan-ending-6.md",
+      "sha256": "0a9cc7aee365f84da2306726472b07877a57be8cd55bb89c2edfe952b5b296e7",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/plans/plan-ending-7.md",
+      "target": ".agents/skills/maj/plans/plan-ending-7.md",
+      "sha256": "266cb982a44c2fe334bb5b19d1c519b42bc4c59951767eb96aadcdf05e6a6d08",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/plans/plan-ending-8.md",
+      "target": ".agents/skills/maj/plans/plan-ending-8.md",
+      "sha256": "fb48804a809ce983a0bb18f2933df262496cc3c09b842d42672df2bea19394c3",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/beginning-check-backup.sh",
+      "target": ".agents/skills/maj/scripts/beginning-check-backup.sh",
+      "sha256": "6f2f832b19714b757f6e62e89a87dd7f9befdae13d53fa6984932f6f978ff6d3",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/beginning-detect-versions.sh",
+      "target": ".agents/skills/maj/scripts/beginning-detect-versions.sh",
+      "sha256": "3b8a641e0713d8f707c37c9407efc48bfda7c47ddf116ac314712ec619f77fb7",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/beginning-generate-structure.sh",
+      "target": ".agents/skills/maj/scripts/beginning-generate-structure.sh",
+      "sha256": "98595042afcdc1eeea4d502d01ccf3c922d8f2e8db824c3dba100ed06df44c3f",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/check-file-exists.sh",
+      "target": ".agents/skills/maj/scripts/check-file-exists.sh",
+      "sha256": "50463bba75f5116e979d06e91225ece877a3920272144ed0415609fdde2aa9e8",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/create-backup.sh",
+      "target": ".agents/skills/maj/scripts/create-backup.sh",
+      "sha256": "02909d076503635e1380651896fb7394378a58161d716c79105f31f36b2b4189",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/create-log.sh",
+      "target": ".agents/skills/maj/scripts/create-log.sh",
+      "sha256": "02ab1fd2894243ecc91305dc0ccf28180f37880d3125ffdf3615a4421bbbd8f1",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/detect-project-type.sh",
+      "target": ".agents/skills/maj/scripts/detect-project-type.sh",
+      "sha256": "030635438620dc5a152c367eafa240337392ec56509d16939a8c06ae2b2bbc5e",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/detect-version.sh",
+      "target": ".agents/skills/maj/scripts/detect-version.sh",
+      "sha256": "3bc1d999ad683a50970af57a1622f9380606b33010283685a10bb631116a3842",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-0-ask-llm-capability.sh",
+      "target": ".agents/skills/maj/scripts/ending-0-ask-llm-capability.sh",
+      "sha256": "777465414e86d11a4aea24f22a4982cdfa9760ef19e06053c995c9555b1111c3",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-0-check-json-files.sh",
+      "target": ".agents/skills/maj/scripts/ending-0-check-json-files.sh",
+      "sha256": "8a700841de9087704d98a88838b2394ef1fe2ba57dae6defee97be2344cb060d",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-0-generate-diff-report.sh",
+      "target": ".agents/skills/maj/scripts/ending-0-generate-diff-report.sh",
+      "sha256": "59fbebde1fdc150b91fb9a245685d28a02a217fd2f69a4e71e2a055cb8f4e78a",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-0-process-fusion.sh",
+      "target": ".agents/skills/maj/scripts/ending-0-process-fusion.sh",
+      "sha256": "10e1148704d45e6ec83b82b85c8df75807dbdb790b01037daad5861934e394f7",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-1-check-before-json.sh",
+      "target": ".agents/skills/maj/scripts/ending-1-check-before-json.sh",
+      "sha256": "c1b7a021cddbf03901add9f197b13c65b6c6d30102dc0b728a7a4edacd681a5c",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-1-compare-structures.sh",
+      "target": ".agents/skills/maj/scripts/ending-1-compare-structures.sh",
+      "sha256": "68cbbf6abe079ff8d483841d7f70a6c6be1d2b0922c834351765b6e207f380d6",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-1-display-statistics.sh",
+      "target": ".agents/skills/maj/scripts/ending-1-display-statistics.sh",
+      "sha256": "acbcacfadf614fc91416fa0b88101f06463a19de4a8e0ffb97215c3ba251788b",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-1-generate-after-structure.sh",
+      "target": ".agents/skills/maj/scripts/ending-1-generate-after-structure.sh",
+      "sha256": "e5286178bf8f8d0b18fda9b557a6cacbc10d1b9e039827522fed1b6d74c51880",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-10-collect-error-context.sh",
+      "target": ".agents/skills/maj/scripts/ending-10-collect-error-context.sh",
+      "sha256": "1cd66f8a44602f21eeb516b734897517174a83ebae6b880521a1bd82abca469c",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-10-diagnostic-by-plan.sh",
+      "target": ".agents/skills/maj/scripts/ending-10-diagnostic-by-plan.sh",
+      "sha256": "567ad4f07e6ee4f26cdeb2451ac8dc02472002bca18cd1f998cddfea4b937233",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-10-generate-error-report.sh",
+      "target": ".agents/skills/maj/scripts/ending-10-generate-error-report.sh",
+      "sha256": "d92ba9fac4570de47f9722b9c66aa9c1e2e1fd87dedf714965be7b530927a416",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-2-analyze-changes.sh",
+      "target": ".agents/skills/maj/scripts/ending-2-analyze-changes.sh",
+      "sha256": "0226ed51458553c72aefa6ce9e2cf5ca5953ba610995ff77994e5993cde9a213",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-2-check-diff-report.sh",
+      "target": ".agents/skills/maj/scripts/ending-2-check-diff-report.sh",
+      "sha256": "039de874a503ab3ddeab31c8023922119a50c6a128dd4b4fe96e0c34c9d8eb5d",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-2-detect-backups.sh",
+      "target": ".agents/skills/maj/scripts/ending-2-detect-backups.sh",
+      "sha256": "a100bc96dd8e4cc5dbf16826944fd9037ce85748c7a71b3dc2e2a469872890e4",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-2-validate-json.sh",
+      "target": ".agents/skills/maj/scripts/ending-2-validate-json.sh",
+      "sha256": "4b4e6f71e262cc1bda6c36a609ed93113648b25c93240ba8714ad5fdb90113f8",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-3-generate-mono-index.sh",
+      "target": ".agents/skills/maj/scripts/ending-3-generate-mono-index.sh",
+      "sha256": "43c8774cb14ffb38660cca5ad1f73c237600a0bde3786401a4421d8342c22fe9",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-3-generate-multi-index.sh",
+      "target": ".agents/skills/maj/scripts/ending-3-generate-multi-index.sh",
+      "sha256": "b3db1a9a5453fc14d27b9a29459590ade55c8d8f19a4e6b1f0d43095f5de2ee4",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-3-validate-indexes.sh",
+      "target": ".agents/skills/maj/scripts/ending-3-validate-indexes.sh",
+      "sha256": "a875ff7611c97ecdf87844be0fca2ce95eb8a4f000ac5d2c8f7575e57b1d9ad9",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-4-diagnostic-structure.sh",
+      "target": ".agents/skills/maj/scripts/ending-4-diagnostic-structure.sh",
+      "sha256": "a2c38044628b3c2ffa50173c87d7c928acb682f9ac3433a461f4199ecd055223",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-4-run-validation.sh",
+      "target": ".agents/skills/maj/scripts/ending-4-run-validation.sh",
+      "sha256": "5c1fd32dd0f0eff7673ff71c07cbcfa6c77330ca46354a1861190521db6cbea6",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-5-analyze-backups.sh",
+      "target": ".agents/skills/maj/scripts/ending-5-analyze-backups.sh",
+      "sha256": "6fac26f8507e12e538b9260bc30d8e0d25faabbd45da07cb4ecb73efd60780d9",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-5-cleanup-tmp-files.sh",
+      "target": ".agents/skills/maj/scripts/ending-5-cleanup-tmp-files.sh",
+      "sha256": "dca0e7c0a9aba6bdf1d5aeea3cb3d9a8c6a85d0a35d45df9462b5f39fffb128f",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-5-display-tmp-aikido.sh",
+      "target": ".agents/skills/maj/scripts/ending-5-display-tmp-aikido.sh",
+      "sha256": "487a46f3f790dd64611c4d9f1f314cdb7fbad522ac395908c0fbbadfe202c2ed",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-6-analyze-validation-report.sh",
+      "target": ".agents/skills/maj/scripts/ending-6-analyze-validation-report.sh",
+      "sha256": "d76deaf071c86a472246ca3c7e879e3f73a94804f2d1eb262f035cd27212f430",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-6-invoke-validator.sh",
+      "target": ".agents/skills/maj/scripts/ending-6-invoke-validator.sh",
+      "sha256": "ef84f0f4654893895eb0a6a23a59bf552822e64272cd390be8421aac458ed75b",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-6-list-critical-files.sh",
+      "target": ".agents/skills/maj/scripts/ending-6-list-critical-files.sh",
+      "sha256": "ef3b1b0c9dfffa234dee1b31fc86cad75428fd806d5d6178786327e2d89c90f6",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-7-detect-gaps.sh",
+      "target": ".agents/skills/maj/scripts/ending-7-detect-gaps.sh",
+      "sha256": "2947e677a8d5888d1c05700cd7606276efaf7acb1c806537afba32ee73a8bf0d",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-7-propose-populate.sh",
+      "target": ".agents/skills/maj/scripts/ending-7-propose-populate.sh",
+      "sha256": "aaa5c6e73b37c5098b079a4f33e3b47ac972ac53e2158f442e88183a36811ed4",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-8-deploy-agents.sh",
+      "target": ".agents/skills/maj/scripts/ending-8-deploy-agents.sh",
+      "sha256": "00c549d23a2853d3693145fc1158de0d23221cee52f123ee8760a1ec1c6ab562",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-8-deploy-commands.sh",
+      "target": ".agents/skills/maj/scripts/ending-8-deploy-commands.sh",
+      "sha256": "bffbb6ea002e753b47a241fa7dbb85f30785c308265d8b70c444b1030c9e2217",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-8-deploy-root-files.sh",
+      "target": ".agents/skills/maj/scripts/ending-8-deploy-root-files.sh",
+      "sha256": "78ffab9b82335ac1e91e20c2f5ea61307d3352664875c91ffe69d0223a53741d",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/ending-8-validate-deployment.sh",
+      "target": ".agents/skills/maj/scripts/ending-8-validate-deployment.sh",
+      "sha256": "074a96aa3cc34d1dedfc668058cf7204f9f41b41131403a6d2b940fb9971462b",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/sync-directories.sh",
+      "target": ".agents/skills/maj/scripts/sync-directories.sh",
+      "sha256": "10dfc3f50119617d0a77ee8fc902fdcae2d0b49bb8640e0be7198b8bc3026549",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/sync-files.sh",
+      "target": ".agents/skills/maj/scripts/sync-files.sh",
+      "sha256": "ad40ac58d584afd3736907f07526a7fe9aab3b903122b2013f6aa10959570b7b",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/maj/scripts/validate-structure.sh",
+      "target": ".agents/skills/maj/scripts/validate-structure.sh",
+      "sha256": "9976ebcea341ce6993438f274cc7fe2780266e99d292c63f3e644d40fc92cb07",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/optimize-command-with-aikido-agents/SKILL.md",
+      "target": ".agents/skills/optimize-command-with-aikido-agents/SKILL.md",
+      "sha256": "85ab82b781af5cfe9f05f126f189b03c1c3fa9bb72c9b4aef37c603382e21550",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/orchestrator/SKILL.md",
+      "target": ".agents/skills/orchestrator/SKILL.md",
+      "sha256": "8a95854a09cca0d024d3256e1f5be816e9458233043554280e21a829dc4ae3bd",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/orchestrator/contract.schema.json",
+      "target": ".agents/skills/orchestrator/contract.schema.json",
+      "sha256": "0b351bd18d7dece878419f5e12266e681c11f153f858e49dcda4c1e4901ed826",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/orchestrator/policy.json",
+      "target": ".agents/skills/orchestrator/policy.json",
+      "sha256": "c8ada4c7f77a0eb5088e5f0e0f83451fd33935c1fc14d040380da88f18a1ee43",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/orchestrator/runtime.mjs",
+      "target": ".agents/skills/orchestrator/runtime.mjs",
+      "sha256": "f57804eaaeec34067f746b07a51c12d6dfcd1bce3e209bd853117efbcf2ba7b5",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/orchestrator/runtime.test.mjs",
+      "target": ".agents/skills/orchestrator/runtime.test.mjs",
+      "sha256": "f604f539a959a1b84c01f263894d386edbf335e33cd5b7b3fca6742bf6f341d0",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/orchestrator/sources/llm-pricing-5143-2026-10-09.csv",
+      "target": ".agents/skills/orchestrator/sources/llm-pricing-5143-2026-10-09.csv",
+      "sha256": "5a589e0cabc94948d94921205259d061deb20f7c99727928b264010de25f300f",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/orchestrator/tracker.mjs",
+      "target": ".agents/skills/orchestrator/tracker.mjs",
+      "sha256": "3901582b8f8d614ba3f37d50bb11c4e9dfc6cbcb5c3f6171b57ce87185d98218",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/orchestrator/tracker.test.mjs",
+      "target": ".agents/skills/orchestrator/tracker.test.mjs",
+      "sha256": "685fb8a03b8f57a98c71a01db8406b183515cb85f9d78b0ae0703782dbc0be22",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/reindex-projet/SKILL.md",
+      "target": ".agents/skills/reindex-projet/SKILL.md",
+      "sha256": "e7631e0a24b49f6d8dc0c1737abe7cb9449a5007aefdb5e0f40808a7418cc138",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/search/SKILL.md",
+      "target": ".agents/skills/search/SKILL.md",
+      "sha256": "b704f2549d42eed35c04bdc9d2f24a81836a5cd63136c082439e945afcf5276b",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/search/plans/README.md",
+      "target": ".agents/skills/search/plans/README.md",
+      "sha256": "d0d3dc01699741fb7c329886b984c807e8d0d9f255e066ac984f606b64fc708d",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/search/plans/javascript/plan.md",
+      "target": ".agents/skills/search/plans/javascript/plan.md",
+      "sha256": "f7c91408def6a55e1f4ae7d76f1697df3685370196470b667aed95b25620ae75",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/search/plans/php/plan.md",
+      "target": ".agents/skills/search/plans/php/plan.md",
+      "sha256": "d8ef5552bed160a4b67bfbe8d2f1670e76e111f8f3152ff144e30456bd9b5d44",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/search/plans/plan-generic.md",
+      "target": ".agents/skills/search/plans/plan-generic.md",
+      "sha256": "3e718f5d0602483149176b21274a4bddd0c890ef9e213a8de7ddacec7e075d4f",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/search/plans/terraform/plan.md",
+      "target": ".agents/skills/search/plans/terraform/plan.md",
+      "sha256": "0548b4c490343e4069bd29aebe99174913bed42c7798aba99a15c58f4088a26e",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/skill-manage/SKILL.md",
+      "target": ".agents/skills/skill-manage/SKILL.md",
+      "sha256": "3e694375c87f7af4160672a3321bde4d344d33ae24a0d61977a220a8f8d8faba",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/structure/ARCHITECTURE-V3.1-HASH-ID.md",
+      "target": ".agents/skills/structure/ARCHITECTURE-V3.1-HASH-ID.md",
+      "sha256": "21fbe90928d84da7ffd707b5324dbf4d3f7a7544818c757ef12d412a9382b456",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/structure/ARCHITECTURE-V3.md",
+      "target": ".agents/skills/structure/ARCHITECTURE-V3.md",
+      "sha256": "c5f9e0b7df9f29f26b4c5d23950f07ab88cbbe924189e8deb8c6286dc74f523c",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/structure/SKILL.md",
+      "target": ".agents/skills/structure/SKILL.md",
+      "sha256": "909eba69e539a1eb8e94f27256069c268b938cc557cafbd851ef4b4175d0fd14",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/structure/index.json",
+      "target": ".agents/skills/structure/index.json",
+      "sha256": "5871d5691b4e4a3ed475594996375408812c7d1bbe7578fef2b48d212ed4871b",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/structure/scripts/clean-orphans.sh",
+      "target": ".agents/skills/structure/scripts/clean-orphans.sh",
+      "sha256": "860813962798f4d4fa6fcd32f5fe0e9619a69be128bb780395785c2e54ac86b6",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/structure/scripts/format-file-metadata.sh",
+      "target": ".agents/skills/structure/scripts/format-file-metadata.sh",
+      "sha256": "c6e647a60359e862350d6fe59f509b5aa8b8e304cc09da96b9b8a85380b0b4ef",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/structure/scripts/generate-all-indexes-v3.1.sh",
+      "target": ".agents/skills/structure/scripts/generate-all-indexes-v3.1.sh",
+      "sha256": "db884caf41af525324f5fbe0a79d1cb9d063113dbed124c15e246b1d4bac65b3",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/structure/scripts/generate-index-by-alpha.sh",
+      "target": ".agents/skills/structure/scripts/generate-index-by-alpha.sh",
+      "sha256": "182cb5604513347dd6e7c8a2646c59d025333a13a685227dc7fb81a57e4494f3",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/structure/scripts/generate-index-by-directory.sh",
+      "target": ".agents/skills/structure/scripts/generate-index-by-directory.sh",
+      "sha256": "574dce1dc5ed6ad54439cb28d97fd40d5620912adec3b189d882869200e04dc3",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/structure/scripts/generate-index-by-id-parallel.sh",
+      "target": ".agents/skills/structure/scripts/generate-index-by-id-parallel.sh",
+      "sha256": "ecb2a9acbe32480f2d7726af240402a30a81cb57f9f1dacdc815df78a9c97d3a",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/structure/scripts/generate-index-by-id.sh",
+      "target": ".agents/skills/structure/scripts/generate-index-by-id.sh",
+      "sha256": "b7c8bf19bb90033eca877d1103630ce508be300e053cb0a97c91307a0354c998",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/structure/scripts/generate-index-by-path.sh",
+      "target": ".agents/skills/structure/scripts/generate-index-by-path.sh",
+      "sha256": "21b3b74b67cf1553545f2500fa45c5ccb03d8205a09ca557eebb9f1bae0c73b2",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/structure/scripts/generate-index-by-type.sh",
+      "target": ".agents/skills/structure/scripts/generate-index-by-type.sh",
+      "sha256": "6261b4fd20e58af6df157aed04254813d53d0bc7f1247b5b43145e2c449f1d69",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/structure/scripts/generate-index-master.sh",
+      "target": ".agents/skills/structure/scripts/generate-index-master.sh",
+      "sha256": "f1e01cbfbd297cf669e271f946a8a4c51150dd1d09bd2e8a9390752efb2de1d8",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/structure/scripts/generate-project-tree-json.sh",
+      "target": ".agents/skills/structure/scripts/generate-project-tree-json.sh",
+      "sha256": "cf22630a88abb81258fc797ce4aed70754b06d4d99a13962f5540186ce974079",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/structure/scripts/generate-project-tree.sh",
+      "target": ".agents/skills/structure/scripts/generate-project-tree.sh",
+      "sha256": "8f9d81c3b7208141f7ba389de88bcc6705743619605568be817d3daf0618e0e8",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/structure/scripts/lib/hash-utils.sh",
+      "target": ".agents/skills/structure/scripts/lib/hash-utils.sh",
+      "sha256": "a63173e2ed78da1694329d3708c2489234ecc2b8fec61c0ab93fd85a48d98dd0",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/structure/scripts/update-incremental.sh",
+      "target": ".agents/skills/structure/scripts/update-incremental.sh",
+      "sha256": "216a94798e45d618d73563e6e3b6992c4fd7c85741cfd20b62b52da2b8c9e8fd",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/structure/scripts/watch-changes.sh",
+      "target": ".agents/skills/structure/scripts/watch-changes.sh",
+      "sha256": "d5aa9ec534371f55411a80a692af1477920563a8401e4f29b51613068be1526d",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/validate-analyse-plan/SKILL.md",
+      "target": ".agents/skills/validate-analyse-plan/SKILL.md",
+      "sha256": "ae17a217494c903d5234bbb2aa33ad823a5766f2ab9ad38b3b5772db58b6d663",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/validate-search-plan/SKILL.md",
+      "target": ".agents/skills/validate-search-plan/SKILL.md",
+      "sha256": "d12599c4e5b32a8bb295365884df347277af79b72288c15a39e580b0ab513a43",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/web/SKILL.md",
+      "target": ".agents/skills/web/SKILL.md",
+      "sha256": "6b868dd9731266ab7a4fecea73659a84b0e0f8cee46a05445fd77165634efe44",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/web/commands/download-site.md",
+      "target": ".agents/skills/web/commands/download-site.md",
+      "sha256": "2c22551c13765adf0e1165415e9aeed86b0615e21114bf2b18ae6863c208c78c",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/web/install-aikido.md",
+      "target": ".agents/skills/web/install-aikido.md",
+      "sha256": "06ea8c9acd3af3f1b8e474b7bf0995b21ea55a967097c66734f2e7ef3b9ec15a",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".agents/skills/web/script/download_site.sh",
+      "target": ".agents/skills/web/script/download_site.sh",
+      "sha256": "39b82b4b7cec230eff7034ae77998f2e7def2c043dd6e15bf926a5478455710e",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".codex/agents/agent-aikido-balancer.toml",
+      "target": ".codex/agents/agent-aikido-balancer.toml",
+      "sha256": "b641da677df0ff14e63eb644dfa5635e985ff177bc8661a0563b01e08c56eebd",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".codex/agents/agent-aikido-bank-populate.toml",
+      "target": ".codex/agents/agent-aikido-bank-populate.toml",
+      "sha256": "8671cd806bd7b06adb3c541094a1a8f7b38b04719c9247597d9d958c2f49ba0a",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".codex/agents/agent-aikido-doc-header.toml",
+      "target": ".codex/agents/agent-aikido-doc-header.toml",
+      "sha256": "90d49d23552c8294e4c69f813c01789c3ed0a487fbfa2e30ae6f2ffb1a75fe60",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".codex/agents/agent-aikido-explore-all.toml",
+      "target": ".codex/agents/agent-aikido-explore-all.toml",
+      "sha256": "95de3bb8ed6ad35301b703d0dc93d817a1f2b4d40304dd006562af1d4c0a13e8",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".codex/agents/agent-aikido-explore-bank.toml",
+      "target": ".codex/agents/agent-aikido-explore-bank.toml",
+      "sha256": "b5d8f1d2eb19b22e7ff82f8c4cbd844de4292cfa7805bbbfb48c59802e664225",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".codex/agents/agent-aikido-explore-code.toml",
+      "target": ".codex/agents/agent-aikido-explore-code.toml",
+      "sha256": "33e889e368de02f90b0195c04544f7040b0d649f8ed14c54a478de9bd8acc1f7",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".codex/agents/agent-aikido-fusion.toml",
+      "target": ".codex/agents/agent-aikido-fusion.toml",
+      "sha256": "2c0a88a0b20053d0b2ab33065b62791ad76aa65667636412836da05937ada89e",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".codex/agents/agent-aikido-helper.toml",
+      "target": ".codex/agents/agent-aikido-helper.toml",
+      "sha256": "54d386ac0e11c5a864dfea33bd0b82e6a173f28bbb8e3d8d3c59caff24bffc1a",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".codex/agents/agent-aikido-maj-md-index.toml",
+      "target": ".codex/agents/agent-aikido-maj-md-index.toml",
+      "sha256": "1483be908c2984916a88a133835ce5288210ea0e0d99ee7db7e36f17b41eb78b",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".codex/agents/agent-aikido-orchestrator.toml",
+      "target": ".codex/agents/agent-aikido-orchestrator.toml",
+      "sha256": "158aa7c4a803629723d710c60200052281cc3fa10ab38f3fc800658099690b2f",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".codex/agents/agent-aikido-projet-index.toml",
+      "target": ".codex/agents/agent-aikido-projet-index.toml",
+      "sha256": "75a09c7b4cf53dfd93c25ab93a309aa3d9a6c85cc3c56853f6ccbec36644f153",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".codex/agents/agent-aikido-raci-delegator.toml",
+      "target": ".codex/agents/agent-aikido-raci-delegator.toml",
+      "sha256": "124b6cbe8171a5beefd85fa7b1f6b55ae1faf07a3f7f7883f1e2e47d4416c8ed",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".codex/agents/agent-aikido-truth-evaluator.toml",
+      "target": ".codex/agents/agent-aikido-truth-evaluator.toml",
+      "sha256": "8c0319509e2647645acbcde1551ba5d745526c5f2d9b0e7017446ed13fa6bcc5",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".codex/agents/agent-aikido-update-controller.toml",
+      "target": ".codex/agents/agent-aikido-update-controller.toml",
+      "sha256": "dab250122e2ee1a1d7c88a4cf8b1a80be20a8ad857fd7ad64ac64eaa57c612b3",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".codex/agents/agent-aikido-validator.toml",
+      "target": ".codex/agents/agent-aikido-validator.toml",
+      "sha256": "de44da80839b4a999751db78594fcf9cf298bb1c123799d6643771a3160fc0b3",
+      "origin": "adapter",
+      "policy": "three-way"
+    }
+  ],
+  "agentFormat": "codex",
+  "agentCount": 15
+}
