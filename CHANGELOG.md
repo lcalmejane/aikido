@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 | Version | Date | Highlights |
 |---------|------|-----------|
-| **Unreleased** | - | Bundled Roo Code reference docs removed |
+| **Unreleased** | - | Distribution groundwork (project templates, lock schema, managed blocks); bundled Roo Code reference docs removed |
 | **1.4** | 2026-10-03 | First public release. English-language baseline, MIT license, secrets hardening |
 | **1.3.3** | 2026-02-27 | Skill lifecycle management (install, update, uninstall from a Git group) |
 | **1.3.1** | 2026-01-16 | External skills integration, `create-skill` command, technical audit plan |
@@ -28,6 +28,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ---
 
 ## [Unreleased]
+
+### Added
+
+- `distribution/`: groundwork for installing AI-KIDO into any project from several AI hosts. Blank project templates per mode (STANDARD, LIGHT, not initialized), managed instruction blocks for `AGENTS.md`, `CLAUDE.md` and `.gitignore`, the `.aikido/lock.json` schema, merge policy, and dependency-free Node helpers with tests. Nothing is published yet.
+
+### Changed
+
+- `/init-aikido` treats an `AIKIDO_MODE: UNSET` entry point as not initialized and keeps the AI-KIDO managed block of `AGENTS.md` intact.
 
 ### Removed
 

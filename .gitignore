@@ -2,6 +2,7 @@
 **/.DS_Store
 prompts/spec/
 spec/
+!distribution/templates/project/prompts/spec/
 prompts/hard_points/system/structure/indices
 prompts/hard_points/system/structure/index.json
 prompts/hard_points/system/structure/index.json
