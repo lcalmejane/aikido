@@ -1,0 +1,70 @@
+name: Distribution publish
+
+# Manual only: publishing the generated branch requires a maintainer decision (D04).
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (x.y.z or x.y.z-prerelease); creates tag aikido-dist-v<version>'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: distribution-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: release
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: '26'
+      - name: Check version and tag
+        run: |
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]] || { echo "Invalid version: $VERSION"; exit 1; }
+          if git ls-remote --exit-code --tags origin "refs/tags/aikido-dist-v$VERSION" >/dev/null; then
+            echo "Tag aikido-dist-v$VERSION already exists; published releases are immutable"; exit 1
+          fi
+      - name: Install Claude Code plugin validator
+        run: npm install --global --no-fund --no-audit @anthropic-ai/claude-code@2.1.310
+      - name: Run tests
+        run: node --test distribution/tests/*.test.mjs prompts/hard_points/system/orchestrator/*.test.mjs
+      - name: Prepare and verify release tree
+        run: |
+          node distribution/scripts/prepare-release.mjs \
+            --out "$RUNNER_TEMP/aikido-dist" --revision "$GITHUB_SHA" --version "$VERSION"
+          node distribution/scripts/prepare-release.mjs --verify "$RUNNER_TEMP/aikido-dist"
+      - name: Commit generated tree to the dist branch and tag it
+        run: |
+          set -euo pipefail
+          tree="$RUNNER_TEMP/dist-worktree"
+          tag="aikido-dist-v$VERSION"
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git ls-remote --exit-code --heads origin dist >/dev/null; then
+            git fetch --no-tags origin dist
+            git worktree add -B dist "$tree" origin/dist
+          else
+            git worktree add --orphan -b dist "$tree"
+          fi
+          git -C "$tree" rm -rq --ignore-unmatch .
+          cp -a "$RUNNER_TEMP/aikido-dist/." "$tree/"
+          git -C "$tree" add -A
+          git -C "$tree" commit -m "dist: aikido $VERSION from $GITHUB_SHA"
+          git -C "$tree" tag -a "$tag" -m "AI-KIDO distribution $VERSION from $GITHUB_SHA"
+          git -C "$tree" push origin dist "refs/tags/$tag"
+          echo "Published $tag at $(git -C "$tree" rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"

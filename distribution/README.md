@@ -15,14 +15,14 @@ This directory only contains what is needed to copy it into a project and keep i
 | [`schemas/`](schemas/lock.schema.json) | JSON schema of `.aikido/lock.json` |
 | [`lib/`](lib/) | Dependency-free Node helpers: catalog lists, templates, managed blocks, lock validation, bootstrap planning and three-way update planning |
 | [`catalog.json`](catalog.json) | Canonical command, system skill and agent inventory plus per-host delivery decisions |
-| [`scripts/`](scripts/) | Bootstrap and update planners, package validation, and deterministic package builder |
+| [`scripts/`](scripts/) | Bootstrap and update planners, package validation, deterministic package builder, and release tree preparation/verification |
 | [`docs/`](docs/lock-and-merge.md) | Installed state, managed blocks and merge policy |
 | [`tests/`](tests/) | `node:test` suites and fixtures |
 
 Staging includes the closed method payload, package validation, confirmed bootstrap, lock-based
 updates, conservative legacy migration, and adapter-only uninstall with targeted backups and
-explicit recovery. Host-native end-to-end qualification and publication remain future work.
-Nothing here is published yet.
+explicit recovery. CI and a manual publication workflow are defined (see [CI and publication](#ci-and-publication));
+host-native end-to-end qualification remains future work. Nothing has been published yet.
 
 ## Commands exposed per host
 
@@ -169,7 +169,8 @@ Codex, GitHub coding agent and Antigravity fallback Skills, Kiro native Skill-co
 Zoo Code and legacy Roo command wrappers, and generated agent wrappers for every enabled host.
 These are build mappings, not tested host integrations.
 Generated packages are staging outputs, not installable releases. Package integrity is validated
-after extraction; host-specific end-to-end testing and release publication remain future work.
+after extraction; host-specific end-to-end testing remains future work. Releases are prepared with
+`prepare-release.mjs` (see [CI and publication](#ci-and-publication)).
 
 The VS Code package uses the portable Agent Plugins 1.0 manifest (`plugin.json`), with Copilot
 slash prompts and custom agents under `com.github.copilot/`, and system Skills under `skills/`.
@@ -224,3 +225,35 @@ Node.js only, no npm dependency (tested with Node.js 26):
 ```bash
 node --test distribution/tests/*.test.mjs prompts/hard_points/system/orchestrator/*.test.mjs
 ```
+
+Two tests run the Claude Code plugin validator, so `claude` must be on `PATH`. CI installs the
+pinned `@anthropic-ai/claude-code@2.1.310`; the validator needs no Claude account.
+
+## CI and publication
+
+[`distribution-ci.yml`](../.github/workflows/distribution-ci.yml) runs on pushes and pull requests
+that touch the distribution, the hard points or the legal notices. It has read-only repository
+permissions, runs the tests, builds a release tree twice to prove it is deterministic, validates
+every package and uploads the tree as a workflow artifact. It never pushes.
+
+[`distribution-publish.yml`](../.github/workflows/distribution-publish.yml) only runs when a
+maintainer starts it manually with a version. It runs in the `release` environment (configure
+required reviewers there), refuses an existing tag, rebuilds and verifies the tree from the selected
+commit, replaces the content of the generated `dist` branch with it and pushes the immutable tag
+`aikido-dist-v<version>`. Install from that tag or from a `dist` commit SHA, never from the moving
+branch.
+
+The release tree is produced, and can be checked after a clone, with:
+
+```bash
+node distribution/scripts/prepare-release.mjs --out /tmp/aikido-release \
+  --revision "$(git rev-parse HEAD)" --version 1.5.0
+node distribution/scripts/prepare-release.mjs --verify /path/to/dist-checkout
+```
+
+Preparation refuses a revision other than the checked-out `HEAD` or uncommitted changes in the
+release sources. The tree adds a root `.claude-plugin/marketplace.json` pointing to
+`./claude-code`, a `README.md`, a `.gitattributes` that disables line-ending conversion, and
+`release-manifest.json`, which records the source commit and the SHA-256 of every file. Installing
+from GitHub and checking rollback in a clean environment are separate follow-up checks; they have
+not been run yet.
