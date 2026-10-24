@@ -49,7 +49,7 @@ test('bootstrap list plans are generated from the catalog and selected host rout
     assert.equal(plan.files.find((item) => item.id === 'commands-list').contentHash, expectedHash);
     const rows = renderCatalogEntries('commands', { hosts: ['claude-code', 'codex'] });
     assert.match(rows, /Claude Code: \/aikido:init-aikido/);
-    assert.match(rows, /Codex: \/init-aikido \(Skill\)/);
+    assert.match(rows, /Codex: `\$init-aikido` \(Skill; also available in `\/skills`\)/);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

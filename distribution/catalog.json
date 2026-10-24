@@ -40,9 +40,9 @@
     { "name": "agent-aikido-explore-bank", "source": "prompts/hard_points/agents/agent-aikido-explore-bank.md" },
     { "name": "agent-aikido-explore-code", "source": "prompts/hard_points/agents/agent-aikido-explore-code.md" },
     { "name": "agent-aikido-fusion", "source": "prompts/hard_points/agents/agent-aikido-fusion.md" },
-    { "name": "agent-aikido-helper", "source": "prompts/hard_points/agents/agent-aikido-helper.md" },
+    { "name": "agent-aikido-helper", "source": "prompts/hard_points/agents/agent-aikido-helper.md", "description": "Guides users in understanding and applying the AI-KIDO Memory Bank, its hard points, agents and techniques.", "capabilities": ["read"] },
     { "name": "agent-aikido-maj-md-index", "source": "prompts/hard_points/agents/agent-aikido-maj-md-index.md" },
-    { "name": "agent-aikido-orchestrator", "source": "prompts/hard_points/agents/agent-aikido-orchestrator.md" },
+    { "name": "agent-aikido-orchestrator", "source": "prompts/hard_points/agents/agent-aikido-orchestrator.md", "inheritTools": true, "topLevelOnly": true },
     { "name": "agent-aikido-projet-index", "source": "prompts/hard_points/agents/agent-aikido-projet-index.md" },
     { "name": "agent-aikido-raci-delegator", "source": "prompts/hard_points/agents/agent-aikido-raci-delegator.md" },
     { "name": "agent-aikido-truth-evaluator", "source": "prompts/hard_points/agents/agent-aikido-truth-evaluator.md" },
@@ -56,11 +56,9 @@
       "commandDelivery": "native-command",
       "commandTarget": "commands",
       "commandSuffix": ".md",
-      "commandWrapperSource": ".claude/commands",
       "systemSkillTarget": "skills",
-      "agentWrapperSource": ".claude/agents",
+      "agentFormat": "claude-plugin",
       "agentTarget": "agents",
-      "agentWrapperSuffix": ".md",
       "projectCommandFiles": false,
       "projectSystemSkillFiles": false,
       "projectAgentFiles": false
@@ -71,8 +69,9 @@
       "commandDelivery": "native-command",
       "commandTarget": "commands",
       "commandSuffix": ".md",
-      "commandWrapperSource": ".claude/commands",
       "systemSkillTarget": "skills",
+      "agentFormat": "claude-plugin",
+      "agentTarget": "agents",
       "projectCommandFiles": false,
       "projectSystemSkillFiles": false,
       "projectAgentFiles": false
@@ -84,22 +83,23 @@
       "commandTarget": "com.github.copilot/commands",
       "commandSuffix": ".prompt.md",
       "systemSkillTarget": "skills",
-      "agentWrapperSource": ".github/agents",
+      "agentFormat": "copilot",
       "agentTarget": "com.github.copilot/agents",
-      "agentWrapperSuffix": ".agent.md",
       "projectCommandFiles": false,
       "projectSystemSkillFiles": false,
       "projectAgentFiles": false
     },
     "copilot-github": {
-      "enabled": false,
-      "qualification": "unverified",
-      "commandDelivery": "unverified",
-      "systemSkillTarget": null,
-      "reason": "Cloud-agent command and skill discovery is not documented in the qualification evidence.",
-      "projectCommandFiles": false,
-      "projectSystemSkillFiles": false,
-      "projectAgentFiles": false
+      "enabled": true,
+      "qualification": "qualified-not-tested",
+      "commandDelivery": "fallback-skill",
+      "commandTarget": ".github/skills",
+      "systemSkillTarget": ".github/skills",
+      "agentFormat": "copilot",
+      "agentTarget": ".github/agents",
+      "projectCommandFiles": true,
+      "projectSystemSkillFiles": true,
+      "projectAgentFiles": true
     },
     "codex": {
       "enabled": true,
@@ -107,9 +107,11 @@
       "commandDelivery": "fallback-skill",
       "commandTarget": ".agents/skills",
       "systemSkillTarget": ".agents/skills",
+      "agentFormat": "codex",
+      "agentTarget": ".codex/agents",
       "projectCommandFiles": true,
       "projectSystemSkillFiles": true,
-      "projectAgentFiles": false
+      "projectAgentFiles": true
     },
     "kiro-cli": {
       "enabled": true,
@@ -117,9 +119,11 @@
       "commandDelivery": "native-skill-command",
       "commandTarget": ".kiro/skills",
       "systemSkillTarget": ".kiro/skills",
+      "agentFormat": "kiro",
+      "agentTarget": ".kiro/agents",
       "projectCommandFiles": true,
       "projectSystemSkillFiles": true,
-      "projectAgentFiles": false
+      "projectAgentFiles": true
     },
     "roo-zoo": {
       "enabled": true,
@@ -127,9 +131,9 @@
       "commandDelivery": "native-command",
       "commandTarget": ".roo/commands",
       "commandSuffix": ".md",
-      "commandWrapperSource": ".roo/commands",
       "systemSkillTarget": null,
-      "agentConfiguration": { "source": ".roomodes", "target": ".roomodes" },
+      "agentFormat": "roomodes",
+      "agentTarget": ".roomodes",
       "projectCommandFiles": true,
       "projectSystemSkillFiles": false,
       "projectAgentFiles": true
@@ -140,9 +144,11 @@
       "commandDelivery": "fallback-skill",
       "commandTarget": ".agents/skills",
       "systemSkillTarget": ".agents/skills",
+      "agentFormat": "antigravity",
+      "agentTarget": ".agents/agents",
       "projectCommandFiles": true,
       "projectSystemSkillFiles": true,
-      "projectAgentFiles": false
+      "projectAgentFiles": true
     },
     "copilot-cowork": {
       "enabled": false,

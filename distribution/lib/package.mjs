@@ -253,6 +253,90 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
       }
     }
   }
+  const packageHost = catalog.hosts[pkg.host];
+  if (packageHost?.agentFormat === 'roomodes') {
+    const entry = ledger.get(packageHost.agentTarget);
+    if (entry?.role !== 'agent-configuration') error(`Generated agent configuration is missing: ${packageHost.agentTarget}`);
+    else {
+      const text = readFileSync(packageFile(root, packageHost.agentTarget), 'utf8');
+      for (const agent of catalog.agents) {
+        if (!text.includes(`  - slug: ${agent.name}\n`) || !text.includes(`\`${agent.source}\``)) {
+          error(`Generated agent mode is missing or detached: ${agent.name}`);
+        }
+      }
+    }
+  } else if (packageHost?.agentFormat) {
+    const suffix = { codex: '.toml', copilot: '.agent.md' }[packageHost.agentFormat] ?? '.md';
+    const projectTargets = new Set(pkg.projectFiles.map((file) => file.target));
+    for (const agent of catalog.agents) {
+      const path = `${packageHost.agentTarget}/${agent.name}${suffix}`;
+      const entry = ledger.get(path);
+      if (entry?.role !== 'agent') {
+        error(`Generated agent wrapper is missing: ${path}`);
+        continue;
+      }
+      if (packageHost.projectAgentFiles !== projectTargets.has(path)) error(`Agent wrapper install target is inconsistent: ${path}`);
+      const text = readFileSync(packageFile(root, path), 'utf8');
+      if (!text.includes(agent.name) || !text.includes(`\`${agent.source}\``)) {
+        error(`Generated agent wrapper is detached from its canonical agent: ${path}`);
+      }
+      if (pkg.host === 'codex') {
+        // The generator emits only these three single-line TOML basic strings.
+        const keys = ['name', 'description', 'developer_instructions'];
+        const lines = text.trimEnd().split('\n');
+        try {
+          if (lines.length !== keys.length) throw new Error('expected three TOML fields');
+          const values = lines.map((line, index) => {
+            const prefix = `${keys[index]} = `;
+            if (!line.startsWith(prefix)) throw new Error(`expected ${keys[index]}`);
+            const value = JSON.parse(line.slice(prefix.length));
+            if (typeof value !== 'string' || !value.trim()) throw new Error(`empty ${keys[index]}`);
+            return value;
+          });
+          if (values[0] !== agent.name || !values[2].includes(`\`${agent.source}\``)) {
+            throw new Error('name or canonical role does not match');
+          }
+        } catch (exception) {
+          error(`Codex generated agent TOML is invalid: ${path}: ${exception.message}`);
+        }
+      }
+    }
+  }
+  if (pkg.host === 'copilot-github' || pkg.host === 'codex') {
+    const host = catalog.hosts[pkg.host];
+    const label = pkg.host === 'codex' ? 'Codex' : 'GitHub Copilot';
+    if (pkg.host === 'codex' && !ledger.has('README.md')) error('Codex workspace adapter instructions are missing: README.md');
+    const projectTargets = new Set(pkg.projectFiles.map((file) => file.target));
+    const skillNames = [
+      ...catalog.commands.map((command) => ({ name: command.name, source: command.source, role: 'command' })),
+      ...catalog.systemSkills.map((skill) => ({ name: skill.name, role: 'system-skill' })),
+    ];
+    for (const skill of skillNames) {
+      const target = skill.role === 'command' ? host.commandTarget : host.systemSkillTarget;
+      const path = `${target}/${skill.name}/SKILL.md`;
+      const entry = ledger.get(path);
+      if (entry?.role !== skill.role || !projectTargets.has(path)) {
+        error(`${label} project Skill is missing: ${path}`);
+        continue;
+      }
+      const text = readFileSync(packageFile(root, path), 'utf8');
+      const frontmatter = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+      if (!frontmatter
+        || !new RegExp(`^name:\\s*${skill.name}\\s*$`, 'm').test(frontmatter[1])
+        || !/^description:\s*.+$/m.test(frontmatter[1])
+        || (skill.source && !text.includes(`\`${skill.source}\``))) {
+        error(`${label} Skill metadata must match its directory and canonical source: ${path}`);
+      }
+    }
+    for (const file of pkg.projectFiles) {
+      if (pkg.host === 'copilot-github' && file.target.startsWith('.github/prompts/')) {
+        error(`GitHub Copilot cloud agent does not run prompt files: ${file.target}`);
+      }
+      if (pkg.host === 'codex' && /^\.codex\/(?:prompts\/|config\.toml$)/.test(file.target)) {
+        error(`Codex adapter must not install deprecated prompts or change user configuration: ${file.target}`);
+      }
+    }
+  }
 
   const payloadTargets = new Set();
   for (const entry of pkg.payloadFiles) {

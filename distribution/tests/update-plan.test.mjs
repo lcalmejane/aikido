@@ -184,7 +184,7 @@ test('an upstream-removed adapter file is deleted only while it still matches th
   const root = newProject();
   try {
     const removed = JSON.parse(readFileSync(join(adapterBasePackage, 'package-manifest.json'), 'utf8'))
-      .projectFiles[0];
+      .projectFiles.find((file) => !file.target.startsWith('.kiro/agents/'));
     assert.ok(removed, 'Kiro package must include project adapter files');
     removeProjectFile(adapterNextPackage, removed.target);
     const installOptions = {
@@ -216,7 +216,7 @@ test('an upstream-removed adapter preserves locally modified content as an orpha
   const root = newProject();
   try {
     const removed = JSON.parse(readFileSync(join(adapterBasePackage, 'package-manifest.json'), 'utf8'))
-      .projectFiles[0];
+      .projectFiles.find((file) => !file.target.startsWith('.kiro/agents/'));
     removeProjectFile(adapterNextPackage, removed.target);
     const installOptions = {
       root,

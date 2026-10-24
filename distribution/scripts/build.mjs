@@ -5,7 +5,7 @@ import { deflateSync } from 'node:zlib';
 import {
   existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, writeFileSync,
 } from 'node:fs';
-import { dirname, join, relative, resolve, sep } from 'node:path';
+import { dirname, join, posix, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { HOSTS, isSafeRelativePath } from '../lib/lock.mjs';
 import { loadCatalog } from '../lib/catalog.mjs';
@@ -19,6 +19,25 @@ const COMMAND_DELIVERY = new Set([
   'fallback-skill',
   'unverified',
 ]);
+const AGENT_FORMATS = new Set(['claude-plugin', 'copilot', 'codex', 'kiro', 'antigravity', 'roomodes']);
+const PLUGIN_AGENT_FORMATS = new Set(['claude-plugin']);
+const CAPABILITIES = ['read', 'write', 'shell', 'delegate'];
+const CANONICAL_TOOLS = {
+  Read: 'read', Grep: 'read', Glob: 'read',
+  Edit: 'write', Write: 'write',
+  Bash: 'shell', Command: 'shell',
+  Task: 'delegate', AgentOutputTool: 'delegate',
+};
+// Only tool names documented by each host; Antigravity may hang on unknown names.
+const HOST_TOOLS = {
+  'claude-plugin': { read: ['Read', 'Grep', 'Glob'], write: ['Edit', 'Write'], shell: ['Bash'], delegate: ['Task'] },
+  copilot: { read: ['read', 'search'], write: ['edit'], shell: ['execute'], delegate: ['agent'] },
+  kiro: { read: ['read'], write: ['write'], shell: ['shell'], delegate: ['subagent'] },
+  antigravity: {
+    read: ['view_file', 'grep_search'], write: ['replace_file_content'], shell: ['run_command'], delegate: ['invoke_subagent'],
+  },
+  roomodes: { read: ['read'], write: ['edit'], shell: ['command'], delegate: [] },
+};
 
 function within(root, path) {
   if (!isSafeRelativePath(path)) throw new Error(`Unsafe relative path: ${path}`);
@@ -98,7 +117,10 @@ export function validateCatalog(catalog) {
   }
   for (const agent of catalog.agents ?? []) {
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(agent.name ?? '')) errors.push(`Invalid agent name: ${agent.name}`);
-    try { assertSourcePath(agent.source, 'file'); } catch (error) { errors.push(error.message); }
+    try {
+      assertSourcePath(agent.source, 'file');
+      agentProfile(agent);
+    } catch (error) { errors.push(error.message); }
   }
   for (const [hostId, host] of Object.entries(catalog.hosts ?? {})) {
     if (!HOSTS.includes(hostId)) errors.push(`Unknown host id: ${hostId}`);
@@ -109,20 +131,15 @@ export function validateCatalog(catalog) {
         errors.push(`${hostId}: unsafe ${property}`);
       }
     }
-    for (const property of ['commandWrapperSource', 'agentWrapperSource']) {
-      if (host[property]) {
-        try { assertSourcePath(host[property], 'directory'); } catch (error) { errors.push(error.message); }
-      }
+    for (const property of ['commandWrapperSource', 'agentWrapperSource', 'agentWrapperSuffix', 'agentConfiguration']) {
+      if (property in host) errors.push(`${hostId}: ${property} is obsolete; wrappers are generated from canonical sources`);
     }
-    if (host.agentWrapperSource && (!host.agentTarget || !isSafeRelativePath(host.agentTarget))) {
-      errors.push(`${hostId}: verified agent wrappers need a safe agentTarget`);
+    if (host.enabled && !AGENT_FORMATS.has(host.agentFormat)) errors.push(`${hostId}: enabled hosts need a known agentFormat`);
+    if (host.agentFormat && (!host.agentTarget || !isSafeRelativePath(host.agentTarget))) {
+      errors.push(`${hostId}: generated agents need a safe agentTarget`);
     }
-    if (host.agentWrapperSource && typeof host.agentWrapperSuffix !== 'string') {
-      errors.push(`${hostId}: verified agent wrappers need an agentWrapperSuffix`);
-    }
-    if (host.agentConfiguration) {
-      try { assertSourcePath(host.agentConfiguration.source, 'file'); } catch (error) { errors.push(error.message); }
-      if (!isSafeRelativePath(host.agentConfiguration.target)) errors.push(`${hostId}: unsafe agent configuration target`);
+    if (PLUGIN_AGENT_FORMATS.has(host.agentFormat) && host.projectAgentFiles) {
+      errors.push(`${hostId}: plugin agents must not also be copied into the project`);
     }
     if (host.commandDelivery === 'native-plugin-prompt') {
       if (host.commandTarget !== 'com.github.copilot/commands' || host.commandSuffix !== '.prompt.md') {
@@ -142,9 +159,6 @@ export function validateCatalog(catalog) {
         errors.push(`${hostId}: commandSuffix must be a dot-prefixed extension`);
       }
     }
-    if (host.commandDelivery === 'native-command' && host.commandWrapperSource === undefined) {
-      errors.push(`${hostId}: native commands need a verified wrapper source`);
-    }
   }
 
   for (const command of catalog.commands ?? []) {
@@ -161,11 +175,110 @@ function commandDescription(source, name) {
   return (description ?? `Run the AI-KIDO ${name} command`).replaceAll('\\', '\\\\').replaceAll('"', '\\"');
 }
 
-function canonicalCommandWrapper(command, sourceText) {
+function canonicalCommandWrapper(command, sourceText, invocation = `/${command.name}`) {
   return `---\nname: ${command.name}\ndescription: "${commandDescription(sourceText, command.name)}"\n---\n\n`
+    + `# ${invocation}\n\n`
+    + `Read and execute \`${command.source}\` from the initialized project's AI-KIDO Memory Bank.`
+    + `\n\nRun the AI-KIDO bootstrap first if this project has no \`prompts/hard_points/\` directory.\n`;
+}
+
+function nativeCommandWrapper(command, sourceText) {
+  return `---\ndescription: "${commandDescription(sourceText, command.name)}"\n---\n\n`
     + `# /${command.name}\n\n`
     + `Read and execute \`${command.source}\` from the initialized project's AI-KIDO Memory Bank.`
     + `\n\nRun the AI-KIDO bootstrap first if this project has no \`prompts/hard_points/\` directory.\n`;
+}
+
+export function agentProfile(agent) {
+  const text = readFileSync(assertSourcePath(agent.source, 'file'), 'utf8');
+  const frontmatter = text.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? '';
+  const description = agent.description
+    ?? frontmatter.match(/^description:\s*["']?(.+?)["']?\s*$/m)?.[1];
+  if (!description) throw new Error(`${agent.name}: canonical agent needs a description (frontmatter or catalog)`);
+  let capabilities = agent.capabilities;
+  if (!capabilities) {
+    const tools = frontmatter.match(/^tools:\s*\[?(.*?)\]?\s*$/m)?.[1];
+    if (!tools) throw new Error(`${agent.name}: canonical agent needs tools (frontmatter) or capabilities (catalog)`);
+    capabilities = tools.split(',').map((tool) => tool.trim()).filter(Boolean).map((tool) => {
+      const capability = CANONICAL_TOOLS[tool] ?? (/^agent-aikido-[a-z0-9-]+$/.test(tool) ? 'delegate' : null);
+      if (!capability) throw new Error(`${agent.name}: unmapped canonical tool ${tool}`);
+      return capability;
+    });
+  }
+  for (const capability of capabilities) {
+    if (!CAPABILITIES.includes(capability)) throw new Error(`${agent.name}: unknown capability ${capability}`);
+  }
+  return {
+    name: agent.name,
+    source: agent.source,
+    description: description.length > 1000 ? `${description.slice(0, 997)}...` : description,
+    // Every wrapper must at least read its canonical role file.
+    capabilities: CAPABILITIES.filter((capability) => capability === 'read' || capabilities.includes(capability)),
+    inheritTools: agent.inheritTools === true,
+    topLevelOnly: agent.topLevelOnly === true,
+  };
+}
+
+function hostTools(format, profile) {
+  const capabilities = profile.inheritTools ? CAPABILITIES : profile.capabilities;
+  return capabilities.flatMap((capability) => HOST_TOOLS[format][capability]);
+}
+
+function agentInstructions(profile, format) {
+  const source = format === 'claude-plugin'
+    ? `When the project has \`.aikido/lock.json\`, read \`${profile.source}\` from the project. Otherwise read the bundled `
+      + `\`\${CLAUDE_PLUGIN_ROOT}/payload/${profile.source}\`. Never write into the plugin cache.`
+    : `Read \`${profile.source}\` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this `
+      + 'project has no `prompts/hard_points/` directory.';
+  const scope = format === 'codex'
+    ? `\n\nStay within these capabilities: ${profile.capabilities.join(', ')}.`
+      + `${profile.capabilities.includes('write') ? '' : ' Do not edit files.'}`
+    : '';
+  return `# ${profile.name}\n\n${source}\n\nFollow that file as your complete role definition, then perform the delegated task.${scope}\n`;
+}
+
+function yamlList(key, values) {
+  return values.length ? `${key}:\n${values.map((value) => `  - ${value}`).join('\n')}\n` : '';
+}
+
+export function agentWrapper(format, profile) {
+  const name = `name: ${profile.name}\ndescription: ${JSON.stringify(profile.description)}\n`;
+  const body = agentInstructions(profile, format);
+  if (format === 'claude-plugin') {
+    const tools = profile.inheritTools ? '' : `tools: ${hostTools(format, profile).join(', ')}\n`;
+    return `---\n${name}${tools}model: inherit\n---\n\n${body}`;
+  }
+  if (format === 'copilot') {
+    const tools = profile.inheritTools ? '' : `tools: ${JSON.stringify(hostTools(format, profile))}\n`;
+    const invocation = profile.topLevelOnly ? 'disable-model-invocation: true\n' : '';
+    return `---\n${name}${tools}${invocation}---\n\n${body}`;
+  }
+  if (format === 'kiro') {
+    const tools = profile.inheritTools ? ['*'] : hostTools(format, profile);
+    return `---\n${name}${yamlList('tools', tools.map((tool) => JSON.stringify(tool)))}---\n\n${body}`;
+  }
+  if (format === 'antigravity') {
+    const subagent = profile.topLevelOnly ? 'subagent: false\n' : '';
+    return `---\n${name}${yamlList('tools', hostTools(format, profile))}${subagent}---\n\n${body}`;
+  }
+  if (format === 'codex') {
+    return `name = ${JSON.stringify(profile.name)}\ndescription = ${JSON.stringify(profile.description)}\n`
+      + `developer_instructions = ${JSON.stringify(body)}\n`;
+  }
+  throw new Error(`No per-agent wrapper for format ${format}`);
+}
+
+export function rooModes(profiles) {
+  const block = (text) => text.trimEnd().split('\n').map((line) => (line ? `      ${line}` : '')).join('\n');
+  const modes = profiles.map((profile) => {
+    const groups = profile.inheritTools ? [...hostTools('roomodes', profile), 'mcp'] : hostTools('roomodes', profile);
+    return `  - slug: ${profile.name}\n`
+      + `    name: ${JSON.stringify(`AI-KIDO ${profile.name.replace(/^agent-aikido-/, '')}`)}\n`
+      + `    roleDefinition: |-\n${block(agentInstructions(profile, 'roomodes'))}\n`
+      + `    whenToUse: |-\n${block(profile.description)}\n`
+      + `    groups:\n${[...new Set(groups)].map((group) => `      - ${group}`).join('\n')}\n`;
+  });
+  return `customModes:\n${modes.join('')}`;
 }
 
 function copilotPluginManifest(version) {
@@ -178,18 +291,32 @@ function copilotPluginManifest(version) {
   }, null, 2)}\n`;
 }
 
-function copilotPluginSkill(skill, sourceText) {
-  const description = `AI-KIDO ${skill.name} system skill.`;
+function portableSkill(skill, sourceText) {
   const frontmatter = sourceText.match(/^---\r?\n([\s\S]*?)\r?\n---(\r?\n|$)/);
+  const canonicalDescription = frontmatter?.[1].match(/^description:\s*"?(.+?)"?\s*$/m)?.[1]
+    ?? sourceText.match(/^## Description\r?\n+([\s\S]*?)(?:\r?\n\r?\n|$)/m)?.[1];
+  const description = (canonicalDescription ?? `AI-KIDO ${skill.name} system skill.`).replace(/\s+/g, ' ').trim();
   if (!frontmatter) {
-    return `---\nname: ${skill.name}\ndescription: "${description}"\n---\n\n${sourceText}`;
+    return `---\nname: ${skill.name}\ndescription: ${JSON.stringify(description)}\n---\n\n${sourceText}`;
   }
   const lines = frontmatter[1].split(/\r?\n/).filter((line) => (
     !/^(?:name|description):\s*/.test(line)
   ));
-  return `---\nname: ${skill.name}\ndescription: "${description}"\n`
+  return `---\nname: ${skill.name}\ndescription: ${JSON.stringify(description)}\n`
     + `${lines.length ? `${lines.join('\n')}\n` : ''}---${frontmatter[2]}`
     + sourceText.slice(frontmatter[0].length);
+}
+
+// Copied project files keep pointing at the same project files after relocation.
+function rebaseMarkdownLinks(text, sourcePath, targetPath, sourceRoot) {
+  return text.replace(/\]\(([^)\s]+)\)/g, (match, link) => {
+    if (/^(?:[a-z][a-z0-9+.-]*:|#|\/)/i.test(link)) return match;
+    const [path, fragment] = link.split(/(?=#)/);
+    const resolved = posix.normalize(posix.join(posix.dirname(sourcePath), path));
+    if (resolved.startsWith('../') || resolved === sourceRoot || resolved.startsWith(`${sourceRoot}/`)) return match;
+    const rebased = posix.relative(posix.dirname(targetPath), resolved) || '.';
+    return `](${rebased}${fragment ?? ''})`;
+  });
 }
 
 function claudePluginCommand(command, sourceText) {
@@ -307,17 +434,6 @@ function claudePluginSkill(skill, contents) {
   return `---\nname: ${skill.name}\ndescription: "AI-KIDO ${skill.name} system skill."\n---\n\n${guidance}${contents}`;
 }
 
-function claudePluginAgent(agent, contents) {
-  if (agent.name !== 'agent-aikido-explore-bank') return contents;
-  const frontmatter = contents.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/);
-  if (!frontmatter) throw new Error(`${agent.name}: Claude Code wrapper needs YAML frontmatter`);
-  const tools = frontmatter[1].match(/^tools:\s*(.+)$/m)?.[1];
-  const model = frontmatter[1].match(/^model:\s*(.+)$/m)?.[1];
-  return `---\nname: ${agent.name}\ndescription: "AI-KIDO Memory Bank exploration specialist."\n`
-    + `${tools ? `tools: ${tools}\n` : ''}${model ? `model: ${model}\n` : ''}---\n`
-    + contents.slice(frontmatter[0].length);
-}
-
 function writeOutput(root, path, text, outputFiles, role = 'adapter') {
   const absolute = within(root, path);
   mkdirSync(dirname(absolute), { recursive: true });
@@ -417,6 +533,9 @@ export function buildDistribution({
     if (hostId === 'copilot-vscode') {
       writeUnique('plugin.json', copilotPluginManifest(version), 'plugin-manifest');
     }
+    if (hostId === 'codex') {
+      writeUnique('README.md', readFileSync(assertSourcePath('distribution/adapters/codex/README.md', 'file')), 'adapter');
+    }
 
     const commandPaths = new Set();
     for (const command of catalog.commands) {
@@ -424,22 +543,20 @@ export function buildDistribution({
       let contents;
       if (host.commandDelivery === 'native-command') {
         target = `${host.commandTarget}/${command.name}${host.commandSuffix}`;
-        const source = join(assertSourcePath(host.commandWrapperSource, 'directory'), `${command.name}.md`);
-        if (!existsSync(source)) throw new Error(`${hostId}: missing verified command wrapper for ${command.name}`);
-        contents = hostId === 'claude-code'
-          ? claudePluginCommand(command, readFileSync(assertSourcePath(command.source, 'file'), 'utf8'))
-          : readFileSync(source);
-        if (!contents.toString('utf8').includes(command.source)) {
-          if (hostId !== 'claude-code') {
-            throw new Error(`${hostId}: command wrapper for ${command.name} no longer points to ${command.source}`);
-          }
-        }
+        const sourceText = readFileSync(assertSourcePath(command.source, 'file'), 'utf8');
+        contents = host.agentFormat === 'claude-plugin'
+          ? claudePluginCommand(command, sourceText)
+          : nativeCommandWrapper(command, sourceText);
       } else if (host.commandDelivery === 'native-prompt' || host.commandDelivery === 'native-plugin-prompt') {
         target = `${host.commandTarget}/${command.name}${host.commandSuffix}`;
         contents = canonicalCommandWrapper(command, readFileSync(assertSourcePath(command.source, 'file'), 'utf8'));
       } else if (host.commandDelivery === 'native-skill-command' || host.commandDelivery === 'fallback-skill') {
         target = `${host.commandTarget}/${command.name}/SKILL.md`;
-        contents = canonicalCommandWrapper(command, readFileSync(assertSourcePath(command.source, 'file'), 'utf8'));
+        contents = canonicalCommandWrapper(
+          command,
+          readFileSync(assertSourcePath(command.source, 'file'), 'utf8'),
+          hostId === 'codex' ? `$${command.name}` : undefined,
+        );
       }
       if (!target) continue;
       if (commandPaths.has(target)) throw new Error(`${hostId}: duplicate generated target ${target}`);
@@ -461,9 +578,17 @@ export function buildDistribution({
           const suffix = relative(source, file).split(sep).join('/');
           const target = `${host.systemSkillTarget}/${skill.name}/${suffix}`;
           const contents = readFileSync(file);
-          const skillContents = hostId === 'copilot-vscode' && suffix === 'SKILL.md'
-            ? copilotPluginSkill(skill, contents.toString('utf8'))
+          let skillContents = ['copilot-vscode', 'copilot-github', 'codex'].includes(hostId) && suffix === 'SKILL.md'
+            ? portableSkill(skill, contents.toString('utf8'))
             : contents;
+          if (host.projectSystemSkillFiles && suffix.endsWith('.md')) {
+            skillContents = rebaseMarkdownLinks(
+              skillContents.toString('utf8'),
+              `${skill.source}/${suffix}`,
+              target,
+              skill.source,
+            );
+          }
           writeUnique(
             target,
             hostId === 'claude-code' && suffix === 'SKILL.md'
@@ -477,53 +602,31 @@ export function buildDistribution({
         }
       }
     }
-    const missingWrappers = [];
-    const orphanWrappers = [];
-    const sourceDir = host.agentWrapperSource ? assertSourcePath(host.agentWrapperSource, 'directory') : null;
-    if (sourceDir) {
-      const known = new Map(catalog.agents.map((agent) => [`${agent.name}${host.agentWrapperSuffix}`, agent]));
-      const found = new Set();
-      for (const file of listFiles(sourceDir)) {
-        if (!file.endsWith('.md')) continue;
-        const name = file.split(sep).at(-1);
-        const agent = known.get(name);
-        if (!agent) {
-          orphanWrappers.push({ host: hostId, wrapper: name });
-          continue;
+    if (host.agentFormat) {
+      const profiles = catalog.agents.map(agentProfile);
+      if (host.agentFormat === 'roomodes') {
+        writeUnique(
+          host.agentTarget,
+          rooModes(profiles),
+          'agent-configuration',
+          host.projectAgentFiles ? host.agentTarget : null,
+          'adapter',
+          'three-way',
+        );
+      } else {
+        const suffix = { codex: '.toml', copilot: '.agent.md' }[host.agentFormat] ?? '.md';
+        for (const profile of profiles) {
+          const target = `${host.agentTarget}/${profile.name}${suffix}`;
+          writeUnique(
+            target,
+            agentWrapper(host.agentFormat, profile),
+            'agent',
+            host.projectAgentFiles ? target : null,
+            'adapter',
+            'three-way',
+          );
         }
-        const contents = readFileSync(file);
-        if (!contents.toString('utf8').includes(agent.source)) {
-          throw new Error(`${hostId}: agent wrapper ${name} no longer points to ${agent.source}`);
-        }
-        found.add(agent.name);
-        const target = `${host.agentTarget}/${name}`;
-        let wrapper = readFileSync(file, 'utf8');
-        if (hostId === 'claude-code') {
-          wrapper = claudePluginAgent(agent, wrapper);
-          wrapper = wrapper.replaceAll('../../prompts/', '${CLAUDE_PLUGIN_ROOT}/payload/prompts/');
-          const frontmatter = wrapper.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n/);
-          if (frontmatter) {
-            wrapper = `${frontmatter[0]}Before following this agent's role, prefer the matching file in the current project's `
-              + `\`prompts/hard_points/\` when \`.aikido/lock.json\` is present; otherwise load the bundled source under `
-              + `\`\${CLAUDE_PLUGIN_ROOT}/payload/prompts/hard_points/\`. Never edit the plugin cache.\n\n`
-              + wrapper.slice(frontmatter[0].length);
-          }
-        }
-        writeUnique(target, wrapper, 'agent', host.projectAgentFiles ? target : null, 'adapter', 'three-way');
       }
-      for (const agent of catalog.agents) {
-        if (!found.has(agent.name)) missingWrappers.push({ host: hostId, agent: agent.name });
-      }
-    }
-    if (host.agentConfiguration) {
-      writeUnique(
-        host.agentConfiguration.target,
-        readFileSync(assertSourcePath(host.agentConfiguration.source, 'file')),
-        'agent-configuration',
-        host.projectAgentFiles ? host.agentConfiguration.target : null,
-        'adapter',
-        'three-way',
-      );
     }
     outputFiles.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
     projectFiles.sort((a, b) => (a.target < b.target ? -1 : a.target > b.target ? 1 : 0));
@@ -538,8 +641,8 @@ export function buildDistribution({
       files: outputFiles,
       payloadFiles,
       projectFiles,
-      missingAgentWrappers: missingWrappers,
-      orphanAgentWrappers: orphanWrappers,
+      agentFormat: host.agentFormat,
+      agentCount: catalog.agents.length,
     };
     writeUnique('package-manifest.json', `${JSON.stringify(packageManifest, null, 2)}\n`);
     reports.push({
@@ -548,8 +651,8 @@ export function buildDistribution({
       generated: true,
       commandDelivery: host.commandDelivery,
       fileCount: outputFiles.length,
-      missingAgentWrappers: missingWrappers,
-      orphanAgentWrappers: orphanWrappers,
+      agentFormat: host.agentFormat,
+      agentCount: catalog.agents.length,
     });
   }
   const report = { schemaVersion: 1, sourceRevision, hosts: reports };

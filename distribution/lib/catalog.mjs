@@ -21,6 +21,8 @@ const HOST_LABELS = {
 };
 
 function commandInvocation(name, hostId, delivery) {
+  if (hostId === 'copilot-github') return `ask Copilot to use the \`${name}\` Skill`;
+  if (hostId === 'codex') return `\`$${name}\` (Skill; also available in \`/skills\`)`;
   const invocation = hostId === 'claude-code' || hostId === 'claude-cowork'
     ? `/aikido:${name}`
     : `/${name}`;
@@ -48,7 +50,7 @@ export function renderCatalogEntries(kind, { hosts = [], catalog = loadCatalog()
         .map((hostId) => `${HOST_LABELS[hostId] ?? hostId}: ${commandInvocation(item.name, hostId, catalog.hosts[hostId].commandDelivery)}`)
         .join('; ') || 'Invocation depends on the selected host adapter'
       : kind === 'agents'
-        ? 'Canonical role prompt; host wrapper availability is reported by the package build'
+        ? 'Canonical role prompt, generated as a native agent for each selected host'
         : 'AI-KIDO system Skill';
     const source = kind === 'skills' ? `${item.source}/SKILL.md` : item.source;
     return `- [${item.name}](${source}) — ${detail}`;

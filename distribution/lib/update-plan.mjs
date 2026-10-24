@@ -739,7 +739,7 @@ export function applyMigration({ root, packageRoot, mode = 'UNSET', expectedPlan
 }
 
 function isManagedWrapper(path, host) {
-  if (host.agentConfiguration?.target === path) return false;
+  if (host.agentFormat === 'roomodes' && host.agentTarget === path) return false;
   const roots = [
     host.projectCommandFiles ? host.commandTarget : null,
     host.projectSystemSkillFiles ? host.systemSkillTarget : null,

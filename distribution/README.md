@@ -31,20 +31,31 @@ Each command is published as a native slash command where the host has one; a sk
 the command is generated **only** for hosts without user slash commands or with a deprecated
 mechanism, never both for the same command on the same host.
 The catalog leaves unverified host surfaces disabled; its qualification labels are not end-to-end
-compatibility claims. Missing and orphan agent wrappers are reported rather than synthesized from
-guessed tool permissions or silently packaged.
+compatibility claims.
 
-| Host | Command representation in staging build | Qualification |
-|---|---|---|
-| Claude Code | Native command wrapper | Qualified, not tested end to end |
-| Claude Cowork | Native command wrapper | Qualified with conditions, not tested |
-| VS Code / Copilot | Agent Plugins 1.0 plugin: slash prompts, Skills, and namespaced agents | Qualified, not tested end to end |
-| GitHub Copilot coding agent | Not generated | Command/skill discovery unverified |
-| Codex | Fallback Skill | Qualified, not tested end to end |
-| Kiro CLI | Native Skill-command (one file, not a second fallback Skill) | Qualified, not tested end to end |
-| Roo/Zoo Code | Native command wrapper | Format identified, not tested |
-| Google Antigravity | Fallback Skill | Qualified, not tested end to end |
-| Copilot Cowork | Not generated | Optional final target, unverified |
+Every wrapper is **generated** from the canonical sources under `prompts/hard_points/`; the
+hand-written wrappers of this repository (`.claude/`, `.github/agents/`, `.roo/`, `.roomodes`) are
+not distribution sources. Each enabled host receives one native wrapper for **every** catalog
+agent. A wrapper only points to its canonical role file; its tool list is derived from the
+canonical `tools` frontmatter mapped to portable capabilities (read, write, shell, delegate), and
+an unknown tool fails the build instead of being guessed. Agents always keep read access to load
+their role file. The orchestrator inherits the parent tools and is not exposed as a sub-agent where
+the host allows that restriction.
+
+| Host | Commands | Agents | Qualification |
+|---|---|---|---|
+| Claude Code | Native plugin command | Plugin `agents/*.md` | Qualified, not tested end to end |
+| Claude Cowork | Native plugin command | Plugin `agents/*.md` | Qualified with conditions, not tested |
+| VS Code / Copilot | Agent Plugins 1.0: slash prompts, Skills | `com.github.copilot/agents/*.agent.md` | Qualified, not tested end to end |
+| GitHub Copilot coding agent | Fallback Skills in `.github/skills/`, `AGENTS.md` block | `.github/agents/*.agent.md` | Qualified, not tested end to end |
+| Codex | Fallback Skill | `.codex/agents/*.toml` | Qualified, not tested end to end |
+| Kiro CLI | Native Skill-command (one file, not a second fallback Skill) | `.kiro/agents/*.md` | Qualified, not tested end to end |
+| Roo/Zoo Code | Native command in `.roo/commands/` | One custom mode per agent in `.roomodes` | Format identified, not tested |
+| Google Antigravity | Fallback Skill | `.agents/agents/*.md` (documented tool names only) | Qualified, not tested end to end |
+| Copilot Cowork | Not generated | Not generated | Optional final target, unverified |
+
+`.roomodes` is a shared user file: install refuses to overwrite a foreign one and uninstall keeps
+it.
 
 ## Bootstrap plan and application
 
@@ -141,8 +152,9 @@ node distribution/scripts/build.mjs --out /tmp/aikido-dist --revision <40-charac
 ```
 
 The current staging mappings cover Claude Code command wrappers, a VS Code Agent Plugins 1.0 plugin,
-Codex and Antigravity fallback Skills, Kiro native Skill-commands, Roo/Zoo command wrappers, and
-registered Claude/Copilot agent wrappers. These are build mappings, not tested host integrations.
+Codex, GitHub coding agent and Antigravity fallback Skills, Kiro native Skill-commands, Roo/Zoo command
+wrappers, and generated agent wrappers for every enabled host. These are build mappings, not tested
+host integrations.
 Generated packages are staging outputs, not installable releases. Package integrity is validated
 after extraction; host-specific end-to-end testing and release publication remain future work.
 
@@ -154,9 +166,43 @@ commands separate from workspace `.github/prompts/` files, so commands are not d
 The package shape and Skill metadata are tested locally; the native Copilot runtime could not be
 tested in this environment because the GitHub Copilot VS Code extension is not installed.
 
+The GitHub coding agent (Copilot cloud agent on GitHub.com) has no slash commands or prompt
+files, so the `copilot-github` package installs repository files only: commands become fallback
+Skills and system Skills are copied under `.github/skills/` (with `name`/`description` metadata),
+registered agents under `.github/agents/`, and the shared `AGENTS.md` managed block provides the
+instructions. On GitHub.com, ask Copilot to use the Skill by name; Copilot also selects it when
+relevant. Markdown links in copied Skills are rebased so they still reach the installed Memory Bank.
+Bootstrap one Copilot adapter per project: VS Code also reads `.github/skills/` and
+`.github/agents/`, so adding the `copilot-vscode` plugin to a `copilot-github` project would expose
+each command twice. No `copilot-setup-steps.yml` is generated because the Skills need no extra
+dependencies; MCP servers stay a repository setting. The cloud-agent runtime has not been tested
+end to end.
+[Custom instructions support](https://docs.github.com/en/copilot/reference/custom-instructions-support),
+[Adding agent skills](https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/add-skills),
+[Customization cheat sheet](https://docs.github.com/en/copilot/reference/customization-cheat-sheet).
+
 Official format references:
 [Agent Plugins in VS Code](https://code.visualstudio.com/docs/agent-customization/agent-plugins),
 [Agent plugin authoring reference](https://code.visualstudio.com/docs/agents/reference/agent-plugin-reference).
+
+### Codex CLI and IDE workspace adapter
+
+The Codex package installs repository-scoped `.agents/skills/`, all 15 `.codex/agents/*.toml`
+wrappers and the shared `AGENTS.md` block. Commands are invoked with `$<name>` or selected through
+`/skills`, not installed as deprecated custom prompts. System Skills receive valid discovery
+metadata; their resources and relative Memory Bank links remain usable after bootstrap.
+
+The [Codex adapter guide](adapters/codex/README.md) is included as the generated package's
+`README.md`. It covers installation, sandbox/approval requirements, precedence of `AGENTS.override.md`,
+updates, removal and separate CLI/IDE recipes. No plugin or user-level configuration is installed,
+so the workspace adapter does not introduce plugin/workspace duplicates.
+
+Extracted-package tests cover STANDARD/LIGHT/UNSET installation, all agent wrappers, legacy
+migration, personalized updates, explicit conflicts, removal and recovery outside the source tree.
+These test the Node runtime, **not** native Codex discovery or inference. Codex CLI is unavailable
+in the current environment, and the IDE recipe has not run; both remain explicitly untested.
+Agent role instructions do not create a separate sandbox: Codex agents inherit the parent
+permissions, model and MCP servers.
 
 ## Tests
 

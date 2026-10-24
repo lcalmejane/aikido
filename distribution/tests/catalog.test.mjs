@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { buildDistribution, validateCatalog } from '../scripts/build.mjs';
+import { agentProfile, buildDistribution, validateCatalog } from '../scripts/build.mjs';
+import { validatePackage } from '../lib/package.mjs';
 
 const catalog = JSON.parse(readFileSync(new URL('../../distribution/catalog.json', import.meta.url), 'utf8'));
 
@@ -41,7 +42,7 @@ test('a command has exactly one delivery per host and unverified targets stay di
   assert.ok(validateCatalog(invalid).some((error) => error.includes('unverified delivery cannot be enabled')));
 });
 
-test('build is deterministic and reports missing wrappers without inventing agents', () => {
+test('build is deterministic', () => {
   const a = mkdtempSync(join(tmpdir(), 'aikido-build-a-'));
   const b = mkdtempSync(join(tmpdir(), 'aikido-build-b-'));
   try {
@@ -66,14 +67,8 @@ test('build is deterministic and reports missing wrappers without inventing agen
       assert.deepEqual(readFileSync(join(a, 'dist', file)), readFileSync(join(b, 'dist', file)), file);
     }
     assert.equal(reportA.hosts.find((host) => host.host === 'codex').commandDelivery, 'fallback-skill');
-    assert.equal(reportA.hosts.find((host) => host.host === 'claude-code').missingAgentWrappers.length, 2);
-    assert.deepEqual(
-      reportA.hosts.find((host) => host.host === 'claude-code').orphanAgentWrappers,
-      [{ host: 'claude-code', wrapper: 'agent-aikido-indexer.md' }],
-    );
-    assert.equal(reportA.hosts.find((host) => host.host === 'copilot-vscode').missingAgentWrappers.length, 14);
     assert.deepEqual(reportA, reportB);
-    assert.equal(reportA.hosts.find((host) => host.host === 'copilot-github').generated, false);
+    assert.equal(reportA.hosts.find((host) => host.host === 'copilot-github').generated, true);
   } finally {
     rmSync(a, { recursive: true, force: true });
     rmSync(b, { recursive: true, force: true });
@@ -114,6 +109,60 @@ test('generated command files follow exactly one declared route per enabled host
     assert.ok(!copilot.files.some((entry) => entry.path === '.github/prompts/init-aikido.prompt.md'));
     assert.ok(!copilot.projectFiles.some((entry) => entry.target.includes('/commands/')));
     assert.ok(!copilot.projectFiles.some((entry) => entry.target === '.github/prompts/init-aikido.prompt.md'));
+    const github = JSON.parse(readFileSync(join(root, 'dist/copilot-github/package-manifest.json'), 'utf8'));
+    const githubTargets = new Set(github.projectFiles.map((entry) => entry.target));
+    assert.equal(github.commandDelivery, 'fallback-skill');
+    assert.ok(githubTargets.has('.github/skills/init-aikido/SKILL.md'));
+    assert.ok(githubTargets.has('.github/skills/orchestrator/SKILL.md'));
+    assert.ok(githubTargets.has('.github/agents/agent-aikido-orchestrator.agent.md'));
+    assert.ok(![...githubTargets].some((target) => target.startsWith('.github/prompts/')));
+    const githubSkill = readFileSync(join(root, 'dist/copilot-github/.github/skills/orchestrator/SKILL.md'), 'utf8');
+    assert.match(githubSkill, /^---\nname: orchestrator\ndescription: "/);
+    assert.ok(githubSkill.includes('](../../../prompts/hard_points/agents/agent-aikido-orchestrator.md)'));
+    assert.ok(githubSkill.includes('](../../../skills_list.md)'));
+    assert.ok(!githubSkill.includes('](../../agents/'));
+    assert.equal(validatePackage(join(root, 'dist/copilot-github'), { catalog }).valid, true);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('every enabled host package generates a native wrapper for every agent', () => {
+  const root = mkdtempSync(join(tmpdir(), 'aikido-build-agents-'));
+  try {
+    const report = buildDistribution({ outDir: join(root, 'dist'), catalog, sourceRevision: 'a'.repeat(40) });
+    const suffixes = { codex: '.toml', copilot: '.agent.md' };
+    for (const [hostId, host] of Object.entries(catalog.hosts)) {
+      if (!host.enabled) continue;
+      assert.equal(report.hosts.find((entry) => entry.host === hostId).agentCount, catalog.agents.length);
+      const packageRoot = join(root, 'dist', hostId);
+      assert.equal(validatePackage(packageRoot, { catalog }).valid, true, hostId);
+      const manifest = JSON.parse(readFileSync(join(packageRoot, 'package-manifest.json'), 'utf8'));
+      if (host.agentFormat === 'roomodes') {
+        const modes = readFileSync(join(packageRoot, '.roomodes'), 'utf8');
+        assert.equal(modes.match(/^  - slug: /gm).length, catalog.agents.length);
+        assert.ok(manifest.projectFiles.some((entry) => entry.target === '.roomodes'));
+        continue;
+      }
+      for (const agent of catalog.agents) {
+        const path = `${host.agentTarget}/${agent.name}${suffixes[host.agentFormat] ?? '.md'}`;
+        const text = readFileSync(join(packageRoot, path), 'utf8');
+        assert.ok(text.includes(`\`${agent.source}\``), `${hostId}: ${path}`);
+        assert.equal(manifest.projectFiles.some((entry) => entry.target === path), host.projectAgentFiles, path);
+      }
+    }
+    const dist = (path) => readFileSync(join(root, 'dist', path), 'utf8');
+    assert.match(dist('claude-code/agents/agent-aikido-validator.md'), /^---\nname: agent-aikido-validator\ndescription: ".+"\ntools: Read, Grep, Glob\nmodel: inherit\n---/);
+    assert.ok(dist('claude-cowork/agents/agent-aikido-fusion.md').includes('${CLAUDE_PLUGIN_ROOT}/payload/'));
+    assert.ok(!/^tools:/m.test(dist('claude-code/agents/agent-aikido-orchestrator.md')));
+    assert.match(dist('copilot-github/.github/agents/agent-aikido-orchestrator.agent.md'), /disable-model-invocation: true/);
+    assert.match(dist('copilot-vscode/com.github.copilot/agents/agent-aikido-truth-evaluator.agent.md'), /^tools: \["read","search"\]$/m);
+    assert.match(dist('codex/.codex/agents/agent-aikido-validator.toml'), /^name = "agent-aikido-validator"\ndescription = ".+"\ndeveloper_instructions = ".+Do not edit files\.\\n"\n$/);
+    assert.match(dist('kiro-cli/.kiro/agents/agent-aikido-bank-populate.md'), /tools:\n  - "read"\n  - "write"\n  - "shell"\n---/);
+    assert.match(dist('antigravity/.agents/agents/agent-aikido-explore-all.md'), /tools:\n  - view_file\n  - grep_search\n  - invoke_subagent\n---/);
+    assert.match(dist('antigravity/.agents/agents/agent-aikido-orchestrator.md'), /subagent: false/);
+    assert.match(dist('roo-zoo/.roo/commands/init-aikido.md'), /^---\ndescription: ".+"\n---\n\n# \/init-aikido\n/);
+    assert.deepEqual(agentProfile(catalog.agents.find((agent) => agent.name === 'agent-aikido-helper')).capabilities, ['read']);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
