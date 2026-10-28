@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 | Version | Date | Highlights |
 |---------|------|-----------|
-| **Unreleased** | - | Multi-host distribution groundwork (templates, bootstrap, updates, catalog, Claude Code and VS Code plugin packages, GitHub coding agent adapter, generated agent wrappers for every host); bundled Roo Code reference docs removed |
+| **1.5.0** | 2026-10-28 | Multi-host distribution groundwork (templates, bootstrap, updates, catalog, Claude Code and VS Code plugin packages, GitHub coding agent adapter, generated agent wrappers for every host); bundled Roo Code reference docs removed |
 | **1.4** | 2026-10-03 | First public release. English-language baseline, MIT license, secrets hardening |
 | **1.3.3** | 2026-02-27 | Skill lifecycle management (install, update, uninstall from a Git group) |
 | **1.3.1** | 2026-01-16 | External skills integration, `create-skill` command, technical audit plan |
@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [Unreleased]
+## [1.5.0] - 2026-10-28
 
 ### Added
 
