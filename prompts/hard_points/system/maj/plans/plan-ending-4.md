@@ -248,7 +248,7 @@ The **ending-4** plan is considered successful if:
 
 - **Validation script** : [`prompts/hard_points/system/maj/scripts/validate-structure.sh`](../scripts/validate-structure.sh)
 - **Project detection script** : [`prompts/hard_points/system/maj/scripts/detect-project-type.sh`](../scripts/detect-project-type.sh)
-- **AI-KIDO hard points** : [`prompts/hard_points/ai-kido.md`](../../ai-kido.md)
+- **AI-KIDO hard points** : [`prompts/hard_points/ai-kido.md`](../../../ai-kido.md)
 
 ---
 

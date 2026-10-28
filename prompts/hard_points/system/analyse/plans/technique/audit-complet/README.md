@@ -123,12 +123,12 @@ audits/
 
 | Agent | Phase | Role | Required |
 |-------|-------|------|----------|
-| [`agent-aikido-explore-code`](../../../agents/agent-aikido-explore-code.md) | 3.1 | Multi-repository source code scan | ✅ Yes |
-| [`agent-aikido-explore-all`](../../../agents/agent-aikido-explore-all.md) | 3.2 | Parallel Memory Bank + Code search | ✅ Yes (depth ≥4) |
-| [`agent-aikido-truth-evaluator`](../../../agents/agent-aikido-truth-evaluator.md) | Resolution | Resolution of doc vs code contradictions | If contradictions |
-| [`agent-aikido-raci-delegator`](../../../agents/agent-aikido-raci-delegator.md) | Classification | Document classification by domain | If RACI enabled |
-| [`agent-aikido-bank-populate`](../../../agents/agent-aikido-bank-populate.md) | Population | Automatic population of detected gaps | If gaps >3 |
-| [`agent-aikido-validator`](../../../agents/agent-aikido-validator.md) | Validation | AI-KIDO compliance validation | ✅ Yes |
+| [`agent-aikido-explore-code`](../../../../../agents/agent-aikido-explore-code.md) | 3.1 | Multi-repository source code scan | ✅ Yes |
+| [`agent-aikido-explore-all`](../../../../../agents/agent-aikido-explore-all.md) | 3.2 | Parallel Memory Bank + Code search | ✅ Yes (depth ≥4) |
+| [`agent-aikido-truth-evaluator`](../../../../../agents/agent-aikido-truth-evaluator.md) | Resolution | Resolution of doc vs code contradictions | If contradictions |
+| [`agent-aikido-raci-delegator`](../../../../../agents/agent-aikido-raci-delegator.md) | Classification | Document classification by domain | If RACI enabled |
+| [`agent-aikido-bank-populate`](../../../../../agents/agent-aikido-bank-populate.md) | Population | Automatic population of detected gaps | If gaps >3 |
+| [`agent-aikido-validator`](../../../../../agents/agent-aikido-validator.md) | Validation | AI-KIDO compliance validation | ✅ Yes |
 
 ## 📤 Output Format
 
@@ -215,9 +215,9 @@ This plan is best suited for:
 
 - **Full plan**: [`plan-expert.md`](plan-expert.md)
 - **Configuration**: [`config-example.yml`](config-example.yml)
-- **Main command**: [`/analyse-project`](../../../commands/analyse-project.md)
-- **AI-KIDO agents**: [`/agents/`](../../../agents/)
-- **AI-KIDO documentation**: [`ai-kido.md`](../../../ai-kido.md)
+- **Main command**: [`/analyse-project`](../../../../../commands/analyse-project.md)
+- **AI-KIDO agents**: [`/agents/`](../../../../../agents/)
+- **AI-KIDO documentation**: [`ai-kido.md`](../../../../../ai-kido.md)
 
 ## 🔧 Customization
 
@@ -287,9 +287,9 @@ scope:
 
 Questions or issues? See:
 - Full documentation: [`plan-expert.md`](plan-expert.md)
-- AI-KIDO agents: [`/agents/`](../../../agents/)
+- AI-KIDO agents: [`/agents/`](../../../../../agents/)
 - AI-KIDO issues: [GitHub Issues](https://github.com/lcalmejane/aikido/issues)
 
 ---
 *Created on 2026-02-10 for full multi-repository technical audit*
-*See generic plan: [`../plan-expert.md`](../plan-expert.md)*
+*See generic plan: [`../../plan-expert.md`](../../plan-expert.md)*

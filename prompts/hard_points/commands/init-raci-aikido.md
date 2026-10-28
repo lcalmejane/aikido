@@ -4,7 +4,7 @@ description: "Initialize the AI-KIDO RACI matrix and team specs to define role-b
 
 # Command: /init-raci-aikido
 
-Initialize the AI-KIDO RACI matrix and team specifications by analyzing available sources or via manual input. Generates a specs file in [`/prompts/hard_points/`](../prompts/hard_points/) as the basis for role-based subdirectory hierarchy per Rule 15.
+Initialize the AI-KIDO RACI matrix and team specifications by analyzing available sources or via manual input. Generates a specs file in [`/prompts/hard_points/`](../) as the basis for role-based subdirectory hierarchy per Rule 15.
 
 **AI-KIDO mode adaptive**: auto-detects STANDARD or LIGHT mode and adapts behavior accordingly.
 
@@ -469,18 +469,18 @@ RACI matrix specifications and role-based organization for team [TEAM-NAME].
 
 #### 7.1 Hard Points Index
 
-Update [`/prompts/hard_points/index.md`](../prompts/hard_points/index.md):
+Update [`/prompts/hard_points/index.md`](../index.md):
 - STANDARD: Add `aikido-raci-[TEAM-NAME].md` under "Team Specifications"
 - LIGHT minimal: Add `aikido-raci-light-[TEAM-NAME].md`
 - LIGHT single actor: No update needed
 
 #### 7.2 Main Index
 
-Update [`/prompts/index.md`](../prompts/index.md) with team organization reference and mode.
+Update [`/prompts/index.md`](../../index.md) with team organization reference and mode.
 
 #### 7.3 AGENTS.md Update
 
-Update [`AGENTS.md`](../AGENTS.md) with:
+Update [`AGENTS.md`](../../../AGENTS.md) with:
 
 **STANDARD mode**:
 ```markdown

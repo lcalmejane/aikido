@@ -42,7 +42,7 @@ jobs:
       - name: Install Claude Code plugin validator
         run: npm install --global --no-fund --no-audit @anthropic-ai/claude-code@2.1.310
       - name: Run tests
-        run: node --test distribution/tests/*.test.mjs prompts/hard_points/system/orchestrator/*.test.mjs
+        run: node --test distribution/tests/*.test.mjs prompts/hard_points/system/orchestrator/*.test.mjs prompts/hard_points/system/skill-manage/*.test.mjs
       - name: Prepare and verify release tree
         run: |
           node distribution/scripts/prepare-release.mjs \

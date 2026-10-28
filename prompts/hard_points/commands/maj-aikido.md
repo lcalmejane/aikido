@@ -128,10 +128,12 @@ Choose the update source:
 3. ARCHIVE - tar.gz, tgz, or zip file
    Location: prompts/spec/*.{tar.gz,tgz,zip}
 
-Enter your choice (1/2/3):
+4. AI-KIDO PLUGIN PACKAGE - an installed plugin package or extracted host package
+
+Enter your choice (1/2/3/4):
 ```
 
-2. **Wait and store response** in `$SOURCE_TYPE` (values: "1" | "2" | "3")
+2. **Wait and store response** in `$SOURCE_TYPE` (values: "1" | "2" | "3" | "4")
 
 #### Step 3: Source Retrieval & Validation by Type
 
@@ -214,22 +216,49 @@ Enter your choice (1/2/3):
 
 6. **Set TARGET**: `TARGET="$TARGET_PATH"`
 
+##### 3.4 AI-KIDO Plugin Package (if choice = 4)
+
+**Action: Select the active plugin package or an extracted package directory**
+
+1. If the host provides `${CLAUDE_PLUGIN_ROOT}`, use that resolved plugin root as the default.
+   Otherwise ask for the path to an extracted host package directory.
+2. Resolve the selected path to an absolute path; do not infer it from the project directory or
+   search other plugin caches.
+3. Verify that `package-manifest.json`, `payload/`, `templates/` and the package runtime exist.
+   Run the bundled package validator:
+
+   ```bash
+   node "<resolved-plugin-root>/scripts/validate-package.mjs" "<resolved-package-root>"
+   ```
+
+4. Require a valid package manifest and a package host compatible with this host. Do not accept a
+   bare source repository, a package from another host, or an unverified staging folder.
+5. Set `TARGET` to the validated package root and `SOURCE_TYPE=4`.
+6. Do not extract this source or pass it through the legacy version-plan chain. After the common
+   update runtime has shown its read-only plan, ask the user to confirm that exact plan before
+   invoking its apply operation. Plugin update and project-method update are separate operations.
+
 #### Step 4: Source Validation
 
 **Action: Validate the AI-KIDO source**
 
-1. **Check required files** in `$TARGET`:
+1. For Git, local directory and archive sources, check required files in `$TARGET`:
    - `prompts/hard_points/ai-kido.md`
    - `prompts/hard_points/ai-kido-light.md`
    - `AGENTS.md`
    - `CLAUDE.md`
 
-2. **Extract source version** from `$TARGET/prompts/hard_points/ai-kido.md`:
+2. For those legacy sources, extract source version from `$TARGET/prompts/hard_points/ai-kido.md`:
    - Find line: `> **Version**: X.X.X-MODE`
    - Store in `$SOURCE_VERSION`
 
-3. **Result**:
-   - If all files exist AND version detected:
+3. For package source (`SOURCE_TYPE=4`), the package validator is authoritative:
+   - Read `version`, `host` and `sourceRevision` from its validated `package-manifest.json`.
+   - Store `version` in `$SOURCE_VERSION`.
+   - Do not require repository-root `AGENTS.md` or `CLAUDE.md`; these are not package payload files.
+
+4. **Result**:
+   - If source-specific validation succeeds and the version is detected:
      - Display `Source AI-KIDO validated (version $SOURCE_VERSION)`
      - Display `   Path: $TARGET`
      - Continue to next step
@@ -292,6 +321,55 @@ For each plan X:
 ```
 
 #### Phase 1: Execute plan-beginning
+
+**Package source branch**: when `SOURCE_TYPE=4`, do not execute `plan-beginning.md`, the
+version-migration plans, or `plan-ending-0` through `plan-ending-8`. Those plans operate on a
+repository checkout and could copy repository-level configuration into the project. Instead, use
+the bundled distribution runtime. Resolve the active plugin's root before invoking Bash;
+`${CLAUDE_PLUGIN_ROOT}` is a plugin-component substitution, not a shell environment variable.
+If the project has no `.aikido/lock.json` but does have `prompts/hard_points/`, offer the explicit
+non-destructive migration path instead of attempting a regular update:
+
+```bash
+node "<resolved-plugin-root>/scripts/update-plan.mjs" \
+  --root "<current-project-root>" --package "$TARGET" --migrate
+```
+
+Review the migration report and confirm its exact plan ID with `--migrate --apply --confirm`.
+Migration only records existing files and saves source baselines; it does not rewrite project
+knowledge, indexes, generated lists or user instruction files. If no existing AI-KIDO method is
+present, stop and use the bootstrap flow instead.
+
+For an existing lock:
+
+1. Run the read-only update planner with the current project root and `$TARGET` package:
+
+   ```bash
+   node "<resolved-plugin-root>/scripts/update-plan.mjs" \
+     --root "<current-project-root>" --package "$TARGET"
+   ```
+
+2. Display file decisions, conflicts and the returned confirmation ID; planning makes no project
+   writes. If conflicts are present, stop and ask for manual resolution before replanning.
+3. After explicit user approval, invoke apply with the exact displayed ID:
+
+   ```bash
+   node "<resolved-plugin-root>/scripts/update-plan.mjs" \
+     --root "<current-project-root>" --package "$TARGET" \
+     --apply --confirm "<reviewed-plan-id>"
+   ```
+
+4. Report the targeted backup path returned by apply. If recovery is needed, restore only from that
+   exact backup:
+
+   ```bash
+   node "<resolved-plugin-root>/scripts/update-plan.mjs" \
+     --root "<current-project-root>" --recover "<backup-path>"
+   ```
+
+5. Report conflicts or failures and leave existing Git/local/archive workflows unchanged.
+
+For Git, local directory and archive sources, continue with the existing modular plan chain below.
 
 **Action: Create a dedicated sub-task to execute the initialization plan**
 

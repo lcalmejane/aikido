@@ -175,7 +175,7 @@ Once this plan succeeds (or is skipped):
 
 ## 📚 References
 
-- **Merge agent** : [`prompts/hard_points/agents/agent-aikido-fusion.md`](../../agents/agent-aikido-fusion.md)
+- **Merge agent** : [`prompts/hard_points/agents/agent-aikido-fusion.md`](../../../agents/agent-aikido-fusion.md)
 - **Merge rules** : See agent-aikido-fusion (context preservation + formalism adoption)
 - **JSON structure** : [`prompts/hard_points/system/structure/SKILL.md`](../../structure/SKILL.md)
 

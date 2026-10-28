@@ -181,7 +181,7 @@ Once this plan succeeds:
 
 - **Project detection script** : [`prompts/hard_points/system/maj/scripts/detect-project-type.sh`](../scripts/detect-project-type.sh)
 - **V1.3 index format** : [`prompts/index.md`](../../../../index.md)
-- **AI-KIDO hard points** : [`prompts/hard_points/ai-kido.md`](../../ai-kido.md)
+- **AI-KIDO hard points** : [`prompts/hard_points/ai-kido.md`](../../../ai-kido.md)
 
 ---
 

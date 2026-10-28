@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lcalmejane/aikido/distribution/schemas/lock.schema.json",
+  "title": "AI-KIDO project lock (.aikido/lock.json)",
+  "description": "Versioned record of the AI-KIDO method installed in a project. Paths are project-relative POSIX paths; hashes are SHA-256 of file contents (managed blocks: block body without markers, LF, no trailing newline).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "aikido", "mode", "hosts", "installedAt", "files", "managedBlocks"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "aikido": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "source"],
+      "properties": {
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+(\\.\\d+)?(-[0-9A-Za-z.-]+)?$" },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "ref"],
+          "properties": {
+            "type": { "enum": ["git", "archive", "local", "plugin"] },
+            "ref": {
+              "type": "string",
+              "minLength": 1,
+              "not": { "pattern": "^(/|~|file:|[A-Za-z]:)" },
+              "description": "Portable source identifier, e.g. github:lcalmejane/aikido@1.5.0 or plugin:aikido@1.5.0. Never a local absolute path."
+            },
+            "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" }
+          },
+          "if": { "properties": { "type": { "not": { "const": "local" } } } },
+          "then": { "required": ["commit"] }
+        }
+      }
+    },
+    "mode": { "enum": ["STANDARD", "LIGHT", "UNSET"] },
+    "hosts": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": ["claude-code", "claude-cowork", "copilot-vscode", "copilot-github", "codex", "kiro-cli", "zoo-code", "roo-code-legacy", "antigravity", "copilot-cowork"]
+      }
+    },
+    "installedAt": { "type": "string", "format": "date-time" },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "sha256", "origin", "policy"],
+        "properties": {
+          "path": { "$ref": "#/$defs/relativePath" },
+          "sha256": { "$ref": "#/$defs/sha256" },
+          "origin": { "enum": ["payload", "template", "generated", "adapter"] },
+          "policy": { "enum": ["three-way", "create-only"] }
+        }
+      }
+    },
+    "managedBlocks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "id", "sha256"],
+        "properties": {
+          "path": { "$ref": "#/$defs/relativePath" },
+          "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "sha256": { "$ref": "#/$defs/sha256" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "not": { "pattern": "(^/|^~|^[A-Za-z]:|\\\\|(^|/)\\.{1,2}(/|$)|//)" }
+    }
+  }
+}

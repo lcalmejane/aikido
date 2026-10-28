@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "aikido": {
+    "version": "1.5.0",
+    "source": {
+      "type": "git",
+      "ref": "/Users/someone/aikido",
+      "commit": "c858f59000000000000000000000000000000000"
+    }
+  },
+  "mode": "STANDARD",
+  "hosts": [
+    "claude-code",
+    "copilot-vscode"
+  ],
+  "installedAt": "2026-10-24T18:00:00Z",
+  "files": [
+    {
+      "path": "/Users/someone/project/prompts/index.md",
+      "sha256": "5b7e6bf2dc4a32a6aa4770cd5639c2c7af890fc86c273b5c8567fe5382086bf3",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "path": "prompts/index.md",
+      "sha256": "1bc04b5291c26a46d918139138b992d2de976d6851d0893b0476b85bfbdfc6e6",
+      "origin": "template",
+      "policy": "create-only"
+    },
+    {
+      "path": "commands_list.md",
+      "sha256": "a330395cc0a53ad1207736546afff4735940937564bbf75ce1edad40780d9139",
+      "origin": "generated",
+      "policy": "three-way"
+    }
+  ],
+  "managedBlocks": [
+    {
+      "path": "AGENTS.md",
+      "id": "core",
+      "sha256": "496aca80e4d8f29fb8e8cd816c3afb48d3f103970b3a2ee1600c08ca67326dee"
+    },
+    {
+      "path": ".gitignore",
+      "id": "state",
+      "sha256": "1917d730c88ed0f6fd76487c7aeaf58635effb03dfd688d74d423fbcbd510b5a"
+    }
+  ]
+}

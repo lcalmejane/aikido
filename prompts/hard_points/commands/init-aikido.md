@@ -15,6 +15,7 @@ Initialize the AI-KIDO Memory Bank by creating base files in `/prompts/gen/` per
 ### Phase 0: AI-KIDO Mode Selection [MANDATORY]
 
 Check if AI-KIDO is already initialized by reading `/prompts/index.md`.
+A missing file or a bootstrap stub containing `AIKIDO_MODE: UNSET` means **NOT initialized**.
 
 **If NOT initialized**, ask **Question 0: AI-KIDO mode**
 
@@ -478,13 +479,14 @@ Update with new created files:
 
 #### 8.2 Main Index
 
-Update `/prompts/index.md`:
+Update `/prompts/index.md` (replace the `AIKIDO_MODE: UNSET` stub if present):
 - **STANDARD**: Reference `ai-kido.md`, new project context, business domain, tech stack, links to new files
 - **LIGHT**: Reference `ai-kido-light.md`, simplified structure, unified files
 
 #### 8.3 AGENTS.md Update
 
-Create or update `AGENTS.md` at project root:
+Create or update `AGENTS.md` at project root. Keep any `<!-- aikido:begin id=core ... -->` /
+`<!-- aikido:end id=core -->` block unchanged (managed by the AI-KIDO bootstrap) and write outside it:
 
 **STANDARD**:
 ```markdown
