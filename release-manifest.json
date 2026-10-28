@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "name": "aikido",
-  "version": "1.5.0-rc.3",
-  "tag": "aikido-dist-v1.5.0-rc.3",
+  "version": "1.5.0",
+  "tag": "aikido-dist-v1.5.0",
   "source": {
     "repository": "github:lcalmejane/aikido",
-    "commit": "50b39aebe81e6a7a0f81333f6864a05daec6fcd8"
+    "commit": "00412b58e27d65ac13fc414b086c8cfe4c0938c6"
   },
   "hosts": [
     {
@@ -62,8 +62,8 @@
   "files": [
     {
       "path": ".claude-plugin/marketplace.json",
-      "size": 450,
-      "sha256": "21c4e8dae209cbeaa2564970e4cdf9ec25bff195fa33d56270889a81a85e9557"
+      "size": 445,
+      "sha256": "3ea71916605750642cf5a5899323a562ab2cddec347e6decc055e4dc4ba5d0c6"
     },
     {
       "path": ".gitattributes",
@@ -72,8 +72,8 @@
     },
     {
       "path": "README.md",
-      "size": 569,
-      "sha256": "08f9508e144446dbc6c523e0c529cc77f0feca4817ce197496af4c81f898c0bd"
+      "size": 564,
+      "sha256": "594110b80554609564531babc265ba33f6ef86a95016d39ac98730a12d527dcd"
     },
     {
       "path": "antigravity/.agents/agents/agent-aikido-balancer.md",
@@ -827,8 +827,8 @@
     },
     {
       "path": "antigravity/package-manifest.json",
-      "size": 164353,
-      "sha256": "162f49a4dafa1f919cda540bfed045f5a70b55032693195419eab917b7b58d4a"
+      "size": 164348,
+      "sha256": "00d6e33c74f0e2d3fb6962a1196072c2e722781e31a4af3b3e54eb8086acd4b1"
     },
     {
       "path": "antigravity/payload/LICENSE",
@@ -1703,7 +1703,7 @@
     {
       "path": "build-report.json",
       "size": 2425,
-      "sha256": "bf722e824bda22eb4e23550e32288cbb412c24d21df1956c2add7a2887557178"
+      "sha256": "65d837d49ba00ad71c0287a8ca3447cc5ca7de9c088cbf24f4b6b9663ed0676f"
     },
     {
       "path": "claude-code/.claude-plugin/marketplace.json",
@@ -1712,8 +1712,8 @@
     },
     {
       "path": "claude-code/.claude-plugin/plugin.json",
-      "size": 283,
-      "sha256": "f3e1321e9d6f4f705e62337ff7e3bb281630f4fb557a1a665e4a35d71b40badb"
+      "size": 278,
+      "sha256": "8ce38ba0db23baf6e16315de9dc25ea918eb6c6d5717692e461bbfefd8355abb"
     },
     {
       "path": "claude-code/LICENSE",
@@ -1722,8 +1722,8 @@
     },
     {
       "path": "claude-code/README.md",
-      "size": 1246,
-      "sha256": "205a2dfbc78cc823c834882571af80265e9c07f249e048d2f2fd6be32e2720a8"
+      "size": 1241,
+      "sha256": "a0695317ef35ae9a97c53e5256dcc420481e750ab8f4c615cfca2af1e2158136"
     },
     {
       "path": "claude-code/TRADEMARK.md",
@@ -1962,8 +1962,8 @@
     },
     {
       "path": "claude-code/package-manifest.json",
-      "size": 123611,
-      "sha256": "854da24262c26b6f68db901b355cf2eefddbeae53bcd25672e28cbf6b51f41d4"
+      "size": 123606,
+      "sha256": "577486138392011e49d1fa08508daba174f5e39892de6359708ae055b6c09dc0"
     },
     {
       "path": "claude-code/payload/LICENSE",
@@ -3362,8 +3362,8 @@
     },
     {
       "path": "claude-cowork/.claude-plugin/plugin.json",
-      "size": 283,
-      "sha256": "f3e1321e9d6f4f705e62337ff7e3bb281630f4fb557a1a665e4a35d71b40badb"
+      "size": 278,
+      "sha256": "8ce38ba0db23baf6e16315de9dc25ea918eb6c6d5717692e461bbfefd8355abb"
     },
     {
       "path": "claude-cowork/LICENSE",
@@ -3612,8 +3612,8 @@
     },
     {
       "path": "claude-cowork/package-manifest.json",
-      "size": 123629,
-      "sha256": "23245596b88f99b4a4566fb3bc30220c737dcd3e216bd31f2e289618a5241a78"
+      "size": 123624,
+      "sha256": "4a25855085471af2411fce3ac4c851ff1deb4678fb2b579cd2a50370e09d2801"
     },
     {
       "path": "claude-cowork/payload/LICENSE",
@@ -5757,8 +5757,8 @@
     },
     {
       "path": "codex/package-manifest.json",
-      "size": 164386,
-      "sha256": "0ce364187e70a6441bac6c7fbc4a63c5bb373693322f02a2063d5369ce5d3af1"
+      "size": 164381,
+      "sha256": "a84cba447283a91d03b7a029ad651fff0a5fb29dcd4e4e0b72d08d06a89b7794"
     },
     {
       "path": "codex/payload/LICENSE",
@@ -7377,8 +7377,8 @@
     },
     {
       "path": "copilot-github/package-manifest.json",
-      "size": 164474,
-      "sha256": "37a9a27b2ffd99cf2e7dcdfedba0a96efcf13ccb36688aba8cf60cd55decd538"
+      "size": 164469,
+      "sha256": "d43c19c3b7a3a33a5aca102f19e7155ebb1add04f671b828d3ff7ee4e956fe06"
     },
     {
       "path": "copilot-github/payload/LICENSE",
@@ -8477,8 +8477,8 @@
     },
     {
       "path": "copilot-vscode/package-manifest.json",
-      "size": 123755,
-      "sha256": "97bbc66a2ca97cfbf631ca60badf13b0c0ad2b6eae2964b386698f8a076743be"
+      "size": 123750,
+      "sha256": "a9fd6f7b971ee49e72dcc1f88065fddb818890591b0ad1f699246a632b325ceb"
     },
     {
       "path": "copilot-vscode/payload/LICENSE",
@@ -9252,8 +9252,8 @@
     },
     {
       "path": "copilot-vscode/plugin.json",
-      "size": 227,
-      "sha256": "d983bf4a1ae9dd16b36c5e68d2d856fb91106f681a8a06ad131a6c94ef959679"
+      "size": 222,
+      "sha256": "0a45bae13d7289cedbe0335b9f566a27a6e2d9641fb740936ea86015d7fba099"
     },
     {
       "path": "copilot-vscode/scripts/bootstrap-plan.mjs",
@@ -10632,8 +10632,8 @@
     },
     {
       "path": "kiro-cli/package-manifest.json",
-      "size": 163503,
-      "sha256": "ffad9077185d2eba5e377ad7666785473cec5e5cc3b39ea65f051daa876042b7"
+      "size": 163498,
+      "sha256": "67b3013c9ecf2edce48157c288943917ae488ad73d6003b230225565f07304ae"
     },
     {
       "path": "kiro-cli/payload/LICENSE",
@@ -11667,8 +11667,8 @@
     },
     {
       "path": "roo-code-legacy/package-manifest.json",
-      "size": 107086,
-      "sha256": "be4c9c9520fccf69d8f8b5369d73b82a93e8e0bb83c33ea037d1752cbbe33d65"
+      "size": 107081,
+      "sha256": "b6a7f743cd9d27ce14d7e5f35e8763367879aca366005d4e38160b70133cbb48"
     },
     {
       "path": "roo-code-legacy/payload/LICENSE",
@@ -12702,8 +12702,8 @@
     },
     {
       "path": "zoo-code/package-manifest.json",
-      "size": 107075,
-      "sha256": "26bcbb2ac791146977da6d3d6911d8734b3e8b0d6924268ac89bb13656e271c8"
+      "size": 107070,
+      "sha256": "efbde3aae02e0db99e115a5ce1fa592f6bbd70575acb6dc1307fa650ec2f6e0d"
     },
     {
       "path": "zoo-code/payload/LICENSE",
