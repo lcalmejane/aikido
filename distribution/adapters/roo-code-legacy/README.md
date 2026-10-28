@@ -1,44 +1,39 @@
-# AI-KIDO for Roo Code (legacy)
+# AI-KIDO for Roo Code
 
-This package preserves a separate, best-effort target for existing Roo Code
-workspaces. Roo Code's project development was wound down; Zoo Code is the
-maintained fork and the recommended target for new installations. The generated
-`.roo/commands/` and `.roomodes` formats are based on the archived Roo Code
-documentation and are not a claim of current Roo Code support.
-Choose this package **or** the Zoo Code package for a workspace; both write the
-same `.roo/commands/` and `.roomodes` paths and are not co-installable.
+Use this package to add AI-KIDO to an existing Roo Code project. For a project
+using Zoo Code, use the [Zoo Code package](../zoo-code/README.md). Select only
+one package per project because both use the same command and mode paths.
 
 ## Install into a project
 
-Preview the package bootstrap before applying it:
+Preview the bootstrap plan:
 
 ```bash
-node /path/to/roo-code-legacy-package/scripts/bootstrap-plan.mjs \
-  --root "$PWD" --package /path/to/roo-code-legacy-package --mode STANDARD
+node /path/to/roo-code-package/scripts/bootstrap-plan.mjs \
+  --root "$PWD" --package /path/to/roo-code-package --mode STANDARD
 ```
 
-Review the plan and use the returned ID to apply. An existing `.roomodes` file
-causes an explicit conflict rather than being replaced. Back it up and merge
-its `customModes` manually before retrying.
+Review the plan and apply it using its returned ID:
 
 ```bash
-node /path/to/roo-code-legacy-package/scripts/bootstrap-plan.mjs \
-  --root "$PWD" --package /path/to/roo-code-legacy-package --mode STANDARD \
+node /path/to/roo-code-package/scripts/bootstrap-plan.mjs \
+  --root "$PWD" --package /path/to/roo-code-package --mode STANDARD \
   --apply --confirm <plan-id>
 ```
 
-Commands are exposed as `/name` from `.roo/commands/<name>.md`; agent personas
-are custom modes in `.roomodes`. The adapter does not alter `.roo/mcp.json`,
-`.roo/rules/`, global settings, or approval policies. Uninstall preserves the
-shared `.roomodes` file; back it up and remove the AI-KIDO modes manually.
+If the project already has a `.roomodes` file, review that planned change
+before applying it.
 
-## Qualification
+## Use in Roo Code
 
-This legacy package is generated and statically checked separately from
-Zoo Code. Roo Code has no native end-to-end recipe here. Prefer Zoo Code for
-new projects, and do not infer that a successful Zoo Code test validates Roo.
+Invoke commands as `/name` from `.roo/commands/`, such as `/init-aikido`.
+Select AI-KIDO personas as custom modes in `.roomodes`.
 
-Archived reference:
+## Update or remove
 
-- [Roo Code custom modes (archived documentation)](https://roocodeinc.github.io/Roo-Code/features/custom-modes/)
-- [Zoo Code migration guide](https://docs.zoocode.dev/roo-to-zoo-migration)
+Use `scripts/update-plan.mjs` from the package version you want to install to
+preview an update, then apply the reviewed plan with
+`--apply --confirm <plan-id>`. To remove AI-KIDO integration files while
+retaining project knowledge, preview and confirm an uninstall. The shared
+`.roomodes` file is kept; remove AI-KIDO modes from it after reviewing the
+file.

@@ -10,6 +10,15 @@ The AI‑KIDO method follows an iterative process alternating between **function
 
 **Method + meta-harness**: AI‑KIDO is first and foremost a **method**. Its tools are not a fixed harness but a **meta-harness**: the functions built into the knowledge base's agents, skills and tools build **on the fly** the harness each task needs (context, agents, tools, checks). Every harness generated this way becomes a capitalized, reusable **use case**. Details: [Method and meta-harness](prompts/hard_points/ai-kido_details.md#method-and-meta-harness).
 
+## Install AI-KIDO in a project
+
+Choose the package for your assistant to add AI-KIDO to a project, then initialize
+its Memory Bank from that assistant. Packages include a reviewable bootstrap
+plan and a runtime for updating or removing the project integration.
+
+See the [distribution guide](distribution/README.md) for assistant-specific
+installation steps, migration, updates, and removal.
+
 ## 🎯 AI‑KIDO Philosophy
 
 AI‑KIDO is based on 18 fundamental rules that guarantee:

@@ -29,7 +29,10 @@ test('release tree is deterministic, validated and pinned to its source commit',
     assert.ok(manifest.files.some(({ path }) => path === 'claude-code/package-manifest.json'));
     const marketplace = JSON.parse(readFileSync(join(out, '.claude-plugin/marketplace.json'), 'utf8'));
     assert.deepEqual(marketplace.plugins.map(({ name, source }) => [name, source]), [['aikido', './claude-code']]);
-    assert.match(readFileSync(join(out, 'README.md'), 'utf8'), new RegExp(`aikido@${HEAD}`));
+    const readme = readFileSync(join(out, 'README.md'), 'utf8');
+    assert.match(readme, /host-integrations\.md/);
+    assert.doesNotMatch(readme, /qualification|not tested|build-report|sourceRevision|generated from/i);
+    assert.ok(readFileSync(join(out, 'host-integrations.md'), 'utf8').includes('Initialize a project'));
     assert.equal(readFileSync(join(out, '.gitattributes'), 'utf8'), '* -text\n');
     const icon = readFileSync(join(REPO, 'distribution/adapters/claude-code/aikido.png'));
     for (const host of ['claude-code', 'claude-cowork']) {
@@ -45,11 +48,11 @@ test('release verification rejects modified, added and removed files', () => {
   withRelease((out) => {
     writeFileSync(join(out, 'README.md'), 'tampered\n');
     writeFileSync(join(out, 'extra.txt'), 'x\n');
-    rmSync(join(out, 'build-report.json'));
+    rmSync(join(out, 'host-integrations.md'));
     assert.throws(() => verifyRelease(out), (error) => (
       /modified file: README\.md/.test(error.message)
       && /unexpected file: extra\.txt/.test(error.message)
-      && /missing file: build-report\.json/.test(error.message)
+      && /missing file: host-integrations\.md/.test(error.message)
     ));
   });
 });

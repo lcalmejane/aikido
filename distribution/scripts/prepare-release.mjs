@@ -76,16 +76,14 @@ function rootMarketplace(version) {
   }, null, 2)}\n`;
 }
 
-function releaseReadme(version, sourceRevision, hosts) {
+function releaseReadme(version, hosts) {
   return `# AI-KIDO distribution ${version}\n\n`
-    + `Generated from \`lcalmejane/aikido@${sourceRevision}\`. Do not edit this branch by hand; `
-    + `it is replaced by the release workflow. Pin installations to the tag \`${releaseTag(version)}\` `
-    + `or to a commit SHA of this branch, never to the moving branch name.\n\n`
-    + `Each directory is one host package with its own \`README.md\` and \`package-manifest.json\`:\n\n`
+    + `Choose the package for your assistant, then follow the installation guide in `
+    + `[\`host-integrations.md\`](host-integrations.md). Each package is in its own directory:\n\n`
     + hosts.map((host) => `- \`${host}/\``).join('\n')
-    + `\n\nThe root \`.claude-plugin/marketplace.json\` exposes the Claude Code package. `
-    + `\`release-manifest.json\` lists the SHA-256 of every file for provenance checks. `
-    + `Host-native qualification status is recorded per package and in the source repository.\n`;
+    + `\n\nClaude Code users can install the \`aikido\` marketplace plugin from this release. `
+    + `Other assistants use the matching package directory. The package README contains `
+    + `assistant-specific setup instructions where provided.\n`;
 }
 
 export function prepareRelease({ outDir, sourceRevision, version, checkSource = true }) {
@@ -109,7 +107,11 @@ export function prepareRelease({ outDir, sourceRevision, version, checkSource = 
   for (const host of hosts) validatePackage(join(outputRoot, host));
   if (!hosts.includes('claude-code')) throw new Error('A release must include the claude-code package');
 
-  writeFileSync(join(outputRoot, 'README.md'), releaseReadme(version, sourceRevision, hosts));
+  writeFileSync(
+    join(outputRoot, 'host-integrations.md'),
+    readFileSync(join(REPO, 'distribution/docs/host-integrations.md')),
+  );
+  writeFileSync(join(outputRoot, 'README.md'), releaseReadme(version, hosts));
   // Keep published bytes identical to release-manifest.json whatever the clone's line-ending settings.
   writeFileSync(join(outputRoot, '.gitattributes'), '* -text\n');
   mkdirSync(join(outputRoot, '.claude-plugin'));

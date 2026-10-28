@@ -94,7 +94,7 @@ test('Antigravity package emits Skills and every canonical agent with scoped met
     assert.equal(manifest.projectFiles.some((entry) => entry.target === path), true, path);
   }
   assert.match(read(basePackage, agentPath), /from this project's AI-KIDO Memory Bank/);
-  assert.match(read(basePackage, 'README.md'), /Antigravity 2\.0 and the Antigravity CLI/);
+  assert.match(read(basePackage, 'README.md'), /AI-KIDO for Google Antigravity/);
 });
 
 for (const mode of ['STANDARD', 'LIGHT', 'UNSET']) {

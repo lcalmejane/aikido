@@ -10,6 +10,16 @@ La méthode AI‑KIDO suit un processus itératif alternant entre approches **fo
 
 **Méthode + méta-harnais** : AI‑KIDO est avant tout une **méthode**. Ses outils ne sont pas un harnais figé mais un **méta-harnais** : les fonctions intégrées aux agents, skills et outils de la base de connaissance construisent **à la volée** le harnais adapté à chaque tâche (contexte, agents, outils, contrôles). Chaque harnais ainsi généré devient un **cas d'usage** capitalisé et réutilisable. Détails : [Méthode et méta-harnais](prompts/hard_points/ai-kido_details.md#method-and-meta-harness).
 
+## Installer AI-KIDO dans un projet
+
+Choisissez le package correspondant à votre assistant pour ajouter AI-KIDO à
+un projet, puis initialisez sa Memory Bank depuis cet assistant. Les packages
+proposent un plan d'installation à examiner et un runtime pour mettre à jour
+ou retirer l'intégration du projet.
+
+Consultez le [guide de distribution](distribution/README.md) pour les étapes
+d'installation par assistant, la migration, les mises à jour et la désinstallation.
+
 ## 🎯 Philosophie AI‑KIDO
 
 AI‑KIDO repose sur 18 règles fondamentales qui garantissent :

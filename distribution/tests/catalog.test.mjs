@@ -163,8 +163,8 @@ test('every enabled host package generates a native wrapper for every agent', ()
     assert.match(dist('antigravity/.agents/agents/agent-aikido-orchestrator.md'), /mainAgent: true\nsubagent: false\ncommandExecutionPolicy: sandbox/);
     assert.match(dist('zoo-code/.roo/commands/init-aikido.md'), /^---\ndescription: ".+"\n---\n\n# \/init-aikido\n/);
     assert.match(dist('roo-code-legacy/.roo/commands/init-aikido.md'), /^---\ndescription: ".+"\n---\n\n# \/init-aikido\n/);
-    assert.match(dist('zoo-code/README.md'), /maintained Zoo Code project/);
-    assert.match(dist('roo-code-legacy/README.md'), /best-effort target/);
+    assert.match(dist('zoo-code/README.md'), /AI-KIDO for Zoo Code/);
+    assert.match(dist('roo-code-legacy/README.md'), /existing Roo Code project/);
     assert.deepEqual(agentProfile(catalog.agents.find((agent) => agent.name === 'agent-aikido-helper')).capabilities, ['read']);
   } finally {
     rmSync(root, { recursive: true, force: true });

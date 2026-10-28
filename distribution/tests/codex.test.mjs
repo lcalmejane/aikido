@@ -108,7 +108,7 @@ test('Codex extracted package exposes discoverable Skills and inherited-permissi
   assert.ok(!manifest.projectFiles.some((entry) => entry.target === 'README.md'));
   assert.ok(!manifest.projectFiles.some((entry) => /^\.codex\/(?:prompts\/|config\.toml)/.test(entry.target)));
   assert.ok(!existsSync(join(basePackage, 'plugin.json')));
-  assert.match(read(basePackage, 'README.md'), /Native recipe not run: CLI unavailable/);
+  assert.match(read(basePackage, 'README.md'), /Codex CLI and IDE/);
   const entries = renderCatalogEntries('commands', { hosts: ['codex'] });
   assert.ok(entries.includes('`$list-command`'));
   assert.ok(!entries.includes('`/list-command`'));

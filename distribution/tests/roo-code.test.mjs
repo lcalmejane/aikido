@@ -69,7 +69,7 @@ for (const host of hosts) {
     assert.equal(modes.match(/^    description: /gm).length, catalog.agents.length);
     assert.match(readFileSync(join(root, '.roo/commands/init-aikido.md'), 'utf8'), /^# \/init-aikido/m);
     const readme = readFileSync(join(root, 'README.md'), 'utf8');
-    assert.ok(readme.includes(host === 'zoo-code' ? 'maintained Zoo Code' : 'legacy'));
+    assert.ok(readme.includes(host === 'zoo-code' ? 'AI-KIDO for Zoo Code' : 'existing Roo Code project'));
   });
 
   test(`${host} refuses foreign Roo files and preserves user integrations during removal`, () => {

@@ -1,31 +1,19 @@
 # AI-KIDO for Zoo Code
 
-This is the primary adapter for the maintained Zoo Code project. It packages:
-
-- AI-KIDO commands as native slash commands in `.roo/commands/<name>.md`.
-- AI-KIDO agent prompts as custom modes in `.roomodes`.
-- The shared AI-KIDO Memory Bank and bootstrap/update runtime.
-
-Zoo Code documents the same `.roo/commands/` and `.roomodes` project formats
-used by its Roo Code predecessor. This is a direct workspace adapter, not a
-Zoo Code extension or Marketplace package.
-Choose this package **or** the legacy Roo Code package for a workspace; both
-write the same `.roo/commands/` and `.roomodes` paths and are not co-installable.
+The Zoo Code package adds AI-KIDO commands, agent modes, and the shared
+project Memory Bank. Choose this package or the Roo Code package for a project;
+both use the same command and mode paths.
 
 ## Install into a project
 
-Build/use a package pinned to an AI-KIDO commit. From the intended project,
-preview the bootstrap:
+Preview the bootstrap plan from the project directory:
 
 ```bash
 node /path/to/zoo-code-package/scripts/bootstrap-plan.mjs \
   --root "$PWD" --package /path/to/zoo-code-package --mode STANDARD
 ```
 
-Review every planned file and conflict. If `.roomodes` already exists, the
-bootstrap reports a conflict instead of replacing or merging the shared file.
-Back up and merge its `customModes` yourself before retrying. Apply a reviewed
-plan with its returned ID:
+Review the listed files and apply the plan using its returned ID:
 
 ```bash
 node /path/to/zoo-code-package/scripts/bootstrap-plan.mjs \
@@ -33,41 +21,26 @@ node /path/to/zoo-code-package/scripts/bootstrap-plan.mjs \
   --apply --confirm <plan-id>
 ```
 
-Use `LIGHT` or `UNSET` to select another entry-point template.
+Use `LIGHT` or `UNSET` for another project entry point. Review the plan's
+`.roomodes` entry if the project already uses custom modes.
 
 ## Use in Zoo Code
 
-- Type `/` and select an AI-KIDO command, such as `/init-aikido` or
-  `/maj-aikido`.
-- Select an AI-KIDO custom mode from the mode picker for an agent persona.
-- The modes declare Roo-compatible tool groups derived from each canonical
-  agent's tool frontmatter. The orchestrator mode keeps its existing behavior
-  as a top-level coordinator and does not list itself as a worker.
+Type `/` and select an AI-KIDO command, such as `/init-aikido` or
+`/maj-aikido`. Select an AI-KIDO custom mode from the mode picker to use an
+agent persona.
 
-The adapter does not install or alter global settings, `.roo/mcp.json`,
-`.roo/rules/`, MCP servers, models, or approval policies. Existing custom
-commands at the generated paths are preserved as conflicts.
+## Update or remove
 
-## Update and remove
-
-Use `scripts/update-plan.mjs` from a newer package to preview and apply
-three-way updates. Modified command files are preserved or presented as
-conflicts; they are never silently replaced. Uninstall removes unchanged
-command wrappers and managed instruction blocks, but deliberately preserves
-`.roomodes` because it is a shared user configuration file. Remove the
-AI-KIDO modes from that file manually after backing it up.
-
-## Qualification
-
-Build, package integrity, bootstrap conflicts, and shared runtime behavior are
-automated. They are not a native Zoo Code session test. Record the installed
-Zoo Code version and test slash-command discovery, mode switching, file
-permissions, update, and removal before claiming end-to-end compatibility.
+Use `scripts/update-plan.mjs` from the package version you want to install to
+preview an update. Review and confirm the plan with
+`--apply --confirm <plan-id>`. To remove the AI-KIDO integration while
+retaining project knowledge, preview and confirm an uninstall. The shared
+`.roomodes` file is kept; remove the AI-KIDO entries from it after reviewing
+the file.
 
 Official references:
 
 - [Zoo Code custom modes](https://docs.zoocode.dev/features/custom-modes)
 - [Zoo Code slash commands](https://docs.zoocode.dev/features/slash-commands)
 - [Zoo Code custom instructions](https://docs.zoocode.dev/features/custom-instructions)
-- [Zoo Code MCP](https://docs.zoocode.dev/features/mcp/using-mcp-in-roo)
-- [Roo-to-Zoo migration](https://docs.zoocode.dev/roo-to-zoo-migration)

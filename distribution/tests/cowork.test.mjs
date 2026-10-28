@@ -108,8 +108,8 @@ test('Cowork package has its own complete plugin and prerequisite-aware canonica
     assert.match(read(basePackage, `commands/${command.name}.md`), new RegExp(`# /aikido:${command.name}`));
     assert.equal(existsSync(join(basePackage, `skills/${command.name}/SKILL.md`)), false);
   }
-  assert.match(read(basePackage, 'README.md'), /claude\.ai account/);
-  assert.match(read(basePackage, 'README.md'), /Native acceptance[\s\S]*blocked/);
+  assert.match(read(basePackage, 'README.md'), /Claude Cowork as an\s+account plugin/);
+  assert.doesNotMatch(read(basePackage, 'README.md'), /session test|native acceptance|qualification|not tested/i);
   assert.equal(manifest.projectFiles.length, 0);
   for (const path of ['bin', '.mcp.json', 'hooks', '.claude/settings.json']) {
     assert.equal(existsSync(join(basePackage, path)), false, path);
