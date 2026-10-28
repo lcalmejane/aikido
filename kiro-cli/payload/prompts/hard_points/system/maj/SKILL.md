@@ -14,18 +14,18 @@ This Skill manages the complete AI-KIDO system update process: it detects the pr
 | **Created**    | 2025-12-19                          |
 
 ## Instructions
-1. **Analyse the project context** – run the detection script: [`scripts/detect-project-type.sh`](prompts/hard_points/system/maj/scripts/detect-project-type.sh:1).
-2. **Select the update plan** – choose the plan corresponding to the target version, e.g. [`plan-V1.3.0.0.md`](prompts/hard_points/system/maj/plans/plan-V1.3.0.0.md:1).
+1. **Analyse the project context** – run the detection script: [`scripts/detect-project-type.sh`](scripts/detect-project-type.sh#L1).
+2. **Select the update plan** – choose the plan corresponding to the target version, e.g. [`plan-V1.3.0.0.md`](plans/plan-V1.3.0.0.md#L1).
 3. **Run the migration scripts** – execute the scripts located in `maj/scripts/…` according to the chosen plan.
 4. **Update index files and metadata** – adjust version references in index files, headers, and configuration files.
 5. **Validate success** – run automated tests, check dependency consistency, and ensure versions are correctly recorded.
 
 ## Resources
 - **Existing scripts**:
-  - [`detect-project-type.sh`](prompts/hard_points/system/maj/scripts/detect-project-type.sh:1)
+  - [`detect-project-type.sh`](scripts/detect-project-type.sh#L1)
   - Migration scripts in `prompts/hard_points/system/maj/scripts/` (e.g. `upgrade-db.sh`, `update-config.sh`).
-- **Version plans**: the [`prompts/hard_points/system/maj/plans/`](prompts/hard_points/system/maj/plans/:1) directory contains all detailed plans.
-- **Related documentation**: [`prompts/hard_points/system/maj/plans/README.md`](prompts/hard_points/system/maj/plans/README.md:1).
+- **Version plans**: the [`prompts/hard_points/system/maj/plans/`](plans/#L1) directory contains all detailed plans.
+- **Related documentation**: [`prompts/hard_points/system/maj/plans/README.md`](plans/README.md#L1).
 - **Validation tools**: `agent-aikido-validator` to check compliance after update.
 
 ## Usage

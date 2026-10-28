@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "name": "aikido",
-  "version": "1.5.0-rc.1",
-  "tag": "aikido-dist-v1.5.0-rc.1",
+  "version": "1.5.0-rc.3",
+  "tag": "aikido-dist-v1.5.0-rc.3",
   "source": {
     "repository": "github:lcalmejane/aikido",
-    "commit": "5e1adb76f5f6641b1c7082ecd88f4a02d6e782e7"
+    "commit": "50b39aebe81e6a7a0f81333f6864a05daec6fcd8"
   },
   "hosts": [
     {
@@ -63,7 +63,7 @@
     {
       "path": ".claude-plugin/marketplace.json",
       "size": 450,
-      "sha256": "f8ef95797fc32a0ec0a6c437f842b7ab9edb1e190f55aed6c4fbc9e0334d7b3d"
+      "sha256": "21c4e8dae209cbeaa2564970e4cdf9ec25bff195fa33d56270889a81a85e9557"
     },
     {
       "path": ".gitattributes",
@@ -72,8 +72,8 @@
     },
     {
       "path": "README.md",
-      "size": 795,
-      "sha256": "91858900a7c46417f6a91fbcef6d0631c10cfaa529591cd54fba4e7c8e7e55f1"
+      "size": 569,
+      "sha256": "08f9508e144446dbc6c523e0c529cc77f0feca4817ce197496af4c81f898c0bd"
     },
     {
       "path": "antigravity/.agents/agents/agent-aikido-balancer.md",
@@ -277,8 +277,8 @@
     },
     {
       "path": "antigravity/.agents/skills/maj/SKILL.md",
-      "size": 2837,
-      "sha256": "e03939092b1ca34250ce397fe2712dea9e285a7ac80d19d6cf342385882d0c56"
+      "size": 2687,
+      "sha256": "750e55e83fdddc5d29c93ceb22428744370c0d21ecb1220922901339c5f9b424"
     },
     {
       "path": "antigravity/.agents/skills/maj/plans/README.md",
@@ -667,8 +667,8 @@
     },
     {
       "path": "antigravity/.agents/skills/structure/SKILL.md",
-      "size": 4251,
-      "sha256": "909eba69e539a1eb8e94f27256069c268b938cc557cafbd851ef4b4175d0fd14"
+      "size": 3783,
+      "sha256": "f53747a3ae3a807e3e5c2f9064507e689a7d3500f690c90e0449b11c54632e07"
     },
     {
       "path": "antigravity/.agents/skills/structure/index.json",
@@ -762,8 +762,8 @@
     },
     {
       "path": "antigravity/.agents/skills/web/SKILL.md",
-      "size": 2575,
-      "sha256": "6b868dd9731266ab7a4fecea73659a84b0e0f8cee46a05445fd77165634efe44"
+      "size": 2535,
+      "sha256": "009ec08e3e27648140e4a1d034a30c5d803ef10aafe4054b1b944a930345af39"
     },
     {
       "path": "antigravity/.agents/skills/web/commands/download-site.md",
@@ -782,8 +782,8 @@
     },
     {
       "path": "antigravity/README.md",
-      "size": 4169,
-      "sha256": "ed385a75100bbf2e0307ea2027397907cdff1524c58482961d851c85d54a4205"
+      "size": 1930,
+      "sha256": "047da524dc61394ecce537bb3e7720b5995a574975f7e0b4ca33fa05a28004ca"
     },
     {
       "path": "antigravity/catalog.json",
@@ -812,8 +812,8 @@
     },
     {
       "path": "antigravity/lib/package.mjs",
-      "size": 25259,
-      "sha256": "7357d58b77fab7eea3b4dc3dbf3942e71d49771a28c736da64362e8dadd33340"
+      "size": 25243,
+      "sha256": "67626891223ec2f200a75e490efdbd5d2da1645c1353e1cf48eff6ab3e7ecb2d"
     },
     {
       "path": "antigravity/lib/templates.mjs",
@@ -827,8 +827,8 @@
     },
     {
       "path": "antigravity/package-manifest.json",
-      "size": 163757,
-      "sha256": "f5693dce67f010c6e6db59c20d315948d197708f28df634dbd2fa0f120d892ec"
+      "size": 164353,
+      "sha256": "162f49a4dafa1f919cda540bfed045f5a70b55032693195419eab917b7b58d4a"
     },
     {
       "path": "antigravity/payload/LICENSE",
@@ -922,8 +922,8 @@
     },
     {
       "path": "antigravity/payload/prompts/hard_points/ai-kido-light.md",
-      "size": 3374,
-      "sha256": "d99a19911fd14bba44eef17e3cfad98dfa5b06aa9f70b24df0f6bc54cac37940"
+      "size": 3352,
+      "sha256": "52560cec5398b15f9d7ced5419454f9333daefb12d84044f73b40e0f2d5667b7"
     },
     {
       "path": "antigravity/payload/prompts/hard_points/ai-kido-light_details.md",
@@ -932,8 +932,8 @@
     },
     {
       "path": "antigravity/payload/prompts/hard_points/ai-kido.md",
-      "size": 4437,
-      "sha256": "71d206257e087f09df60bb4d5b29b72e5c4c46b769537e5b07d611b27ad90766"
+      "size": 4401,
+      "sha256": "f3a664fdd3a3d0f66120be92956e1874e9379b2f920ee1689fb13046203f3f76"
     },
     {
       "path": "antigravity/payload/prompts/hard_points/ai-kido_details.md",
@@ -947,13 +947,13 @@
     },
     {
       "path": "antigravity/payload/prompts/hard_points/commands/analyse-project.md",
-      "size": 29518,
-      "sha256": "ded1c4d068ffdfd7afd463208ae088b896e6b28a6445c95903b3f3ab703bc2bc"
+      "size": 29444,
+      "sha256": "00b2a446cc5950948a88f7578ea9ee743052c391249e2ab0d0e81a92fd60316b"
     },
     {
       "path": "antigravity/payload/prompts/hard_points/commands/check-claude.md",
-      "size": 20696,
-      "sha256": "337ddc601e486a5635a286f57a76b03ee2c0d4d578f4f9987e826cee9a9171dc"
+      "size": 20705,
+      "sha256": "02caa7cb007aa7f0a44e0246bd8ae25647fff528bab4a52fe920aa453ddbf66f"
     },
     {
       "path": "antigravity/payload/prompts/hard_points/commands/check-truth.md",
@@ -992,8 +992,8 @@
     },
     {
       "path": "antigravity/payload/prompts/hard_points/commands/create-skill.md",
-      "size": 6318,
-      "sha256": "80c478c123e30151f875b5c0399bf1b9bc064f2d49fd0f2950e2f43af580794c"
+      "size": 6301,
+      "sha256": "8184065c23206e39ec2c55a936319facca56326845608936f39ce8855bfaa521"
     },
     {
       "path": "antigravity/payload/prompts/hard_points/commands/init-aikido.md",
@@ -1002,13 +1002,13 @@
     },
     {
       "path": "antigravity/payload/prompts/hard_points/commands/init-glossaire.md",
-      "size": 13857,
-      "sha256": "d19e216c2ac0d0b5f7d8e283ff1db124247c9cff5698f573d1007a7ccd5f514b"
+      "size": 13767,
+      "sha256": "df64a4592d80276d4a7303b875bda5053a67f3fa62a4e429d079bdfd3a8d015c"
     },
     {
       "path": "antigravity/payload/prompts/hard_points/commands/init-raci-aikido.md",
-      "size": 18239,
-      "sha256": "370d0a5dfd6d2b001aeaa3f9cac8d53d5aa8c2aac9b42ca15959a7faea2ffb48"
+      "size": 18200,
+      "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
     },
     {
       "path": "antigravity/payload/prompts/hard_points/commands/list-command.md",
@@ -1032,8 +1032,8 @@
     },
     {
       "path": "antigravity/payload/prompts/hard_points/commands/skill-manage.md",
-      "size": 16843,
-      "sha256": "b8e8b06693050d721e3bc5495ba1e9c20326d2e1ae68063814797aa37e3c3e46"
+      "size": 21831,
+      "sha256": "c3f8e995a0ed5901ac07ab820d67b87941796ba97a3991833778884c580f3dd0"
     },
     {
       "path": "antigravity/payload/prompts/hard_points/commands/validate-analyse-plan.md",
@@ -1052,8 +1052,8 @@
     },
     {
       "path": "antigravity/payload/prompts/hard_points/configuration/skills.cfg",
-      "size": 3734,
-      "sha256": "a02576786e08ba9abf5b6bc15819a6c8aeb1aa63da9a78593a2d02d9ccd0634f"
+      "size": 4066,
+      "sha256": "c31615e95e7c4b51d989e1765c4a4052764d0ef4e774f421f222055ddd4e59d2"
     },
     {
       "path": "antigravity/payload/prompts/hard_points/gestion-logs-aikido.md",
@@ -1122,8 +1122,8 @@
     },
     {
       "path": "antigravity/payload/prompts/hard_points/system/maj/SKILL.md",
-      "size": 2577,
-      "sha256": "c5de02ceeb71e571c3c9dfcbad125b6031c9918cfc112fcd87bf6fb3a684d46a"
+      "size": 2427,
+      "sha256": "f242310e65accf90d039c5fabaf7616b19631edd60c45163f2e642d46fee5cb8"
     },
     {
       "path": "antigravity/payload/prompts/hard_points/system/maj/plans/README.md",
@@ -1471,6 +1471,11 @@
       "sha256": "0548b4c490343e4069bd29aebe99174913bed42c7798aba99a15c58f4088a26e"
     },
     {
+      "path": "antigravity/payload/prompts/hard_points/system/skill-manage/skill-manage.mjs",
+      "size": 20926,
+      "sha256": "dcabfaa9fe782cb98323da1d596bbfe5c06fff7f9f57e362ac826a843b680655"
+    },
+    {
       "path": "antigravity/payload/prompts/hard_points/system/structure/ARCHITECTURE-V3.1-HASH-ID.md",
       "size": 23159,
       "sha256": "21fbe90928d84da7ffd707b5324dbf4d3f7a7544818c757ef12d412a9382b456"
@@ -1482,8 +1487,8 @@
     },
     {
       "path": "antigravity/payload/prompts/hard_points/system/structure/SKILL.md",
-      "size": 4066,
-      "sha256": "1f4e763403f31bc3e274352e8611038d84542674503394da2151a0dd29f157a6"
+      "size": 3598,
+      "sha256": "d06e7daf8dea4fbbf7e6f0f8da2e35c485b95121824696110b8f063b57471a39"
     },
     {
       "path": "antigravity/payload/prompts/hard_points/system/structure/index.json",
@@ -1567,8 +1572,8 @@
     },
     {
       "path": "antigravity/payload/prompts/hard_points/system/web/SKILL.md",
-      "size": 2242,
-      "sha256": "aca8e3911be730fe15d512f3f508e07b4e946b7337bc835d4cac469f8107843f"
+      "size": 2136,
+      "sha256": "0d80e16691510e3db3ceaae2383bd7301500e50d0f97729dd8728b7fa3a7938f"
     },
     {
       "path": "antigravity/payload/prompts/hard_points/system/web/commands/download-site.md",
@@ -1698,7 +1703,7 @@
     {
       "path": "build-report.json",
       "size": 2425,
-      "sha256": "acd999b00dd738b6b90322dc1dc7a420a2afbb7c3b012fab054bd592502cd053"
+      "sha256": "bf722e824bda22eb4e23550e32288cbb412c24d21df1956c2add7a2887557178"
     },
     {
       "path": "claude-code/.claude-plugin/marketplace.json",
@@ -1708,7 +1713,7 @@
     {
       "path": "claude-code/.claude-plugin/plugin.json",
       "size": 283,
-      "sha256": "799427cd27388a6c247912e50d0d56d4e2b4dbf13924d256087c9e1227a0cec1"
+      "sha256": "f3e1321e9d6f4f705e62337ff7e3bb281630f4fb557a1a665e4a35d71b40badb"
     },
     {
       "path": "claude-code/LICENSE",
@@ -1717,8 +1722,8 @@
     },
     {
       "path": "claude-code/README.md",
-      "size": 884,
-      "sha256": "ecdc705b58de066a4a2c6074ca28b3edb4144bd84abec5e5f1ada113d525cf6a"
+      "size": 1246,
+      "sha256": "205a2dfbc78cc823c834882571af80265e9c07f249e048d2f2fd6be32e2720a8"
     },
     {
       "path": "claude-code/TRADEMARK.md",
@@ -1942,8 +1947,8 @@
     },
     {
       "path": "claude-code/lib/package.mjs",
-      "size": 25259,
-      "sha256": "7357d58b77fab7eea3b4dc3dbf3942e71d49771a28c736da64362e8dadd33340"
+      "size": 25243,
+      "sha256": "67626891223ec2f200a75e490efdbd5d2da1645c1353e1cf48eff6ab3e7ecb2d"
     },
     {
       "path": "claude-code/lib/templates.mjs",
@@ -1957,8 +1962,8 @@
     },
     {
       "path": "claude-code/package-manifest.json",
-      "size": 123015,
-      "sha256": "fe3a7082621b86fb70615b49329706ed179cd68986c16304df967f6d7d77d3aa"
+      "size": 123611,
+      "sha256": "854da24262c26b6f68db901b355cf2eefddbeae53bcd25672e28cbf6b51f41d4"
     },
     {
       "path": "claude-code/payload/LICENSE",
@@ -2052,8 +2057,8 @@
     },
     {
       "path": "claude-code/payload/prompts/hard_points/ai-kido-light.md",
-      "size": 3374,
-      "sha256": "d99a19911fd14bba44eef17e3cfad98dfa5b06aa9f70b24df0f6bc54cac37940"
+      "size": 3352,
+      "sha256": "52560cec5398b15f9d7ced5419454f9333daefb12d84044f73b40e0f2d5667b7"
     },
     {
       "path": "claude-code/payload/prompts/hard_points/ai-kido-light_details.md",
@@ -2062,8 +2067,8 @@
     },
     {
       "path": "claude-code/payload/prompts/hard_points/ai-kido.md",
-      "size": 4437,
-      "sha256": "71d206257e087f09df60bb4d5b29b72e5c4c46b769537e5b07d611b27ad90766"
+      "size": 4401,
+      "sha256": "f3a664fdd3a3d0f66120be92956e1874e9379b2f920ee1689fb13046203f3f76"
     },
     {
       "path": "claude-code/payload/prompts/hard_points/ai-kido_details.md",
@@ -2077,13 +2082,13 @@
     },
     {
       "path": "claude-code/payload/prompts/hard_points/commands/analyse-project.md",
-      "size": 29518,
-      "sha256": "ded1c4d068ffdfd7afd463208ae088b896e6b28a6445c95903b3f3ab703bc2bc"
+      "size": 29444,
+      "sha256": "00b2a446cc5950948a88f7578ea9ee743052c391249e2ab0d0e81a92fd60316b"
     },
     {
       "path": "claude-code/payload/prompts/hard_points/commands/check-claude.md",
-      "size": 20696,
-      "sha256": "337ddc601e486a5635a286f57a76b03ee2c0d4d578f4f9987e826cee9a9171dc"
+      "size": 20705,
+      "sha256": "02caa7cb007aa7f0a44e0246bd8ae25647fff528bab4a52fe920aa453ddbf66f"
     },
     {
       "path": "claude-code/payload/prompts/hard_points/commands/check-truth.md",
@@ -2122,8 +2127,8 @@
     },
     {
       "path": "claude-code/payload/prompts/hard_points/commands/create-skill.md",
-      "size": 6318,
-      "sha256": "80c478c123e30151f875b5c0399bf1b9bc064f2d49fd0f2950e2f43af580794c"
+      "size": 6301,
+      "sha256": "8184065c23206e39ec2c55a936319facca56326845608936f39ce8855bfaa521"
     },
     {
       "path": "claude-code/payload/prompts/hard_points/commands/init-aikido.md",
@@ -2132,13 +2137,13 @@
     },
     {
       "path": "claude-code/payload/prompts/hard_points/commands/init-glossaire.md",
-      "size": 13857,
-      "sha256": "d19e216c2ac0d0b5f7d8e283ff1db124247c9cff5698f573d1007a7ccd5f514b"
+      "size": 13767,
+      "sha256": "df64a4592d80276d4a7303b875bda5053a67f3fa62a4e429d079bdfd3a8d015c"
     },
     {
       "path": "claude-code/payload/prompts/hard_points/commands/init-raci-aikido.md",
-      "size": 18239,
-      "sha256": "370d0a5dfd6d2b001aeaa3f9cac8d53d5aa8c2aac9b42ca15959a7faea2ffb48"
+      "size": 18200,
+      "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
     },
     {
       "path": "claude-code/payload/prompts/hard_points/commands/list-command.md",
@@ -2162,8 +2167,8 @@
     },
     {
       "path": "claude-code/payload/prompts/hard_points/commands/skill-manage.md",
-      "size": 16843,
-      "sha256": "b8e8b06693050d721e3bc5495ba1e9c20326d2e1ae68063814797aa37e3c3e46"
+      "size": 21831,
+      "sha256": "c3f8e995a0ed5901ac07ab820d67b87941796ba97a3991833778884c580f3dd0"
     },
     {
       "path": "claude-code/payload/prompts/hard_points/commands/validate-analyse-plan.md",
@@ -2182,8 +2187,8 @@
     },
     {
       "path": "claude-code/payload/prompts/hard_points/configuration/skills.cfg",
-      "size": 3734,
-      "sha256": "a02576786e08ba9abf5b6bc15819a6c8aeb1aa63da9a78593a2d02d9ccd0634f"
+      "size": 4066,
+      "sha256": "c31615e95e7c4b51d989e1765c4a4052764d0ef4e774f421f222055ddd4e59d2"
     },
     {
       "path": "claude-code/payload/prompts/hard_points/gestion-logs-aikido.md",
@@ -2252,8 +2257,8 @@
     },
     {
       "path": "claude-code/payload/prompts/hard_points/system/maj/SKILL.md",
-      "size": 2577,
-      "sha256": "c5de02ceeb71e571c3c9dfcbad125b6031c9918cfc112fcd87bf6fb3a684d46a"
+      "size": 2427,
+      "sha256": "f242310e65accf90d039c5fabaf7616b19631edd60c45163f2e642d46fee5cb8"
     },
     {
       "path": "claude-code/payload/prompts/hard_points/system/maj/plans/README.md",
@@ -2601,6 +2606,11 @@
       "sha256": "0548b4c490343e4069bd29aebe99174913bed42c7798aba99a15c58f4088a26e"
     },
     {
+      "path": "claude-code/payload/prompts/hard_points/system/skill-manage/skill-manage.mjs",
+      "size": 20926,
+      "sha256": "dcabfaa9fe782cb98323da1d596bbfe5c06fff7f9f57e362ac826a843b680655"
+    },
+    {
       "path": "claude-code/payload/prompts/hard_points/system/structure/ARCHITECTURE-V3.1-HASH-ID.md",
       "size": 23159,
       "sha256": "21fbe90928d84da7ffd707b5324dbf4d3f7a7544818c757ef12d412a9382b456"
@@ -2612,8 +2622,8 @@
     },
     {
       "path": "claude-code/payload/prompts/hard_points/system/structure/SKILL.md",
-      "size": 4066,
-      "sha256": "1f4e763403f31bc3e274352e8611038d84542674503394da2151a0dd29f157a6"
+      "size": 3598,
+      "sha256": "d06e7daf8dea4fbbf7e6f0f8da2e35c485b95121824696110b8f063b57471a39"
     },
     {
       "path": "claude-code/payload/prompts/hard_points/system/structure/index.json",
@@ -2697,8 +2707,8 @@
     },
     {
       "path": "claude-code/payload/prompts/hard_points/system/web/SKILL.md",
-      "size": 2242,
-      "sha256": "aca8e3911be730fe15d512f3f508e07b4e946b7337bc835d4cac469f8107843f"
+      "size": 2136,
+      "sha256": "0d80e16691510e3db3ceaae2383bd7301500e50d0f97729dd8728b7fa3a7938f"
     },
     {
       "path": "claude-code/payload/prompts/hard_points/system/web/commands/download-site.md",
@@ -2787,8 +2797,8 @@
     },
     {
       "path": "claude-code/skills/maj/SKILL.md",
-      "size": 2877,
-      "sha256": "f0a94a79ed00b4a05a6e009b3ecff5ca531f7109fb72b1708b6b75a8d72823e6"
+      "size": 2727,
+      "sha256": "3f63715fa5212ad6743b4c25ea167f3c320e264b9b1a6b1b53ca0d7a99ba062b"
     },
     {
       "path": "claude-code/skills/maj/plans/README.md",
@@ -3157,8 +3167,8 @@
     },
     {
       "path": "claude-code/skills/structure/SKILL.md",
-      "size": 4384,
-      "sha256": "4a83572ef061db5d663ece271aed423b85eab2ba0b58f0df2ac947d6473a9652"
+      "size": 3916,
+      "sha256": "17a326d9176ba0c9d1204be7a83828b25326a184954b1704e93f955949094fd4"
     },
     {
       "path": "claude-code/skills/structure/index.json",
@@ -3242,8 +3252,8 @@
     },
     {
       "path": "claude-code/skills/web/SKILL.md",
-      "size": 2542,
-      "sha256": "35efac8e6ace8e5ecebeb209786444f8371aef526411d3484926ef759ee76bb5"
+      "size": 2436,
+      "sha256": "e30215f506f28e021f6b1c95eebcca7c8f336435fabda5d5bfb7be1d062aae77"
     },
     {
       "path": "claude-code/skills/web/commands/download-site.md",
@@ -3353,7 +3363,7 @@
     {
       "path": "claude-cowork/.claude-plugin/plugin.json",
       "size": 283,
-      "sha256": "799427cd27388a6c247912e50d0d56d4e2b4dbf13924d256087c9e1227a0cec1"
+      "sha256": "f3e1321e9d6f4f705e62337ff7e3bb281630f4fb557a1a665e4a35d71b40badb"
     },
     {
       "path": "claude-cowork/LICENSE",
@@ -3362,8 +3372,8 @@
     },
     {
       "path": "claude-cowork/README.md",
-      "size": 5553,
-      "sha256": "8c64616af159f6cc43b1bfc5fa4da86b8e3237307cdd725a5f24f5f9beea3cb6"
+      "size": 2305,
+      "sha256": "be008749e4decf7bcefd4cf789f5cf669354fa38a85e4100fb2d4fd9c760c556"
     },
     {
       "path": "claude-cowork/TRADEMARK.md",
@@ -3587,8 +3597,8 @@
     },
     {
       "path": "claude-cowork/lib/package.mjs",
-      "size": 25259,
-      "sha256": "7357d58b77fab7eea3b4dc3dbf3942e71d49771a28c736da64362e8dadd33340"
+      "size": 25243,
+      "sha256": "67626891223ec2f200a75e490efdbd5d2da1645c1353e1cf48eff6ab3e7ecb2d"
     },
     {
       "path": "claude-cowork/lib/templates.mjs",
@@ -3602,8 +3612,8 @@
     },
     {
       "path": "claude-cowork/package-manifest.json",
-      "size": 123033,
-      "sha256": "a64386bbebc420d004e0f8989a273a29874ec648ed1e026e52e5c673ddf768dd"
+      "size": 123629,
+      "sha256": "23245596b88f99b4a4566fb3bc30220c737dcd3e216bd31f2e289618a5241a78"
     },
     {
       "path": "claude-cowork/payload/LICENSE",
@@ -3697,8 +3707,8 @@
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/ai-kido-light.md",
-      "size": 3374,
-      "sha256": "d99a19911fd14bba44eef17e3cfad98dfa5b06aa9f70b24df0f6bc54cac37940"
+      "size": 3352,
+      "sha256": "52560cec5398b15f9d7ced5419454f9333daefb12d84044f73b40e0f2d5667b7"
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/ai-kido-light_details.md",
@@ -3707,8 +3717,8 @@
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/ai-kido.md",
-      "size": 4437,
-      "sha256": "71d206257e087f09df60bb4d5b29b72e5c4c46b769537e5b07d611b27ad90766"
+      "size": 4401,
+      "sha256": "f3a664fdd3a3d0f66120be92956e1874e9379b2f920ee1689fb13046203f3f76"
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/ai-kido_details.md",
@@ -3722,13 +3732,13 @@
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/commands/analyse-project.md",
-      "size": 29518,
-      "sha256": "ded1c4d068ffdfd7afd463208ae088b896e6b28a6445c95903b3f3ab703bc2bc"
+      "size": 29444,
+      "sha256": "00b2a446cc5950948a88f7578ea9ee743052c391249e2ab0d0e81a92fd60316b"
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/commands/check-claude.md",
-      "size": 20696,
-      "sha256": "337ddc601e486a5635a286f57a76b03ee2c0d4d578f4f9987e826cee9a9171dc"
+      "size": 20705,
+      "sha256": "02caa7cb007aa7f0a44e0246bd8ae25647fff528bab4a52fe920aa453ddbf66f"
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/commands/check-truth.md",
@@ -3767,8 +3777,8 @@
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/commands/create-skill.md",
-      "size": 6318,
-      "sha256": "80c478c123e30151f875b5c0399bf1b9bc064f2d49fd0f2950e2f43af580794c"
+      "size": 6301,
+      "sha256": "8184065c23206e39ec2c55a936319facca56326845608936f39ce8855bfaa521"
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/commands/init-aikido.md",
@@ -3777,13 +3787,13 @@
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/commands/init-glossaire.md",
-      "size": 13857,
-      "sha256": "d19e216c2ac0d0b5f7d8e283ff1db124247c9cff5698f573d1007a7ccd5f514b"
+      "size": 13767,
+      "sha256": "df64a4592d80276d4a7303b875bda5053a67f3fa62a4e429d079bdfd3a8d015c"
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/commands/init-raci-aikido.md",
-      "size": 18239,
-      "sha256": "370d0a5dfd6d2b001aeaa3f9cac8d53d5aa8c2aac9b42ca15959a7faea2ffb48"
+      "size": 18200,
+      "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/commands/list-command.md",
@@ -3807,8 +3817,8 @@
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/commands/skill-manage.md",
-      "size": 16843,
-      "sha256": "b8e8b06693050d721e3bc5495ba1e9c20326d2e1ae68063814797aa37e3c3e46"
+      "size": 21831,
+      "sha256": "c3f8e995a0ed5901ac07ab820d67b87941796ba97a3991833778884c580f3dd0"
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/commands/validate-analyse-plan.md",
@@ -3827,8 +3837,8 @@
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/configuration/skills.cfg",
-      "size": 3734,
-      "sha256": "a02576786e08ba9abf5b6bc15819a6c8aeb1aa63da9a78593a2d02d9ccd0634f"
+      "size": 4066,
+      "sha256": "c31615e95e7c4b51d989e1765c4a4052764d0ef4e774f421f222055ddd4e59d2"
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/gestion-logs-aikido.md",
@@ -3897,8 +3907,8 @@
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/system/maj/SKILL.md",
-      "size": 2577,
-      "sha256": "c5de02ceeb71e571c3c9dfcbad125b6031c9918cfc112fcd87bf6fb3a684d46a"
+      "size": 2427,
+      "sha256": "f242310e65accf90d039c5fabaf7616b19631edd60c45163f2e642d46fee5cb8"
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/system/maj/plans/README.md",
@@ -4246,6 +4256,11 @@
       "sha256": "0548b4c490343e4069bd29aebe99174913bed42c7798aba99a15c58f4088a26e"
     },
     {
+      "path": "claude-cowork/payload/prompts/hard_points/system/skill-manage/skill-manage.mjs",
+      "size": 20926,
+      "sha256": "dcabfaa9fe782cb98323da1d596bbfe5c06fff7f9f57e362ac826a843b680655"
+    },
+    {
       "path": "claude-cowork/payload/prompts/hard_points/system/structure/ARCHITECTURE-V3.1-HASH-ID.md",
       "size": 23159,
       "sha256": "21fbe90928d84da7ffd707b5324dbf4d3f7a7544818c757ef12d412a9382b456"
@@ -4257,8 +4272,8 @@
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/system/structure/SKILL.md",
-      "size": 4066,
-      "sha256": "1f4e763403f31bc3e274352e8611038d84542674503394da2151a0dd29f157a6"
+      "size": 3598,
+      "sha256": "d06e7daf8dea4fbbf7e6f0f8da2e35c485b95121824696110b8f063b57471a39"
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/system/structure/index.json",
@@ -4342,8 +4357,8 @@
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/system/web/SKILL.md",
-      "size": 2242,
-      "sha256": "aca8e3911be730fe15d512f3f508e07b4e946b7337bc835d4cac469f8107843f"
+      "size": 2136,
+      "sha256": "0d80e16691510e3db3ceaae2383bd7301500e50d0f97729dd8728b7fa3a7938f"
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/system/web/commands/download-site.md",
@@ -4432,8 +4447,8 @@
     },
     {
       "path": "claude-cowork/skills/maj/SKILL.md",
-      "size": 4698,
-      "sha256": "679c8268187c8e7cd85acd73ed85308889e1bce407a61ebbc43da981c5835857"
+      "size": 4548,
+      "sha256": "967e247e9580dcf68500561f999472a53d5c69bee8053b47f7bce8344bc4d276"
     },
     {
       "path": "claude-cowork/skills/maj/plans/README.md",
@@ -4802,8 +4817,8 @@
     },
     {
       "path": "claude-cowork/skills/structure/SKILL.md",
-      "size": 6118,
-      "sha256": "f923d8d465cb3e617a65fe252fab505e0c0b4f5d61245753579e3cf36077d212"
+      "size": 5650,
+      "sha256": "0dfe803d326130d4d6d8bb018a8259649a2dba477d084ab66f1c9adca1a530cd"
     },
     {
       "path": "claude-cowork/skills/structure/index.json",
@@ -4887,8 +4902,8 @@
     },
     {
       "path": "claude-cowork/skills/web/SKILL.md",
-      "size": 4436,
-      "sha256": "8298904613fff0525e5a0e5ae7ca5b786d045e7ed837d2f96d408e9b38cb373c"
+      "size": 4330,
+      "sha256": "3139c45ac93ee7f7dd12a5f8484fd94c2ee68d69a2d8a963e17ea09bc2452eb9"
     },
     {
       "path": "claude-cowork/skills/web/commands/download-site.md",
@@ -5117,8 +5132,8 @@
     },
     {
       "path": "codex/.agents/skills/maj/SKILL.md",
-      "size": 2837,
-      "sha256": "e03939092b1ca34250ce397fe2712dea9e285a7ac80d19d6cf342385882d0c56"
+      "size": 2687,
+      "sha256": "750e55e83fdddc5d29c93ceb22428744370c0d21ecb1220922901339c5f9b424"
     },
     {
       "path": "codex/.agents/skills/maj/plans/README.md",
@@ -5507,8 +5522,8 @@
     },
     {
       "path": "codex/.agents/skills/structure/SKILL.md",
-      "size": 4251,
-      "sha256": "909eba69e539a1eb8e94f27256069c268b938cc557cafbd851ef4b4175d0fd14"
+      "size": 3783,
+      "sha256": "f53747a3ae3a807e3e5c2f9064507e689a7d3500f690c90e0449b11c54632e07"
     },
     {
       "path": "codex/.agents/skills/structure/index.json",
@@ -5602,8 +5617,8 @@
     },
     {
       "path": "codex/.agents/skills/web/SKILL.md",
-      "size": 2575,
-      "sha256": "6b868dd9731266ab7a4fecea73659a84b0e0f8cee46a05445fd77165634efe44"
+      "size": 2535,
+      "sha256": "009ec08e3e27648140e4a1d034a30c5d803ef10aafe4054b1b944a930345af39"
     },
     {
       "path": "codex/.agents/skills/web/commands/download-site.md",
@@ -5697,8 +5712,8 @@
     },
     {
       "path": "codex/README.md",
-      "size": 7276,
-      "sha256": "499c803efbdff780d95004d2af740e853e48910b385e2d7d0dd5f84b6ceede20"
+      "size": 2143,
+      "sha256": "b6e2623cb9e099e327fc8d76a98ddf5f20c6861d73d2891bb8692c87ecaad35f"
     },
     {
       "path": "codex/catalog.json",
@@ -5727,8 +5742,8 @@
     },
     {
       "path": "codex/lib/package.mjs",
-      "size": 25259,
-      "sha256": "7357d58b77fab7eea3b4dc3dbf3942e71d49771a28c736da64362e8dadd33340"
+      "size": 25243,
+      "sha256": "67626891223ec2f200a75e490efdbd5d2da1645c1353e1cf48eff6ab3e7ecb2d"
     },
     {
       "path": "codex/lib/templates.mjs",
@@ -5742,8 +5757,8 @@
     },
     {
       "path": "codex/package-manifest.json",
-      "size": 163790,
-      "sha256": "7554360e6628cdac7320a44b4a32e90bf9db7f0a44253f7042f864fc2cf56baa"
+      "size": 164386,
+      "sha256": "0ce364187e70a6441bac6c7fbc4a63c5bb373693322f02a2063d5369ce5d3af1"
     },
     {
       "path": "codex/payload/LICENSE",
@@ -5837,8 +5852,8 @@
     },
     {
       "path": "codex/payload/prompts/hard_points/ai-kido-light.md",
-      "size": 3374,
-      "sha256": "d99a19911fd14bba44eef17e3cfad98dfa5b06aa9f70b24df0f6bc54cac37940"
+      "size": 3352,
+      "sha256": "52560cec5398b15f9d7ced5419454f9333daefb12d84044f73b40e0f2d5667b7"
     },
     {
       "path": "codex/payload/prompts/hard_points/ai-kido-light_details.md",
@@ -5847,8 +5862,8 @@
     },
     {
       "path": "codex/payload/prompts/hard_points/ai-kido.md",
-      "size": 4437,
-      "sha256": "71d206257e087f09df60bb4d5b29b72e5c4c46b769537e5b07d611b27ad90766"
+      "size": 4401,
+      "sha256": "f3a664fdd3a3d0f66120be92956e1874e9379b2f920ee1689fb13046203f3f76"
     },
     {
       "path": "codex/payload/prompts/hard_points/ai-kido_details.md",
@@ -5862,13 +5877,13 @@
     },
     {
       "path": "codex/payload/prompts/hard_points/commands/analyse-project.md",
-      "size": 29518,
-      "sha256": "ded1c4d068ffdfd7afd463208ae088b896e6b28a6445c95903b3f3ab703bc2bc"
+      "size": 29444,
+      "sha256": "00b2a446cc5950948a88f7578ea9ee743052c391249e2ab0d0e81a92fd60316b"
     },
     {
       "path": "codex/payload/prompts/hard_points/commands/check-claude.md",
-      "size": 20696,
-      "sha256": "337ddc601e486a5635a286f57a76b03ee2c0d4d578f4f9987e826cee9a9171dc"
+      "size": 20705,
+      "sha256": "02caa7cb007aa7f0a44e0246bd8ae25647fff528bab4a52fe920aa453ddbf66f"
     },
     {
       "path": "codex/payload/prompts/hard_points/commands/check-truth.md",
@@ -5907,8 +5922,8 @@
     },
     {
       "path": "codex/payload/prompts/hard_points/commands/create-skill.md",
-      "size": 6318,
-      "sha256": "80c478c123e30151f875b5c0399bf1b9bc064f2d49fd0f2950e2f43af580794c"
+      "size": 6301,
+      "sha256": "8184065c23206e39ec2c55a936319facca56326845608936f39ce8855bfaa521"
     },
     {
       "path": "codex/payload/prompts/hard_points/commands/init-aikido.md",
@@ -5917,13 +5932,13 @@
     },
     {
       "path": "codex/payload/prompts/hard_points/commands/init-glossaire.md",
-      "size": 13857,
-      "sha256": "d19e216c2ac0d0b5f7d8e283ff1db124247c9cff5698f573d1007a7ccd5f514b"
+      "size": 13767,
+      "sha256": "df64a4592d80276d4a7303b875bda5053a67f3fa62a4e429d079bdfd3a8d015c"
     },
     {
       "path": "codex/payload/prompts/hard_points/commands/init-raci-aikido.md",
-      "size": 18239,
-      "sha256": "370d0a5dfd6d2b001aeaa3f9cac8d53d5aa8c2aac9b42ca15959a7faea2ffb48"
+      "size": 18200,
+      "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
     },
     {
       "path": "codex/payload/prompts/hard_points/commands/list-command.md",
@@ -5947,8 +5962,8 @@
     },
     {
       "path": "codex/payload/prompts/hard_points/commands/skill-manage.md",
-      "size": 16843,
-      "sha256": "b8e8b06693050d721e3bc5495ba1e9c20326d2e1ae68063814797aa37e3c3e46"
+      "size": 21831,
+      "sha256": "c3f8e995a0ed5901ac07ab820d67b87941796ba97a3991833778884c580f3dd0"
     },
     {
       "path": "codex/payload/prompts/hard_points/commands/validate-analyse-plan.md",
@@ -5967,8 +5982,8 @@
     },
     {
       "path": "codex/payload/prompts/hard_points/configuration/skills.cfg",
-      "size": 3734,
-      "sha256": "a02576786e08ba9abf5b6bc15819a6c8aeb1aa63da9a78593a2d02d9ccd0634f"
+      "size": 4066,
+      "sha256": "c31615e95e7c4b51d989e1765c4a4052764d0ef4e774f421f222055ddd4e59d2"
     },
     {
       "path": "codex/payload/prompts/hard_points/gestion-logs-aikido.md",
@@ -6037,8 +6052,8 @@
     },
     {
       "path": "codex/payload/prompts/hard_points/system/maj/SKILL.md",
-      "size": 2577,
-      "sha256": "c5de02ceeb71e571c3c9dfcbad125b6031c9918cfc112fcd87bf6fb3a684d46a"
+      "size": 2427,
+      "sha256": "f242310e65accf90d039c5fabaf7616b19631edd60c45163f2e642d46fee5cb8"
     },
     {
       "path": "codex/payload/prompts/hard_points/system/maj/plans/README.md",
@@ -6386,6 +6401,11 @@
       "sha256": "0548b4c490343e4069bd29aebe99174913bed42c7798aba99a15c58f4088a26e"
     },
     {
+      "path": "codex/payload/prompts/hard_points/system/skill-manage/skill-manage.mjs",
+      "size": 20926,
+      "sha256": "dcabfaa9fe782cb98323da1d596bbfe5c06fff7f9f57e362ac826a843b680655"
+    },
+    {
       "path": "codex/payload/prompts/hard_points/system/structure/ARCHITECTURE-V3.1-HASH-ID.md",
       "size": 23159,
       "sha256": "21fbe90928d84da7ffd707b5324dbf4d3f7a7544818c757ef12d412a9382b456"
@@ -6397,8 +6417,8 @@
     },
     {
       "path": "codex/payload/prompts/hard_points/system/structure/SKILL.md",
-      "size": 4066,
-      "sha256": "1f4e763403f31bc3e274352e8611038d84542674503394da2151a0dd29f157a6"
+      "size": 3598,
+      "sha256": "d06e7daf8dea4fbbf7e6f0f8da2e35c485b95121824696110b8f063b57471a39"
     },
     {
       "path": "codex/payload/prompts/hard_points/system/structure/index.json",
@@ -6482,8 +6502,8 @@
     },
     {
       "path": "codex/payload/prompts/hard_points/system/web/SKILL.md",
-      "size": 2242,
-      "sha256": "aca8e3911be730fe15d512f3f508e07b4e946b7337bc835d4cac469f8107843f"
+      "size": 2136,
+      "sha256": "0d80e16691510e3db3ceaae2383bd7301500e50d0f97729dd8728b7fa3a7938f"
     },
     {
       "path": "codex/payload/prompts/hard_points/system/web/commands/download-site.md",
@@ -6812,8 +6832,8 @@
     },
     {
       "path": "copilot-github/.github/skills/maj/SKILL.md",
-      "size": 2837,
-      "sha256": "e03939092b1ca34250ce397fe2712dea9e285a7ac80d19d6cf342385882d0c56"
+      "size": 2687,
+      "sha256": "750e55e83fdddc5d29c93ceb22428744370c0d21ecb1220922901339c5f9b424"
     },
     {
       "path": "copilot-github/.github/skills/maj/plans/README.md",
@@ -7202,8 +7222,8 @@
     },
     {
       "path": "copilot-github/.github/skills/structure/SKILL.md",
-      "size": 4251,
-      "sha256": "909eba69e539a1eb8e94f27256069c268b938cc557cafbd851ef4b4175d0fd14"
+      "size": 3783,
+      "sha256": "f53747a3ae3a807e3e5c2f9064507e689a7d3500f690c90e0449b11c54632e07"
     },
     {
       "path": "copilot-github/.github/skills/structure/index.json",
@@ -7297,8 +7317,8 @@
     },
     {
       "path": "copilot-github/.github/skills/web/SKILL.md",
-      "size": 2575,
-      "sha256": "6b868dd9731266ab7a4fecea73659a84b0e0f8cee46a05445fd77165634efe44"
+      "size": 2535,
+      "sha256": "009ec08e3e27648140e4a1d034a30c5d803ef10aafe4054b1b944a930345af39"
     },
     {
       "path": "copilot-github/.github/skills/web/commands/download-site.md",
@@ -7342,8 +7362,8 @@
     },
     {
       "path": "copilot-github/lib/package.mjs",
-      "size": 25259,
-      "sha256": "7357d58b77fab7eea3b4dc3dbf3942e71d49771a28c736da64362e8dadd33340"
+      "size": 25243,
+      "sha256": "67626891223ec2f200a75e490efdbd5d2da1645c1353e1cf48eff6ab3e7ecb2d"
     },
     {
       "path": "copilot-github/lib/templates.mjs",
@@ -7357,8 +7377,8 @@
     },
     {
       "path": "copilot-github/package-manifest.json",
-      "size": 163878,
-      "sha256": "982159ad73ea9c47da2fbfe3a6c6cc05cae444fbd384e25099f36fc68e93b635"
+      "size": 164474,
+      "sha256": "37a9a27b2ffd99cf2e7dcdfedba0a96efcf13ccb36688aba8cf60cd55decd538"
     },
     {
       "path": "copilot-github/payload/LICENSE",
@@ -7452,8 +7472,8 @@
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/ai-kido-light.md",
-      "size": 3374,
-      "sha256": "d99a19911fd14bba44eef17e3cfad98dfa5b06aa9f70b24df0f6bc54cac37940"
+      "size": 3352,
+      "sha256": "52560cec5398b15f9d7ced5419454f9333daefb12d84044f73b40e0f2d5667b7"
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/ai-kido-light_details.md",
@@ -7462,8 +7482,8 @@
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/ai-kido.md",
-      "size": 4437,
-      "sha256": "71d206257e087f09df60bb4d5b29b72e5c4c46b769537e5b07d611b27ad90766"
+      "size": 4401,
+      "sha256": "f3a664fdd3a3d0f66120be92956e1874e9379b2f920ee1689fb13046203f3f76"
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/ai-kido_details.md",
@@ -7477,13 +7497,13 @@
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/commands/analyse-project.md",
-      "size": 29518,
-      "sha256": "ded1c4d068ffdfd7afd463208ae088b896e6b28a6445c95903b3f3ab703bc2bc"
+      "size": 29444,
+      "sha256": "00b2a446cc5950948a88f7578ea9ee743052c391249e2ab0d0e81a92fd60316b"
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/commands/check-claude.md",
-      "size": 20696,
-      "sha256": "337ddc601e486a5635a286f57a76b03ee2c0d4d578f4f9987e826cee9a9171dc"
+      "size": 20705,
+      "sha256": "02caa7cb007aa7f0a44e0246bd8ae25647fff528bab4a52fe920aa453ddbf66f"
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/commands/check-truth.md",
@@ -7522,8 +7542,8 @@
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/commands/create-skill.md",
-      "size": 6318,
-      "sha256": "80c478c123e30151f875b5c0399bf1b9bc064f2d49fd0f2950e2f43af580794c"
+      "size": 6301,
+      "sha256": "8184065c23206e39ec2c55a936319facca56326845608936f39ce8855bfaa521"
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/commands/init-aikido.md",
@@ -7532,13 +7552,13 @@
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/commands/init-glossaire.md",
-      "size": 13857,
-      "sha256": "d19e216c2ac0d0b5f7d8e283ff1db124247c9cff5698f573d1007a7ccd5f514b"
+      "size": 13767,
+      "sha256": "df64a4592d80276d4a7303b875bda5053a67f3fa62a4e429d079bdfd3a8d015c"
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/commands/init-raci-aikido.md",
-      "size": 18239,
-      "sha256": "370d0a5dfd6d2b001aeaa3f9cac8d53d5aa8c2aac9b42ca15959a7faea2ffb48"
+      "size": 18200,
+      "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/commands/list-command.md",
@@ -7562,8 +7582,8 @@
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/commands/skill-manage.md",
-      "size": 16843,
-      "sha256": "b8e8b06693050d721e3bc5495ba1e9c20326d2e1ae68063814797aa37e3c3e46"
+      "size": 21831,
+      "sha256": "c3f8e995a0ed5901ac07ab820d67b87941796ba97a3991833778884c580f3dd0"
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/commands/validate-analyse-plan.md",
@@ -7582,8 +7602,8 @@
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/configuration/skills.cfg",
-      "size": 3734,
-      "sha256": "a02576786e08ba9abf5b6bc15819a6c8aeb1aa63da9a78593a2d02d9ccd0634f"
+      "size": 4066,
+      "sha256": "c31615e95e7c4b51d989e1765c4a4052764d0ef4e774f421f222055ddd4e59d2"
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/gestion-logs-aikido.md",
@@ -7652,8 +7672,8 @@
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/system/maj/SKILL.md",
-      "size": 2577,
-      "sha256": "c5de02ceeb71e571c3c9dfcbad125b6031c9918cfc112fcd87bf6fb3a684d46a"
+      "size": 2427,
+      "sha256": "f242310e65accf90d039c5fabaf7616b19631edd60c45163f2e642d46fee5cb8"
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/system/maj/plans/README.md",
@@ -8001,6 +8021,11 @@
       "sha256": "0548b4c490343e4069bd29aebe99174913bed42c7798aba99a15c58f4088a26e"
     },
     {
+      "path": "copilot-github/payload/prompts/hard_points/system/skill-manage/skill-manage.mjs",
+      "size": 20926,
+      "sha256": "dcabfaa9fe782cb98323da1d596bbfe5c06fff7f9f57e362ac826a843b680655"
+    },
+    {
       "path": "copilot-github/payload/prompts/hard_points/system/structure/ARCHITECTURE-V3.1-HASH-ID.md",
       "size": 23159,
       "sha256": "21fbe90928d84da7ffd707b5324dbf4d3f7a7544818c757ef12d412a9382b456"
@@ -8012,8 +8037,8 @@
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/system/structure/SKILL.md",
-      "size": 4066,
-      "sha256": "1f4e763403f31bc3e274352e8611038d84542674503394da2151a0dd29f157a6"
+      "size": 3598,
+      "sha256": "d06e7daf8dea4fbbf7e6f0f8da2e35c485b95121824696110b8f063b57471a39"
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/system/structure/index.json",
@@ -8097,8 +8122,8 @@
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/system/web/SKILL.md",
-      "size": 2242,
-      "sha256": "aca8e3911be730fe15d512f3f508e07b4e946b7337bc835d4cac469f8107843f"
+      "size": 2136,
+      "sha256": "0d80e16691510e3db3ceaae2383bd7301500e50d0f97729dd8728b7fa3a7938f"
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/system/web/commands/download-site.md",
@@ -8437,8 +8462,8 @@
     },
     {
       "path": "copilot-vscode/lib/package.mjs",
-      "size": 25259,
-      "sha256": "7357d58b77fab7eea3b4dc3dbf3942e71d49771a28c736da64362e8dadd33340"
+      "size": 25243,
+      "sha256": "67626891223ec2f200a75e490efdbd5d2da1645c1353e1cf48eff6ab3e7ecb2d"
     },
     {
       "path": "copilot-vscode/lib/templates.mjs",
@@ -8452,8 +8477,8 @@
     },
     {
       "path": "copilot-vscode/package-manifest.json",
-      "size": 123159,
-      "sha256": "5d84f4a6d2c114ffcd416cf4e7de7c025fca56990b134afdbaf9162a80939bd0"
+      "size": 123755,
+      "sha256": "97bbc66a2ca97cfbf631ca60badf13b0c0ad2b6eae2964b386698f8a076743be"
     },
     {
       "path": "copilot-vscode/payload/LICENSE",
@@ -8547,8 +8572,8 @@
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/ai-kido-light.md",
-      "size": 3374,
-      "sha256": "d99a19911fd14bba44eef17e3cfad98dfa5b06aa9f70b24df0f6bc54cac37940"
+      "size": 3352,
+      "sha256": "52560cec5398b15f9d7ced5419454f9333daefb12d84044f73b40e0f2d5667b7"
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/ai-kido-light_details.md",
@@ -8557,8 +8582,8 @@
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/ai-kido.md",
-      "size": 4437,
-      "sha256": "71d206257e087f09df60bb4d5b29b72e5c4c46b769537e5b07d611b27ad90766"
+      "size": 4401,
+      "sha256": "f3a664fdd3a3d0f66120be92956e1874e9379b2f920ee1689fb13046203f3f76"
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/ai-kido_details.md",
@@ -8572,13 +8597,13 @@
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/commands/analyse-project.md",
-      "size": 29518,
-      "sha256": "ded1c4d068ffdfd7afd463208ae088b896e6b28a6445c95903b3f3ab703bc2bc"
+      "size": 29444,
+      "sha256": "00b2a446cc5950948a88f7578ea9ee743052c391249e2ab0d0e81a92fd60316b"
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/commands/check-claude.md",
-      "size": 20696,
-      "sha256": "337ddc601e486a5635a286f57a76b03ee2c0d4d578f4f9987e826cee9a9171dc"
+      "size": 20705,
+      "sha256": "02caa7cb007aa7f0a44e0246bd8ae25647fff528bab4a52fe920aa453ddbf66f"
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/commands/check-truth.md",
@@ -8617,8 +8642,8 @@
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/commands/create-skill.md",
-      "size": 6318,
-      "sha256": "80c478c123e30151f875b5c0399bf1b9bc064f2d49fd0f2950e2f43af580794c"
+      "size": 6301,
+      "sha256": "8184065c23206e39ec2c55a936319facca56326845608936f39ce8855bfaa521"
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/commands/init-aikido.md",
@@ -8627,13 +8652,13 @@
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/commands/init-glossaire.md",
-      "size": 13857,
-      "sha256": "d19e216c2ac0d0b5f7d8e283ff1db124247c9cff5698f573d1007a7ccd5f514b"
+      "size": 13767,
+      "sha256": "df64a4592d80276d4a7303b875bda5053a67f3fa62a4e429d079bdfd3a8d015c"
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/commands/init-raci-aikido.md",
-      "size": 18239,
-      "sha256": "370d0a5dfd6d2b001aeaa3f9cac8d53d5aa8c2aac9b42ca15959a7faea2ffb48"
+      "size": 18200,
+      "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/commands/list-command.md",
@@ -8657,8 +8682,8 @@
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/commands/skill-manage.md",
-      "size": 16843,
-      "sha256": "b8e8b06693050d721e3bc5495ba1e9c20326d2e1ae68063814797aa37e3c3e46"
+      "size": 21831,
+      "sha256": "c3f8e995a0ed5901ac07ab820d67b87941796ba97a3991833778884c580f3dd0"
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/commands/validate-analyse-plan.md",
@@ -8677,8 +8702,8 @@
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/configuration/skills.cfg",
-      "size": 3734,
-      "sha256": "a02576786e08ba9abf5b6bc15819a6c8aeb1aa63da9a78593a2d02d9ccd0634f"
+      "size": 4066,
+      "sha256": "c31615e95e7c4b51d989e1765c4a4052764d0ef4e774f421f222055ddd4e59d2"
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/gestion-logs-aikido.md",
@@ -8747,8 +8772,8 @@
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/system/maj/SKILL.md",
-      "size": 2577,
-      "sha256": "c5de02ceeb71e571c3c9dfcbad125b6031c9918cfc112fcd87bf6fb3a684d46a"
+      "size": 2427,
+      "sha256": "f242310e65accf90d039c5fabaf7616b19631edd60c45163f2e642d46fee5cb8"
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/system/maj/plans/README.md",
@@ -9096,6 +9121,11 @@
       "sha256": "0548b4c490343e4069bd29aebe99174913bed42c7798aba99a15c58f4088a26e"
     },
     {
+      "path": "copilot-vscode/payload/prompts/hard_points/system/skill-manage/skill-manage.mjs",
+      "size": 20926,
+      "sha256": "dcabfaa9fe782cb98323da1d596bbfe5c06fff7f9f57e362ac826a843b680655"
+    },
+    {
       "path": "copilot-vscode/payload/prompts/hard_points/system/structure/ARCHITECTURE-V3.1-HASH-ID.md",
       "size": 23159,
       "sha256": "21fbe90928d84da7ffd707b5324dbf4d3f7a7544818c757ef12d412a9382b456"
@@ -9107,8 +9137,8 @@
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/system/structure/SKILL.md",
-      "size": 4066,
-      "sha256": "1f4e763403f31bc3e274352e8611038d84542674503394da2151a0dd29f157a6"
+      "size": 3598,
+      "sha256": "d06e7daf8dea4fbbf7e6f0f8da2e35c485b95121824696110b8f063b57471a39"
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/system/structure/index.json",
@@ -9192,8 +9222,8 @@
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/system/web/SKILL.md",
-      "size": 2242,
-      "sha256": "aca8e3911be730fe15d512f3f508e07b4e946b7337bc835d4cac469f8107843f"
+      "size": 2136,
+      "sha256": "0d80e16691510e3db3ceaae2383bd7301500e50d0f97729dd8728b7fa3a7938f"
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/system/web/commands/download-site.md",
@@ -9223,7 +9253,7 @@
     {
       "path": "copilot-vscode/plugin.json",
       "size": 227,
-      "sha256": "453efca40c17ef2a6e25babbdc54239db84497d0e15ccf0aaad5f06116d15ff2"
+      "sha256": "d983bf4a1ae9dd16b36c5e68d2d856fb91106f681a8a06ad131a6c94ef959679"
     },
     {
       "path": "copilot-vscode/scripts/bootstrap-plan.mjs",
@@ -9287,8 +9317,8 @@
     },
     {
       "path": "copilot-vscode/skills/maj/SKILL.md",
-      "size": 2837,
-      "sha256": "e03939092b1ca34250ce397fe2712dea9e285a7ac80d19d6cf342385882d0c56"
+      "size": 2687,
+      "sha256": "750e55e83fdddc5d29c93ceb22428744370c0d21ecb1220922901339c5f9b424"
     },
     {
       "path": "copilot-vscode/skills/maj/plans/README.md",
@@ -9657,8 +9687,8 @@
     },
     {
       "path": "copilot-vscode/skills/structure/SKILL.md",
-      "size": 4251,
-      "sha256": "909eba69e539a1eb8e94f27256069c268b938cc557cafbd851ef4b4175d0fd14"
+      "size": 3783,
+      "sha256": "f53747a3ae3a807e3e5c2f9064507e689a7d3500f690c90e0449b11c54632e07"
     },
     {
       "path": "copilot-vscode/skills/structure/index.json",
@@ -9742,8 +9772,8 @@
     },
     {
       "path": "copilot-vscode/skills/web/SKILL.md",
-      "size": 2575,
-      "sha256": "6b868dd9731266ab7a4fecea73659a84b0e0f8cee46a05445fd77165634efe44"
+      "size": 2469,
+      "sha256": "54aa3480dd9f95c7d6eeb85468ea8c1892bf98b72b3764da6f982d513fbeedc0"
     },
     {
       "path": "copilot-vscode/skills/web/commands/download-site.md",
@@ -9844,6 +9874,11 @@
       "path": "copilot-vscode/templates/project/prompts/spec/index.md",
       "size": 259,
       "sha256": "84bbd837d5095865b0fb982f2d26ed1bd2e31ca6adbb6a2e0ccc27537b27b474"
+    },
+    {
+      "path": "host-integrations.md",
+      "size": 3901,
+      "sha256": "9d83ce55165c7bed4496da06baf846f979a688679f5bc6063366b8a4524e6274"
     },
     {
       "path": "kiro-cli/.kiro/agents/agent-aikido-balancer.md",
@@ -10047,8 +10082,8 @@
     },
     {
       "path": "kiro-cli/.kiro/skills/maj/SKILL.md",
-      "size": 2837,
-      "sha256": "e03939092b1ca34250ce397fe2712dea9e285a7ac80d19d6cf342385882d0c56"
+      "size": 2687,
+      "sha256": "750e55e83fdddc5d29c93ceb22428744370c0d21ecb1220922901339c5f9b424"
     },
     {
       "path": "kiro-cli/.kiro/skills/maj/plans/README.md",
@@ -10437,8 +10472,8 @@
     },
     {
       "path": "kiro-cli/.kiro/skills/structure/SKILL.md",
-      "size": 4251,
-      "sha256": "909eba69e539a1eb8e94f27256069c268b938cc557cafbd851ef4b4175d0fd14"
+      "size": 3783,
+      "sha256": "f53747a3ae3a807e3e5c2f9064507e689a7d3500f690c90e0449b11c54632e07"
     },
     {
       "path": "kiro-cli/.kiro/skills/structure/index.json",
@@ -10532,8 +10567,8 @@
     },
     {
       "path": "kiro-cli/.kiro/skills/web/SKILL.md",
-      "size": 2575,
-      "sha256": "6b868dd9731266ab7a4fecea73659a84b0e0f8cee46a05445fd77165634efe44"
+      "size": 2535,
+      "sha256": "009ec08e3e27648140e4a1d034a30c5d803ef10aafe4054b1b944a930345af39"
     },
     {
       "path": "kiro-cli/.kiro/skills/web/commands/download-site.md",
@@ -10552,8 +10587,8 @@
     },
     {
       "path": "kiro-cli/README.md",
-      "size": 4220,
-      "sha256": "f5f1d073f4b31f40190cf038b0c8e83bd6f49ec7002f716d2da4710ef1dbdca6"
+      "size": 1925,
+      "sha256": "dbec391485251473f84f32429456bf8cf4b1c9cf38a3b2c1a555dc13678bd980"
     },
     {
       "path": "kiro-cli/catalog.json",
@@ -10582,8 +10617,8 @@
     },
     {
       "path": "kiro-cli/lib/package.mjs",
-      "size": 25259,
-      "sha256": "7357d58b77fab7eea3b4dc3dbf3942e71d49771a28c736da64362e8dadd33340"
+      "size": 25243,
+      "sha256": "67626891223ec2f200a75e490efdbd5d2da1645c1353e1cf48eff6ab3e7ecb2d"
     },
     {
       "path": "kiro-cli/lib/templates.mjs",
@@ -10597,8 +10632,8 @@
     },
     {
       "path": "kiro-cli/package-manifest.json",
-      "size": 162907,
-      "sha256": "a58499dfacb7f931d076668491038f7c6adde6b9ce5534902186cff5c26e5e5d"
+      "size": 163503,
+      "sha256": "ffad9077185d2eba5e377ad7666785473cec5e5cc3b39ea65f051daa876042b7"
     },
     {
       "path": "kiro-cli/payload/LICENSE",
@@ -10692,8 +10727,8 @@
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/ai-kido-light.md",
-      "size": 3374,
-      "sha256": "d99a19911fd14bba44eef17e3cfad98dfa5b06aa9f70b24df0f6bc54cac37940"
+      "size": 3352,
+      "sha256": "52560cec5398b15f9d7ced5419454f9333daefb12d84044f73b40e0f2d5667b7"
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/ai-kido-light_details.md",
@@ -10702,8 +10737,8 @@
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/ai-kido.md",
-      "size": 4437,
-      "sha256": "71d206257e087f09df60bb4d5b29b72e5c4c46b769537e5b07d611b27ad90766"
+      "size": 4401,
+      "sha256": "f3a664fdd3a3d0f66120be92956e1874e9379b2f920ee1689fb13046203f3f76"
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/ai-kido_details.md",
@@ -10717,13 +10752,13 @@
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/commands/analyse-project.md",
-      "size": 29518,
-      "sha256": "ded1c4d068ffdfd7afd463208ae088b896e6b28a6445c95903b3f3ab703bc2bc"
+      "size": 29444,
+      "sha256": "00b2a446cc5950948a88f7578ea9ee743052c391249e2ab0d0e81a92fd60316b"
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/commands/check-claude.md",
-      "size": 20696,
-      "sha256": "337ddc601e486a5635a286f57a76b03ee2c0d4d578f4f9987e826cee9a9171dc"
+      "size": 20705,
+      "sha256": "02caa7cb007aa7f0a44e0246bd8ae25647fff528bab4a52fe920aa453ddbf66f"
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/commands/check-truth.md",
@@ -10762,8 +10797,8 @@
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/commands/create-skill.md",
-      "size": 6318,
-      "sha256": "80c478c123e30151f875b5c0399bf1b9bc064f2d49fd0f2950e2f43af580794c"
+      "size": 6301,
+      "sha256": "8184065c23206e39ec2c55a936319facca56326845608936f39ce8855bfaa521"
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/commands/init-aikido.md",
@@ -10772,13 +10807,13 @@
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/commands/init-glossaire.md",
-      "size": 13857,
-      "sha256": "d19e216c2ac0d0b5f7d8e283ff1db124247c9cff5698f573d1007a7ccd5f514b"
+      "size": 13767,
+      "sha256": "df64a4592d80276d4a7303b875bda5053a67f3fa62a4e429d079bdfd3a8d015c"
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/commands/init-raci-aikido.md",
-      "size": 18239,
-      "sha256": "370d0a5dfd6d2b001aeaa3f9cac8d53d5aa8c2aac9b42ca15959a7faea2ffb48"
+      "size": 18200,
+      "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/commands/list-command.md",
@@ -10802,8 +10837,8 @@
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/commands/skill-manage.md",
-      "size": 16843,
-      "sha256": "b8e8b06693050d721e3bc5495ba1e9c20326d2e1ae68063814797aa37e3c3e46"
+      "size": 21831,
+      "sha256": "c3f8e995a0ed5901ac07ab820d67b87941796ba97a3991833778884c580f3dd0"
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/commands/validate-analyse-plan.md",
@@ -10822,8 +10857,8 @@
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/configuration/skills.cfg",
-      "size": 3734,
-      "sha256": "a02576786e08ba9abf5b6bc15819a6c8aeb1aa63da9a78593a2d02d9ccd0634f"
+      "size": 4066,
+      "sha256": "c31615e95e7c4b51d989e1765c4a4052764d0ef4e774f421f222055ddd4e59d2"
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/gestion-logs-aikido.md",
@@ -10892,8 +10927,8 @@
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/system/maj/SKILL.md",
-      "size": 2577,
-      "sha256": "c5de02ceeb71e571c3c9dfcbad125b6031c9918cfc112fcd87bf6fb3a684d46a"
+      "size": 2427,
+      "sha256": "f242310e65accf90d039c5fabaf7616b19631edd60c45163f2e642d46fee5cb8"
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/system/maj/plans/README.md",
@@ -11241,6 +11276,11 @@
       "sha256": "0548b4c490343e4069bd29aebe99174913bed42c7798aba99a15c58f4088a26e"
     },
     {
+      "path": "kiro-cli/payload/prompts/hard_points/system/skill-manage/skill-manage.mjs",
+      "size": 20926,
+      "sha256": "dcabfaa9fe782cb98323da1d596bbfe5c06fff7f9f57e362ac826a843b680655"
+    },
+    {
       "path": "kiro-cli/payload/prompts/hard_points/system/structure/ARCHITECTURE-V3.1-HASH-ID.md",
       "size": 23159,
       "sha256": "21fbe90928d84da7ffd707b5324dbf4d3f7a7544818c757ef12d412a9382b456"
@@ -11252,8 +11292,8 @@
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/system/structure/SKILL.md",
-      "size": 4066,
-      "sha256": "1f4e763403f31bc3e274352e8611038d84542674503394da2151a0dd29f157a6"
+      "size": 3598,
+      "sha256": "d06e7daf8dea4fbbf7e6f0f8da2e35c485b95121824696110b8f063b57471a39"
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/system/structure/index.json",
@@ -11337,8 +11377,8 @@
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/system/web/SKILL.md",
-      "size": 2242,
-      "sha256": "aca8e3911be730fe15d512f3f508e07b4e946b7337bc835d4cac469f8107843f"
+      "size": 2136,
+      "sha256": "0d80e16691510e3db3ceaae2383bd7301500e50d0f97729dd8728b7fa3a7938f"
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/system/web/commands/download-site.md",
@@ -11582,8 +11622,8 @@
     },
     {
       "path": "roo-code-legacy/README.md",
-      "size": 1943,
-      "sha256": "93ec6d89ca7f12d5a869f250dbf0f8ffdde6688c9562852db6d9bcc1dfeedf22"
+      "size": 1306,
+      "sha256": "37c603d1f945a1572f44b1641c73eca166d63f935030cd62c9ff8b3093b0a5d9"
     },
     {
       "path": "roo-code-legacy/catalog.json",
@@ -11612,8 +11652,8 @@
     },
     {
       "path": "roo-code-legacy/lib/package.mjs",
-      "size": 25259,
-      "sha256": "7357d58b77fab7eea3b4dc3dbf3942e71d49771a28c736da64362e8dadd33340"
+      "size": 25243,
+      "sha256": "67626891223ec2f200a75e490efdbd5d2da1645c1353e1cf48eff6ab3e7ecb2d"
     },
     {
       "path": "roo-code-legacy/lib/templates.mjs",
@@ -11627,8 +11667,8 @@
     },
     {
       "path": "roo-code-legacy/package-manifest.json",
-      "size": 106490,
-      "sha256": "1df6d3322385519f706f439d40a4f8dc4afc008aaf840c310e8a79014a70a7f7"
+      "size": 107086,
+      "sha256": "be4c9c9520fccf69d8f8b5369d73b82a93e8e0bb83c33ea037d1752cbbe33d65"
     },
     {
       "path": "roo-code-legacy/payload/LICENSE",
@@ -11722,8 +11762,8 @@
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/ai-kido-light.md",
-      "size": 3374,
-      "sha256": "d99a19911fd14bba44eef17e3cfad98dfa5b06aa9f70b24df0f6bc54cac37940"
+      "size": 3352,
+      "sha256": "52560cec5398b15f9d7ced5419454f9333daefb12d84044f73b40e0f2d5667b7"
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/ai-kido-light_details.md",
@@ -11732,8 +11772,8 @@
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/ai-kido.md",
-      "size": 4437,
-      "sha256": "71d206257e087f09df60bb4d5b29b72e5c4c46b769537e5b07d611b27ad90766"
+      "size": 4401,
+      "sha256": "f3a664fdd3a3d0f66120be92956e1874e9379b2f920ee1689fb13046203f3f76"
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/ai-kido_details.md",
@@ -11747,13 +11787,13 @@
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/commands/analyse-project.md",
-      "size": 29518,
-      "sha256": "ded1c4d068ffdfd7afd463208ae088b896e6b28a6445c95903b3f3ab703bc2bc"
+      "size": 29444,
+      "sha256": "00b2a446cc5950948a88f7578ea9ee743052c391249e2ab0d0e81a92fd60316b"
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/commands/check-claude.md",
-      "size": 20696,
-      "sha256": "337ddc601e486a5635a286f57a76b03ee2c0d4d578f4f9987e826cee9a9171dc"
+      "size": 20705,
+      "sha256": "02caa7cb007aa7f0a44e0246bd8ae25647fff528bab4a52fe920aa453ddbf66f"
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/commands/check-truth.md",
@@ -11792,8 +11832,8 @@
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/commands/create-skill.md",
-      "size": 6318,
-      "sha256": "80c478c123e30151f875b5c0399bf1b9bc064f2d49fd0f2950e2f43af580794c"
+      "size": 6301,
+      "sha256": "8184065c23206e39ec2c55a936319facca56326845608936f39ce8855bfaa521"
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/commands/init-aikido.md",
@@ -11802,13 +11842,13 @@
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/commands/init-glossaire.md",
-      "size": 13857,
-      "sha256": "d19e216c2ac0d0b5f7d8e283ff1db124247c9cff5698f573d1007a7ccd5f514b"
+      "size": 13767,
+      "sha256": "df64a4592d80276d4a7303b875bda5053a67f3fa62a4e429d079bdfd3a8d015c"
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/commands/init-raci-aikido.md",
-      "size": 18239,
-      "sha256": "370d0a5dfd6d2b001aeaa3f9cac8d53d5aa8c2aac9b42ca15959a7faea2ffb48"
+      "size": 18200,
+      "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/commands/list-command.md",
@@ -11832,8 +11872,8 @@
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/commands/skill-manage.md",
-      "size": 16843,
-      "sha256": "b8e8b06693050d721e3bc5495ba1e9c20326d2e1ae68063814797aa37e3c3e46"
+      "size": 21831,
+      "sha256": "c3f8e995a0ed5901ac07ab820d67b87941796ba97a3991833778884c580f3dd0"
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/commands/validate-analyse-plan.md",
@@ -11852,8 +11892,8 @@
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/configuration/skills.cfg",
-      "size": 3734,
-      "sha256": "a02576786e08ba9abf5b6bc15819a6c8aeb1aa63da9a78593a2d02d9ccd0634f"
+      "size": 4066,
+      "sha256": "c31615e95e7c4b51d989e1765c4a4052764d0ef4e774f421f222055ddd4e59d2"
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/gestion-logs-aikido.md",
@@ -11922,8 +11962,8 @@
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/system/maj/SKILL.md",
-      "size": 2577,
-      "sha256": "c5de02ceeb71e571c3c9dfcbad125b6031c9918cfc112fcd87bf6fb3a684d46a"
+      "size": 2427,
+      "sha256": "f242310e65accf90d039c5fabaf7616b19631edd60c45163f2e642d46fee5cb8"
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/system/maj/plans/README.md",
@@ -12271,6 +12311,11 @@
       "sha256": "0548b4c490343e4069bd29aebe99174913bed42c7798aba99a15c58f4088a26e"
     },
     {
+      "path": "roo-code-legacy/payload/prompts/hard_points/system/skill-manage/skill-manage.mjs",
+      "size": 20926,
+      "sha256": "dcabfaa9fe782cb98323da1d596bbfe5c06fff7f9f57e362ac826a843b680655"
+    },
+    {
       "path": "roo-code-legacy/payload/prompts/hard_points/system/structure/ARCHITECTURE-V3.1-HASH-ID.md",
       "size": 23159,
       "sha256": "21fbe90928d84da7ffd707b5324dbf4d3f7a7544818c757ef12d412a9382b456"
@@ -12282,8 +12327,8 @@
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/system/structure/SKILL.md",
-      "size": 4066,
-      "sha256": "1f4e763403f31bc3e274352e8611038d84542674503394da2151a0dd29f157a6"
+      "size": 3598,
+      "sha256": "d06e7daf8dea4fbbf7e6f0f8da2e35c485b95121824696110b8f063b57471a39"
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/system/structure/index.json",
@@ -12367,8 +12412,8 @@
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/system/web/SKILL.md",
-      "size": 2242,
-      "sha256": "aca8e3911be730fe15d512f3f508e07b4e946b7337bc835d4cac469f8107843f"
+      "size": 2136,
+      "sha256": "0d80e16691510e3db3ceaae2383bd7301500e50d0f97729dd8728b7fa3a7938f"
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/system/web/commands/download-site.md",
@@ -12612,8 +12657,8 @@
     },
     {
       "path": "zoo-code/README.md",
-      "size": 3201,
-      "sha256": "0d4e32464b28e048451fa905ddb49ee53bb0e83b29e347becdd092e1cae99827"
+      "size": 1642,
+      "sha256": "1ee688ea8f9a2bedd66a29df964788e1f9c3d613aa4e442e04f7e79932c118aa"
     },
     {
       "path": "zoo-code/catalog.json",
@@ -12642,8 +12687,8 @@
     },
     {
       "path": "zoo-code/lib/package.mjs",
-      "size": 25259,
-      "sha256": "7357d58b77fab7eea3b4dc3dbf3942e71d49771a28c736da64362e8dadd33340"
+      "size": 25243,
+      "sha256": "67626891223ec2f200a75e490efdbd5d2da1645c1353e1cf48eff6ab3e7ecb2d"
     },
     {
       "path": "zoo-code/lib/templates.mjs",
@@ -12657,8 +12702,8 @@
     },
     {
       "path": "zoo-code/package-manifest.json",
-      "size": 106479,
-      "sha256": "696dfca29bc15acba82b359cea815dfc6c5d798f4602c4e9308e8e5ca7fc17ce"
+      "size": 107075,
+      "sha256": "26bcbb2ac791146977da6d3d6911d8734b3e8b0d6924268ac89bb13656e271c8"
     },
     {
       "path": "zoo-code/payload/LICENSE",
@@ -12752,8 +12797,8 @@
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/ai-kido-light.md",
-      "size": 3374,
-      "sha256": "d99a19911fd14bba44eef17e3cfad98dfa5b06aa9f70b24df0f6bc54cac37940"
+      "size": 3352,
+      "sha256": "52560cec5398b15f9d7ced5419454f9333daefb12d84044f73b40e0f2d5667b7"
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/ai-kido-light_details.md",
@@ -12762,8 +12807,8 @@
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/ai-kido.md",
-      "size": 4437,
-      "sha256": "71d206257e087f09df60bb4d5b29b72e5c4c46b769537e5b07d611b27ad90766"
+      "size": 4401,
+      "sha256": "f3a664fdd3a3d0f66120be92956e1874e9379b2f920ee1689fb13046203f3f76"
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/ai-kido_details.md",
@@ -12777,13 +12822,13 @@
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/commands/analyse-project.md",
-      "size": 29518,
-      "sha256": "ded1c4d068ffdfd7afd463208ae088b896e6b28a6445c95903b3f3ab703bc2bc"
+      "size": 29444,
+      "sha256": "00b2a446cc5950948a88f7578ea9ee743052c391249e2ab0d0e81a92fd60316b"
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/commands/check-claude.md",
-      "size": 20696,
-      "sha256": "337ddc601e486a5635a286f57a76b03ee2c0d4d578f4f9987e826cee9a9171dc"
+      "size": 20705,
+      "sha256": "02caa7cb007aa7f0a44e0246bd8ae25647fff528bab4a52fe920aa453ddbf66f"
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/commands/check-truth.md",
@@ -12822,8 +12867,8 @@
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/commands/create-skill.md",
-      "size": 6318,
-      "sha256": "80c478c123e30151f875b5c0399bf1b9bc064f2d49fd0f2950e2f43af580794c"
+      "size": 6301,
+      "sha256": "8184065c23206e39ec2c55a936319facca56326845608936f39ce8855bfaa521"
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/commands/init-aikido.md",
@@ -12832,13 +12877,13 @@
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/commands/init-glossaire.md",
-      "size": 13857,
-      "sha256": "d19e216c2ac0d0b5f7d8e283ff1db124247c9cff5698f573d1007a7ccd5f514b"
+      "size": 13767,
+      "sha256": "df64a4592d80276d4a7303b875bda5053a67f3fa62a4e429d079bdfd3a8d015c"
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/commands/init-raci-aikido.md",
-      "size": 18239,
-      "sha256": "370d0a5dfd6d2b001aeaa3f9cac8d53d5aa8c2aac9b42ca15959a7faea2ffb48"
+      "size": 18200,
+      "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/commands/list-command.md",
@@ -12862,8 +12907,8 @@
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/commands/skill-manage.md",
-      "size": 16843,
-      "sha256": "b8e8b06693050d721e3bc5495ba1e9c20326d2e1ae68063814797aa37e3c3e46"
+      "size": 21831,
+      "sha256": "c3f8e995a0ed5901ac07ab820d67b87941796ba97a3991833778884c580f3dd0"
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/commands/validate-analyse-plan.md",
@@ -12882,8 +12927,8 @@
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/configuration/skills.cfg",
-      "size": 3734,
-      "sha256": "a02576786e08ba9abf5b6bc15819a6c8aeb1aa63da9a78593a2d02d9ccd0634f"
+      "size": 4066,
+      "sha256": "c31615e95e7c4b51d989e1765c4a4052764d0ef4e774f421f222055ddd4e59d2"
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/gestion-logs-aikido.md",
@@ -12952,8 +12997,8 @@
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/system/maj/SKILL.md",
-      "size": 2577,
-      "sha256": "c5de02ceeb71e571c3c9dfcbad125b6031c9918cfc112fcd87bf6fb3a684d46a"
+      "size": 2427,
+      "sha256": "f242310e65accf90d039c5fabaf7616b19631edd60c45163f2e642d46fee5cb8"
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/system/maj/plans/README.md",
@@ -13301,6 +13346,11 @@
       "sha256": "0548b4c490343e4069bd29aebe99174913bed42c7798aba99a15c58f4088a26e"
     },
     {
+      "path": "zoo-code/payload/prompts/hard_points/system/skill-manage/skill-manage.mjs",
+      "size": 20926,
+      "sha256": "dcabfaa9fe782cb98323da1d596bbfe5c06fff7f9f57e362ac826a843b680655"
+    },
+    {
       "path": "zoo-code/payload/prompts/hard_points/system/structure/ARCHITECTURE-V3.1-HASH-ID.md",
       "size": 23159,
       "sha256": "21fbe90928d84da7ffd707b5324dbf4d3f7a7544818c757ef12d412a9382b456"
@@ -13312,8 +13362,8 @@
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/system/structure/SKILL.md",
-      "size": 4066,
-      "sha256": "1f4e763403f31bc3e274352e8611038d84542674503394da2151a0dd29f157a6"
+      "size": 3598,
+      "sha256": "d06e7daf8dea4fbbf7e6f0f8da2e35c485b95121824696110b8f063b57471a39"
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/system/structure/index.json",
@@ -13397,8 +13447,8 @@
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/system/web/SKILL.md",
-      "size": 2242,
-      "sha256": "aca8e3911be730fe15d512f3f508e07b4e946b7337bc835d4cac469f8107843f"
+      "size": 2136,
+      "sha256": "0d80e16691510e3db3ceaae2383bd7301500e50d0f97729dd8728b7fa3a7938f"
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/system/web/commands/download-site.md",

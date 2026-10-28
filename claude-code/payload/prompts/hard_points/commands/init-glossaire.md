@@ -31,7 +31,7 @@ explore-bank → truth-evaluator → [Code/Docs Analysis] → raci-delegator →
 
 ### Step 1: Contextual Exploration
 
-**USE AGENT** [`agent-aikido-explore-bank`](../prompts/hard_points/agents/agent-aikido-explore-bank.md):
+**USE AGENT** [`agent-aikido-explore-bank`](../agents/agent-aikido-explore-bank.md):
 
 ```markdown
 AGENT: agent-aikido-explore-bank (QUICK MODE)
@@ -68,7 +68,7 @@ Mode: [CREATION | UPDATE]
 
 ### Step 2: Source Validation
 
-**USE AGENT** [`agent-aikido-truth-evaluator`](../prompts/hard_points/agents/agent-aikido-truth-evaluator.md):
+**USE AGENT** [`agent-aikido-truth-evaluator`](../agents/agent-aikido-truth-evaluator.md):
 
 ```markdown
 AGENT: agent-aikido-truth-evaluator
@@ -162,7 +162,7 @@ Continue? (y/n)
 
 ### Step 4: Classification by Domains
 
-**USE AGENT** [`agent-aikido-raci-delegator`](../prompts/hard_points/agents/agent-aikido-raci-delegator.md):
+**USE AGENT** [`agent-aikido-raci-delegator`](../agents/agent-aikido-raci-delegator.md):
 
 ```markdown
 AGENT: agent-aikido-raci-delegator
@@ -328,7 +328,7 @@ Enter Terms (one per line, or 'done'):
 
 ### Step 7: Compliance Validation
 
-**USE AGENT** [`agent-aikido-validator`](../prompts/hard_points/agents/agent-aikido-validator.md):
+**USE AGENT** [`agent-aikido-validator`](../agents/agent-aikido-validator.md):
 
 ```markdown
 AGENT: agent-aikido-validator
@@ -382,7 +382,7 @@ Continue with Memory Bank integration? (y/n)
 
 #### 8.1 Update Concepts Index
 
-**Update** [`/prompts/gen/concepts/index.md`](../prompts/gen/concepts/index.md):
+**Update** [`/prompts/gen/concepts/index.md`](../../gen/concepts/index.md):
 ```markdown
 ## Available Files
 
@@ -392,7 +392,7 @@ Continue with Memory Bank integration? (y/n)
 
 #### 8.2 Update Main Index
 
-**Update** [`/prompts/index.md`](../prompts/index.md):
+**Update** [`/prompts/index.md`](../../index.md):
 ```markdown
 ## Structure
 

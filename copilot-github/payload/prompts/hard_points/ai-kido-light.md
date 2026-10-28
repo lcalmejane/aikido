@@ -70,5 +70,5 @@ AI‑KIDO is a **method**; its tools are a **meta-harness** whose agents, skills
 
 <details>
 <summary>View the rest of the detailed document</summary>
-[View full content](`prompts/hard_points/ai-kido-light_details.md`)
+[View full content](ai-kido-light_details.md)
 </details>

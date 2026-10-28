@@ -4,7 +4,7 @@ description: "Analyze and update CLAUDE.md based on AI-KIDO Memory Bank and CLAU
 
 # /check-claude
 
-**Purpose**: Analyze the current state of the AI-KIDO Memory Bank and update [`CLAUDE.md`](../../CLAUDE.md) to reflect the real mapping between your structure and the CLAUDE.md standard, then generate mapping files for Claude Code (`.claude/agents/` and `.claude/commands/`).
+**Purpose**: Analyze the current state of the AI-KIDO Memory Bank and update [`CLAUDE.md`](../../../CLAUDE.md) to reflect the real mapping between your structure and the CLAUDE.md standard, then generate mapping files for Claude Code (`.claude/agents/` and `.claude/commands/`).
 
 ---
 
@@ -27,7 +27,7 @@ description: "Analyze and update CLAUDE.md based on AI-KIDO Memory Bank and CLAU
 
 #### 5.1 Compliance Verification
 
-**Verify** that [`AGENTS.md`](../../AGENTS.md) follows rules 16-18:
+**Verify** that [`AGENTS.md`](../../../AGENTS.md) follows rules 16-18:
 
 ```
 VERIFICATION AGENTS.MD
@@ -62,7 +62,7 @@ Apply these corrections? (y/n):
 
 #### 5.3 Apply Corrections
 
-**If accepted**, update [`AGENTS.md`](../../AGENTS.md) automatically.
+**If accepted**, update [`AGENTS.md`](../../../AGENTS.md) automatically.
 
 ### Phase 5bis: Generation of Individual Agent Files
 

@@ -1,8 +1,6 @@
-# AI-KIDO distribution 1.5.0-rc.1
+# AI-KIDO distribution 1.5.0-rc.3
 
-Generated from `lcalmejane/aikido@5e1adb76f5f6641b1c7082ecd88f4a02d6e782e7`. Do not edit this branch by hand; it is replaced by the release workflow. Pin installations to the tag `aikido-dist-v1.5.0-rc.1` or to a commit SHA of this branch, never to the moving branch name.
-
-Each directory is one host package with its own `README.md` and `package-manifest.json`:
+Choose the package for your assistant, then follow the installation guide in [`host-integrations.md`](host-integrations.md). Each package is in its own directory:
 
 - `antigravity/`
 - `claude-code/`
@@ -14,4 +12,4 @@ Each directory is one host package with its own `README.md` and `package-manifes
 - `roo-code-legacy/`
 - `zoo-code/`
 
-The root `.claude-plugin/marketplace.json` exposes the Claude Code package. `release-manifest.json` lists the SHA-256 of every file for provenance checks. Host-native qualification status is recorded per package and in the source repository.
+Claude Code users can install the `aikido` marketplace plugin from this release. Other assistants use the matching package directory. The package README contains assistant-specific setup instructions where provided.

@@ -24,7 +24,7 @@ description: "Interactive guide to create a complete AI-KIDO Skill skeleton"
 
 Direct LLM execution — ❌ no bash script · ✅ Ask user directly + Write tool
 
-**Skill Reference**: [`Skills.md`](prompts/hard_points/system/Skills.md) · Structure: `prompts/hard_points/system/{slug}/` · Progressive disclosure 3 levels (~100 tokens metadata / <5k instructions / resources on demand)
+**Skill Reference**: [`Skills.md`](../system/Skills.md) · Structure: `prompts/hard_points/system/{slug}/` · Progressive disclosure 3 levels (~100 tokens metadata / <5k instructions / resources on demand)
 
 ### Step 0 — Duplicate Detection
 

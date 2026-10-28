@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "host": "claude-cowork",
   "qualification": "qualified-with-conditions-not-tested",
-  "version": "1.5.0-rc.1",
-  "sourceRevision": "5e1adb76f5f6641b1c7082ecd88f4a02d6e782e7",
+  "version": "1.5.0-rc.3",
+  "sourceRevision": "50b39aebe81e6a7a0f81333f6864a05daec6fcd8",
   "source": {
     "type": "git",
     "ref": "github:lcalmejane/aikido",
-    "commit": "5e1adb76f5f6641b1c7082ecd88f4a02d6e782e7"
+    "commit": "50b39aebe81e6a7a0f81333f6864a05daec6fcd8"
   },
   "commandDelivery": "native-command",
   "files": [
@@ -19,7 +19,7 @@
     {
       "path": ".claude-plugin/plugin.json",
       "role": "plugin-manifest",
-      "sha256": "799427cd27388a6c247912e50d0d56d4e2b4dbf13924d256087c9e1227a0cec1"
+      "sha256": "f3e1321e9d6f4f705e62337ff7e3bb281630f4fb557a1a665e4a35d71b40badb"
     },
     {
       "path": "LICENSE",
@@ -29,7 +29,7 @@
     {
       "path": "README.md",
       "role": "plugin-readme",
-      "sha256": "8c64616af159f6cc43b1bfc5fa4da86b8e3237307cdd725a5f24f5f9beea3cb6"
+      "sha256": "be008749e4decf7bcefd4cf789f5cf669354fa38a85e4100fb2d4fd9c760c556"
     },
     {
       "path": "TRADEMARK.md",
@@ -254,7 +254,7 @@
     {
       "path": "lib/package.mjs",
       "role": "runtime",
-      "sha256": "7357d58b77fab7eea3b4dc3dbf3942e71d49771a28c736da64362e8dadd33340"
+      "sha256": "67626891223ec2f200a75e490efdbd5d2da1645c1353e1cf48eff6ab3e7ecb2d"
     },
     {
       "path": "lib/templates.mjs",
@@ -359,7 +359,7 @@
     {
       "path": "payload/prompts/hard_points/ai-kido-light.md",
       "role": "payload",
-      "sha256": "d99a19911fd14bba44eef17e3cfad98dfa5b06aa9f70b24df0f6bc54cac37940"
+      "sha256": "52560cec5398b15f9d7ced5419454f9333daefb12d84044f73b40e0f2d5667b7"
     },
     {
       "path": "payload/prompts/hard_points/ai-kido-light_details.md",
@@ -369,7 +369,7 @@
     {
       "path": "payload/prompts/hard_points/ai-kido.md",
       "role": "payload",
-      "sha256": "71d206257e087f09df60bb4d5b29b72e5c4c46b769537e5b07d611b27ad90766"
+      "sha256": "f3a664fdd3a3d0f66120be92956e1874e9379b2f920ee1689fb13046203f3f76"
     },
     {
       "path": "payload/prompts/hard_points/ai-kido_details.md",
@@ -384,12 +384,12 @@
     {
       "path": "payload/prompts/hard_points/commands/analyse-project.md",
       "role": "payload",
-      "sha256": "ded1c4d068ffdfd7afd463208ae088b896e6b28a6445c95903b3f3ab703bc2bc"
+      "sha256": "00b2a446cc5950948a88f7578ea9ee743052c391249e2ab0d0e81a92fd60316b"
     },
     {
       "path": "payload/prompts/hard_points/commands/check-claude.md",
       "role": "payload",
-      "sha256": "337ddc601e486a5635a286f57a76b03ee2c0d4d578f4f9987e826cee9a9171dc"
+      "sha256": "02caa7cb007aa7f0a44e0246bd8ae25647fff528bab4a52fe920aa453ddbf66f"
     },
     {
       "path": "payload/prompts/hard_points/commands/check-truth.md",
@@ -429,7 +429,7 @@
     {
       "path": "payload/prompts/hard_points/commands/create-skill.md",
       "role": "payload",
-      "sha256": "80c478c123e30151f875b5c0399bf1b9bc064f2d49fd0f2950e2f43af580794c"
+      "sha256": "8184065c23206e39ec2c55a936319facca56326845608936f39ce8855bfaa521"
     },
     {
       "path": "payload/prompts/hard_points/commands/init-aikido.md",
@@ -439,12 +439,12 @@
     {
       "path": "payload/prompts/hard_points/commands/init-glossaire.md",
       "role": "payload",
-      "sha256": "d19e216c2ac0d0b5f7d8e283ff1db124247c9cff5698f573d1007a7ccd5f514b"
+      "sha256": "df64a4592d80276d4a7303b875bda5053a67f3fa62a4e429d079bdfd3a8d015c"
     },
     {
       "path": "payload/prompts/hard_points/commands/init-raci-aikido.md",
       "role": "payload",
-      "sha256": "370d0a5dfd6d2b001aeaa3f9cac8d53d5aa8c2aac9b42ca15959a7faea2ffb48"
+      "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
     },
     {
       "path": "payload/prompts/hard_points/commands/list-command.md",
@@ -469,7 +469,7 @@
     {
       "path": "payload/prompts/hard_points/commands/skill-manage.md",
       "role": "payload",
-      "sha256": "b8e8b06693050d721e3bc5495ba1e9c20326d2e1ae68063814797aa37e3c3e46"
+      "sha256": "c3f8e995a0ed5901ac07ab820d67b87941796ba97a3991833778884c580f3dd0"
     },
     {
       "path": "payload/prompts/hard_points/commands/validate-analyse-plan.md",
@@ -489,7 +489,7 @@
     {
       "path": "payload/prompts/hard_points/configuration/skills.cfg",
       "role": "payload",
-      "sha256": "a02576786e08ba9abf5b6bc15819a6c8aeb1aa63da9a78593a2d02d9ccd0634f"
+      "sha256": "c31615e95e7c4b51d989e1765c4a4052764d0ef4e774f421f222055ddd4e59d2"
     },
     {
       "path": "payload/prompts/hard_points/gestion-logs-aikido.md",
@@ -559,7 +559,7 @@
     {
       "path": "payload/prompts/hard_points/system/maj/SKILL.md",
       "role": "payload",
-      "sha256": "c5de02ceeb71e571c3c9dfcbad125b6031c9918cfc112fcd87bf6fb3a684d46a"
+      "sha256": "f242310e65accf90d039c5fabaf7616b19631edd60c45163f2e642d46fee5cb8"
     },
     {
       "path": "payload/prompts/hard_points/system/maj/plans/README.md",
@@ -907,6 +907,11 @@
       "sha256": "0548b4c490343e4069bd29aebe99174913bed42c7798aba99a15c58f4088a26e"
     },
     {
+      "path": "payload/prompts/hard_points/system/skill-manage/skill-manage.mjs",
+      "role": "payload",
+      "sha256": "dcabfaa9fe782cb98323da1d596bbfe5c06fff7f9f57e362ac826a843b680655"
+    },
+    {
       "path": "payload/prompts/hard_points/system/structure/ARCHITECTURE-V3.1-HASH-ID.md",
       "role": "payload",
       "sha256": "21fbe90928d84da7ffd707b5324dbf4d3f7a7544818c757ef12d412a9382b456"
@@ -919,7 +924,7 @@
     {
       "path": "payload/prompts/hard_points/system/structure/SKILL.md",
       "role": "payload",
-      "sha256": "1f4e763403f31bc3e274352e8611038d84542674503394da2151a0dd29f157a6"
+      "sha256": "d06e7daf8dea4fbbf7e6f0f8da2e35c485b95121824696110b8f063b57471a39"
     },
     {
       "path": "payload/prompts/hard_points/system/structure/index.json",
@@ -1004,7 +1009,7 @@
     {
       "path": "payload/prompts/hard_points/system/web/SKILL.md",
       "role": "payload",
-      "sha256": "aca8e3911be730fe15d512f3f508e07b4e946b7337bc835d4cac469f8107843f"
+      "sha256": "0d80e16691510e3db3ceaae2383bd7301500e50d0f97729dd8728b7fa3a7938f"
     },
     {
       "path": "payload/prompts/hard_points/system/web/commands/download-site.md",
@@ -1094,7 +1099,7 @@
     {
       "path": "skills/maj/SKILL.md",
       "role": "system-skill",
-      "sha256": "679c8268187c8e7cd85acd73ed85308889e1bce407a61ebbc43da981c5835857"
+      "sha256": "967e247e9580dcf68500561f999472a53d5c69bee8053b47f7bce8344bc4d276"
     },
     {
       "path": "skills/maj/plans/README.md",
@@ -1464,7 +1469,7 @@
     {
       "path": "skills/structure/SKILL.md",
       "role": "system-skill",
-      "sha256": "f923d8d465cb3e617a65fe252fab505e0c0b4f5d61245753579e3cf36077d212"
+      "sha256": "0dfe803d326130d4d6d8bb018a8259649a2dba477d084ab66f1c9adca1a530cd"
     },
     {
       "path": "skills/structure/index.json",
@@ -1549,7 +1554,7 @@
     {
       "path": "skills/web/SKILL.md",
       "role": "system-skill",
-      "sha256": "8298904613fff0525e5a0e5ae7ca5b786d045e7ed837d2f96d408e9b38cb373c"
+      "sha256": "3139c45ac93ee7f7dd12a5f8484fd94c2ee68d69a2d8a963e17ea09bc2452eb9"
     },
     {
       "path": "skills/web/commands/download-site.md",
@@ -1801,7 +1806,7 @@
       "source": "prompts/hard_points/ai-kido-light.md",
       "target": "prompts/hard_points/ai-kido-light.md",
       "packagePath": "payload/prompts/hard_points/ai-kido-light.md",
-      "sha256": "d99a19911fd14bba44eef17e3cfad98dfa5b06aa9f70b24df0f6bc54cac37940",
+      "sha256": "52560cec5398b15f9d7ced5419454f9333daefb12d84044f73b40e0f2d5667b7",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -1817,7 +1822,7 @@
       "source": "prompts/hard_points/ai-kido.md",
       "target": "prompts/hard_points/ai-kido.md",
       "packagePath": "payload/prompts/hard_points/ai-kido.md",
-      "sha256": "71d206257e087f09df60bb4d5b29b72e5c4c46b769537e5b07d611b27ad90766",
+      "sha256": "f3a664fdd3a3d0f66120be92956e1874e9379b2f920ee1689fb13046203f3f76",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -1841,7 +1846,7 @@
       "source": "prompts/hard_points/commands/analyse-project.md",
       "target": "prompts/hard_points/commands/analyse-project.md",
       "packagePath": "payload/prompts/hard_points/commands/analyse-project.md",
-      "sha256": "ded1c4d068ffdfd7afd463208ae088b896e6b28a6445c95903b3f3ab703bc2bc",
+      "sha256": "00b2a446cc5950948a88f7578ea9ee743052c391249e2ab0d0e81a92fd60316b",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -1849,7 +1854,7 @@
       "source": "prompts/hard_points/commands/check-claude.md",
       "target": "prompts/hard_points/commands/check-claude.md",
       "packagePath": "payload/prompts/hard_points/commands/check-claude.md",
-      "sha256": "337ddc601e486a5635a286f57a76b03ee2c0d4d578f4f9987e826cee9a9171dc",
+      "sha256": "02caa7cb007aa7f0a44e0246bd8ae25647fff528bab4a52fe920aa453ddbf66f",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -1913,7 +1918,7 @@
       "source": "prompts/hard_points/commands/create-skill.md",
       "target": "prompts/hard_points/commands/create-skill.md",
       "packagePath": "payload/prompts/hard_points/commands/create-skill.md",
-      "sha256": "80c478c123e30151f875b5c0399bf1b9bc064f2d49fd0f2950e2f43af580794c",
+      "sha256": "8184065c23206e39ec2c55a936319facca56326845608936f39ce8855bfaa521",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -1929,7 +1934,7 @@
       "source": "prompts/hard_points/commands/init-glossaire.md",
       "target": "prompts/hard_points/commands/init-glossaire.md",
       "packagePath": "payload/prompts/hard_points/commands/init-glossaire.md",
-      "sha256": "d19e216c2ac0d0b5f7d8e283ff1db124247c9cff5698f573d1007a7ccd5f514b",
+      "sha256": "df64a4592d80276d4a7303b875bda5053a67f3fa62a4e429d079bdfd3a8d015c",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -1937,7 +1942,7 @@
       "source": "prompts/hard_points/commands/init-raci-aikido.md",
       "target": "prompts/hard_points/commands/init-raci-aikido.md",
       "packagePath": "payload/prompts/hard_points/commands/init-raci-aikido.md",
-      "sha256": "370d0a5dfd6d2b001aeaa3f9cac8d53d5aa8c2aac9b42ca15959a7faea2ffb48",
+      "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -1977,7 +1982,7 @@
       "source": "prompts/hard_points/commands/skill-manage.md",
       "target": "prompts/hard_points/commands/skill-manage.md",
       "packagePath": "payload/prompts/hard_points/commands/skill-manage.md",
-      "sha256": "b8e8b06693050d721e3bc5495ba1e9c20326d2e1ae68063814797aa37e3c3e46",
+      "sha256": "c3f8e995a0ed5901ac07ab820d67b87941796ba97a3991833778884c580f3dd0",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -2009,7 +2014,7 @@
       "source": "prompts/hard_points/configuration/skills.cfg",
       "target": "prompts/hard_points/configuration/skills.cfg",
       "packagePath": "payload/prompts/hard_points/configuration/skills.cfg",
-      "sha256": "a02576786e08ba9abf5b6bc15819a6c8aeb1aa63da9a78593a2d02d9ccd0634f",
+      "sha256": "c31615e95e7c4b51d989e1765c4a4052764d0ef4e774f421f222055ddd4e59d2",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -2121,7 +2126,7 @@
       "source": "prompts/hard_points/system/maj/SKILL.md",
       "target": "prompts/hard_points/system/maj/SKILL.md",
       "packagePath": "payload/prompts/hard_points/system/maj/SKILL.md",
-      "sha256": "c5de02ceeb71e571c3c9dfcbad125b6031c9918cfc112fcd87bf6fb3a684d46a",
+      "sha256": "f242310e65accf90d039c5fabaf7616b19631edd60c45163f2e642d46fee5cb8",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -2678,6 +2683,14 @@
       "policy": "three-way"
     },
     {
+      "source": "prompts/hard_points/system/skill-manage/skill-manage.mjs",
+      "target": "prompts/hard_points/system/skill-manage/skill-manage.mjs",
+      "packagePath": "payload/prompts/hard_points/system/skill-manage/skill-manage.mjs",
+      "sha256": "dcabfaa9fe782cb98323da1d596bbfe5c06fff7f9f57e362ac826a843b680655",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
       "source": "prompts/hard_points/system/structure/ARCHITECTURE-V3.1-HASH-ID.md",
       "target": "prompts/hard_points/system/structure/ARCHITECTURE-V3.1-HASH-ID.md",
       "packagePath": "payload/prompts/hard_points/system/structure/ARCHITECTURE-V3.1-HASH-ID.md",
@@ -2697,7 +2710,7 @@
       "source": "prompts/hard_points/system/structure/SKILL.md",
       "target": "prompts/hard_points/system/structure/SKILL.md",
       "packagePath": "payload/prompts/hard_points/system/structure/SKILL.md",
-      "sha256": "1f4e763403f31bc3e274352e8611038d84542674503394da2151a0dd29f157a6",
+      "sha256": "d06e7daf8dea4fbbf7e6f0f8da2e35c485b95121824696110b8f063b57471a39",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -2833,7 +2846,7 @@
       "source": "prompts/hard_points/system/web/SKILL.md",
       "target": "prompts/hard_points/system/web/SKILL.md",
       "packagePath": "payload/prompts/hard_points/system/web/SKILL.md",
-      "sha256": "aca8e3911be730fe15d512f3f508e07b4e946b7337bc835d4cac469f8107843f",
+      "sha256": "0d80e16691510e3db3ceaae2383bd7301500e50d0f97729dd8728b7fa3a7938f",
       "origin": "payload",
       "policy": "three-way"
     },

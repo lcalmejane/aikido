@@ -6,8 +6,8 @@ description: "Manage the complete lifecycle of AI-KIDO skills: search, install, 
 
 **Purpose**: Manage the full lifecycle of AI-KIDO skills — search, install, update, and uninstall from a remote Git group.
 
-**Paradigm**: Direct execution by the LLM — ask the user directly + native tools. No autonomous bash script.
-**Config**: [`skills.cfg`](prompts/hard_points/configuration/skills.cfg) · Priority: `CLI arg` → `env AIKIDO_GIT_TOKEN` → `skills.local.cfg` (untracked, secrets) → `skills.cfg` → hardcoded default
+**Paradigm**: the LLM talks to the user and decides; every file/Git side effect runs through the [deterministic engine](#deterministic-engine) so each execution is identical and bounded.
+**Config**: [`skills.cfg`](../configuration/skills.cfg) · Priority: `CLI arg` → `env AIKIDO_GIT_TOKEN` → `skills.local.cfg` (untracked, secrets) → `skills.cfg` → hardcoded default
 **Backward-compatible shortcuts**: `/skill-get`, `/skill-update`, `/skill-uninstall` → resolved to this command
 
 **Global invariants**:
@@ -15,6 +15,39 @@ description: "Manage the complete lifecycle of AI-KIDO skills: search, install, 
 - Files `prompts/hard_points/commands/{cmd}.md` modified manually → separate confirmation, never silently deleted
 - Pre/post scripts executed **before** any file modification
 - Registries (`skills_list.md`, `commands_list.md`) cleaned/updated after each operation
+
+---
+
+## Deterministic engine
+
+Script: [`system/skill-manage/skill-manage.mjs`](../system/skill-manage/skill-manage.mjs) (Node ≥ 18, no dependency, one JSON object on stdout, exit code 1 + `{"status":"error","code","message"}` on failure).
+
+**Rule**: for the `catalog` layout (`GIT_LAYOUT=auto|catalog`), the LLM MUST NOT run `git clone`, `cp`, `mv`, `rm`, `tar` or write into `TARGET_DIR` itself. It calls the engine, reads the JSON `status`, asks the user when the status requires it, then calls the engine again.
+
+```
+node prompts/hard_points/system/skill-manage/skill-manage.mjs <config|list|search|get|update|uninstall> [options]
+```
+
+| Action | Engine call | Statuses to handle |
+|--------|-------------|--------------------|
+| config | `config` | `ok` (token always masked) |
+| list | `list` | `ok` |
+| search | `search --query Q [--scope local\|remote\|all] [--source ID\|all]` | `ok` |
+| get | `get --name N [--source catalog\|ID] [--on-conflict M] [--dry-run]` | `installed` · `dry_run` · `conflict` · `skipped` · `confirmation_required` |
+| update | `update --name N [--dry-run]` | `installed` · `up_to_date` · `dry_run` · `confirmation_required` |
+| uninstall | `uninstall --name N [--purge] [--dry-run]` | `uninstalled` · `dry_run` |
+
+Status handling:
+- `confirmation_required` (third-party skill) → show `fileList` and `scripts` to the user; only after an explicit yes, repeat the call with `--confirm-third-party`.
+- `conflict` → show `reason`; repeat with `--force` only after explicit confirmation.
+- Run `--dry-run` first, then confirm, then run for real (every destructive action).
+- Never pass a token on the command line: it comes from `AIKIDO_GIT_TOKEN` or the untracked `skills.local.cfg`.
+
+Guarantees enforced by the engine: skill names `^[a-z0-9][a-z0-9-]*$`; `TARGET_DIR` must stay inside the workspace; repository URLs limited to `https://` (no embedded credentials), SSH or an absolute local path; shallow clones without `.git`; symbolic links, > 2000 files or > 50 MB refused; `SKILL.md` required (≤ 500 lines for published skills); staging directory + atomic rename; previous copy kept in `{TARGET_DIR}/.backups/` (never deleted without `--purge`); provenance in `.aikido-source.json`; skill scripts are never executed.
+
+Still done by the LLM after a successful `installed` / `uninstalled` result, using the returned `commands` and `mappings`: registries (`skills_list.md`, `commands_list.md`), `.roo/` / `.claude/` mappings, install-guide steps (`install*.md`, `install*.sh` only after confirmation) and validation. The `group` layout (one repository per skill) has no engine yet: show the exact commands to the user and wait for approval before running them.
+
+Tests: `node --test prompts/hard_points/system/skill-manage/skill-manage.test.mjs`.
 
 ---
 
@@ -28,21 +61,22 @@ description: "Manage the complete lifecycle of AI-KIDO skills: search, install, 
   update    Update one or more installed skills
   uninstall Uninstall a skill and clean registries
 
-/skill-manage search    [--query TERM] [--scope remote|local|all] [--group URL] [--token TOKEN] [--target DIR] [--verbose]
-/skill-manage get       [--skill NAME] [--group URL] [--target DIR] [--branch REF] [--token TOKEN] [--on-conflict update|reinstall|skip|ask] [--dry-run] [--verbose]
+/skill-manage search    [--query TERM] [--scope remote|local|all] [--source ID|all] [--group URL] [--token TOKEN] [--target DIR] [--verbose]
+/skill-manage get       [--skill NAME] [--source ID] [--group URL] [--target DIR] [--branch REF] [--token TOKEN] [--on-conflict update|reinstall|skip|ask] [--dry-run] [--verbose]
 /skill-manage update    [--skill NAME|all] [--group URL] [--target DIR] [--branch REF] [--token TOKEN] [--strategy pull|reinstall] [--backup] [--dry-run] [--verbose]
 /skill-manage uninstall [--skill NAME] [--target DIR] [--backup] [--purge] [--dry-run] [--verbose]
 ```
 
 ## Prerequisites
 
-Read and apply [`skills.cfg`](prompts/hard_points/configuration/skills.cfg) before any action. Apply CLI/env overrides on top.
+Read and apply [`skills.cfg`](../configuration/skills.cfg) before any action. Apply CLI/env overrides on top.
 
 ## Global Configuration
 
 | `skills.cfg` Key | CLI Arg | Default | Description |
 |-----------------|---------|---------|-------------|
 | `GIT_GROUP` | `--group` | `git@github.com:lcalmejane/aikido-skills` | Git group/org URL (SSH · HTTPS · local) |
+| `GIT_LAYOUT` | — | `auto` | `catalog` · `group` · `auto` (catalog if `catalog.json` exists at the repository root) — see [Source layouts](#source-layouts) |
 | `GIT_TOKEN` | `--token` | *(empty)* | Private token · masked in logs · env `AIKIDO_GIT_TOKEN` takes priority · never store in versioned `skills.cfg` (use `skills.local.cfg`, git-ignored) |
 | `GIT_DEFAULT_BRANCH` | `--branch` | `main` | Target branch/tag |
 | `TARGET_DIR` | `--target` | `prompts/hard_points/system` | Root directory for skills |
@@ -56,14 +90,31 @@ Read and apply [`skills.cfg`](prompts/hard_points/configuration/skills.cfg) befo
 | `DISPLAY_FORMAT` | — | `table` | List format: `table` · `list` · `compact` |
 | `MAX_PROJECTS_DISPLAY` | — | `50` | Maximum number of skills displayed |
 
+## Source layouts
+
+**`group`** — one repository per skill; the pipelines below use the group API (`/api/v4/groups/...`).
+
+**`catalog`** — `GIT_GROUP` is one repository (default `aikido-skills`) containing:
+- `catalog.json` — AI-KIDO skills ready to install: `name`, `description`, `version`, `category`, `path` (`skills/<name>`)
+- `sources.json` — external repositories (`id`, HTTPS `repo`, `ref`, `layout`, `roots`, `trust: third-party`)
+
+Catalog pipelines (replace API calls in `search`, `get` and `update`):
+1. **Fetch** — shallow clone of `GIT_GROUP` at `GIT_DEFAULT_BRANCH` into a temporary directory; read `catalog.json` and `sources.json`. The clone is read-only and removed afterwards.
+2. **Published skills** — `search` filters `catalog.json` entries (name, description, category); `get` copies `{path}/` into `{TARGET_DIR}/{name}/` without `.git/`.
+3. **External skills** (`--source ID|all`, or chosen interactively after the published skills) — shallow clone the source, then list directories containing `SKILL.md`: `skills-dir` → `<root>/<skill>/`; `plugin-marketplace` → `<root>/<plugin>/skills/<skill>/`. Only skills are importable (never hooks, MCP servers or plugin agents).
+4. **Third-party safeguard** — before copying an external skill, show its file list and flag scripts/executables; require explicit confirmation; never run its scripts unless the user confirms each one, regardless of `AUTO_RUN_SCRIPTS`.
+5. **Provenance** — write `{TARGET_DIR}/{name}/.aikido-source.json` (`source`, `repo`, `ref`, `commit`, `version`, `installed_at`). `update` compares `commit` (external) or `version` (published) with the remote and replaces the directory after confirmation. Registration and registry steps are unchanged.
+6. **Name collision** — an installed skill with the same name from another source is never overwritten silently: apply `--on-conflict`.
+
 ## Steps
 
 ### Phase 0 — Bootstrap (all actions)
 
-1. Load [`skills.cfg`](prompts/hard_points/configuration/skills.cfg), apply CLI/env overrides.
+1. Load [`skills.cfg`](../configuration/skills.cfg), apply CLI/env overrides.
 2. `GIT_GROUP` empty AND action requires Git → ask the user for URL + token (**blocking**).
-3. `TARGET_DIR` does not exist → `❌ Directory not found` (**blocking** for `uninstall`) · create with `mkdir -p` for `get`.
-4. Display active config summary (token masked as `****`).
+3. Resolve the layout from `GIT_LAYOUT` (see [Source layouts](#source-layouts)).
+4. `TARGET_DIR` does not exist → `❌ Directory not found` (**blocking** for `uninstall`) · create with `mkdir -p` for `get`.
+5. Display active config summary (token masked as `****`).
 
 ---
 

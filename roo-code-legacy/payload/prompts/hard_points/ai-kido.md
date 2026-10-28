@@ -33,7 +33,7 @@ Except for internal "agent‑aikido‑*" agents: before answering, use prompts/i
 15. **👨‍💼 Role-Based Distribution**: Subdirectories assigned to team members
 16. **🤖 AGENTS.md Compliance**: Mandatory sync with AGENTS.md standard
 17. **🔄 Agent-Persona Bidirectionality**: 1:1 correspondence between AGENTS.md agents and AI-KIDO personas
-18. **⚙️ Commands**: Defined in [`prompts/hard_points/commands/`](prompts/hard_points/commands/) — referenced only in [`AGENTS.md`](AGENTS.md), never in [`index.md`](../gen/index.md)
+18. **⚙️ Commands**: Defined in [`prompts/hard_points/commands/`](commands/) — referenced only in [`AGENTS.md`](../../AGENTS.md), never in [`index.md`](../gen/index.md)
 
 ## AUTO-POPULATION RULES (summary)
 - **User Signal**: any reported error immediately creates a preventive rule.
@@ -73,5 +73,5 @@ AGENTS.md / CLAUDE.md / README.md
 
 <details>
 <summary>See full detailed document</summary>
-[Full content](`prompts/hard_points/ai-kido_details.md`)
+[Full content](ai-kido_details.md)
 </details>

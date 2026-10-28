@@ -17,14 +17,14 @@ The AI-KIDO **Web Skill** manages interactions with the Web: site downloading, r
 
 ## Instructions
 1. **Identify the target URL** – The agent must detect a URL in the query or receive the URL as a parameter.
-2. **Use the scripts in the `script/` subdirectory** – call the script [`download_site.sh`](prompts/hard_points/system/web/script/download_site.sh:1) (or its Python equivalent) to retrieve the raw site content.
+2. **Use the scripts in the `script/` subdirectory** – call the script [`download_site.sh`](script/download_site.sh#L1) (or its Python equivalent) to retrieve the raw site content.
 3. **Normalise the HTML** – clean the HTML, remove unnecessary tags, and extract relevant text (e.g. via `beautifulsoup4`).
 4. **Format the output** – return the result either as plain text or JSON according to the requested `format` parameter.
 
 ## Resources
-- **Scripts**: [`download_site.sh`](prompts/hard_points/system/web/script/download_site.sh:1)
+- **Scripts**: [`download_site.sh`](script/download_site.sh#L1)
 - **Bash/Python libraries**: `curl`, `wget`, `beautifulsoup4`
-- **Similar Skills**: [`analyse`](prompts/hard_points/system/analyse/SKILL.md:1), [`search`](prompts/hard_points/system/search/SKILL.md:1)
+- **Similar Skills**: [`analyse`](../../../prompts/hard_points/system/analyse/SKILL.md#L1), [`search`](../../../prompts/hard_points/system/search/SKILL.md#L1)
 
 ## Available commands
 

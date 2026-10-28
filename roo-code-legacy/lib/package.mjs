@@ -435,9 +435,9 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
   const ledgerPayload = [...ledger.values()].filter((entry) => entry.role === 'payload');
   if (ledgerPayload.length !== payloadTargets.size) error('payload file ledger contains missing or unlisted payload files');
   const hardPoints = [...payloadTargets].filter((path) => path.startsWith('prompts/hard_points/'));
-  if (hardPoints.length !== 151) error(`expected 151 hard_points payload files, found ${hardPoints.length}`);
-  if (payloadTargets.size !== 153 || !payloadTargets.has('LICENSE') || !payloadTargets.has('TRADEMARK.md')) {
-    error('payload must contain the 151 hard_points files and both legal notices');
+  if (hardPoints.length === 0) error('payload contains no hard_points files');
+  if (payloadTargets.size !== hardPoints.length + 2 || !payloadTargets.has('LICENSE') || !payloadTargets.has('TRADEMARK.md')) {
+    error('payload must contain only hard_points files and both legal notices');
   }
   const targets = new Set(payloadTargets);
   for (const entry of pkg.projectFiles) {

@@ -4,9 +4,9 @@ description: "Analyze existing project sources to populate and update AI-KIDO Tr
 
 # Command: /analyse-project
 
-Analyze existing project sources (code, documentation, configuration) to populate and enrich AI-KIDO Truth Tables in [`/prompts/gen/`](../prompts/gen/). Prioritizes code truth over documentation. Handles contradictions via user validation.
+Analyze existing project sources (code, documentation, configuration) to populate and enrich AI-KIDO Truth Tables in [`/prompts/gen/`](../../gen/). Prioritizes code truth over documentation. Handles contradictions via user validation.
 
-**Related concept**: [Project Analysis](../prompts/gen/concepts/analyse-projet.md) (AI-KIDO Rule 2: theory/practice separation)
+**Related concept**: [Project Analysis](../../gen/concepts/analyse-projet.md) (AI-KIDO Rule 2: theory/practice separation)
 
 ### Workflow Overview
 
@@ -311,7 +311,7 @@ Last updated: [DATE]
 
 #### 2.2 RACI Specs Check
 
-Search for RACI specs in [`/prompts/index.md`](../prompts/index.md) and [`/prompts/hard_points/index.md`](../prompts/hard_points/index.md):
+Search for RACI specs in [`/prompts/index.md`](../../index.md) and [`/prompts/hard_points/index.md`](../index.md):
 
 ```
 🏗️ DETECTED RACI SPECIFICATIONS:
@@ -565,25 +565,25 @@ Sources to mark obsolete: concepts/architecture.md (section "Monolithic Backend"
 
 Enrich all four areas with detected reality:
 
-**[`/prompts/gen/concepts/`](../prompts/gen/concepts/)**:
+**[`/prompts/gen/concepts/`](../../gen/concepts/)**:
 - Update system architecture with detected reality
 - Enrich glossary with terms found in code
 - Add newly identified business concepts
 - Correct contradictory definitions
 
-**[`/prompts/gen/techniques/`](../prompts/gen/techniques/)**:
+**[`/prompts/gen/techniques/`](../../gen/techniques/)**:
 - Update tech stack with real technologies
 - Add detected patterns and practices from code
 - Document configured deployment techniques
 - Enrich observed development methods
 
-**[`/prompts/gen/use_cases/`](../prompts/gen/use_cases/)**:
+**[`/prompts/gen/use_cases/`](../../gen/use_cases/)**:
 - Add use cases implemented in code
 - Update workflows with operational reality
 - Document real APIs and interfaces
 - Correct obsolete scenarios
 
-**[`/prompts/gen/personas/`](../prompts/gen/personas/)**:
+**[`/prompts/gen/personas/`](../../gen/personas/)**:
 - Adapt personas to actually used technologies
 - Update responsibilities per real architecture
 - Add skills required by detected stack
@@ -775,12 +775,12 @@ personas/ structure:
 ### Phase 7: AI-KIDO Index Update
 
 Update automatically with modifications:
-- [`/prompts/gen/concepts/index.md`](../prompts/gen/concepts/index.md)
-- [`/prompts/gen/techniques/index.md`](../prompts/gen/techniques/index.md)
-- [`/prompts/gen/use_cases/index.md`](../prompts/gen/use_cases/index.md)
-- [`/prompts/gen/personas/index.md`](../prompts/gen/personas/index.md)
-- [`/prompts/index.md`](../prompts/index.md): Updated project info, confirmed real stack, updated architecture, enriched memory bank stats
-- [`AGENTS.md`](../AGENTS.md): Updated project context, agents adapted to real technologies
+- [`/prompts/gen/concepts/index.md`](../../gen/concepts/index.md)
+- [`/prompts/gen/techniques/index.md`](../../gen/techniques/index.md)
+- [`/prompts/gen/use_cases/index.md`](../../gen/use_cases/index.md)
+- [`/prompts/gen/personas/index.md`](../../gen/personas/index.md)
+- [`/prompts/index.md`](../../index.md): Updated project info, confirmed real stack, updated architecture, enriched memory bank stats
+- [`AGENTS.md`](../../../AGENTS.md): Updated project context, agents adapted to real technologies
 
 ---
 
