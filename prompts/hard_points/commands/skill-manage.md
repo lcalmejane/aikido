@@ -6,7 +6,7 @@ description: "Manage the complete lifecycle of AI-KIDO skills: search, install, 
 
 **Purpose**: Manage the full lifecycle of AI-KIDO skills — search, install, update, and uninstall from a remote Git group.
 
-**Paradigm**: Direct execution by the LLM — ask the user directly + native tools. No autonomous bash script.
+**Paradigm**: the LLM talks to the user and decides; every file/Git side effect runs through the [deterministic engine](#deterministic-engine) so each execution is identical and bounded.
 **Config**: [`skills.cfg`](../configuration/skills.cfg) · Priority: `CLI arg` → `env AIKIDO_GIT_TOKEN` → `skills.local.cfg` (untracked, secrets) → `skills.cfg` → hardcoded default
 **Backward-compatible shortcuts**: `/skill-get`, `/skill-update`, `/skill-uninstall` → resolved to this command
 
@@ -15,6 +15,39 @@ description: "Manage the complete lifecycle of AI-KIDO skills: search, install, 
 - Files `prompts/hard_points/commands/{cmd}.md` modified manually → separate confirmation, never silently deleted
 - Pre/post scripts executed **before** any file modification
 - Registries (`skills_list.md`, `commands_list.md`) cleaned/updated after each operation
+
+---
+
+## Deterministic engine
+
+Script: [`system/skill-manage/skill-manage.mjs`](../system/skill-manage/skill-manage.mjs) (Node ≥ 18, no dependency, one JSON object on stdout, exit code 1 + `{"status":"error","code","message"}` on failure).
+
+**Rule**: for the `catalog` layout (`GIT_LAYOUT=auto|catalog`), the LLM MUST NOT run `git clone`, `cp`, `mv`, `rm`, `tar` or write into `TARGET_DIR` itself. It calls the engine, reads the JSON `status`, asks the user when the status requires it, then calls the engine again.
+
+```
+node prompts/hard_points/system/skill-manage/skill-manage.mjs <config|list|search|get|update|uninstall> [options]
+```
+
+| Action | Engine call | Statuses to handle |
+|--------|-------------|--------------------|
+| config | `config` | `ok` (token always masked) |
+| list | `list` | `ok` |
+| search | `search --query Q [--scope local\|remote\|all] [--source ID\|all]` | `ok` |
+| get | `get --name N [--source catalog\|ID] [--on-conflict M] [--dry-run]` | `installed` · `dry_run` · `conflict` · `skipped` · `confirmation_required` |
+| update | `update --name N [--dry-run]` | `installed` · `up_to_date` · `dry_run` · `confirmation_required` |
+| uninstall | `uninstall --name N [--purge] [--dry-run]` | `uninstalled` · `dry_run` |
+
+Status handling:
+- `confirmation_required` (third-party skill) → show `fileList` and `scripts` to the user; only after an explicit yes, repeat the call with `--confirm-third-party`.
+- `conflict` → show `reason`; repeat with `--force` only after explicit confirmation.
+- Run `--dry-run` first, then confirm, then run for real (every destructive action).
+- Never pass a token on the command line: it comes from `AIKIDO_GIT_TOKEN` or the untracked `skills.local.cfg`.
+
+Guarantees enforced by the engine: skill names `^[a-z0-9][a-z0-9-]*$`; `TARGET_DIR` must stay inside the workspace; repository URLs limited to `https://` (no embedded credentials), SSH or an absolute local path; shallow clones without `.git`; symbolic links, > 2000 files or > 50 MB refused; `SKILL.md` required (≤ 500 lines for published skills); staging directory + atomic rename; previous copy kept in `{TARGET_DIR}/.backups/` (never deleted without `--purge`); provenance in `.aikido-source.json`; skill scripts are never executed.
+
+Still done by the LLM after a successful `installed` / `uninstalled` result, using the returned `commands` and `mappings`: registries (`skills_list.md`, `commands_list.md`), `.roo/` / `.claude/` mappings, install-guide steps (`install*.md`, `install*.sh` only after confirmation) and validation. The `group` layout (one repository per skill) has no engine yet: show the exact commands to the user and wait for approval before running them.
+
+Tests: `node --test prompts/hard_points/system/skill-manage/skill-manage.test.mjs`.
 
 ---
 

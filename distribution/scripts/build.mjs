@@ -75,8 +75,11 @@ function trackedPayload() {
     encoding: 'utf8',
   }).split('\0').filter(Boolean).filter((path) => !path.endsWith('.test.mjs')).sort();
   const hardPoints = paths.filter((path) => path.startsWith('prompts/hard_points/'));
-  if (hardPoints.length !== 151 || !paths.includes('LICENSE') || !paths.includes('TRADEMARK.md') || paths.length !== 153) {
-    throw new Error(`Unexpected tracked payload closure: ${hardPoints.length} hard points and ${paths.length - hardPoints.length} legal notices`);
+  // The payload is exactly the tracked hard_points tree plus the two legal notices; the file count
+  // is not pinned so the knowledge base can grow without touching the distribution.
+  const legal = paths.filter((path) => !path.startsWith('prompts/hard_points/'));
+  if (hardPoints.length === 0 || legal.length !== 2 || !paths.includes('LICENSE') || !paths.includes('TRADEMARK.md')) {
+    throw new Error(`Unexpected tracked payload closure: ${hardPoints.length} hard points and ${legal.length} other files`);
   }
   return paths.map((path) => {
     const absolute = assertSourcePath(path, 'file');
