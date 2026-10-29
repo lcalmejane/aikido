@@ -28,7 +28,7 @@ Use the immutable AI-KIDO distribution tag and select the package directory
 for the assistant:
 
 ```bash
-git clone --depth 1 --branch aikido-dist-v1.5.0 \
+git clone --depth 1 --branch aikido-dist-v1.5.1 \
   https://github.com/lcalmejane/aikido.git aikido-dist
 ```
 
@@ -40,7 +40,7 @@ For Claude Code, add the pinned marketplace and install the plugin:
 
 ```bash
 claude plugin marketplace add \
-  https://github.com/lcalmejane/aikido.git#aikido-dist-v1.5.0
+  https://github.com/lcalmejane/aikido.git#aikido-dist-v1.5.1
 claude plugin install aikido@aikido
 ```
 
