@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "host": "claude-cowork",
   "qualification": "qualified-with-conditions-not-tested",
-  "version": "1.5.0",
-  "sourceRevision": "00412b58e27d65ac13fc414b086c8cfe4c0938c6",
+  "version": "1.5.1",
+  "sourceRevision": "f9c793f31dcd3995910572b54c9dc3caa2d8bd7c",
   "source": {
     "type": "git",
     "ref": "github:lcalmejane/aikido",
-    "commit": "00412b58e27d65ac13fc414b086c8cfe4c0938c6"
+    "commit": "f9c793f31dcd3995910572b54c9dc3caa2d8bd7c"
   },
   "commandDelivery": "native-command",
   "files": [
@@ -19,7 +19,7 @@
     {
       "path": ".claude-plugin/plugin.json",
       "role": "plugin-manifest",
-      "sha256": "8ce38ba0db23baf6e16315de9dc25ea918eb6c6d5717692e461bbfefd8355abb"
+      "sha256": "e373b0029f198a2a7c0074e008256b70dc5c97ef64a76b545b8da2e5d4041b3c"
     },
     {
       "path": "LICENSE",

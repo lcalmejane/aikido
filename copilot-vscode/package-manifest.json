@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "host": "copilot-vscode",
   "qualification": "qualified-not-tested",
-  "version": "1.5.0",
-  "sourceRevision": "00412b58e27d65ac13fc414b086c8cfe4c0938c6",
+  "version": "1.5.1",
+  "sourceRevision": "f9c793f31dcd3995910572b54c9dc3caa2d8bd7c",
   "source": {
     "type": "git",
     "ref": "github:lcalmejane/aikido",
-    "commit": "00412b58e27d65ac13fc414b086c8cfe4c0938c6"
+    "commit": "f9c793f31dcd3995910572b54c9dc3caa2d8bd7c"
   },
   "commandDelivery": "native-plugin-prompt",
   "files": [
@@ -1009,7 +1009,7 @@
     {
       "path": "plugin.json",
       "role": "plugin-manifest",
-      "sha256": "0a45bae13d7289cedbe0335b9f566a27a6e2d9641fb740936ea86015d7fba099"
+      "sha256": "dfbebb785fd59d4f30b078e9b0d727c0b739406c8f6cbbe26e253a4666fda1ba"
     },
     {
       "path": "scripts/bootstrap-plan.mjs",

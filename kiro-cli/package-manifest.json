@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "host": "kiro-cli",
   "qualification": "qualified-not-tested",
-  "version": "1.5.0",
-  "sourceRevision": "00412b58e27d65ac13fc414b086c8cfe4c0938c6",
+  "version": "1.5.1",
+  "sourceRevision": "f9c793f31dcd3995910572b54c9dc3caa2d8bd7c",
   "source": {
     "type": "git",
     "ref": "github:lcalmejane/aikido",
-    "commit": "00412b58e27d65ac13fc414b086c8cfe4c0938c6"
+    "commit": "f9c793f31dcd3995910572b54c9dc3caa2d8bd7c"
   },
   "commandDelivery": "native-skill-command",
   "files": [
