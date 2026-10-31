@@ -30,6 +30,8 @@ This sequence runs BEFORE any other operation.
 - **Continuous Improvement**: Automatic evolution based on needs and LLM
 - **Logs**: Conditional traceability, markdown format, structured storage
 
+**[Learned rules](gen/learned.md)** — ALWAYS READ with the guide above (written by `/learn`, may be empty).
+
 ## Structure
 
 - [`gen/concepts/`](gen/concepts/index.md) : Core concepts (1 file)

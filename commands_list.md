@@ -15,6 +15,7 @@
 - **init-aikido**: Initialize the AI‑KIDO memory bank with the project's fundamental elements ([`init-aikido.md`](prompts/hard_points/commands/init-aikido.md))
 - **init-glossaire**: Create a business glossary organized by domain/expert personas in the AI‑KIDO Memory Bank, optimized for semantic search ([`init-glossaire.md`](prompts/hard_points/commands/init-glossaire.md))
 - **init-raci-aikido**: Initialize the RACI matrix and AI‑KIDO team specifications to define subdirectory hierarchy by roles ([`init-raci-aikido.md`](prompts/hard_points/commands/init-raci-aikido.md))
+- **learn**: Self-learning: analyze the current context, deduce errors, propose preventive rules and, once validated, store them in the Memory Bank where they will be read again ([`learn.md`](prompts/hard_points/commands/learn.md))
 - **list-command**: Display the list of available AI‑KIDO commands from `commands_list.md` ([`list-command.md`](prompts/hard_points/commands/list-command.md))
 - **maj-aikido**: Complete AI‑KIDO update and sync: external sources (git/archive/local) + migration + optimization ([`maj-aikido.md`](prompts/hard_points/commands/maj-aikido.md))
 - **optimize-command-with-aikido-agents**: Analyze and optimize AI‑KIDO commands with available technical agents ([`optimize-command-with-aikido-agents.md`](prompts/hard_points/commands/optimize-command-with-aikido-agents.md))

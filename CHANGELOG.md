@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 | Version | Date | Highlights |
 |---------|------|-----------|
+| **1.5.2** | 2026-10-31 | New `/learn` self-learning command and an always-read `learned.md` shipped empty with every installation |
 | **1.5.1** | 2026-10-29 | Install guide in the distribution packages now points to the final release tag |
 | **1.5.0** | 2026-10-28 | Multi-host distribution groundwork (templates, bootstrap, updates, catalog, Claude Code and VS Code plugin packages, GitHub coding agent adapter, generated agent wrappers for every host); bundled Roo Code reference docs removed |
 | **1.4** | 2026-10-03 | First public release. English-language baseline, MIT license, secrets hardening |
@@ -25,6 +26,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 | **1.2.1** | 2025-12-01 | Claude Code compatibility validated and consolidated |
 | **1.3.0** | 2025-12-09 | Centralization of agents, commands and skills under `hard_points/` |
 | **1.2** | 2025-11-21 | Core method: Memory Bank structure, 18 rules, first agents and commands |
+
+---
+
+## [1.5.2] - 2026-10-31
+
+### Added
+
+- `/learn` command: analyzes the current context, deduces errors, corrections and preferences, proposes preventive rules and, only after user validation, stores them in `prompts/gen/learned.md`. It checks the wiring on every run, reports broken anchors and proposes a one-line repair.
+- `prompts/gen/learned.md`: the always-read rule store, shipped empty by the distribution (`create-only`, so updates never overwrite a project's rules). It is referenced from `AGENTS.md` (Getting Started block and general prompt prefix), `CLAUDE.md` (`@` import), `prompts/index.md` and `prompts/gen/index.md`, and from the matching distributed templates and managed blocks (`agents-block.md`, `claude-block.md`, the three `index.*.md`).
+- `learn` is registered in the command catalog and `commands_list.md`, so every host gets its wrapper.
 
 ---
 

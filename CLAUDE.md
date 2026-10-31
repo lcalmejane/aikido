@@ -3,6 +3,7 @@
 @AGENTS.md
 @prompts/hard_points/aikido.md
 @prompts/index.md
+@prompts/gen/learned.md
 
 ## Orchestrator
 
@@ -37,7 +38,7 @@ the [JSON contract](prompts/hard_points/system/orchestrator/contract.schema.json
 
 **AI-KIDO Specific Commands**
 
-- `/init-aikido`, `/create-persona`, `/create-command`, `/analyse-project`, `/analyse-aikido`, `/maj-aikido`, `/init-glossaire`, `/check-truth`, `/list-command`, `/clean-index`, `/reindex-projet`, `/validate-analyse-plan`, `/create-search-plan`, `/validate-search-plan`, `/create-analyse-plan`, `/skill-manage` → See [prompts/hard_points/commands/](prompts/hard_points/commands/)
+- `/init-aikido`, `/create-persona`, `/create-command`, `/analyse-project`, `/analyse-aikido`, `/maj-aikido`, `/init-glossaire`, `/check-truth`, `/list-command`, `/clean-index`, `/reindex-projet`, `/validate-analyse-plan`, `/create-search-plan`, `/validate-search-plan`, `/create-analyse-plan`, `/skill-manage`, `/learn` → See [prompts/hard_points/commands/](prompts/hard_points/commands/)
 
 ## Workflows and Orchestration
 

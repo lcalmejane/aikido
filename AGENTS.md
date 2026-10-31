@@ -47,7 +47,6 @@ Use its [system skill](prompts/hard_points/system/orchestrator/SKILL.md),
 **Concepts**: [`/prompts/gen/concepts/`](prompts/gen/concepts/) | **Techniques**: [`/prompts/gen/techniques/`](prompts/gen/techniques/)
 **Agents**: [`/prompts/gen/agents/`](prompts/gen/agents/) | **Personas**: [`/prompts/gen/personas/`](prompts/gen/personas/)
 **Use Cases**: [`/prompts/gen/use_cases/`](prompts/gen/use_cases/)
-
 ## 📚 Memory Bank Content — Hard Points (validated)
 
 **Concepts**: [`/prompts/hard_points/concepts/`](prompts/hard_points/concepts/) | **Techniques**: [`/prompts/hard_points/techniques/`](prompts/hard_points/techniques/)
@@ -78,13 +77,16 @@ Use its [system skill](prompts/hard_points/system/orchestrator/SKILL.md),
 **Available agents**: [agents_list.md](agents_list.md) | **Available skills**: [skills_list.md](skills_list.md)
 **Available commands**: [commands_list.md](commands_list.md)
 **Hard Points**: [`/prompts/hard_points/ai-kido.md`](prompts/hard_points/ai-kido.md) (fundamental rules V1.3)
+**Learned Rules (always read)**: [`/prompts/gen/learned.md`](prompts/gen/learned.md) (read together with `ai-kido.md`, even when empty)
+
+**CRITICAL RULE**: at the start of every request, read [`/prompts/gen/learned.md`](prompts/gen/learned.md) together with [`ai-kido.md`](prompts/hard_points/ai-kido.md), even when it holds no rule yet. It is written by `/learn` (user-validated rules only) and never overrides a hard point.
 
 ---
 
 ## GENERAL PROMPT PREFIX
 
 ```text
-Before answering, use prompts/index.md for a relevant recursive traversal to retrieve information strictly useful for understanding the request.
+Before answering, read prompts/gen/learned.md, then use prompts/index.md for a relevant recursive traversal to retrieve information strictly useful for understanding the request.
 ```
 
 ## REMEMBER

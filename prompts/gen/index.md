@@ -6,6 +6,9 @@ This directory contains the **evolving Truth Tables** of the AI-KIDO project. Fo
 
 ## 📚 Navigation
 
+### Learned Rules (always read)
+- [Learned rules](learned.md) - Rules validated through `/learn`; read with the hard points on every request
+
 ### Fundamental Concepts
 - [Concepts Index](concepts/index.md) - Theory and foundations
 
