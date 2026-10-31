@@ -9,6 +9,8 @@ Navigate recursively from here and load only what the current request needs.
 
 **[AI-KIDO Light - Guide](hard_points/ai-kido-light.md)** - ABSOLUTE PRIORITY
 
+**[Learned rules](gen/learned.md)** - ALWAYS READ with the guide above (written by `/learn`, may be empty).
+
 Hierarchy: [`hard_points/`](hard_points/index.md) (method, immutable) > [`gen/`](gen/index.md)
 (project Truth Tables) > [`spec/`](spec/index.md) (personal, ignored unless explicitly activated).
 

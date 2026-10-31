@@ -10,6 +10,7 @@
     { "id": "index-light", "source": "project/prompts/index.light.md", "target": "prompts/index.md", "kind": "file", "policy": "create-only", "modes": ["LIGHT"] },
     { "id": "index-unset", "source": "project/prompts/index.unset.md", "target": "prompts/index.md", "kind": "file", "policy": "create-only", "modes": ["UNSET"] },
     { "id": "gen-index", "source": "project/prompts/gen/index.md", "target": "prompts/gen/index.md", "kind": "file", "policy": "create-only" },
+    { "id": "gen-learned", "source": "project/prompts/gen/learned.md", "target": "prompts/gen/learned.md", "kind": "file", "policy": "create-only" },
     { "id": "gen-concepts", "source": "project/prompts/gen/concepts/index.md", "target": "prompts/gen/concepts/index.md", "kind": "file", "policy": "create-only" },
     { "id": "gen-techniques", "source": "project/prompts/gen/techniques/index.md", "target": "prompts/gen/techniques/index.md", "kind": "file", "policy": "create-only" },
     { "id": "gen-personas", "source": "project/prompts/gen/personas/index.md", "target": "prompts/gen/personas/index.md", "kind": "file", "policy": "create-only" },

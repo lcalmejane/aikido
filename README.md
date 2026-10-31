@@ -1,4 +1,4 @@
-# AI-KIDO distribution 1.5.1
+# AI-KIDO distribution 1.5.2
 
 Choose the package for your assistant, then follow the installation guide in [`host-integrations.md`](host-integrations.md). Each package is in its own directory:
 

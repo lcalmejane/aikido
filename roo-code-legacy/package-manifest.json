@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "host": "roo-code-legacy",
   "qualification": "legacy-format-not-tested",
-  "version": "1.5.1",
-  "sourceRevision": "f9c793f31dcd3995910572b54c9dc3caa2d8bd7c",
+  "version": "1.5.2",
+  "sourceRevision": "3c8f6996f03356dcc46e5c1b6940f1c81c822bfc",
   "source": {
     "type": "git",
     "ref": "github:lcalmejane/aikido",
-    "commit": "f9c793f31dcd3995910572b54c9dc3caa2d8bd7c"
+    "commit": "3c8f6996f03356dcc46e5c1b6940f1c81c822bfc"
   },
   "commandDelivery": "native-command",
   "files": [
@@ -87,6 +87,11 @@
       "sha256": "99cd028a7584bca93ae9cdde0d64dd14862fc5f0b2ea1de1d19beb96f33fe471"
     },
     {
+      "path": ".roo/commands/learn.md",
+      "role": "command",
+      "sha256": "11002f71605c171c1e8e7d13792388442f1bb06a3c28e8be63d0c80fbfd97919"
+    },
+    {
       "path": ".roo/commands/list-command.md",
       "role": "command",
       "sha256": "67c3d77cf2b3d001f7aa4d82eaf6590f6de1625bb879ecb7dad951882d5a24d7"
@@ -134,7 +139,7 @@
     {
       "path": "catalog.json",
       "role": "runtime",
-      "sha256": "4658d7b0348b28dcb107599006ab36ebabd4c88fd7ee8c37d878e5022cecfd58"
+      "sha256": "5d99e7b66f9c8071cb1e5359b9351fa7ae64bbf54c88a953b7d9721358b96f51"
     },
     {
       "path": "lib/bootstrap-plan.mjs",
@@ -350,6 +355,11 @@
       "path": "payload/prompts/hard_points/commands/init-raci-aikido.md",
       "role": "payload",
       "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/learn.md",
+      "role": "payload",
+      "sha256": "e90e4ef8d59f5cbb5eead69ca7e684b05988a3aad26263d7b13ba75908b1f49e"
     },
     {
       "path": "payload/prompts/hard_points/commands/list-command.md",
@@ -959,12 +969,12 @@
     {
       "path": "templates/instructions/agents-block.md",
       "role": "template",
-      "sha256": "a635fa36be7c9de95b01230c9d9437415c418a71a8daeb46e0c3a6bbb75714bc"
+      "sha256": "819da8d5b7aa11f09176de9d032650d9a16338a0c24c1ae020d65bc466fc13ad"
     },
     {
       "path": "templates/instructions/claude-block.md",
       "role": "template",
-      "sha256": "0f030a5ad8b3950cc01e509e7aab029975b72e4b797c9a4a79f64068feba44b9"
+      "sha256": "0ea82ef43b1435487af36ff84b7798829bdc232eae3b2d0b7264502d366f887a"
     },
     {
       "path": "templates/instructions/gitignore-block.txt",
@@ -974,7 +984,7 @@
     {
       "path": "templates/manifest.json",
       "role": "template",
-      "sha256": "c04601853655e9bef60beb2441a9ece9bfdb4c8b245b23e03c089134034f0df8"
+      "sha256": "18710df1d1a2a756e25303dbf424b4d474b518b3601ec4b16a30545d6564ebcd"
     },
     {
       "path": "templates/project/lists/agents_list.md",
@@ -1004,7 +1014,12 @@
     {
       "path": "templates/project/prompts/gen/index.md",
       "role": "template",
-      "sha256": "c22305f4d7daf32fef7b94ee536438068681de67dfed0c02ba0f71216b7c510a"
+      "sha256": "1ff109158712f4d837b5dde10e4e5b5bc749efd9a2657bdc9b944f88107d50d6"
+    },
+    {
+      "path": "templates/project/prompts/gen/learned.md",
+      "role": "template",
+      "sha256": "865497f91cd7479ce881b075d5c78ee5c153394d60f15c6e83a42623ef619e7c"
     },
     {
       "path": "templates/project/prompts/gen/personas/index.md",
@@ -1024,17 +1039,17 @@
     {
       "path": "templates/project/prompts/index.light.md",
       "role": "template",
-      "sha256": "f525c016a8d3923fc94e9760120ff1af3f2a98bb6313a034d6b794052f914890"
+      "sha256": "e598b12afb79fb4a4e609a6bf7dd42db7b339735ff1c40c83cf83467bb3a7499"
     },
     {
       "path": "templates/project/prompts/index.standard.md",
       "role": "template",
-      "sha256": "2759d7a5a3d40f4c108e78140bb1e5ec103077660fd46392ec54c48386fc1e1e"
+      "sha256": "28dafd581177a0f2186d9fdcabc23d27ea1843766147442fe055e57f53d60ab5"
     },
     {
       "path": "templates/project/prompts/index.unset.md",
       "role": "template",
-      "sha256": "771994107b7281cd206e24f08d71ad94896452c2a06b58d5c4186b7674cb2e6b"
+      "sha256": "d89500738d1f7af77225af6cfb31b21dea6189e25fef102b6e7f4e606f42369e"
     },
     {
       "path": "templates/project/prompts/spec/index.md",
@@ -1328,6 +1343,14 @@
       "target": "prompts/hard_points/commands/init-raci-aikido.md",
       "packagePath": "payload/prompts/hard_points/commands/init-raci-aikido.md",
       "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/learn.md",
+      "target": "prompts/hard_points/commands/learn.md",
+      "packagePath": "payload/prompts/hard_points/commands/learn.md",
+      "sha256": "e90e4ef8d59f5cbb5eead69ca7e684b05988a3aad26263d7b13ba75908b1f49e",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -2379,6 +2402,13 @@
       "source": ".roo/commands/init-raci-aikido.md",
       "target": ".roo/commands/init-raci-aikido.md",
       "sha256": "99cd028a7584bca93ae9cdde0d64dd14862fc5f0b2ea1de1d19beb96f33fe471",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".roo/commands/learn.md",
+      "target": ".roo/commands/learn.md",
+      "sha256": "11002f71605c171c1e8e7d13792388442f1bb06a3c28e8be63d0c80fbfd97919",
       "origin": "adapter",
       "policy": "three-way"
     },

@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "name": "aikido",
-  "version": "1.5.1",
-  "tag": "aikido-dist-v1.5.1",
+  "version": "1.5.2",
+  "tag": "aikido-dist-v1.5.2",
   "source": {
     "repository": "github:lcalmejane/aikido",
-    "commit": "f9c793f31dcd3995910572b54c9dc3caa2d8bd7c"
+    "commit": "3c8f6996f03356dcc46e5c1b6940f1c81c822bfc"
   },
   "hosts": [
     {
@@ -63,7 +63,7 @@
     {
       "path": ".claude-plugin/marketplace.json",
       "size": 445,
-      "sha256": "53ec5a47741a1b9ac6ab51db67e2cb3c5fab8a3f9af141e51828f30dd4745add"
+      "sha256": "bacdbbc6b7456711ffeeec3fa6f3da0740bddbddf6b54107263d3a069a3b8f2d"
     },
     {
       "path": ".gitattributes",
@@ -73,7 +73,7 @@
     {
       "path": "README.md",
       "size": 564,
-      "sha256": "70b128ae3789538dc9273a27b69e6566eef901f075af1a81fb16b5be159aeb6a"
+      "sha256": "9fe80b2fa5a1fb84ee3c91558008d058701a12f4eb6de790adb91d5caffcea7d"
     },
     {
       "path": "antigravity/.agents/agents/agent-aikido-balancer.md",
@@ -269,6 +269,11 @@
       "path": "antigravity/.agents/skills/init-raci-aikido/SKILL.md",
       "size": 372,
       "sha256": "488fab56f20db6fa4c397cd00a6f53043159ffe4b6d1c65ccb5fd09a611f37c6"
+    },
+    {
+      "path": "antigravity/.agents/skills/learn/SKILL.md",
+      "size": 391,
+      "sha256": "985e4c7624ce3dcb11fb81c3881b484a9c0e01cce82f45bcf1f4e09a994caa36"
     },
     {
       "path": "antigravity/.agents/skills/list-command/SKILL.md",
@@ -787,8 +792,8 @@
     },
     {
       "path": "antigravity/catalog.json",
-      "size": 8741,
-      "sha256": "4658d7b0348b28dcb107599006ab36ebabd4c88fd7ee8c37d878e5022cecfd58"
+      "size": 8817,
+      "sha256": "5d99e7b66f9c8071cb1e5359b9351fa7ae64bbf54c88a953b7d9721358b96f51"
     },
     {
       "path": "antigravity/lib/bootstrap-plan.mjs",
@@ -827,8 +832,8 @@
     },
     {
       "path": "antigravity/package-manifest.json",
-      "size": 164348,
-      "sha256": "73604e6de1adaebfa758f01a1a21cb164d2721e5009be0335cbba426a5e01839"
+      "size": 165466,
+      "sha256": "82949f115fe0f8ed65384bfdea0409c324c7a2fb447c01a5e472a5e3ecae7043"
     },
     {
       "path": "antigravity/payload/LICENSE",
@@ -1009,6 +1014,11 @@
       "path": "antigravity/payload/prompts/hard_points/commands/init-raci-aikido.md",
       "size": 18200,
       "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
+    },
+    {
+      "path": "antigravity/payload/prompts/hard_points/commands/learn.md",
+      "size": 26399,
+      "sha256": "e90e4ef8d59f5cbb5eead69ca7e684b05988a3aad26263d7b13ba75908b1f49e"
     },
     {
       "path": "antigravity/payload/prompts/hard_points/commands/list-command.md",
@@ -1617,13 +1627,13 @@
     },
     {
       "path": "antigravity/templates/instructions/agents-block.md",
-      "size": 820,
-      "sha256": "a635fa36be7c9de95b01230c9d9437415c418a71a8daeb46e0c3a6bbb75714bc"
+      "size": 1029,
+      "sha256": "819da8d5b7aa11f09176de9d032650d9a16338a0c24c1ae020d65bc466fc13ad"
     },
     {
       "path": "antigravity/templates/instructions/claude-block.md",
-      "size": 23,
-      "sha256": "0f030a5ad8b3950cc01e509e7aab029975b72e4b797c9a4a79f64068feba44b9"
+      "size": 47,
+      "sha256": "0ea82ef43b1435487af36ff84b7798829bdc232eae3b2d0b7264502d366f887a"
     },
     {
       "path": "antigravity/templates/instructions/gitignore-block.txt",
@@ -1632,8 +1642,8 @@
     },
     {
       "path": "antigravity/templates/manifest.json",
-      "size": 2943,
-      "sha256": "c04601853655e9bef60beb2441a9ece9bfdb4c8b245b23e03c089134034f0df8"
+      "size": 3093,
+      "sha256": "18710df1d1a2a756e25303dbf424b4d474b518b3601ec4b16a30545d6564ebcd"
     },
     {
       "path": "antigravity/templates/project/lists/agents_list.md",
@@ -1662,8 +1672,13 @@
     },
     {
       "path": "antigravity/templates/project/prompts/gen/index.md",
-      "size": 600,
-      "sha256": "c22305f4d7daf32fef7b94ee536438068681de67dfed0c02ba0f71216b7c510a"
+      "size": 683,
+      "sha256": "1ff109158712f4d837b5dde10e4e5b5bc749efd9a2657bdc9b944f88107d50d6"
+    },
+    {
+      "path": "antigravity/templates/project/prompts/gen/learned.md",
+      "size": 597,
+      "sha256": "865497f91cd7479ce881b075d5c78ee5c153394d60f15c6e83a42623ef619e7c"
     },
     {
       "path": "antigravity/templates/project/prompts/gen/personas/index.md",
@@ -1682,18 +1697,18 @@
     },
     {
       "path": "antigravity/templates/project/prompts/index.light.md",
-      "size": 1294,
-      "sha256": "f525c016a8d3923fc94e9760120ff1af3f2a98bb6313a034d6b794052f914890"
+      "size": 1403,
+      "sha256": "e598b12afb79fb4a4e609a6bf7dd42db7b339735ff1c40c83cf83467bb3a7499"
     },
     {
       "path": "antigravity/templates/project/prompts/index.standard.md",
-      "size": 1303,
-      "sha256": "2759d7a5a3d40f4c108e78140bb1e5ec103077660fd46392ec54c48386fc1e1e"
+      "size": 1412,
+      "sha256": "28dafd581177a0f2186d9fdcabc23d27ea1843766147442fe055e57f53d60ab5"
     },
     {
       "path": "antigravity/templates/project/prompts/index.unset.md",
-      "size": 651,
-      "sha256": "771994107b7281cd206e24f08d71ad94896452c2a06b58d5c4186b7674cb2e6b"
+      "size": 739,
+      "sha256": "d89500738d1f7af77225af6cfb31b21dea6189e25fef102b6e7f4e606f42369e"
     },
     {
       "path": "antigravity/templates/project/prompts/spec/index.md",
@@ -1703,7 +1718,7 @@
     {
       "path": "build-report.json",
       "size": 2425,
-      "sha256": "43c80a397240b340dc629a05b7cac015a8ed0857491fae86705cc705f6e947de"
+      "sha256": "0fe8ef7a2073e6f0f0f4aa32db2b47afec1af9ef17fcee495355e64995d14e0e"
     },
     {
       "path": "claude-code/.claude-plugin/marketplace.json",
@@ -1713,7 +1728,7 @@
     {
       "path": "claude-code/.claude-plugin/plugin.json",
       "size": 278,
-      "sha256": "e373b0029f198a2a7c0074e008256b70dc5c97ef64a76b545b8da2e5d4041b3c"
+      "sha256": "7fe988a6c11b8157ad87cf049e6d59aa22296c57de49a2449651e4207dc00396"
     },
     {
       "path": "claude-code/LICENSE",
@@ -1723,7 +1738,7 @@
     {
       "path": "claude-code/README.md",
       "size": 1241,
-      "sha256": "58054cf8df19cbdca20799b9fe43f1d53498fee238632290013effd3ce5e3159"
+      "sha256": "637938c7631466d034981d0ef7b5c364e2a1b559f00904508fce3252c85547c0"
     },
     {
       "path": "claude-code/TRADEMARK.md",
@@ -1812,8 +1827,8 @@
     },
     {
       "path": "claude-code/catalog.json",
-      "size": 8741,
-      "sha256": "4658d7b0348b28dcb107599006ab36ebabd4c88fd7ee8c37d878e5022cecfd58"
+      "size": 8817,
+      "sha256": "5d99e7b66f9c8071cb1e5359b9351fa7ae64bbf54c88a953b7d9721358b96f51"
     },
     {
       "path": "claude-code/commands/analyse-aikido.md",
@@ -1891,6 +1906,11 @@
       "sha256": "7eb627b0f958bd692282ef0d31b89fe9450e754e8a86c8b79350aeac08aa7af2"
     },
     {
+      "path": "claude-code/commands/learn.md",
+      "size": 651,
+      "sha256": "293c3e3d450db425c0470ca2e9042ae8dde8896c24c1d230f383c9e4fc3c27dd"
+    },
+    {
       "path": "claude-code/commands/list-command.md",
       "size": 602,
       "sha256": "deafcfb70a29f2b59e944d6bc16a08e0a5126ad7fe23d6c4e2ec3ba3b772f2ed"
@@ -1962,8 +1982,8 @@
     },
     {
       "path": "claude-code/package-manifest.json",
-      "size": 123606,
-      "sha256": "e86b0553cc9ef1accdc957d0d1fc4ee7ec02163f5881880ab93f45aa59caae92"
+      "size": 124462,
+      "sha256": "8f56e4b25258989c8fdc7e283e8f29cd3ee1923fc1af7145a32109f6089708d6"
     },
     {
       "path": "claude-code/payload/LICENSE",
@@ -2144,6 +2164,11 @@
       "path": "claude-code/payload/prompts/hard_points/commands/init-raci-aikido.md",
       "size": 18200,
       "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
+    },
+    {
+      "path": "claude-code/payload/prompts/hard_points/commands/learn.md",
+      "size": 26399,
+      "sha256": "e90e4ef8d59f5cbb5eead69ca7e684b05988a3aad26263d7b13ba75908b1f49e"
     },
     {
       "path": "claude-code/payload/prompts/hard_points/commands/list-command.md",
@@ -3272,13 +3297,13 @@
     },
     {
       "path": "claude-code/templates/instructions/agents-block.md",
-      "size": 820,
-      "sha256": "a635fa36be7c9de95b01230c9d9437415c418a71a8daeb46e0c3a6bbb75714bc"
+      "size": 1029,
+      "sha256": "819da8d5b7aa11f09176de9d032650d9a16338a0c24c1ae020d65bc466fc13ad"
     },
     {
       "path": "claude-code/templates/instructions/claude-block.md",
-      "size": 23,
-      "sha256": "0f030a5ad8b3950cc01e509e7aab029975b72e4b797c9a4a79f64068feba44b9"
+      "size": 47,
+      "sha256": "0ea82ef43b1435487af36ff84b7798829bdc232eae3b2d0b7264502d366f887a"
     },
     {
       "path": "claude-code/templates/instructions/gitignore-block.txt",
@@ -3287,8 +3312,8 @@
     },
     {
       "path": "claude-code/templates/manifest.json",
-      "size": 2943,
-      "sha256": "c04601853655e9bef60beb2441a9ece9bfdb4c8b245b23e03c089134034f0df8"
+      "size": 3093,
+      "sha256": "18710df1d1a2a756e25303dbf424b4d474b518b3601ec4b16a30545d6564ebcd"
     },
     {
       "path": "claude-code/templates/project/lists/agents_list.md",
@@ -3317,8 +3342,13 @@
     },
     {
       "path": "claude-code/templates/project/prompts/gen/index.md",
-      "size": 600,
-      "sha256": "c22305f4d7daf32fef7b94ee536438068681de67dfed0c02ba0f71216b7c510a"
+      "size": 683,
+      "sha256": "1ff109158712f4d837b5dde10e4e5b5bc749efd9a2657bdc9b944f88107d50d6"
+    },
+    {
+      "path": "claude-code/templates/project/prompts/gen/learned.md",
+      "size": 597,
+      "sha256": "865497f91cd7479ce881b075d5c78ee5c153394d60f15c6e83a42623ef619e7c"
     },
     {
       "path": "claude-code/templates/project/prompts/gen/personas/index.md",
@@ -3337,18 +3367,18 @@
     },
     {
       "path": "claude-code/templates/project/prompts/index.light.md",
-      "size": 1294,
-      "sha256": "f525c016a8d3923fc94e9760120ff1af3f2a98bb6313a034d6b794052f914890"
+      "size": 1403,
+      "sha256": "e598b12afb79fb4a4e609a6bf7dd42db7b339735ff1c40c83cf83467bb3a7499"
     },
     {
       "path": "claude-code/templates/project/prompts/index.standard.md",
-      "size": 1303,
-      "sha256": "2759d7a5a3d40f4c108e78140bb1e5ec103077660fd46392ec54c48386fc1e1e"
+      "size": 1412,
+      "sha256": "28dafd581177a0f2186d9fdcabc23d27ea1843766147442fe055e57f53d60ab5"
     },
     {
       "path": "claude-code/templates/project/prompts/index.unset.md",
-      "size": 651,
-      "sha256": "771994107b7281cd206e24f08d71ad94896452c2a06b58d5c4186b7674cb2e6b"
+      "size": 739,
+      "sha256": "d89500738d1f7af77225af6cfb31b21dea6189e25fef102b6e7f4e606f42369e"
     },
     {
       "path": "claude-code/templates/project/prompts/spec/index.md",
@@ -3363,7 +3393,7 @@
     {
       "path": "claude-cowork/.claude-plugin/plugin.json",
       "size": 278,
-      "sha256": "e373b0029f198a2a7c0074e008256b70dc5c97ef64a76b545b8da2e5d4041b3c"
+      "sha256": "7fe988a6c11b8157ad87cf049e6d59aa22296c57de49a2449651e4207dc00396"
     },
     {
       "path": "claude-cowork/LICENSE",
@@ -3462,8 +3492,8 @@
     },
     {
       "path": "claude-cowork/catalog.json",
-      "size": 8741,
-      "sha256": "4658d7b0348b28dcb107599006ab36ebabd4c88fd7ee8c37d878e5022cecfd58"
+      "size": 8817,
+      "sha256": "5d99e7b66f9c8071cb1e5359b9351fa7ae64bbf54c88a953b7d9721358b96f51"
     },
     {
       "path": "claude-cowork/commands/analyse-aikido.md",
@@ -3541,6 +3571,11 @@
       "sha256": "e0524787231ea2c3a991d44ed3c06eecb3f0e5a478bd12808715c07945ff5789"
     },
     {
+      "path": "claude-cowork/commands/learn.md",
+      "size": 2272,
+      "sha256": "d0878884061f4986790955a83423f64b4b289d8b77e7d06522e2e29e8c8e824e"
+    },
+    {
       "path": "claude-cowork/commands/list-command.md",
       "size": 2223,
       "sha256": "34f70cfb673a3e6f84bd69b233969d79b52e3e6af65666d4754ffb0f23b51846"
@@ -3612,8 +3647,8 @@
     },
     {
       "path": "claude-cowork/package-manifest.json",
-      "size": 123624,
-      "sha256": "625ca5db06eed626aaf37bcca6d29de433e890964ce122ff2243e1c9c6797f42"
+      "size": 124480,
+      "sha256": "c486ca347ce6641b40b9c676886ab1912044c90f526901569ea3cb7d3d96687c"
     },
     {
       "path": "claude-cowork/payload/LICENSE",
@@ -3794,6 +3829,11 @@
       "path": "claude-cowork/payload/prompts/hard_points/commands/init-raci-aikido.md",
       "size": 18200,
       "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
+    },
+    {
+      "path": "claude-cowork/payload/prompts/hard_points/commands/learn.md",
+      "size": 26399,
+      "sha256": "e90e4ef8d59f5cbb5eead69ca7e684b05988a3aad26263d7b13ba75908b1f49e"
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/commands/list-command.md",
@@ -4922,13 +4962,13 @@
     },
     {
       "path": "claude-cowork/templates/instructions/agents-block.md",
-      "size": 820,
-      "sha256": "a635fa36be7c9de95b01230c9d9437415c418a71a8daeb46e0c3a6bbb75714bc"
+      "size": 1029,
+      "sha256": "819da8d5b7aa11f09176de9d032650d9a16338a0c24c1ae020d65bc466fc13ad"
     },
     {
       "path": "claude-cowork/templates/instructions/claude-block.md",
-      "size": 23,
-      "sha256": "0f030a5ad8b3950cc01e509e7aab029975b72e4b797c9a4a79f64068feba44b9"
+      "size": 47,
+      "sha256": "0ea82ef43b1435487af36ff84b7798829bdc232eae3b2d0b7264502d366f887a"
     },
     {
       "path": "claude-cowork/templates/instructions/gitignore-block.txt",
@@ -4937,8 +4977,8 @@
     },
     {
       "path": "claude-cowork/templates/manifest.json",
-      "size": 2943,
-      "sha256": "c04601853655e9bef60beb2441a9ece9bfdb4c8b245b23e03c089134034f0df8"
+      "size": 3093,
+      "sha256": "18710df1d1a2a756e25303dbf424b4d474b518b3601ec4b16a30545d6564ebcd"
     },
     {
       "path": "claude-cowork/templates/project/lists/agents_list.md",
@@ -4967,8 +5007,13 @@
     },
     {
       "path": "claude-cowork/templates/project/prompts/gen/index.md",
-      "size": 600,
-      "sha256": "c22305f4d7daf32fef7b94ee536438068681de67dfed0c02ba0f71216b7c510a"
+      "size": 683,
+      "sha256": "1ff109158712f4d837b5dde10e4e5b5bc749efd9a2657bdc9b944f88107d50d6"
+    },
+    {
+      "path": "claude-cowork/templates/project/prompts/gen/learned.md",
+      "size": 597,
+      "sha256": "865497f91cd7479ce881b075d5c78ee5c153394d60f15c6e83a42623ef619e7c"
     },
     {
       "path": "claude-cowork/templates/project/prompts/gen/personas/index.md",
@@ -4987,18 +5032,18 @@
     },
     {
       "path": "claude-cowork/templates/project/prompts/index.light.md",
-      "size": 1294,
-      "sha256": "f525c016a8d3923fc94e9760120ff1af3f2a98bb6313a034d6b794052f914890"
+      "size": 1403,
+      "sha256": "e598b12afb79fb4a4e609a6bf7dd42db7b339735ff1c40c83cf83467bb3a7499"
     },
     {
       "path": "claude-cowork/templates/project/prompts/index.standard.md",
-      "size": 1303,
-      "sha256": "2759d7a5a3d40f4c108e78140bb1e5ec103077660fd46392ec54c48386fc1e1e"
+      "size": 1412,
+      "sha256": "28dafd581177a0f2186d9fdcabc23d27ea1843766147442fe055e57f53d60ab5"
     },
     {
       "path": "claude-cowork/templates/project/prompts/index.unset.md",
-      "size": 651,
-      "sha256": "771994107b7281cd206e24f08d71ad94896452c2a06b58d5c4186b7674cb2e6b"
+      "size": 739,
+      "sha256": "d89500738d1f7af77225af6cfb31b21dea6189e25fef102b6e7f4e606f42369e"
     },
     {
       "path": "claude-cowork/templates/project/prompts/spec/index.md",
@@ -5124,6 +5169,11 @@
       "path": "codex/.agents/skills/init-raci-aikido/SKILL.md",
       "size": 372,
       "sha256": "270b32cc62aab284ac635ee8d75e8fb3687c0016e1d1dd239889d290c264a867"
+    },
+    {
+      "path": "codex/.agents/skills/learn/SKILL.md",
+      "size": 391,
+      "sha256": "8ea4ab35ba7345fa98dcfacc6515ffa961922a454fee8e2efd74368e688b26d0"
     },
     {
       "path": "codex/.agents/skills/list-command/SKILL.md",
@@ -5717,8 +5767,8 @@
     },
     {
       "path": "codex/catalog.json",
-      "size": 8741,
-      "sha256": "4658d7b0348b28dcb107599006ab36ebabd4c88fd7ee8c37d878e5022cecfd58"
+      "size": 8817,
+      "sha256": "5d99e7b66f9c8071cb1e5359b9351fa7ae64bbf54c88a953b7d9721358b96f51"
     },
     {
       "path": "codex/lib/bootstrap-plan.mjs",
@@ -5757,8 +5807,8 @@
     },
     {
       "path": "codex/package-manifest.json",
-      "size": 164381,
-      "sha256": "d0d34e9917410c2a20855222ed8f50cc9c9de247694e3eadf592ebf0ee47eb6b"
+      "size": 165499,
+      "sha256": "bb7091b700dd5523f7674949bf68f255aa72c19a598430f9aee381321c97bb4a"
     },
     {
       "path": "codex/payload/LICENSE",
@@ -5939,6 +5989,11 @@
       "path": "codex/payload/prompts/hard_points/commands/init-raci-aikido.md",
       "size": 18200,
       "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
+    },
+    {
+      "path": "codex/payload/prompts/hard_points/commands/learn.md",
+      "size": 26399,
+      "sha256": "e90e4ef8d59f5cbb5eead69ca7e684b05988a3aad26263d7b13ba75908b1f49e"
     },
     {
       "path": "codex/payload/prompts/hard_points/commands/list-command.md",
@@ -6547,13 +6602,13 @@
     },
     {
       "path": "codex/templates/instructions/agents-block.md",
-      "size": 820,
-      "sha256": "a635fa36be7c9de95b01230c9d9437415c418a71a8daeb46e0c3a6bbb75714bc"
+      "size": 1029,
+      "sha256": "819da8d5b7aa11f09176de9d032650d9a16338a0c24c1ae020d65bc466fc13ad"
     },
     {
       "path": "codex/templates/instructions/claude-block.md",
-      "size": 23,
-      "sha256": "0f030a5ad8b3950cc01e509e7aab029975b72e4b797c9a4a79f64068feba44b9"
+      "size": 47,
+      "sha256": "0ea82ef43b1435487af36ff84b7798829bdc232eae3b2d0b7264502d366f887a"
     },
     {
       "path": "codex/templates/instructions/gitignore-block.txt",
@@ -6562,8 +6617,8 @@
     },
     {
       "path": "codex/templates/manifest.json",
-      "size": 2943,
-      "sha256": "c04601853655e9bef60beb2441a9ece9bfdb4c8b245b23e03c089134034f0df8"
+      "size": 3093,
+      "sha256": "18710df1d1a2a756e25303dbf424b4d474b518b3601ec4b16a30545d6564ebcd"
     },
     {
       "path": "codex/templates/project/lists/agents_list.md",
@@ -6592,8 +6647,13 @@
     },
     {
       "path": "codex/templates/project/prompts/gen/index.md",
-      "size": 600,
-      "sha256": "c22305f4d7daf32fef7b94ee536438068681de67dfed0c02ba0f71216b7c510a"
+      "size": 683,
+      "sha256": "1ff109158712f4d837b5dde10e4e5b5bc749efd9a2657bdc9b944f88107d50d6"
+    },
+    {
+      "path": "codex/templates/project/prompts/gen/learned.md",
+      "size": 597,
+      "sha256": "865497f91cd7479ce881b075d5c78ee5c153394d60f15c6e83a42623ef619e7c"
     },
     {
       "path": "codex/templates/project/prompts/gen/personas/index.md",
@@ -6612,18 +6672,18 @@
     },
     {
       "path": "codex/templates/project/prompts/index.light.md",
-      "size": 1294,
-      "sha256": "f525c016a8d3923fc94e9760120ff1af3f2a98bb6313a034d6b794052f914890"
+      "size": 1403,
+      "sha256": "e598b12afb79fb4a4e609a6bf7dd42db7b339735ff1c40c83cf83467bb3a7499"
     },
     {
       "path": "codex/templates/project/prompts/index.standard.md",
-      "size": 1303,
-      "sha256": "2759d7a5a3d40f4c108e78140bb1e5ec103077660fd46392ec54c48386fc1e1e"
+      "size": 1412,
+      "sha256": "28dafd581177a0f2186d9fdcabc23d27ea1843766147442fe055e57f53d60ab5"
     },
     {
       "path": "codex/templates/project/prompts/index.unset.md",
-      "size": 651,
-      "sha256": "771994107b7281cd206e24f08d71ad94896452c2a06b58d5c4186b7674cb2e6b"
+      "size": 739,
+      "sha256": "d89500738d1f7af77225af6cfb31b21dea6189e25fef102b6e7f4e606f42369e"
     },
     {
       "path": "codex/templates/project/prompts/spec/index.md",
@@ -6824,6 +6884,11 @@
       "path": "copilot-github/.github/skills/init-raci-aikido/SKILL.md",
       "size": 372,
       "sha256": "488fab56f20db6fa4c397cd00a6f53043159ffe4b6d1c65ccb5fd09a611f37c6"
+    },
+    {
+      "path": "copilot-github/.github/skills/learn/SKILL.md",
+      "size": 391,
+      "sha256": "985e4c7624ce3dcb11fb81c3881b484a9c0e01cce82f45bcf1f4e09a994caa36"
     },
     {
       "path": "copilot-github/.github/skills/list-command/SKILL.md",
@@ -7337,8 +7402,8 @@
     },
     {
       "path": "copilot-github/catalog.json",
-      "size": 8741,
-      "sha256": "4658d7b0348b28dcb107599006ab36ebabd4c88fd7ee8c37d878e5022cecfd58"
+      "size": 8817,
+      "sha256": "5d99e7b66f9c8071cb1e5359b9351fa7ae64bbf54c88a953b7d9721358b96f51"
     },
     {
       "path": "copilot-github/lib/bootstrap-plan.mjs",
@@ -7377,8 +7442,8 @@
     },
     {
       "path": "copilot-github/package-manifest.json",
-      "size": 164469,
-      "sha256": "39848c4cc153d28b8b2c0ec7c98aa28b13964af4fa382e5a9e1459bae49dc075"
+      "size": 165587,
+      "sha256": "c73b7cd303601a14be9902b9134d757650177d671002594c8c2eee4d9bf4bb2b"
     },
     {
       "path": "copilot-github/payload/LICENSE",
@@ -7559,6 +7624,11 @@
       "path": "copilot-github/payload/prompts/hard_points/commands/init-raci-aikido.md",
       "size": 18200,
       "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
+    },
+    {
+      "path": "copilot-github/payload/prompts/hard_points/commands/learn.md",
+      "size": 26399,
+      "sha256": "e90e4ef8d59f5cbb5eead69ca7e684b05988a3aad26263d7b13ba75908b1f49e"
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/commands/list-command.md",
@@ -8167,13 +8237,13 @@
     },
     {
       "path": "copilot-github/templates/instructions/agents-block.md",
-      "size": 820,
-      "sha256": "a635fa36be7c9de95b01230c9d9437415c418a71a8daeb46e0c3a6bbb75714bc"
+      "size": 1029,
+      "sha256": "819da8d5b7aa11f09176de9d032650d9a16338a0c24c1ae020d65bc466fc13ad"
     },
     {
       "path": "copilot-github/templates/instructions/claude-block.md",
-      "size": 23,
-      "sha256": "0f030a5ad8b3950cc01e509e7aab029975b72e4b797c9a4a79f64068feba44b9"
+      "size": 47,
+      "sha256": "0ea82ef43b1435487af36ff84b7798829bdc232eae3b2d0b7264502d366f887a"
     },
     {
       "path": "copilot-github/templates/instructions/gitignore-block.txt",
@@ -8182,8 +8252,8 @@
     },
     {
       "path": "copilot-github/templates/manifest.json",
-      "size": 2943,
-      "sha256": "c04601853655e9bef60beb2441a9ece9bfdb4c8b245b23e03c089134034f0df8"
+      "size": 3093,
+      "sha256": "18710df1d1a2a756e25303dbf424b4d474b518b3601ec4b16a30545d6564ebcd"
     },
     {
       "path": "copilot-github/templates/project/lists/agents_list.md",
@@ -8212,8 +8282,13 @@
     },
     {
       "path": "copilot-github/templates/project/prompts/gen/index.md",
-      "size": 600,
-      "sha256": "c22305f4d7daf32fef7b94ee536438068681de67dfed0c02ba0f71216b7c510a"
+      "size": 683,
+      "sha256": "1ff109158712f4d837b5dde10e4e5b5bc749efd9a2657bdc9b944f88107d50d6"
+    },
+    {
+      "path": "copilot-github/templates/project/prompts/gen/learned.md",
+      "size": 597,
+      "sha256": "865497f91cd7479ce881b075d5c78ee5c153394d60f15c6e83a42623ef619e7c"
     },
     {
       "path": "copilot-github/templates/project/prompts/gen/personas/index.md",
@@ -8232,18 +8307,18 @@
     },
     {
       "path": "copilot-github/templates/project/prompts/index.light.md",
-      "size": 1294,
-      "sha256": "f525c016a8d3923fc94e9760120ff1af3f2a98bb6313a034d6b794052f914890"
+      "size": 1403,
+      "sha256": "e598b12afb79fb4a4e609a6bf7dd42db7b339735ff1c40c83cf83467bb3a7499"
     },
     {
       "path": "copilot-github/templates/project/prompts/index.standard.md",
-      "size": 1303,
-      "sha256": "2759d7a5a3d40f4c108e78140bb1e5ec103077660fd46392ec54c48386fc1e1e"
+      "size": 1412,
+      "sha256": "28dafd581177a0f2186d9fdcabc23d27ea1843766147442fe055e57f53d60ab5"
     },
     {
       "path": "copilot-github/templates/project/prompts/index.unset.md",
-      "size": 651,
-      "sha256": "771994107b7281cd206e24f08d71ad94896452c2a06b58d5c4186b7674cb2e6b"
+      "size": 739,
+      "sha256": "d89500738d1f7af77225af6cfb31b21dea6189e25fef102b6e7f4e606f42369e"
     },
     {
       "path": "copilot-github/templates/project/prompts/spec/index.md",
@@ -8252,8 +8327,8 @@
     },
     {
       "path": "copilot-vscode/catalog.json",
-      "size": 8741,
-      "sha256": "4658d7b0348b28dcb107599006ab36ebabd4c88fd7ee8c37d878e5022cecfd58"
+      "size": 8817,
+      "sha256": "5d99e7b66f9c8071cb1e5359b9351fa7ae64bbf54c88a953b7d9721358b96f51"
     },
     {
       "path": "copilot-vscode/com.github.copilot/agents/agent-aikido-balancer.agent.md",
@@ -8406,6 +8481,11 @@
       "sha256": "488fab56f20db6fa4c397cd00a6f53043159ffe4b6d1c65ccb5fd09a611f37c6"
     },
     {
+      "path": "copilot-vscode/com.github.copilot/commands/learn.prompt.md",
+      "size": 391,
+      "sha256": "985e4c7624ce3dcb11fb81c3881b484a9c0e01cce82f45bcf1f4e09a994caa36"
+    },
+    {
       "path": "copilot-vscode/com.github.copilot/commands/list-command.prompt.md",
       "size": 335,
       "sha256": "5b99f0c8274adda48e1b014b9409244b2a443ed7936d3f4337ec18d07c58c43c"
@@ -8477,8 +8557,8 @@
     },
     {
       "path": "copilot-vscode/package-manifest.json",
-      "size": 123750,
-      "sha256": "18226d4f79b69623ac6f7c74f240356368eb75a7d223d7cb427b75269a7f09cd"
+      "size": 124632,
+      "sha256": "3451210c6e50d54b9bf292ab6933aa6b7386d3b673ab3346f55ea3477d658c96"
     },
     {
       "path": "copilot-vscode/payload/LICENSE",
@@ -8659,6 +8739,11 @@
       "path": "copilot-vscode/payload/prompts/hard_points/commands/init-raci-aikido.md",
       "size": 18200,
       "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
+    },
+    {
+      "path": "copilot-vscode/payload/prompts/hard_points/commands/learn.md",
+      "size": 26399,
+      "sha256": "e90e4ef8d59f5cbb5eead69ca7e684b05988a3aad26263d7b13ba75908b1f49e"
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/commands/list-command.md",
@@ -9253,7 +9338,7 @@
     {
       "path": "copilot-vscode/plugin.json",
       "size": 222,
-      "sha256": "dfbebb785fd59d4f30b078e9b0d727c0b739406c8f6cbbe26e253a4666fda1ba"
+      "sha256": "7d4fe1d5fd1f2e49aa2921614991505388b4940f2f738234896f7c3aa0f2dd57"
     },
     {
       "path": "copilot-vscode/scripts/bootstrap-plan.mjs",
@@ -9792,13 +9877,13 @@
     },
     {
       "path": "copilot-vscode/templates/instructions/agents-block.md",
-      "size": 820,
-      "sha256": "a635fa36be7c9de95b01230c9d9437415c418a71a8daeb46e0c3a6bbb75714bc"
+      "size": 1029,
+      "sha256": "819da8d5b7aa11f09176de9d032650d9a16338a0c24c1ae020d65bc466fc13ad"
     },
     {
       "path": "copilot-vscode/templates/instructions/claude-block.md",
-      "size": 23,
-      "sha256": "0f030a5ad8b3950cc01e509e7aab029975b72e4b797c9a4a79f64068feba44b9"
+      "size": 47,
+      "sha256": "0ea82ef43b1435487af36ff84b7798829bdc232eae3b2d0b7264502d366f887a"
     },
     {
       "path": "copilot-vscode/templates/instructions/gitignore-block.txt",
@@ -9807,8 +9892,8 @@
     },
     {
       "path": "copilot-vscode/templates/manifest.json",
-      "size": 2943,
-      "sha256": "c04601853655e9bef60beb2441a9ece9bfdb4c8b245b23e03c089134034f0df8"
+      "size": 3093,
+      "sha256": "18710df1d1a2a756e25303dbf424b4d474b518b3601ec4b16a30545d6564ebcd"
     },
     {
       "path": "copilot-vscode/templates/project/lists/agents_list.md",
@@ -9837,8 +9922,13 @@
     },
     {
       "path": "copilot-vscode/templates/project/prompts/gen/index.md",
-      "size": 600,
-      "sha256": "c22305f4d7daf32fef7b94ee536438068681de67dfed0c02ba0f71216b7c510a"
+      "size": 683,
+      "sha256": "1ff109158712f4d837b5dde10e4e5b5bc749efd9a2657bdc9b944f88107d50d6"
+    },
+    {
+      "path": "copilot-vscode/templates/project/prompts/gen/learned.md",
+      "size": 597,
+      "sha256": "865497f91cd7479ce881b075d5c78ee5c153394d60f15c6e83a42623ef619e7c"
     },
     {
       "path": "copilot-vscode/templates/project/prompts/gen/personas/index.md",
@@ -9857,18 +9947,18 @@
     },
     {
       "path": "copilot-vscode/templates/project/prompts/index.light.md",
-      "size": 1294,
-      "sha256": "f525c016a8d3923fc94e9760120ff1af3f2a98bb6313a034d6b794052f914890"
+      "size": 1403,
+      "sha256": "e598b12afb79fb4a4e609a6bf7dd42db7b339735ff1c40c83cf83467bb3a7499"
     },
     {
       "path": "copilot-vscode/templates/project/prompts/index.standard.md",
-      "size": 1303,
-      "sha256": "2759d7a5a3d40f4c108e78140bb1e5ec103077660fd46392ec54c48386fc1e1e"
+      "size": 1412,
+      "sha256": "28dafd581177a0f2186d9fdcabc23d27ea1843766147442fe055e57f53d60ab5"
     },
     {
       "path": "copilot-vscode/templates/project/prompts/index.unset.md",
-      "size": 651,
-      "sha256": "771994107b7281cd206e24f08d71ad94896452c2a06b58d5c4186b7674cb2e6b"
+      "size": 739,
+      "sha256": "d89500738d1f7af77225af6cfb31b21dea6189e25fef102b6e7f4e606f42369e"
     },
     {
       "path": "copilot-vscode/templates/project/prompts/spec/index.md",
@@ -9878,7 +9968,7 @@
     {
       "path": "host-integrations.md",
       "size": 3891,
-      "sha256": "00e76eae92cdc6cd13a02aeaa85a2f01d64740e7ba9e0541bd8e1847796879ff"
+      "sha256": "9992eac3c320dc32a1b6d111a292e48bcfde20a08809fcc20d6c237bcfd2c0cb"
     },
     {
       "path": "kiro-cli/.kiro/agents/agent-aikido-balancer.md",
@@ -10074,6 +10164,11 @@
       "path": "kiro-cli/.kiro/skills/init-raci-aikido/SKILL.md",
       "size": 372,
       "sha256": "488fab56f20db6fa4c397cd00a6f53043159ffe4b6d1c65ccb5fd09a611f37c6"
+    },
+    {
+      "path": "kiro-cli/.kiro/skills/learn/SKILL.md",
+      "size": 391,
+      "sha256": "985e4c7624ce3dcb11fb81c3881b484a9c0e01cce82f45bcf1f4e09a994caa36"
     },
     {
       "path": "kiro-cli/.kiro/skills/list-command/SKILL.md",
@@ -10592,8 +10687,8 @@
     },
     {
       "path": "kiro-cli/catalog.json",
-      "size": 8741,
-      "sha256": "4658d7b0348b28dcb107599006ab36ebabd4c88fd7ee8c37d878e5022cecfd58"
+      "size": 8817,
+      "sha256": "5d99e7b66f9c8071cb1e5359b9351fa7ae64bbf54c88a953b7d9721358b96f51"
     },
     {
       "path": "kiro-cli/lib/bootstrap-plan.mjs",
@@ -10632,8 +10727,8 @@
     },
     {
       "path": "kiro-cli/package-manifest.json",
-      "size": 163498,
-      "sha256": "9947ab838423c304c413d3d02883b4bc84b96e4d269e702eda3c736ed9fb7879"
+      "size": 164610,
+      "sha256": "d56d8926cdbe5300d7b5b254ec7225186e1b4d018ba2b7be3f48bfb58a9b80e4"
     },
     {
       "path": "kiro-cli/payload/LICENSE",
@@ -10814,6 +10909,11 @@
       "path": "kiro-cli/payload/prompts/hard_points/commands/init-raci-aikido.md",
       "size": 18200,
       "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
+    },
+    {
+      "path": "kiro-cli/payload/prompts/hard_points/commands/learn.md",
+      "size": 26399,
+      "sha256": "e90e4ef8d59f5cbb5eead69ca7e684b05988a3aad26263d7b13ba75908b1f49e"
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/commands/list-command.md",
@@ -11422,13 +11522,13 @@
     },
     {
       "path": "kiro-cli/templates/instructions/agents-block.md",
-      "size": 820,
-      "sha256": "a635fa36be7c9de95b01230c9d9437415c418a71a8daeb46e0c3a6bbb75714bc"
+      "size": 1029,
+      "sha256": "819da8d5b7aa11f09176de9d032650d9a16338a0c24c1ae020d65bc466fc13ad"
     },
     {
       "path": "kiro-cli/templates/instructions/claude-block.md",
-      "size": 23,
-      "sha256": "0f030a5ad8b3950cc01e509e7aab029975b72e4b797c9a4a79f64068feba44b9"
+      "size": 47,
+      "sha256": "0ea82ef43b1435487af36ff84b7798829bdc232eae3b2d0b7264502d366f887a"
     },
     {
       "path": "kiro-cli/templates/instructions/gitignore-block.txt",
@@ -11437,8 +11537,8 @@
     },
     {
       "path": "kiro-cli/templates/manifest.json",
-      "size": 2943,
-      "sha256": "c04601853655e9bef60beb2441a9ece9bfdb4c8b245b23e03c089134034f0df8"
+      "size": 3093,
+      "sha256": "18710df1d1a2a756e25303dbf424b4d474b518b3601ec4b16a30545d6564ebcd"
     },
     {
       "path": "kiro-cli/templates/project/lists/agents_list.md",
@@ -11467,8 +11567,13 @@
     },
     {
       "path": "kiro-cli/templates/project/prompts/gen/index.md",
-      "size": 600,
-      "sha256": "c22305f4d7daf32fef7b94ee536438068681de67dfed0c02ba0f71216b7c510a"
+      "size": 683,
+      "sha256": "1ff109158712f4d837b5dde10e4e5b5bc749efd9a2657bdc9b944f88107d50d6"
+    },
+    {
+      "path": "kiro-cli/templates/project/prompts/gen/learned.md",
+      "size": 597,
+      "sha256": "865497f91cd7479ce881b075d5c78ee5c153394d60f15c6e83a42623ef619e7c"
     },
     {
       "path": "kiro-cli/templates/project/prompts/gen/personas/index.md",
@@ -11487,18 +11592,18 @@
     },
     {
       "path": "kiro-cli/templates/project/prompts/index.light.md",
-      "size": 1294,
-      "sha256": "f525c016a8d3923fc94e9760120ff1af3f2a98bb6313a034d6b794052f914890"
+      "size": 1403,
+      "sha256": "e598b12afb79fb4a4e609a6bf7dd42db7b339735ff1c40c83cf83467bb3a7499"
     },
     {
       "path": "kiro-cli/templates/project/prompts/index.standard.md",
-      "size": 1303,
-      "sha256": "2759d7a5a3d40f4c108e78140bb1e5ec103077660fd46392ec54c48386fc1e1e"
+      "size": 1412,
+      "sha256": "28dafd581177a0f2186d9fdcabc23d27ea1843766147442fe055e57f53d60ab5"
     },
     {
       "path": "kiro-cli/templates/project/prompts/index.unset.md",
-      "size": 651,
-      "sha256": "771994107b7281cd206e24f08d71ad94896452c2a06b58d5c4186b7674cb2e6b"
+      "size": 739,
+      "sha256": "d89500738d1f7af77225af6cfb31b21dea6189e25fef102b6e7f4e606f42369e"
     },
     {
       "path": "kiro-cli/templates/project/prompts/spec/index.md",
@@ -11581,6 +11686,11 @@
       "sha256": "99cd028a7584bca93ae9cdde0d64dd14862fc5f0b2ea1de1d19beb96f33fe471"
     },
     {
+      "path": "roo-code-legacy/.roo/commands/learn.md",
+      "size": 379,
+      "sha256": "11002f71605c171c1e8e7d13792388442f1bb06a3c28e8be63d0c80fbfd97919"
+    },
+    {
       "path": "roo-code-legacy/.roo/commands/list-command.md",
       "size": 316,
       "sha256": "67c3d77cf2b3d001f7aa4d82eaf6590f6de1625bb879ecb7dad951882d5a24d7"
@@ -11627,8 +11737,8 @@
     },
     {
       "path": "roo-code-legacy/catalog.json",
-      "size": 8741,
-      "sha256": "4658d7b0348b28dcb107599006ab36ebabd4c88fd7ee8c37d878e5022cecfd58"
+      "size": 8817,
+      "sha256": "5d99e7b66f9c8071cb1e5359b9351fa7ae64bbf54c88a953b7d9721358b96f51"
     },
     {
       "path": "roo-code-legacy/lib/bootstrap-plan.mjs",
@@ -11667,8 +11777,8 @@
     },
     {
       "path": "roo-code-legacy/package-manifest.json",
-      "size": 107081,
-      "sha256": "f8a5fe90ec24e3885ffdd9a90aa553dc63d1f0defcacddb9b5856deea78b250b"
+      "size": 108178,
+      "sha256": "d77ef9d3a9e0c5230f3d66d53a6b86dc28c2a46283528d573daab6cb2a61369d"
     },
     {
       "path": "roo-code-legacy/payload/LICENSE",
@@ -11849,6 +11959,11 @@
       "path": "roo-code-legacy/payload/prompts/hard_points/commands/init-raci-aikido.md",
       "size": 18200,
       "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
+    },
+    {
+      "path": "roo-code-legacy/payload/prompts/hard_points/commands/learn.md",
+      "size": 26399,
+      "sha256": "e90e4ef8d59f5cbb5eead69ca7e684b05988a3aad26263d7b13ba75908b1f49e"
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/commands/list-command.md",
@@ -12457,13 +12572,13 @@
     },
     {
       "path": "roo-code-legacy/templates/instructions/agents-block.md",
-      "size": 820,
-      "sha256": "a635fa36be7c9de95b01230c9d9437415c418a71a8daeb46e0c3a6bbb75714bc"
+      "size": 1029,
+      "sha256": "819da8d5b7aa11f09176de9d032650d9a16338a0c24c1ae020d65bc466fc13ad"
     },
     {
       "path": "roo-code-legacy/templates/instructions/claude-block.md",
-      "size": 23,
-      "sha256": "0f030a5ad8b3950cc01e509e7aab029975b72e4b797c9a4a79f64068feba44b9"
+      "size": 47,
+      "sha256": "0ea82ef43b1435487af36ff84b7798829bdc232eae3b2d0b7264502d366f887a"
     },
     {
       "path": "roo-code-legacy/templates/instructions/gitignore-block.txt",
@@ -12472,8 +12587,8 @@
     },
     {
       "path": "roo-code-legacy/templates/manifest.json",
-      "size": 2943,
-      "sha256": "c04601853655e9bef60beb2441a9ece9bfdb4c8b245b23e03c089134034f0df8"
+      "size": 3093,
+      "sha256": "18710df1d1a2a756e25303dbf424b4d474b518b3601ec4b16a30545d6564ebcd"
     },
     {
       "path": "roo-code-legacy/templates/project/lists/agents_list.md",
@@ -12502,8 +12617,13 @@
     },
     {
       "path": "roo-code-legacy/templates/project/prompts/gen/index.md",
-      "size": 600,
-      "sha256": "c22305f4d7daf32fef7b94ee536438068681de67dfed0c02ba0f71216b7c510a"
+      "size": 683,
+      "sha256": "1ff109158712f4d837b5dde10e4e5b5bc749efd9a2657bdc9b944f88107d50d6"
+    },
+    {
+      "path": "roo-code-legacy/templates/project/prompts/gen/learned.md",
+      "size": 597,
+      "sha256": "865497f91cd7479ce881b075d5c78ee5c153394d60f15c6e83a42623ef619e7c"
     },
     {
       "path": "roo-code-legacy/templates/project/prompts/gen/personas/index.md",
@@ -12522,18 +12642,18 @@
     },
     {
       "path": "roo-code-legacy/templates/project/prompts/index.light.md",
-      "size": 1294,
-      "sha256": "f525c016a8d3923fc94e9760120ff1af3f2a98bb6313a034d6b794052f914890"
+      "size": 1403,
+      "sha256": "e598b12afb79fb4a4e609a6bf7dd42db7b339735ff1c40c83cf83467bb3a7499"
     },
     {
       "path": "roo-code-legacy/templates/project/prompts/index.standard.md",
-      "size": 1303,
-      "sha256": "2759d7a5a3d40f4c108e78140bb1e5ec103077660fd46392ec54c48386fc1e1e"
+      "size": 1412,
+      "sha256": "28dafd581177a0f2186d9fdcabc23d27ea1843766147442fe055e57f53d60ab5"
     },
     {
       "path": "roo-code-legacy/templates/project/prompts/index.unset.md",
-      "size": 651,
-      "sha256": "771994107b7281cd206e24f08d71ad94896452c2a06b58d5c4186b7674cb2e6b"
+      "size": 739,
+      "sha256": "d89500738d1f7af77225af6cfb31b21dea6189e25fef102b6e7f4e606f42369e"
     },
     {
       "path": "roo-code-legacy/templates/project/prompts/spec/index.md",
@@ -12616,6 +12736,11 @@
       "sha256": "99cd028a7584bca93ae9cdde0d64dd14862fc5f0b2ea1de1d19beb96f33fe471"
     },
     {
+      "path": "zoo-code/.roo/commands/learn.md",
+      "size": 379,
+      "sha256": "11002f71605c171c1e8e7d13792388442f1bb06a3c28e8be63d0c80fbfd97919"
+    },
+    {
       "path": "zoo-code/.roo/commands/list-command.md",
       "size": 316,
       "sha256": "67c3d77cf2b3d001f7aa4d82eaf6590f6de1625bb879ecb7dad951882d5a24d7"
@@ -12662,8 +12787,8 @@
     },
     {
       "path": "zoo-code/catalog.json",
-      "size": 8741,
-      "sha256": "4658d7b0348b28dcb107599006ab36ebabd4c88fd7ee8c37d878e5022cecfd58"
+      "size": 8817,
+      "sha256": "5d99e7b66f9c8071cb1e5359b9351fa7ae64bbf54c88a953b7d9721358b96f51"
     },
     {
       "path": "zoo-code/lib/bootstrap-plan.mjs",
@@ -12702,8 +12827,8 @@
     },
     {
       "path": "zoo-code/package-manifest.json",
-      "size": 107070,
-      "sha256": "b95ed3ac0a9148b703066ed02d5a89ee1c61c503a26cf2b674084b3b405c6dcc"
+      "size": 108167,
+      "sha256": "192509bbafbfc762b5dfc78d41ccedbd05e54bbe9e0a41d6340c695788c33063"
     },
     {
       "path": "zoo-code/payload/LICENSE",
@@ -12884,6 +13009,11 @@
       "path": "zoo-code/payload/prompts/hard_points/commands/init-raci-aikido.md",
       "size": 18200,
       "sha256": "8488318446007dc6dafc61712badfe8585ebab688c989fbfbd4c46e4cb6a68e9"
+    },
+    {
+      "path": "zoo-code/payload/prompts/hard_points/commands/learn.md",
+      "size": 26399,
+      "sha256": "e90e4ef8d59f5cbb5eead69ca7e684b05988a3aad26263d7b13ba75908b1f49e"
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/commands/list-command.md",
@@ -13492,13 +13622,13 @@
     },
     {
       "path": "zoo-code/templates/instructions/agents-block.md",
-      "size": 820,
-      "sha256": "a635fa36be7c9de95b01230c9d9437415c418a71a8daeb46e0c3a6bbb75714bc"
+      "size": 1029,
+      "sha256": "819da8d5b7aa11f09176de9d032650d9a16338a0c24c1ae020d65bc466fc13ad"
     },
     {
       "path": "zoo-code/templates/instructions/claude-block.md",
-      "size": 23,
-      "sha256": "0f030a5ad8b3950cc01e509e7aab029975b72e4b797c9a4a79f64068feba44b9"
+      "size": 47,
+      "sha256": "0ea82ef43b1435487af36ff84b7798829bdc232eae3b2d0b7264502d366f887a"
     },
     {
       "path": "zoo-code/templates/instructions/gitignore-block.txt",
@@ -13507,8 +13637,8 @@
     },
     {
       "path": "zoo-code/templates/manifest.json",
-      "size": 2943,
-      "sha256": "c04601853655e9bef60beb2441a9ece9bfdb4c8b245b23e03c089134034f0df8"
+      "size": 3093,
+      "sha256": "18710df1d1a2a756e25303dbf424b4d474b518b3601ec4b16a30545d6564ebcd"
     },
     {
       "path": "zoo-code/templates/project/lists/agents_list.md",
@@ -13537,8 +13667,13 @@
     },
     {
       "path": "zoo-code/templates/project/prompts/gen/index.md",
-      "size": 600,
-      "sha256": "c22305f4d7daf32fef7b94ee536438068681de67dfed0c02ba0f71216b7c510a"
+      "size": 683,
+      "sha256": "1ff109158712f4d837b5dde10e4e5b5bc749efd9a2657bdc9b944f88107d50d6"
+    },
+    {
+      "path": "zoo-code/templates/project/prompts/gen/learned.md",
+      "size": 597,
+      "sha256": "865497f91cd7479ce881b075d5c78ee5c153394d60f15c6e83a42623ef619e7c"
     },
     {
       "path": "zoo-code/templates/project/prompts/gen/personas/index.md",
@@ -13557,18 +13692,18 @@
     },
     {
       "path": "zoo-code/templates/project/prompts/index.light.md",
-      "size": 1294,
-      "sha256": "f525c016a8d3923fc94e9760120ff1af3f2a98bb6313a034d6b794052f914890"
+      "size": 1403,
+      "sha256": "e598b12afb79fb4a4e609a6bf7dd42db7b339735ff1c40c83cf83467bb3a7499"
     },
     {
       "path": "zoo-code/templates/project/prompts/index.standard.md",
-      "size": 1303,
-      "sha256": "2759d7a5a3d40f4c108e78140bb1e5ec103077660fd46392ec54c48386fc1e1e"
+      "size": 1412,
+      "sha256": "28dafd581177a0f2186d9fdcabc23d27ea1843766147442fe055e57f53d60ab5"
     },
     {
       "path": "zoo-code/templates/project/prompts/index.unset.md",
-      "size": 651,
-      "sha256": "771994107b7281cd206e24f08d71ad94896452c2a06b58d5c4186b7674cb2e6b"
+      "size": 739,
+      "sha256": "d89500738d1f7af77225af6cfb31b21dea6189e25fef102b6e7f4e606f42369e"
     },
     {
       "path": "zoo-code/templates/project/prompts/spec/index.md",

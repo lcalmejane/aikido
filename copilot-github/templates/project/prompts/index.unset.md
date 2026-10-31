@@ -10,6 +10,8 @@ and replaces this file with the project's entry point.
 
 LLM_TRACIBILITY=FALSE
 
+**[Learned rules](gen/learned.md)** - ALWAYS READ (written by `/learn`, may be empty).
+
 ## Structure
 
 - [`gen/`](gen/index.md): Project Truth Tables (empty until initialization)

@@ -16,6 +16,7 @@
     { "name": "init-aikido", "source": "prompts/hard_points/commands/init-aikido.md" },
     { "name": "init-glossaire", "source": "prompts/hard_points/commands/init-glossaire.md" },
     { "name": "init-raci-aikido", "source": "prompts/hard_points/commands/init-raci-aikido.md" },
+    { "name": "learn", "source": "prompts/hard_points/commands/learn.md" },
     { "name": "list-command", "source": "prompts/hard_points/commands/list-command.md" },
     { "name": "maj-aikido", "source": "prompts/hard_points/commands/maj-aikido.md" },
     { "name": "optimize-command-with-aikido-agents", "source": "prompts/hard_points/commands/optimize-command-with-aikido-agents.md" },

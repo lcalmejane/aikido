@@ -7,6 +7,7 @@ Evolving knowledge of this project, written by the AI-KIDO commands and agents
 
 ## Navigation
 
+- [Learned rules](learned.md) - **Always read** - rules validated through `/learn`
 - [Concepts](concepts/index.md) - Theory, architecture and business foundations
 - [Techniques](techniques/index.md) - Methods and implementations
 - [Personas](personas/index.md) - Role prompts
