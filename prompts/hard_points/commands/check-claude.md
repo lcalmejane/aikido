@@ -9,7 +9,9 @@ host ID `claude-code`. It does not run an independent wrapper-generation
 workflow.
 
 Run the packaged `scripts/check-cli.mjs` from the installed AI-KIDO
-distribution against the current project:
+distribution against the current project. Resolve its package root as described
+in `/check-cli`; workspace-only installations can retain it in
+`.aikido/state/cli-runtime/claude-code/`:
 
 ```bash
 node "<installed-claude-code-distribution>/scripts/check-cli.mjs" \

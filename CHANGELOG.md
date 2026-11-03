@@ -33,13 +33,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- `/check-cli`: catalog-driven host selection and a read-only audit / controlled repair engine for installed skill, command and agent wrappers. It preserves customizations, reports unsupported surfaces, and does not claim runtime discovery.
+- `/check-cli`: catalog-driven host selection and a read-only audit / controlled repair engine for core instructions, commands, agents and installed skill wrappers. It preserves customizations, reports unsupported surfaces, and does not claim runtime discovery.
 - A mandatory `/skill-manage` registration gate after successful install, update (including `up_to_date`) and uninstall.
 
 ### Changed
 
 - `/check-claude` remains a compatible Claude-specific alias; cross-host wrapper work is directed to `/check-cli`.
 - Distribution catalog now declares workspace wrapper targets for each supported host and packages the check-cli runtime.
+- Update plans accept explicit per-file `--keep-local` resolutions after a reviewed manual merge, preserving local bytes while advancing the upstream baseline.
+
+### Fixed
+
+- Skill wrapper audits ignore backup/staging directories and accept valid documentation links to directories.
+- Workspace-only `/check-cli` calls can use a retained package runtime under `.aikido/state/cli-runtime/`.
 
 ## [1.5.2] - 2026-10-31
 

@@ -86,6 +86,36 @@ function newProject() {
   return mkdtempSync(join(tmpdir(), 'aikido-update-project-'));
 }
 
+test('explicit keep-local resolution preserves merged bytes and advances only the upstream baseline', () => {
+  const root = newProject();
+  try {
+    const installOptions = { root, packageRoot: basePackage, mode: 'STANDARD', projectName: 'Resolved update' };
+    const initial = planBootstrap(installOptions);
+    applyBootstrap({ ...installOptions, expectedPlanId: initial.planId });
+    const target = 'prompts/hard_points/ai-kido.md';
+    const merged = `${readFileSync(join(nextPackage, 'payload', target), 'utf8')}\nPreserved project rule.\n`;
+    writeFileSync(join(root, target), merged);
+    assert.equal(planUpdate({ root, packageRoot: nextPackage }).ready, false);
+    const options = { root, packageRoot: nextPackage, keepLocal: [target] };
+    const plan = planUpdate(options);
+    assert.equal(plan.ready, true, JSON.stringify(plan.conflicts));
+    assert.equal(plan.files.find((file) => file.target === target).action, 'keep-local');
+    assert.throws(() => applyUpdate({ root, packageRoot: nextPackage, expectedPlanId: plan.planId }), /Confirmation/);
+    applyUpdate({ ...options, expectedPlanId: plan.planId });
+    assert.equal(readFileSync(join(root, target), 'utf8'), merged);
+    assert.equal(
+      readFileSync(join(root, '.aikido/state/baseline', target), 'utf8'),
+      readFileSync(join(nextPackage, 'payload', target), 'utf8'),
+    );
+    assert.equal(planUpdate({ root, packageRoot: nextPackage }).ready, true);
+    assert.throws(() => planUpdate({ ...options, keepLocal: ['../escape'] }), /safe relative/);
+    assert.throws(() => planUpdate({ ...options, keepLocal: ['unknown.md'] }), /Unknown keep-local target/);
+    assert.throws(() => planUpdate({ ...options, keepLocal: [target, target] }), /unique safe/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test('three-way update applies upstream changes and restores from its verified backup', () => {
   const root = newProject();
   try {

@@ -151,7 +151,9 @@ function validateMarkdownLinks(root, sourcePath, text) {
     try {
       const rel = relative(root, resolvedPath).split(sep).join('/');
       const info = lstatSync(assertNoSymlink(root, rel));
-      if (!info.isFile()) errors.push(`relative link is not a file: ${sourcePath} -> ${target}`);
+      if (!info.isFile() && !info.isDirectory()) {
+        errors.push(`relative link is not a file or directory: ${sourcePath} -> ${target}`);
+      }
     } catch {
       errors.push(`relative link is missing: ${sourcePath} -> ${target}`);
     }
@@ -271,6 +273,7 @@ function readSkillInventory(root, catalog) {
   assertNoSymlink(root, base);
   for (const entry of readdirSync(absoluteBase, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
     const skillName = entry.name;
+    if (skillName.startsWith('.')) continue;
     const directory = `${base}/${skillName}`;
     if (entry.isSymbolicLink()) {
       issues.push({ path: directory, reason: 'Symbolic link refused.' });
@@ -278,12 +281,12 @@ function readSkillInventory(root, catalog) {
     }
     if (!entry.isDirectory()) continue;
     try {
-      if (!SAFE_NAME.test(skillName)) throw new Error(`Invalid skill directory name: ${skillName}`);
       if (bundled.has(skillName)) continue;
       assertNoSymlink(root, directory);
       const skillPath = `${directory}/SKILL.md`;
       const skillFile = safeAbsolute(root, skillPath);
       if (!existsSync(skillFile)) continue;
+      if (!SAFE_NAME.test(skillName)) throw new Error(`Invalid skill directory name: ${skillName}`);
       assertNoSymlink(root, skillPath);
       const skillText = readFileSync(skillFile, 'utf8');
       const fields = frontMatter(skillText)?.fields;

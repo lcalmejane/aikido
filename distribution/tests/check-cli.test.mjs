@@ -110,6 +110,17 @@ test('CLI emits structured JSON and refuses to guess its host', () => {
   assert.match(JSON.parse(ambiguous.stdout).error.message, /ambiguous; pass --host/);
 });
 
+test('installed skill inventory ignores engine state and accepts links to real directories', () => {
+  write('prompts/hard_points/system/.backups/old/SKILL.md', 'backed-up skill');
+  write('prompts/hard_points/system/.local-designer.tmp-123/SKILL.md', 'staging skill');
+  write('prompts/hard_points/system/Not-a-skill/note.md', 'not a skill');
+  const skillPath = 'prompts/hard_points/system/local-designer/SKILL.md';
+  write(skillPath, `${readFileSync(join(ROOT, skillPath), 'utf8')}\n[Commands](commands/)\n[Agents](agents/)\n`);
+  const result = auditCli({ root: ROOT, hostId: 'copilot-vscode', dryRun: true, repair: true, catalog });
+  assert.equal(result.status, 'ok', JSON.stringify(result.conflicts));
+  assert.equal(result.created.length, expectedWrapperCount('copilot-vscode'));
+});
+
 test('/check-claude forwards to the Claude Code distribution audit and skill lifecycle invokes the gate', () => {
   const checkClaude = readFileSync(new URL('../../prompts/hard_points/commands/check-claude.md', import.meta.url), 'utf8');
   const skillManage = readFileSync(new URL('../../prompts/hard_points/commands/skill-manage.md', import.meta.url), 'utf8');

@@ -30,6 +30,10 @@ if (process.argv[1] && realpathSync(resolve(process.argv[1])) === realpathSync(f
   try {
     const options = parseArgs(process.argv.slice(2));
     const root = resolve(options['--root'] ?? process.cwd());
+    const keepLocal = options['--keep-local']?.split(',') ?? [];
+    if (options['--keep-local'] && (options.flags.has('--migrate') || options.flags.has('--uninstall') || options['--recover'])) {
+      throw new Error('--keep-local is only valid for an existing project update');
+    }
     if (options.flags.has('--migrate') && options.flags.has('--uninstall')) {
       throw new Error('--migrate and --uninstall cannot be combined');
     }
@@ -79,10 +83,10 @@ if (process.argv[1] && realpathSync(resolve(process.argv[1])) === realpathSync(f
           if (!plan.ready) process.exitCode = 2;
         }
       } else if (options.flags.has('--apply')) {
-        const result = applyUpdate({ root, packageRoot, expectedPlanId: options['--confirm'] });
+        const result = applyUpdate({ root, packageRoot, expectedPlanId: options['--confirm'], keepLocal });
         process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
       } else {
-        const plan = planUpdate({ root, packageRoot });
+        const plan = planUpdate({ root, packageRoot, keepLocal });
         process.stdout.write(`${JSON.stringify(plan, null, 2)}\n`);
         if (!plan.ready) process.exitCode = 2;
       }

@@ -23,12 +23,16 @@ the runtime cannot establish it, ask the user to select an ID from
 
 ## Execution
 
-Resolve the package root from the active host integration's installed
-distribution (for Claude Code, its active plugin root). The persistent package
-contains `scripts/check-cli.mjs`, `lib/`, `templates/`, and `catalog.json`.
-Never look for it under the project root or use a temporary build directory.
-If the active package root, runtime or catalog is unavailable, stop and report
-that fact; do not reconstruct wrappers by hand.
+Prefer the package root supplied by the active host integration (for Claude
+Code, its active plugin root). For a workspace-only installation, use
+`.aikido/state/cli-runtime/<calling-host-id>/` when the installer has retained
+the package there. The persistent package contains `scripts/check-cli.mjs`,
+`lib/`, `templates/`, and `catalog.json`; validate it with its
+`scripts/validate-package.mjs` before using it.
+Select the host from the actual caller context first, never from whichever
+runtime directories exist. Do not search unrelated plugin caches or use
+a temporary build directory. If neither package root, runtime nor catalog is
+available, stop and report that fact; do not reconstruct wrappers by hand.
 
 First run a read-only audit:
 

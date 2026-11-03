@@ -120,7 +120,7 @@ function addDeletion(root, target, files, kind) {
   return current.state === 'file' ? readFileSync(current.absolute) : null;
 }
 
-function processFileCandidate(root, candidate, oldEntry, nextFiles, files, operations) {
+function processFileCandidate(root, candidate, oldEntry, nextFiles, files, operations, keepLocal = false) {
   const { target, content, policy, origin } = candidate;
   if (oldEntry && (oldEntry.policy !== policy || oldEntry.policy === 'managed-block')) {
     conflict(files, target, 'update policy changed since installation', origin);
@@ -136,8 +136,12 @@ function processFileCandidate(root, candidate, oldEntry, nextFiles, files, opera
   const localHash = local === null ? null : HASH(local);
   const nextHash = HASH(content);
   const policyForMerge = oldEntry?.policy ?? policy;
+  if (keepLocal && (!oldEntry || policyForMerge !== 'three-way' || local === null)) {
+    throw new Error(`Cannot keep local content for untracked, missing or non-three-way file: ${target}`);
+  }
   let action = classify({ base: baseHash, local: localHash, next: nextHash, policy: policyForMerge });
   if (action === 'keep-local' && oldEntry && localHash === nextHash && nextHash !== baseHash) action = 'adopt';
+  if (keepLocal && action === 'conflict') action = 'keep-local';
   if (action.startsWith('conflict')) {
     conflict(files, target, action === 'conflict-collision'
       ? 'target exists with different content and is not tracked by this lock'
@@ -287,8 +291,14 @@ export function planUpdate({
   root,
   packageRoot,
   catalog = loadCatalog(),
+  keepLocal = [],
 }) {
   if (!root || !packageRoot) throw new Error('root and packageRoot are required to plan an update');
+  if (!Array.isArray(keepLocal) || keepLocal.some((path) => !isSafeRelativePath(path))
+    || new Set(keepLocal).size !== keepLocal.length) {
+    throw new Error('keepLocal must contain unique safe relative file paths');
+  }
+  const localResolutions = new Set(keepLocal);
   const projectRoot = realpathSync(resolve(root));
   if (!lstatSync(projectRoot).isDirectory()) throw new Error('Project root must be a directory');
   const packagePath = realpathSync(resolve(packageRoot));
@@ -322,7 +332,11 @@ export function planUpdate({
       nextFiles,
       files,
       operations,
+      localResolutions.has(candidate.target),
     );
+  }
+  for (const target of localResolutions) {
+    if (!candidatePaths.has(target)) throw new Error(`Unknown keep-local target: ${target}`);
   }
   for (const oldEntry of lock.files) {
     if (!candidatePaths.has(oldEntry.path)) processRemovedFile(projectRoot, oldEntry, files, operations, nextFiles);
@@ -461,11 +475,11 @@ export function backupOperations(projectRoot, operations, kind = 'update') {
   }
 }
 
-export function applyUpdate({ root, packageRoot, expectedPlanId, catalog = loadCatalog() }) {
+export function applyUpdate({ root, packageRoot, expectedPlanId, catalog = loadCatalog(), keepLocal = [] }) {
   if (typeof expectedPlanId !== 'string' || !expectedPlanId) {
     throw new Error('expectedPlanId is required to apply an update');
   }
-  const plan = planUpdate({ root, packageRoot, catalog });
+  const plan = planUpdate({ root, packageRoot, catalog, keepLocal });
   if (expectedPlanId !== plan.planId) throw new Error(`Confirmation does not match the current plan (expected ${plan.planId})`);
   if (!plan.ready) {
     throw new Error(`Update plan contains conflicts:\n${plan.conflicts.map((item) => `${item.target}: ${item.reason}`).join('\n')}`);

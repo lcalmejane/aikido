@@ -85,6 +85,22 @@ Review the plan and resolve any requested choices before applying it with
 `--apply --confirm <plan-id>`. To migrate an existing project without an
 AI-KIDO lock, add `--migrate`.
 
+For a locally customized tracked file that also changed upstream, first merge
+the upstream changes into the local file and review the result. Preview again
+with `--keep-local path/to/file,another/file` to explicitly preserve those
+resolved files. Use the same option when confirming the resulting plan.
+The updater keeps their bytes and records the new upstream baseline; it does
+not accept untracked collisions, symlinks, missing files or unsafe paths.
+Back up local files before manual merging. No wildcard or blanket force exists.
+
+For a workspace-only installation without a host plugin cache, keep the
+selected package runtime available: project method installation copies payload
+and wrappers, not the plugin's runtime. A source build can retain packages in
+the ignored `.aikido/state/cli-runtime/` directory (`--out`), then use its
+`<host-id>/scripts/update-plan.mjs` for the project update. `/check-cli` uses
+that same persistent package after the chat is reopened. Do not overwrite an
+existing runtime directory without reviewing/backing up its contents.
+
 To remove AI-KIDO integration files while keeping the project's Memory Bank,
 preview and confirm an uninstall with the same runtime:
 
