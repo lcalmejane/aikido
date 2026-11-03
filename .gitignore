@@ -9,7 +9,7 @@ prompts/hard_points/system/structure/index.json
 prompts/hard_points/system/structure/index.json
 .claude/worktrees
 .claude/worktrees/*
-.roo/mcp.json
+
 
 # Secrets / local configuration (never commit)
 prompts/hard_points/configuration/*.local.cfg
