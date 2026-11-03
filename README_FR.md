@@ -172,6 +172,7 @@ Lors de la mise à jour, pour chaque fichier modifié, vous pouvez choisir **"2.
 
 ```bash
 /check-claude (Si vous êtes sous Claude Code)
+/check-cli (disponible sur les CLI pris en charge)
 ```
 
 **2. Audit conformité** (recommandé) :
@@ -247,6 +248,7 @@ find . -name "*.bak.*" -type f
 │   │   │   ├── analyse-project.md
 │   │   │   ├── analyse-aikido.md
 │   │   │   ├── check-claude.md
+│   │   │   ├── check-cli.md
 │   │   │   ├── check-truth.md
 │   │   │   ├── maj-aikido.md
 │   │   │   ├── create-persona.md
@@ -639,23 +641,22 @@ Niveau 1: Catégorie (🏗️ CONCEPTION, ⚙️ DÉVELOPPEMENT, 🔒 SÉCURITÉ
 
 ### 🔧 Commandes de Maintenance
 
-#### `check-claude` - Synchronisation CLAUDE.md et Compatibilité Claude Code
+#### `check-claude` - Alias Claude Code
 
-**Objectif** : Vérifier l'état de la Memory Bank et générer les fichiers de compatibilité Claude Code
+Alias strict de `/check-cli` avec l'hôte fixe `claude-code`. Il contrôle les
+wrappers `.claude/` et le bloc géré de `CLAUDE.md`, dont les imports
+`@AGENTS.md` et `@prompts/gen/learned.md`. Il ne lance pas un second générateur
+historique.
 
-**Processus** :
+#### `check-cli` - Audit et enregistrement des wrappers multi-CLI
 
-1. **Inventaire complet** → Scan Memory Bank (via `agent-aikido-explore-bank`)
-2. **Validation conformité** → Règles AI-KIDO (via `agent-aikido-validator`)
-3. **Détection incohérences** → Mapping CLAUDE.md ↔ Memory Bank (via `agent-aikido-truth-evaluator`)
-4. **Génération .claude/agents/** → Mapping automatique depuis `/prompts/gen/personas/`
-5. **Génération .claude/commands/** → Mapping automatique depuis `prompts/hard_points/commands/`
-6. **Mise à jour CLAUDE.md** → Section 12 avec état actuel et statistiques
-7. **Rapport détaillé** → Création dans `/prompts/spec/check-claude-[DATE].md`
-
-**Agents utilisés** : 3 agents (explore-bank, validator, truth-evaluator)
-
-**Résultat** : Base 100% compatible Claude Code avec commandes et agents détectés automatiquement
+Audite toutes les commandes, agents, Skills intégrés ou installés et surfaces
+d'instructions/configuration de l'hôte, depuis le catalogue et les templates
+packagés. L'hôte appelant vient du CLI actif ou de `--host`/`AIKIDO_HOST` :
+il n'est jamais déduit des dossiers du projet ou du modèle. Lancer `--check`,
+puis prévisualiser avec `--repair --dry-run`; appliquer uniquement après
+accord. Les fichiers personnalisés ou corrompus restent préservés en conflit;
+la découverte runtime est rapportée séparément de la conformité des fichiers.
 
 #### `check-truth` - Vérification Cohérence Documentation ↔ Code 🆕
 
@@ -1579,23 +1580,14 @@ Si vous récupérez un dépôt AI-KIDO bootstrap (structure vide), suivez ces é
 Lancez la commande suivante dans Claude Code :
 
 ```
-Exécute le fichier prompts/hard_points/commands/check-claude.md pour vérifier l'état de la Memory Bank AI-KIDO et générer les fichiers de compatibilité Claude Code
+Exécutez `/check-claude` pour auditer les wrappers de distribution et les instructions gérées de Claude Code.
 ```
 
-Cette commande va :
-
-- ✅ Analyser l'état actuel de la Memory Bank (bootstrap ou peuplée)
-- ✅ Mettre à jour le fichier `CLAUDE.md` avec les statistiques actuelles
-- ✅ Générer automatiquement les fichiers `.claude/agents/*.md` depuis `/prompts/gen/personas/`
-- ✅ Générer automatiquement les fichiers `.claude/commands/*.md` depuis `prompts/hard_points/commands/`
-- ✅ Créer un rapport détaillé dans `/prompts/spec/check-claude-[DATE].md`
-- ✅ Afficher les métriques de conformité aux règles AI-KIDO
-
-**⚠️ IMPORTANT** : Après l'exécution de cette commande, vous devez **relancer Claude Code** pour que les nouvelles commandes et agents soient détectés. Les fichiers `.claude/` sont chargés au démarrage de Claude Code.
-
-#### 2️⃣ **Relancer Claude Code**
-
-Fermez et rouvrez Claude Code (ou rechargez la fenêtre) pour que les fichiers générés soient pris en compte.
+`/check-claude` est un alias de `/check-cli --host claude-code`. La
+distribution installée fournit les commandes, agents et Skills; l'audit vérifie
+leurs wrappers projet et les blocs d'instructions `CLAUDE.md`/`AGENTS.md`.
+Lancer le contrôle en lecture seule, prévisualiser les réparations et ne les
+appliquer qu'après accord.
 
 #### 3️⃣ **Vérifier la Détection des Commandes**
 
@@ -1609,7 +1601,8 @@ Vous devriez voir apparaître les commandes suivantes :
 
 - `/analyse-aikido` - Audit complet de la Memory Bank
 - `/analyse-project` - Analyse des sources projet
-- `/check-claude` - Synchronisation CLAUDE.md et fichiers .claude/
+- `/check-claude` - Alias Claude Code de l'audit de distribution
+- `/check-cli` - Audit des wrappers et instructions de distribution multi-CLI
 - `/create-persona` - Création de nouveau persona
 - `/init-aikido` - Initialisation Memory Bank
 - `/init-glossaire` - Création glossaire métier
@@ -1625,7 +1618,8 @@ Si la base contient déjà des personas, vérifiez leur disponibilité :
 /agents
 ```
 
-Les agents disponibles apparaîtront dans la liste Claude Code, directement générés depuis `/prompts/gen/personas/`.
+Les agents disponibles apparaîtront dans la liste Claude Code selon la
+distribution installée et les wrappers projet vérifiés.
 
 #### 5️⃣ **Vérifier l'État de la Base**
 
@@ -1646,7 +1640,8 @@ Si la base est vide (bootstrap), suivez le workflow recommandé dans `CLAUDE.md`
 /create-persona     # Créer des personas spécialisés
 /init-glossaire     # Créer le glossaire métier
 /analyse-aikido     # Vérifier la cohérence
-/check-claude       # Synchroniser CLAUDE.md
+/check-claude       # Auditer l'intégration de distribution Claude Code
+/check-cli          # Auditer wrappers et instructions du CLI appelant
 ```
 
 #### ✅ **Base Opérationnelle**
@@ -1836,7 +1831,7 @@ Toutes les commandes sont documentées dans [`prompts/hard_points/commands/`](pr
 - **Commandes d'initialisation** : `init-aikido`, `init-glossaire`, `init-raci-aikido`
 - **Commandes d'analyse** : `analyse-project`, `analyse-aikido`
 - **Commandes de création** : `create-persona`, `create-command` 🆕, `create-search-plan` 🆕, `create-analyse-plan` 🆕, `compile-agent-from-use`
-- **Commandes de maintenance** : `check-claude`, `check-truth` 🆕, `maj-aikido`, `validate-search-plan` 🆕, `validate-analyse-plan` 🆕
+- **Commandes de maintenance** : `check-claude`, `check-cli`, `check-truth` 🆕, `maj-aikido`, `validate-search-plan` 🆕, `validate-analyse-plan` 🆕
 - **Commandes d'indexation** : `reindex-projet` 🆕, `clean-index` 🆕
 - **Commandes de traçabilité** : `logllmon`, `logllmoff`
 - **Commandes de gestion des skills** : `create-skill`, `skill-get` 🆕
@@ -1868,7 +1863,7 @@ Toutes les commandes sont documentées dans [`prompts/hard_points/commands/`](pr
 Pour démarrer avec un bootstrap AI-KIDO sous Claude Code :
 
 ```
-Exécute le fichier prompts/hard_points/commands/check-claude.md pour vérifier l'état de la Memory Bank AI-KIDO et générer les fichiers de compatibilité Claude Code
+Exécutez `/check-claude` pour auditer les wrappers de distribution et les instructions gérées de Claude Code.
 ```
 
 Pour initialiser un nouveau projet : `/init-aikido`

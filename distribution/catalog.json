@@ -4,6 +4,7 @@
     { "name": "analyse-aikido", "source": "prompts/hard_points/commands/analyse-aikido.md" },
     { "name": "analyse-project", "source": "prompts/hard_points/commands/analyse-project.md" },
     { "name": "check-claude", "source": "prompts/hard_points/commands/check-claude.md" },
+    { "name": "check-cli", "source": "prompts/hard_points/commands/check-cli.md" },
     { "name": "check-truth", "source": "prompts/hard_points/commands/check-truth.md" },
     { "name": "clean-index", "source": "prompts/hard_points/commands/clean-index.md" },
     { "name": "compile-agent-from-use", "source": "prompts/hard_points/commands/compile-agent-from-use.md" },
@@ -62,7 +63,12 @@
       "agentTarget": "agents",
       "projectCommandFiles": false,
       "projectSystemSkillFiles": false,
-      "projectAgentFiles": false
+      "projectAgentFiles": false,
+      "workspace": {
+        "commands": { "target": ".claude/commands", "layout": "file", "suffix": ".md", "delivery": "native-command" },
+        "skills": { "target": ".claude/skills" },
+        "agents": { "target": ".claude/agents", "layout": "file", "suffix": ".md", "format": "claude-plugin" }
+      }
     },
     "claude-cowork": {
       "enabled": true,
@@ -75,7 +81,9 @@
       "agentTarget": "agents",
       "projectCommandFiles": false,
       "projectSystemSkillFiles": false,
-      "projectAgentFiles": false
+      "projectAgentFiles": false,
+      "workspace": null,
+      "reason": "Account plugin; project-level registration is not supported."
     },
     "copilot-vscode": {
       "enabled": true,
@@ -88,7 +96,12 @@
       "agentTarget": "com.github.copilot/agents",
       "projectCommandFiles": false,
       "projectSystemSkillFiles": false,
-      "projectAgentFiles": false
+      "projectAgentFiles": false,
+      "workspace": {
+        "commands": { "target": ".github/prompts", "layout": "file", "suffix": ".prompt.md", "delivery": "native-plugin-prompt" },
+        "skills": { "target": ".github/skills" },
+        "agents": { "target": ".github/agents", "layout": "file", "suffix": ".agent.md", "format": "copilot" }
+      }
     },
     "copilot-github": {
       "enabled": true,
@@ -100,7 +113,12 @@
       "agentTarget": ".github/agents",
       "projectCommandFiles": true,
       "projectSystemSkillFiles": true,
-      "projectAgentFiles": true
+      "projectAgentFiles": true,
+      "workspace": {
+        "commands": { "target": ".github/skills", "layout": "skill", "delivery": "fallback-skill" },
+        "skills": { "target": ".github/skills" },
+        "agents": { "target": ".github/agents", "layout": "file", "suffix": ".agent.md", "format": "copilot" }
+      }
     },
     "codex": {
       "enabled": true,
@@ -112,7 +130,12 @@
       "agentTarget": ".codex/agents",
       "projectCommandFiles": true,
       "projectSystemSkillFiles": true,
-      "projectAgentFiles": true
+      "projectAgentFiles": true,
+      "workspace": {
+        "commands": { "target": ".agents/skills", "layout": "skill", "delivery": "fallback-skill" },
+        "skills": { "target": ".agents/skills" },
+        "agents": { "target": ".codex/agents", "layout": "file", "suffix": ".toml", "format": "codex" }
+      }
     },
     "kiro-cli": {
       "enabled": true,
@@ -124,7 +147,12 @@
       "agentTarget": ".kiro/agents",
       "projectCommandFiles": true,
       "projectSystemSkillFiles": true,
-      "projectAgentFiles": true
+      "projectAgentFiles": true,
+      "workspace": {
+        "commands": { "target": ".kiro/skills", "layout": "skill", "delivery": "native-skill-command" },
+        "skills": { "target": ".kiro/skills" },
+        "agents": { "target": ".kiro/agents", "layout": "file", "suffix": ".md", "format": "kiro" }
+      }
     },
     "zoo-code": {
       "enabled": true,
@@ -137,7 +165,12 @@
       "agentTarget": ".roomodes",
       "projectCommandFiles": true,
       "projectSystemSkillFiles": false,
-      "projectAgentFiles": true
+      "projectAgentFiles": true,
+      "workspace": {
+        "commands": { "target": ".roo/commands", "layout": "file", "suffix": ".md", "delivery": "native-command" },
+        "skills": null,
+        "agents": { "target": ".roomodes", "layout": "modes", "format": "roomodes" }
+      }
     },
     "roo-code-legacy": {
       "enabled": true,
@@ -150,7 +183,12 @@
       "agentTarget": ".roomodes",
       "projectCommandFiles": true,
       "projectSystemSkillFiles": false,
-      "projectAgentFiles": true
+      "projectAgentFiles": true,
+      "workspace": {
+        "commands": { "target": ".roo/commands", "layout": "file", "suffix": ".md", "delivery": "native-command" },
+        "skills": null,
+        "agents": { "target": ".roomodes", "layout": "modes", "format": "roomodes" }
+      }
     },
     "antigravity": {
       "enabled": true,
@@ -162,7 +200,12 @@
       "agentTarget": ".agents/agents",
       "projectCommandFiles": true,
       "projectSystemSkillFiles": true,
-      "projectAgentFiles": true
+      "projectAgentFiles": true,
+      "workspace": {
+        "commands": { "target": ".agents/skills", "layout": "skill", "delivery": "fallback-skill" },
+        "skills": { "target": ".agents/skills" },
+        "agents": { "target": ".agents/agents", "layout": "file", "suffix": ".md", "format": "antigravity" }
+      }
     },
     "copilot-cowork": {
       "enabled": false,
@@ -172,7 +215,8 @@
       "reason": "Optional final target; product availability and supported formats remain unverified.",
       "projectCommandFiles": false,
       "projectSystemSkillFiles": false,
-      "projectAgentFiles": false
+      "projectAgentFiles": false,
+      "workspace": null
     }
   }
 }

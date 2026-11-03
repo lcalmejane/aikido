@@ -45,9 +45,9 @@ function within(root, path) {
   return absolute;
 }
 
-function assertSourcePath(path, type) {
+function assertSourcePath(path, type, root = REPO) {
   if (!isSafeRelativePath(path)) throw new Error(`Unsafe source path: ${path}`);
-  let absolute = REPO;
+  let absolute = root;
   const parts = path.split('/');
   let info;
   for (let i = 0; i < parts.length; i += 1) {
@@ -155,6 +155,39 @@ export function validateCatalog(catalog) {
     for (const property of ['projectCommandFiles', 'projectSystemSkillFiles', 'projectAgentFiles']) {
       if (typeof host[property] !== 'boolean') errors.push(`${hostId}: ${property} must be a boolean`);
     }
+    if (host.workspace !== null && host.workspace !== undefined) {
+      for (const [surfaceName, surface] of Object.entries(host.workspace)) {
+        if (surface === null) continue;
+        if (!surface || typeof surface !== 'object') {
+          errors.push(`${hostId}: workspace.${surfaceName} must be an object or null`);
+          continue;
+        }
+        if (surface.target && !isSafeRelativePath(surface.target)) {
+          errors.push(`${hostId}: unsafe workspace.${surfaceName}.target`);
+        }
+        if (surfaceName === 'commands'
+          && (!['file', 'skill'].includes(surface.layout)
+            || !['native-command', 'native-prompt', 'native-plugin-prompt', 'native-skill-command', 'fallback-skill'].includes(surface.delivery))) {
+          errors.push(`${hostId}: workspace.commands needs a supported layout and delivery`);
+        }
+        if (surfaceName === 'commands' && surface.layout === 'file'
+          && !/^\.[a-z]+(?:\.[a-z]+)*$/.test(surface.suffix ?? '')) {
+          errors.push(`${hostId}: workspace command files need a dot-prefixed suffix`);
+        }
+        if (surfaceName === 'agents') {
+          if (!['file', 'modes'].includes(surface.layout)) errors.push(`${hostId}: workspace.agents has an unknown layout`);
+          if (surface.layout === 'file' && (!AGENT_FORMATS.has(surface.format) || !/^\.[a-z]+(?:\.[a-z]+)*$/.test(surface.suffix ?? ''))) {
+            errors.push(`${hostId}: workspace agent files need a known format and dot-prefixed suffix`);
+          }
+          if (surface.layout === 'modes' && surface.format !== 'roomodes') {
+            errors.push(`${hostId}: mode configuration must use the roomodes renderer`);
+          }
+        }
+        if (surfaceName === 'skills' && surface.target && !isSafeRelativePath(surface.target)) {
+          errors.push(`${hostId}: unsafe workspace.skills.target`);
+        }
+      }
+    }
     if (host.enabled && host.commandDelivery !== 'unverified' && !/^\.[a-z]+(?:\.[a-z]+)*$/.test(host.commandSuffix ?? '')) {
       if (host.commandDelivery === 'native-command' || host.commandDelivery === 'native-prompt'
         || host.commandDelivery === 'native-plugin-prompt') {
@@ -177,22 +210,22 @@ function commandDescription(source, name) {
   return (description ?? `Run the AI-KIDO ${name} command`).replaceAll('\\', '\\\\').replaceAll('"', '\\"');
 }
 
-function canonicalCommandWrapper(command, sourceText, invocation = `/${command.name}`) {
+export function canonicalCommandWrapper(command, sourceText, invocation = `/${command.name}`) {
   return `---\nname: ${command.name}\ndescription: "${commandDescription(sourceText, command.name)}"\n---\n\n`
     + `# ${invocation}\n\n`
     + `Read and execute \`${command.source}\` from the initialized project's AI-KIDO Memory Bank.`
     + `\n\nRun the AI-KIDO bootstrap first if this project has no \`prompts/hard_points/\` directory.\n`;
 }
 
-function nativeCommandWrapper(command, sourceText) {
+export function nativeCommandWrapper(command, sourceText) {
   return `---\ndescription: "${commandDescription(sourceText, command.name)}"\n---\n\n`
     + `# /${command.name}\n\n`
     + `Read and execute \`${command.source}\` from the initialized project's AI-KIDO Memory Bank.`
     + `\n\nRun the AI-KIDO bootstrap first if this project has no \`prompts/hard_points/\` directory.\n`;
 }
 
-export function agentProfile(agent) {
-  const text = readFileSync(assertSourcePath(agent.source, 'file'), 'utf8');
+export function agentProfile(agent, sourceRoot = REPO) {
+  const text = readFileSync(assertSourcePath(agent.source, 'file', sourceRoot), 'utf8');
   const frontmatter = text.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? '';
   const description = agent.description
     ?? frontmatter.match(/^description:\s*["']?(.+?)["']?\s*$/m)?.[1];
@@ -228,8 +261,11 @@ function hostTools(format, profile) {
 
 function agentInstructions(profile, format) {
   const source = format === 'claude-plugin'
-    ? `When the project has \`.aikido/lock.json\`, read \`${profile.source}\` from the project. Otherwise read the bundled `
-      + `\`\${CLAUDE_PLUGIN_ROOT}/payload/${profile.source}\`. Never write into the plugin cache.`
+    ? profile.projectSource
+      ? `Read \`${profile.source}\` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this `
+        + 'project has no `prompts/hard_points/` directory.'
+      : `When the project has \`.aikido/lock.json\`, read \`${profile.source}\` from the project. Otherwise read the bundled `
+        + `\`\${CLAUDE_PLUGIN_ROOT}/payload/${profile.source}\`. Never write into the plugin cache.`
     : `Read \`${profile.source}\` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this `
       + 'project has no `prompts/hard_points/` directory.';
   const scope = format === 'codex'
@@ -305,7 +341,7 @@ function copilotPluginManifest(version) {
   }, null, 2)}\n`;
 }
 
-function portableSkill(skill, sourceText) {
+export function portableSkill(skill, sourceText) {
   const frontmatter = sourceText.match(/^---\r?\n([\s\S]*?)\r?\n---(\r?\n|$)/);
   const canonicalDescription = frontmatter?.[1].match(/^description:\s*"?(.+?)"?\s*$/m)?.[1]
     ?? sourceText.match(/^## Description\r?\n+([\s\S]*?)(?:\r?\n\r?\n|$)/m)?.[1];
@@ -322,7 +358,7 @@ function portableSkill(skill, sourceText) {
 }
 
 // Copied project files keep pointing at the same project files after relocation.
-function rebaseMarkdownLinks(text, sourcePath, targetPath, sourceRoot) {
+export function rebaseMarkdownLinks(text, sourcePath, targetPath, sourceRoot) {
   return text.replace(/\]\(([^)\s]+)\)/g, (match, link) => {
     if (/^(?:[a-z][a-z0-9+.-]*:|#|\/)/i.test(link)) return match;
     const [path, fragment] = link.split(/(?=#)/);
@@ -518,8 +554,11 @@ export function buildDistribution({
       'distribution/lib/templates.mjs',
       'distribution/lib/update-plan.mjs',
       'distribution/scripts/bootstrap-plan.mjs',
+      'distribution/scripts/build.mjs',
+      'distribution/scripts/check-cli.mjs',
       'distribution/scripts/update-plan.mjs',
       'distribution/scripts/validate-package.mjs',
+      'distribution/lib/check-cli.mjs',
     ]) {
       const packagePath = path.replace(/^distribution\//, '');
       writeUnique(packagePath, readFileSync(assertSourcePath(path, 'file')), 'runtime');
@@ -622,7 +661,7 @@ export function buildDistribution({
       }
     }
     if (host.agentFormat) {
-      const profiles = catalog.agents.map(agentProfile);
+      const profiles = catalog.agents.map((agent) => agentProfile(agent));
       if (host.agentFormat === 'roomodes') {
         writeUnique(
           host.agentTarget,

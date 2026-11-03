@@ -29,6 +29,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [Unreleased]
+
+### Added
+
+- `/check-cli`: catalog-driven host selection and a read-only audit / controlled repair engine for installed skill, command and agent wrappers. It preserves customizations, reports unsupported surfaces, and does not claim runtime discovery.
+- A mandatory `/skill-manage` registration gate after successful install, update (including `up_to_date`) and uninstall.
+
+### Changed
+
+- `/check-claude` remains a compatible Claude-specific alias; cross-host wrapper work is directed to `/check-cli`.
+- Distribution catalog now declares workspace wrapper targets for each supported host and packages the check-cli runtime.
+
 ## [1.5.2] - 2026-10-31
 
 ### Added

@@ -171,6 +171,7 @@ During the update, for each modified file you can choose **"2. MERGE"**:
 
 ```bash
 /check-claude (If you are using Claude Code)
+/check-cli (available in supported CLI hosts)
 ```
 
 **2. Compliance audit** (recommended):
@@ -239,13 +240,14 @@ find . -name "*.bak.*" -type f
 │   │   │   ├── agent-aikido-fusion.md
 │   │   │   └── agent-aikido-update-controller.md
 │   │   │
-│   │   ├── commands/             # ⚡ Centralized AI-KIDO commands (33 commands)
+│   │   ├── commands/             # ⚡ Centralized AI-KIDO commands (34 commands)
 │   │   │   ├── init-aikido.md
 │   │   │   ├── init-glossaire.md
 │   │   │   ├── init-raci-aikido.md
 │   │   │   ├── analyse-project.md
 │   │   │   ├── analyse-aikido.md
 │   │   │   ├── check-claude.md
+│   │   │   ├── check-cli.md
 │   │   │   ├── check-truth.md
 │   │   │   ├── maj-aikido.md
 │   │   │   ├── create-persona.md
@@ -307,7 +309,7 @@ find . -name "*.bak.*" -type f
 │           └── prompts.log       # Timestamped markdown format
 │
 ├── .roo/                         # 🔧 Roo-Code configuration
-│   ├── commands/                 # Command wrappers (33 .md files)
+│   ├── commands/                 # Command wrappers (34 .md files)
 │   │   ├── init-aikido.md
 │   │   └── ...                   # Other AI-KIDO commands
 │   └── .roomodes                 # Custom agents configuration
@@ -316,7 +318,7 @@ find . -name "*.bak.*" -type f
 │   ├── agents/                   # Agent mapping (14 .md files)
 │   │   ├── agent-aikido-*.md     # 14 internal AI-KIDO agents
 │   │   └── ...                   # Converted project personas
-│   └── commands/                 # Command mapping (33 .md files)
+│   └── commands/                 # Command mapping (34 .md files)
 │       ├── init-aikido.md
 │       └── ...                   # Other AI-KIDO commands
 │
@@ -404,7 +406,7 @@ The **Skills** (`/prompts/hard_points/system/`) group together complete function
 │   │   │   ├── agent-aikido-explore-code.md
 │   │   │   └── ...               # All system agents
 │   │   │
-│   │   ├── commands/             # ⚡ Shared commands (33 commands)
+│   │   ├── commands/             # ⚡ Shared commands (34 commands)
 │   │   │   ├── init-aikido.md
 │   │   │   ├── analyse-project.md
 │   │   │   └── ...               # All AI-KIDO commands
@@ -421,12 +423,12 @@ The **Skills** (`/prompts/hard_points/system/`) group together complete function
 │       └── logs/                 # Logs shared by all projects
 │
 ├── .roo/
-│   ├── commands/                 # Command wrappers (33 files)
+│   ├── commands/                 # Command wrappers (34 files)
 │   └── .roomodes                 # Multi-project agents
 │
 ├── .claude/
 │   ├── agents/                   # Agent mapping (14 agents + personas)
-│   └── commands/                 # Command mapping (33 commands)
+│   └── commands/                 # Command mapping (34 commands)
 │
 ├── AGENTS.md                     # 🤖 Multi-project interface
 ├── agents_list.md                # 📋 List of agents for all projects
@@ -638,23 +640,22 @@ Level 1: Category (🏗️ DESIGN, ⚙️ DEVELOPMENT, 🔒 SECURITY, 🔍 QUALI
 
 ### 🔧 Maintenance Commands
 
-#### `check-claude` - CLAUDE.md Synchronization and Claude Code Compatibility
+#### `check-claude` - Claude Code alias
 
-**Goal**: Check the state of the Memory Bank and generate the Claude Code compatibility files
+Strict compatibility alias for `/check-cli` with the fixed host ID
+`claude-code`. It checks Claude's `.claude/` wrappers and the managed
+`CLAUDE.md` block, including its `@AGENTS.md` and `@prompts/gen/learned.md`
+imports. It does not run a separate legacy generator.
 
-**Process**:
+#### `check-cli` - Multi-host Wrapper Audit and Registration
 
-1. **Complete inventory** → Memory Bank scan (via `agent-aikido-explore-bank`)
-2. **Compliance validation** → AI-KIDO rules (via `agent-aikido-validator`)
-3. **Inconsistency detection** → CLAUDE.md ↔ Memory Bank mapping (via `agent-aikido-truth-evaluator`)
-4. **.claude/agents/ generation** → Automatic mapping from `/prompts/gen/personas/`
-5. **.claude/commands/ generation** → Automatic mapping from `prompts/hard_points/commands/`
-6. **CLAUDE.md update** → Section 12 with current status and statistics
-7. **Detailed report** → Created in `/prompts/spec/check-claude-[DATE].md`
-
-**Agents used**: 3 agents (explore-bank, validator, truth-evaluator)
-
-**Result**: Base 100% compatible with Claude Code, with commands and agents detected automatically
+Audits all host-distributed core commands, agents, bundled Skills, installed
+Skills, and instruction/configuration surfaces from the packaged catalog and
+templates. Host identity comes from the active CLI or an explicit
+`--host`/`AIKIDO_HOST`, never workspace folders or model choice. Run `--check`,
+then preview with `--repair --dry-run`; apply only after approval. Custom and
+corrupted files are preserved as conflicts, and runtime discovery is reported
+separately from file conformance.
 
 #### `check-truth` - Documentation ↔ Code Consistency Check 🆕
 
@@ -1589,25 +1590,13 @@ If you retrieve a bootstrap AI-KIDO repository (empty structure), follow these s
 Run the following command in Claude Code:
 
 ```
-Run prompts/hard_points/commands/check-claude.md to check the state of the AI-KIDO Memory Bank and generate the Claude Code compatibility files
+Run `/check-claude` to audit Claude Code's AI-KIDO distribution wrappers and managed instructions.
 ```
 
-> 🇬🇧 English equivalent: *Run the file prompts/hard_points/commands/check-claude.md to check the state of the AI-KIDO Memory Bank and generate the Claude Code compatibility files.*
-
-This command will:
-
-- ✅ Analyze the current state of the Memory Bank (bootstrap or populated)
-- ✅ Update the `CLAUDE.md` file with the current statistics
-- ✅ Automatically generate the `.claude/agents/*.md` files from `/prompts/gen/personas/`
-- ✅ Automatically generate the `.claude/commands/*.md` files from `prompts/hard_points/commands/`
-- ✅ Create a detailed report in `/prompts/spec/check-claude-[DATE].md`
-- ✅ Display the compliance metrics against the AI-KIDO rules
-
-**⚠️ IMPORTANT**: After running this command, you must **restart Claude Code** so that the new commands and agents are detected. The `.claude/` files are loaded when Claude Code starts.
-
-#### 2️⃣ **Restart Claude Code**
-
-Close and reopen Claude Code (or reload the window) so that the generated files are taken into account.
+`/check-claude` is an alias of `/check-cli --host claude-code`. The installed
+distribution provides its commands, agents and Skills; the audit verifies
+their project wrappers and the `CLAUDE.md`/`AGENTS.md` instruction blocks.
+Use its read-only check, preview repairs, and apply only after approval.
 
 #### 3️⃣ **Check Command Detection**
 
@@ -1621,7 +1610,8 @@ You should see the following commands appear:
 
 - `/analyse-aikido` - Full Memory Bank audit
 - `/analyse-project` - Project source analysis
-- `/check-claude` - CLAUDE.md and .claude/ files synchronization
+- `/check-claude` - Claude Code alias for the distribution audit
+- `/check-cli` - Multi-host distribution wrapper and instruction audit
 - `/create-persona` - New persona creation
 - `/init-aikido` - Memory Bank initialization
 - `/init-glossaire` - Business glossary creation
@@ -1637,7 +1627,8 @@ If the base already contains personas, check their availability:
 /agents
 ```
 
-The available agents will appear in the Claude Code list, generated directly from `/prompts/gen/personas/`.
+The installed distribution's agents are exposed through its plugin; this check
+verifies project-level wrappers when the selected host declares that surface.
 
 #### 5️⃣ **Check the State of the Base**
 
@@ -1658,7 +1649,8 @@ If the base is empty (bootstrap), follow the recommended workflow in `CLAUDE.md`
 /create-persona     # Create specialized personas
 /init-glossaire     # Create the business glossary
 /analyse-aikido     # Check consistency
-/check-claude       # Synchronize CLAUDE.md
+/check-claude       # Audit Claude Code's distribution integration
+/check-cli          # Audit wrappers and instructions for the calling CLI
 ```
 
 #### ✅ **Operational Base**
@@ -1848,7 +1840,7 @@ All commands are documented in [`prompts/hard_points/commands/`](prompts/hard_po
 - **Initialization commands**: `init-aikido`, `init-glossaire`, `init-raci-aikido`
 - **Analysis commands**: `analyse-project`, `analyse-aikido`
 - **Creation commands**: `create-persona`, `create-command` 🆕, `create-search-plan` 🆕, `create-analyse-plan` 🆕, `compile-agent-from-use`
-- **Maintenance commands**: `check-claude`, `check-truth` 🆕, `maj-aikido`, `validate-search-plan` 🆕, `validate-analyse-plan` 🆕
+- **Maintenance commands**: `check-claude`, `check-cli`, `check-truth` 🆕, `maj-aikido`, `validate-search-plan` 🆕, `validate-analyse-plan` 🆕
 - **Indexing commands**: `reindex-projet` 🆕, `clean-index` 🆕
 - **Traceability commands**: `logllmon`, `logllmoff`
 - **Skill management commands**: `create-skill`, `skill-get` 🆕
@@ -1880,9 +1872,7 @@ All commands are documented in [`prompts/hard_points/commands/`](prompts/hard_po
 To get started with an AI-KIDO bootstrap under Claude Code:
 
 ```
-Run prompts/hard_points/commands/check-claude.md to check the state of the AI-KIDO Memory Bank and generate the Claude Code compatibility files
+Run `/check-claude` to audit Claude Code's AI-KIDO distribution wrappers and managed instructions.
 ```
-
-> 🇬🇧 English equivalent: *Run the file prompts/hard_points/commands/check-claude.md to check the state of the AI-KIDO Memory Bank and generate the Claude Code compatibility files.*
 
 To initialize a new project: `/init-aikido`

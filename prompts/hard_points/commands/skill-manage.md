@@ -45,7 +45,11 @@ Status handling:
 
 Guarantees enforced by the engine: skill names `^[a-z0-9][a-z0-9-]*$`; `TARGET_DIR` must stay inside the workspace; repository URLs limited to `https://` (no embedded credentials), SSH or an absolute local path; shallow clones without `.git`; symbolic links, > 2000 files or > 50 MB refused; `SKILL.md` required (≤ 500 lines for published skills); staging directory + atomic rename; previous copy kept in `{TARGET_DIR}/.backups/` (never deleted without `--purge`); provenance in `.aikido-source.json`; skill scripts are never executed.
 
-Still done by the LLM after a successful `installed` / `uninstalled` result, using the returned `commands` and `mappings`: registries (`skills_list.md`, `commands_list.md`), `.roo/` / `.claude/` mappings, install-guide steps (`install*.md`, `install*.sh` only after confirmation) and validation. The `group` layout (one repository per skill) has no engine yet: show the exact commands to the user and wait for approval before running them.
+After `installed`, `up_to_date`, or `uninstalled`, run the `/check-cli` registration gate for the **calling CLI**. This is mandatory even when an update reports `up_to_date`: wrappers may be missing, stale, or customized independently of the skill source. Identify the host from the active CLI context (never from model choice or directories); if ambiguous, ask for a host ID from `distribution/catalog.json`.
+
+Run `/check-cli --check` first. After install/update, preview and, with explicit approval, apply missing or stale wrappers for the installed skill. After uninstall, preview and apply removal of clean managed wrappers; preserve customizations and report conflicts for manual resolution. Never use `--force` to replace an unmarked wrapper. The engine is read-only except for explicitly approved `--repair`, does not execute skill files, and reports host runtime discovery separately from file conformity.
+
+The `group` layout (one repository per skill) has no install engine yet: show the exact commands to the user and wait for approval before running them. Once an install/update/uninstall is complete, the same `/check-cli` gate still applies.
 
 Tests: `node --test prompts/hard_points/system/skill-manage/skill-manage.test.mjs`.
 

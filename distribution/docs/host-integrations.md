@@ -97,3 +97,35 @@ node /path/to/package/scripts/update-plan.mjs \
 
 Project knowledge remains in the project when an assistant plugin or workspace
 integration is removed.
+
+## Audit host registration surfaces
+
+After `/skill-manage` installs, updates (including `up_to_date`), or removes a
+skill, run `/check-cli` for the calling assistant. It audits catalog commands
+and agents, bundled and installed Skills, and host instruction/configuration
+surfaces. Shared `AGENTS.md` is used by Copilot and other AGENTS-compatible
+hosts; Claude Code additionally uses `CLAUDE.md`, and Zoo/Roo modes are checked
+through their declared `.roomodes` target.
+
+Every host package contains the persistent `scripts/check-cli.mjs` runtime,
+its `lib/` dependencies, `catalog.json` and `templates/`. Invoke it from the
+selected installed package (never from a temporary build directory). The
+current CLI must be passed explicitly as `--host` (or `AIKIDO_HOST`); never
+infer the caller from existing host directories or the selected model.
+
+Preview before applying:
+
+```bash
+node /path/to/selected-package/scripts/check-cli.mjs \
+  --root /path/to/project --host <catalog-host-id> --check
+node /path/to/selected-package/scripts/check-cli.mjs \
+  --root /path/to/project --host <catalog-host-id> --repair --dry-run
+```
+
+Apply only after approval by repeating the second command without
+`--dry-run`. The JSON report distinguishes file conformance from host runtime
+discovery. Only marker-managed wrappers and lock-verified instruction blocks are updated
+or removed; recognizable legacy wrappers remain unchanged, while unmarked or
+customized files are reported as conflicts and preserved. Skills, commands
+and agents are read as Markdown only: skill scripts, hooks, providers, MCP
+configuration and secrets are never executed or modified.

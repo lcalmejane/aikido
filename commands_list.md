@@ -2,7 +2,8 @@
 
 - **analyse-aikido**: Complete audit of AI‑KIDO truth tables to detect derivations, inconsistencies and broken links ([`analyse-aikido.md`](prompts/hard_points/commands/analyse-aikido.md))
 - **analyse-project**: Analyze existing project sources to populate and update AI‑KIDO truth tables ([`analyse-project.md`](prompts/hard_points/commands/analyse-project.md))
-- **check-claude**: Analyze and update CLAUDE.md based on AI‑KIDO Memory Bank and CLAUDE.md concepts ([`check-claude.md`](prompts/hard_points/commands/check-claude.md))
+- **check-claude**: Claude Code alias for the full AI-KIDO distribution audit ([`check-claude.md`](prompts/hard_points/commands/check-claude.md))
+- **check-cli**: Audit and safely register all AI-KIDO distribution interfaces for the calling CLI ([`check-cli.md`](prompts/hard_points/commands/check-cli.md))
 - **check-truth**: Verify consistency between AI‑KIDO documentation and source code, detect obsolescence and propose automatic corrections ([`check-truth.md`](prompts/hard_points/commands/check-truth.md))
 - **clean-index**: Clean orphan entries from the AI‑KIDO structure index ([`clean-index.md`](prompts/hard_points/commands/clean-index.md))
 - **compile-agent-from-use**: Interactive compilation of specialized AI‑KIDO agents with user questionnaire ([`compile-agent-from-use.md`](prompts/hard_points/commands/compile-agent-from-use.md))

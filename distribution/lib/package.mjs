@@ -147,6 +147,7 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
   for (const path of [
     'catalog.json',
     'lib/bootstrap-plan.mjs',
+    'lib/check-cli.mjs',
     'lib/catalog.mjs',
     'lib/lock.mjs',
     'lib/managed-blocks.mjs',
@@ -154,6 +155,8 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
     'lib/templates.mjs',
     'lib/update-plan.mjs',
     'scripts/bootstrap-plan.mjs',
+    'scripts/build.mjs',
+    'scripts/check-cli.mjs',
     'scripts/update-plan.mjs',
     'scripts/validate-package.mjs',
   ]) {
