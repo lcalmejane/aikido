@@ -15,6 +15,10 @@ This directory describes the different AI-KIDO technical agents usable in prompt
 - [`agent-aikido-truth-evaluator.md`](agent-aikido-truth-evaluator.md) - **Truth Source Evaluator** - Determines which sources are authoritative based on the scenario
 - [`agent-aikido-raci-delegator.md`](agent-aikido-raci-delegator.md) - **RACI Classifier** - Classifies and routes documents to correct locations according to the RACI matrix
 
+### 🛠️ Refactoring Agents
+
+- [`agent-aikido-refactoring.md`](agent-aikido-refactoring.md) - **Deterministic Refactoring** - Compares routes (existing tool, Node engine, temporary script outside Git, direct edit), works in wide batches and returns short ok/failure reports; skill: [`refactoring`](../system/refactoring/SKILL.md)
+
 ### ✅ Validation and Compliance Agents
 
 - [`agent-aikido-validator.md`](agent-aikido-validator.md) - **AI-KIDO Compliance Validator** - Validates files against the 18 AI-KIDO rules and generates compliance reports with detailed resolution plans

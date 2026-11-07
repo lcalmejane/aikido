@@ -313,18 +313,10 @@ Revalidation decision:
 
 ## Command-Line Interface
 
-For batch operations via Bash:
-
-```bash
-# Validate all headers in Memory Bank
-find /prompts/gen -name "*.md" -exec agent-aikido-doc-header validate {} \;
-
-# Refresh all source references
-find /prompts/gen -name "*.md" -exec agent-aikido-doc-header refresh-refs {} \;
-
-# Report outdated documents
-find /prompts/gen -name "*.md" -exec agent-aikido-doc-header check-status {} \; | grep "❌ Outdated"
-```
+For batch operations, enumerate Markdown files under the requested scope with
+the host's Glob action and process them individually with Read/Edit actions.
+Return per-file validation, refreshed-reference and outdated-status results;
+do not imply a command-line interface exists.
 
 ## Edge Cases
 

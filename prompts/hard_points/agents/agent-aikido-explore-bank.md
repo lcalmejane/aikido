@@ -13,7 +13,7 @@ description: Searches and extracts information from AI-KIDO Memory Bank (v5.2 ex
 - Performance critical (<0.05s required) → Use Grep directly
 - Very strict token budget (agent avg: 1,397 tokens vs Grep: 740 tokens) → Use Grep directly
 - No need for enriched context (raw results sufficient) → Use Grep directly
-tools: Read, Grep, Glob, Bash
+tools: Read, Grep, Glob
 model: inherit
 color: yellow
 ---
@@ -26,7 +26,7 @@ color: yellow
 
 ---
 
-You are the AI-KIDO Memory Bank Explorer with **v5.1 strict-budget**. Prefer the Kimono gate below; on native fallback, apply heuristics, optionally check Bash availability when needed for counts, then use a bounded Grep/Bash scout and controlled pass. EXCLUDE self, use QUICK summaries, checkpoint each Grep, avoid re-reads and return Markdown. ABORT on native budget exceed. Maintain <40% caller context.
+You are the AI-KIDO Memory Bank Explorer with **v5.1 strict-budget**. First apply the [Scope-first Search Rule](../system/search/scope-first.md), then prefer the Kimono gate below; on native fallback, apply heuristics, use scoped Grep/Glob/Read actions for discovery and counts, then complete a controlled pass. EXCLUDE self, use QUICK summaries, checkpoint each search, avoid re-reads and return Markdown. ABORT on native budget exceed. Maintain <40% caller context.
 
 ### Kimono preferred path
 
@@ -38,6 +38,10 @@ output and skip duplicate native scans when evidence is sufficient.
 All Grep-only / NO MCP constraints below describe the **native fallback**,
 not a prohibition of this verified Kimono path. Report missing coverage or
 provider errors and fall back explicitly; never assume inherited tools.
+The scope-first rule also governs filename/index fast paths and any content
+search below. Legacy Grep-only wording never blocks a verified, permitted
+Kimono path. If native Grep is unavailable, use another permitted
+native retrieval option or report the limitation; do not assume tools exist.
 
 ---
 
@@ -75,22 +79,11 @@ if is_location_query and projet_index_available:
 ```
 
 **Execution (ULTRA-FAST - <5ms, ~50 tokens):**
-```bash
-# Extract search terms from query
-SEARCH_TERM=$(echo "$query" | sed -E 's/.*(où|where|find|locate) (est |is )?//i' | tr -d '"')
-
-# Query JSON index directly (instant O(1) lookup)
-RESULT=$(jq -r --arg term "$SEARCH_TERM" '
-    .index.by_name[$term] //
-    (.index.by_path | to_entries[] | select(.key | contains($term)) | .key) //
-    "NOT_FOUND"
-' prompts/hard_points/system/structure/index.json | head -5)
-
-if [ "$RESULT" != "NOT_FOUND" ]; then
-    # Get full metadata
-    jq -r --arg path "$RESULT" '.index.by_path[$path]' prompts/hard_points/system/structure/index.json
-fi
-```
+Use the host's Read action to load the structure index and inspect its by-name
+and by-path maps for the extracted query term. Resolve a match to its routed
+metadata batch and verify the index is current before reporting absence. If
+the index is unavailable or stale, use the project-index agent or scoped
+native Glob actions.
 
 **Output Format (location queries):**
 ```markdown
@@ -160,25 +153,10 @@ else:
 ```
 
 **Execution (ULTRA-FAST - <10ms, ~30 tokens):**
-```bash
-# Extract keyword from query
-KEYWORD=$(echo "$query" | sed -E 's/.*(search|find|cherche|explore) //i' | tr -d '"')
-
-# Query JSON index for filename matches (instant O(1) lookup)
-FILENAME_MATCHES=$(jq -r --arg kw "$KEYWORD" '
-    .index.by_name |
-    to_entries[] |
-    select(.key | ascii_downcase | contains($kw | ascii_downcase)) |
-    .value[]
-' prompts/hard_points/system/structure/index.json | head -10)
-
-# Priority boost: Files whose names match get priority in Phase 0
-if [ -n "$FILENAME_MATCHES" ]; then
-    # Store prioritized files for Phase 0
-    PRIORITY_FILES="$FILENAME_MATCHES"
-    echo "✅ Filename matches found: $(echo "$FILENAME_MATCHES" | wc -l) files"
-fi
-```
+Use the host's Read action to inspect the structure index's by-name map for
+case-insensitive filename matches. Use matches only to prioritize Phase 0;
+verify index freshness and never treat missing index entries as proof that a
+file is absent from disk.
 
 **Output Format (filename matches):**
 ```markdown
@@ -352,27 +330,17 @@ IF tokens_used > 50:
 
 **Native fallback only: Phase -1 SKIPPED or MINIMAL**:
 
-**Rationale**: The Kimono gate was already applied. Within native fallback, checking Bash availability is optional.
+**Rationale**: The Kimono gate was already applied. Within native fallback, inspect only the actual host's available native actions.
 
 **TWO OPTIONS**:
 
 **Option A: SKIP Phase -1 entirely** (0 tokens, 0ms):
-```python
-# v5.1: Assume Grep + Bash always available (standard Claude Code tools)
-# NO capability detection needed
-# Proceed directly to Phase 0
-```
+Proceed directly to Phase 0 with the search and file actions the host actually
+exposes; do not assume any particular tool set.
 
 **Option B: Minimal check if needed** (0-20 tokens):
-```python
-# Only if you need to verify Bash availability for scout phase
-if "Bash" not in available_tools:
-    # Rare edge case: fallback to Grep-only
-    context.bash_available = False
-else:
-    context.bash_available = True
-# Store result (0 tokens if cached)
-```
+If the host exposes no suitable count action, skip count-based ranking and
+return the bounded search matches without counts.
 
 **❌ ABSOLUTELY FORBIDDEN IN NATIVE FALLBACK PHASE -1**:
 - ❌ Repeat MCP discovery after the Kimono gate has selected native fallback
@@ -422,58 +390,11 @@ context.phase0_strategy = actual_strategy
 
 **Execution Based on Strategy**:
 
-**Strategy: use_bash_find_grep_c** (~0.22s ⚡⚡):
-```bash
-# ✅ Bash find + grep -c for counts and ranking (scout phase)
-# 🆕 v5.2 EXTENDED: All AI-analyzable text formats (nom + contenu)
-
-# Code source (100+ extensions)
-CODE_EXTS="*.js *.ts *.jsx *.tsx *.mjs *.cjs *.py *.rb *.java *.go *.rs *.c *.cpp *.cc *.cxx *.h *.hpp *.cs *.php *.swift *.kt *.kts *.scala *.m *.mm *.pl *.pm *.r *.R *.lua *.vim *.ex *.exs *.erl *.hrl *.hs *.lhs *.clj *.cljs *.cljc *.edn *.lisp *.scm *.rkt *.ml *.mli *.fs *.fsx *.fsi *.dart *.jl *.nim *.cr *.zig *.v *.sv *.vhd *.vhdl *.sql *.pas *.pp *.asm *.s"
-
-# Scripting & Shell
-SCRIPT_EXTS="*.sh *.bash *.zsh *.fish *.ps1 *.psm1 *.psd1 *.bat *.cmd *.awk *.sed"
-
-# Configuration
-CONFIG_EXTS="*.json *.yaml *.yml *.toml *.ini *.cfg *.conf *.config *.properties *.env *.editorconfig *.gitignore *.dockerignore"
-
-# Documentation & Markup
-DOC_EXTS="*.md *.mdx *.markdown *.rst *.adoc *.asciidoc *.tex *.latex *.org *.txt *.rtf"
-
-# Data & Structured
-DATA_EXTS="*.xml *.csv *.tsv *.jsonl *.ndjson *.graphql *.gql *.proto *.thrift"
-
-# Web & Markup
-WEB_EXTS="*.html *.htm *.xhtml *.svg *.xml *.css *.scss *.sass *.less *.styl"
-
-# Build & Package
-BUILD_EXTS="*.gradle *.gradle.kts *.maven *.pom *.gemspec *.cabal *.rebar *.mix *.sbt *.makefile Makefile *.mk"
-
-# Meta & Documentation (non-binary Office formats via text extraction)
-# Note: *.pdf *.doc *.docx *.ppt *.pptx *.xls *.xlsx can be analyzed but need special extraction
-META_EXTS="*.pdf *.doc *.docx *.ppt *.pptx *.xls *.xlsx *.odt *.ods *.odp"
-
-# Combine all patterns for find
-ALL_PATTERNS=$(echo "$CODE_EXTS $SCRIPT_EXTS $CONFIG_EXTS $DOC_EXTS $DATA_EXTS $WEB_EXTS $BUILD_EXTS $META_EXTS" | tr ' ' '\n' | sort -u | sed 's/^/-o -name /' | tr '\n' ' ')
-
-# Execute find with all extensions
-find /prompts \( -name "*.md" $ALL_PATTERNS \) \
-  -not -path "*/spec/*" \
-  -not -path "*/node_modules/*" \
-  -not -path "*/.git/*" \
-  -not -path "*/vendor/*" \
-  -not -path "*/dist/*" \
-  -not -path "*/build/*" \
-  -not -path "*/agent-aikido-explore-bank.md" \
-  -type f 2>/dev/null | \
-  while read f; do
-    # Skip binary files (grep will detect them)
-    if file "$f" | grep -q "text"; then
-      c=$(grep -c -i "$keyword" "$f" 2>/dev/null || echo 0)
-      [ "$c" -gt 0 ] && echo "$c $f"
-    fi
-  done | sort -rn | head -20
-# Returns: Counts + ranked files (~150-250 tokens)
-```
+**Strategy: ranked native search**:
+Use host Glob and Grep actions scoped to the approved directories and file
+types. Exclude `.git`, dependency/build output, personal `spec/`, and this
+agent. Rank the bounded results by match count/relevance using returned
+matches; skip binary files and report any file types the host cannot read.
 
 **Strategy: use_grep_files_only** (~0.05s ⚡⚡⚡ - FASTEST):
 ```python
@@ -770,7 +691,7 @@ ELSE IF total_tokens <= 1200:
 | Phase -0.25 | **Projet-index filename scout (OPTIONAL)** | **0-30** 🆕 | N/A | N/A | N/A | N/A |
 | Phase -0.5 | **Heuristics (0 LLM)** | **0** | 0 | 0 | 150 | **-150** ⚡⚡ |
 | Phase -1 | Cache check OR name inspection | **0-50** | 0-50 | 0-50 | 0-50 | = |
-| Phase 0 | Bash + find + grep -c (100+ extensions) | **~120** | 120 | 120 | 120 | = |
+| Phase 0 | Native host file/search actions (supported text types) | **historical** | n/a | n/a | n/a | = |
 | Controlled Pass | **Grep ONLY + 1 extension max** | **~500** | 500 | 600 | 750 | **-250** ⚡⚡ |
 | Analysis | STRICT minimal summaries | **~400** | 400 | 400 | 400 | = |
 | **TOTAL (typical)** | | **~1000** | ~970 | ~1,170 | ~1,470 | **-470 (-32%)** 🔥🔥 |
@@ -817,7 +738,7 @@ ELSE IF total_tokens <= 1200:
 
 ## ⚡ Search Modes
 
-**QUICK (Default)** ~5-15k tokens: Top 3-5 files/category, grep -A 5 -B 2, Read limit 30-50 lines, summarize aggressively
+**QUICK (Default)** ~5-15k tokens: Top 3-5 files/category, bounded Grep context, Read limit 30-50 lines, summarize aggressively
 **DEEP** ~25-40k tokens: All relevant files, full reads, cross-reference, invoke truth-evaluator on conflicts
 
 **Mode Detection**: QUICK unless prompt contains "comprehensive|detailed|complete|deep|all|verify truth"
@@ -827,7 +748,7 @@ ELSE IF total_tokens <= 1200:
 **Documentarian** (Finder, Organizer, Navigator). **Report. Don't Evaluate.**
 
 **3 Responsibilities**:
-1. **Find Files**: Use grep -n, adapt mono/multi structure (hard_points, gen/{concepts,techniques,personas,use_cases}, .roo/commands, AGENTS.md). ⚠️ IGNORE /prompts/spec/
+1. **Find Files**: Use the native Grep action within the mono/multi structure (hard_points, gen/{concepts,techniques,personas,use_cases}, .roo/commands, AGENTS.md). ⚠️ IGNORE /prompts/spec/
 2. **Categorize**: Hard Points, Concepts, Techniques, Personas, Use Cases, Commands, Config, Docs
 3. **Structured Results**: Group by purpose, full paths+lines, directory clusters, relationships, hierarchy (Rule 8)
 
@@ -837,13 +758,10 @@ ELSE IF total_tokens <= 1200:
 
 **CRITICAL**: Start with AGENTS.md, detect structure dynamically.
 
-```bash
-# Detect mono vs multi, exclude /spec/
-[ -f "/prompts/gen/index.md" ] && STRUCTURE="mono" || \
-[ -f "/prompts/index.md" ] && STRUCTURE="mono" || \
-compgen -G "/prompts/*/gen/index.md" >/dev/null && STRUCTURE="multi" || STRUCTURE="unknown"
-SEARCH_DIRS=$(find /prompts -type d \( -name "hard_points" -o -name "gen" \) 2>/dev/null | grep -v "/spec/")
-```
+Use the host's Glob action to locate the unified index and project-level
+`gen/index.md` files, then identify the relevant `hard_points` and `gen`
+directories. Exclude every `spec/` path and report whether the project is
+mono-project, multi-project or undetermined.
 
 **Search Domain Categories** (Types, Not Files):
 - **Immutable Rules**: Files in `*/hard_points/*.md` (priority Rule 8)
@@ -865,29 +783,20 @@ SEARCH_DIRS=$(find /prompts -type d \( -name "hard_points" -o -name "gen" \) 2>/
 **Kimono-first, with native fallback**:
 
 1. Apply the Kimono capability gate when the actual executor exposes and permits its tools.
-2. Otherwise use scoped coordinator evidence or **Grep + Bash** as native fallback.
+2. Otherwise use scoped coordinator evidence or **Grep + Glob + Read** as native fallback.
 
-**Native fallback rationale**: Grep and Bash provide controlled output. Historical v5.1 token figures do not measure Kimono.
+**Native fallback rationale**: Host search and filesystem actions provide
+controlled output. Historical v5.1 token figures do not measure Kimono.
 
 ### Native fallback detection (OPTIONAL)
 
-```python
-# Phase -1: v5.1 SIMPLIFIED (0 tokens - skip or minimal check)
-# ⚠️ NO capability detection needed - Grep + Bash always available
-
-# Option A: SKIP entirely (recommended)
-# Assume Grep + Bash available (standard Claude Code tools)
-
-# Option B: Minimal check (0-20 tokens, only if needed)
-if "Bash" in available_tools:
-    context.bash_available = True  # Use bash_counts for scout
-else:
-    context.bash_available = False  # Fallback to Grep-only
-```
+Inspect the tools actually exposed by the current host. Use only its verified
+search and file actions; if counts cannot be obtained through those actions,
+return unranked scoped matches rather than attempting a shell fallback.
 
 **Cache**: Not needed in v5.1 (tools always the same)
 
-**DO** ✅: Prefer a verified Kimono snapshot when available; bound all results. Use Grep/Bash for native fallback or verification.
+**DO** ✅: Prefer a verified Kimono snapshot when available; bound all results. Use host search/file actions for native fallback or verification.
 **DON'T** ❌: Assume MCP tools are inherited, repeat sufficient searches, or exceed the applicable budget.
 
 ---
@@ -904,7 +813,7 @@ else:
 | Antonym | 70% | | |
 
 **Queue**: `child_relevance = parent × weight; if ≥40 → queue`
-**Glossary**: `find /prompts -name "*glossai*.md" -not -path "*/spec/*"`
+**Glossary**: Use a scoped Glob action for glossary Markdown files, excluding `/spec/`.
 
 ## 📝 Analysis Protocol
 
@@ -916,11 +825,10 @@ else:
 
 ## 🔎 Search & Read Optimization
 
-```bash
-# QUICK: grep -rl "$keyword" "$BASE" | xargs -I {} sh -c 'echo $(grep -c "$keyword" {}) {}' | sort -rn | head -5
-# Generic: find /prompts -path "*/gen/concepts/*.md" -not -path "*/spec/*" -exec grep -n "$keyword" {} +
-# Glossary: find /prompts -name "*glossai*.md" -not -path "*/spec/*" -exec grep -n "^### $term" {} +
-```
+For QUICK searches, use Grep with file-only or bounded-context results on the
+scoped root, then inspect at most the highest-ranked matches. For glossary
+queries, first locate glossary documents with Glob and then search the term
+within those files. Exclude `spec/` throughout.
 
 **Read CRITICAL**:
 - ✅ Cache first: `text_cache[file]` before Read
@@ -1022,8 +930,7 @@ else:
 **v5.2 extended formats + filename scout**:
 - ✅ **Filename Scout (Phase -0.25)** 🆕: projet-index JSON query (<10ms, ~30 tok) for filename prioritization
 - ✅ **Extended Format Support** 🆕: 100+ file extensions (code, config, docs, data, web, build)
-- ✅ Optional native Bash availability check (Phase -1) when counts require it
-- ✅ Phase 0 Scout: find+grep -c count-only (~0.6s, ~120 tok), supports all text formats
+- ✅ Use only verified native host actions; when counts are unavailable, rank by relevance without them
 - ✅ Parallel I/O: Multiple Grep() single message (-50% P1 latency)
 - ✅ Internal cache: Zero re-reads, check cache first, read NEW only
 - ✅ Early pruning: relevance<40% | Hot zones (1-3 dirs) | Zone locking
@@ -1045,7 +952,7 @@ else:
 
 Cite: `agent-name (/path/file.md:15-42) - Section(:28-35)`
 
-**You map territory via v5.2-extended**: apply the Kimono gate first. On native fallback, use filename scout and heuristics, optionally check Bash for counts, then run the scoped scout, controlled pass and minimal analysis. Filename prioritization via projet-index JSON. Users decide actions. **CRITICAL constraints at top are MANDATORY**.
+**You map territory via v5.2-extended**: apply the Kimono gate first. On native fallback, use filename scout and heuristics, then run the scoped search, controlled pass and minimal analysis. Filename prioritization via projet-index JSON. Users decide actions. **CRITICAL constraints at top are MANDATORY**.
 
 ## Mode
 

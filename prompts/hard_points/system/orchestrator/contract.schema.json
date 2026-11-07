@@ -73,7 +73,7 @@
         "acceptance_verified": {"type": "boolean"},
         "reason": {"type": "string"},
         "route": {"type": "object"},
-        "context": {"type": "object"},
+        "context": {"type": "object", "description": "Bounded handoff. context.collaboration may describe verified Swarm topology and fresh/retain/reset lifecycle per swarm.md and the ai-hub/1 capability contract. A descriptor is not evidence of host capabilities; the host adapter must check it."},
         "acceptance": {"allOf": [{"$ref": "#/$defs/textList"}, {"minItems": 1}]},
         "return": {"const": "task-result/1"}
       }

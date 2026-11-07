@@ -68,6 +68,22 @@ test('init validates the request, creates a replayable journal and reports ready
   assert.equal(readJournal(journalPath(RID, s.dir)).length, 1);
 });
 
+test('file input initializes and accepts results without command-interpreter redirection', t => {
+  const dir = mkdtempSync(join(tmpdir(), 'aikido-tracker-file-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  const input = join(dir, 'request.json');
+  const reply = join(dir, 'reply.json');
+  writeFileSync(input, JSON.stringify(request('file-request')));
+  const initial = cli(['init', '--input', input], { dir });
+  assert.equal(initial.request_id, 'file-request');
+  cli(['start', 'file-request', 'a'], { dir });
+  writeFileSync(reply, okResult('a'));
+  const accepted = cli(['result', 'file-request', 'a', '--input', reply], { dir });
+  assert.equal(accepted.accepted, true);
+  assert.throws(() => cli(['init', '--input'], { dir }), /Usage:/);
+  assert.throws(() => cli(['result', 'file-request', 'a', '--input'], { dir }), /Usage:/);
+});
+
 test('init rejects an invalid request and writes nothing', t => {
   const dir = mkdtempSync(join(tmpdir(), 'aikido-tracker-'));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
