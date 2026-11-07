@@ -22,8 +22,9 @@ approved installation process.
 
 Start a Cowork task for the project folder you want to work in and grant access
 to that folder. Bootstrap, update, and removal use the package's Node.js
-scripts, so Node.js and access to the selected project are required for those
-operations.
+scripts, so a separate stable Node.js runtime (baseline 24+), command access,
+and access to the selected project are required for those operations. Check
+the actual task environment; installing the plugin does not provide Node.
 
 Invoke an AI-KIDO command by its slash name, such as `/aikido:init-aikido`,
 `/aikido:list-command`, or `/aikido:maj-aikido --update`. System Skills and

@@ -2,7 +2,7 @@ name: Distribution CI
 
 on:
   push:
-    branches: [main, 'release/**']
+    branches: [main, 'release/**', 'feature/standardize-node-runtime']
     paths:
       - 'distribution/**'
       - 'prompts/hard_points/**'
@@ -26,6 +26,31 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  runtime-compatibility:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: ['24', '26']
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Test Node diagnostic and generated packages
+        run: node --test distribution/tests/node-runtime.test.mjs distribution/tests/catalog.test.mjs
+      - name: Install Claude Code validator for full suite
+        if: matrix.os == 'ubuntu-latest' && matrix.node == '24'
+        run: npm install --global --no-fund --no-audit @anthropic-ai/claude-code@2.1.310
+      - name: Test full distribution on minimum Node (Linux)
+        if: matrix.os == 'ubuntu-latest' && matrix.node == '24'
+        shell: bash
+        run: node --test distribution/tests/*.test.mjs prompts/hard_points/system/orchestrator/*.test.mjs prompts/hard_points/system/skill-manage/*.test.mjs
+
   test-and-build:
     runs-on: ubuntu-latest
     timeout-minutes: 15

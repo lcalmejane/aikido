@@ -23,6 +23,14 @@ the runtime cannot establish it, ask the user to select an ID from
 
 ## Execution
 
+Before using the Node runtime, check command execution permission and run
+`node --version` in this executor. The stable Node 24+ baseline is the target
+for the distribution; do not assume Node is present because a host or another
+executor has it. If the command is missing, denied or fails, report that the
+runtime audit is unavailable; never install Node or change permissions
+automatically. A documented native alternative is acceptable only if it
+preserves the requested operation.
+
 Prefer the package root supplied by the active host integration (for Claude
 Code, its active plugin root). For a workspace-only installation, use
 `.aikido/state/cli-runtime/<calling-host-id>/` when the installer has retained
@@ -97,8 +105,10 @@ node "<distribution-root>/scripts/check-cli.mjs" \
 
 The script emits one JSON result with `created`, `updated`, `unchanged`,
 `removed`, `conflicts`, `unsupported`, and a separate `runtimeDiscovery`
-result. File conformance is not proof that the CLI has discovered or loaded a
-wrapper.
+result. `nodeRuntime` reports the version, executable and baseline assessment
+of this process only; `below-baseline` is an advisory, not a proof of failure.
+It does not establish availability or permission in another executor. File
+conformance is not proof that the CLI has discovered or loaded a wrapper.
 
 For a preview of changes:
 

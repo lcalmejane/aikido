@@ -5,6 +5,12 @@ or through workspace files understood by the assistant. Choose the package
 that matches the host and use the same release tag for installation and later
 updates.
 
+All package runtimes require a separately available Node.js executable and
+permission to run commands in the intended environment. The stable Node.js 24+
+baseline and its diagnostic limitations are described in the
+[distribution guide](../README.md#runtime-and-execution). A plugin being
+installed does not establish that its agent can execute the runtime.
+
 ## Available integrations
 
 | Assistant | Package | How AI-KIDO appears |

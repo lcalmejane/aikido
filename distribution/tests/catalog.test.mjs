@@ -1,8 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { agentProfile, buildDistribution, validateCatalog } from '../scripts/build.mjs';
 import { validatePackage } from '../lib/package.mjs';
 
@@ -137,6 +138,21 @@ test('every enabled host package generates a native wrapper for every agent', ()
       assert.equal(report.hosts.find((entry) => entry.host === hostId).agentCount, catalog.agents.length);
       const packageRoot = join(root, 'dist', hostId);
       assert.equal(validatePackage(packageRoot, { catalog }).valid, true, hostId);
+      assert.match(readFileSync(join(packageRoot, 'RUNTIME.md'), 'utf8'), /stable Node\.js 24\+/);
+      const workspace = join(root, `workspace-${hostId}`);
+      mkdirSync(workspace);
+      const env = { ...process.env };
+      delete env.AIKIDO_HOST;
+      delete env.AIKIDO_TOOLS;
+      const checked = spawnSync(process.execPath, [
+        join(packageRoot, 'scripts/check-cli.mjs'), '--root', workspace,
+        '--host', hostId, '--check', '--dry-run',
+      ], { encoding: 'utf8', env });
+      assert.equal(checked.status, 0, `${hostId}: ${checked.stdout}\n${checked.stderr}`);
+      const runtime = JSON.parse(checked.stdout).nodeRuntime;
+      assert.equal(runtime.version, process.versions.node, hostId);
+      assert.equal(runtime.executable, process.execPath, hostId);
+      assert.equal(runtime.baseline, '24.0.0', hostId);
       const manifest = JSON.parse(readFileSync(join(packageRoot, 'package-manifest.json'), 'utf8'));
       if (host.agentFormat === 'roomodes') {
         const modes = readFileSync(join(packageRoot, '.roomodes'), 'utf8');

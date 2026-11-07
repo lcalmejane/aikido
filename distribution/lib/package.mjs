@@ -99,6 +99,7 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
   const errors = [];
   const error = (message) => errors.push(message);
   if (pkg.schemaVersion !== 1) error('package schemaVersion must be 1');
+  if (pkg.runtimeContract !== undefined && pkg.runtimeContract !== 1) error('unknown package runtime contract');
   if (!HOSTS.includes(pkg.host)) error(`unknown host: ${pkg.host}`);
   if (!catalog.hosts?.[pkg.host]?.enabled) error(`host is not enabled in the distribution catalog: ${pkg.host}`);
   if (catalog.hosts?.[pkg.host]?.commandDelivery !== pkg.commandDelivery) error('command delivery differs from the distribution catalog');
@@ -162,6 +163,11 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
     'scripts/validate-package.mjs',
   ]) {
     if (!ledger.has(path)) error(`package runtime is missing: ${path}`);
+  }
+  if (pkg.runtimeContract === 1) {
+    for (const path of ['RUNTIME.md', 'lib/node-runtime.mjs']) {
+      if (!ledger.has(path)) error(`package runtime is missing: ${path}`);
+    }
   }
   if (pkg.host === 'claude-code' || pkg.host === 'claude-cowork') {
     const label = pkg.host === 'claude-cowork' ? 'Claude Cowork' : 'Claude Code';

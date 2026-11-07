@@ -104,7 +104,11 @@ test('CLI emits structured JSON and refuses to guess its host', () => {
     encoding: 'utf8',
   });
   assert.equal(checked.status, 0, checked.stderr);
-  assert.equal(JSON.parse(checked.stdout).created.length, expectedWrapperCount('copilot-vscode'));
+  const report = JSON.parse(checked.stdout);
+  assert.equal(report.created.length, expectedWrapperCount('copilot-vscode'));
+  assert.equal(report.nodeRuntime.version, process.versions.node);
+  assert.equal(report.nodeRuntime.executable, process.execPath);
+  assert.equal(report.nodeRuntime.baseline, '24.0.0');
   const ambiguous = spawnSync(process.execPath, [script, '--root', ROOT, '--check'], { encoding: 'utf8', env: {} });
   assert.equal(ambiguous.status, 2);
   assert.match(JSON.parse(ambiguous.stdout).error.message, /ambiguous; pass --host/);

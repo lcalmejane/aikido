@@ -8,6 +8,7 @@ import { dirname, join, posix, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { HOSTS, isSafeRelativePath } from '../lib/lock.mjs';
 import { loadCatalog } from '../lib/catalog.mjs';
+import { NODE_BASELINE } from '../lib/node-runtime.mjs';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const COMMAND_DELIVERY = new Set([
@@ -425,6 +426,9 @@ function claudePluginReadme(version) {
     + `AI-KIDO is an AI Memory Bank Construction Method by Meta harness. This plugin supplies the `
     + `AI-KIDO commands, system skills and available specialist agents for Claude Code. Its bundled `
     + `knowledge payload is read-only and is used to initialize a project when requested.\n\n`
+    + `Project runtime scripts require command access and a separately installed stable Node.js `
+    + `runtime; Node.js 24 or newer is the baseline. Verify it in the actual execution environment. `
+    + `The plugin does not install Node or grant command permissions.\n\n`
     + `Install the plugin, open the intended project, then run \`/aikido:init-aikido\` to review and `
     + `apply the project bootstrap. The plugin does not modify project files on installation. `
     + `Review the displayed plan and explicitly confirm it before files are written.\n\n`
@@ -570,6 +574,7 @@ export function buildDistribution({
       'distribution/lib/features.mjs',
       'distribution/lib/lock.mjs',
       'distribution/lib/managed-blocks.mjs',
+      'distribution/lib/node-runtime.mjs',
       'distribution/lib/package.mjs',
       'distribution/lib/templates.mjs',
       'distribution/lib/update-plan.mjs',
@@ -584,6 +589,15 @@ export function buildDistribution({
       writeUnique(packagePath, readFileSync(assertSourcePath(path, 'file')), 'runtime');
     }
     writeUnique('catalog.json', readFileSync(assertSourcePath('distribution/catalog.json', 'file')), 'runtime');
+    writeUnique('RUNTIME.md', `# Runtime requirements\n\n`
+      + `The shared project runtime uses stable Node.js ${NODE_BASELINE}+ and a command tool with access `
+      + `to the target project. The package does not install Node or grant permissions. `
+      + `Run \`node --version\` in the actual executor before use. If Node or command access is `
+      + `unavailable, report the blocked operation; do not install dependencies or change permissions automatically.\n\n`
+      + `The packaged \`scripts/check-cli.mjs\` reports its own process version and executable in `
+      + `\`nodeRuntime\`; it cannot verify another agent, host or container. A below-baseline `
+      + `result is advisory and does not prove that the operation fails. Use documented equivalent `
+      + `fallbacks only when they preserve the requested result.\n`, 'runtime');
     if (host.agentFormat === 'claude-plugin') {
       writeUnique('.claude-plugin/plugin.json', claudePluginManifest(version), 'plugin-manifest');
       writeUnique('.claude-plugin/marketplace.json', claudeMarketplaceManifest(), 'marketplace-manifest');
@@ -723,6 +737,7 @@ export function buildDistribution({
       host: hostId,
       qualification: host.qualification,
       version,
+      runtimeContract: 1,
       sourceRevision,
       source,
       commandDelivery: host.commandDelivery,

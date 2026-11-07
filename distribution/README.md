@@ -4,6 +4,24 @@ AI-KIDO can be installed into a project for the assistant you use. Each
 package contains the host integration and the shared runtime used to initialize,
 update, or remove AI-KIDO project files.
 
+## Runtime and execution
+
+The distribution scripts use Node.js and do not bundle a Node executable. The
+new shared-runtime baseline is stable Node.js 24 or newer; the compatibility
+matrix tests this baseline but is not evidence that every host provides Node or
+grants shell access. Check `node --version` in the actual executor before invoking a
+script. `/check-cli` reports the version and executable of its own process as
+`nodeRuntime`; that does not verify a different agent, container or remote host.
+If Node or command execution is unavailable, report the blocked operation and
+use a documented equivalent only when it preserves the result. Never install
+Node or change permissions without approval.
+
+Use dependency-free Node.js modules for new deterministic shared engines when
+practical. Keep host adapters thin, validate inputs, return bounded versioned
+JSON and explicit errors, and separate read-only planning from approved writes.
+Retain existing scripts until equivalence, platform and performance tests justify
+replacement; do not assume that changing languages reduces tokens or latency.
+
 ## Choose an assistant
 
 See the [host integration guide](docs/host-integrations.md) for package

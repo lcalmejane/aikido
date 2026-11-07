@@ -9,6 +9,7 @@ import {
 } from '../scripts/build.mjs';
 import { loadCatalog } from './catalog.mjs';
 import { detectFeatures as detectHostFeatures, planFeatureFlags, toolInventoryEnvironment } from './features.mjs';
+import { inspectNodeRuntime } from './node-runtime.mjs';
 import { LOCK_PATH, MODES, isSafeRelativePath } from './lock.mjs';
 import { blockHash, findBlock, upsertBlock } from './managed-blocks.mjs';
 import { loadManifest, readTemplate, render, selectTemplates } from './templates.mjs';
@@ -948,6 +949,7 @@ export function auditCli({ root = process.cwd(), hostId, env = process.env, repa
     applied: repair && !dryRun,
     featureFlags,
     kimono,
+    nodeRuntime: inspectNodeRuntime(),
     created: group('create'),
     updated: group('update'),
     unchanged: group('unchanged'),
@@ -1011,6 +1013,7 @@ export function runCheckCli(argv = process.argv.slice(2), env = process.env) {
       schemaVersion: 1,
       status: 'error',
       error: { code: 'check-cli', message: error.message },
+      nodeRuntime: inspectNodeRuntime(),
       runtimeDiscovery: { status: 'not-verified' },
     }, null, 2)}\n`);
     process.exitCode = 2;
