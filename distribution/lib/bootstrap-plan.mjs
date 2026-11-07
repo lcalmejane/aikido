@@ -12,6 +12,7 @@ import { detectFeatures, FEATURE_STATE_PATH, planFeatureFlags } from './features
 import { blockHash, findBlock, upsertBlock } from './managed-blocks.mjs';
 import { validatePackage } from './package.mjs';
 import { loadManifest, readTemplate, render, selectTemplates, validateManifest } from './templates.mjs';
+import { sourceWarnings } from './version.mjs';
 
 const DEFAULT_TEMPLATES_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'templates');
 const PLAN_OPERATIONS = new WeakMap();
@@ -125,7 +126,7 @@ function fileOperation(template, content, previous, write) {
   };
 }
 
-function artifactResult(projectRoot, packageRoot, artifact, expectedOrigin) {
+function artifactResult(projectRoot, packageRoot, artifact, expectedOrigin, trust = 'verified') {
   const { target, sha256, origin, policy } = artifact;
   const source = artifact.packagePath ?? artifact.source;
   const item = { id: `${expectedOrigin}:${target}`, source, target, kind: expectedOrigin, origin, policy };
@@ -137,9 +138,12 @@ function artifactResult(projectRoot, packageRoot, artifact, expectedOrigin) {
     return { item: { ...item, action: 'blocked', reason: sourceInfo.reason ?? `missing package file ${source}` } };
   }
   const content = readFileSync(sourceInfo.absolute);
-  if (HASH_BUFFER(content) !== sha256) {
+  const actual = HASH_BUFFER(content);
+  if (actual !== sha256 && trust !== 'local') {
     return { item: { ...item, action: 'blocked', reason: `package file hash mismatch: ${source}` } };
   }
+  // The lock records what is really installed, even when a local package differs from its manifest.
+  const installedHash = actual;
   const targetInfo = inspectTarget(projectRoot, target);
   if (targetInfo.state === 'blocked') return { item: { ...item, action: 'blocked', reason: targetInfo.reason } };
   const previous = targetInfo.state === 'file' ? readFileSync(targetInfo.absolute) : null;
@@ -148,14 +152,14 @@ function artifactResult(projectRoot, packageRoot, artifact, expectedOrigin) {
   }
   const action = previous ? 'adopt' : 'create';
   return {
-    item: { ...item, action, contentHash: sha256 },
+    item: { ...item, action, contentHash: installedHash },
     operation: {
       target,
       content,
       previous,
       action,
       write: previous === null,
-      file: { path: target, sha256, origin, policy },
+      file: { path: target, sha256: installedHash, origin, policy },
     },
   };
 }
@@ -226,12 +230,13 @@ export function planBootstrap({
   templatesDir: suppliedTemplatesDir,
   catalog = loadCatalog(),
   env = process.env,
+  trust = 'verified',
 }) {
   if (typeof root !== 'string' || root.length === 0) throw new Error('root must be an existing project directory');
   const projectRoot = realpathSync(root);
   if (!lstatSync(projectRoot).isDirectory()) throw new Error('root must be a directory');
   const packagePath = packageRoot ? realpathSync(packageRoot) : null;
-  const packageInfo = packagePath ? validatePackage(packagePath, { catalog }) : null;
+  const packageInfo = packagePath ? validatePackage(packagePath, { catalog, trust }) : null;
   const pkg = packageInfo ? JSON.parse(readFileSync(join(packagePath, 'package-manifest.json'), 'utf8')) : null;
   const { featureFlags, kimono } = detectFeatures(env, { rtk: pkg?.host === 'zoo-code' });
   if (pkg) {
@@ -290,7 +295,7 @@ export function planBootstrap({
         continue;
       }
       seen.add(artifact.target);
-      const result = artifactResult(projectRoot, packagePath, artifact, artifact.origin);
+      const result = artifactResult(projectRoot, packagePath, artifact, artifact.origin, trust);
       files.push(result.item);
       if (result.operation) operations.push(result.operation);
     }
@@ -342,6 +347,7 @@ export function planBootstrap({
     hosts,
     aikidoVersion,
     sourceRevision: pkg?.sourceRevision ?? null,
+    ...(trust === 'local' && pkg ? { trust, warnings: [...sourceWarnings(pkg.source), ...packageInfo.warnings] } : {}),
     featureFlags,
     kimono,
     files,
@@ -456,9 +462,10 @@ export function applyBootstrap({
   installedAt = new Date().toISOString(),
   catalog = loadCatalog(),
   env = process.env,
+  trust = 'verified',
 }) {
   if (!packageRoot) throw new Error('packageRoot is required to apply a bootstrap');
-  const plan = planBootstrap({ root, packageRoot, mode, hosts, projectName, aikidoVersion, catalog, env });
+  const plan = planBootstrap({ root, packageRoot, mode, hosts, projectName, aikidoVersion, catalog, env, trust });
   if (plan.alreadyInstalled) {
     const operations = PLAN_OPERATIONS.get(plan).operations.filter((operation) => operation.target === FEATURE_STATE_PATH);
     if (operations.length) {

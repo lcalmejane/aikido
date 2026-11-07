@@ -6,7 +6,9 @@ import {
 } from 'node:fs';
 import { dirname, join, posix, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { HOSTS, isSafeRelativePath } from '../lib/lock.mjs';
+import {
+  HOSTS, isPrivateTaskStorePath, isPrivateTaskStorePathWithin, isPrivateTaskStoreRoot, isSafeRelativePath,
+} from '../lib/lock.mjs';
 import { loadCatalog } from '../lib/catalog.mjs';
 import { NODE_BASELINE } from '../lib/node-runtime.mjs';
 
@@ -22,6 +24,9 @@ const COMMAND_DELIVERY = new Set([
 const AGENT_FORMATS = new Set(['claude-plugin', 'copilot', 'codex', 'kiro', 'antigravity', 'roomodes']);
 const PLUGIN_AGENT_FORMATS = new Set(['claude-plugin']);
 const CAPABILITIES = ['read', 'write', 'shell', 'delegate'];
+const PRIVATE_BOUNDARY_RUNTIME = [
+  'prompts/hard_points/system/structure/scripts/lib/private-task-store.mjs',
+];
 const CANONICAL_TOOLS = {
   Read: 'read', Grep: 'read', Glob: 'read',
   Edit: 'write', Write: 'write',
@@ -48,6 +53,7 @@ function within(root, path) {
 
 function assertSourcePath(path, type, root = REPO) {
   if (!isSafeRelativePath(path)) throw new Error(`Unsafe source path: ${path}`);
+  if (isPrivateTaskStorePathWithin(root, path)) throw new Error(`Private Task Store paths cannot be packaged: ${path}`);
   let absolute = root;
   const parts = path.split('/');
   let info;
@@ -65,19 +71,26 @@ function assertSourcePath(path, type, root = REPO) {
 function listFiles(directory) {
   return readdirSync(directory, { withFileTypes: true }).sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)).flatMap((entry) => {
     const absolute = join(directory, entry.name);
+    const path = relative(REPO, absolute).split(sep).join('/');
+    if (isPrivateTaskStorePathWithin(REPO, path) ||
+        (entry.isDirectory() && isPrivateTaskStoreRoot(absolute))) return [];
     if (entry.isSymbolicLink()) throw new Error(`Symbolic link in generated source tree: ${absolute}`);
     return entry.isDirectory() ? listFiles(absolute) : entry.isFile() ? [absolute] : [];
   });
 }
 
-function trackedPayload() {
-  const paths = execFileSync('git', ['ls-files', '-z', '--', 'prompts/hard_points', 'LICENSE', 'TRADEMARK.md'], {
+function trackedPayload(catalog) {
+  const tracked = execFileSync('git', ['ls-files', '-z', '--', 'prompts/hard_points', 'LICENSE', 'TRADEMARK.md'], {
     cwd: REPO,
     encoding: 'utf8',
-  }).split('\0').filter(Boolean).filter((path) => !path.endsWith('.test.mjs')).sort();
+  }).split('\0').filter(Boolean).filter((path) => !path.endsWith('.test.mjs'))
+    .filter((path) => !isPrivateTaskStorePath(path))
+    .filter((path) => existsSync(join(REPO, path))).sort();
+  const commandSources = catalog.commands.map((command) => command.source);
+  const paths = [...new Set([...tracked, ...commandSources, ...PRIVATE_BOUNDARY_RUNTIME])].sort();
   const hardPoints = paths.filter((path) => path.startsWith('prompts/hard_points/'));
-  // The payload is exactly the tracked hard_points tree plus the two legal notices; the file count
-  // is not pinned so the knowledge base can grow without touching the distribution.
+  // Include catalog command sources even when newly added and not yet tracked;
+  // all other payload files remain the tracked hard_points tree and legal notices.
   const legal = paths.filter((path) => !path.startsWith('prompts/hard_points/'));
   if (hardPoints.length === 0 || legal.length !== 2 || !paths.includes('LICENSE') || !paths.includes('TRADEMARK.md')) {
     throw new Error(`Unexpected tracked payload closure: ${hardPoints.length} hard points and ${legal.length} other files`);
@@ -265,6 +278,13 @@ function hostTools(format, profile) {
 }
 
 function agentInstructions(profile, format) {
+  const collaborationSource = format === 'claude-plugin' && !profile.projectSource
+    ? 'When using the bundled role, read `${CLAUDE_PLUGIN_ROOT}/payload/prompts/hard_points/system/orchestrator/swarm.md`; '
+      + 'for a project-pinned role use `prompts/hard_points/system/orchestrator/swarm.md`.'
+    : 'Read `prompts/hard_points/system/orchestrator/swarm.md` when delegating or receiving a collaboration brief.';
+  const collaboration = `${collaborationSource} Consider useful Swarm parallelism and peer/relay communication `
+    + 'only with verified executor tools. Retain context for permitted same-task follow-ups; clean reuse requires '
+    + 'a real verified host reset, otherwise use a fresh worker. Never widen this role\'s permissions.\n';
   const source = format === 'claude-plugin'
     ? profile.projectSource
       ? `Read \`${profile.source}\` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this `
@@ -277,7 +297,7 @@ function agentInstructions(profile, format) {
     ? `\n\nStay within these capabilities: ${profile.capabilities.join(', ')}.`
       + `${profile.capabilities.includes('write') ? '' : ' Do not edit files.'}`
     : '';
-  return `# ${profile.name}\n\n${source}\n\n${SEARCH_POLICY}\nFollow that file as your complete role definition, then perform the delegated task.${scope}\n`;
+  return `# ${profile.name}\n\n${source}\n\n${SEARCH_POLICY}\n${collaboration}\nFollow that file as your complete role definition, then perform the delegated task.${scope}\n`;
 }
 
 function yamlList(key, values) {
@@ -438,7 +458,7 @@ function claudePluginReadme(version) {
     + `back into this plugin package.\n\n`
     + `## Install\n\n`
     + `Add the marketplace pinned to the immutable release tag, then install the plugin:\n\n`
-    + `\`\`\`bash\n`
+    + `\`\`\`text\n`
     + `claude plugin marketplace add https://github.com/lcalmejane/aikido.git#aikido-dist-v${version}\n`
     + `claude plugin install aikido@aikido\n`
     + `\`\`\`\n\n`
@@ -500,7 +520,7 @@ export function buildDistribution({
     throw new Error('sourceRevision must be "uncommitted" or a full lowercase 40-character commit SHA');
   }
   if (!/^\d+\.\d+(\.\d+)?(-[0-9A-Za-z.-]+)?$/.test(version)) throw new Error('version must be a semantic version');
-  const payload = trackedPayload();
+  const payload = trackedPayload(catalog);
   const source = sourceRevision === 'uncommitted'
     ? { type: 'local', ref: 'workspace' }
     : { type: 'git', ref: 'github:lcalmejane/aikido', commit: sourceRevision };
@@ -572,15 +592,19 @@ export function buildDistribution({
       'distribution/lib/bootstrap-plan.mjs',
       'distribution/lib/catalog.mjs',
       'distribution/lib/features.mjs',
+      'distribution/lib/sync-hosts.mjs',
       'distribution/lib/lock.mjs',
       'distribution/lib/managed-blocks.mjs',
       'distribution/lib/node-runtime.mjs',
       'distribution/lib/package.mjs',
+      'distribution/lib/version.mjs',
       'distribution/lib/templates.mjs',
       'distribution/lib/update-plan.mjs',
       'distribution/scripts/bootstrap-plan.mjs',
       'distribution/scripts/build.mjs',
       'distribution/scripts/check-cli.mjs',
+      'distribution/scripts/sync-hosts.mjs',
+      'distribution/scripts/task.mjs',
       'distribution/scripts/update-plan.mjs',
       'distribution/scripts/validate-package.mjs',
       'distribution/lib/check-cli.mjs',
@@ -588,6 +612,12 @@ export function buildDistribution({
       const packagePath = path.replace(/^distribution\//, '');
       writeUnique(packagePath, readFileSync(assertSourcePath(path, 'file')), 'runtime');
     }
+    for (const file of ['index.mjs', 'index.d.ts', 'cli.mjs', 'private-plan-import.mjs']) {
+      const source = `prompts/hard_points/system/task-store/${file}`;
+      writeUnique(`lib/task-store/${file}`, readFileSync(assertSourcePath(source, 'file')), 'runtime');
+    }
+    // One detection implementation, shared with the project (prompts/.../system/host-sync/).
+    writeUnique('lib/host-detect.mjs', readFileSync(assertSourcePath('prompts/hard_points/system/host-sync/host-detect.mjs', 'file')), 'runtime');
     writeUnique('catalog.json', readFileSync(assertSourcePath('distribution/catalog.json', 'file')), 'runtime');
     writeUnique('RUNTIME.md', `# Runtime requirements\n\n`
       + `The shared project runtime uses stable Node.js ${NODE_BASELINE}+ and a command tool with access `
@@ -738,6 +768,7 @@ export function buildDistribution({
       qualification: host.qualification,
       version,
       runtimeContract: 1,
+      hostSync: 1,
       sourceRevision,
       source,
       commandDelivery: host.commandDelivery,

@@ -28,14 +28,55 @@ installed does not establish that its agent can execute the runtime.
 Claude Cowork plugins are installed to the user's Claude account. The same
 package can be uploaded through **Customize > Plugins > Add > Upload plugin**.
 
+## Install with npm
+
+The `@aikido/cli` package bundles every host package and detects the assistant
+CLIs installed on the machine, never by running them. Detection has three
+layers, reported per host with the evidence that proved it:
+
+1. **Machine**: a binary on `PATH`, or an editor extension (for example the
+   Codex and Zoo Code VS Code extensions).
+2. **Workspace proof**: a binary in the project's `node_modules/.bin`
+   (`workspace-binary`), or a directory that only one host creates
+   (`.claude`, `.codex`, `.kiro`).
+3. **Hints**: directories shared by several hosts (`.roo`, `.agents`,
+   `.github/agents`). A hint is listed in `hints` but never wrapped, because it
+   cannot tell the hosts apart.
+
+
+```text
+npx @aikido/cli detect
+npx @aikido/cli init            # plan only
+npx @aikido/cli init --yes      # apply the plan, then wrap every detected CLI
+npx @aikido/cli update --yes
+npx @aikido/cli sync            # pick up a CLI installed later
+```
+
+`init`, `update` and `uninstall` always print the plan first and write nothing
+without `--yes`. After each run the package runtime is kept in
+`.aikido/state/cli-runtime/<host>/` (ignored by Git). `/skill-manage`,
+`/create-skill`, `/create-command`, `/create-persona` and `/maj-aikido` then call
+`prompts/hard_points/system/host-sync/host-sync.mjs`, so a new or updated Skill,
+agent or command is available to every installed CLI immediately. The package
+is built by `distribution/npm/scripts/prepack.mjs` from the tagged sources.
+
+## Install or update from a local folder
+
+`aikido init|update --from <folder>` and `bootstrap-plan.mjs` / `update-plan.mjs --package <folder> --trust local`
+use a folder you already downloaded: a `dist` branch clone, an extracted release, one host package, or a source
+checkout (built into `.aikido/state/source-build/`). With `--trust local` the identity checks (ledger sums, official
+commit, official repository) are reported as `warnings` instead of blocking, and the lock records the bytes really
+installed. The plan reports `versionChange` (`initial`, `upgrade`, `same`, `downgrade`, `unknown`): a regression is
+announced and applied only after you confirm the exact plan. Safety checks always block. See
+[`npm/README.md`](../npm/README.md).
+
 ## Get a package
 
 Use the immutable AI-KIDO distribution tag and select the package directory
 for the assistant:
 
-```bash
-git clone --depth 1 --branch aikido-dist-v1.5.2 \
-  https://github.com/lcalmejane/aikido.git aikido-dist
+```text
+git clone --depth 1 --branch aikido-dist-v1.5.2  https://github.com/lcalmejane/aikido.git aikido-dist
 ```
 
 The package directories are `claude-code/`, `claude-cowork/`,
@@ -44,9 +85,8 @@ The package directories are `claude-code/`, `claude-cowork/`,
 
 For Claude Code, add the pinned marketplace and install the plugin:
 
-```bash
-claude plugin marketplace add \
-  https://github.com/lcalmejane/aikido.git#aikido-dist-v1.5.2
+```text
+claude plugin marketplace add  https://github.com/lcalmejane/aikido.git#aikido-dist-v1.5.2
 claude plugin install aikido@aikido
 ```
 
@@ -59,18 +99,15 @@ package outside the target project and follow its `README.md`.
 The package runtime creates a reviewable installation plan. Select the target
 project and a `STANDARD`, `LIGHT` or `UNSET` entry point:
 
-```bash
-node /path/to/selected-package/scripts/bootstrap-plan.mjs \
-  --root /path/to/project --package /path/to/selected-package --mode STANDARD
+```text
+node /path/to/selected-package/scripts/bootstrap-plan.mjs  --root /path/to/project --package /path/to/selected-package --mode STANDARD
 ```
 
 Review the listed project files, then apply using the plan ID returned by the
 command:
 
-```bash
-node /path/to/selected-package/scripts/bootstrap-plan.mjs \
-  --root /path/to/project --package /path/to/selected-package \
-  --mode STANDARD --apply --confirm <plan-id>
+```text
+node /path/to/selected-package/scripts/bootstrap-plan.mjs  --root /path/to/project --package /path/to/selected-package  --mode STANDARD --apply --confirm <plan-id>
 ```
 
 After installation, run the AI-KIDO initialization command in the selected
@@ -82,9 +119,8 @@ Installing a newer assistant plugin and updating the AI-KIDO method in a
 project are separate actions. To update the project, point the new package's
 runtime at the existing project:
 
-```bash
-node /path/to/new-package/scripts/update-plan.mjs \
-  --root /path/to/project --package /path/to/new-package
+```text
+node /path/to/new-package/scripts/update-plan.mjs  --root /path/to/project --package /path/to/new-package
 ```
 
 Review the plan and resolve any requested choices before applying it with
@@ -110,11 +146,9 @@ existing runtime directory without reviewing/backing up its contents.
 To remove AI-KIDO integration files while keeping the project's Memory Bank,
 preview and confirm an uninstall with the same runtime:
 
-```bash
-node /path/to/package/scripts/update-plan.mjs \
-  --root /path/to/project --uninstall
-node /path/to/package/scripts/update-plan.mjs \
-  --root /path/to/project --uninstall --apply --confirm <plan-id>
+```text
+node /path/to/package/scripts/update-plan.mjs  --root /path/to/project --uninstall
+node /path/to/package/scripts/update-plan.mjs  --root /path/to/project --uninstall --apply --confirm <plan-id>
 ```
 
 Project knowledge remains in the project when an assistant plugin or workspace
@@ -137,11 +171,9 @@ infer the caller from existing host directories or the selected model.
 
 Preview before applying:
 
-```bash
-node /path/to/selected-package/scripts/check-cli.mjs \
-  --root /path/to/project --host <catalog-host-id> --check
-node /path/to/selected-package/scripts/check-cli.mjs \
-  --root /path/to/project --host <catalog-host-id> --repair --dry-run
+```text
+node /path/to/selected-package/scripts/check-cli.mjs  --root /path/to/project --host <catalog-host-id> --check
+node /path/to/selected-package/scripts/check-cli.mjs  --root /path/to/project --host <catalog-host-id> --repair --dry-run
 ```
 
 Apply only after approval by repeating the second command without

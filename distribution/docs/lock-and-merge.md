@@ -93,9 +93,8 @@ Before changing targets, apply stores their prior bytes, existence and permissio
 are transactional: detected failures roll back already-applied operations, and the lock is written
 last. The returned backup path can also restore the prior state after interruption:
 
-```bash
-node /path/to/package/scripts/update-plan.mjs \
-  --root /path/to/project --recover .aikido/backups/updates/<update-id>
+```text
+node /path/to/package/scripts/update-plan.mjs  --root /path/to/project --recover .aikido/backups/updates/<update-id>
 ```
 
 Recovery verifies the backup manifest and every stored hash, restores the lock last, and retains the

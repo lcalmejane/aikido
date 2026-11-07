@@ -1,6 +1,12 @@
 {
   "schemaVersion": 1,
   "commands": [
+    { "name": "aikido-import-plan", "source": "prompts/hard_points/commands/aikido-import-plan.md" },
+    { "name": "aikido-launch-task", "source": "prompts/hard_points/commands/aikido-launch-task.md" },
+    { "name": "aikido-plan-task", "source": "prompts/hard_points/commands/aikido-plan-task.md" },
+    { "name": "aikido-resume-task", "source": "prompts/hard_points/commands/aikido-resume-task.md" },
+    { "name": "aikido-schedule-task", "source": "prompts/hard_points/commands/aikido-schedule-task.md" },
+    { "name": "aikido-show-tasks", "source": "prompts/hard_points/commands/aikido-show-tasks.md" },
     { "name": "analyse-aikido", "source": "prompts/hard_points/commands/analyse-aikido.md" },
     { "name": "analyse-project", "source": "prompts/hard_points/commands/analyse-project.md" },
     { "name": "check-claude", "source": "prompts/hard_points/commands/check-claude.md" },
@@ -13,6 +19,7 @@
     { "name": "create-persona", "source": "prompts/hard_points/commands/create-persona.md" },
     { "name": "create-search-plan", "source": "prompts/hard_points/commands/create-search-plan.md" },
     { "name": "create-skill", "source": "prompts/hard_points/commands/create-skill.md" },
+    { "name": "create-workflow", "source": "prompts/hard_points/commands/create-workflow.md" },
     { "name": "download-site", "source": "prompts/hard_points/system/web/commands/download-site.md" },
     { "name": "init-aikido", "source": "prompts/hard_points/commands/init-aikido.md" },
     { "name": "init-glossaire", "source": "prompts/hard_points/commands/init-glossaire.md" },
@@ -22,6 +29,8 @@
     { "name": "maj-aikido", "source": "prompts/hard_points/commands/maj-aikido.md" },
     { "name": "optimize-command-with-aikido-agents", "source": "prompts/hard_points/commands/optimize-command-with-aikido-agents.md" },
     { "name": "reindex-projet", "source": "prompts/hard_points/commands/reindex-projet.md" },
+    { "name": "show-plan", "source": "prompts/hard_points/commands/show-plan.md" },
+    { "name": "show-workflow", "source": "prompts/hard_points/commands/show-workflow.md" },
     { "name": "skill-manage", "source": "prompts/hard_points/commands/skill-manage.md" },
     { "name": "validate-analyse-plan", "source": "prompts/hard_points/commands/validate-analyse-plan.md" },
     { "name": "validate-search-plan", "source": "prompts/hard_points/commands/validate-search-plan.md" }
@@ -30,8 +39,10 @@
     { "name": "analyse", "source": "prompts/hard_points/system/analyse" },
     { "name": "maj", "source": "prompts/hard_points/system/maj" },
     { "name": "orchestrator", "source": "prompts/hard_points/system/orchestrator" },
+    { "name": "refactoring", "source": "prompts/hard_points/system/refactoring" },
     { "name": "search", "source": "prompts/hard_points/system/search" },
     { "name": "structure", "source": "prompts/hard_points/system/structure" },
+    { "name": "task-store", "source": "prompts/hard_points/system/task-store" },
     { "name": "web", "source": "prompts/hard_points/system/web" }
   ],
   "agents": [
@@ -47,6 +58,7 @@
     { "name": "agent-aikido-orchestrator", "source": "prompts/hard_points/agents/agent-aikido-orchestrator.md", "inheritTools": true, "topLevelOnly": true },
     { "name": "agent-aikido-projet-index", "source": "prompts/hard_points/agents/agent-aikido-projet-index.md" },
     { "name": "agent-aikido-raci-delegator", "source": "prompts/hard_points/agents/agent-aikido-raci-delegator.md" },
+    { "name": "agent-aikido-refactoring", "source": "prompts/hard_points/agents/agent-aikido-refactoring.md" },
     { "name": "agent-aikido-truth-evaluator", "source": "prompts/hard_points/agents/agent-aikido-truth-evaluator.md" },
     { "name": "agent-aikido-update-controller", "source": "prompts/hard_points/agents/agent-aikido-update-controller.md" },
     { "name": "agent-aikido-validator", "source": "prompts/hard_points/agents/agent-aikido-validator.md" }
@@ -160,15 +172,15 @@
       "commandDelivery": "native-command",
       "commandTarget": ".roo/commands",
       "commandSuffix": ".md",
-      "systemSkillTarget": null,
+      "systemSkillTarget": ".roo/skills",
       "agentFormat": "roomodes",
       "agentTarget": ".roomodes",
       "projectCommandFiles": true,
-      "projectSystemSkillFiles": false,
+      "projectSystemSkillFiles": true,
       "projectAgentFiles": true,
       "workspace": {
         "commands": { "target": ".roo/commands", "layout": "file", "suffix": ".md", "delivery": "native-command" },
-        "skills": null,
+        "skills": { "target": ".roo/skills" },
         "agents": { "target": ".roomodes", "layout": "modes", "format": "roomodes" }
       }
     },
