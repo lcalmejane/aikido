@@ -13,15 +13,20 @@ It enables Claude to query, filter, and retrieve relevant information from docum
 
 ## Instructions (level 2)
 1. Receive the search query (keyword, regular expression, or semantic description).
-2. Determine the scope:
+2. Apply the [Scope-first Search Rule](scope-first.md) and determine the scope:
    - **Memory Bank**: traverse files under `prompts/` (index, hard_points, gen, etc.).
    - **Code base**: traverse project source files (e.g. `*.py`, `*.js`, `*.md`).
-3. Apply search algorithms:
-   - Apply the [Kimono capability gate](#kimono-capability-gate) first.
+   Always exclude `.private/`, `.task-store/`, `aikido/tasks/`, and any custom
+   directory identified by its Task Store `store.json` schema, even when the
+   requested scope explicitly includes it or a symlink points to it.
+   Never return private Task Store content in results, excerpts, indexes, or
+   summaries.
+3. Apply the [Kimono capability gate](#kimono-capability-gate).
+4. Apply search algorithms:
    - Simple text search.
    - Regular expression search.
    - Semantic search (via embeddings, if available).
-4. Return a structured result:
+5. Return a structured result:
    ```json
    {
      "matches": [
@@ -117,10 +122,10 @@ permission or connection error, timeout, or insufficient/truncated evidence
 triggers an **explicitly reported** fallback. Distinguish no matches from missing
 coverage; never claim an exhaustive result based on incomplete retrieval.
 Fallback order: available code intelligence/LSP for symbols, then scoped
-Glob/Grep/Read or project-index. Native tools remain available for exact
-verification, fresh filesystem content and operations Kimono does not cover.
-Use RTK for eligible fallback shell commands only when its own flag is ON.
-Do not repeat already sufficient retrieval through a second backend.
+native Glob/Grep/Read or project-index actions; these are host tool calls, not
+shell commands or shell pipelines. The Node search engine remains available for
+exact verification, fresh filesystem content and operations Kimono does not
+cover. Do not repeat already sufficient retrieval through a second backend.
 
 Reports identify the chosen backend, flag/detection status and fallback reason.
 RTK output gains and Kimono retrieval gains remain separate and unmeasured
