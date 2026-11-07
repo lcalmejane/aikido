@@ -12,3 +12,5 @@ This project uses AI-KIDO {{AIKIDO_VERSION}}, an AI Memory Bank construction met
 - **Learned rules**: read [`prompts/gen/learned.md`](prompts/gen/learned.md) at the start of every request,
   together with the hard points (mandatory, even when it holds no rule yet). Maintained by `/learn`.
 - **Catalog**: [agents](agents_list.md) | [commands](commands_list.md) | [skills](skills_list.md)
+- **Search**: apply the [Kimono capability gate](prompts/hard_points/system/search/SKILL.md).
+  Prefer exposed Kimono retrieval tools; keep native search for verification or explicit fallback.

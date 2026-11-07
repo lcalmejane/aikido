@@ -210,18 +210,22 @@ function commandDescription(source, name) {
   return (description ?? `Run the AI-KIDO ${name} command`).replaceAll('\\', '\\\\').replaceAll('"', '\\"');
 }
 
+const SEARCH_POLICY = 'Before searching, apply `prompts/hard_points/system/search/SKILL.md#kimono-capability-gate`: '
+  + 'prefer Kimono only when its tools are actually exposed to this executor; keep native search for verification or explicit fallback. '
+  + 'Never assume parent MCP tools are inherited or widen tool permissions.\n';
+
 export function canonicalCommandWrapper(command, sourceText, invocation = `/${command.name}`) {
   return `---\nname: ${command.name}\ndescription: "${commandDescription(sourceText, command.name)}"\n---\n\n`
     + `# ${invocation}\n\n`
     + `Read and execute \`${command.source}\` from the initialized project's AI-KIDO Memory Bank.`
-    + `\n\nRun the AI-KIDO bootstrap first if this project has no \`prompts/hard_points/\` directory.\n`;
+    + `\n\nRun the AI-KIDO bootstrap first if this project has no \`prompts/hard_points/\` directory.\n\n${SEARCH_POLICY}`;
 }
 
 export function nativeCommandWrapper(command, sourceText) {
   return `---\ndescription: "${commandDescription(sourceText, command.name)}"\n---\n\n`
     + `# /${command.name}\n\n`
     + `Read and execute \`${command.source}\` from the initialized project's AI-KIDO Memory Bank.`
-    + `\n\nRun the AI-KIDO bootstrap first if this project has no \`prompts/hard_points/\` directory.\n`;
+    + `\n\nRun the AI-KIDO bootstrap first if this project has no \`prompts/hard_points/\` directory.\n\n${SEARCH_POLICY}`;
 }
 
 export function agentProfile(agent, sourceRoot = REPO) {
@@ -272,7 +276,7 @@ function agentInstructions(profile, format) {
     ? `\n\nStay within these capabilities: ${profile.capabilities.join(', ')}.`
       + `${profile.capabilities.includes('write') ? '' : ' Do not edit files.'}`
     : '';
-  return `# ${profile.name}\n\n${source}\n\nFollow that file as your complete role definition, then perform the delegated task.${scope}\n`;
+  return `# ${profile.name}\n\n${source}\n\n${SEARCH_POLICY}\nFollow that file as your complete role definition, then perform the delegated task.${scope}\n`;
 }
 
 function yamlList(key, values) {
@@ -517,13 +521,28 @@ export function buildDistribution({
     const projectFiles = [];
     const payloadFiles = [];
     const outputPaths = new Set();
-    const writeUnique = (path, contents, role = 'adapter', projectTarget = null, origin = 'adapter', policy = 'three-way') => {
+    const writeUnique = (
+      path,
+      contents,
+      role = 'adapter',
+      projectTarget = null,
+      origin = 'adapter',
+      policy = 'three-way',
+      feature = null,
+    ) => {
       if (outputPaths.has(path)) throw new Error(`${hostId}: duplicate generated target ${path}`);
       outputPaths.add(path);
       const file = { path, role, sha256: createHash('sha256').update(contents).digest('hex') };
       writeOutput(packageRoot, path, contents, outputFiles, role);
       if (projectTarget) {
-        projectFiles.push({ source: path, target: projectTarget, sha256: file.sha256, origin, policy });
+        projectFiles.push({
+          source: path,
+          target: projectTarget,
+          sha256: file.sha256,
+          origin,
+          policy,
+          ...(feature ? { feature } : {}),
+        });
       }
       return file;
     };
@@ -548,6 +567,7 @@ export function buildDistribution({
     for (const path of [
       'distribution/lib/bootstrap-plan.mjs',
       'distribution/lib/catalog.mjs',
+      'distribution/lib/features.mjs',
       'distribution/lib/lock.mjs',
       'distribution/lib/managed-blocks.mjs',
       'distribution/lib/package.mjs',
@@ -585,6 +605,15 @@ export function buildDistribution({
     }
     if (hostId === 'zoo-code') {
       writeUnique('README.md', readFileSync(assertSourcePath('distribution/adapters/zoo-code/README.md', 'file')), 'adapter');
+      writeUnique(
+        'adapters/zoo-code/rtk.md',
+        readFileSync(assertSourcePath('distribution/adapters/zoo-code/rtk.md', 'file')),
+        'adapter',
+        '.roo/rules/rtk.md',
+        'adapter',
+        'three-way',
+        'rtk',
+      );
     }
     if (hostId === 'roo-code-legacy') {
       writeUnique('README.md', readFileSync(assertSourcePath('distribution/adapters/roo-code-legacy/README.md', 'file')), 'adapter');

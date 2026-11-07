@@ -8,6 +8,7 @@ import {
   BASELINE_DIR, LOCK_PATH, LOCK_SCHEMA_VERSION, MODES, classify, isSafeRelativePath, validateLock,
 } from './lock.mjs';
 import { loadCatalog, renderCatalogEntries } from './catalog.mjs';
+import { detectFeatures, planFeatureFlags } from './features.mjs';
 import { blockHash, findBlock, removeBlock, upsertBlock } from './managed-blocks.mjs';
 import { validatePackage } from './package.mjs';
 import { loadManifest, readTemplate, render, selectTemplates, validateManifest } from './templates.mjs';
@@ -49,9 +50,12 @@ function candidateFromArtifact(packageRoot, artifact) {
   };
 }
 
-function candidatesFromPackage(root, packageRoot, pkg, { mode, hosts, catalog }) {
+function candidatesFromPackage(root, packageRoot, pkg, { mode, hosts, catalog, featureFlags }) {
   const candidates = [];
-  for (const artifact of [...pkg.payloadFiles, ...pkg.projectFiles]) {
+  for (const artifact of [
+    ...pkg.payloadFiles,
+    ...pkg.projectFiles.filter((entry) => !entry.feature || featureFlags[entry.feature] === 'ON'),
+  ]) {
     candidates.push(candidateFromArtifact(packageRoot, artifact));
   }
 
@@ -292,6 +296,7 @@ export function planUpdate({
   packageRoot,
   catalog = loadCatalog(),
   keepLocal = [],
+  env = process.env,
 }) {
   if (!root || !packageRoot) throw new Error('root and packageRoot are required to plan an update');
   if (!Array.isArray(keepLocal) || keepLocal.some((path) => !isSafeRelativePath(path))
@@ -309,10 +314,12 @@ export function planUpdate({
     throw new Error('Update package host must match the single host recorded in the project lock');
   }
 
+  const { featureFlags, kimono } = detectFeatures(env, { rtk: pkg.host === 'zoo-code' });
   const { candidates, blocks } = candidatesFromPackage(projectRoot, packagePath, pkg, {
     mode: lock.mode,
     hosts: lock.hosts,
     catalog,
+    featureFlags,
   });
   const files = [];
   const operations = [];
@@ -340,6 +347,12 @@ export function planUpdate({
   }
   for (const oldEntry of lock.files) {
     if (!candidatePaths.has(oldEntry.path)) processRemovedFile(projectRoot, oldEntry, files, operations, nextFiles);
+  }
+
+  if (Object.keys(featureFlags).length) {
+    const featureState = planFeatureFlags(projectRoot, featureFlags);
+    files.push(featureState.item);
+    if (featureState.operation) operations.push(featureState.operation);
   }
 
   const nextBlocks = new Map(lock.managedBlocks.map((entry) => [`${entry.path}#${entry.id}`, entry]));
@@ -382,6 +395,8 @@ export function planUpdate({
     currentVersion: lock.aikido.version,
     nextVersion: pkg.version,
     sourceRevision: pkg.sourceRevision,
+    featureFlags,
+    kimono,
     files,
     summary,
     conflicts,
@@ -475,11 +490,11 @@ export function backupOperations(projectRoot, operations, kind = 'update') {
   }
 }
 
-export function applyUpdate({ root, packageRoot, expectedPlanId, catalog = loadCatalog(), keepLocal = [] }) {
+export function applyUpdate({ root, packageRoot, expectedPlanId, catalog = loadCatalog(), keepLocal = [], env = process.env }) {
   if (typeof expectedPlanId !== 'string' || !expectedPlanId) {
     throw new Error('expectedPlanId is required to apply an update');
   }
-  const plan = planUpdate({ root, packageRoot, catalog, keepLocal });
+  const plan = planUpdate({ root, packageRoot, catalog, keepLocal, env });
   if (expectedPlanId !== plan.planId) throw new Error(`Confirmation does not match the current plan (expected ${plan.planId})`);
   if (!plan.ready) {
     throw new Error(`Update plan contains conflicts:\n${plan.conflicts.map((item) => `${item.target}: ${item.reason}`).join('\n')}`);

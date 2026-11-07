@@ -33,6 +33,21 @@ Everything else (`prompts/gen/**` content, project code, user sections of `AGENT
 Rules: project-relative POSIX paths only (no absolute path, `~`, drive letter, `..`, backslash);
 no user name, machine path, token or secret; written atomically and only after the installation succeeded.
 
+Host-detected optional features are machine-local and stored separately in the
+Git-ignored `.aikido/state/features.json`; they are not part of the portable
+lock. Zoo Code installation and update set `flags.rtk` to `ON` when
+`rtk --version` succeeds and `OFF` only when the executable is absent;
+other detection errors are reported. `/check-cli` refreshes that flag for Zoo
+Code, or for any caller with `--detect-features`. Command optimization and
+creation use this explicit gate; `--dry-run` detects without writing state.
+For every host, bootstrap, update and check accept a current tool inventory as
+`AIKIDO_TOOLS` (JSON array of exact callable names) or `--tools-file`. A complete
+single-provider snapshot/search/file trio sets `flags.kimono: ON`; a supplied
+inventory without it sets `OFF`. No inventory reports `unknown` and preserves
+the existing flag. Local and host-connected remote MCP tools are equivalent;
+these scripts do not open connections, parse endpoint configs or read secrets.
+RTK and Kimono changes are merged in one feature-state transaction.
+
 ## 3. Baseline and hash-based update decisions
 
 The lock stores each installed file's base hash; `.aikido/state/baseline/` stores the corresponding

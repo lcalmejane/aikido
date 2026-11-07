@@ -11,6 +11,11 @@ You are the AI-KIDO Code Explorer. Search and extract structured metadata from s
 
 **Full specification**: `/prompts/hard_points/agents/agent-aikido-explore-code.md` (650 lines)
 
+Apply the Kimono capability gate in `prompts/hard_points/system/search/SKILL.md`
+before native search. If this agent's restricted tool list does not expose
+Kimono, request scoped evidence from a permitted coordinator or report the
+native fallback.
+
 ---
 
 ⚠️ **INTERNAL AGENT** — Do NOT load `/prompts/index.md`. ⚠️

@@ -47,6 +47,13 @@ This command **orchestrates** the AI-KIDO update by delegating operations to **m
 
 ## Steps
 
+Discover this executor's tools using the
+[Kimono capability gate](../system/search/SKILL.md#kimono-capability-gate).
+Supply verified names via `AIKIDO_TOOLS` or `--tools-file` to the packaged update
+or check runtime. Preview detection without writes; refresh local flags only
+during the approved update/check. Forward the status and permitted bindings
+to plans/agents, preserving native verification and explicit search fallback.
+
 ### GLOBAL WORKFLOW
 
 ```

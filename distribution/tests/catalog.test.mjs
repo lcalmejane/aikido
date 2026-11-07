@@ -152,6 +152,24 @@ test('every enabled host package generates a native wrapper for every agent', ()
       }
     }
     const dist = (path) => readFileSync(join(root, 'dist', path), 'utf8');
+    for (const host of ['claude-code', 'copilot-vscode', 'zoo-code']) {
+      const source = (path) => dist(`${host}/payload/prompts/hard_points/${path}`);
+      const gate = source('system/search/SKILL.md');
+      assert.match(gate, /aikido_snapshot.*aikido_search.*aikido_file/s);
+      assert.match(gate, /If tools are restricted in a subagent, ask the coordinator/);
+      assert.match(gate, /explicitly reported.*fallback/s);
+      assert.match(gate, /Do not replace a restricted profile with unrestricted tool/);
+      const bank = source('agents/agent-aikido-explore-bank.md');
+      assert.match(bank, /KIMONO FIRST/);
+      assert.doesNotMatch(bank, /NEVER.*check for MCP|ANY MCP tool|GREP ONLY.*NO MCP/);
+      const code = source('agents/agent-aikido-explore-code.md');
+      assert.match(code, /Apply the Kimono gate first/);
+      assert.doesNotMatch(code, /Your workflow is ALWAYS: Tech detection/);
+      const all = source('agents/agent-aikido-explore-all.md');
+      assert.match(all, /Kimono gate → covered retrieval, or native fallback/);
+      assert.doesNotMatch(all, /Never sequential|sole purpose is to launch 2 agents/);
+      assert.match(source('commands/create-command.md'), /Apply the Kimono capability gate first/);
+    }
     assert.match(dist('claude-code/agents/agent-aikido-validator.md'), /^---\nname: agent-aikido-validator\ndescription: ".+"\ntools: Read, Grep, Glob\nmodel: inherit\n---/);
     assert.ok(dist('claude-cowork/agents/agent-aikido-fusion.md').includes('${CLAUDE_PLUGIN_ROOT}/payload/'));
     assert.ok(!/^tools:/m.test(dist('claude-code/agents/agent-aikido-orchestrator.md')));

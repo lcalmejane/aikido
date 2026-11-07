@@ -2,6 +2,7 @@
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { realpathSync } from 'node:fs';
+import { toolInventoryEnvironment } from '../lib/features.mjs';
 import {
   applyMigration, applyUninstall, applyUpdate, planMigration, planUninstall, planUpdate, restoreUpdateBackup,
 } from '../lib/update-plan.mjs';
@@ -83,10 +84,10 @@ if (process.argv[1] && realpathSync(resolve(process.argv[1])) === realpathSync(f
           if (!plan.ready) process.exitCode = 2;
         }
       } else if (options.flags.has('--apply')) {
-        const result = applyUpdate({ root, packageRoot, expectedPlanId: options['--confirm'], keepLocal });
+        const result = applyUpdate({ root, packageRoot, expectedPlanId: options['--confirm'], keepLocal, env: toolInventoryEnvironment(process.env, options['--tools-file']) });
         process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
       } else {
-        const plan = planUpdate({ root, packageRoot, keepLocal });
+        const plan = planUpdate({ root, packageRoot, keepLocal, env: toolInventoryEnvironment(process.env, options['--tools-file']) });
         process.stdout.write(`${JSON.stringify(plan, null, 2)}\n`);
         if (!plan.ready) process.exitCode = 2;
       }

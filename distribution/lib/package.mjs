@@ -149,6 +149,7 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
     'lib/bootstrap-plan.mjs',
     'lib/check-cli.mjs',
     'lib/catalog.mjs',
+    'lib/features.mjs',
     'lib/lock.mjs',
     'lib/managed-blocks.mjs',
     'lib/package.mjs',
@@ -452,9 +453,17 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
     targets.add(entry.target);
     if (!['three-way', 'create-only'].includes(entry.policy)) error(`invalid project file policy: ${entry.target}`);
     if (!['template', 'generated', 'adapter', 'payload'].includes(entry.origin)) error(`invalid project file origin: ${entry.target}`);
+    if (entry.feature !== undefined
+      && (entry.feature !== 'rtk' || pkg.host !== 'zoo-code' || entry.target !== '.roo/rules/rtk.md')) {
+      error(`invalid optional project feature: ${entry.target}`);
+    }
     const packaged = ledger.get(entry.source);
     if (!packaged || packaged.sha256 !== entry.sha256) error(`project file source/hash mismatch: ${entry.source}`);
     else if (['payload', 'template'].includes(packaged.role)) error(`project file must point to an adapter artifact: ${entry.source}`);
+  }
+  if (pkg.host === 'zoo-code') {
+    const rtkRules = pkg.projectFiles.filter((entry) => entry.feature === 'rtk');
+    if (rtkRules.length !== 1) error('Zoo Code package must include exactly one optional RTK rules file');
   }
   let templates = null;
   const templateRoot = join(root, 'templates');

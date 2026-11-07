@@ -34,7 +34,61 @@ runtime directories exist. Do not search unrelated plugin caches or use
 a temporary build directory. If neither package root, runtime nor catalog is
 available, stop and report that fact; do not reconstruct wrappers by hand.
 
-First run a read-only audit:
+For every host, first discover the current executor's tools following the
+[Kimono capability gate](../system/search/SKILL.md#kimono-capability-gate).
+Pass the complete, verified inventory as `AIKIDO_TOOLS` (a JSON array of exact
+callable names) or `--tools-file <inventory.json>`. A connected remote MCP is
+eligible only when the host exposes its tools; a configured URL is not proof.
+The runtime reports `kimono.status` and `kimono.tools` and refreshes the local
+`kimono` flag only with a supplied inventory. No inventory means `unknown`,
+without clearing an existing flag. The same input is accepted by packaged
+bootstrap and update; none of these scripts opens MCP connections or reads secrets.
+`--dry-run` leaves both Kimono and RTK state untouched.
+
+For `zoo-code`, the check detects RTK by running `rtk --version` and records
+`rtk: ON` or `rtk: OFF` in the local, Git-ignored
+`.aikido/state/features.json`. Updating this file, with RTK and/or Kimono flags
+merged together, is the only project write performed by a normal check;
+`--repair --dry-run` does not write it. Install and update use
+the same detection to include or remove `.roo/rules/rtk.md`.
+
+## RTK detection for command optimization
+
+`--detect-features` enables the same RTK detection for **any calling host**,
+including Claude Code, Codex and Copilot. Without this option or a supplied
+Kimono inventory, other hosts' normal checks remain read-only. Use this gate from
+[/optimize-command-with-aikido-agents](optimize-command-with-aikido-agents.md)
+and [/create-command](create-command.md), using the validated runtime and
+caller identity described above:
+
+```bash
+node "<distribution-root>/scripts/check-cli.mjs" \
+  --root "<project-root>" --host "<calling-host-id>" --check --detect-features
+```
+
+Add `--dry-run` to detect without writing, including during analysis before
+the user selects a dry-run or approves changes. Read `featureFlags.rtk` from
+the JSON result; never trust a stale saved flag or infer RTK from host/model.
+Pass the current tool inventory too, and apply the shared Kimono gate before
+recommending search substitutions. Keep Kimono retrieval and RTK shell-output
+opportunities separate; preserve native verification and explicit fallbacks.
+Only a missing executable means `OFF`; execution errors must stop detection
+and be reported, not treated as absence. Preserve other flags and the portable
+lock. This gate does not install RTK, hooks or the Zoo Code rule.
+
+When `ON`, consider RTK as a separate shell-output optimization, not an agent:
+use it only for supported commands whose reduced output preserves the required
+result. Check support with `rtk --help`; keep native tools and unsupported
+commands unchanged. Never compress output consumed by a parser, exact-content
+comparison or exhaustive inventory. Avoid double-prefixing `rtk` and leave
+existing rewrite hooks intact. When `OFF`, use original commands without RTK.
+Generated commands must retain this runtime condition, never hard-code the
+current machine's `ON` state or require RTK on another installation. Include
+the flag, eligible substitutions, skipped commands and reasons in optimization
+reports. Report RTK gains separately from agent gains; use measurements when
+available (`rtk gain`), otherwise mark them unmeasured.
+
+First run the audit:
 
 ```bash
 node "<distribution-root>/scripts/check-cli.mjs" \
@@ -60,8 +114,9 @@ node "<distribution-root>/scripts/check-cli.mjs" \
   --root "<project-root>" --host "<calling-host-id>" --repair
 ```
 
-The engine only reads Markdown, the distribution catalog, templates, the
-project lock and wrapper configuration. It never executes installed skill
+Apart from the feature-state detection above, the engine only reads
+Markdown, the distribution catalog, templates, the project lock and wrapper
+configuration. It never executes installed skill
 scripts, install hooks, providers, MCP configuration or secrets. It writes
 only the selected host's declared wrapper and instruction surfaces. Generated
 blocks are marked; updates replace only those blocks. Recognizable legacy

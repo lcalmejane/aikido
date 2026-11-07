@@ -1,10 +1,10 @@
 import { after, before, test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  chmodSync, cpSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, unlinkSync, writeFileSync,
+  chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, unlinkSync, writeFileSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { delimiter, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { applyBootstrap, planBootstrap } from '../lib/bootstrap-plan.mjs';
@@ -14,6 +14,7 @@ import { buildDistribution } from '../scripts/build.mjs';
 
 let workspace;
 let packageRoot;
+let zooCodePackage;
 let packageRoots;
 
 before(() => {
@@ -21,6 +22,7 @@ before(() => {
   const output = join(workspace, 'dist');
   const report = buildDistribution({ outDir: output, sourceRevision: 'uncommitted' });
   packageRoot = join(output, 'claude-code');
+  zooCodePackage = join(output, 'zoo-code');
   packageRoots = report.hosts.filter((host) => host.generated).map((host) => join(output, host.host));
 });
 
@@ -35,6 +37,119 @@ const packageOptions = (root) => ({
   packageRoot,
   mode: 'STANDARD',
   projectName: 'Example project',
+});
+
+function rtkEnvironment(name, enabled) {
+  const bin = join(workspace, name);
+  mkdirSync(bin, { recursive: true });
+  if (enabled) {
+    const command = join(bin, 'rtk');
+    writeFileSync(command, '#!/bin/sh\nprintf "rtk 1.1.0\\n"\n');
+    chmodSync(command, 0o755);
+  }
+  return { ...process.env, PATH: enabled ? `${bin}${delimiter}${process.env.PATH ?? ''}` : bin };
+}
+
+test('Zoo Code bootstrap installs the RTK rule only when detected and records the local flag', () => {
+  const root = newProject();
+  try {
+    const options = {
+      ...packageOptions(root),
+      packageRoot: zooCodePackage,
+      env: rtkEnvironment('rtk-on', true),
+    };
+    const plan = planBootstrap(options);
+    assert.equal(plan.ready, true, JSON.stringify(plan.conflicts));
+    assert.ok(plan.files.some(({ target, action }) => target === '.roo/rules/rtk.md' && action === 'create'));
+    assert.ok(plan.files.some(({ target, action, value }) => (
+      target === '.aikido/state/features.json' && action === 'create' && value === 'ON'
+    )));
+
+    applyBootstrap({ ...options, expectedPlanId: plan.planId });
+    assert.match(readFileSync(join(root, '.roo/rules/rtk.md'), 'utf8'), /prefix supported commands with `rtk`/);
+    assert.deepEqual(
+      JSON.parse(readFileSync(join(root, '.aikido/state/features.json'), 'utf8')),
+      { schemaVersion: 1, flags: { rtk: 'ON' } },
+    );
+    const lock = JSON.parse(readFileSync(join(root, '.aikido/lock.json'), 'utf8'));
+    assert.ok(lock.files.some(({ path }) => path === '.roo/rules/rtk.md'));
+    assert.ok(!lock.files.some(({ path }) => path === '.aikido/state/features.json'));
+
+    const changedFeaturePlan = planBootstrap({
+      ...options,
+      env: rtkEnvironment('rtk-later-off', false),
+    });
+    assert.equal(changedFeaturePlan.alreadyInstalled, false);
+    assert.match(changedFeaturePlan.conflicts.map(({ reason }) => reason).join('\n'), /use the update workflow/);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+
+  const rootWithoutRtk = newProject();
+  try {
+    const options = {
+      ...packageOptions(rootWithoutRtk),
+      packageRoot: zooCodePackage,
+      env: rtkEnvironment('rtk-off', false),
+    };
+    const plan = planBootstrap(options);
+    assert.ok(!plan.files.some(({ target }) => target === '.roo/rules/rtk.md'));
+    assert.ok(plan.files.some(({ target, value }) => (
+      target === '.aikido/state/features.json' && value === 'OFF'
+    )));
+    applyBootstrap({ ...options, expectedPlanId: plan.planId });
+    assert.equal(existsSync(join(rootWithoutRtk, '.roo/rules/rtk.md')), false);
+    assert.equal(JSON.parse(readFileSync(join(rootWithoutRtk, '.aikido/state/features.json'), 'utf8')).flags.rtk, 'OFF');
+  } finally {
+    rmSync(rootWithoutRtk, { recursive: true, force: true });
+  }
+});
+
+test('Kimono flags are planned on install and refreshed on repeat install without changing the lock', () => {
+  const root = newProject();
+  try {
+    const names = ['aikido_snapshot', 'aikido_search', 'aikido_file'].map((name) => `mcp__kimono__${name}`);
+    const options = {
+      ...packageOptions(root),
+      env: { ...process.env, AIKIDO_TOOLS: JSON.stringify(names) },
+    };
+    const initial = planBootstrap(options);
+    assert.equal(initial.featureFlags.kimono, 'ON');
+    const inventoryPath = join(root, 'tools.json');
+    writeFileSync(inventoryPath, JSON.stringify(names));
+    const cli = spawnSync(process.execPath, [
+      join(packageRoot, 'scripts/bootstrap-plan.mjs'), '--root', root,
+      '--package', packageRoot, '--mode', 'STANDARD', '--name', 'Example project',
+      '--tools-file', inventoryPath,
+    ], { encoding: 'utf8', env: { ...process.env, AIKIDO_TOOLS: '[]' } });
+    assert.equal(cli.status, 0, cli.stderr);
+    assert.equal(JSON.parse(cli.stdout).featureFlags.kimono, 'ON');
+    assert.equal(existsSync(join(root, '.aikido/state/features.json')), false);
+    applyBootstrap({ ...options, expectedPlanId: initial.planId });
+    const statePath = join(root, '.aikido/state/features.json');
+    const lockPath = join(root, '.aikido/lock.json');
+    const lock = readFileSync(lockPath);
+    assert.equal(JSON.parse(readFileSync(statePath, 'utf8')).flags.kimono, 'ON');
+    assert.ok(!JSON.parse(lock).files.some(({ path }) => path === '.aikido/state/features.json'));
+    assert.match(readFileSync(join(root, 'AGENTS.md'), 'utf8'), /Kimono capability gate/);
+
+    const absent = { ...options, env: { ...process.env, AIKIDO_TOOLS: '[]' } };
+    const repeated = planBootstrap(absent);
+    assert.equal(repeated.alreadyInstalled, true);
+    assert.equal(repeated.confirmationRequired, true);
+    assert.throws(() => applyBootstrap({ ...absent, expectedPlanId: initial.planId }), /Confirmation/);
+    applyBootstrap({ ...absent, expectedPlanId: repeated.planId });
+    assert.equal(JSON.parse(readFileSync(statePath, 'utf8')).flags.kimono, 'OFF');
+    assert.deepEqual(readFileSync(lockPath), lock);
+    const { AIKIDO_TOOLS, ...unknownEnv } = options.env;
+    const unknown = planBootstrap({ ...options, env: unknownEnv });
+    assert.equal(unknown.kimono.status, 'unknown');
+    assert.equal(unknown.confirmationRequired, false);
+    applyBootstrap({ ...options, env: unknownEnv, expectedPlanId: unknown.planId });
+    assert.equal(JSON.parse(readFileSync(statePath, 'utf8')).flags.kimono, 'OFF');
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
 });
 
 test('validates extracted packages and rejects damaged payload hashes', () => {

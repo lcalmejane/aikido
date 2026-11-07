@@ -2,10 +2,10 @@ import { after, before, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import {
-  mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync,
+  chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { delimiter, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { buildDistribution } from '../scripts/build.mjs';
 import { applyBootstrap, planBootstrap } from '../lib/bootstrap-plan.mjs';
@@ -85,6 +85,89 @@ function removeProjectFile(packageRoot, target) {
 function newProject() {
   return mkdtempSync(join(tmpdir(), 'aikido-update-project-'));
 }
+
+function rtkEnvironment(name, enabled) {
+  const bin = join(workspace, name);
+  mkdirSync(bin, { recursive: true });
+  if (enabled) {
+    const command = join(bin, 'rtk');
+    writeFileSync(command, '#!/bin/sh\nprintf "rtk 1.1.0\\n"\n');
+    chmodSync(command, 0o755);
+  }
+  return { ...process.env, PATH: `${bin}${delimiter}${enabled ? process.env.PATH ?? '' : ''}` };
+}
+
+test('Zoo Code install and update set the RTK feature flag and gate its instruction file', () => {
+  const root = newProject();
+  try {
+    const installOptions = {
+      root,
+      packageRoot: adapterBasePackage,
+      mode: 'STANDARD',
+      projectName: 'RTK feature',
+      env: rtkEnvironment('rtk-on', true),
+    };
+    const installPlan = planBootstrap(installOptions);
+    assert.ok(installPlan.files.some(({ target }) => target === '.roo/rules/rtk.md'));
+    applyBootstrap({ ...installOptions, expectedPlanId: installPlan.planId });
+    assert.equal(JSON.parse(readFileSync(join(root, '.aikido/state/features.json'), 'utf8')).flags.rtk, 'ON');
+
+    const updateOptions = {
+      root,
+      packageRoot: adapterNextPackage,
+      env: rtkEnvironment('rtk-off', false),
+    };
+    const updatePlan = planUpdate(updateOptions);
+    assert.ok(updatePlan.files.some(({ target, action }) => target === '.roo/rules/rtk.md' && action === 'delete'));
+    assert.ok(updatePlan.files.some(({ target, value }) => (
+      target === '.aikido/state/features.json' && value === 'OFF'
+    )));
+    applyUpdate({ ...updateOptions, expectedPlanId: updatePlan.planId });
+    assert.equal(readFileSync(join(root, '.aikido/state/features.json'), 'utf8').includes('"rtk": "OFF"'), true);
+    assert.equal(existsSync(join(root, '.roo/rules/rtk.md')), false);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('Kimono and RTK flags update together with reviewed plans and recoverable backups', () => {
+  const root = newProject();
+  try {
+    const tools = JSON.stringify(['mcp__kimono__aikido_snapshot', 'mcp__kimono__aikido_search', 'mcp__kimono__aikido_file']);
+    const options = {
+      root, packageRoot: adapterBasePackage, mode: 'STANDARD', projectName: 'Kimono and RTK',
+      env: { ...rtkEnvironment('kimono-rtk-on', true), AIKIDO_TOOLS: tools },
+    };
+    const initial = planBootstrap(options);
+    assert.equal(initial.files.filter(({ kind }) => kind === 'feature-state').length, 1);
+    applyBootstrap({ ...options, expectedPlanId: initial.planId });
+    const statePath = join(root, '.aikido/state/features.json');
+    const previous = readFileSync(statePath);
+    assert.deepEqual(JSON.parse(previous).flags, { kimono: 'ON', rtk: 'ON' });
+    const updateOptions = {
+      root, packageRoot: adapterNextPackage,
+      env: { ...rtkEnvironment('kimono-rtk-off', false), AIKIDO_TOOLS: '[]' },
+    };
+    const plan = planUpdate(updateOptions);
+    assert.equal(plan.files.filter(({ kind }) => kind === 'feature-state').length, 1);
+    const inventoryPath = join(root, 'tools.json');
+    writeFileSync(inventoryPath, tools);
+    const cli = spawnSync(process.execPath, [
+      updateCli, '--root', root, '--package', adapterNextPackage, '--tools-file', inventoryPath,
+    ], { encoding: 'utf8', env: updateOptions.env });
+    assert.equal(cli.status, 0, cli.stderr);
+    assert.equal(JSON.parse(cli.stdout).featureFlags.kimono, 'ON');
+    assert.deepEqual(readFileSync(statePath), previous);
+    const stale = { ...updateOptions, env: { ...updateOptions.env, AIKIDO_TOOLS: tools } };
+    assert.throws(() => applyUpdate({ ...stale, expectedPlanId: plan.planId }), /Confirmation/);
+    const applied = applyUpdate({ ...updateOptions, expectedPlanId: plan.planId });
+    assert.deepEqual(JSON.parse(readFileSync(statePath, 'utf8')).flags, { kimono: 'OFF', rtk: 'OFF' });
+    restoreUpdateBackup({ root, backupPath: applied.backup });
+    assert.deepEqual(readFileSync(statePath), previous);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
 
 test('explicit keep-local resolution preserves merged bytes and advances only the upstream baseline', () => {
   const root = newProject();

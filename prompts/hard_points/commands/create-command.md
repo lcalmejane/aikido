@@ -1,5 +1,5 @@
 ---
-description: "Interactive guide to create AI-KIDO commands"
+description: "Interactive guide to create AI-KIDO commands with detected RTK-aware optimization"
 ---
 
 # Command: /create-command
@@ -30,6 +30,31 @@ Interactive guide for creating new AI-KIDO commands with duplicate detection, ex
 ---
 
 ## Steps
+
+### RTK Optimization Context
+
+Also apply the [Kimono capability gate](../system/search/SKILL.md#kimono-capability-gate):
+discover this executor's exposed tools, pass their verified inventory to the
+feature gate below and include the returned Kimono status/bindings in agent
+context. Prioritize supported retrieval without removing native verification
+or backup. Generated commands rediscover tools per executor; they do not embed
+this machine's server namespace, endpoint, permissions or flag.
+
+Before command analysis and generation, run the
+[/check-cli feature gate](check-cli.md#rtk-detection-for-command-optimization)
+with `--check --detect-features --dry-run` using the actual calling host.
+Pass the returned `featureFlags.rtk` to analysis/generation agents.
+Follow that shared policy: `ON` allows supported shell-output substitutions
+only when the required result is preserved; `OFF` keeps original commands.
+Native tools, parsers, exact comparisons and exhaustive inventories stay
+unchanged. Generated commands retain the runtime gate and OFF fallback, never
+the creator machine's fixed flag. Report RTK opportunities/gains separately
+from agent substitutions, without inventing measurements.
+
+Before writing an approved command, rerun the gate without `--dry-run` to
+refresh the local flag. Revisit affected proposals if availability changed.
+Preview/cancellation must not write feature state; detection errors must be
+reported rather than converted to `OFF`.
 
 ### Phase 0: Initial Information Collection
 
@@ -66,9 +91,10 @@ Description: [short description]
 Specification: [detailed multi-line spec]
 ```
 
-### Phase 1: Similar Command Detection (Fast Grep)
+### Phase 1: Similar Command Detection
 
-Search for similar or related commands using grep:
+Apply the Kimono capability gate first. Search for similar or related commands
+with covered Kimono retrieval when available, or scoped native search as fallback:
 
 Extract keywords from name + description → search in `prompts/hard_points/commands/*.md` + check `commands_list.md`.
 
@@ -404,6 +430,10 @@ Validations:
 4. Memory Bank references: valid links
 5. Referenced agents: all exist
 6. Workflow coherence: logical phases
+7. RTK substitutions: runtime ON/OFF gate and native fallback preserved,
+   supported commands only, no lossy output for exact data, gains separate
+8. Kimono retrieval: executor-scoped tool discovery, corpus checks, bounded
+   snapshots/ranges and explicit native fallback retained
 
 Return: status (✅ COMPLIANT | ⚠️ WARNINGS | ❌ NON-COMPLIANT) + violations + quick fixes
 Estimated tokens: ~1-2k"

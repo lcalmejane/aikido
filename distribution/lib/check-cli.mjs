@@ -8,9 +8,11 @@ import {
   agentProfile, agentWrapper, canonicalCommandWrapper, nativeCommandWrapper, portableSkill, rebaseMarkdownLinks, rooModes,
 } from '../scripts/build.mjs';
 import { loadCatalog } from './catalog.mjs';
+import { detectFeatures as detectHostFeatures, planFeatureFlags, toolInventoryEnvironment } from './features.mjs';
 import { LOCK_PATH, MODES, isSafeRelativePath } from './lock.mjs';
 import { blockHash, findBlock, upsertBlock } from './managed-blocks.mjs';
 import { loadManifest, readTemplate, render, selectTemplates } from './templates.mjs';
+import { writeTransaction } from './bootstrap-plan.mjs';
 
 const SAFE_NAME = /^[a-z0-9][a-z0-9-]*$/;
 const DISTRIBUTION_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -896,14 +898,20 @@ export function resolveHost({ hostId, env = process.env, catalog = loadCatalog()
   return { id: selected, source: hostId ? 'override' : 'AIKIDO_HOST', ...catalog.hosts[selected] };
 }
 
-export function auditCli({ root = process.cwd(), hostId, env = process.env, repair = false, dryRun = false, catalog = loadCatalog() } = {}) {
+export function auditCli({ root = process.cwd(), hostId, env = process.env, repair = false, dryRun = false, detectFeatures = false, catalog = loadCatalog() } = {}) {
   const resolvedRoot = resolve(root);
   const rootInfo = lstatSync(resolvedRoot);
   if (rootInfo.isSymbolicLink() || !rootInfo.isDirectory()) throw new Error('Workspace root must be a real directory.');
   const workspaceRoot = realpathSync(resolvedRoot);
   const host = resolveHost({ hostId, env, catalog });
+  const { featureFlags, kimono } = detectHostFeatures(env, { rtk: host.id === 'zoo-code' || detectFeatures });
   const plan = [];
   const unsupported = [];
+  const lock = host.workspace ? projectLock(workspaceRoot) : null;
+  if (Object.keys(featureFlags).length) {
+    const featureState = planFeatureFlags(workspaceRoot, featureFlags);
+    if (featureState.operation && !dryRun) writeTransaction(workspaceRoot, [featureState.operation]);
+  }
   if (!host.workspace) {
     unsupported.push({
       host: host.id,
@@ -911,7 +919,6 @@ export function auditCli({ root = process.cwd(), hostId, env = process.env, repa
       reason: host.reason ?? 'No project-level integration is declared in distribution/catalog.json.',
     });
   } else {
-    const lock = projectLock(workspaceRoot);
     const { skills, issues } = readSkillInventory(workspaceRoot, catalog);
     for (const issue of issues) plan.push({ ...issue, action: 'conflict' });
     const expected = buildExpected(workspaceRoot, host, catalog, skills, unsupported, lock);
@@ -939,6 +946,8 @@ export function auditCli({ root = process.cwd(), hostId, env = process.env, repa
     root: workspaceRoot,
     mode: repair ? (dryRun ? 'repair-dry-run' : 'repair') : 'check',
     applied: repair && !dryRun,
+    featureFlags,
+    kimono,
     created: group('create'),
     updated: group('update'),
     unchanged: group('unchanged'),
@@ -955,8 +964,8 @@ export function auditCli({ root = process.cwd(), hostId, env = process.env, repa
 
 export function parseCheckCliArgs(argv) {
   const options = {};
-  const flags = new Set(['--check', '--repair', '--dry-run', '--help']);
-  const values = new Set(['--root', '--host']);
+  const flags = new Set(['--check', '--repair', '--dry-run', '--detect-features', '--help']);
+  const values = new Set(['--root', '--host', '--tools-file']);
   for (let index = 0; index < argv.length; index += 1) {
     const key = argv[index];
     if (!flags.has(key) && !values.has(key)) throw new Error(`Unknown option: ${key}`);
@@ -982,16 +991,17 @@ export function runCheckCli(argv = process.argv.slice(2), env = process.env) {
       result = {
         schemaVersion: 1,
         status: 'ok',
-        usage: 'check-cli.mjs [--check | --repair] [--dry-run] [--root DIR] --host HOST',
+        usage: 'check-cli.mjs [--check | --repair] [--dry-run] [--detect-features] [--tools-file JSON] [--root DIR] --host HOST',
         hostSource: 'Use an explicit --host or AIKIDO_HOST; host directories are never used to guess the caller.',
       };
     } else {
       result = auditCli({
         root: options['--root'],
         hostId: options['--host'],
-        env,
+        env: toolInventoryEnvironment(env, options['--tools-file']),
         repair: options['--repair'] === true,
         dryRun: options['--dry-run'] === true,
+        detectFeatures: options['--detect-features'] === true,
       });
     }
     process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);

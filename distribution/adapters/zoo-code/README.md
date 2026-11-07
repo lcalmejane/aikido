@@ -30,6 +30,12 @@ Type `/` and select an AI-KIDO command, such as `/init-aikido` or
 `/maj-aikido`. Select an AI-KIDO custom mode from the mode picker to use an
 agent persona.
 
+If `rtk --version` succeeds during installation or update, AI-KIDO sets the
+local `rtk` flag to `ON` in `.aikido/state/features.json` and installs
+`.roo/rules/rtk.md`. `/check-cli` refreshes this flag from the current host;
+the feature-state file is local and ignored by Git. Zoo Code has no RTK-native
+command-rewrite hook, so this rule only instructs agents to use the RTK CLI.
+
 ## Update or remove
 
 Use `scripts/update-plan.mjs` from the package version you want to install to

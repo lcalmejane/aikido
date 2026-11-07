@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { basename, resolve } from 'node:path';
 import { applyBootstrap, planBootstrap } from '../lib/bootstrap-plan.mjs';
+import { toolInventoryEnvironment } from '../lib/features.mjs';
 
 function args(argv) {
   const result = { flags: new Set() };
@@ -38,6 +39,7 @@ try {
     hosts: options['--hosts'] ? options['--hosts'].split(',').filter(Boolean) : [],
     projectName: options['--name'] ?? basename(root),
     aikidoVersion: options['--version'],
+    env: toolInventoryEnvironment(process.env, options['--tools-file']),
   };
   if (options.flags.has('--apply')) {
     const result = applyBootstrap({ ...shared, expectedPlanId: options['--confirm'] });
