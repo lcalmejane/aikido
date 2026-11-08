@@ -122,7 +122,7 @@ test('optional absent members, fixed argument list, spaces and SOURCE != cwd', a
     if (!guarded(t)) return;
     const { project } = source(t);
     const privateRoot = join(project, 'user-session-data');
-    mkdirSync(join(privateRoot, 'events'), { recursive: true });
+    mkdirSync(join(privateRoot, '.roo', 'events'), { recursive: true });
     writeFileSync(join(privateRoot, 'store.json'), '{"schemaVersion":"task-store/1"}');
     writeFileSync(join(privateRoot, 'events', 'canary.json'), '{"text":"PRIVATE_TASK_CANARY"}');
     await assert.rejects(createBackup(privateRoot, 'private-check', {
