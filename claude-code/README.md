@@ -13,7 +13,7 @@ After initialization, project-pinned instructions and the version in `.aikido/lo
 Add the marketplace pinned to the immutable release tag, then install the plugin:
 
 ```text
-claude plugin marketplace add https://github.com/lcalmejane/aikido.git#aikido-dist-v1.5.3
+claude plugin marketplace add https://github.com/lcalmejane/aikido.git#aikido-dist-v1.5.4
 claude plugin install aikido@aikido
 ```
 

@@ -8,7 +8,7 @@ When the project has `.aikido/lock.json`, prefer its installed `prompts/hard_poi
 # AI-KIDO Task Store
 
 Use the installed `task-store/task.mjs` script with Node 24+, or the
-`@aikido/cli/task-store` package API. The canonical runtime, CLI, declarations
+`@aikido-method/cli/task-store` package API. The canonical runtime, CLI, declarations
 and data/API contract are shipped in this Skill directory. Do not edit private
 task JSON, projections or journals directly, and never use an LLM to choose or
 apply a state transition.

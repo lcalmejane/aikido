@@ -107,12 +107,12 @@ capabilities records `unavailable`; it must not claim execution or sync.
 
 ## API and command
 
-The npm package exports the same engine as `@aikido/cli/task-store` (Node.js
+The npm package exports the same engine as `@aikido-method/cli/task-store` (Node.js
 24+). The installed system Skill contains `index.mjs`, `index.d.ts`, `cli.mjs`
 and `task.mjs`; it can be used without the npm package:
 
 ```js
-import { openTaskStore } from '@aikido/cli/task-store';
+import { openTaskStore } from '@aikido-method/cli/task-store';
 
 const store = openTaskStore({
   workspacePath: realProjectRoot,

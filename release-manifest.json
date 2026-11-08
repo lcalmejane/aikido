@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "name": "aikido",
-  "version": "1.5.3",
-  "tag": "aikido-dist-v1.5.3",
+  "version": "1.5.4",
+  "tag": "aikido-dist-v1.5.4",
   "source": {
     "repository": "github:lcalmejane/aikido",
-    "commit": "8e5d723a32494839dbf87bb5c4cf87c37a9c176e"
+    "commit": "413b2f6f03939d3c403d8abb2dce1484d12ccc9b"
   },
   "hosts": [
     {
@@ -63,7 +63,7 @@
     {
       "path": ".claude-plugin/marketplace.json",
       "size": 445,
-      "sha256": "1df44d6d426865c03a1d4217c1bb10b7d91d833c1a6c95e86b9a1644ce6dc213"
+      "sha256": "e1ca2b367a4eb397fd37287b73cbdd7ff047d462358afb9d4389fa57c21f94aa"
     },
     {
       "path": ".gitattributes",
@@ -73,7 +73,7 @@
     {
       "path": "README.md",
       "size": 564,
-      "sha256": "3c2a77a3496d7720ec346a76a701335cda4af0e755afca3d17c880188d3ae2df"
+      "sha256": "789f087f8efa3320553c4437248c246400ae3b82fd8fa38ea86b231478cc3a0c"
     },
     {
       "path": "antigravity/.agents/agents/agent-aikido-balancer.md",
@@ -777,8 +777,8 @@
     },
     {
       "path": "antigravity/.agents/skills/task-store/SKILL.md",
-      "size": 6380,
-      "sha256": "2b43c630c0745e5c5a58ed678ac0ed80ae1d8aeff4677d89230b6739fb8f395d"
+      "size": 6387,
+      "sha256": "dc10d5d5762dbde5f798d22d1d302d0d3bc9fb345854a67e25ba398220b78536"
     },
     {
       "path": "antigravity/.agents/skills/task-store/cli.mjs",
@@ -802,8 +802,8 @@
     },
     {
       "path": "antigravity/.agents/skills/task-store/task-store.md",
-      "size": 11232,
-      "sha256": "0b146d846599d3cd47a52a37e2e11c36288f78d2d66d992836a899ec6632f23f"
+      "size": 11246,
+      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
     },
     {
       "path": "antigravity/.agents/skills/task-store/task.mjs",
@@ -943,7 +943,7 @@
     {
       "path": "antigravity/package-manifest.json",
       "size": 178113,
-      "sha256": "e4896b3e5b4a6964e3d6d415e9e05f234cf5304dbe2b6f37c2b756f938d6e149"
+      "sha256": "0552798e6df68ba4ccd9a6a64e4b57e5a0757f2565b7626643a86662c12ef1f8"
     },
     {
       "path": "antigravity/payload/LICENSE",
@@ -1307,8 +1307,8 @@
     },
     {
       "path": "antigravity/payload/prompts/hard_points/system/host-sync/host-sync.mjs",
-      "size": 5014,
-      "sha256": "0fe59af930c5470172ce7f26cb03579d0b76c2fd811becc3ca2c7b1263c141a5"
+      "size": 5021,
+      "sha256": "2ff57879509e730b2dc90ee3824a717842a2ecc4ef5826958929c267197806de"
     },
     {
       "path": "antigravity/payload/prompts/hard_points/system/maj/SKILL.md",
@@ -1727,8 +1727,8 @@
     },
     {
       "path": "antigravity/payload/prompts/hard_points/system/task-store/SKILL.md",
-      "size": 6378,
-      "sha256": "614b94d74aa01fcc2d24437f6b75016ae36960ef802176a7e79879ba080cea6d"
+      "size": 6385,
+      "sha256": "511395f5c38315bbf4f8fa9fa2a2cb4d2e694e9d1f3b9d8f6ed8a825750f0304"
     },
     {
       "path": "antigravity/payload/prompts/hard_points/system/task-store/cli.mjs",
@@ -1752,8 +1752,8 @@
     },
     {
       "path": "antigravity/payload/prompts/hard_points/system/task-store/task-store.md",
-      "size": 11232,
-      "sha256": "0b146d846599d3cd47a52a37e2e11c36288f78d2d66d992836a899ec6632f23f"
+      "size": 11246,
+      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
     },
     {
       "path": "antigravity/payload/prompts/hard_points/system/task-store/task.mjs",
@@ -1918,7 +1918,7 @@
     {
       "path": "build-report.json",
       "size": 2425,
-      "sha256": "ee3aa325e4d8b644ca6438f78418d940e0276c613b2634b698682fd4b3526f2e"
+      "sha256": "4ae1402bde1189ff26ece56ff4b426832386e30c84df019ca74b10de338a1b91"
     },
     {
       "path": "claude-code/.claude-plugin/marketplace.json",
@@ -1928,7 +1928,7 @@
     {
       "path": "claude-code/.claude-plugin/plugin.json",
       "size": 278,
-      "sha256": "31474639e09cd9804d665aa4dc3bcae0274409b14ece0e390250c8f3f25cc5a2"
+      "sha256": "13b04a56ae39da34dd0df5bc841f4572edae02bc9895ef318235a275a44382df"
     },
     {
       "path": "claude-code/LICENSE",
@@ -1938,7 +1938,7 @@
     {
       "path": "claude-code/README.md",
       "size": 1487,
-      "sha256": "3f316ac57905948e72e28338a0cb37d282115e350c3df613a0cbb2fd47802010"
+      "sha256": "1b275c5af89601ea0e3f17252a082dbfd26d67722af3554c0325dcabadf6a7c1"
     },
     {
       "path": "claude-code/RUNTIME.md",
@@ -2293,7 +2293,7 @@
     {
       "path": "claude-code/package-manifest.json",
       "size": 134737,
-      "sha256": "088f0238d47b076b6a0fa0240cf360b8c063e32d29a17dfbb68e6f06b0e3219f"
+      "sha256": "3810b92c0539542ed1fd41dc910eca790e6bb00330bbbd58cb34086b672d24bb"
     },
     {
       "path": "claude-code/payload/LICENSE",
@@ -2657,8 +2657,8 @@
     },
     {
       "path": "claude-code/payload/prompts/hard_points/system/host-sync/host-sync.mjs",
-      "size": 5014,
-      "sha256": "0fe59af930c5470172ce7f26cb03579d0b76c2fd811becc3ca2c7b1263c141a5"
+      "size": 5021,
+      "sha256": "2ff57879509e730b2dc90ee3824a717842a2ecc4ef5826958929c267197806de"
     },
     {
       "path": "claude-code/payload/prompts/hard_points/system/maj/SKILL.md",
@@ -3077,8 +3077,8 @@
     },
     {
       "path": "claude-code/payload/prompts/hard_points/system/task-store/SKILL.md",
-      "size": 6378,
-      "sha256": "614b94d74aa01fcc2d24437f6b75016ae36960ef802176a7e79879ba080cea6d"
+      "size": 6385,
+      "sha256": "511395f5c38315bbf4f8fa9fa2a2cb4d2e694e9d1f3b9d8f6ed8a825750f0304"
     },
     {
       "path": "claude-code/payload/prompts/hard_points/system/task-store/cli.mjs",
@@ -3102,8 +3102,8 @@
     },
     {
       "path": "claude-code/payload/prompts/hard_points/system/task-store/task-store.md",
-      "size": 11232,
-      "sha256": "0b146d846599d3cd47a52a37e2e11c36288f78d2d66d992836a899ec6632f23f"
+      "size": 11246,
+      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
     },
     {
       "path": "claude-code/payload/prompts/hard_points/system/task-store/task.mjs",
@@ -3642,8 +3642,8 @@
     },
     {
       "path": "claude-code/skills/task-store/SKILL.md",
-      "size": 6625,
-      "sha256": "b8ce344594d6483ae387c96f9cf3ab4e52a0c644d20e05890942b792cb32d196"
+      "size": 6632,
+      "sha256": "edc62be81e7d73cb1bdddff896ee966e7b44f989bab9ac6e29895df77ca7423f"
     },
     {
       "path": "claude-code/skills/task-store/cli.mjs",
@@ -3667,8 +3667,8 @@
     },
     {
       "path": "claude-code/skills/task-store/task-store.md",
-      "size": 11232,
-      "sha256": "0b146d846599d3cd47a52a37e2e11c36288f78d2d66d992836a899ec6632f23f"
+      "size": 11246,
+      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
     },
     {
       "path": "claude-code/skills/task-store/task.mjs",
@@ -3793,7 +3793,7 @@
     {
       "path": "claude-cowork/.claude-plugin/plugin.json",
       "size": 278,
-      "sha256": "31474639e09cd9804d665aa4dc3bcae0274409b14ece0e390250c8f3f25cc5a2"
+      "sha256": "13b04a56ae39da34dd0df5bc841f4572edae02bc9895ef318235a275a44382df"
     },
     {
       "path": "claude-cowork/LICENSE",
@@ -4158,7 +4158,7 @@
     {
       "path": "claude-cowork/package-manifest.json",
       "size": 134755,
-      "sha256": "fe4e4c4815cf7cc302cec66c4b4378b4a47e788338ec4e417571071b9371d9c3"
+      "sha256": "63ad264185c485796697f649bd8846d3c0ef804186f8a119121974f10023bc2c"
     },
     {
       "path": "claude-cowork/payload/LICENSE",
@@ -4522,8 +4522,8 @@
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/system/host-sync/host-sync.mjs",
-      "size": 5014,
-      "sha256": "0fe59af930c5470172ce7f26cb03579d0b76c2fd811becc3ca2c7b1263c141a5"
+      "size": 5021,
+      "sha256": "2ff57879509e730b2dc90ee3824a717842a2ecc4ef5826958929c267197806de"
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/system/maj/SKILL.md",
@@ -4942,8 +4942,8 @@
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/system/task-store/SKILL.md",
-      "size": 6378,
-      "sha256": "614b94d74aa01fcc2d24437f6b75016ae36960ef802176a7e79879ba080cea6d"
+      "size": 6385,
+      "sha256": "511395f5c38315bbf4f8fa9fa2a2cb4d2e694e9d1f3b9d8f6ed8a825750f0304"
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/system/task-store/cli.mjs",
@@ -4967,8 +4967,8 @@
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/system/task-store/task-store.md",
-      "size": 11232,
-      "sha256": "0b146d846599d3cd47a52a37e2e11c36288f78d2d66d992836a899ec6632f23f"
+      "size": 11246,
+      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
     },
     {
       "path": "claude-cowork/payload/prompts/hard_points/system/task-store/task.mjs",
@@ -5507,8 +5507,8 @@
     },
     {
       "path": "claude-cowork/skills/task-store/SKILL.md",
-      "size": 8248,
-      "sha256": "89629ac1d7a83ff1f04df4ae48f1cc59cb350e92a0c67859cdc390ce3efd963a"
+      "size": 8255,
+      "sha256": "480b956e7888c9bfcc5288acb21ebba9ca89459cb3b7236640edfc87ff0100ba"
     },
     {
       "path": "claude-cowork/skills/task-store/cli.mjs",
@@ -5532,8 +5532,8 @@
     },
     {
       "path": "claude-cowork/skills/task-store/task-store.md",
-      "size": 11232,
-      "sha256": "0b146d846599d3cd47a52a37e2e11c36288f78d2d66d992836a899ec6632f23f"
+      "size": 11246,
+      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
     },
     {
       "path": "claude-cowork/skills/task-store/task.mjs",
@@ -6272,8 +6272,8 @@
     },
     {
       "path": "codex/.agents/skills/task-store/SKILL.md",
-      "size": 6380,
-      "sha256": "2b43c630c0745e5c5a58ed678ac0ed80ae1d8aeff4677d89230b6739fb8f395d"
+      "size": 6387,
+      "sha256": "dc10d5d5762dbde5f798d22d1d302d0d3bc9fb345854a67e25ba398220b78536"
     },
     {
       "path": "codex/.agents/skills/task-store/cli.mjs",
@@ -6297,8 +6297,8 @@
     },
     {
       "path": "codex/.agents/skills/task-store/task-store.md",
-      "size": 11232,
-      "sha256": "0b146d846599d3cd47a52a37e2e11c36288f78d2d66d992836a899ec6632f23f"
+      "size": 11246,
+      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
     },
     {
       "path": "codex/.agents/skills/task-store/task.mjs",
@@ -6518,7 +6518,7 @@
     {
       "path": "codex/package-manifest.json",
       "size": 178149,
-      "sha256": "f46d59a98e34dcbec2a4282819314a3b09d63d98efb75a9a5946116d2e2123fc"
+      "sha256": "8ec4040cc2408f05fdd8302c008609fc0ac901c92afb54311ceb9ae59b16b1b8"
     },
     {
       "path": "codex/payload/LICENSE",
@@ -6882,8 +6882,8 @@
     },
     {
       "path": "codex/payload/prompts/hard_points/system/host-sync/host-sync.mjs",
-      "size": 5014,
-      "sha256": "0fe59af930c5470172ce7f26cb03579d0b76c2fd811becc3ca2c7b1263c141a5"
+      "size": 5021,
+      "sha256": "2ff57879509e730b2dc90ee3824a717842a2ecc4ef5826958929c267197806de"
     },
     {
       "path": "codex/payload/prompts/hard_points/system/maj/SKILL.md",
@@ -7302,8 +7302,8 @@
     },
     {
       "path": "codex/payload/prompts/hard_points/system/task-store/SKILL.md",
-      "size": 6378,
-      "sha256": "614b94d74aa01fcc2d24437f6b75016ae36960ef802176a7e79879ba080cea6d"
+      "size": 6385,
+      "sha256": "511395f5c38315bbf4f8fa9fa2a2cb4d2e694e9d1f3b9d8f6ed8a825750f0304"
     },
     {
       "path": "codex/payload/prompts/hard_points/system/task-store/cli.mjs",
@@ -7327,8 +7327,8 @@
     },
     {
       "path": "codex/payload/prompts/hard_points/system/task-store/task-store.md",
-      "size": 11232,
-      "sha256": "0b146d846599d3cd47a52a37e2e11c36288f78d2d66d992836a899ec6632f23f"
+      "size": 11246,
+      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
     },
     {
       "path": "codex/payload/prompts/hard_points/system/task-store/task.mjs",
@@ -8192,8 +8192,8 @@
     },
     {
       "path": "copilot-github/.github/skills/task-store/SKILL.md",
-      "size": 6380,
-      "sha256": "2b43c630c0745e5c5a58ed678ac0ed80ae1d8aeff4677d89230b6739fb8f395d"
+      "size": 6387,
+      "sha256": "dc10d5d5762dbde5f798d22d1d302d0d3bc9fb345854a67e25ba398220b78536"
     },
     {
       "path": "copilot-github/.github/skills/task-store/cli.mjs",
@@ -8217,8 +8217,8 @@
     },
     {
       "path": "copilot-github/.github/skills/task-store/task-store.md",
-      "size": 11232,
-      "sha256": "0b146d846599d3cd47a52a37e2e11c36288f78d2d66d992836a899ec6632f23f"
+      "size": 11246,
+      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
     },
     {
       "path": "copilot-github/.github/skills/task-store/task.mjs",
@@ -8353,7 +8353,7 @@
     {
       "path": "copilot-github/package-manifest.json",
       "size": 178252,
-      "sha256": "81e817f002ea770d2a0d7ff59775b1d0259db9578d62fe00d8d0e6009e5e3dba"
+      "sha256": "17ea51ae2817c795e0e1539ed7945ed16812032baacd77a3915cb7a7186e9102"
     },
     {
       "path": "copilot-github/payload/LICENSE",
@@ -8717,8 +8717,8 @@
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/system/host-sync/host-sync.mjs",
-      "size": 5014,
-      "sha256": "0fe59af930c5470172ce7f26cb03579d0b76c2fd811becc3ca2c7b1263c141a5"
+      "size": 5021,
+      "sha256": "2ff57879509e730b2dc90ee3824a717842a2ecc4ef5826958929c267197806de"
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/system/maj/SKILL.md",
@@ -9137,8 +9137,8 @@
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/system/task-store/SKILL.md",
-      "size": 6378,
-      "sha256": "614b94d74aa01fcc2d24437f6b75016ae36960ef802176a7e79879ba080cea6d"
+      "size": 6385,
+      "sha256": "511395f5c38315bbf4f8fa9fa2a2cb4d2e694e9d1f3b9d8f6ed8a825750f0304"
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/system/task-store/cli.mjs",
@@ -9162,8 +9162,8 @@
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/system/task-store/task-store.md",
-      "size": 11232,
-      "sha256": "0b146d846599d3cd47a52a37e2e11c36288f78d2d66d992836a899ec6632f23f"
+      "size": 11246,
+      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
     },
     {
       "path": "copilot-github/payload/prompts/hard_points/system/task-store/task.mjs",
@@ -9668,7 +9668,7 @@
     {
       "path": "copilot-vscode/package-manifest.json",
       "size": 135192,
-      "sha256": "408a623d448321ce3af5da4c2a11174bc5784f1bdbaa08135cc80503d7141ec7"
+      "sha256": "24b7a0477014ba7203b73a6085516854b2ecd16e0ba5043b8856f816216de1d3"
     },
     {
       "path": "copilot-vscode/payload/LICENSE",
@@ -10032,8 +10032,8 @@
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/system/host-sync/host-sync.mjs",
-      "size": 5014,
-      "sha256": "0fe59af930c5470172ce7f26cb03579d0b76c2fd811becc3ca2c7b1263c141a5"
+      "size": 5021,
+      "sha256": "2ff57879509e730b2dc90ee3824a717842a2ecc4ef5826958929c267197806de"
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/system/maj/SKILL.md",
@@ -10452,8 +10452,8 @@
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/system/task-store/SKILL.md",
-      "size": 6378,
-      "sha256": "614b94d74aa01fcc2d24437f6b75016ae36960ef802176a7e79879ba080cea6d"
+      "size": 6385,
+      "sha256": "511395f5c38315bbf4f8fa9fa2a2cb4d2e694e9d1f3b9d8f6ed8a825750f0304"
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/system/task-store/cli.mjs",
@@ -10477,8 +10477,8 @@
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/system/task-store/task-store.md",
-      "size": 11232,
-      "sha256": "0b146d846599d3cd47a52a37e2e11c36288f78d2d66d992836a899ec6632f23f"
+      "size": 11246,
+      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
     },
     {
       "path": "copilot-vscode/payload/prompts/hard_points/system/task-store/task.mjs",
@@ -10518,7 +10518,7 @@
     {
       "path": "copilot-vscode/plugin.json",
       "size": 222,
-      "sha256": "c9572fbc3b5bc65777163311f191fb33bd2090008056b6063d66aed471f05ac6"
+      "sha256": "6632a4b5fedb2c3223a42b1c63c0cf9226d2d30cfbe44bc5c3c60d2c3ea59b3d"
     },
     {
       "path": "copilot-vscode/scripts/bootstrap-plan.mjs",
@@ -11022,8 +11022,8 @@
     },
     {
       "path": "copilot-vscode/skills/task-store/SKILL.md",
-      "size": 6380,
-      "sha256": "2b43c630c0745e5c5a58ed678ac0ed80ae1d8aeff4677d89230b6739fb8f395d"
+      "size": 6387,
+      "sha256": "dc10d5d5762dbde5f798d22d1d302d0d3bc9fb345854a67e25ba398220b78536"
     },
     {
       "path": "copilot-vscode/skills/task-store/cli.mjs",
@@ -11047,8 +11047,8 @@
     },
     {
       "path": "copilot-vscode/skills/task-store/task-store.md",
-      "size": 11232,
-      "sha256": "0b146d846599d3cd47a52a37e2e11c36288f78d2d66d992836a899ec6632f23f"
+      "size": 11246,
+      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
     },
     {
       "path": "copilot-vscode/skills/task-store/task.mjs",
@@ -11167,8 +11167,8 @@
     },
     {
       "path": "host-integrations.md",
-      "size": 9167,
-      "sha256": "1a9661b6be0a0c939859920b87572be119f6ab36878d71c2a1a25556346a7084"
+      "size": 9209,
+      "sha256": "fd62798cc84a45deac5c2f4a6faf66bc089b6a0c6fd0a56d62fe5017ac515bc0"
     },
     {
       "path": "kiro-cli/.kiro/agents/agent-aikido-balancer.md",
@@ -11872,8 +11872,8 @@
     },
     {
       "path": "kiro-cli/.kiro/skills/task-store/SKILL.md",
-      "size": 6380,
-      "sha256": "2b43c630c0745e5c5a58ed678ac0ed80ae1d8aeff4677d89230b6739fb8f395d"
+      "size": 6387,
+      "sha256": "dc10d5d5762dbde5f798d22d1d302d0d3bc9fb345854a67e25ba398220b78536"
     },
     {
       "path": "kiro-cli/.kiro/skills/task-store/cli.mjs",
@@ -11897,8 +11897,8 @@
     },
     {
       "path": "kiro-cli/.kiro/skills/task-store/task-store.md",
-      "size": 11232,
-      "sha256": "0b146d846599d3cd47a52a37e2e11c36288f78d2d66d992836a899ec6632f23f"
+      "size": 11246,
+      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
     },
     {
       "path": "kiro-cli/.kiro/skills/task-store/task.mjs",
@@ -12038,7 +12038,7 @@
     {
       "path": "kiro-cli/package-manifest.json",
       "size": 177191,
-      "sha256": "fd111e354db7102d5c5c022e928b5d1e18d1a032b0c36fb90fcffc802f026e99"
+      "sha256": "864e4d930a352997c9db7edbc7628c2e03fcb52610a322fb9ac748cc60b0b3f0"
     },
     {
       "path": "kiro-cli/payload/LICENSE",
@@ -12402,8 +12402,8 @@
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/system/host-sync/host-sync.mjs",
-      "size": 5014,
-      "sha256": "0fe59af930c5470172ce7f26cb03579d0b76c2fd811becc3ca2c7b1263c141a5"
+      "size": 5021,
+      "sha256": "2ff57879509e730b2dc90ee3824a717842a2ecc4ef5826958929c267197806de"
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/system/maj/SKILL.md",
@@ -12822,8 +12822,8 @@
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/system/task-store/SKILL.md",
-      "size": 6378,
-      "sha256": "614b94d74aa01fcc2d24437f6b75016ae36960ef802176a7e79879ba080cea6d"
+      "size": 6385,
+      "sha256": "511395f5c38315bbf4f8fa9fa2a2cb4d2e694e9d1f3b9d8f6ed8a825750f0304"
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/system/task-store/cli.mjs",
@@ -12847,8 +12847,8 @@
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/system/task-store/task-store.md",
-      "size": 11232,
-      "sha256": "0b146d846599d3cd47a52a37e2e11c36288f78d2d66d992836a899ec6632f23f"
+      "size": 11246,
+      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
     },
     {
       "path": "kiro-cli/payload/prompts/hard_points/system/task-store/task.mjs",
@@ -13283,7 +13283,7 @@
     {
       "path": "roo-code-legacy/package-manifest.json",
       "size": 121267,
-      "sha256": "02740e7fcb439726b7a331e3c316a8a892102e9b9937c5e7e8fb032371bb8c7d"
+      "sha256": "34d7bad37c1b1a560876753a1d43a257b81efc3e08f16f00720645d7ed3939bc"
     },
     {
       "path": "roo-code-legacy/payload/LICENSE",
@@ -13647,8 +13647,8 @@
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/system/host-sync/host-sync.mjs",
-      "size": 5014,
-      "sha256": "0fe59af930c5470172ce7f26cb03579d0b76c2fd811becc3ca2c7b1263c141a5"
+      "size": 5021,
+      "sha256": "2ff57879509e730b2dc90ee3824a717842a2ecc4ef5826958929c267197806de"
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/system/maj/SKILL.md",
@@ -14067,8 +14067,8 @@
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/system/task-store/SKILL.md",
-      "size": 6378,
-      "sha256": "614b94d74aa01fcc2d24437f6b75016ae36960ef802176a7e79879ba080cea6d"
+      "size": 6385,
+      "sha256": "511395f5c38315bbf4f8fa9fa2a2cb4d2e694e9d1f3b9d8f6ed8a825750f0304"
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/system/task-store/cli.mjs",
@@ -14092,8 +14092,8 @@
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/system/task-store/task-store.md",
-      "size": 11232,
-      "sha256": "0b146d846599d3cd47a52a37e2e11c36288f78d2d66d992836a899ec6632f23f"
+      "size": 11246,
+      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
     },
     {
       "path": "roo-code-legacy/payload/prompts/hard_points/system/task-store/task.mjs",
@@ -14887,8 +14887,8 @@
     },
     {
       "path": "zoo-code/.roo/skills/task-store/SKILL.md",
-      "size": 6378,
-      "sha256": "614b94d74aa01fcc2d24437f6b75016ae36960ef802176a7e79879ba080cea6d"
+      "size": 6385,
+      "sha256": "511395f5c38315bbf4f8fa9fa2a2cb4d2e694e9d1f3b9d8f6ed8a825750f0304"
     },
     {
       "path": "zoo-code/.roo/skills/task-store/cli.mjs",
@@ -14912,8 +14912,8 @@
     },
     {
       "path": "zoo-code/.roo/skills/task-store/task-store.md",
-      "size": 11232,
-      "sha256": "0b146d846599d3cd47a52a37e2e11c36288f78d2d66d992836a899ec6632f23f"
+      "size": 11246,
+      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
     },
     {
       "path": "zoo-code/.roo/skills/task-store/task.mjs",
@@ -15053,7 +15053,7 @@
     {
       "path": "zoo-code/package-manifest.json",
       "size": 169976,
-      "sha256": "08cea03308efc6d2e28e5126845718b927569b27e92586b9cbf7aebb6dd1010c"
+      "sha256": "61db8a0c8845e568f902a3116486eb297e1ed258f225b0fb45163325046e113b"
     },
     {
       "path": "zoo-code/payload/LICENSE",
@@ -15417,8 +15417,8 @@
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/system/host-sync/host-sync.mjs",
-      "size": 5014,
-      "sha256": "0fe59af930c5470172ce7f26cb03579d0b76c2fd811becc3ca2c7b1263c141a5"
+      "size": 5021,
+      "sha256": "2ff57879509e730b2dc90ee3824a717842a2ecc4ef5826958929c267197806de"
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/system/maj/SKILL.md",
@@ -15837,8 +15837,8 @@
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/system/task-store/SKILL.md",
-      "size": 6378,
-      "sha256": "614b94d74aa01fcc2d24437f6b75016ae36960ef802176a7e79879ba080cea6d"
+      "size": 6385,
+      "sha256": "511395f5c38315bbf4f8fa9fa2a2cb4d2e694e9d1f3b9d8f6ed8a825750f0304"
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/system/task-store/cli.mjs",
@@ -15862,8 +15862,8 @@
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/system/task-store/task-store.md",
-      "size": 11232,
-      "sha256": "0b146d846599d3cd47a52a37e2e11c36288f78d2d66d992836a899ec6632f23f"
+      "size": 11246,
+      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
     },
     {
       "path": "zoo-code/payload/prompts/hard_points/system/task-store/task.mjs",

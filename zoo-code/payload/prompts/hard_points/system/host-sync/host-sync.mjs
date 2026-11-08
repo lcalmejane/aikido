@@ -54,7 +54,7 @@ export function syncProject({
   const found = runtime ?? locateRuntime(project);
   if (!found) {
     // No retained runtime: still tell the caller what is installed so that it can ask the user to run
-    // `npx @aikido/cli sync` (or /check-cli once the package is retained).
+    // `npx @aikido-method/cli sync` (or /check-cli once the package is retained).
     return {
       schemaVersion: 1,
       status: 'runtime-missing',

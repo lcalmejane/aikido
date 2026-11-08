@@ -2,14 +2,14 @@
   "schemaVersion": 1,
   "host": "roo-code-legacy",
   "qualification": "legacy-format-not-tested",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "runtimeContract": 1,
   "hostSync": 1,
-  "sourceRevision": "8e5d723a32494839dbf87bb5c4cf87c37a9c176e",
+  "sourceRevision": "413b2f6f03939d3c403d8abb2dce1484d12ccc9b",
   "source": {
     "type": "git",
     "ref": "github:lcalmejane/aikido",
-    "commit": "8e5d723a32494839dbf87bb5c4cf87c37a9c176e"
+    "commit": "413b2f6f03939d3c403d8abb2dce1484d12ccc9b"
   },
   "commandDelivery": "native-command",
   "files": [
@@ -646,7 +646,7 @@
     {
       "path": "payload/prompts/hard_points/system/host-sync/host-sync.mjs",
       "role": "payload",
-      "sha256": "0fe59af930c5470172ce7f26cb03579d0b76c2fd811becc3ca2c7b1263c141a5"
+      "sha256": "2ff57879509e730b2dc90ee3824a717842a2ecc4ef5826958929c267197806de"
     },
     {
       "path": "payload/prompts/hard_points/system/maj/SKILL.md",
@@ -1066,7 +1066,7 @@
     {
       "path": "payload/prompts/hard_points/system/task-store/SKILL.md",
       "role": "payload",
-      "sha256": "614b94d74aa01fcc2d24437f6b75016ae36960ef802176a7e79879ba080cea6d"
+      "sha256": "511395f5c38315bbf4f8fa9fa2a2cb4d2e694e9d1f3b9d8f6ed8a825750f0304"
     },
     {
       "path": "payload/prompts/hard_points/system/task-store/cli.mjs",
@@ -1091,7 +1091,7 @@
     {
       "path": "payload/prompts/hard_points/system/task-store/task-store.md",
       "role": "payload",
-      "sha256": "0b146d846599d3cd47a52a37e2e11c36288f78d2d66d992836a899ec6632f23f"
+      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
     },
     {
       "path": "payload/prompts/hard_points/system/task-store/task.mjs",
@@ -1835,7 +1835,7 @@
       "source": "prompts/hard_points/system/host-sync/host-sync.mjs",
       "target": "prompts/hard_points/system/host-sync/host-sync.mjs",
       "packagePath": "payload/prompts/hard_points/system/host-sync/host-sync.mjs",
-      "sha256": "0fe59af930c5470172ce7f26cb03579d0b76c2fd811becc3ca2c7b1263c141a5",
+      "sha256": "2ff57879509e730b2dc90ee3824a717842a2ecc4ef5826958929c267197806de",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -2507,7 +2507,7 @@
       "source": "prompts/hard_points/system/task-store/SKILL.md",
       "target": "prompts/hard_points/system/task-store/SKILL.md",
       "packagePath": "payload/prompts/hard_points/system/task-store/SKILL.md",
-      "sha256": "614b94d74aa01fcc2d24437f6b75016ae36960ef802176a7e79879ba080cea6d",
+      "sha256": "511395f5c38315bbf4f8fa9fa2a2cb4d2e694e9d1f3b9d8f6ed8a825750f0304",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -2547,7 +2547,7 @@
       "source": "prompts/hard_points/system/task-store/task-store.md",
       "target": "prompts/hard_points/system/task-store/task-store.md",
       "packagePath": "payload/prompts/hard_points/system/task-store/task-store.md",
-      "sha256": "0b146d846599d3cd47a52a37e2e11c36288f78d2d66d992836a899ec6632f23f",
+      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3",
       "origin": "payload",
       "policy": "three-way"
     },
