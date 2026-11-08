@@ -277,7 +277,7 @@ test('ending-8 plan uses direct Node CLI operations and safely publishes logs', 
     input: 'Plan Ending-8 : direct Node log\n', encoding: 'utf8',
   });
   assert.equal(logging.status, 0, logging.stderr);
-  assert.match(logging.stdout, /prompts\/spec\/logs\/phase-8-/);
+  assert.match(logging.stdout.replaceAll('\\', '/'), /prompts\/spec\/logs\/phase-8-/);
   assert.equal(readdirSync(join(source, 'prompts/spec/logs')).length, 1);
 });
 
@@ -326,7 +326,7 @@ test('phase-8 logs are safely created under SOURCE without overwriting prior run
   assert.notEqual(first, second);
   assert.equal(readFileSync(first, 'utf8'), 'first');
   assert.equal(readFileSync(second, 'utf8'), 'second');
-  assert.match(first, /prompts\/spec\/logs\/phase-8-/);
+  assert.match(first.replaceAll('\\', '/'), /prompts\/spec\/logs\/phase-8-/);
 });
 
 test('phase-8 refuses symlinked log directories and sync rejects unsafe patterns/options', (t) => {

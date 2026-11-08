@@ -142,8 +142,15 @@ export function writeReport(args = [], date = new Date()) {
   // Legacy second-resolution naming must never truncate another report.
   for (let suffix = 0; suffix < 10000; suffix++) {
     const name = `error-report-${timestamp(date)}${suffix ? `-${suffix}` : ''}.md`;
+    const path = join(directory, name);
+    try {
+      lstatSync(path);
+      continue;
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error;
+    }
     let fd;
-    try { fd = openSync(join(directory, name), 'wx', 0o600); } catch (error) {
+    try { fd = openSync(path, 'wx', 0o600); } catch (error) {
       if (error.code === 'EEXIST') continue;
       throw error;
     }

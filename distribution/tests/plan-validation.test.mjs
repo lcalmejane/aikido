@@ -10,8 +10,8 @@ import { formatReport, functional, listPlans, validate } from '../../prompts/har
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const fixtures = join(root, 'distribution/tests/fixtures/plan-validation');
 const engine = join(root, 'prompts/hard_points/system/plan-validation/validate.mjs');
-const search = readFileSync(join(fixtures, 'search.md'), 'utf8');
-const analyse = readFileSync(join(fixtures, 'analyse.md'), 'utf8');
+const search = readFileSync(join(fixtures, 'search.md'), 'utf8').replace(/\r\n/g, '\n');
+const analyse = readFileSync(join(fixtures, 'analyse.md'), 'utf8').replace(/\r\n/g, '\n');
 const status = (result, id) => result.checks.find(c => c.id === id)?.status;
 
 test('search validates valid fixtures and compiles regexes instead of confusing no match with invalid syntax', () => {

@@ -59,6 +59,8 @@ function waitFor(predicate, timeoutMs = 5000) {
   });
 }
 
+const watcherTimeout = process.platform === 'win32' ? 10000 : 3000;
+
 test('watcher classifies and excludes known generated and temporary paths', () => {
   assert.equal(classifyFile('prompts/gen/personas/agent.md'), 'memory_bank_personas');
   assert.equal(classifyFile('prompts/hard_points/rule.md'), 'hard_points');
@@ -169,20 +171,20 @@ test('daemon uses nested Git ignore rules and rebuilds for documentation and oth
   assert.equal(existsSync(log) && readFileSync(log, 'utf8').includes('Processing batch'), false);
   writeFileSync(join(root, 'reopened/keep.txt'), 'included update\n');
   writeFileSync(join(root, 'docs', 'important.private'), 're-included\n');
-  await waitFor(() => existsSync(log) && readFileSync(log, 'utf8').includes('Processing batch'), 3000);
+  await waitFor(() => existsSync(log) && readFileSync(log, 'utf8').includes('Processing batch'), watcherTimeout);
   let batchCount = readFileSync(log, 'utf8').match(/Processing batch/g)?.length ?? 0;
   assert.ok(batchCount > 0);
   assert.match(readFileSync(log, 'utf8'), /Project changes .* other/);
   writeFileSync(join(root, 'docs', 'README.md'), 'documentation change\n');
-  await waitFor(() => (readFileSync(log, 'utf8').match(/Processing batch/g)?.length ?? 0) > batchCount, 3000);
+  await waitFor(() => (readFileSync(log, 'utf8').match(/Processing batch/g)?.length ?? 0) > batchCount, watcherTimeout);
   batchCount = readFileSync(log, 'utf8').match(/Processing batch/g)?.length ?? 0;
   assert.match(readFileSync(log, 'utf8'), /Project changes .* documentation/);
   writeFileSync(join(root, 'assets.bin'), Buffer.from([0, 1, 2]));
-  await waitFor(() => (readFileSync(log, 'utf8').match(/Processing batch/g)?.length ?? 0) > batchCount, 3000);
+  await waitFor(() => (readFileSync(log, 'utf8').match(/Processing batch/g)?.length ?? 0) > batchCount, watcherTimeout);
   batchCount = readFileSync(log, 'utf8').match(/Processing batch/g)?.length ?? 0;
   assert.match(readFileSync(log, 'utf8'), /Project changes .* other/);
   writeFileSync(join(root, '.gitignore'), '');
-  await waitFor(() => (readFileSync(log, 'utf8').match(/Processing batch/g)?.length ?? 0) > batchCount, 3000);
+  await waitFor(() => (readFileSync(log, 'utf8').match(/Processing batch/g)?.length ?? 0) > batchCount, watcherTimeout);
   batchCount = readFileSync(log, 'utf8').match(/Processing batch/g)?.length ?? 0;
   writeFileSync(join(root, 'hidden', 'visible.md'), 'newly visible after ignore change\n');
   await waitFor(() => (readFileSync(log, 'utf8').match(/Processing batch/g)?.length ?? 0) > batchCount, 3000);

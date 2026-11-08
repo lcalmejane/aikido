@@ -24,6 +24,8 @@ import {
   search,
 } from '../../prompts/hard_points/system/search/search-engine.mjs';
 
+const portablePaths = paths => paths.map(path => path.replaceAll('\\', '/'));
+
 const repoRoot = fileURLToPath(new URL('../../', import.meta.url));
 const fixtureParent = join(repoRoot, 'distribution/tests/.runtime-fixtures');
 
@@ -55,7 +57,7 @@ test('file discovery stays in selected paths and respects exclusions and gitigno
   write(base, 'outside.js', 'outside physical root');
   if (process.platform !== 'win32') symlinkSync(join(base, 'outside.js'), join(root, 'src/linked.js'));
 
-  assert.deepEqual(listFiles({ root, paths: ['src'], language: 'javascript' }), ['src/keep.js']);
+  assert.deepEqual(portablePaths(listFiles({ root, paths: ['src'], language: 'javascript' })), ['src/keep.js']);
   assert.throws(() => listFiles({ root, paths: ['../outside.js'], language: 'javascript' }), /outside the search scope/);
   if (process.platform !== 'win32') {
     assert.throws(() => listFiles({ root, paths: ['src/linked.js'], language: 'javascript' }), /resolves outside/);
@@ -72,7 +74,7 @@ test('custom Task Store roots never enter explicit or broad search results', t =
   write(root, 'aikido/tasks/events/canary.js', 'const PRIVATE_TASK_CANARY = "aikido-tasks";');
   if (process.platform !== 'win32') symlinkSync(join(root, 'custom-user-data'), join(root, 'private-alias'));
 
-  assert.deepEqual(listFiles({ root, paths: ['.'], language: 'javascript' }), ['src/public.js']);
+  assert.deepEqual(portablePaths(listFiles({ root, paths: ['.'], language: 'javascript' })), ['src/public.js']);
   assert.throws(() => listFiles({
     root, paths: ['custom-user-data'], language: 'javascript',
   }), /Private Task Store paths cannot be searched/);
@@ -162,7 +164,7 @@ test('PHP helpers detect frameworks and ignore function/constant use imports', t
   write(root, 'src/User.cache.php', '<?php class CachedUser {}');
   write(root, 'vendor/framework/Framework.php', '<?php class Framework {}');
   assert.equal(detectPhpFramework({ root }), 'laravel');
-  assert.deepEqual(listFiles({ root, language: 'php' }), ['.env', 'composer.json', 'src/User.php']);
+  assert.deepEqual(portablePaths(listFiles({ root, language: 'php' })), ['.env', 'composer.json', 'src/User.php']);
   assert.deepEqual(extractFileMetadata({ root, file: 'src/User.php', language: 'php' }).classes, [
     { name: 'User', line: 1 },
   ]);

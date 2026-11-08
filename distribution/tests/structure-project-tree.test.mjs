@@ -31,6 +31,14 @@ function put(root, path, value) {
 
 test('tree engine preserves the JSON contract, metadata and exclusions on an isolated fixture', t => {
   const { root, output } = fixture(t);
+  const specialFiles = [
+    ['quote"\nline.md', 'line\n'],
+    ['literal*.md', 'literal\n'],
+    ['literal[?].md', 'brackets\n'],
+    [':leading.md', 'colon\n'],
+  ];
+  const supportedSpecialFiles = specialFiles.filter(([path]) => process.platform !== 'win32' ||
+    !/[<>:"\/\\|?*\u0000-\u001f]/.test(path));
   put(root, '.gitignore', '*.ignored\n!keep.ignored\nfolder/\nliteralX.md\nliteralQ.md\n');
   put(root, 'drop.ignored', 'ignored\n');
   put(root, 'keep.ignored', 'included\n');
@@ -42,15 +50,12 @@ test('tree engine preserves the JSON contract, metadata and exclusions on an iso
   put(root, 'prompts/gen/local/drop.secret', 'ignored\n');
   put(root, 'prompts/gen/local/keep.secret', 'included\n');
   put(root, 'prompts/gen/personas/agent.md', '---\nlast-check: yes\n---\nagent\n');
-  put(root, 'quote"\nline.md', 'line\n');
-  put(root, 'literal*.md', 'literal\n');
-  put(root, 'literal[?].md', 'brackets\n');
+  for (const [path, content] of supportedSpecialFiles) put(root, path, content);
   put(root, 'literalX.md', 'ignored by name\n');
   put(root, 'literalQ.md', 'ignored by name\n');
-  put(root, ':leading.md', 'colon\n');
   put(root, 'binary.bin', Buffer.from([0, 1, 10]));
   put(root, 'node_modules/ignored.js', 'ignored\n');
-  if (process.platform !== 'win32') symlinkSync(join(root, 'quote"\nline.md'), join(root, 'linked.md'));
+  if (process.platform !== 'win32') symlinkSync(join(root, specialFiles[0][0]), join(root, 'linked.md'));
 
   const result = generateProjectTree({
     projectRoot: root,
@@ -102,12 +107,15 @@ test('tree engine preserves the JSON contract, metadata and exclusions on an iso
   }
   for (const included of [
     'keep.ignored', 'prompts/gen/important.private', 'prompts/gen/local/keep.secret',
-    'literal*.md', 'literal[?].md', ':leading.md',
+    ...supportedSpecialFiles.map(([path]) => path),
   ]) {
     assert.ok(Object.hasOwn(payload.index.by_path, included), included);
   }
-  assert.deepEqual(payload.metadata.statistics, { total_files: 12, total_dirs: 5, total_lines: 20 });
-  assert.equal(result.total_files, 12);
+  const expectedFiles = 8 + supportedSpecialFiles.length;
+  assert.deepEqual(payload.metadata.statistics, {
+    total_files: expectedFiles, total_dirs: 5, total_lines: 16 + supportedSpecialFiles.length,
+  });
+  assert.equal(result.total_files, expectedFiles);
 });
 
 test('Node CLI preserves the selected output path and PROJECT_ROOT', t => {
