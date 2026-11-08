@@ -20,7 +20,7 @@ description: "Manage the complete lifecycle of AI-KIDO skills: search, install, 
 
 ## Deterministic engine
 
-Script: [`system/skill-manage/skill-manage.mjs`](../system/skill-manage/skill-manage.mjs) (Node ≥ 18, no dependency, one JSON object on stdout, exit code 1 + `{"status":"error","code","message"}` on failure).
+Script: [`system/skill-manage/skill-manage.mjs`](../system/skill-manage/skill-manage.mjs) (Node.js 24+, no dependency, one JSON object on stdout, exit code 1 + `{"status":"error","code","message"}` on failure). Installed or updated skills are checked against the [Default Tooling Standard (Node.js)](../system/Skills.md#default-tooling-standard-nodejs): report non-Node scripts (`.sh`, `.py`, `.ps1`…) as a deviation without rewriting third-party skills unasked.
 
 **Rule**: for the `catalog` layout (`GIT_LAYOUT=auto|catalog`), the LLM MUST NOT run `git clone`, `cp`, `mv`, `rm`, `tar` or write into `TARGET_DIR` itself. It calls the engine, reads the JSON `status`, asks the user when the status requires it, then calls the engine again.
 
@@ -45,7 +45,9 @@ Status handling:
 
 Guarantees enforced by the engine: skill names `^[a-z0-9][a-z0-9-]*$`; `TARGET_DIR` must stay inside the workspace; repository URLs limited to `https://` (no embedded credentials), SSH or an absolute local path; shallow clones without `.git`; symbolic links, > 2000 files or > 50 MB refused; `SKILL.md` required (≤ 500 lines for published skills); staging directory + atomic rename; previous copy kept in `{TARGET_DIR}/.backups/` (never deleted without `--purge`); provenance in `.aikido-source.json`; skill scripts are never executed.
 
-After `installed`, `up_to_date`, or `uninstalled`, run the `/check-cli` registration gate for the **calling CLI**. This is mandatory even when an update reports `up_to_date`: wrappers may be missing, stale, or customized independently of the skill source. Identify the host from the active CLI context (never from model choice or directories); if ambiguous, ask for a host ID from `distribution/catalog.json`.
+**Every installed CLI, not only the caller** — pass `--sync-hosts` to the engine call that really writes (`get`, `update`, `uninstall`; ignored by `--dry-run` and read-only actions). The engine then runs [`system/host-sync/host-sync.mjs`](../system/host-sync/host-sync.mjs): it detects the assistant CLIs and editor extensions installed on this machine (PATH and extension folders only, no process spawned), adds the hosts remembered in `.aikido/state/hosts.json`, and brings each one up to date through the same audited `/check-cli` engine (commands, agents/modes, Skills, instruction files). The result is returned as `hostSync` next to the install result. A host problem never turns a successful install into an error: report `hostSync.results[].status` (`conflict` = customized wrapper preserved) and `hostSync.status` (`runtime-missing` = no retained package, tell the user to run `aikido sync` or `/check-cli` once). `hostSync.hints` lists hosts that only have a workspace directory but no CLI on this machine: never synchronise those without asking.
+
+After `installed`, `up_to_date`, or `uninstalled`, run the `/check-cli` registration gate for the **calling CLI**. This is mandatory even when an update reports `up_to_date`: wrappers may be missing, stale, or customized independently of the skill source. Identify the host from the active CLI context (never from model choice or directories); if ambiguous, ask for a host ID from `distribution/catalog.json`. When `--sync-hosts` was used and `hostSync.status` is `ok`, the calling CLI is already covered; the gate then only has to confirm it.
 
 Run `/check-cli --check` first. After install/update, preview and, with explicit approval, apply missing or stale wrappers for the installed skill. After uninstall, preview and apply removal of clean managed wrappers; preserve customizations and report conflicts for manual resolution. Never use `--force` to replace an unmarked wrapper. The engine is read-only except for explicitly approved `--repair`, does not execute skill files, and reports host runtime discovery separately from file conformity.
 
@@ -93,6 +95,15 @@ Read and apply [`skills.cfg`](../configuration/skills.cfg) before any action. Ap
 | `VERBOSE` | `--verbose` | `true` | Detailed log per file/operation |
 | `DISPLAY_FORMAT` | — | `table` | List format: `table` · `list` · `compact` |
 | `MAX_PROJECTS_DISPLAY` | — | `50` | Maximum number of skills displayed |
+
+## Local source
+
+`GIT_GROUP` (or `--group`) may be an absolute path to a folder that holds `catalog.json`: a Git repository (cloned
+shallowly) or a plain downloaded folder without `.git` (copied; its identity is `local-<content digest>`, so
+`update` detects any change and the source folder is never modified). A local source is never refused for its
+identity: the result reports `versionChange` (`initial`, `upgrade`, `same`, `downgrade`, `unknown`) and `warnings`
+(regression, local origin), and `.aikido-source.json` records `local: true` and, for a regression,
+`regression_from`. Tell the user, then proceed once confirmed. Symbolic links and oversized content are still refused.
 
 ## Source layouts
 
@@ -282,14 +293,15 @@ Catalog pipelines (replace API calls in `search`, `get` and `update`):
    `--dry-run` → **stop here**
 
 4. **Confirmation & Backup** — ask the user: CONFIRM / CONFIRM WITH BACKUP / CANCEL · backup → copy before any deletion · `⚠️ MODIFIED` files → individual confirmation (unless `--purge`)
-5. **Pre-removal script** — search: `scripts/uninstall.sh` → `uninstall.sh` → `uninstall*.md`/`UNINSTALL*.md` · `.sh` + `AUTO_RUN_SCRIPTS=false` → confirmation · `.md` → LLM instructions · error → log + continue
+5. **Pre-removal instructions** — inspect `uninstall*.md` and
+   `UNINSTALL*.md` with host Read actions. Never execute `.sh` files; report
+   their presence and request an explicitly approved non-shell alternative.
 6. **Deletion**:
-   ```bash
-   rm -f .roo/commands/{cmd}.md .claude/commands/{cmd}.md          # mappings
-   rm -f prompts/hard_points/commands/{cmd}.md                     # if not ⚠️MODIFIED
-   rm -rf {SKILL_PATH}                                              # skill directory
-   rm -rf {TARGET_DIR}/{SELECTED_SKILL}_backup_*                   # if --purge
-   ```
+   Delete selected paths with the host's file-delete action only after confirmation. Remove
+   clean generated mappings and the approved skill directory; preserve
+   modified command sources and retain backups unless `--purge` was explicitly
+   selected. Use recursive deletion only for the verified skill directory,
+   never a derived or unchecked path.
    Report: `✅ deleted` · `❌ failed` · `⏭️ preserved (manually modified)`
 7. **Registry cleanup** — `agent-aikido-maj-md-index`: delete `{slug}` line from `skills_list.md` + all command entries from `commands_list.md` · verify no duplicates/orphans remain
 8. **Report**:

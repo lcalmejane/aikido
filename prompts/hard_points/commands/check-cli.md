@@ -23,13 +23,11 @@ the runtime cannot establish it, ask the user to select an ID from
 
 ## Execution
 
-Before using the Node runtime, check command execution permission and run
-`node --version` in this executor. The stable Node 24+ baseline is the target
-for the distribution; do not assume Node is present because a host or another
-executor has it. If the command is missing, denied or fails, report that the
-runtime audit is unavailable; never install Node or change permissions
-automatically. A documented native alternative is acceptable only if it
-preserves the requested operation.
+Before using the Node runtime, inspect the current host's Node capability and
+version. The stable Node 24+ baseline is the target; do not assume Node is
+present because another host or executor has it. If the capability is absent,
+denied or fails, report that the runtime audit is unavailable; never install
+Node or change permissions automatically.
 
 Prefer the package root supplied by the active host integration (for Claude
 Code, its active plugin root). For a workspace-only installation, use
@@ -41,6 +39,12 @@ Select the host from the actual caller context first, never from whichever
 runtime directories exist. Do not search unrelated plugin caches or use
 a temporary build directory. If neither package root, runtime nor catalog is
 available, stop and report that fact; do not reconstruct wrappers by hand.
+Use an exposed host direct-process action to launch Node with the packaged
+`scripts/check-cli.mjs` and each flag or value as a separate argv entry.
+Alternatively, an actual host Node execution facility may import the packaged
+`auditCli` API directly. `host-actions.mjs` is a library, not an automatically
+registered Tool. Do not construct shell text; if neither execution facility is
+available, report the limitation and stop.
 
 For every host, first discover the current executor's tools following the
 [Kimono capability gate](../system/search/SKILL.md#kimono-capability-gate).
@@ -53,8 +57,8 @@ without clearing an existing flag. The same input is accepted by packaged
 bootstrap and update; none of these scripts opens MCP connections or reads secrets.
 `--dry-run` leaves both Kimono and RTK state untouched.
 
-For `zoo-code`, the check detects RTK by running `rtk --version` and records
-`rtk: ON` or `rtk: OFF` in the local, Git-ignored
+For `zoo-code`, the check detects RTK through the packaged host-feature
+inspection and records `rtk: ON` or `rtk: OFF` in the local, Git-ignored
 `.aikido/state/features.json`. Updating this file, with RTK and/or Kimono flags
 merged together, is the only project write performed by a normal check;
 `--repair --dry-run` does not write it. Install and update use
@@ -62,17 +66,16 @@ the same detection to include or remove `.roo/rules/rtk.md`.
 
 ## RTK detection for command optimization
 
-`--detect-features` enables the same RTK detection for **any calling host**,
+`detectFeatures: true` enables the same RTK detection for **any calling host**,
 including Claude Code, Codex and Copilot. Without this option or a supplied
 Kimono inventory, other hosts' normal checks remain read-only. Use this gate from
 [/optimize-command-with-aikido-agents](optimize-command-with-aikido-agents.md)
 and [/create-command](create-command.md), using the validated runtime and
 caller identity described above:
 
-```bash
-node "<distribution-root>/scripts/check-cli.mjs" \
-  --root "<project-root>" --host "<calling-host-id>" --check --detect-features
-```
+Invoke the packaged Node script using the verified host identity and separate
+argv entries for `--root`, the project root, `--host`, the host ID, `--check`
+and `--detect-features`.
 
 Add `--dry-run` to detect without writing, including during analysis before
 the user selects a dry-run or approves changes. Read `featureFlags.rtk` from
@@ -80,28 +83,26 @@ the JSON result; never trust a stale saved flag or infer RTK from host/model.
 Pass the current tool inventory too, and apply the shared Kimono gate before
 recommending search substitutions. Keep Kimono retrieval and RTK shell-output
 opportunities separate; preserve native verification and explicit fallbacks.
-Only a missing executable means `OFF`; execution errors must stop detection
-and be reported, not treated as absence. Preserve other flags and the portable
-lock. This gate does not install RTK, hooks or the Zoo Code rule.
+Only a confirmed missing executable means `OFF`; permission errors and other
+inspection failures must stop detection and be reported, not treated as
+absence. Preserve other flags and the portable lock. This gate does not install
+RTK, hooks or the Zoo Code rule.
 
-When `ON`, consider RTK as a separate shell-output optimization, not an agent:
-use it only for supported commands whose reduced output preserves the required
-result. Check support with `rtk --help`; keep native tools and unsupported
-commands unchanged. Never compress output consumed by a parser, exact-content
-comparison or exhaustive inventory. Avoid double-prefixing `rtk` and leave
-existing rewrite hooks intact. When `OFF`, use original commands without RTK.
+When `ON`, consider RTK as a separate output optimization, not an agent: use it
+only for supported host actions whose reduced output preserves the required
+result. Obtain its supported-action list from the host, keep native tools and
+unsupported actions unchanged, and never compress output consumed by a parser,
+exact-content comparison or exhaustive inventory. Avoid duplicate RTK
+processing and leave existing rewrite hooks intact. When `OFF`, use original
+host actions without RTK.
 Generated commands must retain this runtime condition, never hard-code the
 current machine's `ON` state or require RTK on another installation. Include
 the flag, eligible substitutions, skipped commands and reasons in optimization
 reports. Report RTK gains separately from agent gains; use measurements when
 available (`rtk gain`), otherwise mark them unmeasured.
 
-First run the audit:
-
-```bash
-node "<distribution-root>/scripts/check-cli.mjs" \
-  --root "<project-root>" --host "<calling-host-id>" --check
-```
+First invoke the packaged script with separate argv entries `--root`, the
+project root, `--host`, the verified host ID, and `--check`.
 
 The script emits one JSON result with `created`, `updated`, `unchanged`,
 `removed`, `conflicts`, `unsupported`, and a separate `runtimeDiscovery`
@@ -110,19 +111,11 @@ of this process only; `below-baseline` is an advisory, not a proof of failure.
 It does not establish availability or permission in another executor. File
 conformance is not proof that the CLI has discovered or loaded a wrapper.
 
-For a preview of changes:
+For a preview, call the same script with root and host, followed by separate
+`--repair` and `--dry-run` argv entries.
 
-```bash
-node "<distribution-root>/scripts/check-cli.mjs" \
-  --root "<project-root>" --host "<calling-host-id>" --repair --dry-run
-```
-
-Show the plan and conflicts to the user. Apply only after explicit approval:
-
-```bash
-node "<distribution-root>/scripts/check-cli.mjs" \
-  --root "<project-root>" --host "<calling-host-id>" --repair
-```
+Show the plan and conflicts to the user. Apply only after explicit approval by
+calling the same script with root, host and `--repair`, without `--dry-run`.
 
 Apart from the feature-state detection above, the engine only reads
 Markdown, the distribution catalog, templates, the project lock and wrapper
@@ -136,6 +129,15 @@ preserved are reported as conflicts, not overwritten. Instruction blocks are
 updated only when the installed lock confirms their unchanged baseline.
 Removed canonical skills cause only clean generated wrappers to be removed;
 customized orphans remain conflicts.
+
+## All installed CLIs
+
+`/check-cli` audits the calling host. To wrap every assistant CLI installed on the
+machine or in the workspace, use the host-sync entry point
+`prompts/hard_points/system/host-sync/host-sync.mjs` (or `aikido sync` / `aikido check`
+from the npm package). It detects CLIs from `PATH` and editor extensions only, then
+runs the retained runtime once per detected host. It never writes outside the
+catalog-declared targets. Use `--check` or `--dry-run` first.
 
 ## Legacy command
 

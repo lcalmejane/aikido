@@ -19,10 +19,8 @@ Strict rules for log management in the AI-KIDO ecosystem, including location, fo
 ### 🔧 Log Test Procedure
 
 1. **Activation check**
-   ```bash
-   # Check in /prompts/index.md
-   grep "LLM_TRACIBILITY=TRUE" prompts/index.md
-   ```
+   Read `prompts/index.md` with the host file tool and check for
+   `LLM_TRACIBILITY=TRUE`. Do not invoke a command interpreter.
 
 2. **Logger activation**
    - Edit `/prompts/index.md`
@@ -78,20 +76,13 @@ Strict rules for log management in the AI-KIDO ecosystem, including location, fo
 ## Usage Examples
 
 ### ✅ Correct
-```bash
-# Check that the log file exists
-ls -la prompts/spec/logs/prompts.log
-
-# View the latest entries
-tail -10 prompts/spec/logs/prompts.log
-```
+Use the host file metadata tool to verify `prompts/spec/logs/prompts.log`
+exists. Read the final ten lines with its bounded file-reading tool.
+For a Node host, use `node:fs` metadata and file reads; append entries with
+`appendFile` after ensuring the authorized parent directory exists.
 
 ### ❌ Incorrect
-```bash
-# NEVER do this
-mkdir logs
-touch logs/trace.md
-```
+Never create `logs/` or `logs/trace.md` at the project root.
 
 ## Relations and Dependencies
 

@@ -16,7 +16,7 @@ Interactive guide for creating new AI-KIDO commands with duplicate detection, ex
 
 ## Usage
 
-```bash
+```text
 # Interactive mode (recommended)
 /create-command
 
@@ -504,6 +504,10 @@ Estimated tokens: ~1k"
 **Check `README.md`**:
 - If commands section detected → propose adding `/[command-name]` in detected format
 - If no section → note "No commands section detected — manual update if needed"
+
+### Phase 8bis: Make the command available to every installed CLI
+
+Phase 7 writes the Zoo/Roo and Claude stubs only. Then run `node prompts/hard_points/system/host-sync/host-sync.mjs --dry-run`, show the planned changes, and after explicit approval run it without `--dry-run`: it detects every assistant CLI installed on this machine (plus the hosts remembered in `.aikido/state/hosts.json`) and creates the native command or fallback Skill for each of them through the audited `/check-cli` engine (Copilot prompts, Codex/Kiro/Antigravity Skills, ...). Report `results[].status`; `conflict` = customized wrapper preserved; `runtime-missing` → ask the user to run `aikido sync` once.
 
 ### Phase 9: Final Report
 

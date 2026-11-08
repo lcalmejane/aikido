@@ -6,6 +6,12 @@ description: "Update and complete AI-KIDO synchronization via modular plan syste
 
 **Purpose**: Orchestrate AI-KIDO updates by delegating operations to modular plans.
 
+**Safety gate:** Never execute a plan marked blocked or historical, even if a
+later instruction says to execute every phase. The historical V1.3.0.0 plan
+contains unsafe and unavailable operations. For managed installations, prefer
+the packaged Node planner below; review its output and obtain approval before
+applying. If the required safe workflow is unavailable, stop and report it.
+
 > **Version**: 3.0 | **Architecture**: Modular Plans V2.0 | **Role**: Orchestrator
 
 ---
@@ -14,7 +20,7 @@ description: "Update and complete AI-KIDO synchronization via modular plan syste
 
 [MANDATORY]
 
-```bash
+```text
 # UPDATE mode - update from external source
 /maj-aikido --update
 
@@ -146,30 +152,30 @@ Enter your choice (1/2/3/4):
 
 ##### 3.1 GIT Source (if choice = 1)
 
-**Action: Clone or update the AI-KIDO Git repository**
+**Action: Clone or update the AI-KIDO Git repository using the host's Git actions**
 
-1. **Define variables**:
-   - `AIKIDO_REPO="git@github.com:lcalmejane/aikido.git"`
-   - `TARGET_PATH="$(pwd)/prompts/spec/aikido-source-git"`
+1. Use `git@github.com:lcalmejane/aikido.git` and the target
+   `prompts/spec/aikido-source-git`.
 
-2. **Check if repository already exists**:
-   - If `TARGET_PATH/.git` exists:
+2. Check whether the target repository exists using a host directory action:
+   - If it exists:
      - Display `Existing repository detected, updating...`
-     - Run via Bash tool: `cd $TARGET_PATH && git fetch --all --tags && cd -`
+     - Use host Git actions to fetch remote branches and tags.
    - Otherwise:
      - Display `Cloning repository...`
-     - Run via Bash tool: `git clone $AIKIDO_REPO $TARGET_PATH`
+     - Use the host Git clone action with the selected repository and target.
 
 3. **List available branches and tags**:
-   - Branches: `cd $TARGET_PATH && git branch -r | sed 's/origin\///' | grep -v HEAD`
-   - Tags: `cd $TARGET_PATH && git tag --sort=-version:refname | head -10`
+   - Use host Git actions to list remote branches and the ten newest version
+     tags.
 
 4. **Ask for desired branch**:
    - Display: `Which branch do you want to use? (ENTER for 'main')`
-   - Store in `$SELECTED_BRANCH` (default: "main")
+   - Store the selected branch (default: `main`).
 
 5. **Checkout branch**:
-   - Run via Bash tool: `cd $TARGET_PATH && git checkout $SELECTED_BRANCH && git pull origin $SELECTED_BRANCH && cd -`
+   - Use host Git actions to checkout the selected branch and pull its remote
+     updates.
 
 6. **Tag option** (optional):
    - Ask: `Do you want to use a specific tag? (yes/no)`
@@ -179,49 +185,55 @@ Enter your choice (1/2/3/4):
 
 ##### 3.2 LOCAL Source (if choice = 2)
 
-**Action: Select an already-extracted local directory**
+**Action: Select an already-extracted local directory using host file actions**
 
 1. **List available directories**:
-   - Run via Bash tool: `ls -d prompts/spec/aikido-* 2>/dev/null`
+   - Use a scoped Glob action for `prompts/spec/aikido-*`.
    - Display list or message if none found
 
 2. **Ask for directory name**:
    - Display: `Enter directory name (e.g. aikido-v1.3-custom):`
-   - Store in `$DIR_NAME`
+   - Store the selected directory name.
 
 3. **Verify existence**:
-   - `TARGET_PATH="prompts/spec/$DIR_NAME"`
-   - If directory does not exist → Display error and EXIT 1
+   - Resolve the selected directory under `prompts/spec/`. If it does not
+     exist, display an error and stop.
 
-4. **Set TARGET**: `TARGET="$TARGET_PATH"`
+4. Use the verified directory as the selected source.
+5. A downloaded release or a working copy is the user's own: do not require a checksum, a lock or the
+   official repository. Run the update runtime with `--trust local`, report its `warnings` and
+   `versionChange` (`upgrade`, `same`, `downgrade`) to the user, and apply the exact plan once confirmed,
+   a regression included. Trace the source in the lock; never block on its identity.
 
 ##### 3.3 ARCHIVE Source (if choice = 3)
 
-**Action: Extract an archive (tar.gz, tgz, zip)**
+**Action: Extract an archive with a host archive action (tar.gz, tgz, zip)**
 
 1. **List available archives**:
-   - Run via Bash tool: `ls prompts/spec/*.{tar.gz,tgz,zip} 2>/dev/null`
+   - Use a scoped Glob action for supported archive extensions under
+     `prompts/spec/`.
    - Display list or message if none found
 
 2. **Ask for archive name**:
    - Display: `Enter archive name (e.g. ai-kido-v1.3.tar.gz):`
-   - Store in `$ARCHIVE_NAME`
+   - Store the selected archive name.
 
 3. **Verify existence**:
-   - `ARCHIVE_PATH="prompts/spec/$ARCHIVE_NAME"`
-   - If file does not exist → Display error and EXIT 1
+   - Resolve and verify the selected archive under `prompts/spec/`. If absent,
+     display an error and stop.
 
 4. **Prepare extraction**:
-   - Extract version from name: `VERSION_FROM_FILE=$(echo "$ARCHIVE_NAME" | sed -E 's/.*-v?([0-9]+\.[0-9]+(\.[0-9]+)?).*/\1/')`
-   - Create target directory: `TARGET_PATH="prompts/spec/aikido-source-v${VERSION_FROM_FILE}-$(date +%Y%m%d)"`
-   - Run via Bash tool: `mkdir -p "$TARGET_PATH"`
+   - Extract the version from the archive name and use the current date to
+     form `prompts/spec/aikido-source-v{version}-{date}`. Create the target
+     through the host's directory action.
 
 5. **Extract by format**:
-   - If `.tar.gz` or `.tgz`: run via Bash tool: `tar -xzf "$ARCHIVE_PATH" -C "$TARGET_PATH" --strip-components=1`
-   - If `.zip`: run via Bash tool: `unzip -q "$ARCHIVE_PATH" -d "$TARGET_PATH"`
-   - Other format → Error and EXIT 1
+   - Use the host's archive extraction action for the verified archive and
+     target directory. Reject unsupported formats. If extraction is not
+     supported by the host, report that limitation and stop without fallback
+     to a shell command.
 
-6. **Set TARGET**: `TARGET="$TARGET_PATH"`
+6. Use the extracted target directory as the selected source.
 
 ##### 3.4 AI-KIDO Plugin Package (if choice = 4)
 
@@ -232,11 +244,11 @@ Enter your choice (1/2/3/4):
 2. Resolve the selected path to an absolute path; do not infer it from the project directory or
    search other plugin caches.
 3. Verify that `package-manifest.json`, `payload/`, `templates/` and the package runtime exist.
-   Run the bundled package validator:
-
-   ```bash
-   node "<resolved-plugin-root>/scripts/validate-package.mjs" "<resolved-package-root>"
-   ```
+   Start Node directly using the host's argv-based process action, with the
+   absolute path to `scripts/validate-package.mjs` followed by the resolved
+   package root. Require a successful exit and valid output. Do not execute a
+   shell or pipeline; if direct process execution is unavailable, report the
+   limitation and stop. `host-actions.mjs` is a library, not a registered Tool.
 
 4. Require a valid package manifest and a package host compatible with this host. Do not accept a
    bare source repository, a package from another host, or an unverified staging folder.
@@ -310,7 +322,9 @@ Ready for plan orchestration...
 1. **Create a dedicated sub-task** via Agent tool or Code sub-task
 2. **Read the complete plan** via Read tool
 3. **Execute ALL phases** of the plan in exact order
-4. **Call ALL scripts** mentioned in the plan (no summarizing)
+4. **Call the scripts required by the selected branch** (no summarizing);
+   do not execute alternative examples or resumed phases blindly. Ending-0
+   suspends pending external dispatch/review and resumes only through its verifier.
 5. **Verify ALL success conditions** before moving to the next plan
 6. **Log every action** performed
 
@@ -332,15 +346,15 @@ For each plan X:
 **Package source branch**: when `SOURCE_TYPE=4`, do not execute `plan-beginning.md`, the
 version-migration plans, or `plan-ending-0` through `plan-ending-8`. Those plans operate on a
 repository checkout and could copy repository-level configuration into the project. Instead, use
-the bundled distribution runtime. Resolve the active plugin's root before invoking Bash;
-`${CLAUDE_PLUGIN_ROOT}` is a plugin-component substitution, not a shell environment variable.
+the bundled distribution runtime. Resolve the active plugin root from the host's
+plugin context; do not treat it as an environment variable or infer it from the
+project directory.
 If the project has no `.aikido/lock.json` but does have `prompts/hard_points/`, offer the explicit
 non-destructive migration path instead of attempting a regular update:
 
-```bash
-node "<resolved-plugin-root>/scripts/update-plan.mjs" \
-  --root "<current-project-root>" --package "$TARGET" --migrate
-```
+Start Node through the host's direct-process action with the absolute path to
+`scripts/update-plan.mjs` followed by the separate argv entries
+`["--root", currentProjectRoot, "--package", targetPackage, "--migrate"]`.
 
 Review the migration report and confirm its exact plan ID with `--migrate --apply --confirm`.
 Migration only records existing files and saves source baselines; it does not rewrite project
@@ -351,30 +365,29 @@ For an existing lock:
 
 1. Run the read-only update planner with the current project root and `$TARGET` package:
 
-   ```bash
-   node "<resolved-plugin-root>/scripts/update-plan.mjs" \
-     --root "<current-project-root>" --package "$TARGET"
-   ```
+   Start Node directly with the absolute path to `scripts/update-plan.mjs`
+   and argv entries `["--root", currentProjectRoot, "--package", targetPackage]`.
 
 2. Display file decisions, conflicts and the returned confirmation ID; planning makes no project
    writes. If conflicts are present, stop and ask for manual resolution before replanning.
 3. After explicit user approval, invoke apply with the exact displayed ID:
 
-   ```bash
-   node "<resolved-plugin-root>/scripts/update-plan.mjs" \
-     --root "<current-project-root>" --package "$TARGET" \
-     --apply --confirm "<reviewed-plan-id>"
-   ```
+   After approval, start the same Node script directly with the same root and
+   package arguments plus `["--apply", "--confirm", reviewedPlanId]`.
 
 4. Report the targeted backup path returned by apply. If recovery is needed, restore only from that
    exact backup:
 
-   ```bash
-   node "<resolved-plugin-root>/scripts/update-plan.mjs" \
-     --root "<current-project-root>" --recover "<backup-path>"
-   ```
+   Start the same Node script directly with arguments
+   `["--root", currentProjectRoot, "--recover", backupPath]`.
 
 5. Report conflicts or failures and leave existing Git/local/archive workflows unchanged.
+6. After a successful apply or migration, bring every assistant CLI installed on this machine up
+   to date: start Node directly with the absolute path to the same package's `scripts/sync-hosts.mjs`
+   and argv entries `["--root", currentProjectRoot, "--dry-run"]`, show the plan, and after explicit
+   approval run it again without `--dry-run`. Alternatively, add `"--sync-hosts"` to the
+   `--apply` call above to do both in one step. The project-side entry
+   `prompts/hard_points/system/host-sync/host-sync.mjs` does the same from an installed project.
 
 For Git, local directory and archive sources, continue with the existing modular plan chain below.
 
@@ -457,16 +470,22 @@ For **each ending plan** in order (N = 0 to 8):
 1. **Locate plan**: `prompts/hard_points/system/maj/plans/plan-ending-${N}.md`
 
 2. **Verify existence**:
-   - If not found → Warning + skip to next
+   - If ending-0 is not found → Stop (mandatory fusion gate missing)
+   - For other plans, follow their required/optional status; never skip a required gate
 
 3. **Create a sub-task** (via Agent tool or Code sub-task) with the message:
 ```
 Execute plan-ending-${N}.md IN FULL:
 - Read file prompts/hard_points/system/maj/plans/plan-ending-${N}.md
 - Execute ALL phases in exact order
-- Call ALL mentioned scripts (do not summarize)
+- Call the scripts for the selected branch only; examples and resumed phases
+  are not instructions to execute every alternative
 - Verify all required inputs (files, variables)
 - Verify all success conditions
+- For ending-0, use ending-0-fusion.mjs start for INTELLIGENT; supply the exact
+  host-exposed dispatch tool as MAJ_DISPATCH_TOOL. Exit 2 means pending.
+- Do not normalize pending into failure or claim completion. Return the request file and host next actions.
+- Only a current verified resume/status result (or verified zero differences) permits ending-1.
 - Log every action performed
 - Do NOT summarize, do NOT skip anything
 ```
@@ -479,7 +498,14 @@ Execute plan-ending-${N}.md IN FULL:
 ```
 
 5. **Ending plans context** (for information only):
-   - **plan-ending-0** : Intelligent merge TARGET → SOURCE (prompts/ content)
+   - **plan-ending-0** : Host-dispatched reviewed fusion under prompts/hard_points;
+     `ending-0-fusion.mjs start` prepares `ending-0-fusion.request.json`.
+     The coordinator uses an actually exposed dispatch tool and authorized
+     `agent-aikido-fusion` executor, never assumes worker permissions, and
+     reviews every applied result. It writes the acceptance manifest specified
+     in the plan, runs `accept`, then `resume`/`status` with the same MAJ_WORK_DIR.
+     Node does not invoke the agent. Keep the workflow suspended until the
+     verification succeeds; SKIP/MANUAL_LATER remain pending and REPLACE is refused.
    - **plan-ending-1** : Change detection (diff report generation)
    - **plan-ending-2** : Report analysis + index update preparation
    - **plan-ending-3** : General index update (mono/multi)
@@ -496,6 +522,12 @@ Execute plan-ending-${N}.md IN FULL:
    - Execution logs
 
 7. **Error handling**:
+   - ending-0 exit 2/pending → Suspend and return the host dispatch/review/accept
+     actions; do not launch ending-1 or show success. Resume the existing request
+     rather than restarting beginning/comparison/start.
+   - ending-0 completion → Require fresh verified `ending-0-fusion.mjs resume`
+     (or revalidated zero differences). A prepared request or generic sub-task
+     `ok` message is insufficient.
    - BLOCKING plan fails → Launch `plan-ending-10.md` (diagnostics)
    - NON-BLOCKING plan fails → Warning + continue to next
 
@@ -612,10 +644,10 @@ When executing this command:
    - When a plan mentions a script, call it via Bash tool
    - NEVER summarize a script call with "I verified..."
    - Scripts authorized in plans:
-     - `detect-project-type.sh`
-     - `sync-files.sh`
-     - `sync-directories.sh`
-     - `validate-structure.sh`
+     - `detect-project-type.mjs`
+     - `maj-node-migration.mjs sync-file`
+     - `maj-node-migration.mjs sync-directories`
+     - `validate-structure.mjs`
      - All scripts in `prompts/hard_points/system/maj/scripts/`
 
 4. **OBLIGATION: FOLLOW STRICT ORDER**
