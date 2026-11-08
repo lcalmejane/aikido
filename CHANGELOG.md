@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 | Version | Date | Highlights |
 |---------|------|-----------|
+| **1.5.3** | 2026-11-08 | Node.js tooling standard, multi-host AI-KIDO CLI and integrations, deterministic workflows, and task-store support |
 | **1.5.2** | 2026-10-31 | New `/learn` self-learning command and an always-read `learned.md` shipped empty with every installation |
 | **1.5.1** | 2026-10-29 | Install guide in the distribution packages now points to the final release tag |
 | **1.5.0** | 2026-10-28 | Multi-host distribution groundwork (templates, bootstrap, updates, catalog, Claude Code and VS Code plugin packages, GitHub coding agent adapter, generated agent wrappers for every host); bundled Roo Code reference docs removed |
@@ -30,6 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ---
 
 ## [Unreleased]
+
+## [1.5.3] - 2026-11-08
 
 ### Added
 
