@@ -59,3 +59,12 @@ workflow operations; task data is stored outside the checkout. The standalone
 CLI previews due work only. Actual scheduling requires an explicitly started
 Node scheduler and an authorized host dispatcher supplied by an integration.
 See `docs/task-store.md` for the data model, API and safety boundaries.
+
+## Publishing
+
+Maintainers publish from GitHub Actions using the manual `npm-publish.yml`
+workflow on `main`, with a version matching this package's manifest. npm trusted
+publishing must authorize GitHub user `lcalmejane`, repository `aikido`, workflow
+`npm-publish.yml`, environment `release`, and direct `npm publish`.
+The workflow uses OIDC and provenance; it does not use `NPM_TOKEN`.
+Published npm versions cannot be overwritten.

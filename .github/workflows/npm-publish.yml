@@ -27,10 +27,9 @@ jobs:
     environment: release
     permissions:
       contents: read
-      id-token: write # npm provenance
+      id-token: write # npm trusted publishing and provenance
     env:
       VERSION: ${{ inputs.version }}
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -45,5 +44,5 @@ jobs:
         run: require('node:child_process').execFileSync(process.execPath, ['distribution/scripts/ci.mjs', 'install-validator'], {stdio:'inherit'});
       - name: Run tests
         run: require('node:child_process').execFileSync(process.execPath, ['distribution/scripts/ci.mjs', 'tests'], {stdio:'inherit'});
-      - name: Build host packages and publish with provenance
+      - name: Build host packages and publish with OIDC provenance
         run: require('node:child_process').execFileSync(process.execPath, ['distribution/scripts/ci.mjs', 'npm-publish'], {stdio:'inherit'});

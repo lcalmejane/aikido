@@ -1,6 +1,6 @@
 {
   "name": "@aikido-method/cli",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "Install, update and synchronise the AI-KIDO Memory Bank for every assistant CLI installed on the machine.",
   "license": "MIT",
   "type": "module",
