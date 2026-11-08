@@ -26,6 +26,9 @@ Except for internal "agent‑aikido‑*" agents: before answering, use prompts/i
 8. **🏗️ Bicephalous Architecture**: `gen/` (mutable) vs `hard_points/` (rigid)
 9. **👥 Specialist Agents**: Personas for LLM query optimization
 10. **🎭 Orchestrator Agent**: Coordinates specialist agents
+    Apply [Swarm and reuse](system/orchestrator/swarm.md) at delegation: useful
+    parallel work, verified peer/relay tools, same-task context retention;
+    clean reuse requires a real host reset, otherwise use a fresh worker.
 11. **🗜️ Semantic Density**: Maximum information, minimum words
 12. **📈 Mermaid Diagrams**: Visual compression for semantic density
 13. **🔍 Vector Indexing**: Local RAG mode of the workspace
@@ -48,6 +51,7 @@ Except for internal "agent‑aikido‑*" agents: before answering, use prompts/i
 4. Continuously enrich truth tables.
 5. Maintain alignment between all elements.
 6. Document every important decision.
+7. **Search scope**: Apply the [Scope-first Search Rule](system/search/scope-first.md) before exploratory code or Memory Bank searches.
 
 ## MANDATORY DIRECTORY STRUCTURE (summary)
 ```
@@ -70,6 +74,7 @@ AGENTS.md / CLAUDE.md / README.md
 - **Bidirectional links** mandatory between concepts, techniques, personas and use_cases.
 - **Hard points** immutable except via `agent‑aikido‑fusion`.
 - **Commands** referenced only in `AGENTS.md`, never in `index.md`.
+- **Skill tooling**: skills created, optimized or compiled use dependency-free Node.js `.mjs` tooling (24+ baseline, highest version available in the workspace); no new `.sh`/`.py`/`.ps1` unless a documented exception. See [Default Tooling Standard](system/Skills.md#default-tooling-standard-nodejs).
 
 <details>
 <summary>See full detailed document</summary>

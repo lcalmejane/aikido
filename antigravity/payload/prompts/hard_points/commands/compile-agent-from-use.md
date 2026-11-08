@@ -12,6 +12,23 @@ description: "Interactive compilation of specialized AI-KIDO agents with user qu
 
 /compile-agent-from-use
 
+## Tooling Standard
+
+All compiled agents and their mappings MUST reference
+[`swarm.md`](../system/orchestrator/swarm.md), rebasing the link for the output
+location. Preserve the shared instruction to consider useful parallelism and
+peer/relay communication with actual executor tools at every delegation;
+retain useful same-task context, but clean reuse requires a verified host reset.
+Otherwise use a fresh worker. Never infer messaging rights from delegation,
+override native lifecycle restrictions or embed invented tools/frontmatter.
+The compilation validator must check this link and instruction before delivery.
+
+Any skill, script or tool this compilation produces or embeds MUST follow the
+[Default Tooling Standard (Node.js)](../system/Skills.md#default-tooling-standard-nodejs):
+dependency-free `.mjs` on Node.js 24+ (check `node --version` first, use the
+highest version available in the workspace), bounded JSON output, `node --test`
+tests. Never emit new `.sh`/`.py`/`.ps1` tooling; list non-Node sources as gaps.
+
 ## Prerequisites
 
 - AI-KIDO Memory Bank initialized at `/prompts/`
@@ -228,6 +245,9 @@ Compliance validation specific to compiled agents:
 5. Consistent techniques: No contradictory techniques
 6. Format: Formatted text template (not raw markdown)
 7. Functional tests: Validation on typical use cases
+8. Collaboration: resolving link to swarm.md in agent AND mapping; useful parallelism,
+   verified peer/relay capabilities, same-task retention, verified reset or fresh
+   fallback, and native lifecycle/permission restrictions preserved
 
 For each detected violation, return:
 - Violation + affected line
@@ -298,6 +318,13 @@ FINALIZATION IN PROGRESS...
 
 ## Optimized System Prompt
 [Unified and optimized prompt]
+
+## Collaboration and lifecycle
+Apply [Swarm and reuse](../../prompts/hard_points/system/orchestrator/swarm.md)
+at every delegation or collaboration brief, only when useful and supported by
+verified executor tools. Retain useful same-task context; clean reuse requires
+a real verified host reset, otherwise use fresh context. Respect the assigned
+scope and native permissions. Rebase this link if the output location changes.
 
 ## Consultant Personas
 

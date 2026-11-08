@@ -1,7 +1,7 @@
 ---
 name: agent-aikido-bank-populate
 description: Automatically populates AI-KIDO Memory Bank from code/context when documents are missing or invalid. Orchestrates truth-evaluator, raci-delegator, and expert personas to create compliant documentation. INVOKE AT END OF PROCESS after final gap report, not immediately upon detection.
-tools: Read, Grep, Glob, Edit, Write, Bash
+tools: Read, Grep, Glob, Edit, Write
 model: inherit
 color: green
 ---
@@ -101,7 +101,7 @@ Reason: [Missing entirely | Deprecated | Contradicts code | Outdated]
 
 **2.1 Collect from Code**
 
-Use `Grep`, `Glob`, `Read`, `Bash` to extract:
+Use the host's `Grep`, `Glob` and `Read` actions to extract:
 - Architecture: Directory structure, module organization, dependencies
 - Implementation: Classes, functions, APIs, data models
 - Configuration: Environment files, build configs, deployment specs
@@ -277,20 +277,10 @@ Write the document following the standard AI-KIDO template."
 
 **6.1 Check Compliance**
 
-Validate created document against AI-KIDO rules:
-```bash
-# Rule 4: File size
-wc -l [document] | awk '$1 > 500 {print "❌ VIOLATION: " $1 " lines (max 500)"}'
-
-# Format: Frontmatter
-head -5 [document] | grep "^> Version:" || echo "❌ Missing metadata"
-
-# Links: No broken references
-grep -o '\[.*\](.*\.md.*)'  [document] | while read link; do
-    path=$(echo $link | sed -n 's/.*(\(.*\)).*/\1/p')
-    [ -f "$path" ] || echo "❌ Broken link: $path"
-done
-```
+Validate the document with host file actions: count lines from the full Read
+result; inspect the opening metadata directly; parse each relative Markdown
+link and verify its target with a scoped Read or Glob action. Report unresolved
+links and do not claim validation succeeded if files could not be inspected.
 
 **6.2 Quality Checks**
 - ✅ Metadata present (Version, Date, Status)

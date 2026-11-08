@@ -1,4 +1,5 @@
 ---
+name: create-skill
 description: "Interactive guide to create a complete AI-KIDO Skill skeleton"
 ---
 
@@ -28,28 +29,19 @@ Direct LLM execution — ❌ no bash script · ✅ Ask user directly + Write too
 
 ### Step 0 — Duplicate Detection
 
-Scan the 3 sources and display the summary:
-```bash
-find prompts/hard_points/commands -name "*.md" | while read f; do
-  NAME=$(basename "$f" .md)
-  DESC=$(grep -m1 '^description:' "$f" | sed 's/description:[[:space:]]*//' | tr -d '"')
-  [ -z "$DESC" ] && DESC=$(grep -m1 '^#' "$f" | sed 's/^#[[:space:]]*//')
-  echo "  [AIKIDO] $NAME : $DESC"
-done
-find .roo -name "*.md" 2>/dev/null | while read f; do echo "  [ROO] $(basename "$f" .md) : $(grep -m1 '^#' "$f" | sed 's/^#[[:space:]]*/')"; done
-find .claude -name "*.md" 2>/dev/null | while read f; do echo "  [CLAUDE] $(basename "$f" .md) : $(grep -m1 '^#' "$f" | sed 's/^#[[:space:]]*/')"; done
-```
+Inspect the directory structure first, then scan existing Markdown files only
+within `prompts/hard_points/commands`, `.roo` and `.claude`. Follow
+[`scope-first.md`](../system/search/scope-first.md). Display each source label,
+basename and frontmatter description or first heading. Report read errors;
+missing optional host directories can be reported as absent.
 
 Ask the user directly: `1. No — new Skill` · `2. Yes — package [NAME]` · `3. Uncertain — details [NAME]` · `4. Extend [NAME]`
 If packaging → Read source file → pre-fill `SKILL_NAME/DESC/INSTRUCTIONS/SOURCE_COMMAND` → **skip to Step 2**
 
 ### Step 1 — Existing Skills Inventory
 
-```bash
-find prompts/hard_points/system -name "SKILL.md" | while read f; do
-  echo "  - $(basename $(dirname $f)) : $(grep -m1 '^## Description' -A1 "$f" | tail -1 | sed 's/^[[:space:]]*//')"
-done
-```
+Inspect the subdirectories of `prompts/hard_points/system` first, then list
+their `SKILL.md` files and display each parent directory and description.
 Display list + `Reference: skills_list.md`
 
 ### Steps 2–8 — Questionnaire (Ask user directly)
@@ -61,7 +53,7 @@ Display list + `Reference: skills_list.md`
 | 4 | Category? | `analysis/understanding` · `generation/creation` · `validation/verification` · `search/exploration` | `SKILL_CATEGORY` |
 | 5 | Execution steps (numbered list) | *(free text)* | `SKILL_INSTRUCTIONS` |
 | 6 | Output format? | `JSON {status,result,summary,details}` · `Markdown {Summary,Details,Recommendations}` · `JSON {matches[],summary,total_count}` · `Plain text UTF-8` | `SKILL_OUTPUT` |
-| 7 | Dependencies/libraries? | `None` · `POSIX Bash` · `Python stdlib` · `Python NLP (nltk,spacy)` | `SKILL_RESOURCES` |
+| 7 | Dependencies/libraries? | `None` · `Node.js 24+ (default, node: built-ins only)` · `Other runtime (exception: user must justify, recorded in SKILL.md)` | `SKILL_RESOURCES` |
 | 8 | Associated AI-KIDO agents? | `explore-bank` · `explore-code` · `bank-populate` · `None` | `SKILL_AGENTS` |
 
 Step 2: validate uniqueness (`prompts/hard_points/system/{SKILL_NAME}` must not exist) · conflict → propose `{name}-v2`
@@ -121,7 +113,7 @@ Progressive disclosure: metadata → instructions → resources on demand.
 
 **10.2** `references/README.md` *(if `WITH_REF`)* — Sections: Overview / Input parameters (table) / Output format / Constraints / See also
 **10.3** `examples/README.md` *(if `WITH_EX`)* — Minimum 2 examples: Input + Expected output per use case
-**10.4** `scripts/helper.sh` *(if `WITH_SCRIPTS`)* — `set -euo pipefail` + `main()` + TODO logic
+**10.4** `scripts/helper.mjs` + `scripts/helper.test.mjs` *(if `WITH_SCRIPTS`)* — MUST follow the [Default Tooling Standard (Node.js)](../system/Skills.md#default-tooling-standard-nodejs): `#!/usr/bin/env node`, exported pure core + thin `main()`, `node:` built-ins only, one bounded JSON object on stdout, explicit `{"status":"error","code","message"}` and nonzero exit on failure, `node --test` tests. Check `node --version` first and use the highest version available in the workspace without raising the 24+ baseline. Never generate `.sh`/`.py`/`.ps1` entry points unless the user chose the exception in Step 7. Do not claim unimplemented behavior succeeds.
 **10.5** `templates/template.txt` *(if `WITH_TPL`)* — `[SECTION_N]` sections + `{{VARIABLE_N}}` variables
 **10.6** `documentation/documentation.md` *(if `WITH_DOC`)* — Architecture / Mermaid flow / Decisions / Limitations / History
 
@@ -131,6 +123,10 @@ Add to `skills_list.md` (alphabetical order):
 ```markdown
 - **{SKILL_NAME}** – {SKILL_DESC} – [`prompts/hard_points/system/{SKILL_NAME}/SKILL.md`](prompts/hard_points/system/{SKILL_NAME}/SKILL.md)
 ```
+
+### Step 11bis — Make it available to every installed CLI
+
+Run `node prompts/hard_points/system/host-sync/host-sync.mjs --dry-run` first, show the planned wrapper changes, then, after explicit approval, run it without `--dry-run`. It detects every assistant CLI installed on the machine (plus the hosts remembered in `.aikido/state/hosts.json`) and creates the Skill wrappers, agents and command entries for each of them through the audited `/check-cli` engine. Report `results[].status`; `conflict` means a customized wrapper was preserved. `runtime-missing` → tell the user to run `aikido sync` once. Never write host directories by hand.
 
 ### Step 12 — Final Report (Output result to user)
 

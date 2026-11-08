@@ -363,7 +363,10 @@ export function cli(args, { stdin = () => readFileSync(0, 'utf8'), dir, now, con
   const [command, ...rest] = args;
   switch (command) {
     case 'init': {
-      const request = JSON.parse(stdin());
+      if (rest.length && (rest.length !== 2 || rest[0] !== '--input')) {
+        throw new Error('Usage: tracker.mjs init [--input <request.json>]');
+      }
+      const request = JSON.parse(rest.length ? readFileSync(rest[1], 'utf8') : stdin());
       record(request?.request_id, { type: 'request', request }, { dir: journalDir, now: clock });
       return view(request.request_id);
     }
@@ -373,12 +376,15 @@ export function cli(args, { stdin = () => readFileSync(0, 'utf8'), dir, now, con
       return view(requestId);
     }
     case 'result': {
-      const [requestId, taskId] = rest;
+      const [requestId, taskId, ...inputArgs] = rest;
+      if (inputArgs.length && (inputArgs.length !== 2 || inputArgs[0] !== '--input')) {
+        throw new Error('Usage: tracker.mjs result <request> <task> [--input <reply.json>]');
+      }
       const state = loadState(requestId, journalDir);
       let check;
       let value = null;
       try {
-        value = JSON.parse(stdin());
+        value = JSON.parse(inputArgs.length ? readFileSync(inputArgs[1], 'utf8') : stdin());
         check = validateResult(value, state.request, config);
         if (check.valid && value.id !== taskId) check = { valid: false, errors: [`result.id must be ${taskId}`] };
       } catch (error) {

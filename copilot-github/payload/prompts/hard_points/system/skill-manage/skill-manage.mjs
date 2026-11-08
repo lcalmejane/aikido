@@ -2,6 +2,7 @@
 // Deterministic engine behind /skill-manage. Every side effect (clone, copy, replace, remove)
 // happens here so the AI only calls it and reports its JSON output. No dependencies; uses git.
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import {
   chmodSync, copyFileSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync,
   renameSync, rmSync, statSync, writeFileSync,
@@ -9,6 +10,24 @@ import {
 import { tmpdir } from 'node:os';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { syncProject } from '../host-sync/host-sync.mjs';
+
+// Version direction of an install over an existing copy (kept local: this file ships without the distribution libs).
+function versionParts(value) {
+  const match = /^(\d+)\.(\d+)(?:\.(\d+))?(?:-([0-9A-Za-z.-]+))?$/.exec(String(value ?? ''));
+  return match ? { core: [Number(match[1]), Number(match[2]), Number(match[3] ?? 0)], pre: match[4] ?? '' } : null;
+}
+export function versionDirection(from, to) {
+  if (from === null || from === undefined) return 'initial';
+  const a = versionParts(from);
+  const b = versionParts(to);
+  if (!a || !b) return 'unknown';
+  for (let i = 0; i < 3; i += 1) if (a.core[i] !== b.core[i]) return a.core[i] < b.core[i] ? 'upgrade' : 'downgrade';
+  if (a.pre === b.pre) return 'same';
+  if (!a.pre) return 'downgrade';
+  if (!b.pre) return 'upgrade';
+  return a.pre < b.pre ? 'upgrade' : 'downgrade';
+}
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const DEFAULT_CFG = resolve(HERE, '../../configuration/skills.cfg');
@@ -17,7 +36,8 @@ const SAFE_REF = /^(?!-)[A-Za-z0-9._/-]+$/;
 const SAFE_REL = /^(?!\/)(?!.*\.\.)[A-Za-z0-9._/-]+$/;
 const SCRIPT_EXT = /\.(sh|bash|zsh|py|js|mjs|cjs|ts|rb|pl|ps1|bat|cmd)$/i;
 const LIMITS = { files: 2000, bytes: 50 * 1024 * 1024, skillLines: 500 };
-const FLAGS = new Set(['dry-run', 'confirm-third-party', 'force', 'purge', 'help']);
+const FLAGS = new Set(['dry-run', 'confirm-third-party', 'force', 'purge', 'sync-hosts', 'help']);
+const WRITING_STATUSES = new Set(['installed', 'uninstalled']);
 const ACTIONS = new Set(['config', 'list', 'search', 'get', 'update', 'uninstall']);
 
 class SkillError extends Error {
@@ -106,11 +126,36 @@ function git(args, { cwd, token, url } = {}) {
   }
 }
 
+// An absolute local directory that is not a Git repository (a downloaded and extracted release, for
+// example) is used as is. A Git repository keeps its commit semantics through a shallow clone.
+function isPlainLocalDirectory(url, config) {
+  if (!config.allowLocal || !isAbsolute(url)) return false;
+  try { return statSync(url).isDirectory() && !existsSync(join(url, '.git')); } catch { return false; }
+}
+
+// Stable content identity, so that "update" detects a change in a copy that has no commit.
+function treeDigest(dir) {
+  const hash = createHash('sha256');
+  for (const file of inventory(dir).files) {
+    hash.update(`${file.path}\0`).update(readFileSync(join(dir, file.path))).update('\0');
+  }
+  return hash.digest('hex').slice(0, 16);
+}
+
 function cloneShallow(url, ref, config) {
   assertRepoUrl(url, config);
   if (ref && !SAFE_REF.test(ref)) fail('invalid-ref', `Invalid ref: ${ref}`);
   const dir = mkdtempSync(join(tmpdir(), 'aikido-skill-'));
   const dest = join(dir, 'repo');
+  if (isPlainLocalDirectory(url, config)) {
+    try {
+      copyTree(url, dest); // refuses symbolic links; never writes to or removes the source directory
+      return { dir, repo: dest, commit: `local-${treeDigest(dest)}` };
+    } catch (error) {
+      rmSync(dir, { recursive: true, force: true });
+      throw error;
+    }
+  }
   try {
     git(['clone', '--depth=1', '--single-branch', ...(ref ? ['--branch', ref] : []), '--', url, dest], { token: config.token, url });
     return { dir, repo: dest, commit: git(['rev-parse', 'HEAD'], { cwd: dest }) };
@@ -304,7 +349,14 @@ function install(config, options, { name, origin, sourceDir, version, commit, so
     warnings.push(`SKILL.md has ${info.lines} lines (limit ${LIMITS.skillLines})`);
   }
   const scripts = files.filter((f) => f.script).map((f) => f.path);
-  const summary = { name, origin, source: sourceId, version: version ?? null, commit, files: files.length, bytes, scripts, commands: info.commands, warnings };
+  // Analysed and announced, never blocking: the user's own copy, fork or older release is theirs to install.
+  const localSource = /^local-[0-9a-f]{16}$/.test(commit ?? '') || (config.allowLocal && repoUrl === config.group);
+  const previousPath = join(dest, '.aikido-source.json');
+  const previousVersion = existsSync(previousPath) ? readJson(previousPath, 'provenance').version ?? null : null;
+  const versionChange = { from: previousVersion, to: version ?? null, direction: versionDirection(previousVersion, version ?? null) };
+  if (versionChange.direction === 'downgrade') warnings.push(`version regression: ${versionChange.from} -> ${versionChange.to}`);
+  if (localSource) warnings.push(`installed from a local source (${repoUrl}); its content was not compared with the official catalog`);
+  const summary = { name, origin, source: sourceId, version: version ?? null, commit, files: files.length, bytes, scripts, commands: info.commands, versionChange, warnings };
 
   if (trust === 'third-party' && !options['confirm-third-party']) {
     return { status: 'confirmation_required', reason: 'third-party skill: review the file list, then re-run with --confirm-third-party', ...summary, fileList: files.map((f) => f.path) };
@@ -326,6 +378,7 @@ function install(config, options, { name, origin, sourceDir, version, commit, so
     copyTree(sourceDir, staging);
     writeFileSync(join(staging, '.aikido-source.json'), `${JSON.stringify({
       source: sourceId, repo: repoUrl, ref: ref ?? null, commit, version: version ?? null, installed_at: new Date().toISOString(),
+      local: localSource, ...(versionChange.direction === 'downgrade' ? { regression_from: versionChange.from } : {}),
     }, null, 2)}\n`);
     if (existsSync(dest)) backup = moveToBackup(config, name);
     renameSync(staging, dest);
@@ -392,19 +445,30 @@ function actionUninstall(config, options) {
   return { status: 'uninstalled', name, backup, commands, mappings };
 }
 
-export function run(argv, env = process.env) {
+// Make the change visible to every assistant CLI installed on this machine (wrappers, modes, Skills).
+// A synchronisation problem never turns a successful install into a failure: it is reported next to it.
+function withHostSync(result, config, options, env, sync) {
+  if (!options['sync-hosts'] || options['dry-run'] || !WRITING_STATUSES.has(result.status)) return result;
+  try {
+    return { ...result, hostSync: sync({ root: config.repoRoot, env }) };
+  } catch (error) {
+    return { ...result, hostSync: { status: 'error', message: error.message } };
+  }
+}
+
+export function run(argv, env = process.env, { sync = syncProject } = {}) {
   const { action, options } = parseArgs(argv);
   if (!ACTIONS.has(action) || options.help) {
-    fail('usage', `Usage: skill-manage.mjs <${[...ACTIONS].join('|')}> [--name n] [--query q] [--scope local|remote|all] [--source id|all|catalog] [--target dir] [--group url] [--on-conflict update|reinstall|skip|ask] [--dry-run] [--confirm-third-party] [--force] [--purge]`);
+    fail('usage', `Usage: skill-manage.mjs <${[...ACTIONS].join('|')}> [--name n] [--query q] [--scope local|remote|all] [--source id|all|catalog] [--target dir] [--group url] [--on-conflict update|reinstall|skip|ask] [--dry-run] [--confirm-third-party] [--force] [--purge] [--sync-hosts]`);
   }
   const config = loadConfig(options, env);
   switch (action) {
     case 'config': return { status: 'ok', group: config.group, branch: config.branch, layout: config.layout, targetDir: relative(config.repoRoot, config.targetDir), onConflict: config.onConflict, token: config.token ? '****' : '' };
     case 'list': return { status: 'ok', targetDir: relative(config.repoRoot, config.targetDir), skills: installedSkills(config) };
     case 'search': return actionSearch(config, options);
-    case 'get': return actionGet(config, options);
-    case 'update': return actionUpdate(config, options);
-    default: return actionUninstall(config, options);
+    case 'get': return withHostSync(actionGet(config, options), config, options, env, sync);
+    case 'update': return withHostSync(actionUpdate(config, options), config, options, env, sync);
+    default: return withHostSync(actionUninstall(config, options), config, options, env, sync);
   }
 }
 

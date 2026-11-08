@@ -4,46 +4,29 @@
 
 ## 🎯 Plans Architecture
 
-AI-KIDO update plans follow a **declarative approach** where actions are described as **action prompts** rather than complex bash scripts.
+AI-KIDO update plans combine action prompts with deterministic Node.js engines.
+Some historical version plans are blocked; see their status before execution.
 
 ### Philosophy
 
-Instead of creating dozens of bash scripts for each operation, we use:
-- ✅ **Technical scripts** (4 only) for operations requiring algorithmic processing
-- ✅ **Direct action prompts** for everything the LLM can do natively
-- ✅ **Modular plans** that are chainable and reusable
+Use the Node.js 24+ engines for deterministic processing, and action prompts
+for review and decisions that require the host. The old shell entry points
+have been removed; call the documented Node engines.
 
 ### Benefits
 
-1. **Maintainability** : Less bash code to maintain
-2. **Flexibility** : The LLM adapts actions to context
-3. **Readability** : Clear instructions rather than procedural code
-4. **Robustness** : The LLM handles error cases naturally
+Plans must expose failures and stop at their documented review gates.
 
 ---
 
-## 📦 Technical Scripts (To Keep)
+## 📦 Technical Engines
 
-These 4 scripts perform **real processing** that cannot be replaced by prompts:
+The scripts directory contains Node engines for detection, synchronization,
+validation, reporting and the ending plans. See [the MAJ skill](../SKILL.md)
+and each plan for their supported arguments and safety limits.
 
-| Script | Role | Why keep |
-|--------|------|-----------------|
-| **`detect-project-type.sh`** | Mono/multi-project detection | Complex directory structure analysis |
-| **`sync-files.sh`** | Intelligent synchronization | Date comparison, automatic backup, multi-OS logic |
-| **`sync-directories.sh`** | Directory synchronization | Optimized recursive operations |
-| **`validate-structure.sh`** | Structure validation | Multiple checks with return codes |
-
-**Usage in plans** :
-```markdown
-**Action: Detect project type**
-
-```bash
-DETECT_SCRIPT="prompts/hard_points/system/maj/scripts/detect-project-type.sh"
-PROJECT_TYPE=$("$DETECT_SCRIPT" detect | head -1)
-```
-
-Store `$PROJECT_TYPE` (MONO or MULTI) for later use.
-```
+The former `.sh` adapters have been removed; update external callers to use
+the Node entry points and subcommands documented in each active plan.
 
 ---
 
@@ -63,8 +46,8 @@ Store `$PROJECT_TYPE` (MONO or MULTI) for later use.
 
 **Role** : Version-specific migrations
 **Examples** :
-- `plan-V1.3.0.0.md` : Migration `/prompts/gen/index.md` → `/prompts/index.md`
-- `plan-V1.3.1.0.md` : Migration `.roo/commands/` → `prompts/hard_points/commands/`
+- `plan-V1.3.0.0.md` : historical index migration — **BLOCKED**
+- `plan-V1.3.1.0.md` : historical command migration — **BLOCKED**
 
 **Typical structure** :
 ```markdown
@@ -96,19 +79,23 @@ Success criteria
 
 | Plan | Phase | Role |
 |------|-------|------|
-| **ending-0** | Merge | Intelligent merge TARGET → SOURCE (prompts/ content) |
+| **ending-0** | Merge | Reviewed TARGET → SOURCE hard-point merge; host dispatch, acceptance and resume required when differences exist |
 | **ending-1** | Detection | Change detection report post-rebase |
 | **ending-2** | Analysis | Report analysis + index update preparation |
 | **ending-3** | Index | General index update (mono/multi) |
 | **ending-4** | Validation | Project consistency diagnosis |
-| **ending-5** | Optimization | Temporary files cleanup |
-| **ending-6** | Final validation | AI-KIDO compliance check |
+| **ending-5** | Optimization | Review backups and temporaries; deletion skipped without proven ownership |
+| **ending-6** | Final validation | Prepare AI-KIDO compliance validation for the host |
 | **ending-7** | Population | Gap population proposal (agent-aikido-bank-populate) |
 | **ending-8** | Deployment | Mappings and config deployment TARGET → SOURCE (.roo/, .claude/, root files) |
 
 ---
 
-## 🔄 Complete Workflow
+## 🔄 Conditional Workflow
+
+This diagram describes the historical plan sequence, not authorization to
+execute it. Stop at blocked version plans, pending fusion and any other
+documented gate. For managed installations, use the Node package planner.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -134,7 +121,7 @@ Success criteria
                      │
                      ▼
           ┌──────────────────────┐
-          │  plan-ending-0.md    │  ← Merge TARGET → SOURCE (prompts/)
+          │  plan-ending-0.md    │  ← Host-reviewed merge and resume gate
           └──────────┬───────────┘
                      │
                      ▼
@@ -187,13 +174,14 @@ Success criteria
 
 ## 📝 Action Prompt Anatomy
 
-Instead of a script call, plans use **action prompts**:
+Action prompts can describe host decisions alongside deterministic script calls.
+The following is an illustrative prompt, not a substitute for the current
+validation engines and their documented error handling.
 
 ### ❌ Old approach (missing script)
 
-```bash
-"$VALIDATE_SOURCE_SCRIPT" validate "$SOURCE_PATH"
-```
+The former validation command referenced an unavailable script; do not invoke
+or reproduce it.
 
 ### ✅ New approach (action prompt)
 
@@ -219,12 +207,6 @@ Instead of a script call, plans use **action prompts**:
      - List missing files
      - EXIT 1
 ```
-
-**Advantages**:
-- The LLM understands the intent
-- Adaptation to real context
-- Natural error handling
-- No bash files to maintain
 
 ---
 
@@ -256,12 +238,9 @@ Detailed instructions as action prompts:
    - Detail A
    - Detail B
 
-2. **Second step**: Precise description
-   ```bash
-   # If technical script needed (one of the 4 authorized)
-   SCRIPT="prompts/hard_points/system/maj/scripts/{script}.sh"
-   RESULT=$("$SCRIPT" {args})
-   ```
+2. **Second step**: Invoke the relevant documented Node engine directly with
+   an argument array and check its exit status before consuming output:
+   `node SOURCE/prompts/hard_points/system/maj/scripts/engine.mjs arguments`.
 
 3. **Result**:
    - ✅ Success case: Action
@@ -304,9 +283,10 @@ During `/maj-aikido` execution:
    - `1.3.0.0` → `plan-V1.3.0.0.md`
    - `1.3.1.0` → `plan-V1.3.1.0.md`
 
-3. **Execute the version plan**
-   - Phase by phase
-   - If blocking phase fails → STOP
+3. **Check the selected plan's status before execution**
+   - Never execute a blocked or historical plan; stop and report it.
+   - For managed installations, use the reviewed Node package update planner.
+   - For an approved safe plan, execute phase by phase; stop on blocking failure.
 
 4. **Chain ending plans** (0→1→2→3→4→5→6→7)
    - Each plan can decide to continue or stop

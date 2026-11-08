@@ -7,6 +7,10 @@ globs: prompts/hard_points/system/analyse/plans/README.md, prompts/hard_points/c
 
 **Purpose**: Create a new project analysis plan for `/analyse-project` by reading the README template and requirements, asking the user for analysis type and depth, and generating the complete plan structure.
 
+Generated plans remain shared Git knowledge and are never converted or moved
+automatically. To start private task tracking from a completed supported plan,
+offer `/aikido-import-plan` as a separate, user-approved workflow.
+
 ---
 
 ## Usage
@@ -22,18 +26,10 @@ globs: prompts/hard_points/system/analyse/plans/README.md, prompts/hard_points/c
 
 ### Step 1 — Load the Reference README
 
-```bash
-# Load the README for template and guidelines
-README_PATH="prompts/hard_points/system/analyse/plans/README.md"
-README_CONTENT=$(cat "$README_PATH")
-
-# Extract the analysis plan template
-TEMPLATE=$(sed -n '/### 2\. Template de Plan d'"'"'Analyse/,/### 3\. Checklist/p' "$README_PATH")
-
-# Load the analyse-project command to understand the available types
-COMMAND_PATH="prompts/hard_points/commands/analyse-project.md"
-COMMAND_CONTENT=$(cat "$COMMAND_PATH")
-```
+Read `prompts/hard_points/system/analyse/plans/README.md` and
+`prompts/hard_points/commands/analyse-project.md` with the host's Read action.
+Extract the plan template from the README's template section and retain the
+command's supported analysis types as the authoritative options.
 
 ### Step 2 — Interactive Questionnaire
 
@@ -140,21 +136,13 @@ If yes, enter priority directories (space-separated):
 **Store**: `PRIORITY_SOURCES` (list of priority paths)
 
 **Auto-suggestions based on type**:
-```bash
-case "$CATEGORY/$SUB_TYPE" in
-    architectural/c1)         SUGGESTED_SOURCES="README.md ARCHITECTURE.md docs/" ;;
-    architectural/c2)         SUGGESTED_SOURCES="src/ docker-compose.yml" ;;
-    architectural/c3)         SUGGESTED_SOURCES="src/ lib/ components/" ;;
-    architectural/c4)         SUGGESTED_SOURCES="src/**/*.{js,ts,php,py}" ;;
-    technical/backend)        SUGGESTED_SOURCES="src/api/ src/services/ config/" ;;
-    technical/frontend)       SUGGESTED_SOURCES="src/components/ src/views/ src/assets/" ;;
-    technical/infrastructure) SUGGESTED_SOURCES="docker-compose.yml .github/ terraform/" ;;
-    technical/security)       SUGGESTED_SOURCES="src/ config/ .env.example" ;;
-    functional/*)             SUGGESTED_SOURCES="src/ docs/business/" ;;
-    methodological/*)         SUGGESTED_SOURCES="docs/ .github/ README.md" ;;
-    *)                        SUGGESTED_SOURCES="src/ docs/ config/" ;;
-esac
-```
+Choose recommended sources from this mapping: architectural/c1 → README,
+ARCHITECTURE and docs; architectural/c2 → src and docker-compose; c3 → src,
+lib and components; c4 → matching source files; technical/backend → src/api,
+src/services and config; frontend → src/components, src/views and src/assets;
+infrastructure → docker-compose, .github and terraform; security → src, config
+and .env.example; functional → src and docs/business; methodological → docs,
+.github and README. For any other type, use src, docs and config.
 
 #### Question 5 — Specific Extraction Strategy
 
@@ -176,23 +164,12 @@ Use the recommended standard strategy? (y/n):
 
 Create the directory structure and the plan file.
 
-```bash
-# Determine the plan path
-BASE_PATH="prompts/hard_points/system/analyse/plans"
-
-if [ "$SUB_TYPE" != "" ]; then
-    # Specific plan: category/sub-type/plan-depth.md
-    PLAN_PATH="$BASE_PATH/$CATEGORY/$SUB_TYPE/plan-$DEPTH_NAME.md"
-else
-    # Category plan: category/plan-depth.md
-    PLAN_PATH="$BASE_PATH/$CATEGORY/plan-$DEPTH_NAME.md"
-fi
-
-# Create the parent directory
-mkdir -p "$(dirname "$PLAN_PATH")"
-
-echo "The plan will be created at: $PLAN_PATH"
-```
+Resolve the destination as
+`prompts/hard_points/system/analyse/plans/{category}/{sub-type}/plan-{depth}.md`
+when a subtype is selected, or
+`prompts/hard_points/system/analyse/plans/{category}/plan-{depth}.md` otherwise.
+Use the host's directory-creation and file actions; do not overwrite an
+existing plan.
 
 ### Step 4 — Generate Plan Content
 
@@ -386,72 +363,24 @@ Pre-fill sections with default values based on the analysis type.
 
 #### Architectural C1 (System Context)
 
-```bash
-FOCUS_AREAS="- Users and external actors
-- External systems and integrations
-- System boundaries
-- High-level interactions"
-
-SEARCH_PATTERNS="# External APIs
-https?://[^'\"\\s]+
-
-# Integrations
-(integration|external|third-party|api)
-
-# Users/Actors
-(user|actor|role|persona)"
-
-OUTPUT_FORMAT="- C1 context diagram (Mermaid)
-- Users/actors list
-- External systems list
-- Main interfaces"
-```
+Use focus areas of users and external actors, integrations, system boundaries
+and high-level interactions. Search for external URLs, integration/API terms
+and user/actor/role/persona terms. Require a context diagram, actor and
+external-system lists, and main interfaces in the output.
 
 #### Technical Backend
 
-```bash
-FOCUS_AREAS="- APIs and endpoints
-- Services and business logic
-- Data access (ORM, queries)
-- Backend-specific dependencies"
-
-SEARCH_PATTERNS="# API routes
-(get|post|put|delete|patch)\\s*\\(['\"]([^'\"]+)
-
-# Services
-(class|interface).*Service
-
-# Database queries
-(select|insert|update|delete).*from"
-
-OUTPUT_FORMAT="- API endpoints list with methods
-- Service architecture (Mermaid graph)
-- Data models
-- Detailed backend stack"
-```
+Use focus areas of APIs/endpoints, service logic, data access and backend
+dependencies. Search route declarations, service classes/interfaces and data
+queries with host search tools. Require endpoints and methods, a service
+architecture diagram, data models and the backend stack.
 
 #### Functional Use Cases
 
-```bash
-FOCUS_AREAS="- Main usage scenarios
-- Implemented business processes
-- Business rules (validations, constraints)
-- User workflows"
-
-SEARCH_PATTERNS="# Use case patterns
-(usecase|scenario|workflow)
-
-# Business rules
-(validate|verify|check|ensure).*business
-
-# User flows
-(login|register|checkout|payment)"
-
-OUTPUT_FORMAT="- Use cases list with actors
-- Sequence diagrams (Mermaid)
-- Extracted business rules
-- Detailed workflows"
-```
+Use focus areas of usage scenarios, implemented processes, business rules and
+workflows. Search use-case/scenario/workflow, validation and user-flow terms
+with host search tools. Require use cases with actors, sequence diagrams,
+business rules and detailed workflows.
 
 ### Step 6 — Confirmation and Creation
 
@@ -475,34 +404,20 @@ Create this plan now? (y/n):
 
 If confirmed:
 
-```bash
-# Write the file
-echo "$PLAN_CONTENT" > "$PLAN_PATH"
-
-echo "Plan created successfully: $PLAN_PATH"
-echo ""
-echo "Next steps:"
-echo "1. Customize agent prompts to fit your needs"
-echo "2. Refine search patterns"
-echo "3. Complete TODO sections"
-echo "4. Add type-specific examples"
-echo "5. Test with: /analyse-project (nature {NATURE_NUM}, depth {DEPTH_LEVEL})"
-echo ""
-echo "To edit the plan:"
-echo "  \$EDITOR $PLAN_PATH"
-```
+After confirmation, create the plan with the host's Write action, leaving
+existing files untouched.
+Report its path and next steps: customize agent prompts and search patterns,
+complete planned sections, add type-specific examples, and validate it with
+`/analyse-project` at the selected depth. Offer to open it only through a
+host-provided editor action.
 
 ### Step 7 — README Update (Automatic)
 
 Add the new plan to the list in README.md.
 
-```bash
-# Add the created plan to the "Available Plans" section
-README_PATH="prompts/hard_points/system/analyse/plans/README.md"
-
-# Update the "To Create (TODO)" section -> "Available"
-# (Automatic README update script)
-```
+Update the README's Available Plans section with the new plan using the host's
+edit action. Preserve unrelated content and do not claim an automated update
+script ran.
 
 ### Step 8 — Open in Editor (Optional)
 
@@ -512,15 +427,9 @@ Ask the user whether to open the plan in an editor.
 Do you want to open the plan in your editor for customization? (y/n):
 ```
 
-If yes:
-
-```bash
-# Detect the editor (EDITOR env var or default)
-EDITOR="${EDITOR:-nano}"
-
-# Open the file
-$EDITOR "$PLAN_PATH"
-```
+If yes, use an editor action explicitly exposed by the host. If none is
+available, return the path and let the user open it; never run an editor
+command.
 
 ## Output
 
@@ -561,12 +470,12 @@ For each supported type, pre-configured templates are available.
 ## Notes
 
 - **Advanced options - Expert Mode (Skip Questions)**: create a plan quickly with command-line arguments:
-  ```bash
+  ```text
   # Usage: /create-analyse-plan --type=architectural/c1 --depth=2
   # Creates automatically with default values
   ```
 - **Clone an existing plan**:
-  ```bash
+  ```text
   # Usage: /create-analyse-plan --clone=architectural/c1/plan-standard.md --target=architectural/c2
   # Clones c1 and adapts it for c2
   ```

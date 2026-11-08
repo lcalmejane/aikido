@@ -19,13 +19,14 @@ The AI-KIDO **Web Skill** manages interactions with the Web: site downloading, r
 
 ## Instructions
 1. **Identify the target URL** – The agent must detect a URL in the query or receive the URL as a parameter.
-2. **Use the scripts in the `script/` subdirectory** – call the script [`download_site.sh`](script/download_site.sh#L1) (or its Python equivalent) to retrieve the raw site content.
-3. **Normalise the HTML** – clean the HTML, remove unnecessary tags, and extract relevant text (e.g. via `beautifulsoup4`).
+2. **Invoke Node directly** – run `node prompts/hard_points/system/web/script/download_site.mjs <url> <depth> [prefix]`, using [`download_site.mjs`](script/download_site.mjs). Pass arguments separately, never interpolate a shell command.
+3. **Convert the HTML** – the engine uses real `wget` (including robots.txt and link conversion) and `pandoc` for Markdown; do not simulate their behavior.
 4. **Format the output** – return the result either as plain text or JSON according to the requested `format` parameter.
 
 ## Resources
-- **Scripts**: [`download_site.sh`](script/download_site.sh#L1)
-- **Bash/Python libraries**: `curl`, `wget`, `beautifulsoup4`
+- **Engine**: [`download_site.mjs`](script/download_site.mjs)
+- **Dependencies**: stable Node.js 24+, `wget`, `pandoc` in PATH.
+- **Platforms**: POSIX environment required. Native Windows is explicitly rejected before dependency probes or filesystem effects; use WSL instead. Portable path helpers do not imply Windows readiness.
 - **Similar Skills**: [`analyse`](../analyse/SKILL.md#L1), [`search`](../search/SKILL.md#L1)
 
 ## Available commands
@@ -35,7 +36,7 @@ The AI-KIDO **Web Skill** manages interactions with the Web: site downloading, r
 ## Usage
 
 ### Via command
-```bash
+```text
 /download-site https://example.com 2
 ```
 
@@ -49,9 +50,10 @@ result = invoke_skill("web", {
 The Skill activates automatically when a query contains a URL or when an agent explicitly invokes `invoke_skill("web", …)`.
 
 ## Notes
-- **Stateless**: no persistent data is retained between calls.
-- **Size limits**: download is limited to 10 MB per call to prevent abuse.
-- **Policy compliance**: the Skill must verify the site's access rules (robots.txt, copyright) before downloading.
+- **Storage**: Markdown/media persist in `prompts/hard_points/web/`, with wget's domain/port hierarchy. Existing site directories, files or symlinks cause an explicit conflict; no overwriting.
+- **Limits**: no byte quota is implemented. Prefer depths 1–3; depth 0 means unlimited recursion in wget.
+- **Policy compliance**: wget is explicitly configured with `robots=on`. This does not verify a license or grant permission to reuse content; the caller must check authorization.
+- **Failures**: dependency checks precede filesystem/download effects; any download, conversion, publication or cleanup failure returns nonzero. Conversion failures publish nothing. Only the unique private staging directory is cleaned.
 - **Encoding**: output always in UTF-8.
 
 ## Associated Aikido Agents

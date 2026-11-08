@@ -1,4 +1,5 @@
 ---
+name: create-persona
 description: "Interactively create a new AI-KIDO persona or agent (anthropomorphic or technical)"
 ---
 
@@ -16,9 +17,19 @@ description: "Interactively create a new AI-KIDO persona or agent (anthropomorph
 
 ## Prerequisites
 
-Use Claude Code tools directly (Read, Write, Bash, Glob).
+Use the host's scoped Read, Write and Glob actions directly. Do not execute
+shell commands or assume a Claude Code-specific tool set.
 
 ## Core concept
+
+Every generated persona, agent and host mapping MUST link to the shared
+`prompts/hard_points/system/orchestrator/swarm.md` policy (use a correct relative
+link from the generated file). Include this compact instruction: at delegation
+or a collaboration brief, consider useful Swarm parallelism, verified peer/relay
+tools and same-task context retention; clean reuse needs a real verified host
+reset, otherwise use fresh context. Never add messaging/delegation permissions
+solely to enable Swarm. The coordinator passes `task.context.collaboration`;
+the worker checks its own tools and scope. Do not copy the entire shared policy.
 
 **A persona is a specialized LLM agent** that can be one of two types:
 
@@ -48,7 +59,8 @@ An atomic technical agent that:
 
 List existing personas quickly to avoid duplicates.
 
-**Optimized method**: Use `agent-aikido-projet-index` for instant listing.
+**Preferred method**: Use `agent-aikido-projet-index` when available for
+listing. Verify that its index is current before relying on its results.
 
 ```markdown
 AGENT: agent-aikido-projet-index
@@ -68,26 +80,15 @@ EXISTING PERSONAS ([COUNT])
 1. **[slug]** - [LINES] lines - Modified: [DATE]
    Type: [agent-aikido-* = Internal | other = Expert]
 
-Use your JSON cache for instant response (<10ms)."
+Use the JSON index if current."
 
 Expected result: Complete list of personas with metadata
 ```
 
-**Performance gain**: <10ms vs 1-2s with traditional find/grep
-
 **Fallback if agent unavailable**:
-
-```bash
-PERSONAS=$(find prompts/gen/personas -name "*.md" ! -name "index.md" -type f 2>/dev/null)
-PERSONA_COUNT=$(echo "$PERSONAS" | wc -l | tr -d ' ')
-
-echo "Existing personas ($PERSONA_COUNT):"
-for persona in $PERSONAS; do
-  NAME=$(basename "$persona" .md)
-  DESC=$(grep -m1 '^description:' "$persona" | sed 's/description: *//; s/"//g' || echo "")
-  echo "  - $NAME : $DESC"
-done
-```
+Inspect the directories under `prompts/gen/personas` first, then list their
+Markdown files except `index.md` using the host's scoped file tools. Report
+read failures; display each file's name and description when present.
 
 Display to user: "Existing personas: [LIST] — Do you want to create a new similar or complementary persona?"
 
@@ -179,7 +180,7 @@ After receiving all 3 responses:
 1. Validate slug uniqueness in the existing agents list.
 2. If conflict, propose alternatives: [slug]-v2, [slug]-alt, etc.
 
-### Step A5: Create files using the Write tool
+### Step A5: Create files using the host Write action
 
 Use the Write tool to create `prompts/gen/personas/[slug].md`:
 
@@ -232,6 +233,12 @@ Use the Write tool to create `prompts/gen/personas/[slug].md`:
 ## Permissions
 [permissions required to operate]
 
+## Collaboration and lifecycle
+Apply [Swarm and reuse](../../hard_points/system/orchestrator/swarm.md) at delegation
+or a collaboration brief: useful parallelism, verified peer/relay tools and
+same-task context retention. Clean reuse requires a real verified host reset;
+otherwise use fresh context. Respect the assigned scope and native restrictions.
+
 ## REMEMBER: Scope and Limits
 
 **You are [name], your role is [main role].**
@@ -264,7 +271,10 @@ This persona prompts the LLM to fully embody this expert, including:
 
 ### Step A6: Update agents_list.md
 
-Use the Edit tool to update `agents_list.md` with the new persona section.
+Use the host's edit action to update `agents_list.md` with the new persona
+section. If an edit action is unavailable, read the current file, prepare the
+minimal complete replacement, and write only after verifying no concurrent
+change occurred.
 
 ---
 
@@ -393,6 +403,12 @@ color: [color]
 
 You are a specialist at [main specialization]. Your job is to [main responsibility] with precise file:line references.
 
+## Collaboration and lifecycle
+Apply [Swarm and reuse](../../hard_points/system/orchestrator/swarm.md) at delegation
+or a collaboration brief: useful parallelism, verified peer/relay tools and
+same-task context retention. Clean reuse requires a real verified host reset;
+otherwise use fresh context. Never widen permissions or the assigned scope.
+
 ## CRITICAL: YOUR ONLY JOB IS [STRICT SCOPE IN UPPERCASE]
 - DO NOT [restriction 1] unless the user explicitly asks for them
 - DO NOT [restriction 2] unless the user explicitly asks for them
@@ -504,6 +520,11 @@ You are the [Formatted Name]. [Mission in 1 sentence].
 
 **Full specification**: `/prompts/gen/personas/[slug].md` ([X] lines)
 
+**Collaboration**: follow [Swarm and reuse](../../prompts/hard_points/system/orchestrator/swarm.md)
+when delegating or receiving a collaboration brief. Use verified tools only;
+retain same-task context when useful, clean reuse only after a verified host reset.
+Otherwise use fresh context; native lifecycle restrictions and assigned permissions win.
+
 ---
 
 ⚠️ **INTERNAL AGENT — DO NOT LOAD `/prompts/index.md` but do load `aikido.md`** ⚠️
@@ -576,6 +597,10 @@ As an internal AI-KIDO agent, you already have the necessary rules. **NEVER load
 ### Step B6: Update agents_list.md
 
 Use the Edit tool to update `agents_list.md` with the new technical agent section.
+
+### Step B7: Make the agent available to every installed CLI
+
+Run `node prompts/hard_points/system/host-sync/host-sync.mjs --dry-run`, show the planned wrapper changes, then, after explicit approval, run it without `--dry-run`. It detects every assistant CLI installed on this machine (plus the hosts remembered in `.aikido/state/hosts.json`) and generates the native agent wrapper for each one (`.claude/agents/`, `.github/agents/`, `.codex/agents/`, `.kiro/agents/`, `.roomodes`, `.agents/agents/`) through the audited `/check-cli` engine. Do not hand-write other host directories. `runtime-missing` → tell the user to run `aikido sync` once; `conflict` → a customized wrapper was preserved. Applies to both workflows when the persona is exposed as an agent.
 
 ---
 

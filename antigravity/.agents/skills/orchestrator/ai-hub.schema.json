@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ai-hub/1",
+  "title": "AI-KIDO AI Hub capability descriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "id", "kind", "contracts", "capabilities", "limits", "tools", "scope"],
+  "properties": {
+    "version": {"const": 1},
+    "id": {"type": "string", "minLength": 1},
+    "kind": {"enum": ["core", "local", "external"]},
+    "contracts": {
+      "type": "array", "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1},
+      "contains": {"const": "ai-hub/1"}
+    },
+    "capabilities": {
+      "type": "object", "additionalProperties": false,
+      "required": ["pool", "state", "retain", "reset", "peerMessaging", "parallel", "cancellation", "persistence"],
+      "properties": {
+        "pool": {"type": "boolean"},
+        "state": {"type": "boolean"},
+        "retain": {"type": "boolean"},
+        "reset": {"type": "boolean"},
+        "peerMessaging": {"type": "boolean"},
+        "parallel": {"type": "boolean"},
+        "cancellation": {"type": "boolean"},
+        "persistence": {"type": "boolean"}
+      }
+    },
+    "limits": {
+      "type": "object", "additionalProperties": false,
+      "required": ["maxWorkers", "maxParallel"],
+      "properties": {
+        "maxWorkers": {"type": "integer", "minimum": 1, "maximum": 100},
+        "maxParallel": {"type": "integer", "minimum": 1, "maximum": 100}
+      }
+    },
+    "tools": {
+      "type": "array", "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["projectId"],
+      "properties": {"projectId": {"type": "string", "minLength": 1}}
+    }
+  }
+}

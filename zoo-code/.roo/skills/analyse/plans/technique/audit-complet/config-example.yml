@@ -1,0 +1,396 @@
+# Full Technical Audit Configuration - Example
+# Copy this file and adapt it to your project
+
+version: "1.0"
+audit:
+  name: "Technical Audit Project XYZ"
+  date: "2026-02-10"
+  type: "technique/audit-complet"
+  depth: 4  # Expert
+
+# ========================================
+# PATHS OF THE REPOSITORIES TO ANALYZE
+# ⚠️ MODIFY ACCORDING TO YOUR PROJECT
+# ========================================
+
+repositories:
+  frontend:
+    path: "./frontend"  # ← MODIFY HERE
+    type: "frontend"
+    priority: "high"
+    framework: "Angular"  # Angular, React, Vue, Svelte, etc.
+    description: "Client web application"
+    
+  backend:
+    path: "./backend"   # ← MODIFY HERE
+    type: "backend"
+    priority: "high"
+    framework: "Spring Boot"  # Spring Boot, Express, FastAPI, etc.
+    language: "Java"  # Java, Node.js, Python, PHP, etc.
+    description: "REST API backend"
+  
+  # Add other repositories if needed
+  # infrastructure:
+  #   path: "./terraform"
+  #   type: "infrastructure"
+  #   priority: "medium"
+  #   framework: "Terraform"
+  #   description: "Infrastructure as Code"
+  
+  # mobile:
+  #   path: "./mobile-app"
+  #   type: "mobile"
+  #   priority: "medium"
+  #   framework: "React Native"
+  #   description: "Mobile application"
+
+# ========================================
+# ANALYSIS SCOPE
+# ========================================
+
+scope:
+  # Enable/disable analysis categories
+  categories:
+    architecture: true
+    technical_stack: true
+    dependencies: true
+    security: true
+    tests: true
+    performance: true
+    observability: true
+    maintainability: true
+  
+  # File extensions to analyze
+  file_extensions:
+    frontend:
+      - "ts"
+      - "tsx"
+      - "js"
+      - "jsx"
+      - "vue"
+      - "svelte"
+      - "html"
+      - "css"
+      - "scss"
+      - "sass"
+    backend:
+      - "java"
+      - "kt"
+      - "ts"
+      - "js"
+      - "py"
+      - "php"
+      - "go"
+      - "rs"
+      - "cs"
+    config:
+      - "json"
+      - "yml"
+      - "yaml"
+      - "xml"
+      - "properties"
+      - "env"
+  
+  # Directories to exclude
+  exclusions:
+    - "node_modules/"
+    - "dist/"
+    - "build/"
+    - "target/"
+    - "vendor/"
+    - "__pycache__/"
+    - ".next/"
+    - ".nuxt/"
+    - "coverage/"
+    - ".git/"
+    - ".idea/"
+    - ".vscode/"
+
+# ========================================
+# AI-KIDO AGENTS TO USE
+# ========================================
+
+agents:
+  # Required
+  explore-code:
+    enabled: true
+    priority: 1
+    config:
+      max_depth: unlimited
+      follow_imports: true
+      extract_metadata: true
+  
+  validator:
+    enabled: true
+    priority: 99  # Always last
+    config:
+      strict_mode: true
+      auto_fix: false
+  
+  # Optional (depth ≥ 4)
+  explore-all:
+    enabled: true
+    priority: 2
+    condition: "depth >= 4"
+    config:
+      search_memory_bank: true
+      detect_gaps: true
+  
+  truth-evaluator:
+    enabled: true
+    priority: 3
+    condition: "contradictions_detected"
+    config:
+      hierarchy: ["code", "docs", "comments"]
+  
+  raci-delegator:
+    enabled: false  # Enable if a RACI structure exists
+    priority: 4
+    condition: "raci_structure_exists"
+  
+  bank-populate:
+    enabled: true
+    priority: 5
+    condition: "gaps > 3 AND user_accepts"
+    config:
+      auto_create: false
+      ask_confirmation: true
+
+# ========================================
+# SECURITY
+# ========================================
+
+security:
+  # CVE audit
+  cve_audit:
+    enabled: true
+    tools:
+      - name: "npm audit"
+        command: "npm audit --json"
+        repositories: ["frontend", "backend"]
+      - name: "OWASP Dependency Check"
+        command: "mvn org.owasp:dependency-check-maven:check"
+        repositories: ["backend"]
+  
+  # Secret patterns to detect
+  secret_patterns:
+    - pattern: '(api[_-]?key|apikey)\s*[:=]\s*[''"]([^''"]+)[''"]'
+      severity: "CRITICAL"
+      description: "Hardcoded API Key"
+    - pattern: '(password|passwd|pwd)\s*[:=]\s*[''"]([^''"]+)[''"]'
+      severity: "CRITICAL"
+      description: "Hardcoded password"
+    - pattern: '(secret|token)\s*[:=]\s*[''"]([^''"]+)[''"]'
+      severity: "CRITICAL"
+      description: "Hardcoded secret/token"
+    - pattern: '(aws|s3)[_-]?(access|secret)[_-]?key'
+      severity: "CRITICAL"
+      description: "Hardcoded AWS credentials"
+  
+  # CORS configuration
+  cors_check:
+    enabled: true
+    allow_wildcard: false  # If true, raises an alert when CORS = "*"
+
+# ========================================
+# PERFORMANCE
+# ========================================
+
+performance:
+  # Thresholds
+  thresholds:
+    bundle_size_mb: 3  # Alert if bundle > 3 MB
+    lazy_loading_ratio: 0.5  # Alert if <50% of modules are lazy loaded
+    onpush_ratio: 0.5  # Alert if <50% of components use OnPush
+    response_time_ms: 500  # Alert if API >500ms
+  
+  # Memory leak detection
+  memory_leaks:
+    enabled: true
+    patterns:
+      - pattern: '\.subscribe\([^)]*\)(?!.*\.unsubscribe)'
+        type: "rxjs_subscription"
+        severity: "IMPORTANT"
+
+# ========================================
+# TESTS & QUALITY
+# ========================================
+
+testing:
+  # Target coverage
+  coverage_targets:
+    unit_tests: 80  # %
+    integration_tests: 70  # %
+    e2e_tests: 60  # %
+  
+  # CI/CD
+  ci_cd:
+    platforms:
+      - "GitHub Actions"
+      - "GitLab CI"
+      - "Jenkins"
+    check_presence: true
+  
+  # Static analysis
+  static_analysis:
+    tools:
+      - name: "ESLint"
+        enabled: true
+        config_file: ".eslintrc.json"
+      - name: "SonarQube"
+        enabled: true
+        check_integration: true
+
+# ========================================
+# REPORTS
+# ========================================
+
+reports:
+  # Output directory
+  output_dir: "./audits"
+  
+  # Output formats
+  formats:
+    - "markdown"  # .md reports
+    - "json"      # JSON export for CVE
+    # - "html"    # HTML reports (optional)
+    # - "pdf"     # PDF reports (optional)
+  
+  # Files to generate
+  files:
+    - name: "audit-synthese.md"
+      type: "summary"
+      description: "Global executive summary"
+    
+    - name: "audit-frontend.md"
+      type: "detailed"
+      repository: "frontend"
+      description: "Detailed frontend report"
+    
+    - name: "audit-backend.md"
+      type: "detailed"
+      repository: "backend"
+      description: "Detailed backend report"
+    
+    - name: "plan-action.md"
+      type: "action_plan"
+      description: "Phased action plan"
+    
+    - name: "vulnerabilites-cve.json"
+      type: "json_export"
+      description: "JSON export of vulnerabilities"
+  
+  # Output templates
+  templates:
+    include_diagrams: true  # Mermaid diagrams
+    include_code_snippets: true
+    include_statistics: true
+    include_positive_points: true
+
+# ========================================
+# PRIORITIZATION
+# ========================================
+
+prioritization:
+  # Priority definitions
+  levels:
+    critical:
+      color: "🔴"
+      label: "CRITICAL"
+      description: "Security, EOL, CVE vulnerabilities - Handle immediately"
+      max_effort: "1 week"
+    
+    important:
+      color: "🟠"
+      label: "IMPORTANT"
+      description: "Major technical debt - Plan quickly"
+      max_effort: "2-3 weeks"
+    
+    recommended:
+      color: "🟡"
+      label: "RECOMMENDED"
+      description: "Continuous improvements - Backlog"
+      max_effort: "4-8 weeks"
+  
+  # Automatic prioritization rules
+  rules:
+    - condition: "severity == 'CVE_HIGH' OR severity == 'CVE_CRITICAL'"
+      priority: "critical"
+    - condition: "category == 'security' AND type == 'hardcoded_secret'"
+      priority: "critical"
+    - condition: "category == 'performance' AND impact == 'high'"
+      priority: "important"
+    - condition: "category == 'maintainability'"
+      priority: "recommended"
+
+# ========================================
+# NOTIFICATIONS (Optional)
+# ========================================
+
+notifications:
+  enabled: false
+  channels:
+    # Email
+    # email:
+    #   enabled: false
+    #   recipients:
+    #     - "tech-lead@example.com"
+    #     - "dev-team@example.com"
+    #   subject: "Technical Audit - Results"
+    
+    # Slack
+    # slack:
+    #   enabled: false
+    #   webhook_url: "https://hooks.slack.com/services/XXX"
+    #   channel: "#tech-audit"
+    
+    # Microsoft Teams
+    # teams:
+    #   enabled: false
+    #   webhook_url: "https://outlook.office.com/webhook/XXX"
+
+# ========================================
+# METADATA
+# ========================================
+
+metadata:
+  project_name: "Project XYZ"
+  team: "Dev Team"
+  version: "1.0.0"
+  environment: "production"  # production, staging, development
+  contact:
+    tech_lead: "John Doe"
+    email: "john.doe@example.com"
+  
+  # Tags for classification
+  tags:
+    - "technical-audit"
+    - "multi-repository"
+    - "frontend"
+    - "backend"
+    - "security"
+    - "performance"
+
+# ========================================
+# NOTES & INSTRUCTIONS
+# ========================================
+
+notes: |
+  This configuration file defines all parameters for the full technical audit.
+  
+  USAGE STEPS:
+  1. Copy this file: cp config-example.yml config-audit.yml
+  2. Edit the repository paths (repositories section)
+  3. Adapt the exclusions to your project
+  4. Enable/disable agents according to your needs
+  5. Adjust the performance thresholds
+  6. Run the audit: /analyse-project --config=config-audit.yml
+  
+  IMPORTANT:
+  - Paths can be relative or absolute
+  - Exclusions use glob syntax
+  - Optional agents require user confirmation
+  - Reports are generated in ./audits/ by default
+  
+  SUPPORT:
+  See full documentation: prompts/hard_points/system/analyse/plans/technique/audit-complet/plan-expert.md

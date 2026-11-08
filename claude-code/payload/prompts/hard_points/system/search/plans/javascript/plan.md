@@ -11,7 +11,7 @@ Specialized search plan for JavaScript and TypeScript projects. Covers ES6+, Com
 ## 🔍 File Patterns
 
 ### JavaScript/TypeScript Extensions
-```bash
+```text
 *.js       # Standard JavaScript
 *.mjs      # ES Module
 *.cjs      # CommonJS
@@ -24,7 +24,7 @@ Specialized search plan for JavaScript and TypeScript projects. Covers ES6+, Com
 ```
 
 ### Configuration & Metadata
-```bash
+```text
 package.json       # NPM/Yarn dependencies
 tsconfig.json      # TypeScript config
 .eslintrc.*        # ESLint config
@@ -36,7 +36,7 @@ nuxt.config.*      # Nuxt config
 ```
 
 ### JS-specific Exclusions
-```bash
+```text
 node_modules/      # NPM dependencies
 dist/              # Build output
 build/             # Build output
@@ -53,32 +53,21 @@ coverage/          # Test coverage
 **Type**: `naive` + **Module-aware** (ES Modules + CommonJS)
 
 ### Phase 1: Module System Detection
-```bash
-# Detect module system used in project
-function detect_module_system() {
-    if [[ -f "package.json" ]]; then
-        type=$(jq -r '.type' package.json 2>/dev/null)
-        [[ "$type" == "module" ]] && echo "esm" && return
-    fi
+The Node.js engine operates only within the selected scope, honors `.gitignore`
+and the JavaScript exclusions, and reports I/O/configuration failures instead
+of treating them as “no matches”. Relative-import candidates are checked
+against the approved physical root before being returned.
+```javascript
+import { detectModuleSystem } from '../../search-engine.mjs';
 
-    # Check for ES Module usage
-    if grep -rq "^import\s" --include="*.js" --include="*.ts" --glob '!node_modules' .; then
-        echo "esm"
-    # Check for CommonJS
-    elif grep -rq "^const.*=.*require(" --include="*.js" --glob '!node_modules' .; then
-        echo "commonjs"
-    else
-        echo "mixed"
-    fi
-}
+const moduleSystem = detectModuleSystem({ root: approvedRoot, paths: selectedPaths });
 ```
 
 ### Phase 2: TypeScript Detection
-```bash
-# Check if project uses TypeScript
-function has_typescript() {
-    [[ -f "tsconfig.json" ]] || ls *.ts *.tsx &>/dev/null
-}
+```javascript
+import { hasTypeScript } from '../../search-engine.mjs';
+
+const usesTypeScript = hasTypeScript({ root: approvedRoot, paths: selectedPaths });
 ```
 
 ## 📦 Search Patterns
@@ -173,74 +162,21 @@ import\(['"]([^'"]+)['"]\)
 ## 🔄 Extension Strategy
 
 ### 1. ES Module Resolution
-```bash
-# Resolve ES Module import to file
-function resolve_esm_import() {
-    local import_path="$1"
-    local current_file="$2"
-    local base_dir=$(dirname "$current_file")
+This is a candidate search, not full Node or TypeScript resolution: package
+`exports`, inherited TypeScript configuration and conditional resolution
+require the respective ecosystem resolver. Package entries must remain inside
+their package directory.
+```javascript
+import { query as configQuery } from '../../config-query.mjs';
 
-    # Relative import (./,../)
-    if [[ "$import_path" =~ ^\. ]]; then
-        # Try with common extensions
-        for ext in .js .jsx .ts .tsx .vue .svelte index.js index.tsx; do
-            resolved="$base_dir/${import_path}${ext}"
-            [[ -f "$resolved" ]] && echo "$resolved" && return
-        done
-
-        # Try directory/index
-        if [[ -d "$base_dir/$import_path" ]]; then
-            for ext in index.js index.jsx index.ts index.tsx; do
-                resolved="$base_dir/$import_path/$ext"
-                [[ -f "$resolved" ]] && echo "$resolved" && return
-            done
-        fi
-
-    # Absolute/package import
-    else
-        # Check if it's a package (node_modules)
-        if [[ -d "node_modules/$import_path" ]]; then
-            # Read package.json main/module field
-            main=$(jq -r '.main // .module // "index.js"' "node_modules/$import_path/package.json" 2>/dev/null)
-            echo "node_modules/$import_path/$main"
-
-        # Check for path alias (tsconfig.json)
-        elif [[ -f "tsconfig.json" ]]; then
-            # Parse paths from tsconfig
-            alias_path=$(jq -r --arg imp "$import_path" \
-              '.compilerOptions.paths[$imp][0] // empty' tsconfig.json 2>/dev/null)
-            [[ -n "$alias_path" ]] && echo "$alias_path"
-        fi
-    fi
-}
+const candidates = configQuery('esm-resolve', currentFile, importPath, approvedRoot);
 ```
 
 ### 2. Framework Detection
-```bash
-# Detect JS framework used
-function detect_js_framework() {
-    if [[ -f "package.json" ]]; then
-        # React
-        grep -q '"react"' package.json && echo "react" && return
+```javascript
+import { detectJsFramework } from '../../search-engine.mjs';
 
-        # Vue
-        grep -q '"vue"' package.json && echo "vue" && return
-
-        # Angular
-        grep -q '"@angular/core"' package.json && echo "angular" && return
-
-        # Svelte
-        grep -q '"svelte"' package.json && echo "svelte" && return
-
-        # Next.js
-        grep -q '"next"' package.json && echo "nextjs" && return
-
-        # Nuxt
-        grep -q '"nuxt"' package.json && echo "nuxt" && return
-    fi
-
-    echo "generic"
-}
+const framework = detectJsFramework({ root: approvedRoot });
 ```
 
 ## 📤 Output Format
@@ -400,30 +336,27 @@ graph TD
 ## ⚡ Performance Optimization
 
 ### Optimized JS/TS commands
-```bash
-# Ultra-fast search with ripgrep
-rg --type js --type ts \
-  --glob '!node_modules' \
-  --glob '!dist' \
-  --glob '!build' \
-  -i "$KEYWORD"
+```javascript
+import { listFiles, search } from '../../search-engine.mjs';
 
-# Find all classes
-rg --type js --type ts -n "^(export\s+)?class\s+(\w+)" -r '$2' --no-heading --glob '!node_modules'
-
-# Find all interfaces (TypeScript)
-rg --type ts -n "^(export\s+)?interface\s+(\w+)" -r '$2' --no-heading --glob '!node_modules'
-
-# Find ES Module imports
-rg --type js --type ts -n "^import\s+.*from\s+['\"]" --no-heading --glob '!node_modules'
-
-# Statistics per file
-rg --type js --type ts -c -i "$KEYWORD" --glob '!node_modules' | sort -t: -k2 -nr | head -20
+const results = search({
+  root: approvedRoot,
+  paths: selectedPaths,
+  language: 'javascript',
+  query,
+  context: 1,
+  maxResults: 100,
+});
+const sourceFiles = listFiles({
+  root: approvedRoot,
+  paths: selectedPaths,
+  language: 'javascript',
+});
 ```
 
 ### Optimization Strategies
 1. **Module resolution** : Use tsconfig.json paths for fast resolution
-2. **Exclude node_modules early** : Always exclude from the start with find/rg
+2. **Exclude node_modules early** : The Node engine excludes dependencies before reading files
 3. **Framework patterns** : Adapt according to detected framework (React, Vue, Angular)
 4. **Cache package.json** : Parse once, reuse for imports
 
@@ -477,50 +410,27 @@ const\s+\w+\s*=\s*(ref|reactive|computed|watch)\(
 
 ## 📋 Usage Example
 
-```bash
-# Example usage of the JavaScript/TypeScript plan
-KEYWORD="authentication"
-FRAMEWORK=$(detect_js_framework)
+```javascript
+import {
+  detectJsFramework, detectModuleSystem, extractFileMetadata, hasTypeScript,
+  listFiles, search,
+} from '../../search-engine.mjs';
 
-echo "Framework detected: $FRAMEWORK"
-
-# Phase 1: Detect module system and TypeScript
-MODULE_SYSTEM=$(detect_module_system)
-HAS_TS=$(has_typescript && echo "yes" || echo "no")
-
-echo "Module system: $MODULE_SYSTEM"
-echo "TypeScript: $HAS_TS"
-
-# Phase 2: Find JS/TS files
-FILES=$(rg --files --type js --type ts --glob '!node_modules')
-echo "Files found: $(echo "$FILES" | wc -l)"
-
-# Phase 3: Search for keyword
-MATCHES=$(rg --type js --type ts -n -i "$KEYWORD" --glob '!node_modules')
-
-# Phase 4: Extract metadata
-for file in $FILES; do
-    # Extract classes
-    CLASSES=$(grep -n "^class\s" "$file" 2>/dev/null)
-
-    # Extract interfaces (TypeScript)
-    INTERFACES=$(grep -n "^interface\s" "$file" 2>/dev/null)
-
-    # Extract functions
-    FUNCTIONS=$(grep -n "^function\s" "$file" 2>/dev/null)
-
-    # Extract imports
-    IMPORTS=$(grep -n "^import\s" "$file" 2>/dev/null)
-
-    # Format output
-    echo "## 📄 \`$file\`"
-    echo ""
-    echo "**Classes**: $(echo "$CLASSES" | wc -l)"
-    echo "**Interfaces**: $(echo "$INTERFACES" | wc -l)"
-    echo "**Functions**: $(echo "$FUNCTIONS" | wc -l)"
-    echo "**Dependencies**: $(echo "$IMPORTS" | wc -l)"
-    echo ""
-done
+const framework = detectJsFramework({ root: approvedRoot });
+const moduleSystem = detectModuleSystem({ root: approvedRoot, paths: selectedPaths });
+const usesTypeScript = hasTypeScript({ root: approvedRoot, paths: selectedPaths });
+const sourceFiles = listFiles({ root: approvedRoot, paths: selectedPaths, language: 'javascript' });
+const matches = search({
+  root: approvedRoot,
+  paths: selectedPaths,
+  language: 'javascript',
+  query: 'authentication',
+  context: 1,
+});
+const metadata = sourceFiles.map(file => ({
+  file,
+  ...extractFileMetadata({ root: approvedRoot, file }),
+}));
 ```
 
 ## 🔧 Customization Points

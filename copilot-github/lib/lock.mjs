@@ -1,3 +1,6 @@
+import { lstatSync, readFileSync, realpathSync } from 'node:fs';
+import { isAbsolute, join, relative, resolve, sep } from 'node:path';
+
 export const LOCK_SCHEMA_VERSION = 1;
 export const LOCK_PATH = '.aikido/lock.json';
 export const BASELINE_DIR = '.aikido/state/baseline';
@@ -35,6 +38,46 @@ export function isSafeRelativePath(p) {
     !p.startsWith('~') &&
     p.split('/').every((part) => part !== '' && part !== '.' && part !== '..')
   );
+}
+
+export function isPrivateTaskStorePath(path) {
+  const segments = String(path).replaceAll('\\', '/').split('/').filter(Boolean)
+    .map(segment => segment.toLowerCase());
+  return segments.some(segment => segment === '.private' || segment === '.task-store')
+    || segments.some((segment, index) => (
+      (segment === 'aikido' || segment === '.aikido') && segments[index + 1] === 'tasks'
+    ));
+}
+
+export function isPrivateTaskStoreRoot(path) {
+  let info;
+  try { info = lstatSync(path); } catch { return false; }
+  if (!info.isDirectory() || info.isSymbolicLink()) return false;
+  let root;
+  try { root = realpathSync(path); } catch { return false; }
+  if (isPrivateTaskStorePath(root)) return true;
+  try {
+    const metadata = lstatSync(join(root, 'store.json'));
+    return metadata.isFile() && !metadata.isSymbolicLink()
+      && JSON.parse(readFileSync(join(root, 'store.json'), 'utf8')).schemaVersion === 'task-store/1';
+  } catch {
+    return false;
+  }
+}
+
+export function isPrivateTaskStorePathWithin(rootValue, path) {
+  if (isPrivateTaskStorePath(path)) return true;
+  const root = realpathSync(rootValue);
+  const absolute = resolve(root, path);
+  const rel = relative(root, absolute);
+  if (rel === '..' || rel.startsWith(`..${sep}`) || isAbsolute(rel)) return false;
+  if (isPrivateTaskStoreRoot(root)) return true;
+  let current = root;
+  for (const component of rel.split(sep).filter(Boolean)) {
+    current = join(current, component);
+    if (isPrivateTaskStorePath(current) || isPrivateTaskStoreRoot(current)) return true;
+  }
+  return false;
 }
 
 export function validateLock(lock) {

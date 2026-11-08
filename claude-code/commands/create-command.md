@@ -1,6 +1,6 @@
 ---
 name: create-command
-description: "Interactive guide to create AI-KIDO commands"
+description: "Interactive guide to create AI-KIDO commands with detected RTK-aware optimization"
 ---
 
 # /aikido:create-command

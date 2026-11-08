@@ -1,213 +1,77 @@
 # Plan Ending-10 – Centralized Error Handling
 
-> **Type** : ending-error | **Order** : 10 (invoked only on error) | **Blocking** : NO
+> **Type**: ending-error | **Order**: 10 (invoked only on error) | **Blocking**: NO
 
-## 🎯 Objective
+## Objective and inputs
 
-Provide a centralized diagnosis of errors that occurred during the AI-KIDO update process, propose correction solutions and offer rollback options.
+Collect context and diagnose a blocking MAJ failure, propose manual recovery,
+and record a report. Inputs are canonical SOURCE, failed plan, original error
+code/message, and prior phase logs. Runtime is Node.js 24+; no jq or external
+diagnostic utilities are required.
 
-This plan is invoked **only on failure** of one of the previous plans (ending-0 to ending-7) or at the explicit request of the user.
+The host runs each Node CLI operation directly with an argument array. It must
+check each exit status before consuming stdout. Diagnostic failures never
+change the original workflow's failed status. In particular, failures during
+collection, diagnosis, report creation, or logging must be surfaced as
+diagnostic failures; none may convert the original failure into success,
+clear its status, or unblock the update.
 
----
+## Phase 1 – Collect context
 
-## 📥 Required Inputs
-
-- `$SOURCE` : Current project directory
-- `$FAILED_PLAN` : Name of the failed plan (e.g. "ending-3")
-- `$ERROR_CODE` : Returned error code (e.g. 1, 42)
-- `$ERROR_MESSAGE` : Error message (optional)
-- Logs from previous phases in `$SOURCE/prompts/spec/logs/`
-
----
-
-## 📋 Execution Steps
-
-### 1️⃣ Phase 1 : Error Context Collection (NON BLOCKING)
-
-**Action : Gather all information about the failure**
-
-```bash
-bash prompts/hard_points/system/maj/scripts/ending-10-collect-error-context.sh "$SOURCE" "$FAILED_PLAN" "$ERROR_CODE" "$ERROR_MESSAGE"
+```text
+node /canonical/source/prompts/hard_points/system/maj/scripts/ending-10-diagnostics.mjs collect /canonical/source ending-4 42 "Validation failed"
 ```
 
-This script collects the complete error context.
-- **Function** : Displays failed plan, code, message, date, recent logs
-- **Output** : `/tmp/aikido/error-context.txt`
-- **Exit code** : 0 (always, non blocking)
+This prints the failed plan, error, and recent recursive log basenames without
+reading log contents. Missing logs, SOURCE, or IO failures are reported; retain
+the original failure and continue to static diagnosis.
 
----
+## Phase 2 – Diagnose
 
-### 2️⃣ Phase 2 : Automatic Diagnosis (NON BLOCKING)
-
-**Action : Analyze the probable cause based on the failed plan**
-
-```bash
-bash prompts/hard_points/system/maj/scripts/ending-10-diagnostic-by-plan.sh "$FAILED_PLAN" "$SOURCE"
+```text
+node /canonical/source/prompts/hard_points/system/maj/scripts/ending-10-diagnostics.mjs diagnostic ending-4 /canonical/source
 ```
 
-This script displays a diagnosis specific to the failed plan.
-- **Function** : Analysis by case (ending-0 to 7, beginning, unknown)
-- **Output** : Probable causes + proposed solutions
-- **Exit code** : 0 (always, non blocking)
+Known cases include ending-0, ending-1, ending-3, ending-4, and beginning
+(`plan-` aliases are accepted); other names receive the generic diagnosis.
+Printed suggestions are untrusted informational text: never execute them.
 
----
+## Phase 3 – Recovery choices
 
-### 3️⃣ Phase 3 : Recovery Options (NON BLOCKING)
+Present manual options only:
 
-**Action : Propose actions to the user**
+1. Fix reviewed issues and restart `/maj-aikido --update`.
+2. Perform full or partial rollback only with explicit user approval.
+3. Use manual repair, validate, and restart approved individual plans.
+4. Request in-depth diagnosis from the validator agent.
 
-```bash
-echo "═══════════════════════════════════════════════════════════════"
-echo "🔧 RECOVERY OPTIONS"
-echo "═══════════════════════════════════════════════════════════════"
-echo ""
+Rollback is not automated. Do not select or extract wildcard archives over
+user data; review a backup in a separate location before proposing changes.
+The engine does not delete files, invoke Git, extract archives, or execute
+diagnostic suggestions.
 
-echo "1️⃣ FIX AND RESTART"
-echo "   Apply the solutions proposed above then:"
-echo "   /maj-aikido --update"
-echo ""
+## Phase 4 – Report and log
 
-echo "2️⃣ FULL ROLLBACK"
-echo "   Restore state before update:"
-echo "   LATEST_BACKUP=\$(ls -t backups/aikido-verif-backup-*.tgz | head -1)"
-echo "   tar -xzf \"\$LATEST_BACKUP\" -C ."
-echo "   echo \"✅ Rollback performed from \$LATEST_BACKUP\""
-echo ""
+Create a unique Markdown report under SOURCE logs. The report-path operation
+returns the path only on success; missing logs are created safely, symlinked
+descendants are refused, and existing reports are never overwritten.
 
-echo "3️⃣ PARTIAL ROLLBACK"
-echo "   Restore only critical files:"
-echo "   tar -xzf backups/aikido-verif-backup-*.tgz prompts/hard_points/"
-echo "   tar -xzf backups/aikido-verif-backup-*.tgz AGENTS.md CLAUDE.md"
-echo ""
-
-echo "4️⃣ IN-DEPTH DIAGNOSIS"
-echo "   Invoke agent-aikido-validator for complete analysis:"
-echo "   # Create diagnostic context"
-echo "   cat > /tmp/aikido/diagnostic-context.md <<DIAG"
-echo "   # Error Diagnosis $FAILED_PLAN"
-echo "   "
-echo "   Failed plan: $FAILED_PLAN"
-echo "   Error code: $ERROR_CODE"
-echo "   Message: $ERROR_MESSAGE"
-echo "   "
-echo "   Mission: Analyze logs and propose detailed correction plan"
-echo "   DIAG"
-echo ""
-
-echo "5️⃣ MANUAL MODE"
-echo "   Continue manually without /maj-aikido:"
-echo "   - Fix the identified files"
-echo "   - Validate: bash prompts/hard_points/system/maj/scripts/validate-structure.sh ."
-echo "   - Restart individual plans if necessary"
-echo ""
-
-echo "═══════════════════════════════════════════════════════════════"
-echo ""
+```text
+node /canonical/source/prompts/hard_points/system/maj/scripts/ending-10-diagnostics.mjs report-path /canonical/source ending-4 42 "Validation failed"
 ```
 
----
+Pass the returned path, error data, and SOURCE to the log operation. If report
+creation fails, do not pass an empty or stale path. Log/report failures are
+non-blocking diagnostics only. Report them, preserve the original failed
+status, and do not turn the original update failure into success or unblock
+the update.
 
-### 4️⃣ Phase 4 : Error Report Generation (NON BLOCKING)
-
-**Action : Create detailed report for debugging**
-
-```bash
-ERROR_REPORT=$(bash prompts/hard_points/system/maj/scripts/ending-10-generate-error-report.sh "$SOURCE" "$FAILED_PLAN" "$ERROR_CODE" "$ERROR_MESSAGE")
-
-echo "📝 Error report created: $ERROR_REPORT"
-cat "$ERROR_REPORT"
+```text
+node /canonical/source/prompts/hard_points/system/maj/scripts/ending-10-diagnostics.mjs log /canonical/source ending-4 42 "Validation failed" /canonical/source/prompts/spec/logs/error-report-unique.md
 ```
 
-This script generates a complete markdown report.
-- **Function** : Report with context, diagnosis, logs, backups, recommended actions
-- **Output** : `$SOURCE/prompts/spec/logs/error-report-YYYYMMDD-HHMMSS.md`
-- **Return** : Report path
-- **Exit code** : 0 (always, non blocking)
+## Limits
 
----
-
-### 5️⃣ Phase 5 : Logging (NON BLOCKING)
-
-**Action : Create centralized error handling log**
-
-```bash
-LOG_FILE="$SOURCE/prompts/spec/logs/phase-10-error.log"
-
-cat > "$LOG_FILE" <<LOG
-═══════════════════════════════════════════════════════════════
-Plan Ending-10 : Centralized Error Handling
-═══════════════════════════════════════════════════════════════
-Date: $(date '+%Y-%m-%d %H:%M:%S')
-
-ERROR:
-  Failed plan    : $FAILED_PLAN
-  Code           : $ERROR_CODE
-  Message        : $ERROR_MESSAGE
-
-DIAGNOSIS:
-  Report         : $ERROR_REPORT
-  Solutions      : See automatic diagnosis above
-
-OPTIONS PROVIDED:
-  1. Fix and restart
-  2. Full rollback
-  3. Partial rollback
-  4. In-depth diagnosis
-  5. Manual mode
-
-═══════════════════════════════════════════════════════════════
-LOG
-
-echo "📝 Log created: $LOG_FILE"
-echo ""
-```
-
----
-
-## 📤 Produced Outputs
-
-| File | Description | Required |
-|---------|-------------|-------------|
-| `$SOURCE/prompts/spec/logs/error-report-*.md` | Complete error report | ✅ YES |
-| `$SOURCE/prompts/spec/logs/phase-10-error.log` | Error handling log | ✅ YES |
-| stdout | Diagnosis + recovery options | ✅ YES |
-
----
-
-## ✅ Success Criteria
-
-The **ending-10** plan is considered successful in **ALL cases** :
-
-1. ✅ Diagnosis performed
-2. ✅ Solutions proposed
-3. ✅ Report generated
-4. ✅ Recovery options presented
-
-**Note** : This plan is **NON BLOCKING** and informational. It helps resolve the error but does not fix it automatically.
-
----
-
-## ❌ Failure Handling
-
-This plan **cannot fail**. Even if the report generation fails, the diagnosis is displayed on screen.
-
----
-
-## 🔗 Chaining
-
-After this plan:
-- 🛑 **Workflow stopped** (waiting for user action)
-- 🔄 **User chooses**: Fix/Rollback/Manual
-- 🔄 **Restart** `/maj-aikido --update` after correction
-
----
-
-## 📚 References
-
-- **Backups** : `backups/aikido-verif-backup-*.tgz`
-- **Logs** : `prompts/spec/logs/phase-*.log`
-- **Validation scripts** : `prompts/hard_points/system/maj/scripts/`
-
----
-
-*Plan ending-10 v2.0 – Centralized error handling with automatic diagnosis*
+Sorting is deterministic JavaScript string order, not locale-dependent.
+Concurrent hostile filesystem replacement is unsupported; static destination
+symlinks are refused. Rollback and agent dispatch remain explicit host actions.

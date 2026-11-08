@@ -38,7 +38,7 @@ Self-learning loop of the AI-KIDO Memory Bank, in **3 steps**:
 
 ## Usage
 
-```bash
+```text
 /learn                                   # analyze the whole current context, all learning types
 /learn "the build failed because ..."    # add a hint to guide the analysis
 /learn --type error                      # restrict to one learning type (see table below)

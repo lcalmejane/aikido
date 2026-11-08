@@ -7,17 +7,14 @@ and the shared project Memory Bank.
 
 From the project directory, preview the bootstrap plan:
 
-```bash
-node /path/to/aikido-package/scripts/bootstrap-plan.mjs \
-  --root "$PWD" --package /path/to/aikido-package --mode STANDARD
+```text
+node /path/to/aikido-package/scripts/bootstrap-plan.mjs  --root /path/to/project --package /path/to/aikido-package --mode STANDARD
 ```
 
 Review the plan and apply it using its returned ID:
 
-```bash
-node /path/to/aikido-package/scripts/bootstrap-plan.mjs \
-  --root "$PWD" --package /path/to/aikido-package --mode STANDARD \
-  --apply --confirm <plan-id>
+```text
+node /path/to/aikido-package/scripts/bootstrap-plan.mjs  --root /path/to/project --package /path/to/aikido-package --mode STANDARD  --apply --confirm <plan-id>
 ```
 
 Use `LIGHT` or `UNSET` to choose another entry point. The bootstrap plan lists
@@ -43,10 +40,9 @@ AI-KIDO lock.
 To remove AI-KIDO integration files while preserving the project's Memory
 Bank, preview and confirm an uninstall:
 
-```bash
-node /path/to/aikido-package/scripts/update-plan.mjs --root "$PWD" --uninstall
-node /path/to/aikido-package/scripts/update-plan.mjs \
-  --root "$PWD" --uninstall --apply --confirm <plan-id>
+```text
+node /path/to/aikido-package/scripts/update-plan.mjs --root /path/to/project --uninstall
+node /path/to/aikido-package/scripts/update-plan.mjs  --root /path/to/project --uninstall --apply --confirm <plan-id>
 ```
 
 Official references:

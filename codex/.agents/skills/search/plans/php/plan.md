@@ -11,7 +11,7 @@ Specialized search plan for generic PHP projects (all versions). Adapted to PSR-
 ## 🔍 File Patterns
 
 ### PHP Extensions
-```bash
+```text
 *.php      # Main PHP files
 *.phtml    # PHP templates
 *.inc      # Legacy includes
@@ -21,7 +21,7 @@ Specialized search plan for generic PHP projects (all versions). Adapted to PSR-
 ```
 
 ### Configuration & Dependencies
-```bash
+```text
 composer.json    # Composer dependencies
 composer.lock    # Lock file
 *.env            # Environment variables
@@ -29,7 +29,7 @@ config/*.php     # Configuration files
 ```
 
 ### PHP-specific Exclusions
-```bash
+```text
 vendor/          # Composer dependencies
 storage/         # Laravel storage
 cache/           # Symfony/Laravel cache
@@ -43,23 +43,27 @@ bootstrap/cache/ # Laravel bootstrap cache
 **Type**: `naive` + **PSR-4 aware**
 
 ### Phase 1: PSR-4 Discovery
-```bash
-# Detect PSR-4 structure via composer.json
-function detect_psr4_namespaces() {
-    if [[ -f "composer.json" ]]; then
-        jq -r '.autoload."psr-4" | to_entries[] | "\(.key):\(.value)"' composer.json 2>/dev/null
-    fi
-}
+The Node configuration resolver confines Composer mappings to the approved
+root. The result contains candidate paths only; revalidate before opening files
+because concurrent filesystem changes are not locked.
+```javascript
+import { query as configQuery } from '../../config-query.mjs';
 
-# Example output: "App\\:app/", "Tests\\:tests/"
+const namespaces = configQuery('psr4-list', composerFile, '', approvedRoot);
 ```
 
 ### Phase 2: Class/Method Search
-```bash
-# PHP-specific search with context
-grep -rn --include="*.php" \
-  --exclude-dir={vendor,storage,cache,var} \
-  -E "(class|interface|trait|function|namespace)\s+$KEYWORD" .
+```javascript
+import { search } from '../../search-engine.mjs';
+
+const results = search({
+  root: approvedRoot,
+  paths: selectedPaths,
+  language: 'php',
+  query,
+  mode: 'literal',
+  context: 1,
+});
 ```
 
 ## 📦 Search Patterns
@@ -147,54 +151,24 @@ trait
 ## 🔄 Extension Strategy
 
 ### 1. PSR-4 Resolution
-```bash
-# Resolve namespace to file path
-function resolve_psr4_path() {
-    local namespace="$1"
-    local composer_file="composer.json"
+```javascript
+import { query as configQuery } from '../../config-query.mjs';
 
-    if [[ ! -f "$composer_file" ]]; then
-        return 1
-    fi
-
-    # Extract PSR-4 mapping
-    local psr4_map=$(jq -r '.autoload."psr-4"' "$composer_file" 2>/dev/null)
-
-    # Find the matching mapping
-    local base_ns=$(echo "$namespace" | cut -d'\\' -f1)
-    local base_dir=$(echo "$psr4_map" | jq -r --arg ns "$base_ns\\\\" '.[$ns] // empty')
-
-    if [[ -n "$base_dir" ]]; then
-        # Convert namespace to path: App\Models\User → app/Models/User.php
-        local rel_path="${namespace//$base_ns/}"
-        local file_path="${rel_path//\\/\/}.php"
-        echo "${base_dir}${file_path}"
-    fi
-}
+const candidates = configQuery('psr4-resolve', composerFile, namespace, approvedRoot);
 ```
 
 ### 2. Following Use Statements
-```bash
-# Extract all use statements from a file
-function extract_php_uses() {
-    local file="$1"
-    grep -E "^use\s+" "$file" | \
-      sed -E 's/^use\s+(.*?)(;| as .*)/\1/' | \
-      grep -v "^function " | \
-      grep -v "^const "
-}
+```javascript
+import { extractPhpUses } from '../../search-engine.mjs';
+
+const imports = extractPhpUses(sourceText);
 ```
 
 ### 3. Framework Detection
-```bash
-# Detect framework used
-function detect_php_framework() {
-    [[ -f "artisan" ]] && echo "laravel" && return
-    [[ -f "bin/console" ]] && [[ -d "vendor/symfony" ]] && echo "symfony" && return
-    [[ -d "wp-content" ]] && echo "wordpress" && return
-    [[ -f "index.php" ]] && grep -q "Drupal" index.php && echo "drupal" && return
-    echo "generic"
-}
+```javascript
+import { detectPhpFramework } from '../../search-engine.mjs';
+
+const framework = detectPhpFramework({ root: approvedRoot });
 ```
 
 ## 📤 Output Format
@@ -356,30 +330,23 @@ graph TD
 ## ⚡ Performance Optimization
 
 ### Optimized PHP commands
-```bash
-# Ultra-fast search with ripgrep
-rg --type php \
-  --glob '!vendor' \
-  --glob '!storage' \
-  --glob '!cache' \
-  -i "$KEYWORD"
+```javascript
+import { listFiles, search } from '../../search-engine.mjs';
 
-# Find all classes
-rg --type php -n "^class\s+(\w+)" -r '$1' --no-heading --glob '!vendor'
-
-# Find namespaces
-rg --type php -n "^namespace\s+(.*?);" -r '$1' --no-heading --glob '!vendor'
-
-# Find use statements
-rg --type php -n "^use\s+([\w\\]+)" --no-heading --glob '!vendor'
-
-# Statistics per file
-rg --type php -c -i "$KEYWORD" --glob '!vendor' | sort -t: -k2 -nr | head -20
+const results = search({
+  root: approvedRoot,
+  paths: selectedPaths,
+  language: 'php',
+  query,
+  context: 1,
+  maxResults: 100,
+});
+const phpFiles = listFiles({ root: approvedRoot, paths: selectedPaths, language: 'php' });
 ```
 
 ### Optimization Strategies
 1. **PSR-4 awareness** : Use composer.json for fast resolution
-2. **Exclude vendor early** : Always exclude from the start with find/rg
+2. **Exclude vendor early** : The Node engine excludes dependencies before reading files
 3. **Framework patterns** : Adapt patterns according to detected framework
 4. **Cache PSR-4 map** : Parse composer.json once, reuse
 
@@ -434,55 +401,25 @@ register_post_type\(['"]([^'"]+)['"]
 
 ## 📋 Usage Example
 
-```bash
-# Example usage of the PHP plan
-KEYWORD="authenticate"
-FRAMEWORK=$(detect_php_framework)
+```javascript
+import {
+  detectPhpFramework, extractFileMetadata, listFiles, search,
+} from '../../search-engine.mjs';
+import { query as configQuery } from '../../config-query.mjs';
 
-echo "Framework detected: $FRAMEWORK"
-
-# Phase 1: Extract PSR-4 namespaces
-PSR4_NAMESPACES=$(detect_psr4_namespaces)
-echo "PSR-4 namespaces: $PSR4_NAMESPACES"
-
-# Phase 2: Find PHP files
-FILES=$(rg --files --type php --glob '!vendor')
-echo "PHP files found: $(echo "$FILES" | wc -l)"
-
-# Phase 3: Search for keyword
-MATCHES=$(rg --type php -n -i "$KEYWORD" --glob '!vendor')
-
-# Phase 4: Extract metadata
-for file in $FILES; do
-    # Extract namespace
-    NAMESPACE=$(grep -m1 "^namespace" "$file" | sed 's/namespace\s*//;s/;//')
-
-    # Extract class name
-    CLASS=$(grep -m1 "^class\s" "$file" | sed -E 's/^class\s+(\w+).*/\1/')
-
-    # Extract use statements
-    USES=$(grep "^use\s" "$file" | wc -l)
-
-    # Extract methods
-    METHODS=$(grep -E "^\s*(public|protected|private)\s+function\s+" "$file" | wc -l)
-
-    # Format output
-    if [[ -n "$CLASS" ]]; then
-        echo "## 📄 \`$file\`"
-        echo ""
-        echo "**Namespace**: \`$NAMESPACE\`"
-        echo ""
-        echo "**Classes** (1):"
-        echo "  - \`$CLASS\` (lines X-Y)"
-        echo "    - Methods: $METHODS"
-        echo ""
-        echo "**Dependencies** ($USES):"
-        grep "^use\s" "$file" | sed 's/^use\s*/  - /' | head -5
-        echo ""
-        echo "---"
-        echo ""
-    fi
-done
+const framework = detectPhpFramework({ root: approvedRoot });
+const namespaces = configQuery('psr4-list', composerFile, '', approvedRoot);
+const phpFiles = listFiles({ root: approvedRoot, paths: selectedPaths, language: 'php' });
+const matches = search({
+  root: approvedRoot,
+  paths: selectedPaths,
+  language: 'php',
+  query: 'authenticate',
+});
+const metadata = phpFiles.map(file => ({
+  file,
+  ...extractFileMetadata({ root: approvedRoot, file, language: 'php' }),
+}));
 ```
 
 ## 🔧 Customization Points

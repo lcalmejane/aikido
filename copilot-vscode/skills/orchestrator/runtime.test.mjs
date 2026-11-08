@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 import {
@@ -13,6 +15,23 @@ const snapshot = () => ({
   agents: [{ id: 'agent-aikido-explore-all', scope: 'scoped_orchestration' }],
   tools: [{ id: 'Task', scope: 'delegation' }],
   available_routes: [], can_select_model: true
+});
+
+test('explicit file input matches stdin and rejects incomplete flags', t => {
+  const dir = mkdtempSync(join(tmpdir(), 'aikido-decision-file-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  const file = join(dir, 'capabilities.json');
+  const data = JSON.stringify(snapshot());
+  writeFileSync(file, data);
+  const entry = new URL('./runtime.mjs', import.meta.url);
+  const args = [entry.pathname];
+  const stdin = spawnSync(process.execPath, args, { encoding: 'utf8', input: data });
+  const explicit = spawnSync(process.execPath, [...args, '--input', file], { encoding: 'utf8' });
+  assert.equal(explicit.status, 0, explicit.stderr);
+  assert.equal(explicit.stdout, stdin.stdout);
+  const invalid = spawnSync(process.execPath, [...args, '--input'], { encoding: 'utf8' });
+  assert.equal(invalid.status, 1);
+  assert.match(invalid.stderr, /Usage:/);
 });
 const task = () => ({
   class: 'analysis', input_tokens: 1000, output_tokens: 500, context_tokens: 1500

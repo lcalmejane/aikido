@@ -104,25 +104,16 @@ Lines: X/500 (or X/1000)
 
 ## 📏 Line Count Quick Check
 
-```bash
-# Quick check without reading full file
-wc -l [file]
-
-# If over limit, classify file type:
-- *.md in /prompts/gen/concepts|techniques|use_cases|personas → limit 500
-- *.md in .roo/commands OR .claude/agents → limit 1000
-- ai-kido*.md in /prompts/hard_points → EXEMPT (critical docs)
-```
+Use the host's Read action for the specified file and count its lines from the
+returned text. Apply the limit for its actual file category: 500 lines for
+standard Memory Bank files, 1000 for command/agent prompts, with critical
+hard-point exceptions preserved.
 
 ## 🔗 Bidirectional Links Quick Check
 
-```bash
-# Extract links from file
-grep -o '\[.*\](.*\.md)' [file]
-
-# Note: Just FLAG potential missing reverse links, don't validate all
-# Full bidirectional check is expensive, only flag obvious issues
-```
+Parse Markdown links from the specified file text. Flag only clear missing
+reverse links; do not claim a full bidirectional audit unless all linked
+documents were checked.
 
 ## 📤 Output Format
 

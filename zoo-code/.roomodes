@@ -7,6 +7,10 @@ customModes:
 
       Read `prompts/hard_points/agents/agent-aikido-balancer.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
 
+      Before searching, apply `prompts/hard_points/system/search/SKILL.md#kimono-capability-gate`: prefer Kimono only when its tools are actually exposed to this executor; keep native search for verification or explicit fallback. Never assume parent MCP tools are inherited or widen tool permissions.
+
+      Read `prompts/hard_points/system/orchestrator/swarm.md` when delegating or receiving a collaboration brief. Consider useful Swarm parallelism and peer/relay communication only with verified executor tools. Retain context for permitted same-task follow-ups; clean reuse requires a real verified host reset, otherwise use a fresh worker. Never widen this role's permissions.
+
       Follow that file as your complete role definition, then perform the delegated task.
     whenToUse: |-
       Automatically balances the AI-KIDO Memory Bank tree structure according to dynamic AI-KIDO rules (mode-aware depth/branching, ≤500 lines per file). Adapts to Standard/Light modes and mono/multi-project contexts. Call the agent-aikido-balancer when you need to rebalance the Memory Bank after significant modifications. As always, the more detailed your request prompt, the better! :)
@@ -21,13 +25,16 @@ customModes:
 
       Read `prompts/hard_points/agents/agent-aikido-bank-populate.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
 
+      Before searching, apply `prompts/hard_points/system/search/SKILL.md#kimono-capability-gate`: prefer Kimono only when its tools are actually exposed to this executor; keep native search for verification or explicit fallback. Never assume parent MCP tools are inherited or widen tool permissions.
+
+      Read `prompts/hard_points/system/orchestrator/swarm.md` when delegating or receiving a collaboration brief. Consider useful Swarm parallelism and peer/relay communication only with verified executor tools. Retain context for permitted same-task follow-ups; clean reuse requires a real verified host reset, otherwise use a fresh worker. Never widen this role's permissions.
+
       Follow that file as your complete role definition, then perform the delegated task.
     whenToUse: |-
       Automatically populates AI-KIDO Memory Bank from code/context when documents are missing or invalid. Orchestrates truth-evaluator, raci-delegator, and expert personas to create compliant documentation. INVOKE AT END OF PROCESS after final gap report, not immediately upon detection.
     groups:
       - read
       - edit
-      - command
   - slug: agent-aikido-doc-header
     name: "AI-KIDO doc-header"
     description: "Standardizes and manages AI-KIDO document headers with versioning, truth validation metadata, and source traceability. Ensures consistent header format across all Memory Bank documents."
@@ -35,6 +42,10 @@ customModes:
       # agent-aikido-doc-header
 
       Read `prompts/hard_points/agents/agent-aikido-doc-header.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Before searching, apply `prompts/hard_points/system/search/SKILL.md#kimono-capability-gate`: prefer Kimono only when its tools are actually exposed to this executor; keep native search for verification or explicit fallback. Never assume parent MCP tools are inherited or widen tool permissions.
+
+      Read `prompts/hard_points/system/orchestrator/swarm.md` when delegating or receiving a collaboration brief. Consider useful Swarm parallelism and peer/relay communication only with verified executor tools. Retain context for permitted same-task follow-ups; clean reuse requires a real verified host reset, otherwise use a fresh worker. Never widen this role's permissions.
 
       Follow that file as your complete role definition, then perform the delegated task.
     whenToUse: |-
@@ -44,15 +55,19 @@ customModes:
       - edit
   - slug: agent-aikido-explore-all
     name: "AI-KIDO explore-all"
-    description: "Orchestrates parallel search in both Memory Bank (explore-bank) and source code (explore-code) simultaneously. Launches both agents in parallel via Task tool with CASE_SENSITIVITY:BOTH (handles case-sensitive and case-insensitive in single pass), waits for results, combines output. Use when search scope is unclear or when need comprehensive view (docs + code). Minimal overhead, pure orchestration, no chaining."
+    description: "Orchestrates search in both Memory Bank (explore-bank) and source code (explore-code), preferring parallel delegation when available. Waits for results and combines output. Use when search scope is unclear or when need comprehensive view (docs + code)."
     roleDefinition: |-
       # agent-aikido-explore-all
 
       Read `prompts/hard_points/agents/agent-aikido-explore-all.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
 
+      Before searching, apply `prompts/hard_points/system/search/SKILL.md#kimono-capability-gate`: prefer Kimono only when its tools are actually exposed to this executor; keep native search for verification or explicit fallback. Never assume parent MCP tools are inherited or widen tool permissions.
+
+      Read `prompts/hard_points/system/orchestrator/swarm.md` when delegating or receiving a collaboration brief. Consider useful Swarm parallelism and peer/relay communication only with verified executor tools. Retain context for permitted same-task follow-ups; clean reuse requires a real verified host reset, otherwise use a fresh worker. Never widen this role's permissions.
+
       Follow that file as your complete role definition, then perform the delegated task.
     whenToUse: |-
-      Orchestrates parallel search in both Memory Bank (explore-bank) and source code (explore-code) simultaneously. Launches both agents in parallel via Task tool with CASE_SENSITIVITY:BOTH (handles case-sensitive and case-insensitive in single pass), waits for results, combines output. Use when search scope is unclear or when need comprehensive view (docs + code). Minimal overhead, pure orchestration, no chaining.
+      Orchestrates search in both Memory Bank (explore-bank) and source code (explore-code), preferring parallel delegation when available. Waits for results and combines output. Use when search scope is unclear or when need comprehensive view (docs + code).
     groups:
       - read
   - slug: agent-aikido-explore-bank
@@ -63,12 +78,15 @@ customModes:
 
       Read `prompts/hard_points/agents/agent-aikido-explore-bank.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
 
+      Before searching, apply `prompts/hard_points/system/search/SKILL.md#kimono-capability-gate`: prefer Kimono only when its tools are actually exposed to this executor; keep native search for verification or explicit fallback. Never assume parent MCP tools are inherited or widen tool permissions.
+
+      Read `prompts/hard_points/system/orchestrator/swarm.md` when delegating or receiving a collaboration brief. Consider useful Swarm parallelism and peer/relay communication only with verified executor tools. Retain context for permitted same-task follow-ups; clean reuse requires a real verified host reset, otherwise use a fresh worker. Never widen this role's permissions.
+
       Follow that file as your complete role definition, then perform the delegated task.
     whenToUse: |-
       Searches and extracts information from AI-KIDO Memory Bank (v5.2 extended-formats + filename-scout). Supports 100+ file types (code, config, docs, data, web, build). Filename scout via projet-index for instant prioritization. Invoke when:
     groups:
       - read
-      - command
   - slug: agent-aikido-explore-code
     name: "AI-KIDO explore-code"
     description: "Searches and indexes project source code with structured metadata extraction (NOT full code). Technology-aware using search plans. Returns concise categorized info (classes:lines, functions:signatures, dependencies:imports) to help commands/prompts locate relevant code. Respects .gitignore. Deep exploration but compact output. Invoke when:"
@@ -77,12 +95,15 @@ customModes:
 
       Read `prompts/hard_points/agents/agent-aikido-explore-code.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
 
+      Before searching, apply `prompts/hard_points/system/search/SKILL.md#kimono-capability-gate`: prefer Kimono only when its tools are actually exposed to this executor; keep native search for verification or explicit fallback. Never assume parent MCP tools are inherited or widen tool permissions.
+
+      Read `prompts/hard_points/system/orchestrator/swarm.md` when delegating or receiving a collaboration brief. Consider useful Swarm parallelism and peer/relay communication only with verified executor tools. Retain context for permitted same-task follow-ups; clean reuse requires a real verified host reset, otherwise use a fresh worker. Never widen this role's permissions.
+
       Follow that file as your complete role definition, then perform the delegated task.
     whenToUse: |-
       Searches and indexes project source code with structured metadata extraction (NOT full code). Technology-aware using search plans. Returns concise categorized info (classes:lines, functions:signatures, dependencies:imports) to help commands/prompts locate relevant code. Respects .gitignore. Deep exploration but compact output. Invoke when:
     groups:
       - read
-      - command
   - slug: agent-aikido-fusion
     name: "AI-KIDO fusion"
     description: "Intelligent file merger for AI-KIDO updates preserving project context while adopting new formalism. Call during /maj-aikido FUSIONNER option or manual merge conflicts."
@@ -90,6 +111,10 @@ customModes:
       # agent-aikido-fusion
 
       Read `prompts/hard_points/agents/agent-aikido-fusion.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Before searching, apply `prompts/hard_points/system/search/SKILL.md#kimono-capability-gate`: prefer Kimono only when its tools are actually exposed to this executor; keep native search for verification or explicit fallback. Never assume parent MCP tools are inherited or widen tool permissions.
+
+      Read `prompts/hard_points/system/orchestrator/swarm.md` when delegating or receiving a collaboration brief. Consider useful Swarm parallelism and peer/relay communication only with verified executor tools. Retain context for permitted same-task follow-ups; clean reuse requires a real verified host reset, otherwise use a fresh worker. Never widen this role's permissions.
 
       Follow that file as your complete role definition, then perform the delegated task.
     whenToUse: |-
@@ -105,6 +130,10 @@ customModes:
 
       Read `prompts/hard_points/agents/agent-aikido-helper.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
 
+      Before searching, apply `prompts/hard_points/system/search/SKILL.md#kimono-capability-gate`: prefer Kimono only when its tools are actually exposed to this executor; keep native search for verification or explicit fallback. Never assume parent MCP tools are inherited or widen tool permissions.
+
+      Read `prompts/hard_points/system/orchestrator/swarm.md` when delegating or receiving a collaboration brief. Consider useful Swarm parallelism and peer/relay communication only with verified executor tools. Retain context for permitted same-task follow-ups; clean reuse requires a real verified host reset, otherwise use a fresh worker. Never widen this role's permissions.
+
       Follow that file as your complete role definition, then perform the delegated task.
     whenToUse: |-
       Guides users in understanding and applying the AI-KIDO Memory Bank, its hard points, agents and techniques.
@@ -117,6 +146,10 @@ customModes:
       # agent-aikido-maj-md-index
 
       Read `prompts/hard_points/agents/agent-aikido-maj-md-index.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Before searching, apply `prompts/hard_points/system/search/SKILL.md#kimono-capability-gate`: prefer Kimono only when its tools are actually exposed to this executor; keep native search for verification or explicit fallback. Never assume parent MCP tools are inherited or widen tool permissions.
+
+      Read `prompts/hard_points/system/orchestrator/swarm.md` when delegating or receiving a collaboration brief. Consider useful Swarm parallelism and peer/relay communication only with verified executor tools. Retain context for permitted same-task follow-ups; clean reuse requires a real verified host reset, otherwise use a fresh worker. Never widen this role's permissions.
 
       Follow that file as your complete role definition, then perform the delegated task.
     whenToUse: |-
@@ -132,6 +165,10 @@ customModes:
 
       Read `prompts/hard_points/agents/agent-aikido-orchestrator.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
 
+      Before searching, apply `prompts/hard_points/system/search/SKILL.md#kimono-capability-gate`: prefer Kimono only when its tools are actually exposed to this executor; keep native search for verification or explicit fallback. Never assume parent MCP tools are inherited or widen tool permissions.
+
+      Read `prompts/hard_points/system/orchestrator/swarm.md` when delegating or receiving a collaboration brief. Consider useful Swarm parallelism and peer/relay communication only with verified executor tools. Retain context for permitted same-task follow-ups; clean reuse requires a real verified host reset, otherwise use a fresh worker. Never widen this role's permissions.
+
       Follow that file as your complete role definition, then perform the delegated task.
     whenToUse: |-
       AI-KIDO orchestrator that always works: leads when no general orchestrator exists, collaborates with (guides, delegates to, or takes over parallel work from) an existing native orchestrator, or executes directly. Every exchange with agents, threads, MCP and tools is strict JSON.
@@ -142,15 +179,19 @@ customModes:
       - mcp
   - slug: agent-aikido-projet-index
     name: "AI-KIDO projet-index"
-    description: "Fast service to search and locate a file or directory by name, type, directory or path. Generates and maintains the project tree as a scalable multi-index JSON V3.1 (prompts/hard_points/system/structure/) via parallelized bash scripts. Answers project structure questions instantly. Targeted incremental updates."
+    description: "Search and locate project files by name, type, directory or path. Maintain the V3.1 multi-index with Node.js and Git; changed-file updates currently rebuild all indexes."
     roleDefinition: |-
       # agent-aikido-projet-index
 
       Read `prompts/hard_points/agents/agent-aikido-projet-index.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
 
+      Before searching, apply `prompts/hard_points/system/search/SKILL.md#kimono-capability-gate`: prefer Kimono only when its tools are actually exposed to this executor; keep native search for verification or explicit fallback. Never assume parent MCP tools are inherited or widen tool permissions.
+
+      Read `prompts/hard_points/system/orchestrator/swarm.md` when delegating or receiving a collaboration brief. Consider useful Swarm parallelism and peer/relay communication only with verified executor tools. Retain context for permitted same-task follow-ups; clean reuse requires a real verified host reset, otherwise use a fresh worker. Never widen this role's permissions.
+
       Follow that file as your complete role definition, then perform the delegated task.
     whenToUse: |-
-      Fast service to search and locate a file or directory by name, type, directory or path. Generates and maintains the project tree as a scalable multi-index JSON V3.1 (prompts/hard_points/system/structure/) via parallelized bash scripts. Answers project structure questions instantly. Targeted incremental updates.
+      Search and locate project files by name, type, directory or path. Maintain the V3.1 multi-index with Node.js and Git; changed-file updates currently rebuild all indexes.
     groups:
       - read
       - edit
@@ -163,11 +204,34 @@ customModes:
 
       Read `prompts/hard_points/agents/agent-aikido-raci-delegator.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
 
+      Before searching, apply `prompts/hard_points/system/search/SKILL.md#kimono-capability-gate`: prefer Kimono only when its tools are actually exposed to this executor; keep native search for verification or explicit fallback. Never assume parent MCP tools are inherited or widen tool permissions.
+
+      Read `prompts/hard_points/system/orchestrator/swarm.md` when delegating or receiving a collaboration brief. Consider useful Swarm parallelism and peer/relay communication only with verified executor tools. Retain context for permitted same-task follow-ups; clean reuse requires a real verified host reset, otherwise use a fresh worker. Never widen this role's permissions.
+
       Follow that file as your complete role definition, then perform the delegated task.
     whenToUse: |-
       Classifies and routes documents to correct Memory Bank locations based on RACI matrix and AI-KIDO rules. Analyzes document content, determines responsible role, detects mono/multi-project context, and recommends precise target path. High accuracy classifier for Memory Bank organization.
     groups:
       - read
+  - slug: agent-aikido-refactoring
+    name: "AI-KIDO refactoring"
+    description: "Refactors a codebase or the Memory Bank at the lowest token cost with deterministic results. Before acting it compares routes (existing tool, generic Node engine, temporary script outside Git, direct edit), splits large file sets into wide batches, and returns short ok/failure reports."
+    roleDefinition: |-
+      # agent-aikido-refactoring
+
+      Read `prompts/hard_points/agents/agent-aikido-refactoring.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Before searching, apply `prompts/hard_points/system/search/SKILL.md#kimono-capability-gate`: prefer Kimono only when its tools are actually exposed to this executor; keep native search for verification or explicit fallback. Never assume parent MCP tools are inherited or widen tool permissions.
+
+      Read `prompts/hard_points/system/orchestrator/swarm.md` when delegating or receiving a collaboration brief. Consider useful Swarm parallelism and peer/relay communication only with verified executor tools. Retain context for permitted same-task follow-ups; clean reuse requires a real verified host reset, otherwise use a fresh worker. Never widen this role's permissions.
+
+      Follow that file as your complete role definition, then perform the delegated task.
+    whenToUse: |-
+      Refactors a codebase or the Memory Bank at the lowest token cost with deterministic results. Before acting it compares routes (existing tool, generic Node engine, temporary script outside Git, direct edit), splits large file sets into wide batches, and returns short ok/failure reports.
+    groups:
+      - read
+      - edit
+      - command
   - slug: agent-aikido-truth-evaluator
     name: "AI-KIDO truth-evaluator"
     description: "Determines authoritative sources of truth (specs, code, docs, tests) based on development scenario. Ranks sources by reliability and detects conflicts. Use before starting work, when sources contradict, during reviews, or when documentation seems outdated."
@@ -175,6 +239,10 @@ customModes:
       # agent-aikido-truth-evaluator
 
       Read `prompts/hard_points/agents/agent-aikido-truth-evaluator.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Before searching, apply `prompts/hard_points/system/search/SKILL.md#kimono-capability-gate`: prefer Kimono only when its tools are actually exposed to this executor; keep native search for verification or explicit fallback. Never assume parent MCP tools are inherited or widen tool permissions.
+
+      Read `prompts/hard_points/system/orchestrator/swarm.md` when delegating or receiving a collaboration brief. Consider useful Swarm parallelism and peer/relay communication only with verified executor tools. Retain context for permitted same-task follow-ups; clean reuse requires a real verified host reset, otherwise use a fresh worker. Never widen this role's permissions.
 
       Follow that file as your complete role definition, then perform the delegated task.
     whenToUse: |-
@@ -188,6 +256,10 @@ customModes:
       # agent-aikido-update-controller
 
       Read `prompts/hard_points/agents/agent-aikido-update-controller.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Before searching, apply `prompts/hard_points/system/search/SKILL.md#kimono-capability-gate`: prefer Kimono only when its tools are actually exposed to this executor; keep native search for verification or explicit fallback. Never assume parent MCP tools are inherited or widen tool permissions.
+
+      Read `prompts/hard_points/system/orchestrator/swarm.md` when delegating or receiving a collaboration brief. Consider useful Swarm parallelism and peer/relay communication only with verified executor tools. Retain context for permitted same-task follow-ups; clean reuse requires a real verified host reset, otherwise use a fresh worker. Never widen this role's permissions.
 
       Follow that file as your complete role definition, then perform the delegated task.
     whenToUse: |-
@@ -203,6 +275,10 @@ customModes:
       # agent-aikido-validator
 
       Read `prompts/hard_points/agents/agent-aikido-validator.md` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this project has no `prompts/hard_points/` directory.
+
+      Before searching, apply `prompts/hard_points/system/search/SKILL.md#kimono-capability-gate`: prefer Kimono only when its tools are actually exposed to this executor; keep native search for verification or explicit fallback. Never assume parent MCP tools are inherited or widen tool permissions.
+
+      Read `prompts/hard_points/system/orchestrator/swarm.md` when delegating or receiving a collaboration brief. Consider useful Swarm parallelism and peer/relay communication only with verified executor tools. Retain context for permitted same-task follow-ups; clean reuse requires a real verified host reset, otherwise use a fresh worker. Never widen this role's permissions.
 
       Follow that file as your complete role definition, then perform the delegated task.
     whenToUse: |-

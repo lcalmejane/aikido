@@ -18,7 +18,7 @@ Enhanced search plan for Infrastructure as Code Terraform (`.tf` and `.tfvars` f
 ## 🔍 File Patterns
 
 ### Priority extensions
-```bash
+```text
 *.tf          # Main Terraform configuration files
 *.tfvars      # Variable definition files  
 *.tfvars.json # JSON variable files
@@ -26,7 +26,7 @@ Enhanced search plan for Infrastructure as Code Terraform (`.tf` and `.tfvars` f
 ```
 
 ### Standard files
-```bash
+```text
 main.tf           variables.tf      outputs.tf
 providers.tf      versions.tf       backend.tf
 locals.tf         data.tf           terraform.tfvars
@@ -34,7 +34,7 @@ locals.tf         data.tf           terraform.tfvars
 ```
 
 ### Standard exclusions
-```bash
+```text
 # Directories
 .terraform/          .terragrunt-cache/   .git/
 node_modules/        dist/                build/
@@ -50,28 +50,38 @@ override.tf          *_override.tf        *.pem
 **Type**: `structure-aware` (HCL syntax understanding)
 
 ### Phase 1: Quick Discovery
-```bash
-find . -type f \( -name "*.tf" -o -name "*.tfvars" \) \
-  -not -path "*/.terraform/*" -not -path "*/.git/*" 2>/dev/null
+```javascript
+import { listFiles } from '../../search-engine.mjs';
+
+const terraformFiles = listFiles({
+  root: approvedRoot,
+  paths: selectedPaths,
+  language: 'terraform',
+});
 ```
 
 ### Phase 2: Resource & Module Discovery
-```bash
-# Resources
-rg -n "^resource\s" --type-add 'tf:*.tf' --type tf --glob '!.terraform'
+```javascript
+import { search } from '../../search-engine.mjs';
 
-# Modules
-rg -n "^module\s" --type-add 'tf:*.tf' --type tf --glob '!.terraform'
-
-# Data sources
-rg -n "^data\s" --type-add 'tf:*.tf' --type tf --glob '!.terraform'
+const resources = search({ root: approvedRoot, paths: selectedPaths, language: 'terraform', query: '^resource\\s', mode: 'regex' });
+const modules = search({ root: approvedRoot, paths: selectedPaths, language: 'terraform', query: '^module\\s', mode: 'regex' });
+const dataSources = search({ root: approvedRoot, paths: selectedPaths, language: 'terraform', query: '^data\\s', mode: 'regex' });
 ```
 
 ### Phase 3: Dependency Analysis
-```bash
-# All references (var, module, data, resource)
-rg -oE '\$\{[^}]+\}|([a-z_]+\.[a-z_]+\.[a-z_]+)' \
-  --type-add 'tf:*.tf' --type tf --glob '!.terraform' | sort -u
+```javascript
+import { extractTerraformDependencies, listFiles, readScopedFile } from '../../search-engine.mjs';
+
+const dependencies = listFiles({
+  root: approvedRoot,
+  paths: selectedPaths,
+  language: 'terraform',
+}).filter(file => file.endsWith('.tf'))
+  .map(file => ({
+    file,
+    ...extractTerraformDependencies(readScopedFile({ root: approvedRoot, file })),
+  }));
 ```
 
 ## 📦 Search Patterns
@@ -179,44 +189,27 @@ data\.([a-z_]+)\.([a-z_][a-z0-9_]*)\.([a-z_][a-z0-9_]*)
 ## 🔄 Extension Strategy
 
 ### Provider Detection
-```bash
-detect_provider_from_resource() {
-    local prefix="${1%%_*}"
-    case "$prefix" in
-        aws) echo "aws (Amazon Web Services)" ;;
-        azurerm) echo "azurerm (Microsoft Azure)" ;;
-        google) echo "google (Google Cloud)" ;;
-        kubernetes) echo "kubernetes" ;;
-        docker) echo "docker" ;;
-        helm) echo "helm" ;;
-        *) echo "$prefix (unknown)" ;;
-    esac
-}
+```javascript
+import { detectTerraformProvider } from '../../search-engine.mjs';
+
+const provider = detectTerraformProvider(resourceType);
 ```
 
 ### Module Source Resolution
-```bash
-resolve_module_source() {
-    local source="$1"
-    if [[ "$source" =~ ^\.\.?/ ]]; then
-        echo "Local: $(realpath "$source" 2>/dev/null)"
-    elif [[ "$source" =~ ^git:: ]]; then
-        echo "Git: ${source#git::}"
-    else
-        echo "Registry: registry.terraform.io/$source"
-    fi
-}
+```javascript
+import { resolveTerraformModuleSource } from '../../search-engine.mjs';
+
+const moduleSource = resolveTerraformModuleSource(source, {
+  root: approvedRoot,
+  file: currentFile,
+});
 ```
 
 ### Dependency Extraction
-```bash
-extract_dependencies() {
-    local file="$1"
-    echo "=== Variables ===" && rg -oE 'var\.[a-z_]+' "$file" | sort -u
-    echo "=== Locals ===" && rg -oE 'local\.[a-z_]+' "$file" | sort -u
-    echo "=== Modules ===" && rg -oE 'module\.[a-z_]+\.[a-z_]+' "$file" | sort -u
-    echo "=== Data ===" && rg -oE 'data\.[a-z_]+\.[a-z_]+\.[a-z_]+' "$file" | sort -u
-}
+```javascript
+import { extractTerraformDependencies } from '../../search-engine.mjs';
+
+const dependencies = extractTerraformDependencies(terraformSource);
 ```
 
 ## 📤 Output Format
@@ -274,84 +267,83 @@ graph TD
 ## ⚡ Performance Optimization
 
 ### Optimized commands
-```bash
-# Resources of a type
-rg -n "^resource\s+\"aws_instance\"" --type-add 'tf:*.tf' --type tf
+```javascript
+import { detectTerraformProviders, listTerraformModules, search } from '../../search-engine.mjs';
 
-# Count by type
-rg "^resource\s+\"(\w+)\"" -r '$1' --type tf | sort | uniq -c | sort -rn
-
-# Refs to a variable
-rg "var\.region" --type tf
-
-# Modules with sources
-rg -A 2 "^module\s" --type tf | rg "source\s*=" 
-
-# Resources with count/for_each
-rg -B 1 "^\s*(count|for_each)\s*=" --type tf | rg "^resource"
-
-# Sensitive outputs
-rg -A 3 "^output" --type tf | rg -B 3 "sensitive\s*=\s*true"
-
-# Global statistics
-echo "Resources: $(rg -c '^resource\s' --type tf | awk -F: '{s+=$2} END {print s}')"
-echo "Modules: $(rg -c '^module\s' --type tf | awk -F: '{s+=$2} END {print s}')"
+const resourceMatches = search({
+  root: approvedRoot, paths: selectedPaths, language: 'terraform',
+  query: '^resource\\s+"aws_instance"', mode: 'regex',
+});
+const variableMatches = search({
+  root: approvedRoot, paths: selectedPaths, language: 'terraform',
+  query: 'var\\.region', mode: 'regex',
+});
+const providers = detectTerraformProviders({ root: approvedRoot, paths: selectedPaths });
+const modules = listTerraformModules({ root: approvedRoot, paths: selectedPaths });
 ```
 
 ### Strategies
 1. **Early filtering**: Exclude `.terraform/` from the start
-2. **Type-specific**: Use `--type tf` 
+2. **Type-specific**: Use the Terraform plan's `.tf` / `.tfvars` allowlist
 3. **Provider grouping**: Analyze by provider
-4. **Parallel processing**: GNU parallel for large projects
+4. **Parallel processing**: Use the host's supported parallel tool calls for independent scopes
 
 ## 🔧 Terraform-Specific Features
 
-### State Inspection (Read-Only)
-```bash
-# View state
-terraform state list 2>/dev/null
+### State Inspection (Sensitive)
 
-# JSON format
-terraform show -json terraform.tfstate 2>/dev/null | jq .
-```
+Terraform state may contain secrets even when values are marked sensitive.
+Do not read, export or print state by default. Inspect it only when explicitly
+authorized, using a narrowly scoped local procedure that does not expose
+values in logs or agent output.
 
 ### Provider Versions
-```bash
-rg -A 10 "required_providers\s*\{" --type tf | \
-  rg "(\w+)\s*=" -A 3 | rg "version\s*="
+```javascript
+import { search } from '../../search-engine.mjs';
+
+const requiredProviderBlocks = search({
+  root: approvedRoot,
+  paths: selectedPaths,
+  language: 'terraform',
+  query: 'required_providers|version\\s*=',
+  mode: 'regex',
+  context: 3,
+});
 ```
 
 ### Security Audit
-```bash
-# Hardcoded secrets (RISK!)
-rg -i "(password|secret|api_key)\s*=\s*\"[^\"]+\"" --type tf
+Terraform state and sensitive variable files are excluded and never opened by the
+search engine. Search results redact assignment values for sensitive key names.
+```javascript
+import { findSensitiveTerraformFiles, search } from '../../search-engine.mjs';
 
-# Public access
-rg "(0\.0\.0\.0/0|publicly_accessible.*true)" --type tf
+const possibleHardcodedSecrets = findSensitiveTerraformFiles({
+  root: approvedRoot,
+  paths: selectedPaths,
+});
+const publicAccessCandidates = search({
+  root: approvedRoot,
+  paths: selectedPaths,
+  language: 'terraform',
+  query: '0\\.0\\.0\\.0/0|publicly_accessible\\s*=\\s*true',
+  mode: 'regex',
+});
 ```
 
 ## 🎓 Auto-Detection
 
 ### Providers
-```bash
-detect_providers() {
-    # From resources
-    rg "^resource\s+\"(\w+)_" -r '$1' --type tf | sort -u
+```javascript
+import { detectTerraformProviders } from '../../search-engine.mjs';
 
-    # From explicit providers
-    rg "^provider\s+\"(\w+)\"" -r '$1' --type tf | sort -u
-}
+const providers = detectTerraformProviders({ root: approvedRoot, paths: selectedPaths });
 ```
 
 ### Module Inventory
-```bash
-list_modules() {
-    rg -n "^module\s+\"([^\"]+)\"" --type tf | while IFS=: read f l m; do
-        name=$(echo "$m" | rg "\"([^\"]+)\"" -r '$1')
-        src=$(rg -A 10 "^module\s+\"$name\"" "$f" | rg "source\s*=" | head -1)
-        echo "Module: $name | File: $f:$l | $src"
-    done
-}
+```javascript
+import { listTerraformModules } from '../../search-engine.mjs';
+
+const modules = listTerraformModules({ root: approvedRoot, paths: selectedPaths });
 ```
 
 ---

@@ -1,175 +1,71 @@
 ---
+name: clean-index
 description: "Clean orphaned entries from the AI-KIDO structure index"
 ---
 
 # /clean-index
 
-**Purpose**: Intelligently clean the indexing cache by identifying and removing only orphaned entries (indexed files that no longer exist on the filesystem). Preserve valid entries to avoid a full unnecessary re-indexation.
-
----
+Identify entries in the V3.1 by-id index whose project-relative paths no longer
+exist, and remove only those entries. Run from the project root.
 
 ## Usage
 
 [MANDATORY]
-/clean-index
-/clean-index --confirm
-/clean-index --dry-run
-/clean-index --verbose
 
-| Argument | Description | Example |
-|----------|-------------|---------|
-| `--confirm` | Ask for confirmation before deletion | `/clean-index --confirm` |
-| `--dry-run` | Simulation without modifications | `/clean-index --dry-run` |
-| `--verbose` | Detailed mode | `/clean-index --verbose` |
+`/clean-index [--dry-run] [--confirm] [--verbose] [--rebuild]`
 
-## Prerequisites
+| Argument | Description |
+|----------|-------------|
+| `--dry-run` | Report without any writes; takes precedence over `--confirm`. |
+| `--confirm` | Ask before making changes; `y`, `yes`, `o`, or `oui` approves. |
+| `--verbose` | Display every valid and orphan path instead of only orphan examples. |
+| `--rebuild` | Rebuild all indexes from the current project tree, even when no orphans are detected. |
 
-- `prompts/hard_points/system/structure/index.json` should exist (created by `/reindex-projet`)
-- `jq` must be installed (`brew install jq` or `apt-get install jq`)
+Flags can be combined. Without `--confirm` cleanup is immediate.
 
-Typical workflow: `/clean-index` → (optional) `/reindex-projet` if many orphans detected
-
-## Steps
+## Execution
 
 [MANDATORY]
 
-Execute these actions directly without asking questions.
+Use an exposed host direct-process action to start Node with the absolute path
+of `prompts/hard_points/system/structure/scripts/clean-orphans.mjs` followed
+by the selected flags as separate argv entries. Set the working directory to
+the project root; do not invoke a shell or construct a pipeline. If direct
+argv execution is unavailable, report that limitation and stop.
+`host-actions.mjs` is a library, not an automatically registered Tool.
+Do not create a log or any other file for a dry run.
 
-### Phase 0: Verification and Preparation
+The engine reads the master and all routed by-id batches before writing. It
+rejects malformed JSON, invalid entries, unsafe paths and symlink components;
+an incomplete index is an error. To avoid numerical precision loss on rewrite,
+numbers must be safe integers written without decimal or exponent notation.
+If the master is absent, it reports that
+there is nothing to clean and suggests `/reindex-projet`. Errors return a
+nonzero status. Over 10% orphans produces a warning.
 
-1. Create directory `prompts/spec/logs/` if it does not exist.
-2. Generate a timestamped log filename: `prompts/spec/logs/clean-index-YYYY-MM-DD_HH-MM-SS.log`
-3. Display the start header:
+Without `--rebuild`, changed by-id batches, their counts and the master by-id counts, total and
+last-check are updated; other metadata and valid entries are retained.
+**Secondary indexes (by-path, alphabetical, directory and type), their master
+routing and other statistics are not refreshed or checked. Run
+`/reindex-projet` after any cleanup** before relying on them, even below 10%.
+No claim of full index consistency is made when no orphans are found either.
 
-```
-╔══════════════════════════════════════════════════════════╗
-║  INTELLIGENT INDEX CLEANUP - START                      ║
-╚══════════════════════════════════════════════════════════╝
-```
+With `--rebuild`, the engine scans the project and regenerates all indexes
+using the same Node engine as `/reindex-projet`. This also adds newly visible
+files and refreshes metadata; it is not limited to deleting orphan entries.
+Git and Node.js 24+ are required. `--dry-run` reports this intention without
+scanning or testing whether a rebuild will succeed; `--confirm` asks before
+rebuilding. An incomplete or invalid existing by-id index still blocks this
+command; use `/reindex-projet` to rebuild without first inspecting it.
 
-### Phase 1: Check Index Existence
+The engine stages replacements and attempts rollback on ordinary write errors.
+Multi-file replacement is not crash-atomic; a crash, concurrent modification,
+or rollback failure may require `/reindex-projet`. Run with exclusive access
+to the index and project tree. Symlink checks do not protect against a hostile
+concurrent filesystem race. Project files themselves are never deleted.
 
-```bash
-INDEX_DIR="prompts/hard_points/system/structure/indices"
-MASTER_INDEX="prompts/hard_points/system/structure/index.json"
+## Related commands
 
-if [ ! -d "$INDEX_DIR" ] || [ ! -f "$MASTER_INDEX" ]; then
-  echo "Index not found or incomplete."
-  echo "Nothing to clean. Use /reindex-projet to create the index."
-  exit 0
-fi
-
-echo "Index found"
-FILE_COUNT=$(find "$INDEX_DIR" -type f | wc -l | tr -d ' ')
-echo "  Index files: $FILE_COUNT"
-```
-
-### Phase 2: Run Optimized Bash Script
-
-Run the script directly (fastest approach):
-
-```bash
-bash prompts/hard_points/system/structure/scripts/clean-orphans.sh 2>&1 | tee -a "prompts/spec/logs/clean-index-$(date +%Y-%m-%d_%H-%M-%S).log"
-```
-
-The script automatically performs:
-1. Extract indexed files from by-id batches (using `jq`)
-2. Verify existence of each file on the filesystem (`bash test -e`)
-3. Identify orphans (diff)
-4. Selectively delete orphaned entries from JSON batches (`jq del`)
-5. Update statistics in master index
-6. Generate detailed report with orphan examples
-
-### Phase 3: Final Summary (generated by script)
-
-```
-╔══════════════════════════════════════════════════════════╗
-║  INTELLIGENT CLEANUP COMPLETE                           ║
-╚══════════════════════════════════════════════════════════╝
-
-Statistics:
-  - Indexed files    : X
-  - Valid files      : Y
-  - Orphans detected : Z
-  - Orphans removed  : Z
-
-[IF Z > 10% of X]
-  WARNING: Many orphans detected (Z out of X)
-  Recommendation: /reindex-projet for full regeneration
-
-[OTHERWISE]
-  Index cleaned successfully.
-  The index is up to date and coherent.
-
-Duration: [X] seconds
-Full log: prompts/spec/logs/clean-index-[timestamp].log
-```
-
-## Output
-
-```
-# Success — No Orphans
-INTELLIGENT CLEANUP COMPLETE
-
-Statistics:
-  - Indexed files    : 2608
-  - Valid files      : 2608
-  - Orphans detected : 0
-
-Index perfectly coherent. No cleanup action needed.
-
-# Success — Orphans Cleaned
-INTELLIGENT CLEANUP COMPLETE
-
-Statistics:
-  - Indexed files    : 2608
-  - Valid files      : 2595
-  - Orphans detected : 13
-  - Orphans removed  : 13
-
-Index cleaned successfully. 13 obsolete entries removed.
-
-Examples of removed orphans:
-  - prompts/spec/temp/old-file.md (deleted)
-  - src/deprecated/module.js (deleted)
-
-# Warning — Many Orphans
-WARNING: Many orphans detected!
-
-Statistics:
-  - Indexed files    : 2608
-  - Valid files      : 2300
-  - Orphans detected : 308 (11.8%)
-
-STRONG RECOMMENDATION:
-   Run a full re-indexation: /reindex-projet
-   Possible cause: Major refactoring or moved files
-
-# Index Not Found
-Index not found or incomplete.
-Nothing to clean. Use /reindex-projet to create the index.
-```
-
-## Notes
-
-**Error handling**:
-
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Index not found | No index generated yet | Run `/reindex-projet` first |
-| Permission denied | Insufficient rights on JSON | Check permissions on `indices/` |
-| JSON corrupted | Malformed index | Run `/reindex-projet` for regeneration |
-| Timeout | Too many files to check | Re-run or use `/reindex-projet` |
-
-**Security**: Only orphaned entries are removed (files absent from filesystem). Valid entries are preserved intact. Operation is reversible via `/reindex-projet`.
-
-Use `--dry-run` to analyze without deleting. If >10% orphans: prefer `/reindex-projet` for full regeneration.
-
-**Related commands**:
-- `/reindex-projet`: Full index regeneration (complementary)
-- `/analyse-aikido`: Verify general Memory Bank coherence
-- `/maj-aikido`: If AI-KIDO update requires re-indexation
-
-**Technologies**: bash, `jq` (JSON), `shasum` (SHA-256 hash routing), `find`/`test` (filesystem checks)
-
-**Performance**: ~5-10s total, 0 LLM tokens consumed (pure bash script).
+- `/reindex-projet`: regenerate all indexes.
+- `/analyse-aikido`: verify general Memory Bank coherence.
+- `/maj-aikido`: update AI-KIDO.

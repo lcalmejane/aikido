@@ -109,74 +109,31 @@ The `agent-aikido-projet-index` provides pre-computed file listings and metadata
 
 **Check availability:**
 
-```bash
-if [ -f "prompts/hard_points/system/structure/index.json" ]; then
-    AGE=$(( $(date +%s) - $(stat -f%m "prompts/hard_points/system/structure/index.json" 2>/dev/null || echo "0") ))
-    if [ $AGE -lt 86400 ]; then
-        USE_PROJET_INDEX=true
-        echo "✅ Using projet-index cache (age: $((AGE/3600))h)"
-    fi
-fi
-```
+Use the index only when it exists and its recorded freshness is within the
+documented one-day window. Read its metadata through the host's Read action;
+otherwise use scoped directory listing and file reads. Report which source was
+used and do not infer freshness when metadata is unavailable.
 
 ### Step 1: Structural Analysis
 
 **🚀 FAST PATH (with projet-index):**
 
-```bash
-if [ "$USE_PROJET_INDEX" = "true" ]; then
-    echo "⚡ Using projet-index JSON cache for instant analysis..."
-
-    # Extract ALL files from Memory Bank domains (instant)
-    ALL_FILES=$(jq -r --arg base "prompts/gen" '
-        .index.by_path |
-        to_entries[] |
-        select(.key | startswith($base)) |
-        select(.key | endswith(".md")) |
-        {
-            path: .key,
-            name: .value.name,
-            lines: .value.lines,
-            type: .value.type,
-            modified: .value.modified
-        }
-    ' prompts/hard_points/system/structure/index.json)
-
-    # Calculate depth from path (instant)
-    # Calculate parent directories (instant)
-    # Lines already available - no wc -l needed! ⚡
-
-    # Performance: <10ms vs 3-5s with find/wc
-fi
-```
+When the structure index is current, read the routed by-path metadata for
+Markdown files under the detected Memory Bank roots. Calculate depth and
+parent directories from each relative path. Otherwise use the host's scoped
+Glob and Read actions and count lines from the returned text.
 
 **⚙️ FALLBACK PATH (traditional scan):**
 
-```bash
-if [ "$USE_PROJET_INDEX" != "true" ]; then
-    echo "⚠️ Using traditional filesystem scan..."
-
-    # 1. Find all markdown files in detected paths
-    # Mono: find /prompts/gen -name "*.md" -type f
-    # Multi: find /prompts/[projet-x]/gen -name "*.md" -type f (for each projet)
-
-    # 2. For each file:
-    #    - Line count: wc -l
-    #    - Depth: count "/" from root (gen/ = level 0)
-    #    - Parent: extract from path
-    #    - Links: grep '\[.*\](.*\.md)'
-
-    # Performance: 3-5s for ~200 files
-fi
-```
+For a stale or absent index, use scoped host Glob/Read actions for the detected
+roots. Calculate line count, depth and parent path from the results and extract
+Markdown links from each file. Do not claim a scan speed or completeness beyond
+the returned files.
 
 **📝 Link analysis (both paths):**
 
-```bash
-# For both paths, still need to grep for links:
-# grep '\[.*\](.*\.md)' in each file
-# But file listing and line counts are instant with projet-index!
-```
+For either source, validate links from the actual Markdown text using the host
+search action; index metadata alone cannot verify bidirectional links.
 
 **Output structure analysis:**
 
@@ -314,9 +271,9 @@ Depth: 3 ✅
 1. **Extract all links** from modified file
 2. **Find all files linking to** modified file:
 
-   ```bash
-   grep -r '\[.*\](.*modified-file.md)' /prompts/gen/
-   ```
+   Use the host Grep action scoped to the relevant Memory Bank roots to find
+   inbound links to the modified path. Exclude `spec/` and inspect results
+   before changing references.
 
 3. **Update each external link** to new location
 4. **Verify bidirectionality**:

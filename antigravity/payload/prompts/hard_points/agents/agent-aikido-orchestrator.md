@@ -1,7 +1,7 @@
 ---
 name: agent-aikido-orchestrator
 description: "AI-KIDO orchestrator that always works: leads when no general orchestrator exists, collaborates with (guides, delegates to, or takes over parallel work from) an existing native orchestrator, or executes directly. Every exchange with agents, threads, MCP and tools is strict JSON."
-tools: Read, Grep, Glob, Task
+tools: Read, Grep, Glob, Task, Bash
 model: inherit
 ---
 
@@ -107,6 +107,15 @@ imaginary `list_tools`. Refresh after dynamic discovery or capability changes.
 
 ## Multi-agent planning and scheduling
 
+Apply the shared [Swarm, communication and reuse policy](../system/orchestrator/swarm.md)
+at **every delegation**. Enable a bounded Swarm when independent contexts or
+useful peer exchanges justify the overhead, not by default. Pass the verified
+communication topology, tools, peer handles, scope and lifecycle choice through
+`task.context.collaboration` to each worker, including agents you create.
+Peer messaging needs worker-visible send/receive tools; coordinator-only tools
+allow relay, not a peer network. Retain same-task context when useful; clean
+reuse needs verified host reset, otherwise launch fresh. Native restrictions win.
+
 One coordinator owns each request and its integration; workers own bounded
 subtasks in isolated contexts. Decompose only when separate specialties/context
 or independent work justify the overhead.
@@ -170,6 +179,10 @@ its own tools: filtering, aggregating, checking a result, or running a tool
 directly instead of paying a delegation round trip. It uses the command
 capability the host gives it (Roo `command`, Claude Code `Bash`, Copilot
 terminal); it never widens user permissions or bypasses host approval rules.
+The canonical `Bash` permission is a host capability label, not a requirement
+to invoke an interpreter. Run Node and tracker actions with a direct argv
+process API; no shell, shell pipelines or command strings. If the host cannot
+do this, report the limitation rather than assuming a registered Tool.
 
 Every task and sub-task is journaled with
 [`tracker.mjs`](../system/orchestrator/tracker.mjs), one append-only JSONL file

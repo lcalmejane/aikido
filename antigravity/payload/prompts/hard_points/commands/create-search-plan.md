@@ -1,4 +1,5 @@
 ---
+name: create-search-plan
 description: "Create a new code search plan for agent-aikido-explore-code by guiding the user through the process"
 globs: prompts/hard_points/system/search/plans/README.md, prompts/hard_points/agents/agent-aikido-explore-code.md
 ---
@@ -6,6 +7,10 @@ globs: prompts/hard_points/system/search/plans/README.md, prompts/hard_points/ag
 # /create-search-plan
 
 **Purpose**: Create a new code search plan for `agent-aikido-explore-code` following the template and requirements documented in `prompts/hard_points/system/search/plans/README.md`.
+
+Generated plans remain shared Git knowledge and are never converted or moved
+automatically. To start private task tracking from a completed supported plan,
+offer `/aikido-import-plan` as a separate, user-approved workflow.
 
 ---
 
@@ -24,18 +29,10 @@ globs: prompts/hard_points/system/search/plans/README.md, prompts/hard_points/ag
 
 ### Step 1: Load the Reference README
 
-```bash
-# Load README for template and guidelines
-README_PATH="prompts/hard_points/system/search/plans/README.md"
-README_CONTENT=$(cat "$README_PATH")
-
-# Extract the plan template
-TEMPLATE=$(sed -n '/### 2\. Template de Plan/,/### 3\. Checklist/p' "$README_PATH")
-
-# Load agent to understand requirements
-AGENT_PATH="prompts/hard_points/agents/agent-aikido-explore-code.md"
-AGENT_CONTENT=$(cat "$AGENT_PATH")
-```
+Read `prompts/hard_points/system/search/plans/README.md` and
+`prompts/hard_points/agents/agent-aikido-explore-code.md` with the host's Read
+action. Use the README's template section and the agent's current requirements
+as authoritative.
 
 ### Step 2: Interactive Questionnaire
 
@@ -139,19 +136,10 @@ Extensions [{auto_suggestions}]:
 **Store**: `FILE_EXTENSIONS`
 
 **Auto-suggestions based on tech**:
-```bash
-case "$TECH_NAME" in
-    python) SUGGESTED_EXTS="*.py *.pyw *.pyx" ;;
-    java) SUGGESTED_EXTS="*.java *.class *.jar" ;;
-    go) SUGGESTED_EXTS="*.go" ;;
-    rust) SUGGESTED_EXTS="*.rs" ;;
-    ruby) SUGGESTED_EXTS="*.rb *.rake *.gemspec" ;;
-    csharp) SUGGESTED_EXTS="*.cs *.csx" ;;
-    kotlin) SUGGESTED_EXTS="*.kt *.kts" ;;
-    swift) SUGGESTED_EXTS="*.swift" ;;
-    *) SUGGESTED_EXTS="" ;;
-esac
-```
+Suggest extensions by technology: Python (`.py`, `.pyw`, `.pyx`); Java
+(`.java`, `.class`, `.jar`); Go (`.go`); Rust (`.rs`); Ruby (`.rb`, `.rake`,
+`.gemspec`); C# (`.cs`, `.csx`); Kotlin (`.kt`, `.kts`); Swift (`.swift`).
+For other technologies ask the user to provide extensions.
 
 #### Question 5: Directories to Exclude
 
@@ -172,42 +160,19 @@ Exclusions [{auto_suggestions}]:
 **Store**: `ADDITIONAL_EXCLUSIONS`
 
 **Auto-suggestions**:
-```bash
-case "$TECH_NAME" in
-    python) SUGGESTED_EXCL="__pycache__ *.egg-info .venv venv" ;;
-    java) SUGGESTED_EXCL="target out" ;;
-    go) SUGGESTED_EXCL="" ;;
-    rust) SUGGESTED_EXCL="target" ;;
-    ruby) SUGGESTED_EXCL=".bundle" ;;
-    *) SUGGESTED_EXCL="" ;;
-esac
-```
+Suggest extra exclusions by technology: Python (`__pycache__`, `*.egg-info`,
+`.venv`, `venv`); Java (`target`, `out`); Rust (`target`); Ruby (`.bundle`).
+Do not add an extra default for Go or other technologies.
 
 ### Step 3: Generation — Directory Structure
 
 Create the directory structure and plan file:
 
-```bash
-# Determine plan path based on specificity
-BASE_PATH="prompts/hard_points/system/search/plans"
-
-case "$SPECIFICITY_LEVEL" in
-    1) # Generic
-        PLAN_PATH="$BASE_PATH/$TECH_NAME/plan.md"
-        ;;
-    2) # Version-specific
-        PLAN_PATH="$BASE_PATH/$TECH_NAME/$TECH_VERSION/plan.md"
-        ;;
-    3) # Framework-specific
-        PLAN_PATH="$BASE_PATH/$TECH_NAME/$FRAMEWORK_NAME/plan.md"
-        ;;
-esac
-
-# Create parent directory
-mkdir -p "$(dirname "$PLAN_PATH")"
-
-echo "Plan will be created at: $PLAN_PATH"
-```
+Resolve the destination under `prompts/hard_points/system/search/plans/`:
+generic plans use `{technology}/plan.md`, version-specific plans use
+`{technology}/{version}/plan.md`, and framework-specific plans use
+`{technology}/{framework}/plan.md`. Use host directory and file actions, and
+never overwrite an existing plan without explicit approval.
 
 ### Step 4: Generation — Plan Content
 
@@ -262,24 +227,16 @@ target/
 {SEARCH_METHOD_DESCRIPTION}
 
 ### Phase 1: {TECH_NAME_TITLE} Discovery
-\`\`\`bash
-# Find all {TECH_NAME_TITLE} files
-find . -type f \
-  \( {FIND_PATTERNS} \) \
-  -not -path "*/node_modules/*" \
-  -not -path "*/vendor/*" \
-  -not -path "*/.git/*" \
-  {EXCLUSION_PATHS} \
-  2>/dev/null
-\`\`\`
+List directories before searching file patterns; choose relevant roots and
+exclude irrelevant directories. Apply
+\`prompts/hard_points/system/search/scope-first.md\`, including Git ignore
+rules and the exclusions above. Discover files matching {FILE_PATTERNS} only
+inside those roots. Report inaccessible paths rather than hiding errors.
 
 ### Phase 2: Keyword Search
-\`\`\`bash
-# Keyword search with context
-grep -rn --include="{FILE_PATTERNS}" \
-  --exclude-dir={EXCLUSIONS_LIST} \
-  -i "$KEYWORD" .
-\`\`\`
+Search the selected files for the keyword with line numbers and context.
+Use Kimono MCP or RTK only when available and permitted; otherwise use the
+host's scoped search tools. Do not silently widen the selected roots.
 
 ## Search Patterns
 
@@ -383,19 +340,20 @@ function resolve_{TECH_NAME}_import() {
 
 ### Optimized {TECH_NAME_TITLE} Commands
 \`\`\`bash
-# Ultra-fast search with ripgrep
+# SEARCH_ROOT is one directory selected after scope-first exploration.
+# Repeat for each selected root, or use the host's equivalent scoped tools.
 rg --type {RG_TYPE} \
   --glob '!{EXCLUSIONS}' \
-  -i "$KEYWORD"
+  -i "$KEYWORD" "$SEARCH_ROOT"
 
 # Find all classes
-rg --type {RG_TYPE} -n "{CLASS_PATTERN}" -r '$1' --no-heading
+rg --type {RG_TYPE} -n "{CLASS_PATTERN}" -r '$1' --no-heading "$SEARCH_ROOT"
 
 # Find imports
-rg --type {RG_TYPE} -n "{IMPORT_PATTERN}" --no-heading
+rg --type {RG_TYPE} -n "{IMPORT_PATTERN}" --no-heading "$SEARCH_ROOT"
 
 # Statistics per file
-rg --type {RG_TYPE} -c -i "$KEYWORD" | sort -t: -k2 -nr | head -20
+rg --type {RG_TYPE} -c -i "$KEYWORD" "$SEARCH_ROOT" | sort -t: -k2 -nr | head -20
 \`\`\`
 
 ## Usage Example
@@ -404,16 +362,14 @@ rg --type {RG_TYPE} -c -i "$KEYWORD" | sort -t: -k2 -nr | head -20
 # Example usage of the {TECH_NAME_TITLE} plan
 KEYWORD="{EXAMPLE_KEYWORD}"
 
-# Phase 1: Discovery
-FILES=$(rg --files --type {RG_TYPE})
+# Phase 1: Inspect directories and select SEARCH_ROOT before file discovery.
+rg --files --type {RG_TYPE} "$SEARCH_ROOT"
 
 # Phase 2: Search with context
-RESULTS=$(rg -i -n -A 3 -B 1 "$KEYWORD" --type {RG_TYPE})
+rg -i -n -A 3 -B 1 "$KEYWORD" --type {RG_TYPE} "$SEARCH_ROOT"
 
 # Phase 3: Extract imports
-for file in $FILES; do
-    IMPORTS=$(grep -E "{IMPORT_PATTERN}" "$file" | head -5)
-done
+rg -n "{IMPORT_PATTERN}" --type {RG_TYPE} "$SEARCH_ROOT"
 
 # Phase 4: Format output
 # [Generate markdown output using template above]
@@ -429,64 +385,35 @@ done
 Pre-fill sections with default values based on technology.
 
 #### Python
-```bash
-TECH_CONFIG_FILES="requirements.txt setup.py pyproject.toml"
-IMPORT_PATTERNS="^import\s+(.*)\n^from\s+(.*)\s+import"
-DECLARATION_PATTERNS="^class\s+(\w+)\n^def\s+(\w+)"
-FUNCTION_PATTERNS="^def\s+(\w+)\s*\("
-TECH_SPECIFIC_KEYWORDS="class def import from as decorator @property"
-IMPORT_RESOLUTION_LOGIC="# Convert module.path to module/path.py\necho \"\${import_path//\./\/}.py\""
-EXAMPLE_FILE_PATH="src/services/user_service.py"
-EXAMPLE_CLASS_NAME="UserService"
-```
+Use Python defaults: configuration files include requirements.txt, setup.py
+and pyproject.toml; detect import/from statements, classes, functions and
+Python-specific decorators. Resolve dotted imports to module paths ending in
+`.py`. Use a representative service module and class only as illustrative
+examples; confirm actual project paths before recommending them.
 
 #### Java
-```bash
-TECH_CONFIG_FILES="pom.xml build.gradle settings.gradle"
-IMPORT_PATTERNS="^import\s+([\w\.]+);"
-DECLARATION_PATTERNS="^(public|private|protected)?\s*(class|interface|enum)\s+(\w+)"
-FUNCTION_PATTERNS="^\s*(public|private|protected|static)*\s*\w+\s+(\w+)\s*\("
-TECH_SPECIFIC_KEYWORDS="class interface enum extends implements package import annotation @"
-IMPORT_RESOLUTION_LOGIC="# Convert package.Class to package/Class.java\necho \"\${import_path//\./\/}.java\""
-EXAMPLE_FILE_PATH="src/main/java/com/example/UserService.java"
-EXAMPLE_CLASS_NAME="UserService"
-```
+Use Java defaults: inspect Maven/Gradle configuration; detect imports,
+classes, interfaces, enums, methods and package relationships. Resolve
+package-qualified types to corresponding source paths ending in `.java`.
+Illustrative paths are not evidence of project structure.
 
 #### Go
-```bash
-TECH_CONFIG_FILES="go.mod go.sum"
-IMPORT_PATTERNS="^import\s+\(?\s*\"(.*?)\"\n^import\s+\"(.*?)\""
-DECLARATION_PATTERNS="^type\s+(\w+)\s+(struct|interface)\n^func\s+(\w+)"
-FUNCTION_PATTERNS="^func\s+(\w+)\s*\("
-TECH_SPECIFIC_KEYWORDS="package import type struct interface func var const"
-IMPORT_RESOLUTION_LOGIC="# Go uses GOPATH resolution\necho \"\$GOPATH/src/\$import_path\""
-EXAMPLE_FILE_PATH="pkg/services/user.go"
-EXAMPLE_CLASS_NAME="UserService (struct)"
-```
+Use Go defaults: inspect go.mod/go.sum; detect package/import statements,
+types (structs and interfaces), functions, variables and constants. Resolve
+imports using the project's module layout rather than assuming GOPATH.
+Illustrative paths are not evidence of project structure.
 
 #### Rust
-```bash
-TECH_CONFIG_FILES="Cargo.toml Cargo.lock"
-IMPORT_PATTERNS="^use\s+(.*?);"
-DECLARATION_PATTERNS="^pub\s+struct\s+(\w+)\n^pub\s+trait\s+(\w+)\n^pub\s+enum\s+(\w+)"
-FUNCTION_PATTERNS="^pub\s+fn\s+(\w+)"
-TECH_SPECIFIC_KEYWORDS="use mod pub struct trait impl enum fn let mut"
-IMPORT_RESOLUTION_LOGIC="# Rust uses crate resolution\necho \"src/\${import_path//::///}.rs\""
-EXAMPLE_FILE_PATH="src/services/user_service.rs"
-EXAMPLE_CLASS_NAME="UserService (struct)"
-```
+Use Rust defaults: inspect Cargo manifests; detect use/mod declarations,
+public structs, traits, enums and functions. Resolve crate paths using actual
+module declarations and source files. Illustrative paths are not evidence of
+project structure.
 
 #### Ruby
-```bash
-TECH_CONFIG_FILES="Gemfile Gemfile.lock"
-IMPORT_PATTERNS="^require\s+['\"]([^'\"]+)['\"]\n^require_relative\s+['\"]([^'\"]+)['\"]"
-DECLARATION_PATTERNS="^class\s+(\w+)\n^module\s+(\w+)"
-FUNCTION_PATTERNS="^def\s+(\w+)"
-TECH_SPECIFIC_KEYWORDS="class module def end require include extend attr_accessor"
-IMPORT_RESOLUTION_LOGIC="# Convert require to file path\necho \"\$import_path.rb\""
-EXAMPLE_FILE_PATH="lib/services/user_service.rb"
-EXAMPLE_CLASS_NAME="UserService"
-```
+Use Ruby defaults: inspect Gemfile/Gemfile.lock; detect require and
+require_relative statements, classes, modules, methods, mixins and
+attribute declarations. Resolve imports against actual project paths.
+Illustrative paths are not evidence of project structure.
 
 ### Step 6: Confirmation and Creation
 
@@ -510,36 +437,17 @@ Create this plan now? (y/n):
 
 If confirmed:
 
-```bash
-# Write the file
-echo "$PLAN_CONTENT" > "$PLAN_PATH"
-
-echo "Plan created successfully: $PLAN_PATH"
-echo ""
-echo "Next steps:"
-echo "1. Customize regex patterns to your needs"
-echo "2. Complete TODO sections"
-echo "3. Add specific examples"
-echo "4. Validate with: /validate-search-plan"
-echo ""
-echo "To edit the plan:"
-echo "  \$EDITOR $PLAN_PATH"
-```
+After confirmation, create the plan with the host's Write action, without
+overwriting an existing file. Report the path and recommend customizing regex patterns, completing
+TODO sections, adding examples, and validating with `/validate-search-plan`.
+Offer to open the result only when the host exposes an editor action.
 
 ### Step 7: Automatic Post-Creation Validation
 
 Automatically validate the created plan:
 
-```bash
-echo "Running automatic validation of the created plan..."
-echo ""
-
-# Call /validate-search-plan on the created plan
-# (Simulate or actually run the command)
-
-echo "Automatic validation complete"
-echo "Review the report above for suggested improvements."
-```
+Run `/validate-search-plan` using the host's native file actions. Report its
+actual result; never imply that validation ran when the host cannot execute it.
 
 ### Step 8: Open in Editor (Optional)
 
@@ -551,13 +459,7 @@ Do you want to open the plan in your editor for customization? (y/n):
 
 If yes:
 
-```bash
-# Detect editor (EDITOR env var or default)
-EDITOR="${EDITOR:-nano}"
-
-# Open the file
-$EDITOR "$PLAN_PATH"
-```
+If no editor action is exposed, return the path and let the user open it.
 
 ## Output
 
@@ -584,17 +486,11 @@ Pre-configured templates are available for each supported technology:
 
 **Expert Mode (Skip Questions)** — Create a plan quickly with command-line arguments:
 
-```bash
-# Usage: /create-search-plan --tech=python --level=generic --method=naive
-# Creates automatically with default values
-```
+Example invocation: `/create-search-plan --tech=python --level=generic --method=naive`.
 
 **Clone an Existing Plan** — Create a new plan based on an existing one:
 
-```bash
-# Usage: /create-search-plan --clone=php/plan.md --tech=hack
-# Clones php/plan.md and adapts it for the Hack language
-```
+Example clone request: `/create-search-plan --clone=php/plan.md --tech=hack`.
 
 ### Post-Creation Checklist (Automatic)
 

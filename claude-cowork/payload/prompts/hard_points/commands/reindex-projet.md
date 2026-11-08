@@ -1,70 +1,37 @@
 ---
-description: "Launch agent-aikido-projet-index to re-index the project"
+name: reindex-projet
+description: "Rebuild the V3.1 project structure index using Node.js and Git"
 ---
 
 # /reindex-projet
 
-**Purpose**: Launch `agent-aikido-projet-index` to execute generate-all-indexes-v3.1.sh and re-index the project, generating a tracking log in `/prompts/spec/logs/`.
-
----
+Rebuild the full structure index for the current project using
+`agent-aikido-projet-index`, or execute the same generator directly if that
+agent is unavailable.
 
 ## Usage
 
-[MANDATORY]
-/reindex-projet [path]
+`/reindex-projet` rebuilds the current project's complete index.
+The historical optional subtree argument is not supported by the Node
+generator. If one is supplied, explain that the operation is a full rebuild
+and obtain approval before proceeding; do not silently index another root.
 
-- `path` (optional): relative path for targeted indexing (e.g., `src/Domain`)
-- Without argument: full project indexing
+## Execution
 
-## Prerequisites
+Node.js 24+ and Git are required. Use an exposed host process action to start
+Node directly with the absolute path of
+`prompts/hard_points/system/structure/scripts/generate-all-indexes-v3.1.mjs`
+as its sole argv argument. Set the working directory and `PROJECT_ROOT` to
+the current project root. Do not use a shell, pipeline or command string; if
+direct argv execution is unavailable, report the limitation and stop.
+`host-actions.mjs` is a library, not an automatically registered Tool.
+Wait for completion, check its exit code and report errors explicitly. On
+success report the file count and statistics from
+`prompts/hard_points/system/structure/index.json`. Do not claim that a
+separate structural compliance validation ran.
 
-- `agent-aikido-projet-index` agent available
-
-## Steps
-
-[MANDATORY]
-1. Create directory `prompts/spec/logs/` if it does not exist.
-2. Generate a timestamped log filename: `prompts/spec/logs/reindex-projet-YYYY-MM-DD_HH-MM-SS.log`
-3. Display the start header.
-4. Launch `agent-aikido-projet-index` to execute `generate-all-indexes-v3.1.sh` in a background task with the provided path (variable `$ARGUMENTS`) if present.
-5. Display the agent ID and log path.
-6. Monitor agent progress and display in real time:
-   - Timestamp format: `[HH:MM:SS]`
-   - Status symbols: ⚙️ (in progress), ✓ (success), ⚠️ (warning), ✗ (error)
-   - Progress message
-7. Write each output line to the log file.
-8. When the agent completes, display the final summary.
-
-[OPTIONAL]
-- Do NOT edit or modify any file other than the log file.
-
-## Output
-
-```
-╔══════════════════════════════════════════════════════════╗
-║  PROJECT RE-INDEXING - START                             ║
-╚══════════════════════════════════════════════════════════╝
-
-⚙️  Agent launched in background (ID: [agent-id])
-📝 Log: prompts/spec/logs/reindex-projet-[timestamp].log
-
-[HH:MM:SS] ⚙️  Analyzing project structure...
-[HH:MM:SS] ✓ Structure analyzed (125 files found)
-[HH:MM:SS] ⚙️  Generating JSON index...
-[HH:MM:SS] ✓ Index generated (2.4 MB)
-[HH:MM:SS] ⚙️  Validating structure...
-[HH:MM:SS] ✓ Validation complete
-
-╔══════════════════════════════════════════════════════════╗
-║  ✓ RE-INDEXING COMPLETE                                  ║
-╚══════════════════════════════════════════════════════════╝
-
-⏱️  Duration: [X] seconds
-📝 Full log: prompts/spec/logs/reindex-projet-[timestamp].log
-```
-
-## Notes
-
-- The log is kept for traceability in `/prompts/spec/logs/`
-- On error, the log contains details for debugging
-- Unicode characters (✓ ⚙️ ⚠️ ✗ ╔═╗) are supported by both Roo-Code and Claude Code terminals
+The index is generated sequentially. Publication has rollback for ordinary
+errors but is not crash-atomic across multiple files; prevent concurrent
+index readers and writers. No background agent or tracking log is guaranteed.
+See the [structure skill](../system/structure/SKILL.md) for exclusions and
+other limits.

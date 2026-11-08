@@ -143,23 +143,10 @@ The `agent-aikido-projet-index` agent maintains a JSON index (`prompts/hard_poin
 
 **How to check availability:**
 
-```bash
-# Check if JSON index exists
-if [ -f "prompts/hard_points/system/structure/index.json" ]; then
-    # Verify it's recent (last 24h)
-    AGE=$(( $(date +%s) - $(stat -f%m "prompts/hard_points/system/structure/index.json" 2>/dev/null || echo "0") ))
-    if [ $AGE -lt 86400 ]; then
-        USE_PROJET_INDEX=true
-        echo "✅ Using projet-index cache (age: $((AGE/3600))h)"
-    else
-        echo "⚠️ Index stale (>24h), using fallback"
-        USE_PROJET_INDEX=false
-    fi
-else
-    echo "⚠️ No index found, using fallback"
-    USE_PROJET_INDEX=false
-fi
-```
+Use the host's Read action to inspect the index and its freshness metadata.
+Use it only when present and current; otherwise enumerate files with scoped
+host Glob actions. Report which source was used and avoid unverified speed
+claims.
 
 **Integration strategy:**
 
@@ -179,66 +166,21 @@ fi
 
 **🚀 FAST PATH (with projet-index):**
 
-```bash
-# If USE_PROJET_INDEX=true from optimization section
-if [ "$USE_PROJET_INDEX" = "true" ]; then
-    echo "⚡ Using projet-index JSON cache..."
-
-    # Extract domain files from JSON index (instant query)
-    DOMAIN_FILES=$(jq -r --arg domain "prompts/gen/$DOMAIN" '
-        .index.by_path |
-        to_entries[] |
-        select(.key | startswith($domain)) |
-        select(.key | endswith(".md")) |
-        select(.key | contains("/index.md") | not) |
-        {
-            path: .key,
-            name: .value.name,
-            lines: .value.lines,
-            modified: .value.modified,
-            type: .value.type,
-            size_bytes: .value.size_bytes
-        }
-    ' prompts/hard_points/system/structure/index.json)
-
-    # Titles/descriptions still need content analysis
-    # But file listing, stats, dates are INSTANT from JSON ⚡
-
-    # Performance: <10ms vs 3-5s with find/stat/wc
-fi
-```
+When the index is current, read the routed by-path metadata for Markdown files
+within the detected domain. The index supplies paths and statistics only;
+read each file whose title or description must be extracted.
 
 **⚙️ FALLBACK PATH (traditional scan):**
 
-```bash
-# If projet-index unavailable, use traditional method
-if [ "$USE_PROJET_INDEX" != "true" ]; then
-    echo "⚠️ Using traditional filesystem scan..."
-
-    # 1. Find all .md files (excluding index.md) in appropriate paths
-    # Mono: find /prompts/gen/[domain] -name "*.md" -not -name "index.md"
-    # Multi: find /prompts/[projet-x]/gen/[domain] -name "*.md" -not -name "index.md"
-
-    # 2. For each file, extract:
-    #    - Filename and path
-    #    - First heading (title): grep "^# " | head -1
-    #    - Description: grep "^>" or frontmatter description
-    #    - Line count: wc -l
-    #    - Last modified: stat -f "%Sm"
-    #    - Frontmatter (if exists)
-
-    # Performance: 3-5s for ~200 files
-fi
-```
+If the index is absent or stale, enumerate the domain with Glob, excluding its
+index.md when appropriate. Read files to extract title, description and
+frontmatter; calculate line counts from content and request file metadata only
+when the host exposes it.
 
 **📝 Content enrichment (both paths):**
 
-```bash
-# For both paths, still need to read file content for:
-# - Title extraction: grep "^# " | head -1
-# - Description: grep "^>" or frontmatter description
-# But with projet-index, we already have lines/dates/sizes!
-```
+For either source, use Read to obtain title and description from actual
+content. Index data cannot supply semantic summaries or confirm freshness.
 
 **Output scanned data:**
 
@@ -276,19 +218,10 @@ fi
 
 **🚀 Statistics with projet-index (INSTANT):**
 
-```bash
-# If USE_PROJET_INDEX=true, extract pre-calculated stats
-if [ "$USE_PROJET_INDEX" = "true" ]; then
-    # Domain statistics from JSON (no calculation needed!)
-    TOTAL_FILES=$(echo "$DOMAIN_FILES" | jq 'length')
-    TOTAL_LINES=$(echo "$DOMAIN_FILES" | jq '[.lines] | add')
-    AVG_SIZE=$(echo "$DOMAIN_FILES" | jq '[.lines] | add / length | floor')
-    LARGEST_FILE=$(echo "$DOMAIN_FILES" | jq 'max_by(.lines) | .path')
-    LARGEST_SIZE=$(echo "$DOMAIN_FILES" | jq 'max_by(.lines) | .lines')
-
-    # Instant! No wc -l, no stat needed ⚡
-fi
-```
+Calculate file count, total and average line counts, and the largest file from
+the current inventory. Prefer valid indexed line metadata; otherwise count
+lines from each host Read result. Preserve the existing mode-specific index
+template and verify all generated links before editing.
 
 **IF Mode = STANDARD (Comprehensive Template):**
 

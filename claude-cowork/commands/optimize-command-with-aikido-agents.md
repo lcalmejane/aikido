@@ -1,6 +1,6 @@
 ---
 name: optimize-command-with-aikido-agents
-description: "Analyze and optimize AI-KIDO commands with available technical agents"
+description: "Analyze and optimize AI-KIDO commands with available technical agents and detected RTK support"
 ---
 
 ## Cowork execution boundary

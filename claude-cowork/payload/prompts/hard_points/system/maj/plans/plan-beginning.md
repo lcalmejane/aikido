@@ -15,11 +15,9 @@ This plan executes **immediately after** the initial backup is created and **bef
 - `$SOURCE` : Absolute path to the directory containing the current AI-KIDO base (current project)
 - `$TARGET` : Absolute path to the directory containing the update files (validated external source)
 
-**Example** :
-```bash
-export SOURCE="/path/to/ai-kido-best-practices"
-export TARGET="/path/to/ai-kido-best-practices/prompts/spec/aikido-source-git"
-```
+**Example**: set SOURCE and TARGET in the host context to the canonical project
+and reviewed update source paths. Do not initialize these values through a
+generated shell fragment.
 
 ---
 
@@ -29,13 +27,18 @@ export TARGET="/path/to/ai-kido-best-practices/prompts/spec/aikido-source-git"
 
 **Action : Verify the existence of a recent backup**
 
-```bash
-LATEST_BACKUP=$(bash prompts/hard_points/system/maj/scripts/beginning-check-backup.sh)
+```text
+node /canonical/source/prompts/hard_points/system/maj/scripts/beginning-check-backup.mjs /canonical/source
 ```
 
 This script searches for the most recent backup in `backups/aikido-backup-*.tgz`.
-- **Output** : Path to backup or warning message
-- **Exit code** : 0 (always, non-blocking)
+The host records the path from stdout on exit 0. On nonzero exit, report the
+stderr warning, set `LATEST_BACKUP` to absent, and continue to the mandatory
+verification backup.
+- **Output** : One absolute path on stdout, or empty when no matching backup exists;
+  warnings and errors go to stderr. This lookup checks file presence, not archive validity.
+- **Exit code** : 0 on success or absence, nonzero on errors (reported but non-blocking).
+- **Safety** : Symlinked backup directories or matching files are refused.
 
 ---
 
@@ -43,15 +46,34 @@ This script searches for the most recent backup in `backups/aikido-backup-*.tgz`
 
 **Action : Create a verification backup before any modification**
 
-```bash
-bash prompts/hard_points/system/maj/scripts/create-backup.sh "$SOURCE" "aikido-verif-backup"
-VERIF_BACKUP_EXIT=$?
+```text
+node /canonical/source/prompts/hard_points/system/maj/scripts/create-backup.mjs /canonical/source aikido-verif-backup
 ```
 
-This script creates a complete project backup with timestamp.
+The Node.js 24+ engine calls external `tar`
+(argument array, no shell). It saves the historical selection, not the whole project.
 - **Files saved** : `.claude .roo .roomodes agents_list.md commands_list.md AGENTS.md CLAUDE.md README.md prompts`
-- **Output** : `backups/aikido-verif-backup-YYYYMMDD-HHMMSS.tgz`
+- **Missing members** : Optional, skipped with stderr warnings; no members is an error.
+- **Output** : One exact absolute path on stdout, only after successful tar, nonempty output and synchronization:
+  `$SOURCE/backups/aikido-verif-backup-YYYYMMDD-HHMMSS-UUID.tgz`.
+- **Intentional differences** : Backups belong to SOURCE, not cwd; exclusive private
+  archive creation, unique suffix, diagnostics on stderr, no false success after tar failure.
+  Symlinks in the backup destination/ancestors and unsafe prefixes/paths are refused.
+  Member symlinks are archived as links (never dereferenced).
+  Ambient tar/gzip option variables are cleared to prevent deletion/dereference hooks.
+  Supports macOS and Linux: tar runs with cwd SOURCE, stdout goes to an exclusively
+  created file descriptor; SOURCE/backup ancestors are checked before and after tar.
+  These checks are NOT atomic: no hostile concurrent directory rename/symlink swap
+  is permitted. Node cannot guarantee race-free path traversal portably.
+  A detected replacement is a blocking error; no failed archive is read.
+  Failed/interrupted artifacts are retained, never accepted as verification backups;
+  the engine never overwrites or removes an existing entry.
 - **Exit code** : 0 on success, 1 on failure (BLOCKING)
+- **Caller contract** : SOURCE is an absolute canonical path without trailing slash.
+  Never inspect/read an archive after failure; do not continue with an old VERIF_BACKUP.
+- **Host gate**: accept exactly one stdout path only after exit 0; verify it is
+  a regular, non-symlink file under SOURCE/backups with the expected prefix.
+  Any unexpected output or nonzero exit is blocking; do not continue.
 
 ---
 
@@ -59,22 +81,14 @@ This script creates a complete project backup with timestamp.
 
 **Action : Load or detect current and target versions**
 
-```bash
-VERSION_OUTPUT=$(bash prompts/hard_points/system/maj/scripts/beginning-detect-versions.sh "$SOURCE" "$TARGET")
-VERSION_EXIT=$?
-
-if [ $VERSION_EXIT -eq 0 ]; then
-  MAJ_CURRENT_VERSION=$(echo "$VERSION_OUTPUT" | awk '{print $1}')
-  MAJ_TARGET_VERSION=$(echo "$VERSION_OUTPUT" | awk '{print $2}')
-else
-  echo "❌ ERROR : Version detection failed"
-  exit 1
-fi
+```text
+node /canonical/source/prompts/hard_points/system/maj/scripts/beginning-detect-versions.mjs /canonical/source /canonical/target
 ```
 
 This script automatically detects versions from `prompts/hard_points/ai-kido.md`.
 - **Output** : `CURRENT_VERSION TARGET_VERSION` (format: "1.3.0 1.3.1")
-- **Export** : Variables `$MAJ_CURRENT_VERSION` and `$MAJ_TARGET_VERSION`
+- **Diagnostics** : stderr only; the wrapper calls the Node.js 24+ version engine.
+- **Export** : The calling plan exports `$MAJ_CURRENT_VERSION` and `$MAJ_TARGET_VERSION` in Phase 3; a child process cannot export to its parent.
 - **Exit code** : 0 on success, 1 on failure (BLOCKING)
 
 ---
@@ -85,19 +99,11 @@ This script automatically detects versions from `prompts/hard_points/ai-kido.md`
 
 **Objective** : Make variables available for all subsequent plans.
 
-```bash
-export MAJ_CURRENT_VERSION
-export MAJ_TARGET_VERSION
-export LATEST_BACKUP
-export SOURCE
-export TARGET
-
-echo "✅ Variables exported for subsequent plans"
-echo "   MAJ_CURRENT_VERSION = $MAJ_CURRENT_VERSION"
-echo "   MAJ_TARGET_VERSION  = $MAJ_TARGET_VERSION"
-echo "   SOURCE              = $SOURCE"
-echo "   TARGET              = $TARGET"
-```
+The host validates that stdout contains exactly two nonempty, whitespace-free
+version tokens. On any nonzero exit or malformed output, report the engine
+diagnostic and stop with the blocking version-detection failure. Retain the
+validated versions, paths, and backup result in the orchestrator context for
+subsequent plans; child-process environment export is not implied.
 
 ---
 
@@ -105,42 +111,56 @@ echo "   TARGET              = $TARGET"
 
 **Action : Create the initial log file**
 
-```bash
-LOG_FILE="prompts/spec/logs/maj-aikido-start-$(date +%Y%m%d-%H%M%S).log"
-LOG_CONTENT="AI-KIDO Update Start
-
-CONTEXT :
-  Backup used           : ${LATEST_BACKUP:-None}
-  Verification backup   : ${VERIF_BACKUP:-Not created}
-  Current version       : $MAJ_CURRENT_VERSION
-  Target version        : $MAJ_TARGET_VERSION
-
-DIRECTORIES :
-  Source : $SOURCE
-  Target : $TARGET"
-
-bash prompts/hard_points/system/maj/scripts/create-log.sh "$LOG_FILE" "Update Start" "$LOG_CONTENT"
-```
+The host assembles the startup-log content from the validated context and calls
+`create-log.mjs` with a unique, non-existing destination under
+`SOURCE/prompts/spec/logs/`, the title `Update Start`, and the content. Use the
+Node engine's exact exit status: report a nonzero result as a warning and
+continue; never accept an existing path as a newly created log.
 
 This script creates a formatted log to trace the start of the process.
-- **Output** : `prompts/spec/logs/maj-aikido-start-YYYYMMDD-HHMMSS.log`
-- **Exit code** : 0 (always, non-blocking)
+- **Output** : `$SOURCE/prompts/spec/logs/maj-aikido-start-YYYYMMDD-HHMMSS.log`
+- **Exit code** : 0 on success; a failure is reported but does not block the update.
+- **Safety** : The Node.js 24+ engine creates the log exclusively and refuses an existing path, including a symlink.
 
 ---
 
-### 5️⃣ Phase 5 : Initial Project Structure Generation (NON-BLOCKING)
+### 5️⃣ Phase 5 : Initial Content Snapshot (BLOCKING for ending-0)
 
-**Action : Generate JSON indexes for future comparison**
+Use an existing, canonical, private work directory outside SOURCE and TARGET
+(`MAJ_WORK_DIR`); do not reuse an untrusted or concurrently used directory.
+The historical default is `/tmp/aikido` for compatibility.
 
-```bash
-bash prompts/hard_points/system/maj/scripts/beginning-generate-structure.sh "$SOURCE" "$TARGET"
+```text
+node /canonical/source/prompts/hard_points/system/maj/scripts/beginning-generate-structure.mjs /canonical/source /canonical/target --dir /private/maj-work-directory
 ```
 
-This script generates JSON structures for TARGET and SOURCE projects (before).
-- **Outputs** :
-  - `/tmp/aikido/maj_target.json` : External project structure
-  - `/tmp/aikido/maj_before.json` : Current project structure before update
-- **Exit code** : 0 (always, non-blocking - displays warnings on failure)
+The host must provide the same private, exclusive work directory to every
+subsequent plan. A nonzero exit blocks ending-0 and ending-1; do not consume
+snapshots from a prior run.
+
+Node.js 24+ captures SHA-256 digests of TARGET regular files under
+`prompts/hard_points/` and the matching SOURCE files. It excludes generated
+structure indexes and never updates either project. Project truth tables and
+personal data are not merge inputs. The JSON file `ending-0-snapshot.json`
+records `{format,id,source,target,files:{path:{source:sha256|null,target:sha256}}}`.
+Changes between snapshot and comparison are blocking; repeat this phase if a
+version plan changes a matching file.
+
+This phase also creates `maj_before.json` for ending-1, independently of index
+masters. Contract:
+`{format:"aikido-maj-content-v1",phase:"before",run:uuid,root:canonicalSOURCE,
+files:{path:{sha256:hex64,size_bytes:integer}}}`.
+The scope is all regular SOURCE files under `prompts/hard_points/` and
+`prompts/gen/`, excluding `prompts/spec/`, directories named `backups`, names
+containing `.bak`, archives (`.tgz`, `.tar`, `.tar.gz`), staging files (`.tmp`,
+`.partial`, `.ending-0-*`, `.ending-1-*`), and generated structure master/indices.
+Missing gen/hard_points subtrees are empty; TARGET must contain eligible
+hard points for the fusion snapshot. Symlinks and unrepresentable names in the
+selected scope fail the capture. File paths and hashes are checked again before
+publication. No index generator runs and no existing index is modified.
+Each new beginning invalidates `maj_diff.state.json` before capture and creates
+a new run UUID; ending-1 pairs its AFTER snapshot with this exact run and root.
+Legacy masters cannot be consumed as content snapshots.
 
 ---
 
@@ -153,8 +173,8 @@ This script generates JSON structures for TARGET and SOURCE projects (before).
 | `$LATEST_BACKUP` | Initial backup path | Global (exported) |
 | `$VERIF_BACKUP` | Verification backup path | Local |
 | `$LOG_FILE` | Startup log file | Local |
-| `/tmp/aikido/maj_target.json` | TARGET structure (JSON) | Temporary file |
-| `/tmp/aikido/maj_before.json` | SOURCE structure before update (JSON) | Temporary file |
+| `$MAJ_WORK_DIR/ending-0-snapshot.json` | SOURCE/TARGET content fingerprints for ending-0 | Work file |
+| `$MAJ_WORK_DIR/maj_before.json` | SOURCE path/content snapshot for ending-1 | Work file |
 
 ---
 
@@ -165,11 +185,11 @@ The `beginning` plan is considered successful if **ALL** these conditions are me
 1. ✅ A verification backup was created (`$VERIF_BACKUP` exists)
 2. ✅ CURRENT and TARGET versions are detected (non-empty)
 3. ✅ Variables are correctly exported
-4. ✅ The startup log is created
+4. ✅ The ending-0 content snapshot was generated
 
 **Non-blocking conditions** (warnings only) :
 - ⚠️  Initial backup not found
-- ⚠️  JSON structure generation failed
+- ⚠️  Startup log creation failed
 
 ---
 
@@ -184,26 +204,18 @@ If a **BLOCKING** phase fails:
    - Fix the problem (permissions, missing files)
    - Relaunch `/maj-aikido --update`
 
-**Failure message example** :
-```
-❌ CRITICAL ERROR : Phase 1.2 (Verification backup) failed
-
-Cause : Unable to create backups/aikido-verif-backup-20260105-143022.tgz
-Possible reason : Insufficient permissions on the backups/ directory
-
-Required action :
-  1. Check permissions : ls -la backups/
-  2. Create directory if necessary : mkdir -p backups && chmod 755 backups
-  3. Relaunch : /maj-aikido --update
-
-═══════════════════════════════════════════════════════════════
-```
+**Failure message example**: report the exact engine stderr and nonzero exit
+for the verification-backup phase, identify the requested backup destination,
+and stop before version-plan selection. The host may recommend checking the
+directory permissions, but must not create directories or change permissions
+without explicit authorization.
 
 ---
 
 ## 🔗 Chaining
 
-Once this plan succeeds, the system moves to:
+The historical sequence is listed below for integration work. **Do not chain
+the complete workflow while [ending-0](plan-ending-0.md) remains blocked.**
 
 1. **Automatic version plan selection** according to `$MAJ_TARGET_VERSION`
    - Ex: `1.3.0.0` → `plan-V1.3.0.0.md`
@@ -217,8 +229,7 @@ Once this plan succeeds, the system moves to:
 
 ## 📚 References
 
-- **Structure generation script** : [`prompts/hard_points/system/structure/scripts/generate-all-indexes-v3.1.sh`](../../structure/scripts/generate-all-indexes-v3.1.sh)
-- **index.json format** : [`prompts/hard_points/system/structure/SKILL.md`](../../structure/SKILL.md)
+- **Content snapshot** : [`beginning-generate-structure.mjs`](../scripts/beginning-generate-structure.mjs)
 - **Version plans** : [`prompts/hard_points/system/maj/plans/plan-V*.md`](.)
 
 ---

@@ -31,26 +31,20 @@ Carry out a **full technical audit** covering:
 
 ### 1. Copy and Adapt the Configuration
 
-```bash
-# Copy the example file
-cp prompts/hard_points/system/analyse/plans/technique/audit-complet/config-example.yml ./config-audit.yml
-
-# Edit the repository paths
-nano config-audit.yml
-# Change:
-#   repositories.frontend.path: "./frontend"  ← Your frontend path
-#   repositories.backend.path: "./backend"    ← Your backend path
-```
+Use the host's Read action to inspect the example configuration, then create
+`config-audit.yml` with the Write action and update repository paths for the
+actual frontend and backend roots. Do not overwrite an existing configuration
+without approval.
 
 ### 2. Run the Audit
 
 **Option A: With YAML configuration** (recommended)
-```bash
+```text
 /analyse-project --config=./config-audit.yml
 ```
 
 **Option B: Interactive mode**
-```bash
+```text
 /analyse-project
 # Then follow the prompts:
 # - Nature: 6 (General technical stack)

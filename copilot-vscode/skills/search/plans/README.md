@@ -29,6 +29,8 @@ plans/
 │   ├── plan.md                  # Generic JS/TS plan
 │   └── react/
 │       └── plan.md              # React specific plan (TODO)
+├── terraform/
+│   └── plan.md                  # Terraform/HCL plan
 ├── python/
 │   └── plan.md                  # Python plan (TODO)
 ├── java/
@@ -47,7 +49,10 @@ The `agent-aikido-explore-code` agent selects the plan according to this logic:
 
 ### Resolution Algorithm
 
-```python
+The following is conceptual pseudocode, not executable code. Resolve candidate
+plans with the host's file-read/existence tools; do not run shell commands.
+
+```text
 def resolve_search_plan(tech: str, version: str = None, framework: str = None) -> str:
     """
     Resolves the most specific available search plan.
@@ -103,6 +108,7 @@ def resolve_search_plan(tech: str, version: str = None, framework: str = None) -
 | **Generic** | `plan-generic.md` | Universal fallback, all languages | ~450 |
 | **PHP** | `php/plan.md` | Generic PHP (PSR-4, Composer) | ~350 |
 | **JavaScript/TypeScript** | `javascript/plan.md` | Generic JS/TS (ES6+, React, Vue, Angular) | ~400 |
+| **Terraform** | `terraform/plan.md` | Terraform/HCL resources and configuration | ~350 |
 
 ### ⏳ To Create (TODO)
 
@@ -164,7 +170,7 @@ def resolve_search_plan(tech: str, version: str = None, framework: str = None) -
 [Metadata to extract per type: classes, functions, etc.]
 
 ## ⚡ Performance Optimization
-[Optimized commands (rg, grep, find)]
+[Use the Node search engine or the host's native scoped search tools; no shell pipelines]
 
 ## 🎓 Framework/Version-Specific Patterns (if applicable)
 [Patterns specific to a framework or version]
@@ -199,35 +205,21 @@ See:
 
 ### Adding a Technology
 
-```bash
-# 1. Create the directory
-mkdir -p prompts/hard_points/system/search/plans/{new_tech}
+Use the host's authorized directory-creation, file-read, and file-write tools:
 
-# 2. Create the base plan
-cp plans/plan-generic.md plans/{new_tech}/plan.md
+1. Create `prompts/hard_points/system/search/plans/{new_tech}/`.
+2. Read `plans/plan-generic.md` and author `plans/{new_tech}/plan.md` with the applicable patterns.
+3. Validate examples through the Node search engine and `agent-aikido-explore-code`.
+4. Add optional version/framework plans by creating their directories and writing reviewed content.
 
-# 3. Customize the plan (see template above)
-# 4. Test with agent-aikido-explore-code
-
-# 5. (Optional) Add version/framework specific plan
-mkdir -p plans/{new_tech}/{version_or_framework}
-cp plans/{new_tech}/plan.md plans/{new_tech}/{version_or_framework}/plan.md
-# Customize with specific patterns
-```
+Do not copy files with shell commands. Preserve scope-first exclusions and
+update the plan index through the host's file tools.
 
 ### Adding a Specific Version/Framework
 
-```bash
-# Example: PHP 8 with attributes
-mkdir -p plans/php/8
-cp plans/php/plan.md plans/php/8/plan.md
-
-# Edit plans/php/8/plan.md to add:
-# - Patterns for attributes (#[Attribute])
-# - Union types (string|int)
-# - Named arguments
-# - Constructor property promotion
-```
+Example: create `plans/php/8/plan.md` with host file tools, using the PHP plan
+as reference and adding reviewed patterns for attributes (`#[Attribute]`),
+union types (`string|int`), named arguments, and constructor property promotion.
 
 ## 📊 Performance Metrics
 
@@ -253,7 +245,7 @@ cp plans/php/plan.md plans/php/8/plan.md
 1. **Specificity** : The more specific the plan, the better it is (hierarchy)
 2. **Tested Patterns** : Validate all regex with real examples
 3. **Exclusions** : Always exclude vendor/node_modules/build
-4. **Performance** : Prefer `rg` (ripgrep) over `grep` for speed
+4. **Performance** : Prefer the Node search engine or native host search tools; never shell pipelines
 5. **Documentation** : Include concrete examples of expected output
 
 ### When Using Plans
@@ -294,25 +286,12 @@ graph TD
 
 ### Invocation Examples
 
-```bash
-# Example 1: PHP Laravel project
-# Query: "authentication system"
-# Tech detected: php (via composer.json)
-# Plan resolved: plans/php/plan.md
-# Output: Classes, interfaces, traits, dependencies with PSR-4 resolution
-
-# Example 2: React TypeScript project
-# Query: "user profile component"
-# Tech detected: javascript + typescript (via package.json + tsconfig.json)
-# Framework: react (via package.json dependencies)
-# Plan resolved: plans/javascript/plan.md (react subplan if available)
-# Output: Components, hooks, props interfaces, dependencies
-
-# Example 3: Unknown project
-# Query: "config loader"
-# Tech detected: none
-# Plan resolved: plans/plan-generic.md (fallback)
-# Output: Generic file patterns, basic declarations
+```text
+Illustrative, non-executable outcomes:
+- “authentication system” in a Laravel project → PHP plan and PSR-4 candidates.
+- “user profile component” in a React TypeScript project → JavaScript plan and
+  component/import metadata.
+- “config loader” in an unsupported project → generic plan fallback.
 ```
 
 ## 📚 References

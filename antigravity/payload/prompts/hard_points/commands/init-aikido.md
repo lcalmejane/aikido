@@ -12,6 +12,13 @@ Initialize the AI-KIDO Memory Bank by creating base files in `/prompts/gen/` per
 
 ## Steps
 
+Before source analysis, discover the current executor's tools with the
+[Kimono capability gate](../system/search/SKILL.md#kimono-capability-gate).
+Pass only verified callable names via `AIKIDO_TOOLS` or `--tools-file` to the
+packaged bootstrap/check runtime, preview before approval, and refresh the
+local flag during approved installation. Prefer covered Kimono retrieval;
+keep native source reads as verification or explicit backup.
+
 ### Phase 0: AI-KIDO Mode Selection [MANDATORY]
 
 Check if AI-KIDO is already initialized by reading `/prompts/index.md`.

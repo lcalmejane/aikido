@@ -18,6 +18,10 @@ It enables Claude to interpret, summarize, and extract relevant information from
 
 ## Instructions (level 2)
 1. Receive the text or file to analyse.
+   Never read or return private Task Store cards, prompts, journals, or
+   projections from `.private/`, `.task-store/`, `aikido/tasks/`, or any
+   directory containing a Task Store `store.json`. These are user-private data,
+   not Memory Bank or project sources.
 2. Determine the content type (plain-text, code, JSON, etc.).
 3. Apply extraction algorithms:
    - Concise summary (max 3 sentences).

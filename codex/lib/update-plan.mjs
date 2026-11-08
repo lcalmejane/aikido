@@ -8,9 +8,16 @@ import {
   BASELINE_DIR, LOCK_PATH, LOCK_SCHEMA_VERSION, MODES, classify, isSafeRelativePath, validateLock,
 } from './lock.mjs';
 import { loadCatalog, renderCatalogEntries } from './catalog.mjs';
+import { detectFeatures, planFeatureFlags } from './features.mjs';
 import { blockHash, findBlock, removeBlock, upsertBlock } from './managed-blocks.mjs';
 import { validatePackage } from './package.mjs';
 import { loadManifest, readTemplate, render, selectTemplates, validateManifest } from './templates.mjs';
+import { changeWarnings, describeVersionChange, sourceWarnings } from './version.mjs';
+
+// Same code-point order as bootstrap-plan.mjs, so an install followed by an update rewrites nothing.
+const compare = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+const byPath = (a, b) => compare(a.path, b.path);
+const byPathThenId = (a, b) => compare(a.path, b.path) || compare(a.id, b.id);
 
 const PLAN_OPERATIONS = new WeakMap();
 const HASH = (bytes) => createHash('sha256').update(bytes).digest('hex');
@@ -30,7 +37,7 @@ function readLock(root) {
   return { lock, bytes: readFileSync(target.absolute) };
 }
 
-function candidateFromArtifact(packageRoot, artifact) {
+function candidateFromArtifact(packageRoot, artifact, trust = 'verified') {
   if (!artifact || !isSafeRelativePath(artifact.target) || !isSafeRelativePath(artifact.packagePath ?? artifact.source)) {
     throw new Error(`Invalid package file mapping for ${artifact?.target ?? '(unknown target)'}`);
   }
@@ -38,21 +45,25 @@ function candidateFromArtifact(packageRoot, artifact) {
   const sourceInfo = inspectTarget(packageRoot, source);
   if (sourceInfo.state !== 'file') throw new Error(`Package file is unavailable: ${source}`);
   const content = readFileSync(sourceInfo.absolute);
-  if (HASH(content) !== artifact.sha256) throw new Error(`Package file hash mismatch: ${source}`);
+  // A local package is the user's own: the bytes on disk are authoritative, a different sum is only reported.
+  if (HASH(content) !== artifact.sha256 && trust !== 'local') throw new Error(`Package file hash mismatch: ${source}`);
   return {
     target: artifact.target,
     source,
     content,
-    sha256: artifact.sha256,
+    sha256: HASH(content),
     origin: artifact.origin,
     policy: artifact.policy,
   };
 }
 
-function candidatesFromPackage(root, packageRoot, pkg, { mode, hosts, catalog }) {
+function candidatesFromPackage(root, packageRoot, pkg, { mode, hosts, catalog, featureFlags, trust }) {
   const candidates = [];
-  for (const artifact of [...pkg.payloadFiles, ...pkg.projectFiles]) {
-    candidates.push(candidateFromArtifact(packageRoot, artifact));
+  for (const artifact of [
+    ...pkg.payloadFiles,
+    ...pkg.projectFiles.filter((entry) => !entry.feature || featureFlags?.[entry.feature] === 'ON'),
+  ]) {
+    candidates.push(candidateFromArtifact(packageRoot, artifact, trust));
   }
 
   const templatesDir = join(packageRoot, 'templates');
@@ -120,11 +131,15 @@ function addDeletion(root, target, files, kind) {
   return current.state === 'file' ? readFileSync(current.absolute) : null;
 }
 
-function processFileCandidate(root, candidate, oldEntry, nextFiles, files, operations) {
+function processFileCandidate(root, candidate, oldEntryIn, nextFiles, files, operations, keepLocal = false, force = false) {
   const { target, content, policy, origin } = candidate;
+  let oldEntry = oldEntryIn;
   if (oldEntry && (oldEntry.policy !== policy || oldEntry.policy === 'managed-block')) {
-    conflict(files, target, 'update policy changed since installation', origin);
-    return;
+    if (!force) {
+      conflict(files, target, 'update policy changed since installation', origin);
+      return;
+    }
+    oldEntry = undefined; // forced: the package's policy replaces the recorded one
   }
   const current = inspectTarget(root, target);
   if (current.state === 'blocked') {
@@ -136,8 +151,18 @@ function processFileCandidate(root, candidate, oldEntry, nextFiles, files, opera
   const localHash = local === null ? null : HASH(local);
   const nextHash = HASH(content);
   const policyForMerge = oldEntry?.policy ?? policy;
+  if (keepLocal && (!oldEntry || policyForMerge !== 'three-way' || local === null)) {
+    throw new Error(`Cannot keep local content for untracked, missing or non-three-way file: ${target}`);
+  }
   let action = classify({ base: baseHash, local: localHash, next: nextHash, policy: policyForMerge });
   if (action === 'keep-local' && oldEntry && localHash === nextHash && nextHash !== baseHash) action = 'adopt';
+  if (keepLocal && action === 'conflict') action = 'keep-local';
+  let forced = false;
+  if (force && action.startsWith('conflict')) {
+    // The package wins: the local content is overwritten (it is saved in the update backup first).
+    action = local === null ? 'add' : 'update';
+    forced = true;
+  }
   if (action.startsWith('conflict')) {
     conflict(files, target, action === 'conflict-collision'
       ? 'target exists with different content and is not tracked by this lock'
@@ -153,6 +178,7 @@ function processFileCandidate(root, candidate, oldEntry, nextFiles, files, opera
     origin,
     policy,
     action,
+    ...(forced ? { forced: true } : {}),
     baseHash,
     localHash,
     nextHash,
@@ -199,7 +225,7 @@ function processFileCandidate(root, candidate, oldEntry, nextFiles, files, opera
   nextFiles.set(target, { path: target, sha256: nextHash, origin, policy });
 }
 
-function processRemovedFile(root, oldEntry, files, operations, nextFiles) {
+function processRemovedFile(root, oldEntry, files, operations, nextFiles, force = false) {
   if (oldEntry.policy === 'create-only') {
     nextFiles.set(oldEntry.path, oldEntry);
     return;
@@ -211,13 +237,17 @@ function processRemovedFile(root, oldEntry, files, operations, nextFiles) {
   }
   const local = current.state === 'file' ? readFileSync(current.absolute) : null;
   const localHash = local === null ? null : HASH(local);
-  const action = classify({ base: oldEntry.sha256, local: localHash, next: null });
+  let action = classify({ base: oldEntry.sha256, local: localHash, next: null });
+  // Forced: a file the package no longer ships is removed even if it was edited locally.
+  const forced = force && action === 'keep-modified-orphan';
+  if (forced) action = 'delete';
   files.push({
     target: oldEntry.path,
     kind: oldEntry.origin,
     origin: oldEntry.origin,
     policy: oldEntry.policy,
     action,
+    ...(forced ? { forced: true } : {}),
     baseHash: oldEntry.sha256,
     localHash,
     nextHash: null,
@@ -235,7 +265,7 @@ function processRemovedFile(root, oldEntry, files, operations, nextFiles) {
   }
 }
 
-function processBlock(root, block, oldBlocks, nextBlocks, files, operations) {
+function processBlock(root, block, oldBlocks, nextBlocks, files, operations, force = false) {
   const old = oldBlocks.find((entry) => entry.path === block.target && entry.id === block.id);
   const target = inspectTarget(root, block.target);
   if (target.state === 'blocked') {
@@ -253,11 +283,11 @@ function processBlock(root, block, oldBlocks, nextBlocks, files, operations) {
   }
   const currentHash = existing ? blockHash(existing.content) : null;
   const nextHash = blockHash(block.content);
-  if (old && currentHash !== old.sha256 && currentHash !== nextHash) {
+  if (!force && old && currentHash !== old.sha256 && currentHash !== nextHash) {
     conflict(files, block.target, `managed block "${block.id}" was modified locally`, 'managed-block');
     return;
   }
-  if (!old && existing && currentHash !== nextHash) {
+  if (!force && !old && existing && currentHash !== nextHash) {
     conflict(files, block.target, `managed block "${block.id}" exists with untracked content`, 'managed-block');
     return;
   }
@@ -287,22 +317,35 @@ export function planUpdate({
   root,
   packageRoot,
   catalog = loadCatalog(),
+  keepLocal = [],
+  env = process.env,
+  trust = 'verified',
+  force = false,
 }) {
   if (!root || !packageRoot) throw new Error('root and packageRoot are required to plan an update');
+  if (force && keepLocal.length) throw new Error('force and keepLocal are mutually exclusive');
+  if (!Array.isArray(keepLocal) || keepLocal.some((path) => !isSafeRelativePath(path))
+    || new Set(keepLocal).size !== keepLocal.length) {
+    throw new Error('keepLocal must contain unique safe relative file paths');
+  }
+  const localResolutions = new Set(keepLocal);
   const projectRoot = realpathSync(resolve(root));
   if (!lstatSync(projectRoot).isDirectory()) throw new Error('Project root must be a directory');
   const packagePath = realpathSync(resolve(packageRoot));
-  validatePackage(packagePath, { catalog });
+  const packageInfo = validatePackage(packagePath, { catalog, trust });
   const { lock, bytes: lockBytes } = readLock(projectRoot);
   const pkg = JSON.parse(readFileSync(join(packagePath, 'package-manifest.json'), 'utf8'));
   if (lock.hosts.length !== 1 || lock.hosts[0] !== pkg.host) {
     throw new Error('Update package host must match the single host recorded in the project lock');
   }
 
+  const { featureFlags, kimono } = detectFeatures(env, { rtk: pkg.host === 'zoo-code' });
   const { candidates, blocks } = candidatesFromPackage(projectRoot, packagePath, pkg, {
     mode: lock.mode,
     hosts: lock.hosts,
     catalog,
+    featureFlags,
+    trust,
   });
   const files = [];
   const operations = [];
@@ -322,15 +365,26 @@ export function planUpdate({
       nextFiles,
       files,
       operations,
+      localResolutions.has(candidate.target),
+      force,
     );
   }
+  for (const target of localResolutions) {
+    if (!candidatePaths.has(target)) throw new Error(`Unknown keep-local target: ${target}`);
+  }
   for (const oldEntry of lock.files) {
-    if (!candidatePaths.has(oldEntry.path)) processRemovedFile(projectRoot, oldEntry, files, operations, nextFiles);
+    if (!candidatePaths.has(oldEntry.path)) processRemovedFile(projectRoot, oldEntry, files, operations, nextFiles, force);
+  }
+
+  if (Object.keys(featureFlags).length) {
+    const featureState = planFeatureFlags(projectRoot, featureFlags);
+    files.push(featureState.item);
+    if (featureState.operation) operations.push(featureState.operation);
   }
 
   const nextBlocks = new Map(lock.managedBlocks.map((entry) => [`${entry.path}#${entry.id}`, entry]));
   for (const block of blocks) {
-    processBlock(projectRoot, block, lock.managedBlocks, nextBlocks, files, operations);
+    processBlock(projectRoot, block, lock.managedBlocks, nextBlocks, files, operations, force);
   }
 
   const nextLock = {
@@ -339,8 +393,8 @@ export function planUpdate({
     mode: lock.mode,
     hosts: lock.hosts,
     installedAt: lock.installedAt,
-    files: [...nextFiles.values()].sort((a, b) => a.path.localeCompare(b.path)),
-    managedBlocks: [...nextBlocks.values()].sort((a, b) => a.path.localeCompare(b.path) || a.id.localeCompare(b.id)),
+    files: [...nextFiles.values()].sort(byPath),
+    managedBlocks: [...nextBlocks.values()].sort(byPathThenId),
   };
   const lockErrors = validateLock(nextLock);
   if (lockErrors.length) throw new Error(`Generated update lock is invalid:\n${lockErrors.join('\n')}`);
@@ -361,13 +415,22 @@ export function planUpdate({
     [...new Set(files.map((item) => item.action))].sort()
       .map((action) => [action, files.filter((item) => item.action === action).length]),
   );
+  const versionChange = describeVersionChange(lock.aikido.version, pkg.version);
+  const warnings = trust === 'local'
+    ? [...changeWarnings(versionChange), ...sourceWarnings(pkg.source, lock.aikido.source), ...packageInfo.warnings]
+    : [];
   const core = {
     schemaVersion: 1,
     root: projectRoot,
     packageRoot: packagePath,
     currentVersion: lock.aikido.version,
     nextVersion: pkg.version,
+    versionChange,
+    ...(trust === 'local' ? { trust, warnings } : {}),
+    ...(force ? { force: true, forcedFiles: files.filter((item) => item.forced).map((item) => item.target) } : {}),
     sourceRevision: pkg.sourceRevision,
+    featureFlags,
+    kimono,
     files,
     summary,
     conflicts,
@@ -461,11 +524,14 @@ export function backupOperations(projectRoot, operations, kind = 'update') {
   }
 }
 
-export function applyUpdate({ root, packageRoot, expectedPlanId, catalog = loadCatalog() }) {
+export function applyUpdate({
+  root, packageRoot, expectedPlanId, catalog = loadCatalog(), keepLocal = [], env = process.env, trust = 'verified',
+  force = false,
+}) {
   if (typeof expectedPlanId !== 'string' || !expectedPlanId) {
     throw new Error('expectedPlanId is required to apply an update');
   }
-  const plan = planUpdate({ root, packageRoot, catalog });
+  const plan = planUpdate({ root, packageRoot, catalog, keepLocal, env, trust, force });
   if (expectedPlanId !== plan.planId) throw new Error(`Confirmation does not match the current plan (expected ${plan.planId})`);
   if (!plan.ready) {
     throw new Error(`Update plan contains conflicts:\n${plan.conflicts.map((item) => `${item.target}: ${item.reason}`).join('\n')}`);
@@ -685,8 +751,8 @@ export function planMigration({
     mode,
     hosts: [pkg.host],
     installedAt: new Date().toISOString(),
-    files: lockFiles.sort((a, b) => a.path.localeCompare(b.path)),
-    managedBlocks: managedBlocks.sort((a, b) => a.path.localeCompare(b.path) || a.id.localeCompare(b.id)),
+    files: lockFiles.sort(byPath),
+    managedBlocks: managedBlocks.sort(byPathThenId),
   };
   const errors = validateLock(nextLock);
   if (errors.length) throw new Error(`Generated migration lock is invalid:\n${errors.join('\n')}`);
@@ -822,7 +888,7 @@ export function planUninstall({ root, catalog = loadCatalog() }) {
   const removedPaths = new Set(files.filter((item) => item.kind === 'adapter').map((item) => item.target));
   const nextLock = {
     ...lock,
-    files: keepFiles.filter((entry) => !removedPaths.has(entry.path)).sort((a, b) => a.path.localeCompare(b.path)),
+    files: keepFiles.filter((entry) => !removedPaths.has(entry.path)).sort(byPath),
     managedBlocks: keepBlocks,
   };
   const lockErrors = validateLock(nextLock);

@@ -4,6 +4,11 @@
 >
 > Major evolution from V3.0: Normalization via hash-based IDs for deduplication and O(1) performance.
 
+> **Historical design:** Shell examples, performance estimates and checklists
+> below are not the current runtime contract or measured results. For the
+> implemented Node generation, Git exclusions, routing and safety limits, use
+> [the structure skill](SKILL.md) and its referenced scripts.
+
 ## 🎯 Major Innovation V3.1: Hash-Based IDs
 
 ### V3.0 Problem (Duplication)
@@ -49,18 +54,10 @@
 
 **Bash Implementation**:
 
-```bash
-# Hash-based ID generation
-generate_file_id() {
-    local path="$1"
-    # SHA-256 of the path, truncated to 12 hexadecimal characters
-    echo -n "$path" | shasum -a 256 | cut -c1-12
-}
-
-# Example
-# generate_file_id "prompts/hard_points/commands/init-aikido.md"
-# → "7f8a3c4b2e1d"
-```
+The historical command-interpreter implementation is retired. Use the
+[current Node structure contract](SKILL.md) for generation, lookup,
+watching and rebuild commands. Historical latency figures are not measurements
+of the Node implementation.
 
 **ID Format**: `[a-f0-9]{12}` (12 hex chars)
 
@@ -76,27 +73,24 @@ prompts/hard_points/ai-kido.md         → 4d6c1a9f3e7b
 
 1. **Predictive**: Calculate ID without loading any index
 
-   ```bash
-   # Know the ID immediately
-   id=$(generate_file_id "$path")
-   # → Direct lookup in by-id without a mapping table
-   ```
+   The historical command-interpreter implementation is retired. Use the
+[current Node structure contract](SKILL.md) for generation, lookup,
+watching and rebuild commands. Historical latency figures are not measurements
+of the Node implementation.
 
 2. **Deterministic**: Same path = same ID always
 
-   ```bash
-   # Stable ID between regenerations
-   generate_file_id "prompts/index.md"  # → abc123def456
-   # Always the same ID for this path
-   ```
+   The historical command-interpreter implementation is retired. Use the
+[current Node structure contract](SKILL.md) for generation, lookup,
+watching and rebuild commands. Historical latency figures are not measurements
+of the Node implementation.
 
 3. **Uniform distribution**: Good for batch partitioning
 
-   ```bash
-   # First hex digit to route to batch (16 batches max)
-   batch_id="${id:0:1}"  # 0-f (16 possibilities)
-   batch_file="index-id-${batch_id}.json"
-   ```
+   The historical command-interpreter implementation is retired. Use the
+[current Node structure contract](SKILL.md) for generation, lookup,
+watching and rebuild commands. Historical latency figures are not measurements
+of the Node implementation.
 
 4. **No collision**: 2^48 space (281 trillion unique IDs)
    - 10K-file project: collision probability < 0.000001%
@@ -399,24 +393,10 @@ ID: 4d6c1a9f3e7b → batch: index-id-4.json
 
 **V3.1 Process (optimized)**:
 
-```bash
-# Step 1: Calculate hash ID (0ms - local)
-id=$(generate_file_id "prompts/hard_points/commands/init-aikido.md")
-# → "7f8a3c4b2e1d"
-
-# Step 2: Determine by-id batch (0ms - local)
-batch_prefix="${id:0:1}"  # → "7"
-batch_file="indices/by-id/index-id-${batch_prefix}.json"
-# → "indices/by-id/index-id-7.json"
-
-# Step 3: Load batch if needed (~50ms)
-load_batch "$batch_file"
-
-# Step 4: Lookup ID in batch (0ms - hash lookup)
-metadata=$(jq ".files[\"$id\"]" "$batch_file")
-
-# Total: ~50ms (cache MISS), <1ms (cache HIT)
-```
+The historical command-interpreter implementation is retired. Use the
+[current Node structure contract](SKILL.md) for generation, lookup,
+watching and rebuild commands. Historical latency figures are not measurements
+of the Node implementation.
 
 **Advantages vs V3.0**:
 
@@ -441,29 +421,10 @@ metadata=$(jq ".files[\"$id\"]" "$batch_file")
 
 **V3.1 Process**:
 
-```bash
-# Step 1: Load master index (~5ms)
-# (to determine alphabetical batch)
-
-# Step 2: Lookup alphabetical batch (~5ms)
-range=$(jq '.hash_tables.by_alphabetical | to_entries[] | select(.value.range[0] <= "a" and .value.range[1] >= "a") | .value.batch' index.json)
-# → "indices/by-alphabetical/index-alpha-a-d.json"
-
-# Step 3: Load alphabetical batch (~50ms)
-ids=$(jq '.files["agent-aikido-maj-md-index.md"]' "$range")
-# → ["9b3e5f1a8c2d"]
-
-# Step 4: For each ID, lookup by-id
-for id in $ids; do
-    batch_prefix="${id:0:1}"  # → "9"
-    batch_file="indices/by-id/index-id-${batch_prefix}.json"
-
-    # Load batch by-id if needed (~50ms first time)
-    metadata=$(jq ".files[\"$id\"]" "$batch_file")
-done
-
-# Total: ~110ms (cache MISS), ~60ms (partial cache), <5ms (full cache)
-```
+The historical command-interpreter implementation is retired. Use the
+[current Node structure contract](SKILL.md) for generation, lookup,
+watching and rebuild commands. Historical latency figures are not measurements
+of the Node implementation.
 
 **Advantages vs V3.0**:
 
@@ -476,34 +437,10 @@ done
 
 **V3.1 Process**:
 
-```bash
-# Step 1: Calculate ID
-id=$(generate_file_id "prompts/gen/personas/agent-new.md")
-# → "a3b5c7d9e1f2"
-
-# Step 2: Determine by-id batch
-batch_prefix="${id:0:1}"  # → "a"
-batch_file="indices/by-id/index-id-${batch_prefix}.json"
-
-# Step 3: Update by-id ONLY (source of truth)
-# Extract metadata → update batch file
-update_by_id_batch "$batch_file" "$id" "$metadata"
-
-# Step 4: Update secondary indexes (ID refs only, ultra lightweight)
-# by-path
-update_by_path_ref "prompts/gen/personas/agent-new.md" "$id"
-
-# by-alphabetical
-update_by_alpha_ref "agent-new.md" "$id"
-
-# by-directory
-update_by_dir_ref "prompts/gen/personas" "$id"
-
-# by-type
-update_by_type_ref "agent" "$id"
-
-# Total: ~1-2s (1 by-id batch + 4 ultra-light ref updates)
-```
+The historical command-interpreter implementation is retired. Use the
+[current Node structure contract](SKILL.md) for generation, lookup,
+watching and rebuild commands. Historical latency figures are not measurements
+of the Node implementation.
 
 **Advantages vs V3.0**:
 
@@ -553,175 +490,25 @@ update_by_type_ref "agent" "$id"
 
 ## ⚙️ Implementation
 
-### Script lib/hash-utils.sh (NEW)
+### Script lib/hash-utils.sh (historical, removed)
 
-```bash
-#!/bin/bash
+The Node generator no longer sources this removed shell library. New code uses `node:crypto` in
+`scripts/generate-index-by-id.mjs`. The examples below describe the historical
+shell architecture, not the current execution path.
 
-# hash-utils.sh - Utility functions for hash-based IDs
-# Version 3.1
-
-if [ -n "$BASH_VERSION" ]; then
-  set -euo pipefail   # Bash‑only, portable sur Rocky, Ubuntu, etc.
-else
-  set -eu              # Fallback for POSIX‑sh
-fi
-
-# Hash-based ID generation from path
-# Input: path (string)
-# Output: hash ID 12 hex chars (string)
-generate_file_id() {
-    local path="$1"
-
-    # SHA-256 of the path, truncated to 12 hexadecimal characters
-    echo -n "$path" | shasum -a 256 | cut -c1-12
-}
-
-# Determine by-id batch from ID
-# Input: id (string 12 hex chars)
-# Output: batch file path (string)
-get_by_id_batch_file() {
-    local id="$1"
-
-    # Extract first hex character (0-f)
-    local batch_prefix="${id:0:1}"
-
-    # Build batch file path
-    echo "indices/by-id/index-id-${batch_prefix}.json"
-}
-
-# Validate ID format
-# Input: id (string)
-# Output: 0 (valid) or 1 (invalid)
-validate_id_format() {
-    local id="$1"
-
-    # Check length 12 and hexadecimal charset
-    if [[ "${#id}" -eq 12 ]] && [[ "$id" =~ ^[0-9a-f]{12}$ ]]; then
-        return 0
-    else
-        echo "Invalid ID format: $id (expected 12 hex chars)" >&2
-        return 1
-    fi
-}
-
-# Batch files for all prefixes (0-f)
-# Output: List of 16 batch files
-list_all_by_id_batches() {
-    for prefix in {0..9} {a..f}; do
-        echo "indices/by-id/index-id-${prefix}.json"
-    done
-}
-
-# Example usage
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    # Unit test
-    echo "Testing hash-utils.sh..."
-
-    test_path="prompts/hard_points/commands/init-aikido.md"
-    test_id=$(generate_file_id "$test_path")
-
-    echo "Path: $test_path"
-    echo "ID: $test_id"
-    echo "Batch: $(get_by_id_batch_file "$test_id")"
-
-    validate_id_format "$test_id" && echo "✅ ID format valid" || echo "❌ ID format invalid"
-fi
-```
+The historical command-interpreter implementation is retired. Use the
+[current Node structure contract](SKILL.md) for generation, lookup,
+watching and rebuild commands. Historical latency figures are not measurements
+of the Node implementation.
 
 ### Generation Script Modifications
 
 **generate-index-by-id.sh (NEW)**:
 
-```bash
-#!/bin/bash
-
-# generate-index-by-id.sh - Generate by-id index (source of truth)
-# Version 3.1
-
-if [ -n "$BASH_VERSION" ]; then
-  set -euo pipefail   # Bash‑only, portable sur Rocky, Ubuntu, etc.
-else
-  set -eu              # Fallback for POSIX‑sh
-fi
-
-source "$(dirname "$0")/lib/hash-utils.sh"
-
-# Collect all files and generate IDs
-# Group by batch (prefix 0-f)
-collect_files_by_id() {
-    cd "$PROJECT_ROOT"
-
-    # Create 16 temporary files (one per hex prefix)
-    for prefix in {0..9} {a..f}; do
-        temp_files["$prefix"]=$(mktemp)
-    done
-
-    # Scan all files
-    while IFS= read -r -d '' file; do
-        if ! should_exclude "$file"; then
-            [[ -f "$file" ]] || continue
-
-            relative_path="${file#./}"
-
-            # Generate hash ID
-            id=$(generate_file_id "$relative_path")
-
-            # Extract metadata
-            metadata=$(extract_metadata "$file")
-
-            # Determine batch prefix
-            batch_prefix="${id:0:1}"
-
-            # Append to corresponding temp file
-            echo "\"$id\":$metadata," >> "${temp_files[$batch_prefix]}"
-        fi
-    done < <(find . -type f -print0 2>/dev/null)
-
-    # Generate 16 final JSON files
-    for prefix in {0..9} {a..f}; do
-        generate_batch_file "$prefix" "${temp_files[$prefix]}"
-    done
-}
-
-# Generate JSON batch file
-generate_batch_file() {
-    local prefix="$1"
-    local temp_file="$2"
-
-    local batch_file="prompts/hard_points/system/structure/indices/by-id/index-id-${prefix}.json"
-    local count=$(wc -l < "$temp_file")
-
-    # Header
-    echo "{" > "$batch_file"
-    echo "  \"metadata\": {" >> "$batch_file"
-    echo "    \"batch_id\": \"id-${prefix}\"," >> "$batch_file"
-    echo "    \"id_prefix\": \"${prefix}\"," >> "$batch_file"
-    echo "    \"count\": $count," >> "$batch_file"
-    echo "    \"generated\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"" >> "$batch_file"
-    echo "  }," >> "$batch_file"
-    echo "  \"files\": {" >> "$batch_file"
-
-    # Content (remove trailing comma)
-    sed '$ s/,$//' "$temp_file" >> "$batch_file"
-
-    # Footer
-    echo "  }" >> "$batch_file"
-    echo "}" >> "$batch_file"
-
-    # Cleanup
-    rm "$temp_file"
-}
-
-# Main
-main() {
-    echo "Generating by-id index (hash-based, 16 batches)..."
-    collect_files_by_id
-    echo "✅ by-id index generated"
-}
-
-main "$@"
-```
+The historical command-interpreter implementation is retired. Use the
+[current Node structure contract](SKILL.md) for generation, lookup,
+watching and rebuild commands. Historical latency figures are not measurements
+of the Node implementation.
 
 **Other script modifications**:
 

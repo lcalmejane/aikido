@@ -10,7 +10,7 @@ description: "Verify coherence between AI-KIDO documentation and source code, de
 
 ## Usage
 
-```bash
+```text
 /check-truth
 /check-truth --file /prompts/gen/concepts/oauth.md
 /check-truth --domain concepts

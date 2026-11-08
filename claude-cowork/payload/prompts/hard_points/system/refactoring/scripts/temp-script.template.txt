@@ -1,0 +1,48 @@
+#!/usr/bin/env node
+// Temporary AI-KIDO refactoring script. Lives OUTSIDE the project (never in Git).
+// Contract: deterministic, idempotent, dry-run by default, bounded JSON on stdout.
+// Run:  node <this-file> --root <project> [--apply]
+// Delete it once the refactoring is accepted.
+import { readFileSync, writeFileSync, readdirSync, lstatSync } from 'node:fs';
+import { join, resolve } from 'node:path';
+
+const args = process.argv.slice(2);
+const flag = (name) => args.includes(`--${name}`);
+const value = (name) => args[args.indexOf(`--${name}`) + 1];
+const root = resolve(value('root') ?? process.cwd());
+const apply = flag('apply');
+
+// 1. Scope: edit this predicate (extensions, folders). Keep it as narrow as the request.
+const EXCLUDED = new Set(['.git', 'node_modules', 'dist', 'build']);
+const inScope = (path) => /\.(mjs|js|ts|json|md)$/.test(path);
+
+// 2. Transformation: pure function, same input -> same output, safe to run twice.
+const transform = (text, path) => text;
+
+function* walk(dir) {
+  for (const name of readdirSync(dir)) {
+    if (EXCLUDED.has(name)) continue;
+    const path = join(dir, name);
+    const info = lstatSync(path);
+    if (info.isSymbolicLink()) continue;
+    if (info.isDirectory()) yield* walk(path);
+    else if (info.isFile() && inScope(path)) yield path;
+  }
+}
+
+const result = { status: 'ok', mode: apply ? 'apply' : 'dry-run', scanned: 0, changed: 0, failed: [] };
+for (const path of walk(root)) {
+  result.scanned += 1;
+  try {
+    const before = readFileSync(path, 'utf8');
+    const after = transform(before, path);
+    if (after === before) continue;
+    result.changed += 1;
+    if (apply) writeFileSync(path, after);
+  } catch (error) {
+    result.failed.push({ path: path.slice(root.length + 1), code: error.code ?? 'error' });
+  }
+}
+if (result.failed.length) result.status = 'partial';
+process.stdout.write(`${JSON.stringify({ ...result, failed: result.failed.slice(0, 5) })}\n`);
+process.exitCode = result.status === 'ok' ? 0 : 1;

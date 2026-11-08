@@ -204,8 +204,8 @@ The following rules from [`ai-kido.md`](ai-kido.md) are **adapted** for LIGHT mo
 
 The initialization command must offer the choice between STANDARD and LIGHT mode:
 
-```bash
-# Example initialization prompt
+```text
+Example initialization prompt
 Which AI-KIDO mode do you want to initialize?
 1. STANDARD mode (full structure, multi-agent)
 2. LIGHT mode (minimal structure, unit agent)

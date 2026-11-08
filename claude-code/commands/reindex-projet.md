@@ -1,6 +1,6 @@
 ---
 name: reindex-projet
-description: "Launch agent-aikido-projet-index to re-index the project"
+description: "Rebuild the V3.1 project structure index using Node.js and Git"
 ---
 
 # /aikido:reindex-projet

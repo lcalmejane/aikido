@@ -258,24 +258,10 @@ Expected output: Complete view with Memory Bank ↔ Code cross-references"
 
 **Condition**: Depth = 4
 
-**External commands**:
-```bash
-# Frontend
-cd {frontend_path}
-npm audit --json > audit-frontend.json
-# or
-yarn audit --json > audit-frontend.json
-
-# Backend (depending on stack)
-# Node.js
-cd {backend_path}
-npm audit --json > audit-backend.json
-
-# Java
-mvn org.owasp:dependency-check-maven:check
-# or
-gradle dependencyCheckAnalyze
-```
+Use the host's supported dependency-audit action for each repository and
+ecosystem, requesting structured results. Do not invoke package-manager
+commands, install tools, or write audit artifacts without approval. If the
+host exposes no native audit action, report the check as unavailable.
 
 **Agent**: `agent-aikido-explore-code` (audit results analysis)
 

@@ -217,17 +217,11 @@ graph TB
 
 ## 🔧 Customization & Extension
 
-```bash
-# Add a new analysis type
-mkdir -p prompts/hard_points/system/analyse/plans/{new_category}
-for depth in survol standard approfondi expert; do
-  cp plans/plan-${depth}.md plans/{new_category}/plan-${depth}.md
-done
-
-# Add a specific subtype
-mkdir -p plans/architecturale/c3
-cp plans/plan-approfondi.md plans/architecturale/c3/plan-approfondi.md
-```
+Add a new analysis type with the host's directory and file actions: create
+`prompts/hard_points/system/analyse/plans/{new_category}/`, then copy each
+depth template from the plan root using Read and Write. Add a subtype by
+creating its category/subtype directory and copying the selected template.
+Preserve existing files and require approval before replacing one.
 
 ## 📊 Performance Metrics (Targets)
 

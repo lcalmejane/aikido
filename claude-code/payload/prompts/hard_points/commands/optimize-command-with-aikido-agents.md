@@ -1,5 +1,6 @@
 ---
-description: "Analyze and optimize AI-KIDO commands with available technical agents"
+name: optimize-command-with-aikido-agents
+description: "Analyze and optimize AI-KIDO commands with available technical agents and detected RTK support"
 ---
 
 # /optimize-command-with-aikido-agents
@@ -43,11 +44,40 @@ description: "Analyze and optimize AI-KIDO commands with available technical age
 
 **Principle**: Optimization is a **transparent technical substitution** that produces exactly the same functional result with fewer tokens.
 
+When the optimized command creates, rewrites or compiles a skill or its
+scripts, the result MUST comply with the
+[Default Tooling Standard (Node.js)](../system/Skills.md#default-tooling-standard-nodejs):
+deterministic tooling in dependency-free `.mjs` (Node.js 24+), no new
+`.sh`/`.py`/`.ps1` entry points; report any non-Node script as a migration gap.
+
+RTK shell-output substitutions are also allowed under the
+[/check-cli RTK policy](check-cli.md#rtk-detection-for-command-optimization).
+They must preserve the algorithm and required output, not replace native tools
+or exact/exhaustive reads with lossy output.
+
 **explore-bank Usage Criteria** (empirical tests v5.1):
 - Use: Exploratory search, architecture, broad concepts (e.g., "MCP servers", "experimental features")
 - Do NOT use: Simple search (e.g., "rooignore.md location"), strict budget, critical performance (<0.05s)
 
 ---
+
+### Step 0: Detect RTK Before Analysis
+
+Discover the current executor's tools under the
+[Kimono capability gate](../system/search/SKILL.md#kimono-capability-gate)
+and supply its verified inventory to the feature gate below. Record
+`kimono.status`, exact tool bindings and `featureFlags.kimono` when known.
+Prioritize eligible Kimono search/ranges substitutions while preserving native
+backup, exact verification and worker permissions. Keep retrieval gains
+separate from RTK and agent gains; unknown inventory is not evidence of absence.
+
+Run the [/check-cli feature gate](check-cli.md#rtk-detection-for-command-optimization)
+with `--check --detect-features --dry-run` for the **actual calling host**.
+Record the returned `featureFlags.rtk` (`ON`/`OFF`) in the analysis context.
+This preview writes nothing, so cancellation and the later Dry-Run selection
+remain non-mutating. Stop on detection errors; surface wrapper conflicts
+separately without silently repairing them. Do not infer availability from a
+previous local flag, installed host directory or selected model.
 
 ### Step 1: Dynamic Inventory of Agents and Commands
 
@@ -59,6 +89,17 @@ FORMAT: JSON
 
 Prompt for the agent:
 "Complete analysis for AI-KIDO command optimization with available technical agents.
+
+Runtime context: featureFlags.rtk = [ON/OFF from Step 0].
+Kimono context: [status, flag if known, verified callable tools from Step 0].
+Follow ../system/search/SKILL.md#kimono-capability-gate for search substitutions.
+Prefer Kimono when covered and permitted; preserve native fallback and output
+shape, and never assume a worker has the parent's MCP tools.
+Follow check-cli.md#rtk-detection-for-command-optimization.
+If ON, identify supported shell-output substitutions separately from agent
+opportunities; preserve exact output, parsers and exhaustive inventories.
+If OFF, do not recommend RTK execution. Generated templates must keep a
+runtime ON/OFF gate; never bake this machine's availability into commands.
 
 ## PART 1: Dynamic Inventory of Available Technical Agents
 
@@ -127,6 +168,8 @@ For each command, calculate:
   - MEDIUM: 2 opportunities OR gain 20-40%
   - LOW: 1 opportunity OR gain <20%
 - Complexity: EASY/MEDIUM/HARD (based on command structure)
+- RTK opportunities: separate eligible shell substitutions and exclusions;
+  include RTK-only candidates without increasing agent counts or fabricating gains
 
 ## FINAL REPORT
 
@@ -137,6 +180,9 @@ Return JSON or Markdown structure:
 - Total commands analyzed: Y
 - Total opportunities detected: Z
 - Average potential gain: W%
+- RTK flag: ON/OFF; eligible shell substitutions and exclusions with reasons
+- RTK output gain: measured separately, or unmeasured (not an agent gain)
+- Kimono status, retrieval substitutions and native fallback reasons; gains separate
 
 ### Opportunity Table by Command
 | Command | Current agents | Recommended agents | Opportunities | Estimated gain | Priority | Complexity |
@@ -223,6 +269,13 @@ Automatic backups (.bak) created for each file
 Confirm? (yes/no)
 ```
 
+After approval for a non-dry-run selection, rerun the feature gate **without**
+`--dry-run` to refresh `.aikido/state/features.json`. If RTK availability
+changed since Step 0, revise the affected proposals and obtain confirmation
+again before applying them. Dry-Run only uses detection previews and never
+writes the flag, commands, wrappers, backups or preview files. Before making
+backups, refuse an existing backup path rather than overwriting it.
+
 ## Automatic Optimization Process
 
 For each selected command:
@@ -252,6 +305,11 @@ Automatically applied modifications:
 1. Insert `AGENT: [agent-name]` sections with optimized prompts
 2. Update frontmatter description (mention number of agents)
 3. Add summary section of agents used (end of file)
+4. Apply approved RTK substitutions only when the refreshed flag is `ON`;
+   retain the runtime gate and native fallback, supported-command checks and
+   exact-output exclusions from the shared RTK policy.
+5. Apply approved Kimono retrieval substitutions with fresh executor discovery;
+   retain native fallback, corpus checks, permissions and expected output.
 
 ### Phase 3: Compliance Validation
 
@@ -272,6 +330,10 @@ Specific validations for optimized commands:
 3. Workflow coherence: Agents inserted at correct locations (logical phases)
 4. Frontmatter: Description updated with agent mention
 5. Recap section: Presence of agent summary section
+6. RTK: runtime gate and OFF fallback preserved, no double prefix or lossy
+   output where exact data is required; no RTK substitution counted as an agent
+7. Kimono: verified executor tools, snapshot lifecycle, scoped evidence and
+   explicit native fallback retained; no hard-coded server namespace or endpoint
 
 Return:
 - Global compliance score: [X]%
@@ -317,6 +379,8 @@ Create `prompts/hard_points/commands/reports/optimize-[command-name]-[timestamp]
 - Lines: [before] -> [after]
 - Estimated token gain: [X]%
 - Final compliance: [X]%
+- RTK: [ON/OFF], applied/skipped substitutions with reasons; separate measured
+  output gain or "unmeasured"
 
 ## Applied Optimizations
 [List of agents inserted with phases and gains]
@@ -325,7 +389,8 @@ Create `prompts/hard_points/commands/reports/optimize-[command-name]-[timestamp]
 - Original: prompts/hard_points/commands/[command-name].md.bak
 - Mapping: .claude/commands/[command-name].md.bak
 
-To restore: `mv [file].bak [file]`
+To restore, inspect the specific backup and destination and obtain explicit
+approval before replacing an existing file.
 ```
 
 ### Phase 6: Update Documentation
@@ -378,7 +443,7 @@ All backups (.bak) available
 Next steps:
 - Test optimized commands
 - Review reports in reports/
-- Commit if satisfied or restore from .bak
+- Commit if satisfied or inspect and approve a targeted restoration from .bak
 ```
 
 ## Notes
@@ -397,7 +462,7 @@ Action: 1. Retry / 2. Cancel
 ```
 ERROR: Optimization failed [command-name]
 
-Backup automatically restored
+Backup retained; inspect and approve any restoration before replacing a file.
 Action: 1. Retry / 2. Skip / 3. Cancel
 ```
 
@@ -415,19 +480,14 @@ Action: 1. Apply quick fixes / 2. Restore backup / 3. Force
 ### Mode Options
 
 **Dry-Run mode** (choice 5):
-- Generate reports without modifying files
-- Create `.preview` files for visualization
+- Detect RTK with the preview gate; never write `.aikido/state/features.json`
+- Show reports and previews without writing files
 - No backup required
 
-**Restore mode**:
-```bash
-# Restore a single command
-mv prompts/hard_points/commands/[name].md.bak prompts/hard_points/commands/[name].md
-mv .claude/commands/[name].md.bak .claude/commands/[name].md
-
-# Restore all
-find .claude/commands -name "*.bak" -exec bash -c 'mv "$1" "${1%.bak}"' _ {} \;
-```
+**Restore mode**: Identify the exact backup and destination for each command
+in the current operation. Inspect both, report conflicts, and obtain explicit
+approval before replacing a destination. Never bulk-restore arbitrary `.bak`
+files found by a directory scan.
 
 ### Perpetual Algorithm
 

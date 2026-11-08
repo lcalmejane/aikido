@@ -18,6 +18,8 @@ AI‑KIDO is a **method**; its tools are a **meta-harness** whose agents, skills
 2. **Density**: Maximum information per file.  
 3. **Simplicity**: Structure reduced to the strict minimum.  
 4. **Single Actor**: Mono-agent or very restricted multi-agent approach.  
+   Follow [Swarm and reuse](system/orchestrator/swarm.md) if delegation is required;
+   keep one worker unless explicitly requested, with verified tools and lifecycle.
 5. **Speed**: Minimal traversal time for the LLM.
 
 ## DIFFERENCES WITH STANDARD MODE

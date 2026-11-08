@@ -1,0 +1,240 @@
+export type TaskState = 'backlog' | 'ready' | 'running' | 'waiting' | 'review' | 'done' | 'cancelled';
+export type ExecutionState = 'queued' | 'running' | 'idle' | 'interrupted' | 'closed';
+export type TaskResultStatus = 'ok' | 'partial' | 'blocked' | 'error';
+export type ScheduleStatus = 'intent-recorded' | 'requested' | 'acknowledged' | 'unavailable' | 'error';
+export type HostIdentity = { hostId: string; connectionId: string; executorId: string };
+export type HostCapabilityEvidence = {
+  capability: 'task-scheduling';
+  supported: boolean;
+  verifiedAt: string;
+  source: string;
+};
+export type ScheduleRegistration = {
+  status: ScheduleStatus;
+  correlationId: string | null;
+  host: HostIdentity | null;
+  capabilityEvidence: HostCapabilityEvidence | null;
+  jobId: string | null;
+  subscriptionId: string | null;
+  error: { code: string; message: string } | null;
+  requestedAt: string | null;
+  acknowledgedAt: string | null;
+};
+export type TaskCardInput = {
+  id?: string;
+  title: string;
+  summary?: string;
+  prompt?: string;
+  inputRefs?: Array<{ kind: string; id: string }>;
+  labels?: string[];
+  backlogId?: string;
+  priority?: number;
+  order?: number;
+  state?: 'backlog' | 'ready';
+  executionStatus?: ExecutionState;
+  parentId?: string | null;
+  dependsOn?: string[];
+  relatedTo?: string[];
+  workflowId?: string;
+  workflowVersion?: string;
+  workflowSha256?: string;
+  planId?: string;
+  stepId?: string;
+  required?: boolean;
+  acceptanceCriteria?: string[];
+  hookPolicy?: 'inherit' | 'none';
+  assignment?: Record<string, unknown>;
+  retryPolicy?: { maxAttempts: number };
+  dueAt?: string | null;
+  notBefore?: string | null;
+  scheduledAt?: string | null;
+  timezone?: string | null;
+};
+export type ScheduleOutcome = {
+  eventId: string;
+  correlationId: string;
+  status: Exclude<ScheduleStatus, 'intent-recorded'>;
+  host?: HostIdentity | null;
+  capabilityEvidence?: HostCapabilityEvidence;
+  jobId?: string;
+  subscriptionId?: string;
+  error?: { code: string; message: string };
+};
+export type TaskResult = {
+  status: TaskResultStatus;
+  summary?: string;
+  artifacts?: unknown[];
+};
+export type TaskActor = {
+  id: string;
+  type: 'human' | 'service' | 'host';
+  scope?: { tenantId?: string; projectId?: string; sessionId?: string };
+};
+export type TaskCard = {
+  schemaVersion: 'task-card/1';
+  id: string;
+  workspaceId: string;
+  ownerId: string;
+  scope: { workspaceId: string; tenantId?: string; projectId?: string; sessionId?: string };
+  revision: number;
+  createdAt: string;
+  updatedAt: string;
+  state: TaskState;
+  executionStatus: ExecutionState;
+  title: string;
+  summary: string;
+  prompt: string;
+  parentId: string | null;
+  dependsOn: string[];
+  relatedTo: string[];
+  workflowId: string | null;
+  workflowVersion: string | null;
+  workflowSha256: string | null;
+  planId: string | null;
+  stepId: string | null;
+  acceptanceCriteria: string[];
+  acceptance: { accepted: boolean; reason: string | null; acceptedBy: string | null; acceptedAt: string | null };
+  result: (TaskResult & { attemptId: string; recordedAt: string; late?: boolean }) | null;
+  attempts: string[];
+  attemptCount: number;
+  scheduleRegistration: ScheduleRegistration | null;
+  archivedAt: string | null;
+  [key: string]: unknown;
+};
+export type TaskAttempt = {
+  id: string;
+  taskId: string;
+  number: number;
+  status: string;
+  assignment: unknown;
+  createdAt: string;
+  startedAt: string | null;
+  finishedAt: string | null;
+  result: TaskResult | null;
+  lease: { id: string; acquiredAt: string } | null;
+};
+export type WorkflowDefinition = {
+  schemaVersion: 'workflow/1';
+  id: string;
+  version: string;
+  entryStepId: string;
+  terminalStepIds: string[];
+  steps: Array<{ id: string; type: 'plan' | 'dispatch' | 'wait' | 'verify' | 'approve'; transitions: Array<string | { to: string }> }>;
+  hooks?: Array<{ id: string; version: string; sha256: string; phase: string; stepId?: string; eventTypes?: string[] }>;
+  limits?: Record<string, number>;
+};
+export type TaskEvent = {
+  schemaVersion: 'task-event/1';
+  eventId: string;
+  taskId: string;
+  attemptId?: string;
+  origin: string;
+  sequence?: number | string;
+  revision?: number;
+  timestamp: string;
+  type: 'spawn' | 'start' | 'result' | 'reset' | 'close' | 'peer-message';
+  payload: Record<string, unknown>;
+  scope?: { workspaceId?: string; tenantId?: string; projectId?: string; sessionId?: string };
+};
+export type PoolEventResult = {
+  duplicate: boolean;
+  task: TaskCard | null;
+  attempt?: TaskAttempt | null;
+};
+export type TaskStoreOptions = {
+  workspacePath: string;
+  actor: TaskActor;
+  storeRoot?: string;
+  clock?: () => Date | string;
+  idGenerator?: () => string;
+  authorizedCommands?: string[];
+  lockStaleCheck?: (lock: unknown) => boolean;
+};
+export class TaskStoreError extends Error {
+  code: string;
+  details?: unknown;
+}
+export class TaskStore {
+  readonly workspacePath: string;
+  readonly workspaceId: string;
+  readonly storeRoot: string;
+  readonly actor: TaskActor;
+  getTask(id: string): TaskCard | null;
+  listTasks(filter?: Record<string, unknown>): TaskCard[];
+  createTask(input: TaskCardInput, options?: Record<string, unknown>): TaskCard;
+  updateTask(id: string, patch: Record<string, unknown>, options: { expectedRevision: number }): TaskCard;
+  linkTasks(id: string, links: Record<string, unknown>, options: { expectedRevision: number }): TaskCard;
+  transitionTask(id: string, change: { to: TaskState; reason?: unknown }, options: {
+    expectedRevision: number; causationId?: string; rootEventId?: string; hookDepth?: number;
+    acknowledgeRejection?: boolean;
+    beforeHookResults?: Array<{ id: string; version: string; sha256: string; allow: boolean; reason?: string; commands?: unknown[] }>;
+  }): TaskCard;
+  advanceWorkflow(id: string, change: { toStepId: string }, options: {
+    expectedRevision: number;
+    beforeHookResults?: Array<{ id: string; version: string; sha256: string; allow: boolean; reason?: string; commands?: unknown[] }>;
+  }): TaskCard;
+  startAttempt(id: string, assignment: unknown, options: { expectedRevision: number; idempotencyKey?: string }): { task: TaskCard; attempt: TaskAttempt };
+  prepareDispatch(input: {
+    taskInput: TaskCardInput;
+    parentTaskId?: string;
+    assignment?: unknown;
+    idempotencyKey: string;
+    expectedParentRevision?: number;
+  }): { task: TaskCard; attempt: TaskAttempt };
+  markAttemptStarted(taskId: string, attemptId: string, options: { leaseId?: string; expectedRevision: number }): { task: TaskCard; attempt: TaskAttempt };
+  recordAttemptResult(taskId: string, attemptId: string, result: TaskResult): { task: TaskCard; attempt: TaskAttempt };
+  acceptTask(id: string, acceptance: { accepted: boolean; reason?: string }, options: {
+    expectedRevision: number; eventId?: string;
+  }): TaskCard;
+  recordExecutionEvent(event: Omit<TaskEvent, 'schemaVersion'> & { schemaVersion?: string }): PoolEventResult;
+  recordPoolEvent(event: TaskEvent): PoolEventResult;
+  scheduleTask(id: string, schedule: { scheduledAt: string; timezone: string; notBefore?: string; dueAt?: string; policy?: string }, options: { expectedRevision: number }): TaskCard;
+  recordScheduleOutcome(id: string, outcome: ScheduleOutcome, options: { expectedRevision: number }): { duplicate: boolean; task: TaskCard };
+  unscheduleTask(id: string, options: { expectedRevision: number }): TaskCard;
+  pauseTask(id: string, options: { expectedRevision: number; reason?: string }): TaskCard;
+  resumeTask(id: string, options: { expectedRevision: number; scheduledAt?: string; acknowledgeRejection?: boolean }): TaskCard;
+  cancelTask(id: string, options: { expectedRevision: number; reason?: unknown }): TaskCard;
+  createPlan(plan: Record<string, unknown>, options?: { workflowId?: string; workflowVersion?: string }): Record<string, unknown>;
+  updatePlan(id: string, patch: Record<string, unknown>, options: { expectedRevision: number }): Record<string, unknown>;
+  getPlan(id: string): Record<string, unknown> | null;
+  listPlans(): Record<string, unknown>[];
+  instantiatePlan(id: string, options?: {
+    workflowId?: string; workflowVersion?: string; authorized?: boolean; expectedRevision?: number;
+  }): { plan: Record<string, unknown>; tasks: TaskCard[] };
+  registerWorkflow(definition: WorkflowDefinition): { id: string; version: string; sha256: string; definition: WorkflowDefinition };
+  getWorkflow(id: string, version?: string): { id: string; version: string; sha256: string; definition: WorkflowDefinition } | null;
+  listWorkflows(): Array<{ id: string; version: string; sha256: string }>;
+  dispatchDue(options?: { now?: string; dryRun?: true; includeMissed?: boolean }): {
+    eligible: TaskCard[];
+    blocked: Array<Record<string, unknown>>;
+    missed: Array<Record<string, unknown>>;
+  };
+  dispatchDue(options: { now?: string; dryRun: false; includeMissed?: boolean }): never;
+  listPendingHookInvocations(): Array<Record<string, unknown>>;
+  listPendingHookCommands(): Array<Record<string, unknown>>;
+  applyHookCommands(intentId: string, commands: Array<Record<string, unknown>>, options: {
+    authorize: (intent: Record<string, unknown>, command: Record<string, unknown>) => boolean;
+  }): Record<string, unknown>;
+  recordVerification(id: string, criterionId: string, evidence: string, options: { expectedRevision: number }): TaskCard;
+  archiveTask(id: string, options: { expectedRevision: number }): TaskCard;
+  restoreTask(id: string, options: { expectedRevision: number }): TaskCard;
+  previewPurge(filter?: { before?: string; workflowId?: string; backlogId?: string }): Record<string, unknown>;
+  confirmPurge(token: string): { purged: string[]; tombstones: unknown[] };
+  reconcile(): Record<string, number>;
+  doctor(): Record<string, unknown>;
+  close(): void;
+}
+export const TASK_STORE_SCHEMA: 'task-store/1';
+export const TASK_CARD_SCHEMA: 'task-card/1';
+export const WORKFLOW_SCHEMA: 'workflow/1';
+export const TASK_EVENT_SCHEMA: 'task-event/1';
+export const PRIVATE_PLAN_IMPORT_REF_KIND: 'aikido-legacy-plan-sha256';
+export const TASK_RESULT_STATUSES: readonly TaskResultStatus[];
+export const TASK_STATES: readonly TaskState[];
+export const EXECUTION_STATES: readonly ExecutionState[];
+export const SCHEDULE_STATUSES: readonly ScheduleStatus[];
+export const HOOK_COMMAND_TYPES: readonly string[];
+export function openTaskStore(options: TaskStoreOptions): TaskStore;
+export function resolveTaskStoreRoot(workspacePath: string, env?: Record<string, string | undefined>, platform?: string, home?: string): string;
+export function validateWorkflow(definition: WorkflowDefinition): { valid: boolean; errors: string[] };
+export function hashWorkflow(definition: WorkflowDefinition): string;

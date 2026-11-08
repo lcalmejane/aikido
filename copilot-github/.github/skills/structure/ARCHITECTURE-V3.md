@@ -4,6 +4,10 @@
 >
 > Scalable multi-index architecture for managing large file volumes (10K+) with constant O(1) performance.
 
+> **Historical design:** Shell commands and performance estimates below are
+> not the current runtime contract or measured results. Use the
+> [structure skill](SKILL.md) for implemented Node entry points.
+
 ## 🎯 V3.0 Objectives
 
 ### V2.1 Problems (Monolithic)

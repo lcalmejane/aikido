@@ -1,6 +1,6 @@
 ---
 name: check-claude
-description: "Analyze and update CLAUDE.md based on AI-KIDO Memory Bank and CLAUDE.md concepts"
+description: "Run the AI-KIDO distribution audit for Claude Code"
 ---
 
 # /aikido:check-claude
