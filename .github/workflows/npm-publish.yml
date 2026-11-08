@@ -1,11 +1,11 @@
 name: npm publish
 
-# Manual only: publishing @aikido/cli requires a maintainer decision, like the distribution release.
+# Manual only: publishing @aikido-method/cli requires a maintainer decision, like the distribution release.
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version of @aikido/cli (must equal distribution/npm/package.json; x.y.z or x.y.z-prerelease)'
+        description: 'Version of @aikido-method/cli (must equal distribution/npm/package.json; x.y.z or x.y.z-prerelease)'
         required: true
         type: string
 

@@ -47,7 +47,7 @@ selection and installation steps. Assistant-specific instructions are available 
 
 ## Install with npm
 
-`npx @aikido/cli init --yes` selects the bundled package, installs the method and
+`npx @aikido-method/cli init --yes` selects the bundled package, installs the method and
 wraps every assistant CLI detected locally; `aikido sync` repeats the wrapping
 when a CLI is installed later. See [`npm/README.md`](npm/README.md).
 

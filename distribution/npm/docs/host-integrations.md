@@ -30,7 +30,7 @@ package can be uploaded through **Customize > Plugins > Add > Upload plugin**.
 
 ## Install with npm
 
-The `@aikido/cli` package bundles every host package and detects the assistant
+The `@aikido-method/cli` package bundles every host package and detects the assistant
 CLIs installed on the machine, never by running them. Detection has three
 layers, reported per host with the evidence that proved it:
 
@@ -45,11 +45,11 @@ layers, reported per host with the evidence that proved it:
 
 
 ```text
-npx @aikido/cli detect
-npx @aikido/cli init            # plan only
-npx @aikido/cli init --yes      # apply the plan, then wrap every detected CLI
-npx @aikido/cli update --yes
-npx @aikido/cli sync            # pick up a CLI installed later
+npx @aikido-method/cli detect
+npx @aikido-method/cli init            # plan only
+npx @aikido-method/cli init --yes      # apply the plan, then wrap every detected CLI
+npx @aikido-method/cli update --yes
+npx @aikido-method/cli sync            # pick up a CLI installed later
 ```
 
 `init`, `update` and `uninstall` always print the plan first and write nothing

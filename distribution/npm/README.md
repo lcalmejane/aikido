@@ -1,16 +1,16 @@
-# @aikido/cli
+# @aikido-method/cli
 
 Installs and keeps the AI-KIDO Memory Bank up to date, and makes it available to **every assistant CLI
 installed on the machine** (Claude Code, Codex, Copilot, Kiro, Zoo/Roo Code, Antigravity…).
 
 ```text
-npx @aikido/cli detect             # which CLIs are used here (PATH, editor extensions, workspace packages and host-only folders; shared folders are hints)
-npx @aikido/cli init               # plan the installation (writes nothing)
-npx @aikido/cli init --yes         # apply that exact plan, then wrap every detected CLI
-npx @aikido/cli update --yes       # update the method and refresh every CLI
-npx @aikido/cli sync               # re-detect CLIs and (re)generate wrappers, agents and Skills
-npx @aikido/cli check              # report only, never writes
-npx @aikido/cli uninstall --yes    # remove the managed adapters
+npx @aikido-method/cli detect             # which CLIs are used here (PATH, editor extensions, workspace packages and host-only folders; shared folders are hints)
+npx @aikido-method/cli init               # plan the installation (writes nothing)
+npx @aikido-method/cli init --yes         # apply that exact plan, then wrap every detected CLI
+npx @aikido-method/cli update --yes       # update the method and refresh every CLI
+npx @aikido-method/cli sync               # re-detect CLIs and (re)generate wrappers, agents and Skills
+npx @aikido-method/cli check              # report only, never writes
+npx @aikido-method/cli uninstall --yes    # remove the managed adapters
 ```
 
 Every command prints one JSON object. `init`, `update` and `uninstall` always show the plan first; nothing
@@ -34,9 +34,9 @@ source repository**, which is built into `.aikido/state/source-build/` and remov
 test an update of the method on a workspace before publishing it.
 
 ```text
-npx @aikido/cli update --from ~/Downloads/aikido-dist-v1.6.0        # plan
-npx @aikido/cli update --from ~/Downloads/aikido-dist-v1.6.0 --yes  # apply that plan
-npx @aikido/cli update --from ~/src/aikido --yes                    # a working copy, built on the fly
+npx @aikido-method/cli update --from ~/Downloads/aikido-dist-v1.6.0        # plan
+npx @aikido-method/cli update --from ~/Downloads/aikido-dist-v1.6.0 --yes  # apply that plan
+npx @aikido-method/cli update --from ~/src/aikido --yes                    # a working copy, built on the fly
 ```
 
 A local source is **analysed and announced, never refused for what it is**. Checksums, the official commit and
@@ -54,7 +54,7 @@ agent or command is immediately available to every installed CLI.
 Requires Node.js 24 or later. No dependency, no network access at run time, no shell.
 
 The package also exports the deterministic private task engine at
-`@aikido/cli/task-store`. Use `aikido task ...` for local task, plan and
+`@aikido-method/cli/task-store`. Use `aikido task ...` for local task, plan and
 workflow operations; task data is stored outside the checkout. The standalone
 CLI previews due work only. Actual scheduling requires an explicitly started
 Node scheduler and an authorized host dispatcher supplied by an integration.
