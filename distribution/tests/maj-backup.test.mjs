@@ -125,10 +125,10 @@ test('optional absent members, fixed argument list, spaces and SOURCE != cwd', a
     mkdirSync(join(privateRoot, 'events'), { recursive: true });
     writeFileSync(join(privateRoot, 'store.json'), '{"schemaVersion":"task-store/1"}');
     writeFileSync(join(privateRoot, 'events', 'canary.json'), '{"text":"PRIVATE_TASK_CANARY"}');
-    await assert.rejects(createBackup(project, 'private-check', {
+    await assert.rejects(createBackup(privateRoot, 'private-check', {
       tar: 'unused', diagnostic() {},
     }), /Private Task Store data.*refusing to export/);
-    assert.equal(existsSync(join(project, 'backups')), false);
+    assert.equal(existsSync(join(privateRoot, 'backups')), false);
   });
   assert.equal(dirname(backup), join(project, 'backups'));
   assert.match(backup, /aikido-verif-backup-\d{8}-\d{6}-[a-f0-9-]+\.tgz$/);
