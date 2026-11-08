@@ -240,8 +240,10 @@ function writeAtomic(path, contents) {
     closeSync(fd);
   }
   renameSync(temp, path);
-  const dirFd = openSync(dirname(path), constants.O_RDONLY);
-  try { fsyncSync(dirFd); } finally { closeSync(dirFd); }
+  if (process.platform !== 'win32') {
+    const dirFd = openSync(dirname(path), constants.O_RDONLY);
+    try { fsyncSync(dirFd); } finally { closeSync(dirFd); }
+  }
 }
 
 function makeEventId(generator) {
