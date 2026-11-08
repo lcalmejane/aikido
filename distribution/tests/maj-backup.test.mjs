@@ -124,6 +124,7 @@ test('optional absent members, fixed argument list, spaces and SOURCE != cwd', a
     const privateRoot = join(project, 'user-session-data');
     mkdirSync(join(privateRoot, 'journal'), { recursive: true });
     mkdirSync(join(privateRoot, 'boards', 'default', 'unassigned', 'backlog'), { recursive: true });
+    writeFileSync(join(privateRoot, 'README.md'), 'private session data fixture\n');
     writeFileSync(join(privateRoot, 'store.json'), '{"schemaVersion":"task-store/1"}');
     writeFileSync(join(privateRoot, 'journal', 'events.jsonl'), '{"text":"PRIVATE_TASK_CANARY"}\n');
     writeFileSync(join(privateRoot, 'boards', 'default', 'unassigned', 'backlog', 'canary.json'),
