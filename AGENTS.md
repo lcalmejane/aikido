@@ -21,6 +21,8 @@ instructions retain priority.
 Use its [system skill](prompts/hard_points/system/orchestrator/SKILL.md),
 [JSON contract](prompts/hard_points/system/orchestrator/contract.schema.json) and
 [routing policy](prompts/hard_points/system/orchestrator/policy.json); never invent model availability or costs.
+All agents apply [Swarm, peer communication and reuse](prompts/hard_points/system/orchestrator/swarm.md)
+at delegation, only with verified tools and a useful scope; native lifecycle restrictions win.
 
 - **Project Name**: AI-KIDO Best Practices
 - **Description**: AI Memory Bank Construction Method by Meta-Harness

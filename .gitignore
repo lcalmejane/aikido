@@ -10,6 +10,12 @@ prompts/hard_points/system/structure/index.json
 .claude/worktrees
 .claude/worktrees/*
 
+# Private Task Store data must never enter source control.
+**/.private/
+**/.task-store/
+**/aikido/tasks/
+**/.aikido/tasks/
+
 
 # Secrets / local configuration (never commit)
 prompts/hard_points/configuration/*.local.cfg
@@ -24,3 +30,7 @@ prompts/hard_points/configuration/*.local.cfg
 id_rsa*
 id_ed25519*
 credentials*.json
+
+# Generated host packages shipped in the npm package
+distribution/npm/packages/
+distribution/npm/LICENSE

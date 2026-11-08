@@ -28,7 +28,7 @@ const skillMd = (name, extra = '') => `---\nname: ${name}\ndescription: ${name} 
 function setup(t) {
   const external = makeRepo({
     'skills/ext-one/SKILL.md': skillMd('ext-one'),
-    'skills/ext-one/run.sh': '#!/bin/sh\necho hi\n',
+    'skills/ext-one/run.mjs': 'process.stdout.write("hi\\n");\n',
   });
   const catalogRepo = makeRepo({
     'catalog.json': JSON.stringify({ schemaVersion: 1, skills: [
@@ -107,7 +107,7 @@ test('external skills require third-party confirmation and expose scripts', (t) 
   assert.deepEqual(found.external.map((s) => s.name), ['ext-one']);
   const pending = call('get', '--name', 'ext-one', '--source', 'ext');
   assert.equal(pending.status, 'confirmation_required');
-  assert.deepEqual(pending.scripts, ['run.sh']);
+  assert.deepEqual(pending.scripts, ['run.mjs']);
   assert.equal(existsSync(join(workspace, 'skills-out/ext-one')), false);
   const done = call('get', '--name', 'ext-one', '--source', 'ext', '--confirm-third-party');
   assert.equal(done.status, 'installed');
@@ -151,9 +151,131 @@ test('list, search and uninstall (backup or purge) behave deterministically', (t
   assert.throws(() => call('uninstall', '--name', 'demo'), /not installed/i);
 });
 
+test('--sync-hosts runs once after a real write and never on dry-run, read-only or failing actions', (t) => {
+  const { workspace } = setup(t);
+  const cfg = join(workspace, 'skills.cfg');
+  const calls = [];
+  const sync = (options) => { calls.push(options.root); return { status: 'ok', results: [{ host: 'codex', status: 'ok' }] }; };
+  const call = (...args) => run([...args, '--cfg', cfg, '--repo-root', workspace], {}, { sync });
+
+  assert.equal(call('get', '--name', 'demo', '--dry-run', '--sync-hosts').hostSync, undefined);
+  assert.equal(call('list', '--sync-hosts').hostSync, undefined);
+  assert.equal(calls.length, 0);
+
+  const installed = call('get', '--name', 'demo', '--sync-hosts');
+  assert.equal(installed.status, 'installed');
+  assert.equal(installed.hostSync.status, 'ok');
+  assert.deepEqual(calls, [workspace]);
+
+  assert.equal(call('update', '--name', 'demo', '--sync-hosts').status, 'up_to_date');
+  assert.equal(call('update', '--name', 'demo', '--sync-hosts').hostSync, undefined);
+  assert.equal(calls.length, 1);
+
+  assert.equal(call('uninstall', '--name', 'demo', '--sync-hosts').hostSync.status, 'ok');
+  assert.equal(calls.length, 2);
+  assert.throws(() => call('get', '--name', 'missing', '--sync-hosts'), /not found/i);
+  assert.equal(calls.length, 2);
+});
+
+test('without --sync-hosts the host synchronisation is never started', (t) => {
+  const { workspace } = setup(t);
+  const sync = () => { throw new Error('must not be called'); };
+  const result = run(['get', '--name', 'demo', '--cfg', join(workspace, 'skills.cfg'), '--repo-root', workspace], {}, { sync });
+  assert.equal(result.status, 'installed');
+  assert.equal(result.hostSync, undefined);
+});
+
+test('a host synchronisation failure never turns a successful install into an error', (t) => {
+  const { workspace } = setup(t);
+  const sync = () => { throw new Error('engine unavailable'); };
+  const result = run(['get', '--name', 'demo', '--sync-hosts', '--cfg', join(workspace, 'skills.cfg'), '--repo-root', workspace], {}, { sync });
+  assert.equal(result.status, 'installed');
+  assert.deepEqual(result.hostSync, { status: 'error', message: 'engine unavailable' });
+  assert.equal(existsSync(join(workspace, 'skills-out/demo/SKILL.md')), true);
+});
+
 test('the token never appears in output', (t) => {
   const { workspace } = setup(t);
   const out = run(['config', '--repo-root', workspace, '--cfg', join(workspace, 'skills.cfg')], { AIKIDO_GIT_TOKEN: 'secret-token' });
   assert.equal(out.token, '****');
   assert.equal(JSON.stringify(out).includes('secret-token'), false);
+});
+
+test('a downloaded directory without .git is a valid source and update detects its changes', (t) => {
+  const plain = mkdtempSync(join(tmpdir(), 'skm-plain-'));
+  write(plain, 'catalog.json', JSON.stringify({ schemaVersion: 1, skills: [
+    { name: 'demo', description: 'Demo skill', version: '1.0.0', category: 'example', path: 'skills/demo' },
+  ] }));
+  write(plain, 'skills/demo/SKILL.md', skillMd('demo'));
+  write(plain, 'skills/demo/data.txt', 'v1\n');
+  const workspace = mkdtempSync(join(tmpdir(), 'skm-ws-'));
+  const cfg = join(workspace, 'skills.cfg');
+  writeFileSync(cfg, `GIT_GROUP=${plain}\nTARGET_DIR=skills-out\nON_CONFLICT=update\n`);
+  t.after(() => [plain, workspace].forEach((dir) => rmSync(dir, { recursive: true, force: true })));
+  const call = (...args) => run([...args, '--cfg', cfg, '--repo-root', workspace], {});
+
+  assert.equal(existsSync(join(plain, '.git')), false);
+  const installed = call('get', '--name', 'demo');
+  assert.equal(installed.status, 'installed');
+  assert.match(installed.commit, /^local-[0-9a-f]{16}$/);
+  assert.equal(readFileSync(join(workspace, 'skills-out/demo/data.txt'), 'utf8'), 'v1\n');
+  assert.equal(call('update', '--name', 'demo').status, 'up_to_date');
+
+  write(plain, 'skills/demo/data.txt', 'v2\n');
+  assert.equal(call('update', '--name', 'demo', '--dry-run').status, 'dry_run');
+  const updated = call('update', '--name', 'demo');
+  assert.equal(updated.status, 'installed');
+  assert.equal(readFileSync(join(workspace, 'skills-out/demo/data.txt'), 'utf8'), 'v2\n');
+  assert.equal(readFileSync(join(plain, 'skills/demo/data.txt'), 'utf8'), 'v2\n', 'the source directory is never modified');
+  assert.equal(call('update', '--name', 'demo').status, 'up_to_date');
+  assert.equal(call('search', '--query', 'demo').catalog[0].installed, true);
+});
+
+test('a local source containing a symbolic link is refused', (t) => {
+  const plain = mkdtempSync(join(tmpdir(), 'skm-plain-'));
+  write(plain, 'catalog.json', JSON.stringify({ schemaVersion: 1, skills: [] }));
+  symlinkSync('/etc/hosts', join(plain, 'link'));
+  const workspace = mkdtempSync(join(tmpdir(), 'skm-ws-'));
+  const cfg = join(workspace, 'skills.cfg');
+  writeFileSync(cfg, `GIT_GROUP=${plain}\nTARGET_DIR=skills-out\n`);
+  t.after(() => [plain, workspace].forEach((dir) => rmSync(dir, { recursive: true, force: true })));
+  assert.throws(() => run(['search', '--query', 'x', '--cfg', cfg, '--repo-root', workspace], {}), /Symbolic link refused/);
+});
+
+test('a local source announces the version direction and its provenance without blocking', (t) => {
+  const plain = mkdtempSync(join(tmpdir(), 'skm-plain-'));
+  const publish = (version) => {
+    write(plain, 'catalog.json', JSON.stringify({ schemaVersion: 1, skills: [
+      { name: 'demo', description: 'Demo skill', version, category: 'example', path: 'skills/demo' },
+    ] }));
+    write(plain, 'skills/demo/SKILL.md', skillMd('demo'));
+    write(plain, 'skills/demo/data.txt', `${version}\n`);
+  };
+  const workspace = mkdtempSync(join(tmpdir(), 'skm-ws-'));
+  const cfg = join(workspace, 'skills.cfg');
+  writeFileSync(cfg, `GIT_GROUP=${plain}\nTARGET_DIR=skills-out\nON_CONFLICT=update\n`);
+  t.after(() => [plain, workspace].forEach((dir) => rmSync(dir, { recursive: true, force: true })));
+  const call = (...args) => run([...args, '--cfg', cfg, '--repo-root', workspace], {});
+  const provenance = () => JSON.parse(readFileSync(join(workspace, 'skills-out/demo/.aikido-source.json'), 'utf8'));
+
+  publish('1.0.0');
+  const first = call('get', '--name', 'demo');
+  assert.equal(first.versionChange.direction, 'initial');
+  assert.ok(first.warnings.some((warning) => /local source/.test(warning)));
+  assert.equal(provenance().local, true);
+
+  publish('1.1.0');
+  const up = call('update', '--name', 'demo');
+  assert.equal(up.status, 'installed');
+  assert.deepEqual(up.versionChange, { from: '1.0.0', to: '1.1.0', direction: 'upgrade' });
+
+  publish('1.0.0');
+  const dry = call('update', '--name', 'demo', '--dry-run');
+  assert.equal(dry.versionChange.direction, 'downgrade');
+  assert.ok(dry.warnings.some((warning) => /version regression: 1\.1\.0 -> 1\.0\.0/.test(warning)));
+  assert.equal(provenance().version, '1.1.0', 'a dry run changes nothing');
+  const down = call('update', '--name', 'demo');
+  assert.equal(down.status, 'installed', 'a regression is traced, not blocked');
+  assert.equal(provenance().regression_from, '1.1.0');
+  assert.equal(readFileSync(join(workspace, 'skills-out/demo/data.txt'), 'utf8'), '1.0.0\n');
 });

@@ -359,7 +359,7 @@ test('Zoo Code check refreshes the local RTK flag and dry-run leaves state uncha
   const bin = join(ROOT, 'rtk-bin');
   mkdirSync(bin, { recursive: true });
   const command = join(bin, 'rtk');
-  writeFileSync(command, '#!/bin/sh\nprintf "rtk 1.1.0\\n"\n');
+  writeFileSync(command, `#!${process.execPath}\nprocess.stdout.write("rtk 1.1.0\\n");\n`);
   chmodSync(command, 0o755);
   const env = { ...process.env, PATH: `${bin}${delimiter}${process.env.PATH ?? ''}` };
   const statePath = join(ROOT, '.aikido/state/features.json');
@@ -387,7 +387,7 @@ test('optimization feature detection refreshes ON/OFF for any host without chang
   const bin = join(ROOT, 'rtk-bin');
   mkdirSync(bin);
   const command = join(bin, 'rtk');
-  writeFileSync(command, '#!/bin/sh\nprintf "rtk test\\n"\n');
+  writeFileSync(command, `#!${process.execPath}\nprocess.stdout.write("rtk test\\n");\n`);
   chmodSync(command, 0o755);
   const env = { PATH: bin };
   const statePath = join(ROOT, '.aikido/state/features.json');
@@ -417,7 +417,7 @@ test('optimization feature detection refreshes ON/OFF for any host without chang
     assert.equal(existsSync(join(ROOT, '.roo/rules/rtk.md')), false);
     assert.equal(existsSync(join(ROOT, 'AGENTS.md')), false);
     rmSync(statePath);
-    writeFileSync(command, '#!/bin/sh\nprintf "rtk test\\n"\n');
+    writeFileSync(command, `#!${process.execPath}\nprocess.stdout.write("rtk test\\n");\n`);
     chmodSync(command, 0o755);
   }
   assert.deepEqual(parseCheckCliArgs(['--check', '--detect-features', '--dry-run']), {
@@ -430,7 +430,7 @@ test('optimization RTK detection reports execution errors instead of persisting 
   const bin = join(ROOT, 'broken-rtk-bin');
   mkdirSync(bin);
   const command = join(bin, 'rtk');
-  writeFileSync(command, '#!/bin/sh\nprintf "broken RTK\\n" >&2\nexit 1\n');
+  writeFileSync(command, `#!${process.execPath}\nprocess.stderr.write("broken RTK\\n"); process.exitCode = 1;\n`);
   chmodSync(command, 0o755);
   write('.aikido/state/features.json', '{"schemaVersion":1,"flags":{"rtk":"ON"}}\n');
   const statePath = join(ROOT, '.aikido/state/features.json');

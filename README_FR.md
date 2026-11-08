@@ -20,6 +20,50 @@ ou retirer l'intégration du projet.
 Consultez le [guide de distribution](distribution/README.md) pour les étapes
 d'installation par assistant, la migration, les mises à jour et la désinstallation.
 
+### Changements des points d'entrée Node
+
+Les anciens points d'entrée `generate-project-tree.sh` et
+`generate-project-tree-json.sh` sont supprimés. Utilisez
+`node prompts/hard_points/system/structure/scripts/generate-project-tree.mjs [fichier-sortie]`.
+Le script `download_site.sh` est remplacé par
+`node prompts/hard_points/system/web/script/download_site.mjs <url> <profondeur> [préfixe]`.
+Les scripts inutilisés `check-file-exists.sh` et `lib/hash-utils.sh` sont
+également supprimés. Remplacez `clean-orphans.sh` par
+`node prompts/hard_points/system/structure/scripts/clean-orphans.mjs`.
+Remplacez `format-file-metadata.sh` par
+`node prompts/hard_points/system/structure/scripts/format-file-metadata.mjs`.
+Remplacez `update-incremental.sh` par
+`node prompts/hard_points/system/structure/scripts/update-incremental.mjs`.
+Remplacez `generate-index-by-path.sh` par
+`node prompts/hard_points/system/structure/scripts/generate-index-by-path.mjs`.
+Remplacez `generate-index-by-alpha.sh`, `generate-index-by-directory.sh` et
+`generate-index-by-type.sh` par
+`node prompts/hard_points/system/structure/scripts/generate-secondary-index.mjs <alpha|directory|type>`.
+Remplacez `generate-index-master.sh` par
+`node prompts/hard_points/system/structure/scripts/generate-index-master.mjs`.
+Les anciens points d'entrée `generate-index-by-id*.sh`,
+`generate-all-indexes-v3.1.sh` et `watch-changes.sh` sont remplacés par leurs
+fichiers `.mjs` invoqués avec Node ; la génération by-id est séquentielle.
+Les quatre anciens points d'entrée MAJ `ending-0-*.sh` sont remplacés par leurs
+fichiers `.mjs` correspondants ; le protocole de fusion revu reste obligatoire.
+Les anciens points d'entrée shell ending-6 et ending-7 sont remplacés par
+`ending-6-validation.mjs` et `ending-7-gaps.mjs` et leurs sous-commandes documentées.
+Les anciens points d'entrée ending-5 sont remplacés par `ending-5-review.mjs` ;
+le nettoyage reste suspendu quand la propriété ne peut pas être prouvée.
+Les adaptateurs de diagnostic ending-10 sont remplacés par
+`ending-10-diagnostics.mjs` avec `collect`, `diagnostic` ou `report`. Ceux
+de ending-3, ending-8 et sync sont remplacés par `maj-node-migration.mjs` ;
+utilisez `--help` pour les sous-commandes correspondantes.
+Les entrées shell ending-1 sont remplacées par les sous-commandes
+`check-before`, `generate-after`, `statistics` de `ending-1-workflow.mjs` et
+par `ending-1-compare-structures.mjs`. Ending-2 utilise `ending-2-report.mjs`
+avec `check`, `validate`, `analyze` et `backups`.
+Les entrées shell de sauvegarde, de journal et de validation ending-4 sont
+remplacées par leurs fichiers `.mjs` correspondants, appelés directement avec Node.
+Les entrées shell de détection, de comparaison des versions et de structure
+initiale sont également remplacées par leurs fichiers `.mjs` correspondants.
+Adaptez les appels externes. Node.js 24+ est requis.
+
 ## 🎯 Philosophie AI‑KIDO
 
 AI‑KIDO repose sur 18 règles fondamentales qui garantissent :
@@ -41,7 +85,7 @@ AI‑KIDO repose sur 18 règles fondamentales qui garantissent :
 
 **Si vous avez déjà le dépôt Git AI-KIDO dans `/prompts/spec/aikido-source-git/`** :
 
-```bash
+```text
 # Lancer la mise à jour en mode UPDATE
 /maj-aikido --update
 ```
@@ -69,7 +113,7 @@ AI‑KIDO repose sur 18 règles fondamentales qui garantissent :
 
 ##### Option A : Depuis Git AI-KIDO (Première Installation)
 
-```bash
+```text
 # Si vous etes en version ancienne (< V1.3), copier d'abord le script maj-aikido dans /roo/commands/
 cp /prompts/spec/aikido-source-git/prompts/hard_points/commands/maj-aikido /prompts/hard_points/commands/
 
@@ -95,7 +139,7 @@ Choix : 1
 
 **Si vous avez reçu une archive AI-KIDO** :
 
-```bash
+```text
 # 1. Placer l'archive dans /prompts/spec/
 mv ai-kido-vX.Y.Z.tar.gz /prompts/spec/
 
@@ -118,7 +162,7 @@ Archive : /prompts/spec/ai-kido-vX.Y.Z.tar.gz
 
 **Si vous avez déjà extrait les sources quelque part** :
 
-```bash
+```text
 # Si vous etes en version ancienne (< V1.3), copier d'abord le script maj-aikido dans /roo/commands/
 cp /path/to/ai-kido-sources/prompts/hard_points/commands/maj-aikido /prompts/hard_points/commands/
 
@@ -170,14 +214,14 @@ Lors de la mise à jour, pour chaque fichier modifié, vous pouvez choisir **"2.
 
 **1. Vérifier l'état de la base** :
 
-```bash
+```text
 /check-claude (Si vous êtes sous Claude Code)
 /check-cli (disponible sur les CLI pris en charge)
 ```
 
 **2. Audit conformité** (recommandé) :
 
-```bash
+```text
 /analyse-aikido
 ```
 
@@ -185,7 +229,7 @@ Lors de la mise à jour, pour chaque fichier modifié, vous pouvez choisir **"2.
 
 **4. Consulter les backups** (si besoin de rollback) :
 
-```bash
+```text
 find . -name "*.bak.*" -type f
 ```
 
@@ -291,10 +335,9 @@ find . -name "*.bak.*" -type f
 │   │       │   ├── README.md
 │   │       │   ├── index.json    # Index complet projet (cache 24h)
 │   │       │   └── scripts/      # Scripts génération/maintenance index
-│   │       │       ├── generate-project-tree.sh
-│   │       │       ├── generate-project-tree-json.sh
-│   │       │       ├── format-file-metadata.sh
-│   │       │       └── watch-changes.sh
+│   │       │       ├── generate-project-tree.mjs
+│   │       │       ├── format-file-metadata.mjs
+│   │       │       └── watch-changes.mjs
 │   │       │
 │   │       ├── web/              # 🌐 Skill Web (téléchargement sites)
 │   │       │   ├── SKILL.md
@@ -664,7 +707,7 @@ la découverte runtime est rapportée séparément de la conformité des fichier
 
 **Syntaxes disponibles** :
 
-```bash
+```text
 /check-truth                           # Vérification complète Memory Bank
 /check-truth --file [path]            # Fichier spécifique
 /check-truth --domain concepts         # Domaine complet
@@ -747,26 +790,19 @@ la découverte runtime est rapportée séparément de la conformité des fichier
 
 #### `reindex-projet` - Réindexation Complète du Projet 🆕
 
-**Objectif** : Régénérer l'index JSON complet de la structure projet avec cache 24H
+**Objectif** : Régénérer l'index complet V3.1 de la structure du projet.
 
 **Syntaxe** :
 
-```bash
+```text
 /reindex-projet              # Indexation complète
-/reindex-projet src/Domain   # Indexation ciblée sur un répertoire
 ```
 
 **Processus** :
 
-1. **Analyse structure** → Scan complet projet (260 fichiers, 37 répertoires)
-2. **Génération index JSON** → Format V3.2 optimisé (by_path, by_directory, by_type, by_name)
-3. **Validation structure** → Vérification cohérence et conformité AI-KIDO V1.3
-4. **Statistiques** → Rapport détaillé (fichiers, lignes, taille, conformité)
-5. **Cache 24H** → Performance queries <5ms vs 2500ms markdown
-
-**Agents utilisés** : 1 agent (agent-aikido-projet-index)
-
-**Performance** : ~36s génération, <100ms parse, <5ms query
+Le générateur reconstruit et contrôle le master et les index secondaires.
+Il n'accepte pas de répertoire en argument et ne valide pas toutes les règles
+AI-KIDO. Node.js 24+ et Git sont requis ; éviter tout accès concurrent à l'index.
 
 #### `clean-index` - Nettoyage Intelligent de l'Index 🆕
 
@@ -774,10 +810,11 @@ la découverte runtime est rapportée séparément de la conformité des fichier
 
 **Syntaxe** :
 
-```bash
+```text
 /clean-index                 # Nettoyage intelligent automatique
 /clean-index --dry-run       # Analyse seule sans suppression
 /clean-index --verbose       # Mode détaillé avec liste complète
+/clean-index --rebuild       # Reconstruire tous les index depuis le projet
 ```
 
 **Cas d'usage** :
@@ -785,19 +822,21 @@ la découverte runtime est rapportée séparément de la conformité des fichier
 - Fichiers supprimés mais toujours dans l'index
 - Entrées orphelines après refactoring
 - Maintenance régulière de l'index
-- Nettoyage incrémental sans régénération complète
+- Prévisualisation du nettoyage avant régénération
 
 **Workflow intelligent** :
 
 - `/clean-index` → Détecte et supprime orphelins
-- Si <10% orphelins → Index cohérent ✅
-- Si >10% orphelins → Recommande `/reindex-projet`
+- Les index secondaires ne sont pas actualisés : exécuter `/reindex-projet`
+  après le nettoyage, quel que soit le pourcentage d'orphelins.
+- L'option `--rebuild` régénère tous les index, ajoute les fichiers devenus
+  visibles et actualise les métadonnées. `--dry-run` annonce cette opération,
+  sans vérifier que la reconstruction réussira.
 
-**Agents utilisés** : 0 agents (script bash optimisé avec jq)
-
-**Performance** : ~5-10s (3-5× plus rapide qu'avec agent)
-**Prérequis** : `jq` doit être installé (`brew install jq` / `apt-get install jq` / `yum install jq`)
-**Avantage** : Nettoyage sélectif ultra-rapide sans tokens LLM
+**Prérequis** : Node.js 24+ ; Git est requis pour la réindexation. L'entrée
+`.sh` a été supprimée. Ni `jq` ni `bc` ne sont requis.
+Travailler en accès exclusif ; la publication multifichier n'est pas atomique
+en cas de crash.
 
 ### 📊 Commandes de Traçabilité
 
@@ -1223,7 +1262,7 @@ Wait → Combine → Return structured output
 
 #### 12. **agent-aikido-projet-index** 🗂️ (Gestionnaire Index Projet)
 
-**Spécialisation** : Génération et maintenance de l'arborescence du projet en JSON avec cache mémoire pour réponses instantanées sur la structure et localisation des fichiers
+**Spécialisation** : Génération et maintenance de l'index de structure du projet.
 
 **Quand l'utiliser** :
 
@@ -1232,72 +1271,16 @@ Wait → Combine → Return structured output
 - Pour obtenir des statistiques sur la structure du projet
 - Pour des requêtes de navigation filesystem répétitives
 
-**Capabilities** :
+**Capacités** : Node.js 24+ génère le master V3.1 et les index par ID, chemin,
+répertoire, type et nom. Git évalue les règles `.gitignore` imbriquées et leurs
+négations ; les répertoires générés courants et `.env*` sont aussi exclus. Les
+métadonnées comprennent lignes, tailles et dates. Les anciens noms `.sh` ont
+été supprimés. Contrats et limites :
+[skill Structure](prompts/hard_points/system/structure/SKILL.md).
 
-- Génération index JSON complet (`prompts/hard_points/system/structure/index.json`) via scripts bash
-- Cache JSON avec 4 index multi-niveaux : by_path, by_directory, by_type, by_name
-- Réponses instantanées (<10ms) depuis cache mémoire (TTL 24h)
-- Métadonnées pré-calculées : lignes, tailles, dates, types, icônes
-- Exclusion automatique : `.git/`, `node_modules/`, patterns `.gitignore`
-- Régénération automatique via `watch-changes.sh` lors de modifications filesystem
-
-**Performance** :
-
-- **Query temps** : <10ms (mémoire O(1) access)
-- **Parse JSON** : ~100ms (première lecture, partagée entre invocations)
-- **Régénération** : ~36s (1200+ fichiers, asynchrone en arrière-plan)
-- **Gain vs find/stat/wc** : **300-500x plus rapide** ⚡⚡⚡
-
-**Format JSON (v3.0)** :
-
-```json
-{
-  "metadata": {
-    "last_check": {"timestamp": "...", "status": "✅"},
-    "statistics": {"total_files": 183, "total_lines": 32930}
-  },
-  "index": {
-    "by_path": {"path/file.md": {name, type, icon, lines, size, modified, ...}},
-    "by_directory": {"dir/": {"files": [...]}},
-    "by_type": {"agent": [...], "concept": [...]},
-    "by_name": {"filename.md": ["path1", "path2"]}
-  }
-}
-```
-
-**Scripts disponibles** :
-
-- `generate-project-tree.sh` : Wrapper principal (génération complète)
-- `generate-project-tree-json.sh` : Moteur JSON optimisé
-- `format-file-metadata.sh` : Helper extraction métadonnées
-- `watch-changes.sh` : Surveillance filesystem + régénération auto
-
-**Intégration avec autres agents** :
-
-- ✅ **agent-aikido-maj-md-index** : Accélère scan fichiers 300-500x (3-5s → <10ms)
-- ✅ **agent-aikido-explore-bank** : Phase -0.75 ultra-fast pour requêtes localisation (2.6s → <5ms, 97% tokens économisés)
-- ✅ **agent-aikido-balancer** : Analyse structure instantanée (3-5s → <10ms)
-- ⚙️ **agent-aikido-validator** : Métadonnées instant (lignes, dates)
-- ⚙️ **agent-aikido-bank-populate** : Validation gaps instantanée
-- ⚙️ **agent-aikido-raci-delegator** : Localisation RACI rapide
-
-**Gains estimés** (vs scans manuels) :
-
-- **Temps** : -95% à -99% selon agent (3-5s → <10ms)
-- **Tokens** : -97% pour explore-bank location queries (1400 → 50 tokens)
-- **Complexité** : Élimination complète des `find`, `stat`, `wc -l`
-- **Qualité** : Métadonnées standardisées, cache partagé, exclusions cohérentes
-
-**Conformité** : ✅ 667 lignes (respecte contrainte 1000 lignes extended - agent technique)
-
-**Cas d'usage** :
-
-1. **Navigation rapide** : "Où est agent-aikido-maj-md-index.md?" → Réponse <5ms
-2. **Exploration répertoires** : "Que contient /prompts/gen/personas/?" → Liste instantanée
-3. **Statistiques projet** : Total fichiers, lignes, distribution par type → Pré-calculé
-4. **Optimisation agents** : Tous les agents utilisant find/grep/stat bénéficient automatiquement
-
-**Mise à jour automatique** : `watch-changes.sh` détecte modifications fichiers → régénération JSON asynchrone (~36s en arrière-plan)
+**Watcher facultatif** : `watch-changes.mjs` surveille les chemins visibles et
+demande une régénération complète ; l'entrée `.sh` a été supprimée. Node.js
+24+ et Git sont requis. Aucun gain de performance n'a été mesuré.
 
 ### Orchestrateur conditionnel pour Copilot
 
@@ -1312,80 +1295,32 @@ ne parallélise que les tâches indépendantes permises par le harnais et ses li
 
 ### 🔄 Intégration Inter-Agents : Projet-Index comme Accélérateur
 
-L'agent **agent-aikido-projet-index** agit comme un **accélérateur de performance** pour les autres agents en fournissant un cache JSON pré-calculé de la structure du projet.
+L'agent **agent-aikido-projet-index** fournit un index de structure du projet.
 
 #### Mécanisme d'Intégration
 
-**Principe** : Fast-path avec fallback gracieux
-
-```
-Agent démarre
-  → Vérifie JSON index disponible (<24h)
-    → OUI : Fast path (<10ms) ⚡⚡⚡
-    → NON : Fallback traditionnel (3-5s)
-  → Aucun breaking change
-```
+Vérifier que l'index est disponible et à jour avant utilisation. Sinon,
+inspecter les répertoires pertinents puis effectuer une recherche bornée.
 
 **Architecture** :
 
 ```
 prompts/hard_points/system/structure/
-├── index.json                    # Cache partagé (605KB → 92KB optimisé)
+├── index.json                    # Master V3.1
+├── indices/                      # Lots et index secondaires V3.1
 └── scripts/
-    ├── generate-project-tree.sh  # Génération
-    ├── watch-changes.sh          # Auto-update
-    └── format-file-metadata.sh   # Helper
+    ├── generate-project-tree.mjs  # Génération
+    ├── watch-changes.mjs         # Auto-update
+    └── format-file-metadata.mjs  # Helper
 ```
 
-#### Gains par Agent
+#### Utilisation et limites de l'index
 
-| Agent | Opération Optimisée | Avant | Après | Gain |
-|-------|---------------------|-------|-------|------|
-| **indexer** | Scan fichiers + stats | 3-5s | <10ms | **300-500x** ⚡⚡⚡ |
-| **explore-bank** | Location queries | 2.6s, 1400 tok | <5ms, 50 tok | **520x, 97% tokens** ⚡⚡⚡💰 |
-| **explore-code** | Code search metadata | N/A | Technology-aware | **N/A** (nouvel agent) |
-| **explore-all** | Parallel bank+code | N/A | 3-5s (parallel) | **N/A** (orchestrator) |
-| **balancer** | Analyse structure | 3-5s | <10ms | **300-500x** ⚡⚡⚡ |
-| **validator** | Comptage lignes | 0.5s (wc) | <1ms (cache) | **500x** ⚡⚡ |
-| **bank-populate** | Validation gaps | 1-2s | <10ms | **100-200x** ⚡⚡ |
-| **raci-delegator** | Localisation RACI | 1-2s | <10ms | **100-200x** ⚡⚡ |
-
-**Impact cumulé** : Jusqu'à **-95% temps d'exécution** sur les opérations filesystem lourdes
-
-#### Code d'Intégration Type
-
-**Pattern utilisé dans tous les agents optimisés** :
-
-```bash
-# Check availability
-if [ -f "prompts/hard_points/system/structure/index.json" ]; then
-    AGE=$(( $(date +%s) - $(stat -f%m "index.json" 2>/dev/null || echo "0") ))
-    if [ $AGE -lt 86400 ]; then  # <24h
-        USE_PROJET_INDEX=true
-    fi
-fi
-
-# Fast path (with projet-index)
-if [ "$USE_PROJET_INDEX" = "true" ]; then
-    # Query JSON directly (instant)
-    RESULTS=$(jq -r '.index.by_path | keys[]' index.json | grep "$pattern")
-    # Performance: <10ms ⚡⚡⚡
-fi
-
-# Fallback path (traditional)
-if [ "$USE_PROJET_INDEX" != "true" ]; then
-    # Use find/grep/wc as before
-    RESULTS=$(find . -name "$pattern" ...)
-    # Performance: 3-5s (100% compatible)
-fi
-```
-
-**Avantages** :
-
-- ✅ **Aucun breaking change** : Fallback automatique si JSON indisponible
-- ✅ **Gains massifs** : 300-500x plus rapide quand disponible
-- ✅ **Transparent** : Intégration invisible pour l'utilisateur
-- ✅ **Robuste** : TTL 24h avec régénération auto via watch-changes.sh
+Le générateur Node publie un master V3.1 et des index secondaires. Explorer
+d'abord les répertoires pertinents, puis utiliser Kimono s'il est disponible
+ou une recherche locale bornée ; ne pas supposer que l'index ou le watcher est
+à jour. L'entrée acceptant des chemins modifiés effectue actuellement une
+régénération complète. Les gains de temps et de tokens n'ont pas été mesurés.
 
 ### 💼 Use Cases des Agents AI-KIDO
 
@@ -1634,7 +1569,7 @@ Consultez le fichier `CLAUDE.md` section 12 pour voir :
 
 Si la base est vide (bootstrap), suivez le workflow recommandé dans `CLAUDE.md` section 12.5 :
 
-```bash
+```text
 /analyse-project    # Analyser le projet existant
 /init-aikido        # Initialiser la Memory Bank
 /create-persona     # Créer des personas spécialisés
@@ -1662,7 +1597,7 @@ Après ces étapes, votre base AI-KIDO est **100% compatible Claude Code** :
 
 1. **Initialisation** :
 
-   ```bash
+   ```text
    init-aikido          # Créer la structure de base
    init-glossaire       # Clarifier la terminologie
    init-raci-aikido     # Organiser l'équipe
@@ -1670,14 +1605,14 @@ Après ces étapes, votre base AI-KIDO est **100% compatible Claude Code** :
 
 2. **Enrichissement** :
 
-   ```bash
+   ```text
    analyse-project      # Analyser le contexte existant
    create-persona       # Créer les agents spécialisés
    ```
 
 3. **Activation de la traçabilité** (optionnel) :
 
-   ```bash
+   ```text
    logllmon            # Activer les logs d'interactions
    ```
 
@@ -1685,19 +1620,19 @@ Après ces étapes, votre base AI-KIDO est **100% compatible Claude Code** :
 
 1. **Synchronisation régulière** :
 
-   ```bash
+   ```text
    maj-aikido          # Après chaque rebase/évolution
    ```
 
 2. **Audit périodique** :
 
-   ```bash
+   ```text
    analyse-aikido      # Audit complet avec corrections
    ```
 
 3. **Gestion des logs** :
 
-   ```bash
+   ```text
    logllmoff           # Désactiver si nécessaire
    logllmon            # Réactiver pour debug
    ```

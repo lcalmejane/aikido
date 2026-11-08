@@ -10,6 +10,7 @@
 | 🔍💻 **agent-aikido-explore-all** | [agent-aikido-explore-all.md](prompts/hard_points/agents/agent-aikido-explore-all.md) | Orchestrator: parallel Bank + Code search |
 | ⚖️ **agent-aikido-truth-evaluator** | [agent-aikido-truth-evaluator.md](prompts/hard_points/agents/agent-aikido-truth-evaluator.md) | Determines authoritative sources with last-check optimization |
 | 🎯 **agent-aikido-raci-delegator** | [agent-aikido-raci-delegator.md](prompts/hard_points/agents/agent-aikido-raci-delegator.md) | Classifies and routes documents by RACI |
+| 🛠️ **agent-aikido-refactoring** | [agent-aikido-refactoring.md](prompts/hard_points/agents/agent-aikido-refactoring.md) | Token-efficient deterministic refactoring: route choice, wide batches, short reports |
 | 📝 **agent-aikido-doc-header** | [agent-aikido-doc-header.md](prompts/hard_points/agents/agent-aikido-doc-header.md) | Standardized AI-KIDO document header management |
 | 🗂️ **agent-aikido-projet-index** | [agent-aikido-projet-index.md](prompts/hard_points/agents/agent-aikido-projet-index.md) | Project tree manager with 24H cache |
 | 🤖 **agent-aikido-bank-populate** | [agent-aikido-bank-populate.md](prompts/hard_points/agents/agent-aikido-bank-populate.md) | Automatic Memory Bank population from code/context |
@@ -82,6 +83,12 @@
 - Content organization
 - Determine responsible role
 
+### agent-aikido-refactoring
+- Compare routes before acting: existing tool, generic Node engine, temporary script outside Git, direct edit
+- Mass edits by wide batches with plan, hash check, backup and rollback
+- Sub-agents per batch only for judgement work; short ok/failure reports
+- Uses RTK, Kimono, explore agents and Swarm only when verified at runtime
+
 ### agent-aikido-doc-header
 - Create/validate/update headers with versioning
 - Truth source tracking
@@ -133,6 +140,7 @@
 - `explore-all`: Parallel orchestration explore-bank + explore-code for complete search (docs + code)
 - `truth-evaluator`: Contradiction arbitration with last-check optimization (fast-path if ✅ + unchanged sources)
 - `raci-delegator`: Document classification and routing by role
+- `refactoring`: Deterministic, token-efficient mass edits (engine, temporary scripts, batches)
 - `doc-header`: Standardized header management (versioning, truth source, last-check, source refs)
 - `projet-index`: Instant file location via JSON cache, project stats, structure navigation
 - `bank-populate`: Population END OF PROCESS (after complete gap report) with full headers

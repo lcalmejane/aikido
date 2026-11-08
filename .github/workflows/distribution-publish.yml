@@ -21,6 +21,9 @@ jobs:
     if: github.ref_type == 'branch'
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    defaults:
+      run:
+        shell: node {0}
     environment: release
     permissions:
       contents: write
@@ -34,37 +37,12 @@ jobs:
         with:
           node-version: '26'
       - name: Check version and tag
-        run: |
-          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]] || { echo "Invalid version: $VERSION"; exit 1; }
-          if git ls-remote --exit-code --tags origin "refs/tags/aikido-dist-v$VERSION" >/dev/null; then
-            echo "Tag aikido-dist-v$VERSION already exists; published releases are immutable"; exit 1
-          fi
+        run: require('node:child_process').execFileSync(process.execPath, ['distribution/scripts/ci.mjs', 'check-tag'], {stdio:'inherit'});
       - name: Install Claude Code plugin validator
-        run: npm install --global --no-fund --no-audit @anthropic-ai/claude-code@2.1.310
+        run: require('node:child_process').execFileSync(process.execPath, ['distribution/scripts/ci.mjs', 'install-validator'], {stdio:'inherit'});
       - name: Run tests
-        run: node --test distribution/tests/*.test.mjs prompts/hard_points/system/orchestrator/*.test.mjs prompts/hard_points/system/skill-manage/*.test.mjs
+        run: require('node:child_process').execFileSync(process.execPath, ['distribution/scripts/ci.mjs', 'tests'], {stdio:'inherit'});
       - name: Prepare and verify release tree
-        run: |
-          node distribution/scripts/prepare-release.mjs \
-            --out "$RUNNER_TEMP/aikido-dist" --revision "$GITHUB_SHA" --version "$VERSION"
-          node distribution/scripts/prepare-release.mjs --verify "$RUNNER_TEMP/aikido-dist"
+        run: require('node:child_process').execFileSync(process.execPath, ['distribution/scripts/ci.mjs', 'prepare-publish'], {stdio:'inherit'});
       - name: Commit generated tree to the dist branch and tag it
-        run: |
-          set -euo pipefail
-          tree="$RUNNER_TEMP/dist-worktree"
-          tag="aikido-dist-v$VERSION"
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          if git ls-remote --exit-code --heads origin dist >/dev/null; then
-            git fetch --no-tags origin dist
-            git worktree add -B dist "$tree" origin/dist
-          else
-            git worktree add --orphan -b dist "$tree"
-          fi
-          git -C "$tree" rm -rq --ignore-unmatch .
-          cp -a "$RUNNER_TEMP/aikido-dist/." "$tree/"
-          git -C "$tree" add -A
-          git -C "$tree" commit -m "dist: aikido $VERSION from $GITHUB_SHA"
-          git -C "$tree" tag -a "$tag" -m "AI-KIDO distribution $VERSION from $GITHUB_SHA"
-          git -C "$tree" push origin dist "refs/tags/$tag"
-          echo "Published $tag at $(git -C "$tree" rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
+        run: require('node:child_process').execFileSync(process.execPath, ['distribution/scripts/ci.mjs', 'publish'], {stdio:'inherit'});

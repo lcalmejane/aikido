@@ -8,17 +8,14 @@ both use the same command and mode paths.
 
 Preview the bootstrap plan from the project directory:
 
-```bash
-node /path/to/zoo-code-package/scripts/bootstrap-plan.mjs \
-  --root "$PWD" --package /path/to/zoo-code-package --mode STANDARD
+```text
+node /path/to/zoo-code-package/scripts/bootstrap-plan.mjs  --root /path/to/project --package /path/to/zoo-code-package --mode STANDARD
 ```
 
 Review the listed files and apply the plan using its returned ID:
 
-```bash
-node /path/to/zoo-code-package/scripts/bootstrap-plan.mjs \
-  --root "$PWD" --package /path/to/zoo-code-package --mode STANDARD \
-  --apply --confirm <plan-id>
+```text
+node /path/to/zoo-code-package/scripts/bootstrap-plan.mjs  --root /path/to/project --package /path/to/zoo-code-package --mode STANDARD  --apply --confirm <plan-id>
 ```
 
 Use `LIGHT` or `UNSET` for another project entry point. Review the plan's

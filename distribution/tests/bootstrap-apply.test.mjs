@@ -44,7 +44,7 @@ function rtkEnvironment(name, enabled) {
   mkdirSync(bin, { recursive: true });
   if (enabled) {
     const command = join(bin, 'rtk');
-    writeFileSync(command, '#!/bin/sh\nprintf "rtk 1.1.0\\n"\n');
+    writeFileSync(command, `#!${process.execPath}\nprocess.stdout.write("rtk 1.1.0\\n");\n`);
     chmodSync(command, 0o755);
   }
   return { ...process.env, PATH: enabled ? `${bin}${delimiter}${process.env.PATH ?? ''}` : bin };

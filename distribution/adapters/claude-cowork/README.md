@@ -9,10 +9,9 @@ separate from Claude Code CLI plugins.
 Create a zip from the generated `claude-cowork` package. Keep the archive
 outside the package directory:
 
-```bash
-cd /path/to/claude-cowork
-zip -r /path/to/aikido-cowork.zip .
-```
+Use an approved local archive tool to create a ZIP of the package directory
+contents, with the plugin manifest at its root. Do not generate an archive
+through a command-interpreter script.
 
 In claude.ai or Claude Desktop, open **Customize > Plugins > Add > Upload
 plugin** and select the zip. If your organization manages plugins, use its
@@ -32,17 +31,14 @@ agents are available from the installed plugin.
 
 To initialize project files, preview and review the plan:
 
-```bash
-node /path/to/plugin-root/scripts/bootstrap-plan.mjs \
-  --root /path/to/project --package /path/to/plugin-root --mode STANDARD
+```text
+node /path/to/plugin-root/scripts/bootstrap-plan.mjs  --root /path/to/project --package /path/to/plugin-root --mode STANDARD
 ```
 
 Apply the reviewed plan using its exact ID:
 
-```bash
-node /path/to/plugin-root/scripts/bootstrap-plan.mjs \
-  --root /path/to/project --package /path/to/plugin-root --mode STANDARD \
-  --apply --confirm <plan-id>
+```text
+node /path/to/plugin-root/scripts/bootstrap-plan.mjs  --root /path/to/project --package /path/to/plugin-root --mode STANDARD  --apply --confirm <plan-id>
 ```
 
 `LIGHT` and `UNSET` are also available. Choose the project folder and paths
