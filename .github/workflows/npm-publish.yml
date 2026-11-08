@@ -1,0 +1,49 @@
+name: npm publish
+
+# Manual only: publishing @aikido/cli requires a maintainer decision, like the distribution release.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version of @aikido/cli (must equal distribution/npm/package.json; x.y.z or x.y.z-prerelease)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: node {0}
+    environment: release
+    permissions:
+      contents: read
+      id-token: write # npm provenance
+    env:
+      VERSION: ${{ inputs.version }}
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: '26'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Check version and that it is not already published
+        run: require('node:child_process').execFileSync(process.execPath, ['distribution/scripts/ci.mjs', 'npm-check'], {stdio:'inherit'});
+      - name: Install Claude Code plugin validator
+        run: require('node:child_process').execFileSync(process.execPath, ['distribution/scripts/ci.mjs', 'install-validator'], {stdio:'inherit'});
+      - name: Run tests
+        run: require('node:child_process').execFileSync(process.execPath, ['distribution/scripts/ci.mjs', 'tests'], {stdio:'inherit'});
+      - name: Build host packages and publish with provenance
+        run: require('node:child_process').execFileSync(process.execPath, ['distribution/scripts/ci.mjs', 'npm-publish'], {stdio:'inherit'});

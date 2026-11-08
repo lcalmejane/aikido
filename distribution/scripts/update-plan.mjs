@@ -2,13 +2,15 @@
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { realpathSync } from 'node:fs';
+import { toolInventoryEnvironment } from '../lib/features.mjs';
+import { syncHosts } from '../lib/sync-hosts.mjs';
 import {
   applyMigration, applyUninstall, applyUpdate, planMigration, planUninstall, planUpdate, restoreUpdateBackup,
 } from '../lib/update-plan.mjs';
 
 function parseArgs(argv) {
   const result = { flags: new Set() };
-  const flags = new Set(['--apply', '--migrate', '--uninstall']);
+  const flags = new Set(['--apply', '--migrate', '--uninstall', '--sync-hosts', '--force']);
   for (let i = 0; i < argv.length; i += 1) {
     const key = argv[i];
     if (!key.startsWith('--')) throw new Error(`Unexpected argument: ${key}`);
@@ -29,6 +31,15 @@ function parseArgs(argv) {
 if (process.argv[1] && realpathSync(resolve(process.argv[1])) === realpathSync(fileURLToPath(import.meta.url))) {
   try {
     const options = parseArgs(process.argv.slice(2));
+    const force = options.flags.has('--force');
+    if (force && (options.flags.has('--migrate') || options.flags.has('--uninstall') || options['--recover'] || options['--keep-local'])) {
+      throw new Error('--force is only valid for an existing project update and excludes --keep-local');
+    }
+    const trust = options['--trust'] ?? 'verified';
+    if (!['verified', 'local'].includes(trust)) throw new Error('--trust must be verified or local');
+    if (options['--trust'] && (options.flags.has('--uninstall') || options['--recover'])) {
+      throw new Error('--trust is only valid with a package (install, update or migration)');
+    }
     const root = resolve(options['--root'] ?? process.cwd());
     const keepLocal = options['--keep-local']?.split(',') ?? [];
     if (options['--keep-local'] && (options.flags.has('--migrate') || options.flags.has('--uninstall') || options['--recover'])) {
@@ -36,6 +47,10 @@ if (process.argv[1] && realpathSync(resolve(process.argv[1])) === realpathSync(f
     }
     if (options.flags.has('--migrate') && options.flags.has('--uninstall')) {
       throw new Error('--migrate and --uninstall cannot be combined');
+    }
+    if (options.flags.has('--sync-hosts')
+      && (!options.flags.has('--apply') || options.flags.has('--uninstall') || options['--recover'])) {
+      throw new Error('--sync-hosts is only valid when applying an install, update or migration');
     }
     if (options['--recover']) {
       if (options['--package'] || options.flags.has('--apply') || options['--confirm']
@@ -77,16 +92,21 @@ if (process.argv[1] && realpathSync(resolve(process.argv[1])) === realpathSync(f
         const plan = planMigration({ root, packageRoot, mode });
         if (options.flags.has('--apply')) {
           const result = applyMigration({ root, packageRoot, mode, expectedPlanId: options['--confirm'] });
+          if (options.flags.has('--sync-hosts')) result.hostSync = syncHosts({ root, env: process.env });
           process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
         } else {
           process.stdout.write(`${JSON.stringify(plan, null, 2)}\n`);
           if (!plan.ready) process.exitCode = 2;
         }
       } else if (options.flags.has('--apply')) {
-        const result = applyUpdate({ root, packageRoot, expectedPlanId: options['--confirm'], keepLocal });
+        const env = toolInventoryEnvironment(process.env, options['--tools-file']);
+        const result = applyUpdate({ root, packageRoot, expectedPlanId: options['--confirm'], keepLocal, env, trust, force });
+        if (options.flags.has('--sync-hosts')) result.hostSync = syncHosts({ root, env });
         process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
       } else {
-        const plan = planUpdate({ root, packageRoot, keepLocal });
+        const plan = planUpdate({
+          root, packageRoot, keepLocal, trust, force, env: toolInventoryEnvironment(process.env, options['--tools-file']),
+        });
         process.stdout.write(`${JSON.stringify(plan, null, 2)}\n`);
         if (!plan.ready) process.exitCode = 2;
       }

@@ -7,17 +7,14 @@ AI-KIDO Memory Bank. It does not change user-level Codex settings.
 
 Keep the package outside the target project. Preview the bootstrap plan:
 
-```bash
-node /path/to/codex-package/scripts/bootstrap-plan.mjs \
-  --root /path/to/project --package /path/to/codex-package --mode STANDARD
+```text
+node /path/to/codex-package/scripts/bootstrap-plan.mjs  --root /path/to/project --package /path/to/codex-package --mode STANDARD
 ```
 
 Review the plan and apply it using its exact `planId`:
 
-```bash
-node /path/to/codex-package/scripts/bootstrap-plan.mjs \
-  --root /path/to/project --package /path/to/codex-package --mode STANDARD \
-  --apply --confirm <plan-id>
+```text
+node /path/to/codex-package/scripts/bootstrap-plan.mjs  --root /path/to/project --package /path/to/codex-package --mode STANDARD  --apply --confirm <plan-id>
 ```
 
 `LIGHT` and `UNSET` are also supported. Existing project instructions and
@@ -44,10 +41,9 @@ AI-KIDO lock under management.
 To remove AI-KIDO integration files while retaining the project's Memory Bank,
 preview and confirm an uninstall:
 
-```bash
+```text
 node /path/to/codex-package/scripts/update-plan.mjs --root /path/to/project --uninstall
-node /path/to/codex-package/scripts/update-plan.mjs \
-  --root /path/to/project --uninstall --apply --confirm <plan-id>
+node /path/to/codex-package/scripts/update-plan.mjs  --root /path/to/project --uninstall --apply --confirm <plan-id>
 ```
 
 Official references:

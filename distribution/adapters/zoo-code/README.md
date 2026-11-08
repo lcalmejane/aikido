@@ -8,17 +8,14 @@ both use the same command and mode paths.
 
 Preview the bootstrap plan from the project directory:
 
-```bash
-node /path/to/zoo-code-package/scripts/bootstrap-plan.mjs \
-  --root "$PWD" --package /path/to/zoo-code-package --mode STANDARD
+```text
+node /path/to/zoo-code-package/scripts/bootstrap-plan.mjs  --root /path/to/project --package /path/to/zoo-code-package --mode STANDARD
 ```
 
 Review the listed files and apply the plan using its returned ID:
 
-```bash
-node /path/to/zoo-code-package/scripts/bootstrap-plan.mjs \
-  --root "$PWD" --package /path/to/zoo-code-package --mode STANDARD \
-  --apply --confirm <plan-id>
+```text
+node /path/to/zoo-code-package/scripts/bootstrap-plan.mjs  --root /path/to/project --package /path/to/zoo-code-package --mode STANDARD  --apply --confirm <plan-id>
 ```
 
 Use `LIGHT` or `UNSET` for another project entry point. Review the plan's
@@ -29,6 +26,12 @@ Use `LIGHT` or `UNSET` for another project entry point. Review the plan's
 Type `/` and select an AI-KIDO command, such as `/init-aikido` or
 `/maj-aikido`. Select an AI-KIDO custom mode from the mode picker to use an
 agent persona.
+
+If `rtk --version` succeeds during installation or update, AI-KIDO sets the
+local `rtk` flag to `ON` in `.aikido/state/features.json` and installs
+`.roo/rules/rtk.md`. `/check-cli` refreshes this flag from the current host;
+the feature-state file is local and ignored by Git. Zoo Code has no RTK-native
+command-rewrite hook, so this rule only instructs agents to use the RTK CLI.
 
 ## Update or remove
 

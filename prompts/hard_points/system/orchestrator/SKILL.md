@@ -65,6 +65,17 @@ Unknown native capability yields `native_parallel_unverified`, never a takeover.
 
 ## Live tool binding
 
+For an AI Hub, bind the [capability and worker contract](ai-hub.md). Discover its
+authenticated project-scoped profile, intersect adapter support and permissions,
+and activate only verified operations. Model APIs and knowledge MCP servers alone
+do not supply a stateful pool. Apply the [Swarm policy](swarm.md) to every task.
+
+At every delegation apply [Swarm, peer communication and reuse](swarm.md).
+Choose useful parallelism, communication (`none|relay|peer`) and lifecycle
+(`fresh|retain|reset`) independently from verified executor capabilities.
+Pass the decision and known peers through `task.context.collaboration`.
+Do not infer peer mailboxes or reset support from a launch/follow-up tool.
+
 Capture exact Tool IDs and input schemas, including MCP server/tool namespaces.
 Identify delegation, progress, wait/result, follow-up and completion capabilities
 from actual tool descriptions. Do not require a specific harness's tool names.
@@ -181,12 +192,15 @@ reported `stale` and must be refreshed or confirmed before being trusted.
    `price_source_csv`) and returns `price_catalog` (`source`, `matched`, `unmatched`)
    next to `route`. A measured row of `routing.models` replaces the estimate.
 
-```bash
-echo '{"host":"roo-code","can_select_model":true,
+Save the snapshot using the host's file editor, then pass it explicitly.
+```json
+{"host":"roo-code","can_select_model":true,
   "discovered_models":[{"model":"gpt-6-luna","connection":"p1","authorized":true,
     "context_tokens":128000,"mode":"aikido-cheap"}],
-  "task":{"class":"lookup","input_tokens":1000,"output_tokens":500,"context_tokens":1500}}' \
-  | node prompts/hard_points/system/orchestrator/runtime.mjs
+  "task":{"class":"lookup","input_tokens":1000,"output_tokens":500,"context_tokens":1500}}
+```
+```text
+node prompts/hard_points/system/orchestrator/runtime.mjs --input capabilities.json
 ```
 
 **Cold start (bounded).** An `estimate` row has no measurements, so it would never
@@ -213,8 +227,8 @@ requires operator permission; do not store request content or secrets there.
 
 From the repository root, pass a JSON snapshot on stdin:
 
-```bash
-node prompts/hard_points/system/orchestrator/runtime.mjs < capabilities.json
+```text
+node prompts/hard_points/system/orchestrator/runtime.mjs --input capabilities.json
 node --test prompts/hard_points/system/orchestrator/runtime.test.mjs
 ```
 
@@ -237,11 +251,11 @@ beyond user permissions) and journals every task and sub-task with
 [tracker.mjs](tracker.mjs), so it can follow progress, relaunch failed work and
 report token consumption:
 
-```bash
-node prompts/hard_points/system/orchestrator/tracker.mjs init < request.json
+```text
+node prompts/hard_points/system/orchestrator/tracker.mjs init --input request.json
 node prompts/hard_points/system/orchestrator/tracker.mjs start  <req> <task> [aikido|native]
 node prompts/hard_points/system/orchestrator/tracker.mjs run    <req> <task> [--timeout s] -- <cmd> [args]
-node prompts/hard_points/system/orchestrator/tracker.mjs result <req> <task> < reply.json
+node prompts/hard_points/system/orchestrator/tracker.mjs result <req> <task> --input reply.json
 node prompts/hard_points/system/orchestrator/tracker.mjs usage  <req> <task> <in> <out> [model]
 node prompts/hard_points/system/orchestrator/tracker.mjs retry  <req> <task> [--force]
 node prompts/hard_points/system/orchestrator/tracker.mjs status <req>
@@ -254,8 +268,8 @@ exit 3). The journal is one append-only JSONL file per request in
 state is rebuilt by replay, so a crash or a new session resumes without loss.
 Override the directory with `AIKIDO_ORCH_DIR`.
 
-- `run` executes without a shell (`shell: false`; pass `["sh","-c",...]`
-  explicitly if a shell is needed), with a timeout, a bounded output tail and
+- `run` executes without a shell (`shell: false`; no interpreter command
+  strings or pipelines), with a timeout, a bounded output tail and
   masked credentials. It journals exit code, duration, signal and timeout; it
   does not decide the task result.
 - `result` validates the reply with `task-result/1`; a malformed reply is

@@ -2,7 +2,10 @@ import { createHash } from 'node:crypto';
 import { lstatSync, readFileSync, readdirSync, realpathSync } from 'node:fs';
 import { dirname, join, posix, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { HOSTS, isSafeRelativePath } from './lock.mjs';
+import {
+  HOSTS, isPrivateTaskStorePath, isPrivateTaskStorePathWithin,
+  isPrivateTaskStoreRoot, isSafeRelativePath,
+} from './lock.mjs';
 import { loadCatalog, renderCatalogEntries } from './catalog.mjs';
 import { loadManifest, readTemplate, render, selectTemplates, validateManifest } from './templates.mjs';
 
@@ -13,6 +16,9 @@ const VERSION = /^\d+\.\d+(\.\d+)?(-[0-9A-Za-z.-]+)?$/;
 
 function packageFile(root, path) {
   if (!isSafeRelativePath(path)) throw new Error(`Unsafe package path: ${path}`);
+  if (isPrivateTaskStorePathWithin(root, path)) {
+    throw new Error(`Private Task Store path cannot be included: ${path}`);
+  }
   let current = root;
   const parts = path.split('/');
   let info;
@@ -38,12 +44,16 @@ function readJson(path, label) {
   }
 }
 
-function packageFiles(directory, prefix = '') {
+function packageFiles(directory, prefix = '', root = directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const childPrefix = prefix ? `${prefix}/${entry.name}` : entry.name;
     const absolute = join(directory, entry.name);
+    if (isPrivateTaskStorePathWithin(root, childPrefix) ||
+        (entry.isDirectory() && isPrivateTaskStoreRoot(absolute))) {
+      throw new Error(`Private Task Store path in package tree: ${childPrefix}`);
+    }
     if (entry.isSymbolicLink()) throw new Error(`Symlink in package tree: ${childPrefix}`);
-    if (entry.isDirectory()) return packageFiles(absolute, childPrefix);
+    if (entry.isDirectory()) return packageFiles(absolute, childPrefix, root);
     return entry.isFile() ? [childPrefix] : [];
   });
 }
@@ -91,7 +101,13 @@ function validateLinks(templateRoot, templates, packageManifest, catalog) {
   return errors;
 }
 
-export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
+// Identity checks (ledger sums, listed files, official commit). With trust "local" they become
+// reported warnings: a downloaded, edited or forked package is the user's own to install.
+// Safety checks (paths, symbolic links, host, schema) always block, whatever the origin.
+const IDENTITY_ERROR = /^(hash mismatch|invalid hash|invalid payload hash|payload is not covered|project file source\/hash mismatch|unlisted package file|ledger file is missing|package source must match|source\.ref must be portable|uncommitted package needs|payload file ledger contains)/;
+
+export function validatePackage(packageRoot, { catalog = loadCatalog(), trust = 'verified' } = {}) {
+  if (!['verified', 'local'].includes(trust)) throw new Error(`Unknown package trust: ${trust}`);
   const root = realpathSync(resolve(packageRoot));
   if (!lstatSync(root).isDirectory()) throw new Error('Package root must be a directory');
   const manifestPath = packageFile(root, 'package-manifest.json');
@@ -99,6 +115,7 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
   const errors = [];
   const error = (message) => errors.push(message);
   if (pkg.schemaVersion !== 1) error('package schemaVersion must be 1');
+  if (pkg.runtimeContract !== undefined && pkg.runtimeContract !== 1) error('unknown package runtime contract');
   if (!HOSTS.includes(pkg.host)) error(`unknown host: ${pkg.host}`);
   if (!catalog.hosts?.[pkg.host]?.enabled) error(`host is not enabled in the distribution catalog: ${pkg.host}`);
   if (catalog.hosts?.[pkg.host]?.commandDelivery !== pkg.commandDelivery) error('command delivery differs from the distribution catalog');
@@ -120,6 +137,10 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
   for (const entry of pkg.files) {
     if (!entry || !isSafeRelativePath(entry.path)) {
       error(`unsafe package file path: ${entry?.path}`);
+      continue;
+    }
+    if (isPrivateTaskStorePath(entry.path)) {
+      error(`private Task Store path must not be included: ${entry.path}`);
       continue;
     }
     if (ledger.has(entry.path)) {
@@ -149,6 +170,7 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
     'lib/bootstrap-plan.mjs',
     'lib/check-cli.mjs',
     'lib/catalog.mjs',
+    'lib/features.mjs',
     'lib/lock.mjs',
     'lib/managed-blocks.mjs',
     'lib/package.mjs',
@@ -161,6 +183,17 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
     'scripts/validate-package.mjs',
   ]) {
     if (!ledger.has(path)) error(`package runtime is missing: ${path}`);
+  }
+  if (pkg.runtimeContract === 1) {
+    for (const path of ['RUNTIME.md', 'lib/node-runtime.mjs']) {
+      if (!ledger.has(path)) error(`package runtime is missing: ${path}`);
+    }
+  }
+  if (pkg.hostSync !== undefined && pkg.hostSync !== 1) error('unknown package host-sync contract');
+  if (pkg.hostSync === 1) {
+    for (const path of ['lib/host-detect.mjs', 'lib/sync-hosts.mjs', 'scripts/sync-hosts.mjs']) {
+      if (!ledger.has(path)) error(`package runtime is missing: ${path}`);
+    }
   }
   if (pkg.host === 'claude-code' || pkg.host === 'claude-cowork') {
     const label = pkg.host === 'claude-cowork' ? 'Claude Cowork' : 'Claude Code';
@@ -452,9 +485,17 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
     targets.add(entry.target);
     if (!['three-way', 'create-only'].includes(entry.policy)) error(`invalid project file policy: ${entry.target}`);
     if (!['template', 'generated', 'adapter', 'payload'].includes(entry.origin)) error(`invalid project file origin: ${entry.target}`);
+    if (entry.feature !== undefined
+      && (entry.feature !== 'rtk' || pkg.host !== 'zoo-code' || entry.target !== '.roo/rules/rtk.md')) {
+      error(`invalid optional project feature: ${entry.target}`);
+    }
     const packaged = ledger.get(entry.source);
     if (!packaged || packaged.sha256 !== entry.sha256) error(`project file source/hash mismatch: ${entry.source}`);
     else if (['payload', 'template'].includes(packaged.role)) error(`project file must point to an adapter artifact: ${entry.source}`);
+  }
+  if (pkg.host === 'zoo-code') {
+    const rtkRules = pkg.projectFiles.filter((entry) => entry.feature === 'rtk');
+    if (rtkRules.length !== 1) error('Zoo Code package must include exactly one optional RTK rules file');
   }
   let templates = null;
   const templateRoot = join(root, 'templates');
@@ -479,7 +520,7 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
     errors.push(...validateLinks(templateRoot, templates, pkg, catalog));
   }
   try {
-    const actualFiles = new Set(packageFiles(root));
+    const actualFiles = new Set(packageFiles(root, '', root));
     if (pkg.host === 'claude-cowork') {
       if (actualFiles.size > 5000) error('Cowork plugins must contain at most 5000 files');
       const bytes = [...actualFiles].reduce((total, path) => total + lstatSync(packageFile(root, path)).size, 0);
@@ -492,12 +533,19 @@ export function validatePackage(packageRoot, { catalog = loadCatalog() } = {}) {
     error(exception.message);
   }
 
+  const warnings = [];
+  if (trust === 'local') {
+    for (const message of errors.splice(0)) (IDENTITY_ERROR.test(message) ? warnings : errors).push(message);
+  }
   if (errors.length) throw new Error(`Invalid package ${pkg.host ?? '(unknown host)'}:\n${errors.join('\n')}`);
   return {
     valid: true,
     host: pkg.host,
     version: pkg.version,
     sourceRevision: pkg.sourceRevision,
+    source: pkg.source,
+    trust,
+    warnings,
     packageFiles: ledger.size,
     payloadFiles: pkg.payloadFiles.length,
     projectFiles: pkg.projectFiles.length,

@@ -3,12 +3,12 @@ import {
   after, beforeEach, test,
 } from 'node:test';
 import {
-  existsSync, mkdirSync, readFileSync, rmSync, writeFileSync,
+  chmodSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync,
 } from 'node:fs';
-import { join } from 'node:path';
+import { delimiter, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { loadCatalog } from '../lib/catalog.mjs';
-import { auditCli, resolveHost } from '../lib/check-cli.mjs';
+import { auditCli, parseCheckCliArgs, resolveHost } from '../lib/check-cli.mjs';
 import { blockHash, findBlock } from '../lib/managed-blocks.mjs';
 import { validatePackage } from '../lib/package.mjs';
 import {
@@ -104,7 +104,11 @@ test('CLI emits structured JSON and refuses to guess its host', () => {
     encoding: 'utf8',
   });
   assert.equal(checked.status, 0, checked.stderr);
-  assert.equal(JSON.parse(checked.stdout).created.length, expectedWrapperCount('copilot-vscode'));
+  const report = JSON.parse(checked.stdout);
+  assert.equal(report.created.length, expectedWrapperCount('copilot-vscode'));
+  assert.equal(report.nodeRuntime.version, process.versions.node);
+  assert.equal(report.nodeRuntime.executable, process.execPath);
+  assert.equal(report.nodeRuntime.baseline, '24.0.0');
   const ambiguous = spawnSync(process.execPath, [script, '--root', ROOT, '--check'], { encoding: 'utf8', env: {} });
   assert.equal(ambiguous.status, 2);
   assert.match(JSON.parse(ambiguous.stdout).error.message, /ambiguous; pass --host/);
@@ -339,6 +343,36 @@ test('Zoo Code mode merge preserves custom modes and removes orphaned managed ag
   assert.doesNotMatch(readFileSync(modesPath, 'utf8'), /agent-aikido-art-director/);
 });
 
+test('Zoo Code check refreshes the local RTK flag and dry-run leaves state unchanged', () => {
+  const lockDirectory = join(ROOT, '.aikido');
+  mkdirSync(lockDirectory, { recursive: true });
+  writeFileSync(join(lockDirectory, 'lock.json'), `${JSON.stringify({
+    schemaVersion: 1,
+    aikido: { version: '1.5.0', source: { type: 'local', ref: 'workspace' } },
+    mode: 'STANDARD',
+    hosts: ['zoo-code'],
+    installedAt: new Date().toISOString(),
+    files: [],
+    managedBlocks: [],
+  }, null, 2)}\n`);
+
+  const bin = join(ROOT, 'rtk-bin');
+  mkdirSync(bin, { recursive: true });
+  const command = join(bin, 'rtk');
+  writeFileSync(command, `#!${process.execPath}\nprocess.stdout.write("rtk 1.1.0\\n");\n`);
+  chmodSync(command, 0o755);
+  const env = { ...process.env, PATH: `${bin}${delimiter}${process.env.PATH ?? ''}` };
+  const statePath = join(ROOT, '.aikido/state/features.json');
+
+  const dryRun = auditCli({ root: ROOT, hostId: 'zoo-code', env, dryRun: true, catalog });
+  assert.equal(dryRun.featureFlags.rtk, 'ON');
+  assert.equal(existsSync(statePath), false);
+
+  const checked = auditCli({ root: ROOT, hostId: 'zoo-code', env, catalog });
+  assert.equal(checked.featureFlags.rtk, 'ON');
+  assert.equal(JSON.parse(readFileSync(statePath, 'utf8')).flags.rtk, 'ON');
+});
+
 test('Zoo Code recognizes existing unmarked distribution modes without duplicating them', () => {
   const legacyModes = rooModes(catalog.agents.map((agent) => agentProfile(agent)));
   write('.roomodes', legacyModes);
@@ -347,6 +381,110 @@ test('Zoo Code recognizes existing unmarked distribution modes without duplicati
   const output = readFileSync(join(ROOT, '.roomodes'), 'utf8');
   assert.equal((output.match(/slug: agent-aikido-helper/g) ?? []).length, 1);
   assert.equal((output.match(/slug: agent-aikido-art-director/g) ?? []).length, 1);
+});
+
+test('optimization feature detection refreshes ON/OFF for any host without changing normal checks or wrappers', () => {
+  const bin = join(ROOT, 'rtk-bin');
+  mkdirSync(bin);
+  const command = join(bin, 'rtk');
+  writeFileSync(command, `#!${process.execPath}\nprocess.stdout.write("rtk test\\n");\n`);
+  chmodSync(command, 0o755);
+  const env = { PATH: bin };
+  const statePath = join(ROOT, '.aikido/state/features.json');
+  for (const hostId of ['claude-code', 'codex', 'copilot-vscode', 'claude-cowork']) {
+    const normal = auditCli({ root: ROOT, hostId, env, catalog });
+    assert.deepEqual(normal.featureFlags, {});
+    assert.equal(existsSync(statePath), false);
+
+    const preview = auditCli({ root: ROOT, hostId, env, detectFeatures: true, dryRun: true, catalog });
+    assert.equal(preview.featureFlags.rtk, 'ON');
+    assert.equal(existsSync(statePath), false);
+
+    write('.aikido/state/features.json', '{"schemaVersion":1,"flags":{"other":"ON","rtk":"OFF"}}\n');
+    const checked = auditCli({ root: ROOT, hostId, env, detectFeatures: true, catalog });
+    assert.equal(checked.featureFlags.rtk, 'ON');
+    assert.deepEqual(JSON.parse(readFileSync(statePath, 'utf8')).flags, { other: 'ON', rtk: 'ON' });
+
+    rmSync(command);
+    const previous = readFileSync(statePath);
+    const missingPreview = auditCli({ root: ROOT, hostId, env, detectFeatures: true, dryRun: true, catalog });
+    assert.equal(missingPreview.featureFlags.rtk, 'OFF');
+    assert.deepEqual(readFileSync(statePath), previous);
+    const missing = auditCli({ root: ROOT, hostId, env, detectFeatures: true, catalog });
+    assert.equal(missing.featureFlags.rtk, 'OFF');
+    assert.deepEqual(JSON.parse(readFileSync(statePath, 'utf8')).flags, { other: 'ON', rtk: 'OFF' });
+    assert.equal(existsSync(join(ROOT, '.aikido/lock.json')), false);
+    assert.equal(existsSync(join(ROOT, '.roo/rules/rtk.md')), false);
+    assert.equal(existsSync(join(ROOT, 'AGENTS.md')), false);
+    rmSync(statePath);
+    writeFileSync(command, `#!${process.execPath}\nprocess.stdout.write("rtk test\\n");\n`);
+    chmodSync(command, 0o755);
+  }
+  assert.deepEqual(parseCheckCliArgs(['--check', '--detect-features', '--dry-run']), {
+    '--check': true, '--detect-features': true, '--dry-run': true,
+  });
+  assert.throws(() => parseCheckCliArgs(['--detect-features', '--detect-features']), /Duplicate option/);
+});
+
+test('optimization RTK detection reports execution errors instead of persisting OFF', () => {
+  const bin = join(ROOT, 'broken-rtk-bin');
+  mkdirSync(bin);
+  const command = join(bin, 'rtk');
+  writeFileSync(command, `#!${process.execPath}\nprocess.stderr.write("broken RTK\\n"); process.exitCode = 1;\n`);
+  chmodSync(command, 0o755);
+  write('.aikido/state/features.json', '{"schemaVersion":1,"flags":{"rtk":"ON"}}\n');
+  const statePath = join(ROOT, '.aikido/state/features.json');
+  const previous = readFileSync(statePath);
+  const script = new URL('../scripts/check-cli.mjs', import.meta.url).pathname;
+  const checked = spawnSync(process.execPath, [
+    script, '--root', ROOT, '--host', 'copilot-vscode', '--check', '--detect-features',
+  ], { encoding: 'utf8', env: { PATH: bin } });
+  assert.equal(checked.status, 2);
+  assert.equal(JSON.parse(checked.stdout).status, 'error');
+  assert.match(JSON.parse(checked.stdout).error.message, /RTK detection failed: broken RTK/);
+  assert.deepEqual(readFileSync(statePath), previous);
+});
+
+test('command creation and optimization share the portable RTK gate', () => {
+  for (const name of ['create-command', 'optimize-command-with-aikido-agents']) {
+    const command = readFileSync(new URL(`../../prompts/hard_points/commands/${name}.md`, import.meta.url), 'utf8');
+    assert.match(command, /check-cli\.md#rtk-detection-for-command-optimization/);
+    assert.match(command, /--check --detect-features --dry-run/);
+    assert.match(command, /featureFlags\.rtk/);
+    assert.match(command, /OFF fallback/);
+    assert.match(command, /Kimono capability gate/);
+    assert.match(command, /feature gate/);
+  }
+});
+
+test('Kimono check uses a host inventory file, preserves unknown state and never writes in dry-run', () => {
+  const names = ['aikido_snapshot', 'aikido_search', 'aikido_file'].map((name) => `remote__${name}`);
+  const inventoryPath = join(ROOT, 'tools.json');
+  writeFileSync(inventoryPath, JSON.stringify(names));
+  const script = new URL('../scripts/check-cli.mjs', import.meta.url).pathname;
+  const statePath = join(ROOT, '.aikido/state/features.json');
+  const args = [script, '--root', ROOT, '--host', 'copilot-vscode', '--check', '--tools-file', inventoryPath];
+  const preview = spawnSync(process.execPath, [...args, '--dry-run'], { encoding: 'utf8', env: {} });
+  assert.equal(preview.status, 0, preview.stderr);
+  assert.deepEqual(JSON.parse(preview.stdout).featureFlags, { kimono: 'ON' });
+  assert.equal(existsSync(statePath), false);
+  const checked = spawnSync(process.execPath, args, { encoding: 'utf8', env: {} });
+  assert.equal(checked.status, 0, checked.stderr);
+  assert.equal(JSON.parse(checked.stdout).kimono.tools.aikido_search, names[1]);
+  const previous = readFileSync(statePath);
+  const unknown = auditCli({ root: ROOT, hostId: 'copilot-vscode', env: {}, catalog });
+  assert.equal(unknown.kimono.status, 'unknown');
+  assert.deepEqual(readFileSync(statePath), previous);
+  const missing = auditCli({ root: ROOT, hostId: 'copilot-vscode', env: { AIKIDO_TOOLS: '[]' }, catalog });
+  assert.equal(missing.featureFlags.kimono, 'OFF');
+  assert.equal(JSON.parse(readFileSync(statePath, 'utf8')).flags.kimono, 'OFF');
+  const malformed = spawnSync(process.execPath, args, { encoding: 'utf8', env: { AIKIDO_TOOLS: 'broken' } });
+  assert.equal(malformed.status, 0, malformed.stderr);
+  writeFileSync(inventoryPath, '{}');
+  const failed = spawnSync(process.execPath, args, { encoding: 'utf8', env: {} });
+  assert.equal(failed.status, 2);
+  assert.match(JSON.parse(failed.stdout).error.message, /AIKIDO_TOOLS/);
+  assert.equal(JSON.parse(readFileSync(statePath, 'utf8')).flags.kimono, 'ON');
 });
 
 test('generated distributions package the runtime and canonical check-cli prompt for every enabled host', () => {
@@ -370,6 +508,15 @@ test('generated distributions package the runtime and canonical check-cli prompt
       assert.ok(manifest.files.some((entry) => entry.path === path), `${host}: ${path}`);
     }
     assert.ok(manifest.files.some(({ path }) => path.includes('check-cli')), `${host} command wrapper`);
+    for (const entry of manifest.files.filter(({ role }) => ['agent', 'agent-configuration'].includes(role))) {
+      assert.match(readFileSync(join(packageRoot, entry.path), 'utf8'), /kimono-capability-gate/, `${host}: ${entry.path}`);
+      assert.match(readFileSync(join(packageRoot, entry.path), 'utf8'), /native search/, `${host}: ${entry.path}`);
+    }
+    assert.match(
+      readFileSync(join(packageRoot, 'payload/prompts/hard_points/system/search/SKILL.md'), 'utf8'),
+      /Kimono Capability Gate/,
+      `${host}: shared search policy`,
+    );
     assert.equal(validatePackage(packageRoot, { catalog }).valid, true, host);
   }
   const packagedCli = spawnSync(process.execPath, [
@@ -377,7 +524,11 @@ test('generated distributions package the runtime and canonical check-cli prompt
     '--root', ROOT,
     '--host', 'copilot-vscode',
     '--check',
+    '--detect-features',
+    '--dry-run',
   ], { encoding: 'utf8' });
   assert.equal(packagedCli.status, 0, packagedCli.stderr);
   assert.equal(JSON.parse(packagedCli.stdout).created.length, expectedWrapperCount('copilot-vscode'));
+  assert.ok(['ON', 'OFF'].includes(JSON.parse(packagedCli.stdout).featureFlags.rtk));
+  assert.equal(existsSync(join(ROOT, '.aikido/state/features.json')), false);
 });

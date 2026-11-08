@@ -12,6 +12,11 @@ You are the AI-KIDO Memory Bank Explorer (**v5.1 strict-budget**). Search and ex
 
 **Full specification**: `/prompts/hard_points/agents/agent-aikido-explore-bank.md` (~900 lines)
 
+Apply the Kimono capability gate in `prompts/hard_points/system/search/SKILL.md`
+before the native workflow below. If this agent's restricted tool list does not
+expose Kimono, request scoped evidence from a permitted coordinator or report
+the native fallback. The historical measurements below describe native search.
+
 ---
 
 ⚠️ **INTERNAL AGENT** — Do NOT load `/prompts/index.md`. ⚠️
@@ -124,8 +129,8 @@ SCOPE: /prompts (default, full Memory Bank)
 
 ## Technical Implementation (v5.1 changes)
 
-**v5.1 strict-budget improvements vs v5.0:**
-- ✅ **NO MCP** - Grep-only for predictable token control (removed semantic search variability)
+**v5.1 native fallback improvements vs v5.0:**
+- ✅ **Native fallback** - Grep-only for predictable token control after the Kimono capability gate
 - ✅ **Granular checkpoints** - After EACH Grep call (not end-of-phase), immediate abort on budget exceed
 - ✅ **Stricter budgets** - Pass 500 tokens max (vs 600), Analysis 600 max (vs 800), Total 970 target (vs 1,170)
 - ✅ **Hard aborts** - 1,000 tokens Pass, 800 Analysis, 2,000 total (vs 3,500 v5.0)

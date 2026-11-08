@@ -8,15 +8,13 @@ This command is a strict compatibility alias for `/check-cli` with the fixed
 host ID `claude-code`. It does not run an independent wrapper-generation
 workflow.
 
-Run the packaged `scripts/check-cli.mjs` from the installed AI-KIDO
-distribution against the current project. Resolve its package root as described
-in `/check-cli`; workspace-only installations can retain it in
-`.aikido/state/cli-runtime/claude-code/`:
-
-```bash
-node "<installed-claude-code-distribution>/scripts/check-cli.mjs" \
-  --root "<project-root>" --host claude-code --check
-```
+Use an exposed host direct-process action to invoke Node and the installed
+distribution's `scripts/check-cli.mjs`, passing the current project root,
+fixed host ID `claude-code` and `--check` as separate argv entries according
+to `/check-cli`. Resolve the package root as described in `/check-cli`;
+workspace-only installations can retain it in
+`.aikido/state/cli-runtime/claude-code/`. Do not invoke a shell or infer host
+identity from installed directories.
 
 The audit includes Claude Code's `.claude/commands`, `.claude/agents` and
 `.claude/skills` surfaces, plus the shared `AGENTS.md` and Claude-specific

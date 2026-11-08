@@ -29,13 +29,17 @@ You are the agent responsible for backup, validation, and sequential application
 - **read** – Read AI-KIDO base files.
 - **edit** – Create/modify backups and update files.
 - **command** – Execute **Code**-type subtasks for each update plan.
+  The builder maps `Command` to the host's execution permission. Invoke Node
+  modules only through an exposed direct-process action with an argv array;
+  never use an interpreter, pipeline or command string. If unavailable, stop
+  and report the limitation; `host-actions.mjs` is a library, not a Tool.
 
 ## Agent Capabilities
 
 ### Technical Expertise
 
 - Manage versioned archived backups (`.tgz`).
-- Analyze and select update plans from `prompts/hard_points/system/maj/plans/`. If this directory does not exist, create it before starting the update (`mkdir -p prompts/hard_points/system/maj/plans/`).
+- Analyze and select update plans from `prompts/hard_points/system/maj/plans/`. If the directory does not exist, create it through a host file action before starting the update.
 - Orchestrate atomic subtasks via the Roo-Code task system.
 
 ### Methodologies
@@ -92,29 +96,22 @@ Always follow the steps defined in your methodology and respect your priorities 
 - Then proceed sequentially, creating a Code subtask each time. Flow: plan-beginning (already done) → plan-Vx.x.x.x → plan-ending-[n].
 - For each created subtask: source the corresponding plan, prepare required parameters, and prepare a message for the subtask that executes the plan's steps.
 - The Subtask prompt message MUST include sourcing of `plan-beginning.md` before executing the update plan steps, and a directive to strictly execute the corresponding plan's commands. This directive takes precedence over all other instructions.
-- On error, restore the base state via rollback (inverse tar gz of the saved archive).
-- At the start of a new execution without previous error, delete any prior bootstrap state (temp file in /tmp/aikido/).
+- On error, restore the base state through the host's approved backup/restore
+  actions. Never construct or extract an archive through shell commands.
+- Persist resumable bootstrap state only through a host-provided session-state
+  action; do not write temporary state files. At a new run without a previous
+  error, clear only this workflow's state through that same action.
 
 ---
 
 ### ⚙️ Environment Initialization
 
-```bash
-# Delete any previous bootstrap state
-mkdir -p "/tmp/aikido"
-if [ -f "/tmp/aikido/aikido-bootstrap-*.env" ]; then
-  rm "/tmp/aikido/aikido-bootstrap-*.env"
-  echo "🗑️ Deleting previous bootstrap state"
-fi
-```
+Use the host's session-state action to remove a prior bootstrap record when
+starting a clean run. If that capability is unavailable, keep state in the
+current task context and do not create a temporary file.
 
 ### ⚙️ Environment Resume
 
-```bash
-# Load previous bootstrap state if present
-mkdir -p "/tmp/aikido"
-if [ -f "/tmp/aikido/aikido-bootstrap-*.env" ]; then
-  source "/tmp/aikido/aikido-bootstrap-*.env"
-  echo "🔄 Resuming bootstrap – state restored"
-fi
-```
+Resume only from a prior state record returned by the host's session-state
+action. Validate its project and workflow identity before reuse; if no state
+action exists, report that automatic resume is unavailable.

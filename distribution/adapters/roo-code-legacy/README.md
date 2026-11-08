@@ -8,17 +8,14 @@ one package per project because both use the same command and mode paths.
 
 Preview the bootstrap plan:
 
-```bash
-node /path/to/roo-code-package/scripts/bootstrap-plan.mjs \
-  --root "$PWD" --package /path/to/roo-code-package --mode STANDARD
+```text
+node /path/to/roo-code-package/scripts/bootstrap-plan.mjs  --root /path/to/project --package /path/to/roo-code-package --mode STANDARD
 ```
 
 Review the plan and apply it using its returned ID:
 
-```bash
-node /path/to/roo-code-package/scripts/bootstrap-plan.mjs \
-  --root "$PWD" --package /path/to/roo-code-package --mode STANDARD \
-  --apply --confirm <plan-id>
+```text
+node /path/to/roo-code-package/scripts/bootstrap-plan.mjs  --root /path/to/project --package /path/to/roo-code-package --mode STANDARD  --apply --confirm <plan-id>
 ```
 
 If the project already has a `.roomodes` file, review that planned change

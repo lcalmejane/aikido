@@ -6,8 +6,11 @@ import {
 } from 'node:fs';
 import { dirname, join, posix, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { HOSTS, isSafeRelativePath } from '../lib/lock.mjs';
+import {
+  HOSTS, isPrivateTaskStorePath, isPrivateTaskStorePathWithin, isPrivateTaskStoreRoot, isSafeRelativePath,
+} from '../lib/lock.mjs';
 import { loadCatalog } from '../lib/catalog.mjs';
+import { NODE_BASELINE } from '../lib/node-runtime.mjs';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const COMMAND_DELIVERY = new Set([
@@ -21,6 +24,9 @@ const COMMAND_DELIVERY = new Set([
 const AGENT_FORMATS = new Set(['claude-plugin', 'copilot', 'codex', 'kiro', 'antigravity', 'roomodes']);
 const PLUGIN_AGENT_FORMATS = new Set(['claude-plugin']);
 const CAPABILITIES = ['read', 'write', 'shell', 'delegate'];
+const PRIVATE_BOUNDARY_RUNTIME = [
+  'prompts/hard_points/system/structure/scripts/lib/private-task-store.mjs',
+];
 const CANONICAL_TOOLS = {
   Read: 'read', Grep: 'read', Glob: 'read',
   Edit: 'write', Write: 'write',
@@ -47,6 +53,7 @@ function within(root, path) {
 
 function assertSourcePath(path, type, root = REPO) {
   if (!isSafeRelativePath(path)) throw new Error(`Unsafe source path: ${path}`);
+  if (isPrivateTaskStorePathWithin(root, path)) throw new Error(`Private Task Store paths cannot be packaged: ${path}`);
   let absolute = root;
   const parts = path.split('/');
   let info;
@@ -64,19 +71,26 @@ function assertSourcePath(path, type, root = REPO) {
 function listFiles(directory) {
   return readdirSync(directory, { withFileTypes: true }).sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)).flatMap((entry) => {
     const absolute = join(directory, entry.name);
+    const path = relative(REPO, absolute).split(sep).join('/');
+    if (isPrivateTaskStorePathWithin(REPO, path) ||
+        (entry.isDirectory() && isPrivateTaskStoreRoot(absolute))) return [];
     if (entry.isSymbolicLink()) throw new Error(`Symbolic link in generated source tree: ${absolute}`);
     return entry.isDirectory() ? listFiles(absolute) : entry.isFile() ? [absolute] : [];
   });
 }
 
-function trackedPayload() {
-  const paths = execFileSync('git', ['ls-files', '-z', '--', 'prompts/hard_points', 'LICENSE', 'TRADEMARK.md'], {
+function trackedPayload(catalog) {
+  const tracked = execFileSync('git', ['ls-files', '-z', '--', 'prompts/hard_points', 'LICENSE', 'TRADEMARK.md'], {
     cwd: REPO,
     encoding: 'utf8',
-  }).split('\0').filter(Boolean).filter((path) => !path.endsWith('.test.mjs')).sort();
+  }).split('\0').filter(Boolean).filter((path) => !path.endsWith('.test.mjs'))
+    .filter((path) => !isPrivateTaskStorePath(path))
+    .filter((path) => existsSync(join(REPO, path))).sort();
+  const commandSources = catalog.commands.map((command) => command.source);
+  const paths = [...new Set([...tracked, ...commandSources, ...PRIVATE_BOUNDARY_RUNTIME])].sort();
   const hardPoints = paths.filter((path) => path.startsWith('prompts/hard_points/'));
-  // The payload is exactly the tracked hard_points tree plus the two legal notices; the file count
-  // is not pinned so the knowledge base can grow without touching the distribution.
+  // Include catalog command sources even when newly added and not yet tracked;
+  // all other payload files remain the tracked hard_points tree and legal notices.
   const legal = paths.filter((path) => !path.startsWith('prompts/hard_points/'));
   if (hardPoints.length === 0 || legal.length !== 2 || !paths.includes('LICENSE') || !paths.includes('TRADEMARK.md')) {
     throw new Error(`Unexpected tracked payload closure: ${hardPoints.length} hard points and ${legal.length} other files`);
@@ -210,18 +224,22 @@ function commandDescription(source, name) {
   return (description ?? `Run the AI-KIDO ${name} command`).replaceAll('\\', '\\\\').replaceAll('"', '\\"');
 }
 
+const SEARCH_POLICY = 'Before searching, apply `prompts/hard_points/system/search/SKILL.md#kimono-capability-gate`: '
+  + 'prefer Kimono only when its tools are actually exposed to this executor; keep native search for verification or explicit fallback. '
+  + 'Never assume parent MCP tools are inherited or widen tool permissions.\n';
+
 export function canonicalCommandWrapper(command, sourceText, invocation = `/${command.name}`) {
   return `---\nname: ${command.name}\ndescription: "${commandDescription(sourceText, command.name)}"\n---\n\n`
     + `# ${invocation}\n\n`
     + `Read and execute \`${command.source}\` from the initialized project's AI-KIDO Memory Bank.`
-    + `\n\nRun the AI-KIDO bootstrap first if this project has no \`prompts/hard_points/\` directory.\n`;
+    + `\n\nRun the AI-KIDO bootstrap first if this project has no \`prompts/hard_points/\` directory.\n\n${SEARCH_POLICY}`;
 }
 
 export function nativeCommandWrapper(command, sourceText) {
   return `---\ndescription: "${commandDescription(sourceText, command.name)}"\n---\n\n`
     + `# /${command.name}\n\n`
     + `Read and execute \`${command.source}\` from the initialized project's AI-KIDO Memory Bank.`
-    + `\n\nRun the AI-KIDO bootstrap first if this project has no \`prompts/hard_points/\` directory.\n`;
+    + `\n\nRun the AI-KIDO bootstrap first if this project has no \`prompts/hard_points/\` directory.\n\n${SEARCH_POLICY}`;
 }
 
 export function agentProfile(agent, sourceRoot = REPO) {
@@ -260,6 +278,13 @@ function hostTools(format, profile) {
 }
 
 function agentInstructions(profile, format) {
+  const collaborationSource = format === 'claude-plugin' && !profile.projectSource
+    ? 'When using the bundled role, read `${CLAUDE_PLUGIN_ROOT}/payload/prompts/hard_points/system/orchestrator/swarm.md`; '
+      + 'for a project-pinned role use `prompts/hard_points/system/orchestrator/swarm.md`.'
+    : 'Read `prompts/hard_points/system/orchestrator/swarm.md` when delegating or receiving a collaboration brief.';
+  const collaboration = `${collaborationSource} Consider useful Swarm parallelism and peer/relay communication `
+    + 'only with verified executor tools. Retain context for permitted same-task follow-ups; clean reuse requires '
+    + 'a real verified host reset, otherwise use a fresh worker. Never widen this role\'s permissions.\n';
   const source = format === 'claude-plugin'
     ? profile.projectSource
       ? `Read \`${profile.source}\` from this project's AI-KIDO Memory Bank. Run the AI-KIDO bootstrap first if this `
@@ -272,7 +297,7 @@ function agentInstructions(profile, format) {
     ? `\n\nStay within these capabilities: ${profile.capabilities.join(', ')}.`
       + `${profile.capabilities.includes('write') ? '' : ' Do not edit files.'}`
     : '';
-  return `# ${profile.name}\n\n${source}\n\nFollow that file as your complete role definition, then perform the delegated task.${scope}\n`;
+  return `# ${profile.name}\n\n${source}\n\n${SEARCH_POLICY}\n${collaboration}\nFollow that file as your complete role definition, then perform the delegated task.${scope}\n`;
 }
 
 function yamlList(key, values) {
@@ -421,6 +446,9 @@ function claudePluginReadme(version) {
     + `AI-KIDO is an AI Memory Bank Construction Method by Meta harness. This plugin supplies the `
     + `AI-KIDO commands, system skills and available specialist agents for Claude Code. Its bundled `
     + `knowledge payload is read-only and is used to initialize a project when requested.\n\n`
+    + `Project runtime scripts require command access and a separately installed stable Node.js `
+    + `runtime; Node.js 24 or newer is the baseline. Verify it in the actual execution environment. `
+    + `The plugin does not install Node or grant command permissions.\n\n`
     + `Install the plugin, open the intended project, then run \`/aikido:init-aikido\` to review and `
     + `apply the project bootstrap. The plugin does not modify project files on installation. `
     + `Review the displayed plan and explicitly confirm it before files are written.\n\n`
@@ -430,7 +458,7 @@ function claudePluginReadme(version) {
     + `back into this plugin package.\n\n`
     + `## Install\n\n`
     + `Add the marketplace pinned to the immutable release tag, then install the plugin:\n\n`
-    + `\`\`\`bash\n`
+    + `\`\`\`text\n`
     + `claude plugin marketplace add https://github.com/lcalmejane/aikido.git#aikido-dist-v${version}\n`
     + `claude plugin install aikido@aikido\n`
     + `\`\`\`\n\n`
@@ -492,7 +520,7 @@ export function buildDistribution({
     throw new Error('sourceRevision must be "uncommitted" or a full lowercase 40-character commit SHA');
   }
   if (!/^\d+\.\d+(\.\d+)?(-[0-9A-Za-z.-]+)?$/.test(version)) throw new Error('version must be a semantic version');
-  const payload = trackedPayload();
+  const payload = trackedPayload(catalog);
   const source = sourceRevision === 'uncommitted'
     ? { type: 'local', ref: 'workspace' }
     : { type: 'git', ref: 'github:lcalmejane/aikido', commit: sourceRevision };
@@ -517,13 +545,28 @@ export function buildDistribution({
     const projectFiles = [];
     const payloadFiles = [];
     const outputPaths = new Set();
-    const writeUnique = (path, contents, role = 'adapter', projectTarget = null, origin = 'adapter', policy = 'three-way') => {
+    const writeUnique = (
+      path,
+      contents,
+      role = 'adapter',
+      projectTarget = null,
+      origin = 'adapter',
+      policy = 'three-way',
+      feature = null,
+    ) => {
       if (outputPaths.has(path)) throw new Error(`${hostId}: duplicate generated target ${path}`);
       outputPaths.add(path);
       const file = { path, role, sha256: createHash('sha256').update(contents).digest('hex') };
       writeOutput(packageRoot, path, contents, outputFiles, role);
       if (projectTarget) {
-        projectFiles.push({ source: path, target: projectTarget, sha256: file.sha256, origin, policy });
+        projectFiles.push({
+          source: path,
+          target: projectTarget,
+          sha256: file.sha256,
+          origin,
+          policy,
+          ...(feature ? { feature } : {}),
+        });
       }
       return file;
     };
@@ -548,14 +591,20 @@ export function buildDistribution({
     for (const path of [
       'distribution/lib/bootstrap-plan.mjs',
       'distribution/lib/catalog.mjs',
+      'distribution/lib/features.mjs',
+      'distribution/lib/sync-hosts.mjs',
       'distribution/lib/lock.mjs',
       'distribution/lib/managed-blocks.mjs',
+      'distribution/lib/node-runtime.mjs',
       'distribution/lib/package.mjs',
+      'distribution/lib/version.mjs',
       'distribution/lib/templates.mjs',
       'distribution/lib/update-plan.mjs',
       'distribution/scripts/bootstrap-plan.mjs',
       'distribution/scripts/build.mjs',
       'distribution/scripts/check-cli.mjs',
+      'distribution/scripts/sync-hosts.mjs',
+      'distribution/scripts/task.mjs',
       'distribution/scripts/update-plan.mjs',
       'distribution/scripts/validate-package.mjs',
       'distribution/lib/check-cli.mjs',
@@ -563,7 +612,22 @@ export function buildDistribution({
       const packagePath = path.replace(/^distribution\//, '');
       writeUnique(packagePath, readFileSync(assertSourcePath(path, 'file')), 'runtime');
     }
+    for (const file of ['index.mjs', 'index.d.ts', 'cli.mjs', 'private-plan-import.mjs']) {
+      const source = `prompts/hard_points/system/task-store/${file}`;
+      writeUnique(`lib/task-store/${file}`, readFileSync(assertSourcePath(source, 'file')), 'runtime');
+    }
+    // One detection implementation, shared with the project (prompts/.../system/host-sync/).
+    writeUnique('lib/host-detect.mjs', readFileSync(assertSourcePath('prompts/hard_points/system/host-sync/host-detect.mjs', 'file')), 'runtime');
     writeUnique('catalog.json', readFileSync(assertSourcePath('distribution/catalog.json', 'file')), 'runtime');
+    writeUnique('RUNTIME.md', `# Runtime requirements\n\n`
+      + `The shared project runtime uses stable Node.js ${NODE_BASELINE}+ and a command tool with access `
+      + `to the target project. The package does not install Node or grant permissions. `
+      + `Run \`node --version\` in the actual executor before use. If Node or command access is `
+      + `unavailable, report the blocked operation; do not install dependencies or change permissions automatically.\n\n`
+      + `The packaged \`scripts/check-cli.mjs\` reports its own process version and executable in `
+      + `\`nodeRuntime\`; it cannot verify another agent, host or container. A below-baseline `
+      + `result is advisory and does not prove that the operation fails. Use documented equivalent `
+      + `fallbacks only when they preserve the requested result.\n`, 'runtime');
     if (host.agentFormat === 'claude-plugin') {
       writeUnique('.claude-plugin/plugin.json', claudePluginManifest(version), 'plugin-manifest');
       writeUnique('.claude-plugin/marketplace.json', claudeMarketplaceManifest(), 'marketplace-manifest');
@@ -585,6 +649,15 @@ export function buildDistribution({
     }
     if (hostId === 'zoo-code') {
       writeUnique('README.md', readFileSync(assertSourcePath('distribution/adapters/zoo-code/README.md', 'file')), 'adapter');
+      writeUnique(
+        'adapters/zoo-code/rtk.md',
+        readFileSync(assertSourcePath('distribution/adapters/zoo-code/rtk.md', 'file')),
+        'adapter',
+        '.roo/rules/rtk.md',
+        'adapter',
+        'three-way',
+        'rtk',
+      );
     }
     if (hostId === 'roo-code-legacy') {
       writeUnique('README.md', readFileSync(assertSourcePath('distribution/adapters/roo-code-legacy/README.md', 'file')), 'adapter');
@@ -694,6 +767,8 @@ export function buildDistribution({
       host: hostId,
       qualification: host.qualification,
       version,
+      runtimeContract: 1,
+      hostSync: 1,
       sourceRevision,
       source,
       commandDelivery: host.commandDelivery,

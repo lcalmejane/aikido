@@ -94,11 +94,16 @@ test('release source check detects bytes hidden from git status by line-ending c
 test('publication workflow is manual and CI cannot write to the repository', () => {
   const ci = readFileSync(join(REPO, '.github/workflows/distribution-ci.yml'), 'utf8');
   const publish = readFileSync(join(REPO, '.github/workflows/distribution-publish.yml'), 'utf8');
+  const runner = readFileSync(join(REPO, 'distribution/scripts/ci.mjs'), 'utf8');
   assert.match(ci, /^permissions:\n {2}contents: read$/m);
   assert.doesNotMatch(ci, /contents: write|git push/);
   assert.match(publish, /^on:\n {2}workflow_dispatch:/m);
   assert.doesNotMatch(publish, /^ {2}(push|pull_request|schedule|release):/m);
-  assert.match(publish, /already exists; published releases are immutable/);
+  assert.match(publish, /'distribution\/scripts\/ci\.mjs', 'check-tag'/);
+  assert.match(publish, /'distribution\/scripts\/ci\.mjs', 'publish'/);
+  assert.match(runner, /Published releases are immutable/);
+  assert.match(runner, /'push', '--atomic'/);
+  assert.doesNotMatch(ci, /'(?:publish|prepare-publish|check-tag)'/);
   for (const text of [ci, publish]) {
     for (const [, ref] of text.matchAll(/uses: [^@\s]+@(\S+)/g)) assert.match(ref, /^[0-9a-f]{40}$/);
   }

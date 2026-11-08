@@ -8,9 +8,11 @@ import {
   BASELINE_DIR, HOSTS, LOCK_PATH, LOCK_SCHEMA_VERSION, isSafeRelativePath, validateLock,
 } from './lock.mjs';
 import { loadCatalog, renderCatalogEntries } from './catalog.mjs';
+import { detectFeatures, FEATURE_STATE_PATH, planFeatureFlags } from './features.mjs';
 import { blockHash, findBlock, upsertBlock } from './managed-blocks.mjs';
 import { validatePackage } from './package.mjs';
 import { loadManifest, readTemplate, render, selectTemplates, validateManifest } from './templates.mjs';
+import { sourceWarnings } from './version.mjs';
 
 const DEFAULT_TEMPLATES_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'templates');
 const PLAN_OPERATIONS = new WeakMap();
@@ -124,7 +126,7 @@ function fileOperation(template, content, previous, write) {
   };
 }
 
-function artifactResult(projectRoot, packageRoot, artifact, expectedOrigin) {
+function artifactResult(projectRoot, packageRoot, artifact, expectedOrigin, trust = 'verified') {
   const { target, sha256, origin, policy } = artifact;
   const source = artifact.packagePath ?? artifact.source;
   const item = { id: `${expectedOrigin}:${target}`, source, target, kind: expectedOrigin, origin, policy };
@@ -136,9 +138,12 @@ function artifactResult(projectRoot, packageRoot, artifact, expectedOrigin) {
     return { item: { ...item, action: 'blocked', reason: sourceInfo.reason ?? `missing package file ${source}` } };
   }
   const content = readFileSync(sourceInfo.absolute);
-  if (HASH_BUFFER(content) !== sha256) {
+  const actual = HASH_BUFFER(content);
+  if (actual !== sha256 && trust !== 'local') {
     return { item: { ...item, action: 'blocked', reason: `package file hash mismatch: ${source}` } };
   }
+  // The lock records what is really installed, even when a local package differs from its manifest.
+  const installedHash = actual;
   const targetInfo = inspectTarget(projectRoot, target);
   if (targetInfo.state === 'blocked') return { item: { ...item, action: 'blocked', reason: targetInfo.reason } };
   const previous = targetInfo.state === 'file' ? readFileSync(targetInfo.absolute) : null;
@@ -147,14 +152,14 @@ function artifactResult(projectRoot, packageRoot, artifact, expectedOrigin) {
   }
   const action = previous ? 'adopt' : 'create';
   return {
-    item: { ...item, action, contentHash: sha256 },
+    item: { ...item, action, contentHash: installedHash },
     operation: {
       target,
       content,
       previous,
       action,
       write: previous === null,
-      file: { path: target, sha256, origin, policy },
+      file: { path: target, sha256: installedHash, origin, policy },
     },
   };
 }
@@ -190,7 +195,7 @@ function installedLockMatches(root, lock) {
   return true;
 }
 
-function existingLockStatus(root, pkg, mode, hosts) {
+function existingLockStatus(root, pkg, mode, hosts, featureFlags) {
   const target = inspectTarget(root, LOCK_PATH);
   if (target.state === 'missing') return { status: 'missing' };
   if (target.state !== 'file') return { status: 'conflict', reason: target.reason };
@@ -203,6 +208,10 @@ function existingLockStatus(root, pkg, mode, hosts) {
   const errors = validateLock(lock);
   if (errors.length) return { status: 'conflict', reason: `existing lock is invalid: ${errors.join('; ')}` };
   if (!identityFromLock(lock, pkg, mode, hosts)) return { status: 'conflict', reason: 'an AI-KIDO lock already exists; use the update workflow' };
+  if (pkg.host === 'zoo-code'
+    && lock.files.some((file) => file.path === '.roo/rules/rtk.md') !== (featureFlags.rtk === 'ON')) {
+    return { status: 'conflict', reason: 'the detected RTK feature differs from the installed files; use the update workflow' };
+  }
   if (!installedLockMatches(root, lock)) {
     return { status: 'conflict', reason: 'the locked installation or baseline cache has changed; use the update workflow' };
   }
@@ -220,13 +229,16 @@ export function planBootstrap({
   manifest: suppliedManifest,
   templatesDir: suppliedTemplatesDir,
   catalog = loadCatalog(),
+  env = process.env,
+  trust = 'verified',
 }) {
   if (typeof root !== 'string' || root.length === 0) throw new Error('root must be an existing project directory');
   const projectRoot = realpathSync(root);
   if (!lstatSync(projectRoot).isDirectory()) throw new Error('root must be a directory');
   const packagePath = packageRoot ? realpathSync(packageRoot) : null;
-  const packageInfo = packagePath ? validatePackage(packagePath, { catalog }) : null;
+  const packageInfo = packagePath ? validatePackage(packagePath, { catalog, trust }) : null;
   const pkg = packageInfo ? JSON.parse(readFileSync(join(packagePath, 'package-manifest.json'), 'utf8')) : null;
+  const { featureFlags, kimono } = detectFeatures(env, { rtk: pkg?.host === 'zoo-code' });
   if (pkg) {
     if (hosts.length && (hosts.length !== 1 || hosts[0] !== pkg.host)) {
       throw new Error(`package host ${pkg.host} must be the only selected host`);
@@ -266,7 +278,7 @@ export function planBootstrap({
     const seen = new Set(files.map((file) => file.target));
     const artifacts = [
       ...pkg.payloadFiles,
-      ...pkg.projectFiles,
+      ...pkg.projectFiles.filter((artifact) => !artifact.feature || featureFlags[artifact.feature] === 'ON'),
     ];
     for (const artifact of artifacts) {
       if (seen.has(artifact.target)) {
@@ -283,9 +295,14 @@ export function planBootstrap({
         continue;
       }
       seen.add(artifact.target);
-      const result = artifactResult(projectRoot, packagePath, artifact, artifact.origin);
+      const result = artifactResult(projectRoot, packagePath, artifact, artifact.origin, trust);
       files.push(result.item);
       if (result.operation) operations.push(result.operation);
+    }
+    if (Object.keys(featureFlags).length) {
+      const featureState = planFeatureFlags(projectRoot, featureFlags);
+      files.push(featureState.item);
+      if (featureState.operation) operations.push(featureState.operation);
     }
   }
 
@@ -305,7 +322,7 @@ export function planBootstrap({
     });
   }
 
-  const lockStatus = pkg ? existingLockStatus(projectRoot, pkg, mode, hosts) : { status: 'not-applicable' };
+  const lockStatus = pkg ? existingLockStatus(projectRoot, pkg, mode, hosts, featureFlags) : { status: 'not-applicable' };
   if (lockStatus.status === 'conflict') {
     files.push({
       id: 'existing-lock',
@@ -316,9 +333,11 @@ export function planBootstrap({
     });
   }
   const conflicts = files.filter((file) => file.action === 'conflict' || file.action === 'blocked');
-  const writes = files.filter((file) => file.action === 'create' || file.action === 'update-managed-block');
+  const writes = files.filter((file) => ['create', 'update', 'update-managed-block'].includes(file.action));
+  const featureWrites = files.some((file) => file.kind === 'feature-state' && ['create', 'update'].includes(file.action));
+  const confirmationRequired = conflicts.length === 0 && (pkg ? lockStatus.status !== 'installed' || featureWrites : writes.length > 0);
   const summary = Object.fromEntries(
-    ['create', 'update-managed-block', 'adopt', 'unchanged', 'keep-local', 'conflict', 'blocked']
+    ['create', 'update', 'update-managed-block', 'adopt', 'unchanged', 'keep-local', 'conflict', 'blocked']
       .map((action) => [action, files.filter((file) => file.action === action).length]),
   );
   const core = {
@@ -328,12 +347,15 @@ export function planBootstrap({
     hosts,
     aikidoVersion,
     sourceRevision: pkg?.sourceRevision ?? null,
+    ...(trust === 'local' && pkg ? { trust, warnings: [...sourceWarnings(pkg.source), ...packageInfo.warnings] } : {}),
+    featureFlags,
+    kimono,
     files,
     summary,
     conflicts,
     ready: conflicts.length === 0,
-    confirmationRequired: conflicts.length === 0 && (pkg ? lockStatus.status !== 'installed' : writes.length > 0),
-    confirmation: conflicts.length === 0 && (pkg ? lockStatus.status !== 'installed' : writes.length > 0)
+    confirmationRequired,
+    confirmation: confirmationRequired
       ? 'Review every planned path and explicitly approve this exact plan before application.'
       : null,
     applicationAvailable: Boolean(pkg),
@@ -439,10 +461,19 @@ export function applyBootstrap({
   expectedPlanId,
   installedAt = new Date().toISOString(),
   catalog = loadCatalog(),
+  env = process.env,
+  trust = 'verified',
 }) {
   if (!packageRoot) throw new Error('packageRoot is required to apply a bootstrap');
-  const plan = planBootstrap({ root, packageRoot, mode, hosts, projectName, aikidoVersion, catalog });
-  if (plan.alreadyInstalled) return { status: 'already-installed', planId: plan.planId, lockFile: LOCK_PATH };
+  const plan = planBootstrap({ root, packageRoot, mode, hosts, projectName, aikidoVersion, catalog, env, trust });
+  if (plan.alreadyInstalled) {
+    const operations = PLAN_OPERATIONS.get(plan).operations.filter((operation) => operation.target === FEATURE_STATE_PATH);
+    if (operations.length) {
+      if (expectedPlanId !== plan.planId) throw new Error(`Confirmation does not match the current plan (expected ${plan.planId})`);
+      writeTransaction(plan.root, operations);
+    }
+    return { status: 'already-installed', planId: plan.planId, lockFile: LOCK_PATH };
+  }
   if (!plan.ready) throw new Error(`Bootstrap plan contains conflicts:\n${plan.conflicts.map((item) => `${item.target}: ${item.reason}`).join('\n')}`);
   if (expectedPlanId !== plan.planId) throw new Error(`Confirmation does not match the current plan (expected ${plan.planId})`);
 
