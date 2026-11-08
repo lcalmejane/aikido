@@ -2,7 +2,7 @@ import { after, before, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import {
-  chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync,
+  chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { delimiter, join } from 'node:path';
@@ -82,6 +82,46 @@ function removeProjectFile(packageRoot, target) {
   writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
 }
 
+test('upgrading a package with old shell payload removes unmodified scripts, preserves customizations and restores', () => {
+  const root = newProject();
+  const oldPackage = join(workspace, 'legacy-shell-package');
+  cpSync(basePackage, oldPackage, { recursive: true });
+  const manifestPath = join(oldPackage, 'package-manifest.json');
+  const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+  const names = ['ending-1-check-before-json.sh', 'ending-1-display-statistics.sh'];
+  const targets = names.map(name => `prompts/hard_points/system/maj/scripts/${name}`);
+  const contents = Buffer.from('legacy non-Node entry point fixture\n');
+  const sha256 = createHash('sha256').update(contents).digest('hex');
+  for (const target of targets) {
+    const packagePath = `payload/${target}`;
+    writeFileSync(join(oldPackage, packagePath), contents);
+    manifest.files.push({ path: packagePath, role: 'payload', sha256 });
+    manifest.payloadFiles.push({ source: target, target, packagePath, origin: 'payload', policy: 'three-way', sha256 });
+  }
+  writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+  try {
+    const installOptions = { root, packageRoot: oldPackage, mode: 'STANDARD', projectName: 'Legacy scripts' };
+    const install = planBootstrap(installOptions);
+    applyBootstrap({ ...installOptions, expectedPlanId: install.planId });
+    const local = Buffer.from('# customized shell entry\n');
+    writeFileSync(join(root, targets[1]), local);
+    const options = { root, packageRoot: nextPackage };
+    const update = planUpdate(options);
+    assert.equal(update.ready, true, JSON.stringify(update.conflicts));
+    assert.ok(update.files.some(item => item.target === targets[0] && item.action === 'delete'));
+    assert.ok(update.files.some(item => item.target === targets[1] && item.action === 'keep-modified-orphan'));
+    const result = applyUpdate({ ...options, expectedPlanId: update.planId });
+    assert.equal(existsSync(join(root, targets[0])), false);
+    assert.deepEqual(readFileSync(join(root, targets[1])), local);
+    restoreUpdateBackup({ root, backupPath: result.backup });
+    assert.deepEqual(readFileSync(join(root, targets[0])), contents);
+    assert.deepEqual(readFileSync(join(root, targets[1])), local);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+    rmSync(oldPackage, { recursive: true, force: true });
+  }
+});
+
 function newProject() {
   return mkdtempSync(join(tmpdir(), 'aikido-update-project-'));
 }
@@ -91,7 +131,7 @@ function rtkEnvironment(name, enabled) {
   mkdirSync(bin, { recursive: true });
   if (enabled) {
     const command = join(bin, 'rtk');
-    writeFileSync(command, '#!/bin/sh\nprintf "rtk 1.1.0\\n"\n');
+    writeFileSync(command, `#!${process.execPath}\nprocess.stdout.write("rtk 1.1.0\\n");\n`);
     chmodSync(command, 0o755);
   }
   return { ...process.env, PATH: `${bin}${delimiter}${enabled ? process.env.PATH ?? '' : ''}` };
