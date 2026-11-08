@@ -114,11 +114,15 @@ test('CLI project counts obey nested Git ignore rules and negations outside a re
   put('custom-user-data/store.json', '{"schemaVersion":"task-store/1"}');
   put('custom-user-data/events/private.js', 'const PRIVATE_TASK_CANARY = true;');
 
-  const gitEnv = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.toUpperCase().startsWith('GIT_')));
-  const repository = spawnSync('git', ['-C', project, 'rev-parse', '--is-inside-work-tree'], { encoding: 'utf8', env: gitEnv });
-  assert.equal(repository.status, 128, 'The fixture must be outside any Git repository');
   const oracle = mkdtempSync(join(realpathSync(tmpdir()), 'aikido-plan-oracle-'));
   t.after(() => rmSync(oracle, { recursive: true, force: true }));
+  const emptyGlobalConfig = join(oracle, 'empty.gitconfig');
+  writeFileSync(emptyGlobalConfig, '');
+  const gitEnv = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.toUpperCase().startsWith('GIT_')));
+  gitEnv.GIT_CONFIG_NOSYSTEM = '1';
+  gitEnv.GIT_CONFIG_GLOBAL = emptyGlobalConfig;
+  const repository = spawnSync('git', ['-C', project, 'rev-parse', '--is-inside-work-tree'], { encoding: 'utf8', env: gitEnv });
+  assert.equal(repository.status, 128, 'The fixture must be outside any Git repository');
   const bare = join(oracle, 'git');
   const init = spawnSync('git', ['init', '--bare', '--quiet', '--template=', bare], { encoding: 'utf8', env: gitEnv });
   assert.equal(init.status, 0, init.stderr);
@@ -128,8 +132,8 @@ test('CLI project counts obey nested Git ignore rules and negations outside a re
     ['ignore.js', true], ['blocked/keep.js', true], ['reopened/hidden/keep.js', true],
     ['nested/ignored.js', true], ['nested/deep/ignored.js', true],
   ]) {
-    const result = spawnSync('git', [`--git-dir=${bare}`, `--work-tree=${project}`, '-c',
-      'core.excludesFile=/dev/null', 'check-ignore', '--no-index', '--', path], { encoding: 'utf8', env: gitEnv });
+    const result = spawnSync('git', [`--git-dir=${bare}`, `--work-tree=${project}`,
+      'check-ignore', '--no-index', '--', path], { encoding: 'utf8', env: gitEnv });
     assert.equal(result.status, ignored ? 0 : 1, `Git oracle: ${path}: ${result.stderr}`);
   }
   for (const kind of ['search', 'analyse']) {

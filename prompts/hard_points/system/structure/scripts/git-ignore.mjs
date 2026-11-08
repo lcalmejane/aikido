@@ -1,21 +1,21 @@
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, realpathSync, rmSync } from 'node:fs';
-import { devNull, tmpdir } from 'node:os';
+import { mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 export { isPrivateTaskStorePath } from './lib/private-task-store.mjs';
 
-function gitEnvironment() {
+function gitEnvironment(globalConfig) {
   const env = Object.fromEntries(Object.entries(process.env)
     .filter(([key]) => !key.toUpperCase().startsWith('GIT_')));
   env.GIT_CONFIG_NOSYSTEM = '1';
-  env.GIT_CONFIG_GLOBAL = devNull;
+  env.GIT_CONFIG_GLOBAL = globalConfig;
   return env;
 }
 
-function runGit(args, options, allowed = [0]) {
+function runGit(args, options, globalConfig, allowed = [0]) {
   const result = spawnSync('git', args, {
     ...options,
-    env: gitEnvironment(),
+    env: gitEnvironment(globalConfig),
     maxBuffer: 32 * 1024 * 1024,
   });
   if (result.error) throw new Error(`Git execution failed: ${result.error.message}`);
@@ -28,9 +28,11 @@ function runGit(args, options, allowed = [0]) {
 export function createGitIgnoreContext(projectRoot) {
   const root = projectRoot;
   const temporary = mkdtempSync(join(realpathSync(tmpdir()), 'aikido-gitignore-'));
+  const globalConfig = join(temporary, 'empty.gitconfig');
   const gitDirectory = join(temporary, 'git');
   try {
-    runGit(['init', '--bare', '--quiet', '--template=', gitDirectory], {});
+    writeFileSync(globalConfig, '');
+    runGit(['init', '--bare', '--quiet', '--template=', gitDirectory], {}, globalConfig);
   } catch (error) {
     rmSync(temporary, { recursive: true, force: true });
     throw error;
@@ -49,13 +51,11 @@ export function createGitIgnoreContext(projectRoot) {
       const output = runGit([
         `--git-dir=${gitDirectory}`,
         `--work-tree=${root}`,
-        '-c',
-        `core.excludesFile=${devNull}`,
         'check-ignore',
         '--no-index',
         '--stdin',
         '-z',
-      ], { input }, [0, 1]);
+      ], { input }, globalConfig, [0, 1]);
       return new Set(output.toString('utf8').split('\0').filter(Boolean));
     },
     close() {

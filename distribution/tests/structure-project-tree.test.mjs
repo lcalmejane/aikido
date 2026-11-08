@@ -5,7 +5,7 @@ import {
   mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, symlinkSync, utimesSync,
   writeFileSync,
 } from 'node:fs';
-import { devNull, tmpdir } from 'node:os';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { generateProjectTree } from '../../prompts/hard_points/system/structure/scripts/generate-project-tree.mjs';
@@ -172,11 +172,21 @@ test('raw Git ignore paths match Git oracle for directory negations and special 
     'reopened', 'reopened/drop.txt', 'reopened/keep.txt', 'keep.ignored',
     'drop.ignored', ...specialNames,
   ];
-  const init = spawnSync('git', ['init', '--quiet'], { cwd: root, encoding: 'utf8' });
+  const emptyGlobalConfig = join(dirname(root), 'empty.gitconfig');
+  writeFileSync(emptyGlobalConfig, '');
+  const gitEnv = Object.fromEntries(Object.entries(process.env)
+    .filter(([key]) => !key.toUpperCase().startsWith('GIT_')));
+  gitEnv.GIT_CONFIG_NOSYSTEM = '1';
+  gitEnv.GIT_CONFIG_GLOBAL = emptyGlobalConfig;
+  const init = spawnSync('git', ['init', '--quiet'], { cwd: root, encoding: 'utf8', env: gitEnv });
   assert.equal(init.status, 0, init.stderr);
   const oracle = spawnSync('git', [
-    '-c', `core.excludesFile=${devNull}`, 'check-ignore', '--no-index', '--stdin', '-z',
-  ], { cwd: root, input: Buffer.from(`${candidates.join('\0')}\0`) });
+    'check-ignore', '--no-index', '--stdin', '-z',
+  ], {
+    cwd: root,
+    env: gitEnv,
+    input: Buffer.from(`${candidates.join('\0')}\0`),
+  });
   assert.ok([0, 1].includes(oracle.status), oracle.stderr?.toString('utf8'));
   const expectedIgnored = new Set(oracle.stdout.toString('utf8').split('\0').filter(Boolean));
   assert.deepEqual(expectedIgnored, new Set(['reopened/drop.txt', 'drop.ignored', ...specialNames]));
