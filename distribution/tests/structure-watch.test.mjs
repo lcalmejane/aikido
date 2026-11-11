@@ -192,8 +192,10 @@ test('daemon uses nested Git ignore rules and rebuilds for documentation and oth
   const stop = run(root, 'stop');
   assert.equal(stop.status, 0, stop.stderr);
   assert.match(stop.stdout, /Watch daemon stopping/);
-  await waitFor(() => !existsSync(join(root, 'prompts/spec/system/structure/cache/watch.pid')));
-  assert.equal(existsSync(join(root, 'prompts/spec/system/structure/cache/watch.start-lock')), false);
+  const cache = join(root, 'prompts/spec/system/structure/cache');
+  await waitFor(() => !existsSync(join(cache, 'watch.pid')) && !existsSync(join(cache, 'watch.start-lock')));
+  assert.equal(existsSync(join(cache, 'watch.pid')), false);
+  assert.equal(existsSync(join(cache, 'watch.start-lock')), false);
   const finalLog = readFileSync(log, 'utf8');
   assert.match(finalLog, /Index generation failed: Missing structure directory/);
   assert.doesNotMatch(finalLog, /Index regeneration completed successfully/);
