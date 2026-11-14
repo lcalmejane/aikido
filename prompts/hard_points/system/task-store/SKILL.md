@@ -37,6 +37,19 @@ Each card states its review mode with a label; without one it is `review:human`:
 Never mark a `review:human` card accepted or done, and never invent an
 automated check to bypass a human review.
 
+Mechanics that `done` enforces:
+
+- `acceptanceCriteria` are stable identifiers (`[A-Za-z0-9._-]`, e.g.
+  `v0.1`); put each criterion's wording in the card `prompt` as
+  `<id> : <description>`. Free sentences can never be verified.
+- Record one verification per criterion, with its evidence, through the
+  package API `recordVerification(id, criterionId, evidence, {expectedRevision})`
+  (the CLI has no verify command yet).
+- Keep the workflow step in step with the state: for `implementation`,
+  `design` → `implement` (running) → `verify` (review) → `approval` →
+  `accepted` (after acceptance) through `advanceWorkflow`; `done` requires a
+  terminal step. The CLI advances steps only for `automatic`.
+
 ## Commands
 
 - `node <task-store-dir>/task.mjs task store init|doctor|reconcile`
