@@ -30,6 +30,11 @@ Memory Bank, Kimono, RAG, shared exports and model/tool output.
   Results move a task to review or waiting, never to accepted or done.
   `acceptTask` records an explicit authorized decision; `done` is a further
   explicit transition requiring acceptance and verified criteria.
+- Review mode is explicit through a card label: `review:human` (default when
+  absent) is accepted only by the user; `review:automated` is accepted from a
+  passing deterministic check named in `acceptanceCriteria`. Agents keep card
+  progress (`ready`, `running`, `review`, `waiting`) in step with the work
+  without asking; see the Skill's *Card progress* section.
 - Rejections require explicit reviewer acknowledgement before resuming.
   Retries are new attempts on the same task.
 - Archive is reversible. Purge requires a revision-checked preview and
