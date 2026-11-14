@@ -8,8 +8,34 @@ description: Manage private AI-KIDO task cards, plans and workflows with determi
 Use the installed `task-store/task.mjs` script with Node 24+, or the
 `@aikido-method/cli/task-store` package API. The canonical runtime, CLI, declarations
 and data/API contract are shipped in this Skill directory. Do not edit private
-task JSON, projections or journals directly, and never use an LLM to choose or
-apply a state transition.
+task JSON, projections or journals directly. An LLM applies progress
+transitions only through these commands and only from observable facts (see
+*Card progress*); it never decides a human acceptance.
+
+## Card progress — mandatory for every agent using the store
+
+Keep cards in step with the work, transparently, without asking the user:
+
+1. When work on a card starts, move it `backlog → ready → running`.
+2. When the work is delivered, move it to `review` and update its `summary`
+   with what was delivered (commits, proofs) and what remains.
+3. Blocked work goes to `waiting` with the reason; abandoned work is not
+   silently left `running`.
+4. Report the resulting card states in the turn's answer.
+
+Each card states its review mode with a label; without one it is `review:human`:
+
+- `review:human` — stop at `review`, present the delivery and remaining
+  criteria, and wait. Only the user accepts (`task accept`) or marks `done`.
+  Dependent cards wait until the dependency is accepted; say so instead of
+  forcing it.
+- `review:automated` — acceptance comes from the deterministic check named in
+  `acceptanceCriteria` (tests, CI, validator). Run it; when it passes, record
+  `task accept --accepted true` with the evidence in `--reason`, then `done`.
+  When it fails, record the rejection and keep the card out of `done`.
+
+Never mark a `review:human` card accepted or done, and never invent an
+automated check to bypass a human review.
 
 ## Commands
 
