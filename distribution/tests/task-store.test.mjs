@@ -13,7 +13,7 @@ import {
   validateWorkflow,
 } from '../lib/task-store/index.mjs';
 import * as taskStoreModule from '../lib/task-store/index.mjs';
-import { runTaskCLI } from '../lib/task-store/cli.mjs';
+import { compactTaskResult, planSummary, runTaskCLI } from '../lib/task-store/cli.mjs';
 import {
   createPrivatePlan, instantiatePrivatePlan, preparePrivatePlan,
 } from '../lib/task-store/private-plan-import.mjs';
@@ -135,6 +135,27 @@ test('new tasks pin automatic by default, preserve explicit workflows, and reloc
   assert.equal(existsSync(planPath), false);
   assert.ok(existsSync(executePath));
   store.close();
+});
+
+test('CLI task list is compact by default and returns whole cards with --full', () => {
+  const storeRoot = join(runRoot, 'cli-compact-list-store');
+  const inputPath = join(runRoot, 'cli-compact-list.json');
+  writeFileSync(inputPath, JSON.stringify({ title: 'Compact', summary: 'x'.repeat(5000) }));
+  const invoke = (...args) => runTaskCLI(['task', ...args, '--workspace', REPO, '--store', storeRoot], { cwd: REPO });
+  const { id } = invoke('create', '--file', inputPath).result.task;
+  const [compact] = invoke('list').result.tasks;
+  assert.deepEqual([compact.id, compact.title, compact.state], [id, 'Compact', 'backlog']);
+  assert.equal(compact.summary, undefined);
+  assert.equal(invoke('list', '--full').result.tasks[0].summary.length, 5000);
+  assert.equal(invoke('show', id).result.task.summary.length, 5000);
+});
+
+test('CLI write results and plan lists stay compact unless whole items are requested', () => {
+  const task = { id: 't1', title: 'T', state: 'ready', revision: 2, prompt: 'long' };
+  assert.deepEqual(compactTaskResult(['task', 'update', 't1'], { status: 'ok', task }).task, { id: 't1', title: 'T', state: 'ready', revision: 2 });
+  assert.equal(compactTaskResult(['task', 'show', 't1'], { status: 'ok', task }).task.prompt, 'long');
+  assert.equal(compactTaskResult(['task', 'update', 't1', '--full'], { status: 'ok', task }).task.prompt, 'long');
+  assert.deepEqual(planSummary({ id: 'p1', title: 'P', tasks: [{ prompt: 'long' }] }).taskCount, 1);
 });
 
 test('CLI task creation pins automatic and only advances after explicit ready state', () => {
@@ -306,7 +327,7 @@ test('canonical task-store skill runtime is shipped and byte-synced into both di
   const catalog = JSON.parse(readFileSync(join(REPO, 'distribution', 'catalog.json'), 'utf8'));
   assert.ok(catalog.systemSkills.some((skill) => skill.name === 'task-store'
     && skill.source === 'prompts/hard_points/system/task-store'));
-  for (const file of ['index.mjs', 'index.d.ts', 'cli.mjs']) {
+  for (const file of ['index.mjs', 'index.d.ts', 'cli.mjs', 'hosted-cli.mjs', 'module-link.mjs', 'workflow-library.mjs']) {
     const canonical = readFileSync(join(source, file));
     assert.deepEqual(readFileSync(join(REPO, 'distribution', 'lib', 'task-store', file)), canonical);
     assert.deepEqual(readFileSync(join(REPO, 'distribution', 'npm', 'lib', 'task-store', file)), canonical);

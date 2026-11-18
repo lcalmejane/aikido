@@ -2089,6 +2089,7 @@ export class TaskStore {
 
   previewPurge(filter = {}) {
     const candidates = this.listTasks({ archived: true }).filter((task) => {
+      if (filter.taskId && task.id !== filter.taskId) return false;
       if (filter.before && Date.parse(task.archivedAt) >= Date.parse(parseTime(filter.before, 'before', { required: true }))) return false;
       if (filter.workflowId && task.workflowId !== filter.workflowId) return false;
       if (filter.backlogId && task.backlogId !== filter.backlogId) return false;

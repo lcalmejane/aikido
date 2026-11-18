@@ -54,6 +54,7 @@ Mechanics that `done` enforces:
 
 - `node <task-store-dir>/task.mjs task store init|doctor|reconcile`
 - `node <task-store-dir>/task.mjs task workflow create|update|register|validate|list|show ...`
+- `node <task-store-dir>/task.mjs host status` shows whether Tatami Core Agent is used; `workflow save|delete|sync` and card commands then go through it, otherwise they work locally.
 - `node <task-store-dir>/task.mjs plan import --source <workspace-relative-plan-path> [--workflow <id> --workflow-version <version>]`
 - `node <task-store-dir>/task.mjs plan import --source <workspace-relative-plan-path> --confirm-create --expected-sha256 <reviewed-source-hash> --expected-workflow-sha256 <reviewed-workflow-hash>`
 - `node <task-store-dir>/task.mjs plan import --plan-id <id> --revision <reviewed-revision> --confirm-instantiate`
@@ -92,8 +93,8 @@ Never accept them from card JSON, event payloads or model output.
   a Core command input; Core derives the authorized route from session settings.
 - Create envelopes pin `automatic@1.0.0` by default, or preserve a supplied
   `workflowId`/`workflowVersion` pair. Core create accepts and validates that
-  pair; schedule commands do not carry workflow fields. Core currently exposes
-  no workflow-discovery route, so do not invent custom workflow IDs.
+  pair; schedule commands do not carry workflow fields. Discover workflow IDs with
+  `task.mjs workflow list`; never invent one.
 - `TaskStore.createTask` and CLI `task create` pin `automatic@1.0.0` when the
   workflow is omitted. Backlog cards stay at `plan`; only an explicit ready or
   schedule approval advances this exact built-in workflow to `execute`.

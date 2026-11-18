@@ -218,7 +218,7 @@ export class TaskStore {
   recordVerification(id: string, criterionId: string, evidence: string, options: { expectedRevision: number }): TaskCard;
   archiveTask(id: string, options: { expectedRevision: number }): TaskCard;
   restoreTask(id: string, options: { expectedRevision: number }): TaskCard;
-  previewPurge(filter?: { before?: string; workflowId?: string; backlogId?: string }): Record<string, unknown>;
+  previewPurge(filter?: { taskId?: string; before?: string; workflowId?: string; backlogId?: string }): Record<string, unknown>;
   confirmPurge(token: string): { purged: string[]; tombstones: unknown[] };
   reconcile(): Record<string, number>;
   doctor(): Record<string, unknown>;

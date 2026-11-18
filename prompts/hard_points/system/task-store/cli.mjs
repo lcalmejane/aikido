@@ -15,8 +15,29 @@ const VALUE_OPTIONS = new Set([
 ]);
 const FLAG_OPTIONS = new Set([
   '--dry-run', '--execute', '--due', '--confirm-missed', '--acknowledge-rejection',
-  '--confirm-create', '--confirm-instantiate',
+  '--confirm-create', '--confirm-instantiate', '--full',
 ]);
+
+const TASK_SUMMARY_FIELDS = [
+  'id', 'title', 'state', 'executionStatus', 'revision', 'updatedAt', 'workflowId', 'backlogId', 'parentId', 'archivedAt',
+];
+
+/** Compact card returned by `task list`: whole cards can exceed the output limit of agent shells. */
+export function taskSummary(task) {
+  return Object.fromEntries(TASK_SUMMARY_FIELDS.filter(field => task[field] !== undefined).map(field => [field, task[field]]));
+}
+
+/** Compact plan returned by `plan list`; `plan show` or --full gives the whole plan. */
+export function planSummary(plan) {
+  const { id, title, state, type, revision, updatedAt } = plan;
+  return { id, title, state, type, revision, updatedAt, taskCount: plan.tasks?.length ?? 0 };
+}
+
+/** Printed result of a task command: write commands answer with the compact card unless --full is given. */
+export function compactTaskResult(argv, result) {
+  if (argv.includes('--full') || argv[1] === 'show' || !result?.task) return result;
+  return { ...result, task: taskSummary(result.task) };
+}
 
 function cliError(code, message) {
   const error = new Error(message);
@@ -455,7 +476,10 @@ function operationResult(store, parsed, cwd) {
       });
       return { status: 'ok', plan };
     }
-    if (operation === 'list') return { status: 'ok', plans: store.listPlans() };
+    if (operation === 'list') {
+      const plans = store.listPlans();
+      return { status: 'ok', plans: options['--full'] ? plans : plans.map(planSummary) };
+    }
     if (operation === 'show') {
       const plan = store.getPlan(requireId(positional));
       if (!plan) cliError('not_found', 'Plan not found');
@@ -496,9 +520,12 @@ function operationResult(store, parsed, cwd) {
       if (!options['--file']) cliError('usage', 'task create requires --file <json>');
       return { status: 'ok', task: advanceAutomaticReady(store, store.createTask(readJsonInput(options['--file'], cwd))) };
     }
-    if (operation === 'list') return { status: 'ok', tasks: store.listTasks({
-      state: options['--state'], workflowId: options['--workflow'], backlogId: options['--backlog'],
-    }) };
+    if (operation === 'list') {
+      const tasks = store.listTasks({
+        state: options['--state'], workflowId: options['--workflow'], backlogId: options['--backlog'],
+      });
+      return { status: 'ok', tasks: options['--full'] ? tasks : tasks.map(taskSummary) };
+    }
     if (operation === 'show') {
       const task = store.getTask(requireId(positional));
       if (!task) cliError('not_found', 'Task not found');
@@ -567,6 +594,7 @@ function operationResult(store, parsed, cwd) {
     if (operation === 'archive') return { status: 'ok', task: store.archiveTask(requireId(positional), { expectedRevision: requireRevision(options) }) };
     if (operation === 'restore') return { status: 'ok', task: store.restoreTask(requireId(positional), { expectedRevision: requireRevision(options) }) };
     if (operation === 'purge-preview') return { status: 'ok', preview: store.previewPurge({
+      taskId: options['--task-id'],
       before: options['--before'], workflowId: options['--workflow'], backlogId: options['--backlog'],
     }) };
     if (operation === 'purge') {

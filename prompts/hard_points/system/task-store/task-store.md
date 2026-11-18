@@ -139,6 +139,7 @@ aikido task workflow validate --file <workflow.json>
 aikido task workflow list|show <id>
 aikido task plan create|list|show|update|instantiate ...
 aikido task create|list|show|update|link|transition|accept ...
+aikido task list|plan list [--full]  # minified JSON, compact summaries by default; --full for whole items
 aikido task host-command prepare-create --file <private-submission.json> --service-file <authenticated-descriptor.json>
 aikido task host-command prepare-schedule --file <private-submission.json> --service-file <authenticated-descriptor.json> --task-file <actual-host-result.json> [--task-id <id>]
 aikido task schedule <id> --at <ISO-8601-offset> --timezone <IANA> --revision <n>
@@ -199,3 +200,44 @@ Tests and embedding hosts can inject `clock` and `idGenerator` through
 `openTaskStore` to verify timestamps, IDs, idempotency, interruption recovery,
 schedule callbacks and retry behavior without relying on wall-clock time or
 random values.
+
+## Optional modules and workflow library
+
+AI-KIDO, Tatami Agent, Tatami Core Agent and Tatami Core are independent. `task.mjs`
+detects what is present on every run and adapts:
+
+| Situation | Workflows | Cards |
+|---|---|---|
+| Knowledge base only | Files in the library, registered in the private store | Private store |
+| Core Agent reachable | Created, changed and deleted by the Core Agent (MCP) | Core Agent Task Service |
+| Core Agent stopped, older or untrusted | Same as knowledge base only | Private store |
+| No knowledge base (Core Agent alone) | `.tatami/workflows/` | Core Agent Task Service |
+
+Detection reads the `tatami-core-agent` entry of `.mcp.json` and its runtime file, or
+`AIKIDO_CORE_AGENT_URL`, `AIKIDO_CORE_AGENT_TOKEN` and `AIKIDO_CORE_AGENT_PROJECT`,
+or the connection saved by `task config core-agent set`. The address is stored in the
+Git-ignored `prompts/spec/aikido/core-agent.json`, the token in `~/.aikido/core-agent/`.
+A runtime file is trusted only when it is private, outside the workspace and points
+to this machine. `--local` forces local operation.
+
+Library, by priority: `prompts/hard_points/workflows/` (read-only method templates),
+then `prompts/gen/workflows/` (project templates). Each version is one immutable file,
+`<id>/<version>.json`. Cards stay outside Git, in the private store or the Core Agent.
+
+```text
+node task.mjs host status
+node task.mjs workflow list|show <id>
+node task.mjs workflow save --file <draft.json>
+node task.mjs workflow delete <id> --confirm
+node task.mjs workflow sync
+node task.mjs task launch|stop|done|events|delete|sync ...
+node task.mjs task config core-agent show|set|clear
+```
+
+A card is piloted where it lives: on the Core Agent when it exists there, locally
+otherwise. The full command list is in the `aikido-tasks` skill.
+
+A draft is `{ "id?": "...", "label": "...", "description?": "...", "steps": [{ "label": "...", "type": "plan|dispatch|wait|verify|approve" }] }`
+with exactly one `dispatch` step; the final step and the version are generated.
+`workflow sync` registers library templates in the private store and publishes private
+linear workflows missing from the library, through the Core Agent when it is present.
