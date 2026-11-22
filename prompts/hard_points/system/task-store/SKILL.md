@@ -23,7 +23,9 @@ Keep cards in step with the work, transparently, without asking the user:
    silently left `running`.
 4. Report the resulting card states in the turn's answer.
 
-Each card states its review mode with a label; without one it is `review:human`:
+Each card states its review mode with a label; without one it takes the review
+default of its pinned workflow (`review:automated` for Full Auto workflows),
+else `review:human`:
 
 - `review:human` — stop at `review`, present the delivery and remaining
   criteria, and wait. Only the user accepts (`task accept`) or marks `done`.
@@ -32,7 +34,9 @@ Each card states its review mode with a label; without one it is `review:human`:
 - `review:automated` — acceptance comes from the deterministic check named in
   `acceptanceCriteria` (tests, CI, validator). Run it; when it passes, record
   `task accept --accepted true` with the evidence in `--reason`, then `done`.
-  When it fails, record the rejection and keep the card out of `done`.
+  When it fails, record the rejection and keep the card out of `done`; a new
+  attempt follows the retry policy, otherwise the card is `blocked` with the
+  reason. Never ask a person to confirm a passing automated review.
 
 Never mark a `review:human` card accepted or done, and never invent an
 automated check to bypass a human review.

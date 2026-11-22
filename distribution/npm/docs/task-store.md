@@ -30,17 +30,25 @@ Memory Bank, Kimono, RAG, shared exports and model/tool output.
   Results move a task to review or waiting, never to accepted or done.
   `acceptTask` records an explicit authorized decision; `done` is a further
   explicit transition requiring acceptance and verified criteria.
-- Review mode is explicit through a card label: `review:human` (default when
-  absent) is accepted only by the user; `review:automated` is accepted from a
-  passing deterministic check named in `acceptanceCriteria`. Agents keep card
-  progress (`ready`, `running`, `review`, `waiting`) in step with the work
-  without asking; see the Skill's *Card progress* section.
-- Rejections require explicit reviewer acknowledgement before resuming.
-  Retries are new attempts on the same task.
+- Review mode is explicit: the card label, else the review default of its
+  pinned workflow, else `review:human`. `review:human` is accepted only by the
+  user. `review:automated` is accepted from a passing deterministic check named
+  in `acceptanceCriteria` (workflow checks, tests, validators): the host's
+  workflow actor records the acceptance with its evidence, then marks the card
+  `done`, without waiting for a person. Full Auto workflows default to
+  `review:automated`; their "with approval" variant keeps `review:human`.
+  Agents keep card progress (`ready`, `running`, `review`, `waiting`) in step
+  with the work without asking; see the Skill's *Card progress* section.
+- A `review:human` rejection requires explicit reviewer acknowledgement before
+  resuming. A `review:automated` rejection starts a new attempt within the
+  retry policy (Swarm `max_retries_per_task`, never for non-retryable codes) or
+  the workflow's declared bounded loop; once exhausted, the card is `blocked`
+  with its reason. Retries are new attempts on the same task.
 - Archive is reversible. Purge requires a revision-checked preview and
   confirmation token, then retains only a minimal tombstone.
 - Workflow snapshots are immutable `{id, version, sha256, definition}`.
-  New tasks pin `automatic@1.0.0` when no workflow is supplied; an explicit
+  New tasks pin the library's current `automatic` version when no workflow is
+  supplied; an explicit
   workflow/version is preserved and an invalid selection is rejected. Backlog
   tasks start at the workflow's `plan` step. Card state and workflow step remain
   separate; plans pin their selected workflow and instantiate a deterministic DAG.
@@ -71,11 +79,15 @@ call a dispatcher. The authenticated host owns its own execution request,
 hook registration, polling and callback delivery. A worker result does not
 accept or finish its parent.
 
-The host advances the built-in automatic path only after an explicit ready or
-schedule approval, advances successful/partial execution to `verify` while the
-card enters `review`, and records explicit human acceptance before moving to
-`complete`. A separate explicit transition is still required to mark a task
-`done`. Custom workflows are never skipped by this automatic path.
+The host advances the built-in automatic path once the card is launched: the
+user's request or a schedule is the ready approval, with no further
+confirmation. Successful/partial execution moves to `verify` while the card
+enters `review`; acceptance then follows the review mode before `complete`:
+deterministic checks for `review:automated` (default of Full Auto workflows),
+explicit human acceptance for `review:human`. `done` stays a separate
+transition, made by the host's workflow actor for `review:automated` and by
+the user for `review:human`. Custom workflows are never skipped by this
+automatic path.
 
 ## Host scheduling and callbacks
 
