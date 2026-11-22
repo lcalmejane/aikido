@@ -53,6 +53,19 @@ function fail(code, message, details) {
   throw new TaskStoreError(code, message, details);
 }
 
+function processIdentity(pid) {
+  if (process.platform !== 'linux') return null;
+  try {
+    const stat = readFileSync(`/proc/${pid}/stat`, 'utf8');
+    const startTicks = stat.slice(stat.lastIndexOf(')') + 2).split(' ')[19];
+    const bootId = readFileSync('/proc/sys/kernel/random/boot_id', 'utf8').trim();
+    return `${bootId}:${startTicks}`;
+  } catch (error) {
+    if (error.code === 'ENOENT' || error.code === 'ESRCH') return null;
+    throw error;
+  }
+}
+
 function canonicalize(value) {
   if (Array.isArray(value)) return value.map(canonicalize);
   if (value && typeof value === 'object') {
@@ -595,11 +608,15 @@ export class TaskStore {
 
   acquireLock(lockStaleCheck) {
     assertNoSymlinkComponents(this.paths.lock);
+    const identity = processIdentity(process.pid);
     try {
       const fd = openSync(this.paths.lock, 'wx', 0o600);
-      writeFileSync(fd, JSON.stringify({ pid: process.pid, openedAt: normalizeClock(this.clock), token: this.idGenerator() }));
-      fsyncSync(fd);
-      closeSync(fd);
+      try {
+        this.lockToken = this.idGenerator();
+        writeFileSync(fd, JSON.stringify({ pid: process.pid, openedAt: new Date().toISOString(),
+          token: this.lockToken, processIdentity: identity }));
+        fsyncSync(fd);
+      } finally { closeSync(fd); }
       return;
     } catch (error) {
       if (error.code !== 'EEXIST') throw error;
@@ -614,6 +631,13 @@ export class TaskStore {
     if (typeof lockStaleCheck === 'function') stale = Boolean(lockStaleCheck(lock));
     else if (Number.isInteger(lock.pid)) {
       try { process.kill(lock.pid, 0); } catch (error) { stale = error.code === 'ESRCH'; }
+      if (!stale && typeof lock.processIdentity === 'string') {
+        const identity = processIdentity(lock.pid);
+        stale = identity !== null && identity !== lock.processIdentity;
+      } else if (!stale && lock.pid === process.pid) {
+        // Legacy locks survive container restarts, where the server is PID 1 again.
+        stale = Date.parse(lock.openedAt) < Date.now() - process.uptime() * 1000 - 1000;
+      }
     }
     if (!stale) fail('writer_locked', 'Task store already has an active writer');
     unlinkSync(this.paths.lock);
@@ -621,10 +645,14 @@ export class TaskStore {
   }
 
   releaseLock() {
-    if (!this.paths?.lock) return;
+    if (!this.paths?.lock || !this.lockToken) return;
     try {
-      if (existsSync(this.paths.lock) && lstatSync(this.paths.lock).isFile()) unlinkSync(this.paths.lock);
-    } catch {}
+      if (existsSync(this.paths.lock) && safeReadJson(this.paths.lock, 'writer lock').token === this.lockToken) {
+        unlinkSync(this.paths.lock);
+      }
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error;
+    }
   }
 
   initializeMetadata() {
@@ -870,6 +898,14 @@ export class TaskStore {
     const task = this.tasks.get(id);
     if (task) this.assertTaskOwner(task);
     return task ? clone(task) : null;
+  }
+
+  isTaskPurged(id) {
+    safeId(id, 'task id');
+    const tombstone = this.tombstones.get(id);
+    return Boolean(tombstone && tombstone.workspaceId === this.workspaceId &&
+      (this.actor.type === 'service' ||
+        tombstone.ownerIdHash === createHash('sha256').update(this.actor.id).digest('hex')));
   }
 
   listTasks(filter = {}) {
@@ -1653,9 +1689,10 @@ export class TaskStore {
         nextAttempt.finishedAt = receivedAt;
         nextAttempt.lease = null;
       }
-      if (next.state === 'running') {
+      if (next.state === 'running' || next.state === 'waiting' && next.waitingReason?.type === 'interruption') {
         next.state = 'waiting';
-        next.waitingReason = { type: 'interruption', detail: event.type };
+        next.waitingReason = { type: 'interruption',
+          detail: typeof event.payload?.reason === 'string' ? event.payload.reason.slice(0, 1000) : event.type };
       }
     } else if (event.type === 'peer-message') {
       next.activity = [...(next.activity ?? []), {

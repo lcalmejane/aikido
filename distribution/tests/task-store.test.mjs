@@ -1299,3 +1299,20 @@ test('causal hook cycles spanning two cards are detected and bounded', () => {
   assert.equal(store.getTask('cycle-b').waitingReason?.type, 'hook_cycle');
   store.close();
 });
+
+test('writer lock: a legacy lock with a reused PID is recovered, a live writer never removes a replacement lock', () => {
+  const { storeRoot, open } = harness('writer-lock');
+  const lock = join(storeRoot, 'writer.lock');
+  const initial = open();
+  const card = initial.createTask({ id: 'lock-card', title: 'Recoverable task' });
+  initial.close();
+  // Container restart: the server is PID 1 again and the lock predates this process.
+  writeFileSync(lock, JSON.stringify({ pid: process.pid, token: 'old',
+    openedAt: new Date(Date.now() - process.uptime() * 1000 - 10_000).toISOString() }), { mode: 0o600 });
+  const recovered = open();
+  assert.equal(recovered.getTask(card.id).title, card.title);
+  assert.throws(() => open(), { code: 'writer_locked' });
+  writeFileSync(lock, JSON.stringify({ ...JSON.parse(readFileSync(lock, 'utf8')), token: 'replacement' }), { mode: 0o600 });
+  recovered.close();
+  assert.equal(JSON.parse(readFileSync(lock, 'utf8')).token, 'replacement');
+});

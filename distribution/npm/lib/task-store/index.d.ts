@@ -160,6 +160,7 @@ export class TaskStore {
   readonly storeRoot: string;
   readonly actor: TaskActor;
   getTask(id: string): TaskCard | null;
+  isTaskPurged(id: string): boolean;
   listTasks(filter?: Record<string, unknown>): TaskCard[];
   createTask(input: TaskCardInput, options?: Record<string, unknown>): TaskCard;
   updateTask(id: string, patch: Record<string, unknown>, options: { expectedRevision: number }): TaskCard;
