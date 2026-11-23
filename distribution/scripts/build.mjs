@@ -612,7 +612,7 @@ export function buildDistribution({
       const packagePath = path.replace(/^distribution\//, '');
       writeUnique(packagePath, readFileSync(assertSourcePath(path, 'file')), 'runtime');
     }
-    for (const file of ['index.mjs', 'index.d.ts', 'cli.mjs', 'private-plan-import.mjs', 'hosted-cli.mjs', 'module-link.mjs', 'workflow-library.mjs']) {
+    for (const file of ['index.mjs', 'index.d.ts', 'cli.mjs', 'private-plan-import.mjs', 'hosted-cli.mjs', 'module-link.mjs', 'workflow-library.mjs', 'workflow.mjs']) {
       const source = `prompts/hard_points/system/task-store/${file}`;
       writeUnique(`lib/task-store/${file}`, readFileSync(assertSourcePath(source, 'file')), 'runtime');
     }

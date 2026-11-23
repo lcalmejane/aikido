@@ -5,6 +5,7 @@ import { createServer } from 'node:http';
 import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { runHostedTaskCLI } from '../lib/task-store/hosted-cli.mjs';
+import { renderWorkflow } from '../lib/task-store/workflow.mjs';
 
 const roots = [];
 const temp = (base = tmpdir()) => { const path = realpathSync(mkdtempSync(join(base, 'aikido-hosted-'))); roots.push(path); return path; };
@@ -49,7 +50,7 @@ test('knowledge base alone: workflows are versioned files, usable by local cards
   writeFileSync(join(workspace, 'draft.json'), JSON.stringify(draft));
   const saved = await run(workspace, 'workflow', 'save', '--file', 'draft.json');
   assert.deepEqual([saved.exitCode, saved.result.route, saved.result.workflow.version], [0, 'local', '1.0.0']);
-  assert.ok(existsSync(join(workspace, 'prompts/gen/workflows/revue-securite/1.0.0.json')));
+  assert.ok(existsSync(join(workspace, 'prompts/gen/workflows/revue-securite/1.0.0.workflow.md')));
   assert.equal((await run(workspace, 'workflow', 'save', '--file', 'draft.json')).result.workflow.version, '1.0.0');
   assert.ok((await run(workspace, 'workflow', 'list')).result.workflows.some(item => item.id === 'revue-securite'));
   writeFileSync(join(workspace, 'card.json'), JSON.stringify({ title: 'Audit', workflowId: 'revue-securite' }));
@@ -63,8 +64,8 @@ test('hard points are read-only and win over project files', async () => {
   const workspace = temp();
   const directory = join(workspace, 'prompts/hard_points/workflows/revue-securite');
   mkdirSync(directory, { recursive: true });
-  writeFileSync(join(directory, '1.0.0.json'), JSON.stringify({ schemaVersion: 'workflow/1', id: 'revue-securite', version: '1.0.0', entryStepId: 'a', terminalStepIds: ['b'],
-    steps: [{ id: 'a', type: 'dispatch', transitions: ['b'] }, { id: 'b', type: 'wait', transitions: [] }] }));
+  writeFileSync(join(directory, '1.0.0.workflow.md'), renderWorkflow({ schemaVersion: 'workflow/2', id: 'revue-securite', version: '1.0.0', entry: 'a',
+    states: [{ id: 'a', type: 'task', stage: 'dispatch', next: 'b' }, { id: 'b', type: 'terminal' }] }));
   writeFileSync(join(workspace, 'draft.json'), JSON.stringify(draft));
   assert.equal((await run(workspace, 'workflow', 'save', '--file', 'draft.json')).result.code, 'workflow_reserved');
   assert.equal((await run(workspace, 'workflow', 'show', 'revue-securite')).result.workflow.source, 'hard-point');

@@ -1,12 +1,16 @@
 # Method workflows
 
-Read-only `workflow/1` templates distributed with AI-KIDO, one immutable file per
-version: `<id>/<version>.json`. They take priority over project templates in
-`prompts/gen/workflows/`. See the [task store contract](../system/task-store/task-store.md).
+Read-only `workflow/2` templates distributed with AI-KIDO, one immutable file per
+version: `<id>/<version>.workflow.md`. They take priority over project templates in
+`prompts/gen/workflows/`, then `.tatami/workflows/`. See the
+[task store contract](../system/task-store/task-store.md).
 
-`workflow/2` is the adopted successor: a `.workflow.md` file whose JSON block is
-authoritative (states `task`, `choice`, `parallel`, `wait`, `approval`,
-`terminal`; `auto` or `manual` mode; per-state agent, prompt, MCP, tools, skills
-and pre/post hooks). Workflows are Full Auto by default, with `review:automated`.
-It replaces `workflow/1` without dual reading or migration as soon as the Task
-Store library validates it; until then the library accepts `workflow/1` only.
+A `.workflow.md` file has a front matter (`id`, `version`, `publication`, render
+hashes), a human part (title, description, `stateDiagram-v2` diagram, states) and a
+`json workflow/2` block that is authoritative. States are `task`, `choice`,
+`parallel`, `wait`, `approval` and `terminal`, in `auto` or `manual` mode, with
+per-state agent, prompt, MCP, tools, skills and pre/post hooks. Workflows are Full
+Auto by default (`review:automated`); built-ins `automatic`, `analysis` and
+`implementation` (2.0.0) each have a `-with-approval` variant (`review:human`).
+Validation, rendering, diagram parsing, patches and diff live in
+[`workflow.mjs`](../system/task-store/workflow.mjs); `workflow/1` is no longer read.

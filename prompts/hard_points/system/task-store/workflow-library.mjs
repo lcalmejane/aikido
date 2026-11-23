@@ -1,13 +1,14 @@
-// Workflow templates kept in the knowledge base: one immutable JSON file per version, usable without any Tatami module.
+// Workflow templates kept in the knowledge base: one immutable `<id>/<version>.workflow.md` file per version (workflow/2),
+// usable without any Tatami module. The JSON block of the file is the source of truth.
 import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { validateWorkflow } from './index.mjs';
+import { linearStates, readWorkflowMarkdown, renderWorkflow, validateWorkflow, WORKFLOW_SCHEMA } from './workflow.mjs';
 
 export const HARD_POINT_WORKFLOWS = 'prompts/hard_points/workflows';
 export const PROJECT_WORKFLOWS = 'prompts/gen/workflows';
 const FALLBACK_WORKFLOWS = '.tatami/workflows';
 const DIRECTORIES = [HARD_POINT_WORKFLOWS, PROJECT_WORKFLOWS, FALLBACK_WORKFLOWS];
-export const BUILTIN_WORKFLOW_IDS = ['automatic', 'analysis', 'implementation'];
+export const BUILTIN_WORKFLOW_IDS = ['automatic', 'analysis', 'implementation', 'automatic-with-approval', 'analysis-with-approval', 'implementation-with-approval'];
 const STEP_TYPES = ['plan', 'dispatch', 'wait', 'verify', 'approve'];
 const SAFE_ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
 
@@ -20,20 +21,21 @@ const plainDirectory = path => { try { return lstatSync(path).isDirectory(); } c
 function versions(workspace, directory, id) {
   const path = join(workspace, directory, id);
   if (!plainDirectory(path)) return [];
-  return readdirSync(path).filter(name => /^\d+\.\d+\.\d+\.json$/.test(name)).map(name => name.slice(0, -5)).sort(byVersion);
+  return readdirSync(path).filter(name => /^\d+\.\d+\.\d+\.workflow\.md$/.test(name)).map(name => name.slice(0, -'.workflow.md'.length)).sort(byVersion);
 }
 function locate(workspace, id) {
   for (const directory of DIRECTORIES) { const found = versions(workspace, directory, id); if (found.length) return { directory, versions: found }; }
   return undefined;
 }
-const fileOf = (workspace, directory, id, version) => join(workspace, directory, id, `${version}.json`);
-const read = (workspace, directory, id, version) => JSON.parse(readFileSync(fileOf(workspace, directory, id, version), 'utf8'));
+const fileOf = (workspace, directory, id, version) => join(workspace, directory, id, `${version}.workflow.md`);
+const read = (workspace, directory, id, version) => readWorkflowMarkdown(readFileSync(fileOf(workspace, directory, id, version), 'utf8')).definition;
 const writeDirectory = workspace => plainDirectory(join(workspace, 'prompts')) ? PROJECT_WORKFLOWS : FALLBACK_WORKFLOWS;
 
+const labelOf = label => typeof label === 'string' ? label : label?.en ?? Object.values(label ?? {})[0] ?? '';
 function summary(definition, directory) {
   return { id: definition.id, version: definition.version, label: definition.label ?? definition.id, description: definition.description ?? '',
     source: directory === HARD_POINT_WORKFLOWS ? 'hard-point' : 'project',
-    steps: definition.steps.map(step => ({ id: step.id, type: step.type, label: step.label ?? step.id })) };
+    states: definition.states.map(state => ({ id: state.id, type: state.type, ...(state.stage ? { stage: state.stage } : {}), label: labelOf(state.label) || state.id })) };
 }
 
 /** Latest valid version of every template; hard points win over project files. */
@@ -74,11 +76,16 @@ export function saveToLibrary(workspace, draft) {
     if (!STEP_TYPES.includes(step?.type) || typeof step.label !== 'string' || !step.label.trim()) fail('workflow_invalid', `Step ${index + 1} needs a label and a valid type`);
     return { id: unique(step.label, index), label: step.label.trim(), type: step.type };
   });
+  const toState = (step, next) => step.type === 'approve' ? { id: step.id, label: step.label, type: 'approval', next }
+    : step.type === 'wait' ? { id: step.id, label: step.label, type: 'wait', next }
+    : { id: step.id, label: step.label, type: 'task', stage: step.type, next };
   if (steps.filter(step => step.type === 'dispatch').length !== 1) fail('workflow_invalid', 'A workflow needs exactly one dispatch step');
-  const chain = [...steps, { id: unique('termine', steps.length), label: 'Terminé', type: 'wait' }];
+  const end = { id: unique('termine', steps.length), label: 'Terminé', type: 'terminal', outcome: 'success' };
   const description = typeof draft.description === 'string' ? draft.description.trim() : '';
-  const body = { schemaVersion: 'workflow/1', id, label, ...(description ? { description } : {}), entryStepId: chain[0].id, terminalStepIds: [chain.at(-1).id],
-    steps: chain.map((step, index) => ({ ...step, transitions: chain[index + 1] ? [chain[index + 1].id] : [] })) };
+  const approval = steps.some(step => step.type === 'approve');
+  const body = { schemaVersion: WORKFLOW_SCHEMA, id, label, ...(description ? { description } : {}),
+    defaults: { mode: 'auto', review: approval ? 'human' : 'automated' }, entry: steps[0].id,
+    states: [...steps.map((step, index) => toState(step, (steps[index + 1] ?? end).id)), end] };
   const directory = found?.directory ?? writeDirectory(workspace);
   const latest = found?.versions.at(-1);
   if (latest) {
@@ -98,7 +105,7 @@ export function publish(workspace, definition, directory = writeDirectory(worksp
     if (existsSync(path) && !plainDirectory(path)) fail('workflow_path', 'Workflow directory must not be a link');
   }
   mkdirSync(dirname(file), { recursive: true });
-  writeFileSync(file, `${JSON.stringify(definition, null, 2)}\n`, { flag: 'wx' });
+  writeFileSync(file, renderWorkflow(definition), { flag: 'wx' });
   return summary(definition, directory);
 }
 
@@ -112,15 +119,12 @@ export function deleteFromLibrary(workspace, id) {
   rmSync(join(workspace, found.directory, id), { recursive: true });
 }
 
-/** Converts a linear workflow/1 definition to the draft accepted by the Core Agent; undefined when it cannot be expressed. */
+/** Converts a linear workflow/2 definition to the draft accepted by the Core Agent; undefined when it cannot be expressed. */
 export function draftFromDefinition(definition) {
-  const byId = new Map(definition.steps.map(step => [step.id, step]));
-  const ordered = [];
-  for (let step = byId.get(definition.entryStepId); step; step = byId.get(typeof step.transitions[0] === 'string' ? step.transitions[0] : step.transitions[0]?.to)) {
-    if (step.transitions.length > 1 || ordered.includes(step)) return undefined;
-    ordered.push(step);
-  }
-  if (definition.hooks?.length || ordered.length !== definition.steps.length || ordered.filter(step => step.type === 'dispatch').length !== 1) return undefined;
-  return { id: definition.id, label: definition.label ?? definition.id, ...(definition.description ? { description: definition.description } : {}),
-    steps: ordered.slice(0, -1).map(step => ({ label: step.label ?? step.id, type: step.type })) };
+  const ordered = linearStates(definition);
+  if (!ordered || definition.hooks?.length || ordered.some(state => state.hooks || state.agent || state.prompt || state.script || state.mcp || state.mode === 'manual')) return undefined;
+  const steps = ordered.slice(0, -1).map(state => ({ label: labelOf(state.label) || state.id,
+    type: state.type === 'approval' ? 'approve' : state.type === 'wait' ? 'wait' : state.stage }));
+  if (steps.some(step => !step.type) || steps.filter(step => step.type === 'dispatch').length !== 1) return undefined;
+  return { id: definition.id, label: labelOf(definition.label) || definition.id, ...(definition.description ? { description: definition.description } : {}), steps };
 }

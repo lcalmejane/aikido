@@ -66,7 +66,7 @@ function runNextHostHook(store, hooks, authorize = () => true) {
 
 function advanceAutomaticToComplete(store, task) {
   let current = task;
-  for (const toStepId of ['execute', 'verify', 'approve', 'complete']) {
+  for (const toStepId of ['execute', 'verify', 'complete']) {
     if (current.stepId === toStepId) continue;
     current = store.advanceWorkflow(current.id, { toStepId }, { expectedRevision: current.revision });
   }
@@ -87,7 +87,7 @@ test('default root stays outside the checkout and explicit in-checkout roots are
 test('new tasks pin automatic by default, preserve explicit workflows, and relocate projections on advancement', () => {
   const { open, storeRoot } = harness('default-workflow');
   const store = open();
-  const workflow = store.getWorkflow('automatic', '1.0.0');
+  const workflow = store.getWorkflow('automatic', '2.0.0');
   const backlog = store.createTask({ id: 'default-backlog', title: 'Default workflow' });
   assert.equal(backlog.state, 'backlog');
   assert.equal(backlog.workflowId, workflow.id);
@@ -100,15 +100,14 @@ test('new tasks pin automatic by default, preserve explicit workflows, and reloc
   assert.ok(existsSync(planPath));
 
   const explicit = {
-    schemaVersion: 'workflow/1',
+    schemaVersion: 'workflow/2',
     id: 'custom-task-workflow',
     version: '2.0.0',
-    entryStepId: 'draft',
-    terminalStepIds: ['finished'],
-    steps: [
-      { id: 'draft', type: 'plan', transitions: ['work'] },
-      { id: 'work', type: 'dispatch', transitions: ['finished'] },
-      { id: 'finished', type: 'wait', transitions: [] },
+    entry: 'draft',
+    states: [
+      { id: 'draft', type: 'task', stage: 'plan', next: 'work' },
+      { id: 'work', type: 'task', stage: 'dispatch', next: 'finished' },
+      { id: 'finished', type: 'terminal' },
     ],
   };
   const customWorkflow = store.registerWorkflow(explicit);
@@ -165,7 +164,7 @@ test('CLI task creation pins automatic and only advances after explicit ready st
   const ready = runTaskCLI(['task', 'create', '--file', inputPath, '--workspace', REPO, '--store', storeRoot], { cwd: REPO });
   assert.equal(ready.exitCode, 0, ready.result.message);
   assert.equal(ready.result.task.workflowId, 'automatic');
-  assert.equal(ready.result.task.workflowVersion, '1.0.0');
+  assert.equal(ready.result.task.workflowVersion, '2.0.0');
   assert.equal(ready.result.task.state, 'ready');
   assert.equal(ready.result.task.stepId, 'execute');
 
@@ -183,9 +182,9 @@ test('workflow CLI validates without a store and updates only immutable matching
   mkdirSync(directory);
   const file = join(directory, 'workflow.json');
   const definition = {
-    schemaVersion: 'workflow/1', id: 'cli-workflow', version: '1.0.0',
-    entryStepId: 'verify', terminalStepIds: ['verify'],
-    steps: [{ id: 'verify', type: 'verify', transitions: [] }],
+    schemaVersion: 'workflow/2', id: 'cli-workflow', version: '1.0.0',
+    entry: 'verify',
+    states: [{ id: 'verify', type: 'terminal' }],
   };
   writeFileSync(file, JSON.stringify(definition));
   const invoke = (...args) => runTaskCLI([
@@ -200,7 +199,7 @@ test('workflow CLI validates without a store and updates only immutable matching
   assert.equal(invoke('update', definition.id, '--file', file).exitCode, 0);
   const original = invoke('show', definition.id, '--workflow-version', '1.0.0').result.workflow;
   assert.deepEqual(original.definition, definition);
-  writeFileSync(file, JSON.stringify({ ...definition, entryStepId: 'absent' }));
+  writeFileSync(file, JSON.stringify({ ...definition, entry: 'absent' }));
   assert.equal(invoke('validate', '--file', file).exitCode, 1);
 });
 
@@ -219,7 +218,7 @@ test('historical plans preview losslessly, create only with approval, pin workfl
   assert.equal(preview.source.sha256, analysisHash);
   assert.equal(preview.source.kind, 'analysis');
   assert.equal(preview.workflow.id, 'analysis');
-  assert.equal(preview.workflow.version, '1.0.0');
+  assert.equal(preview.workflow.version, '2.0.0');
   assert.doesNotMatch(JSON.stringify(preview), /Sources to Analyze/);
   assert.throws(() => preparePrivatePlan({
     store,
@@ -246,15 +245,14 @@ test('historical plans preview losslessly, create only with approval, pin workfl
   assert.equal(readFileSync(join(REPO, analysisPath), 'utf8'), analysisText);
 
   const customDefinition = {
-    schemaVersion: 'workflow/1',
+    schemaVersion: 'workflow/2',
     id: 'legacy-search-review',
     version: '2.0.0',
-    entryStepId: 'draft',
-    terminalStepIds: ['finished'],
-    steps: [
-      { id: 'draft', type: 'plan', transitions: ['search'] },
-      { id: 'search', type: 'dispatch', transitions: ['finished'] },
-      { id: 'finished', type: 'wait', transitions: [] },
+    entry: 'draft',
+    states: [
+      { id: 'draft', type: 'task', stage: 'plan', next: 'search' },
+      { id: 'search', type: 'task', stage: 'dispatch', next: 'finished' },
+      { id: 'finished', type: 'terminal' },
     ],
   };
   const customWorkflow = store.registerWorkflow(customDefinition);
@@ -426,7 +424,7 @@ test('host-command preparation is typed, scoped, idempotent and never executes',
     command: 'create',
     input: {
       title: input.title, prompt: input.prompt, state: 'ready',
-      workflowId: 'automatic', workflowVersion: '1.0.0',
+      workflowId: 'automatic', workflowVersion: '2.0.0',
     },
   });
   assert.doesNotMatch(JSON.stringify(create.result), /must-not-be-copied/);
@@ -731,7 +729,7 @@ test('new child dispatch preparation is idempotent and binds workflow before spa
   assert.equal(prepared.task.id, 'dispatch-child');
   assert.equal(prepared.task.parentId, parent.id);
   assert.equal(prepared.task.workflowId, 'analysis');
-  assert.equal(prepared.task.workflowVersion, '1.0.0');
+  assert.equal(prepared.task.workflowVersion, '2.0.0');
   assert.equal(replay.task.id, prepared.task.id);
   assert.equal(replay.attempt.id, prepared.attempt.id);
   assert.throws(() => store.prepareDispatch({
@@ -760,23 +758,21 @@ test('workflow validation, immutable snapshots, and repeatable plan instantiatio
   assert.deepEqual(instance.tasks[1].dependsOn, [instance.tasks[0].id]);
   assert.deepEqual(store.instantiatePlan(plan.id).tasks.map((task) => task.id), instance.tasks.map((task) => task.id));
   assert.throws(() => store.registerWorkflow({
-    schemaVersion: 'workflow/1',
+    schemaVersion: 'workflow/2',
     id: 'analysis',
-    version: '1.0.0',
-    entryStepId: 'one',
-    terminalStepIds: ['two'],
-    steps: [{ id: 'one', type: 'plan', transitions: ['two'] }, { id: 'two', type: 'verify', transitions: [] }],
+    version: '2.0.0',
+    entry: 'one',
+    states: [{ id: 'one', type: 'task', stage: 'plan', next: 'two' }, { id: 'two', type: 'terminal' }],
   }), { code: 'workflow_immutable' });
   const invalid = validateWorkflow({
-    schemaVersion: 'workflow/1',
+    schemaVersion: 'workflow/2',
     id: 'cycle',
     version: '1.0.0',
-    entryStepId: 'a',
-    terminalStepIds: ['b'],
-    steps: [{ id: 'a', type: 'plan', transitions: ['b'] }, { id: 'b', type: 'verify', transitions: ['a'] }],
+    entry: 'a',
+    states: [{ id: 'a', type: 'task', stage: 'plan', next: 'b' }, { id: 'b', type: 'task', stage: 'verify', next: 'a' }],
   });
   assert.equal(invalid.valid, false);
-  assert.ok(invalid.errors.some((error) => error.includes('cycle')));
+  assert.ok(invalid.errors.some((error) => error.includes('loop')));
   store.close();
 });
 
@@ -784,14 +780,13 @@ test('plans stay pinned to immutable workflow versions', () => {
   const { open } = harness('workflow-pinning');
   const store = open();
   const workflowV1 = {
-    schemaVersion: 'workflow/1',
+    schemaVersion: 'workflow/2',
     id: 'pinned-workflow',
     version: '1.0.0',
-    entryStepId: 'draft',
-    terminalStepIds: ['done'],
-    steps: [
-      { id: 'draft', type: 'plan', transitions: ['done'] },
-      { id: 'done', type: 'verify', transitions: [] },
+    entry: 'draft',
+    states: [
+      { id: 'draft', type: 'task', stage: 'plan', next: 'done' },
+      { id: 'done', type: 'terminal' },
     ],
   };
   const snapshotV1 = store.registerWorkflow(workflowV1);
@@ -802,8 +797,8 @@ test('plans stay pinned to immutable workflow versions', () => {
   });
   const workflowV2 = structuredClone(workflowV1);
   workflowV2.version = '2.0.0';
-  workflowV2.steps[0].transitions = ['review'];
-  workflowV2.steps.splice(1, 0, { id: 'review', type: 'approve', transitions: ['done'] });
+  workflowV2.states[0].next = 'review';
+  workflowV2.states.splice(1, 0, { id: 'review', type: 'approval', next: 'done' });
   const snapshotV2 = store.registerWorkflow(workflowV2);
   assert.notEqual(snapshotV1.sha256, snapshotV2.sha256);
   assert.equal(store.getPlan(plan.id).workflow.version, '1.0.0');
@@ -1136,9 +1131,9 @@ test('registered hooks return bounded typed commands and refuse causal loops', (
   };
   const store = open({ authorizedCommands: ['task.create', 'task.transition'] });
   store.registerWorkflow({
-    schemaVersion: 'workflow/1', id: 'hooked', version: '1.0.0',
-    entryStepId: 'work', terminalStepIds: ['finish'],
-    steps: [{ id: 'work', type: 'dispatch', transitions: ['finish'] }, { id: 'finish', type: 'verify', transitions: [] }],
+    schemaVersion: 'workflow/2', id: 'hooked', version: '1.0.0',
+    entry: 'work',
+    states: [{ id: 'work', type: 'task', stage: 'dispatch', next: 'finish' }, { id: 'finish', type: 'terminal' }],
     hooks: [{ id: makeChild.id, version: makeChild.version, sha256: hash, phase: makeChild.phase }],
   });
   const hooked = store.createTask({ id: 'hooked-task', title: 'Hook target', workflowId: 'hooked' });
@@ -1153,9 +1148,9 @@ test('registered hooks return bounded typed commands and refuse causal loops', (
   assert.equal(store.listPendingHookCommands().length, 0);
 
   store.registerWorkflow({
-    schemaVersion: 'workflow/1', id: 'looping', version: '1.0.0',
-    entryStepId: 'work', terminalStepIds: ['finish'],
-    steps: [{ id: 'work', type: 'dispatch', transitions: ['finish'] }, { id: 'finish', type: 'verify', transitions: [] }],
+    schemaVersion: 'workflow/2', id: 'looping', version: '1.0.0',
+    entry: 'work',
+    states: [{ id: 'work', type: 'task', stage: 'dispatch', next: 'finish' }, { id: 'finish', type: 'terminal' }],
     hooks: [{ id: loop.id, version: loop.version, sha256: loop.sha256, phase: loop.phase }],
   });
   const target = store.createTask({ id: 'loop-target', title: 'Loop target', workflowId: 'looping' });
@@ -1166,9 +1161,9 @@ test('registered hooks return bounded typed commands and refuse causal loops', (
   assert.equal(cycleResult.reason, 'hook_cycle');
 
   store.registerWorkflow({
-    schemaVersion: 'workflow/1', id: 'event-hooked', version: '1.0.0',
-    entryStepId: 'work', terminalStepIds: ['finish'],
-    steps: [{ id: 'work', type: 'dispatch', transitions: ['finish'] }, { id: 'finish', type: 'verify', transitions: [] }],
+    schemaVersion: 'workflow/2', id: 'event-hooked', version: '1.0.0',
+    entry: 'work',
+    states: [{ id: 'work', type: 'task', stage: 'dispatch', next: 'finish' }, { id: 'finish', type: 'terminal' }],
     hooks: [{
       id: peerMessageHook.id, version: peerMessageHook.version, sha256: peerMessageHook.sha256,
       phase: peerMessageHook.phase, eventTypes: peerMessageHook.eventTypes,
@@ -1186,9 +1181,9 @@ test('registered hooks return bounded typed commands and refuse causal loops', (
   assert.equal(store.listTasks().filter((task) => task.parentId === eventTarget.id).length, 1);
 
   store.registerWorkflow({
-    schemaVersion: 'workflow/1', id: 'vetoed', version: '1.0.0',
-    entryStepId: 'work', terminalStepIds: ['finish'],
-    steps: [{ id: 'work', type: 'dispatch', transitions: ['finish'] }, { id: 'finish', type: 'verify', transitions: [] }],
+    schemaVersion: 'workflow/2', id: 'vetoed', version: '1.0.0',
+    entry: 'work',
+    states: [{ id: 'work', type: 'task', stage: 'dispatch', next: 'finish' }, { id: 'finish', type: 'terminal' }],
     hooks: [{ id: veto.id, version: veto.version, sha256: veto.sha256, phase: veto.phase }],
   });
   const vetoed = store.createTask({ id: 'veto-target', title: 'Veto target', workflowId: 'vetoed' });
@@ -1225,14 +1220,13 @@ test('hook intentions replay without rerunning callbacks or reapplying completed
   };
   let store = open(options);
   store.registerWorkflow({
-    schemaVersion: 'workflow/1',
+    schemaVersion: 'workflow/2',
     id: 'restart-safe',
     version: '1.0.0',
-    entryStepId: 'work',
-    terminalStepIds: ['finish'],
-    steps: [
-      { id: 'work', type: 'dispatch', transitions: ['finish'] },
-      { id: 'finish', type: 'verify', transitions: [] },
+    entry: 'work',
+    states: [
+      { id: 'work', type: 'task', stage: 'dispatch', next: 'finish' },
+      { id: 'finish', type: 'terminal' },
     ],
     hooks: [{ id: childHook.id, version: childHook.version, sha256: childHook.sha256, phase: childHook.phase }],
   });
@@ -1273,14 +1267,13 @@ test('causal hook cycles spanning two cards are detected and bounded', () => {
   };
   const store = open({ authorizedCommands: ['task.transition'] });
   store.registerWorkflow({
-    schemaVersion: 'workflow/1',
+    schemaVersion: 'workflow/2',
     id: 'two-card-cycle',
     version: '1.0.0',
-    entryStepId: 'work',
-    terminalStepIds: ['finish'],
-    steps: [
-      { id: 'work', type: 'dispatch', transitions: ['finish'] },
-      { id: 'finish', type: 'verify', transitions: [] },
+    entry: 'work',
+    states: [
+      { id: 'work', type: 'task', stage: 'dispatch', next: 'finish' },
+      { id: 'finish', type: 'terminal' },
     ],
     hooks: [{
       id: 'toggle-peer', version: '1.0.0', sha256: 'f'.repeat(64), phase: 'afterTransition',

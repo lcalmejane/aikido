@@ -95,11 +95,11 @@ Never accept them from card JSON, event payloads or model output.
   timestamps whose offset matches a valid IANA timezone.
 - Target selection is client-side envelope metadata. Never send `targetId` as
   a Core command input; Core derives the authorized route from session settings.
-- Create envelopes pin `automatic@1.0.0` by default, or preserve a supplied
+- Create envelopes pin `automatic@2.0.0` by default, or preserve a supplied
   `workflowId`/`workflowVersion` pair. Core create accepts and validates that
   pair; schedule commands do not carry workflow fields. Discover workflow IDs with
   `task.mjs workflow list`; never invent one.
-- `TaskStore.createTask` and CLI `task create` pin `automatic@1.0.0` when the
+- `TaskStore.createTask` and CLI `task create` pin `automatic@2.0.0` when the
   workflow is omitted. Backlog cards stay at `plan`; only an explicit ready or
   schedule approval advances this exact built-in workflow to `execute`.
 - Core advances successful/partial results to `verify` while the card remains

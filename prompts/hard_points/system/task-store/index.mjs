@@ -8,7 +8,8 @@ import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'nod
 
 export const TASK_STORE_SCHEMA = 'task-store/1';
 export const TASK_CARD_SCHEMA = 'task-card/1';
-export const WORKFLOW_SCHEMA = 'workflow/1';
+import { WORKFLOW_SCHEMA, validateWorkflow, workflowGraph, hostHooks } from './workflow.mjs';
+export * from './workflow.mjs';
 export const TASK_EVENT_SCHEMA = 'task-event/1';
 export const PRIVATE_PLAN_IMPORT_REF_KIND = 'aikido-legacy-plan-sha256';
 export const TASK_RESULT_STATUSES = Object.freeze(['ok', 'partial', 'blocked', 'error']);
@@ -16,14 +17,13 @@ export const TASK_STATES = Object.freeze(['backlog', 'ready', 'running', 'waitin
 export const EXECUTION_STATES = Object.freeze(['queued', 'running', 'idle', 'interrupted', 'closed']);
 export const SCHEDULE_STATUSES = Object.freeze(['intent-recorded', 'requested', 'acknowledged', 'unavailable', 'error']);
 export const HOOK_COMMAND_TYPES = Object.freeze(['task.create', 'task.transition', 'task.verify']);
-const POOL_EVENT_TYPES = Object.freeze(['spawn', 'start', 'result', 'reset', 'close', 'peer-message']);
+import { POOL_EVENT_TYPES } from './workflow.mjs';
 
 const ID = /^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/;
 const HASH = /^[a-f0-9]{64}$/;
 const ISO_WITH_ZONE = /^\d{4}-\d\d-\d\dT\d\d:\d\d(?::\d\d(?:\.\d{1,9})?)?(?:Z|[+-]\d\d:\d\d)$/;
 const INTERNAL_SUPPRESS_HOOKS = Symbol('internal suppress hooks');
 const INTERNAL_SUPPRESS_DEFAULT_WORKFLOW = Symbol('internal suppress default workflow');
-const STEP_TYPES = new Set(['plan', 'dispatch', 'wait', 'verify', 'approve']);
 const TRANSITIONS = {
   backlog: new Set(['ready', 'cancelled']),
   ready: new Set(['running', 'waiting', 'cancelled']),
@@ -271,118 +271,75 @@ function normalizeClock(clock) {
   return date.toISOString();
 }
 
-function validateHookReference(hook) {
-  return hook && typeof hook === 'object'
-    && typeof hook.id === 'string' && ID.test(hook.id)
-    && typeof hook.version === 'string' && hook.version.length <= 64
-    && HASH.test(hook.sha256 ?? '')
-    && ['beforeTransition', 'onExit', 'onEnter', 'onTaskStart', 'onTaskResult', 'afterTransition', 'executionEvent'].includes(hook.phase)
-    && (hook.eventTypes === undefined || (Array.isArray(hook.eventTypes)
-      && hook.eventTypes.length > 0 && hook.eventTypes.every((type) => POOL_EVENT_TYPES.includes(type))));
-}
-
-export function validateWorkflow(definition) {
-  const errors = [];
-  const error = (message) => errors.push(message);
-  if (!definition || typeof definition !== 'object' || Array.isArray(definition)) {
-    return { valid: false, errors: ['workflow must be an object'] };
-  }
-  if (definition.schemaVersion !== WORKFLOW_SCHEMA) error(`schemaVersion must be ${WORKFLOW_SCHEMA}`);
-  if (typeof definition.id !== 'string' || !ID.test(definition.id)) error('id must be a safe stable identifier');
-  if (typeof definition.version !== 'string' || !/^\d+\.\d+\.\d+$/.test(definition.version)) error('version must be semantic x.y.z');
-  if (!Array.isArray(definition.steps) || definition.steps.length === 0) error('steps must be a non-empty array');
-  const steps = Array.isArray(definition.steps) ? definition.steps : [];
-  const byId = new Map();
-  for (const step of steps) {
-    if (!step || typeof step !== 'object' || typeof step.id !== 'string' || !ID.test(step.id)) {
-      error('every step needs a safe stable id');
-      continue;
-    }
-    if (byId.has(step.id)) error(`duplicate step id: ${step.id}`);
-    byId.set(step.id, step);
-    if (!STEP_TYPES.has(step.type)) error(`${step.id}: unknown step type`);
-    if (!Array.isArray(step.transitions)) error(`${step.id}: transitions must be an array`);
-  }
-  if (!byId.has(definition.entryStepId)) error('entryStepId must identify a step');
-  const terminals = new Set(Array.isArray(definition.terminalStepIds) ? definition.terminalStepIds : []);
-  if (terminals.size === 0) error('terminalStepIds must name at least one terminal step');
-  for (const terminal of terminals) if (!byId.has(terminal)) error(`unknown terminal step: ${terminal}`);
-  const edges = new Map();
-  for (const [stepId, step] of byId) {
-    const transitions = Array.isArray(step.transitions) ? step.transitions : [];
-    const targets = [];
-    for (const transition of transitions) {
-      const target = typeof transition === 'string' ? transition : transition?.to;
-      if (!byId.has(target)) error(`${stepId}: transition targets unknown step ${target}`);
-      else targets.push(target);
-    }
-    if (terminals.has(stepId) && transitions.length) error(`${stepId}: terminal step cannot have transitions`);
-    if (!terminals.has(stepId) && transitions.length === 0) error(`${stepId}: non-terminal step needs transitions`);
-    edges.set(stepId, targets);
-  }
-  const visiting = new Set();
-  const visited = new Set();
-  function visit(stepId) {
-    if (visiting.has(stepId)) {
-      error(`workflow cycle detected at ${stepId}`);
-      return;
-    }
-    if (visited.has(stepId)) return;
-    visiting.add(stepId);
-    for (const target of edges.get(stepId) ?? []) visit(target);
-    visiting.delete(stepId);
-    visited.add(stepId);
-  }
-  if (byId.has(definition.entryStepId)) visit(definition.entryStepId);
-  for (const stepId of byId.keys()) if (!visited.has(stepId)) error(`unreachable step: ${stepId}`);
-  const reachableTerminals = [...terminals].some((terminal) => visited.has(terminal));
-  if (!reachableTerminals) error('entryStepId cannot reach a terminal step');
-  if (definition.hooks !== undefined && !Array.isArray(definition.hooks)) error('hooks must be an array');
-  for (const hook of definition.hooks ?? []) if (!validateHookReference(hook)) error('invalid hook reference');
-  const limits = definition.limits ?? {};
-  for (const name of Object.keys(DEFAULT_LIMITS)) {
-    if (limits[name] !== undefined && (!Number.isInteger(limits[name]) || limits[name] < 1 || limits[name] > 10000)) {
-      error(`limits.${name} must be an integer from 1 to 10000`);
-    }
-  }
-  return { valid: errors.length === 0, errors };
-}
-
 const BUILTIN_WORKFLOWS = [
   {
-    schemaVersion: WORKFLOW_SCHEMA, id: 'automatic', version: '1.0.0', entryStepId: 'plan',
-    terminalStepIds: ['complete'],
-    steps: [
-      { id: 'plan', type: 'plan', transitions: ['execute'] },
-      { id: 'execute', type: 'dispatch', transitions: ['verify'] },
-      { id: 'verify', type: 'verify', transitions: ['approve'] },
-      { id: 'approve', type: 'approve', transitions: ['complete'] },
-      { id: 'complete', type: 'wait', transitions: [] },
+    schemaVersion: WORKFLOW_SCHEMA, id: 'automatic', version: '2.0.0',
+    defaults: { mode: 'auto', review: 'automated' }, entry: 'plan',
+    states: [
+      { id: 'plan', type: 'task', stage: 'plan', next: 'execute' },
+      { id: 'execute', type: 'task', stage: 'dispatch', next: 'verify' },
+      { id: 'verify', type: 'task', stage: 'verify', next: 'complete' },
+      { id: 'complete', type: 'terminal', outcome: 'success' },
     ],
   },
   {
-    schemaVersion: WORKFLOW_SCHEMA, id: 'analysis', version: '1.0.0', entryStepId: 'scope',
-    terminalStepIds: ['accepted'],
-    steps: [
-      { id: 'scope', type: 'plan', transitions: ['investigate'] },
-      { id: 'investigate', type: 'dispatch', transitions: ['review'] },
-      { id: 'review', type: 'verify', transitions: ['approval'] },
-      { id: 'approval', type: 'approve', transitions: ['accepted'] },
-      { id: 'accepted', type: 'wait', transitions: [] },
+    schemaVersion: WORKFLOW_SCHEMA, id: 'automatic-with-approval', version: '2.0.0',
+    defaults: { mode: 'auto', review: 'human' }, entry: 'plan',
+    states: [
+      { id: 'plan', type: 'task', stage: 'plan', next: 'execute' },
+      { id: 'execute', type: 'task', stage: 'dispatch', next: 'verify' },
+      { id: 'verify', type: 'task', stage: 'verify', next: 'approval' },
+      { id: 'approval', type: 'approval', next: 'complete' },
+      { id: 'complete', type: 'terminal', outcome: 'success' },
     ],
   },
   {
-    schemaVersion: WORKFLOW_SCHEMA, id: 'implementation', version: '1.0.0', entryStepId: 'design',
-    terminalStepIds: ['accepted'],
-    steps: [
-      { id: 'design', type: 'plan', transitions: ['implement'] },
-      { id: 'implement', type: 'dispatch', transitions: ['verify'] },
-      { id: 'verify', type: 'verify', transitions: ['approval'] },
-      { id: 'approval', type: 'approve', transitions: ['accepted'] },
-      { id: 'accepted', type: 'wait', transitions: [] },
+    schemaVersion: WORKFLOW_SCHEMA, id: 'analysis', version: '2.0.0',
+    defaults: { mode: 'auto', review: 'automated' }, entry: 'scope',
+    states: [
+      { id: 'scope', type: 'task', stage: 'plan', next: 'investigate' },
+      { id: 'investigate', type: 'task', stage: 'dispatch', next: 'review' },
+      { id: 'review', type: 'task', stage: 'verify', next: 'complete' },
+      { id: 'complete', type: 'terminal', outcome: 'success' },
+    ],
+  },
+  {
+    schemaVersion: WORKFLOW_SCHEMA, id: 'analysis-with-approval', version: '2.0.0',
+    defaults: { mode: 'auto', review: 'human' }, entry: 'scope',
+    states: [
+      { id: 'scope', type: 'task', stage: 'plan', next: 'investigate' },
+      { id: 'investigate', type: 'task', stage: 'dispatch', next: 'review' },
+      { id: 'review', type: 'task', stage: 'verify', next: 'approval' },
+      { id: 'approval', type: 'approval', next: 'complete' },
+      { id: 'complete', type: 'terminal', outcome: 'success' },
+    ],
+  },
+  {
+    schemaVersion: WORKFLOW_SCHEMA, id: 'implementation', version: '2.0.0',
+    defaults: { mode: 'auto', review: 'automated' }, entry: 'design',
+    states: [
+      { id: 'design', type: 'task', stage: 'plan', next: 'implement' },
+      { id: 'implement', type: 'task', stage: 'dispatch', next: 'verify' },
+      { id: 'verify', type: 'task', stage: 'verify', next: 'complete' },
+      { id: 'complete', type: 'terminal', outcome: 'success' },
+    ],
+  },
+  {
+    schemaVersion: WORKFLOW_SCHEMA, id: 'implementation-with-approval', version: '2.0.0',
+    defaults: { mode: 'auto', review: 'human' }, entry: 'design',
+    states: [
+      { id: 'design', type: 'task', stage: 'plan', next: 'implement' },
+      { id: 'implement', type: 'task', stage: 'dispatch', next: 'verify' },
+      { id: 'verify', type: 'task', stage: 'verify', next: 'approval' },
+      { id: 'approval', type: 'approval', next: 'complete' },
+      { id: 'complete', type: 'terminal', outcome: 'success' },
     ],
   },
 ];
+
+/** Built-in definition (Full Auto, or its variant with approval). */
+export function builtinWorkflow(id, version) { const found = workflowDefaults(id, version); return found ? clone(found) : undefined; }
+export const BUILTIN_WORKFLOW_VERSION = '2.0.0';
 
 function workflowDefaults(id, version) {
   return BUILTIN_WORKFLOWS.find((workflow) => workflow.id === id && (!version || workflow.version === version));
@@ -868,7 +825,7 @@ export class TaskStore {
   taskHooks(task, phase, stepId = task.stepId) {
     if (task.hookPolicy === 'none') return [];
     const workflow = task.workflowId ? this.getWorkflow(task.workflowId, task.workflowVersion) : null;
-    return (workflow?.definition.hooks ?? []).filter((hook) => hook.phase === phase && (!hook.stepId || hook.stepId === stepId));
+    return hostHooks(workflow?.definition).filter((hook) => hook.phase === phase && (!hook.stepId || hook.stepId === stepId));
   }
 
   addIntents(events, intents) {
@@ -933,9 +890,9 @@ export class TaskStore {
     for (const relation of [...value.dependsOn, ...value.relatedTo]) this.requireTask(relation);
     const workflow = value.workflowId
       ? this.getWorkflow(value.workflowId, value.workflowVersion)
-      : suppressDefaultWorkflow ? null : this.getWorkflow('automatic', '1.0.0');
+      : suppressDefaultWorkflow ? null : this.getWorkflow('automatic', BUILTIN_WORKFLOW_VERSION);
     if ((value.workflowId || !suppressDefaultWorkflow) && !workflow) {
-      fail('workflow_missing', `Workflow not found: ${value.workflowId ?? 'automatic@1.0.0'}`);
+      fail('workflow_missing', `Workflow not found: ${value.workflowId ?? `automatic@${BUILTIN_WORKFLOW_VERSION}`}`);
     }
     if (value.workflowSha256 && workflow?.sha256 !== value.workflowSha256) fail('workflow_snapshot', 'Workflow hash does not match the requested snapshot');
     const now = normalizeClock(this.clock);
@@ -966,7 +923,7 @@ export class TaskStore {
       workflowSha256: workflow?.sha256 ?? null,
       planId: value.planId ?? null,
       requiredForParent: value.required,
-      stepId: value.stepId ?? workflow?.definition?.entryStepId ?? null,
+      stepId: value.stepId ?? workflow?.definition?.entry ?? null,
       acceptanceCriteria: value.acceptanceCriteria,
       acceptance: { accepted: false, reason: null, acceptedBy: null, acceptedAt: null },
       result: null,
@@ -997,7 +954,7 @@ export class TaskStore {
     if (!TASK_STATES.includes(task.state)) fail('validation', `Invalid task state: ${task.state}`);
     if (!['backlog', 'ready'].includes(task.state)) fail('validation', 'New tasks must start in backlog or ready');
     if (!EXECUTION_STATES.includes(task.executionStatus)) fail('validation', `Invalid executionStatus: ${task.executionStatus}`);
-    if (workflow && !workflow.definition.steps.some((step) => step.id === task.stepId)) {
+    if (workflow && !workflow.definition.states.some((step) => step.id === task.stepId)) {
       fail('workflow_step', `Unknown workflow step: ${task.stepId}`);
     }
     const event = this.makeEvent('task.created', { task }, { eventId, causationId, rootEventId, hookDepth });
@@ -1130,7 +1087,7 @@ export class TaskStore {
     const oldStep = next.stepId;
     if (next.workflowId && to === 'done') {
       const workflow = this.getWorkflow(next.workflowId, next.workflowVersion);
-      if (!workflow?.definition.terminalStepIds.includes(next.stepId)) {
+      if (!workflowGraph(workflow?.definition).terminals.includes(next.stepId)) {
         fail('workflow_transition', 'Task cannot finish before reaching a terminal workflow step');
       }
     }
@@ -1168,9 +1125,9 @@ export class TaskStore {
       fail('workflow_snapshot', 'Task workflow snapshot is missing or does not match the pinned hash');
     }
     const target = safeId(toStepId, 'toStepId');
-    const from = workflow?.definition.steps.find((step) => step.id === current.stepId);
+    const from = workflow?.definition.states.find((step) => step.id === current.stepId);
     if (!from) fail('workflow_step', `Current workflow step is missing: ${current.stepId}`);
-    const targets = (from.transitions ?? []).map((item) => typeof item === 'string' ? item : item.to);
+    const targets = workflowGraph(workflow.definition).targets(from.id);
     if (!targets.includes(target)) fail('workflow_transition', `Workflow step ${current.stepId} cannot transition to ${target}`);
     const next = clone(current);
     next.stepId = target;
@@ -1306,7 +1263,7 @@ export class TaskStore {
     const workflow = value.workflowId ? this.getWorkflow(value.workflowId, value.workflowVersion) : null;
     if (value.workflowId && !workflow) fail('workflow_missing', `Workflow not found: ${value.workflowId}`);
     if (value.workflowSha256 && workflow?.sha256 !== value.workflowSha256) fail('workflow_snapshot', 'Workflow hash does not match the requested snapshot');
-    if (value.workflowId && value.stepId && !workflow.definition.steps.some((step) => step.id === value.stepId)) {
+    if (value.workflowId && value.stepId && !workflow.definition.states.some((step) => step.id === value.stepId)) {
       fail('workflow_step', `Unknown workflow step: ${value.stepId}`);
     }
     const blockers = value.dependsOn.filter((dependency) => this.tasks.get(dependency)?.state !== 'done'
@@ -1324,7 +1281,7 @@ export class TaskStore {
       workflowId: workflow?.id ?? value.workflowId ?? null, workflowVersion: workflow?.version ?? null,
       workflowSha256: workflow?.sha256 ?? null, planId: value.planId ?? null,
       requiredForParent: value.required,
-      stepId: value.stepId ?? workflow?.definition.entryStepId ?? null,
+      stepId: value.stepId ?? workflow?.definition.entry ?? null,
       acceptanceCriteria: value.acceptanceCriteria,
       acceptance: { accepted: false, reason: null, acceptedBy: null, acceptedAt: null },
       result: null, attempts: [], attemptCount: 1, createdBy: clone(this.actor),
@@ -1858,9 +1815,9 @@ export class TaskStore {
         relatedTo: (item.relatedTo ?? []).map((key) => ids.get(key)),
         workflowId: ref.id,
         planId: plan.id,
-        stepId: item.stepId ?? workflow.definition.entryStepId,
+        stepId: item.stepId ?? workflow.definition.entry,
       });
-      if (!workflow.definition.steps.some((step) => step.id === taskInput.stepId)) {
+      if (!workflow.definition.states.some((step) => step.id === taskInput.stepId)) {
         fail('workflow_step', `Unknown workflow step ${taskInput.stepId} in task ${item.key}`);
       }
       if (!['backlog', 'ready'].includes(item.state ?? 'backlog')) {

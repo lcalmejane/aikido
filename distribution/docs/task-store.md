@@ -181,7 +181,7 @@ Core commands do not receive `targetId`, and Core selects the authorized route
 from session settings. The submission file uses `schemaVersion: "task-submission/1"`
 with a stable `submissionId`, private `prompt`, optional `title`, installed
 `agent`, `mode: "act"` and an optional workflow pair (`workflowId`,
-`workflowVersion`). By default the create envelope pins `automatic@1.0.0`;
+`workflowVersion`). By default the create envelope pins `automatic@2.0.0`;
 custom workflow IDs must be paired with an explicit version. Core
 `task-service/1` create accepts these two fields and validates that the pinned
 workflow exists. The schedule command does not accept workflow fields. For
@@ -234,7 +234,7 @@ to this machine. `--local` forces local operation.
 
 Library, by priority: `prompts/hard_points/workflows/` (read-only method templates),
 then `prompts/gen/workflows/` (project templates). Each version is one immutable file,
-`<id>/<version>.json`. Cards stay outside Git, in the private store or the Core Agent.
+`<id>/<version>.workflow.md` (`workflow/2`). Cards stay outside Git, in the private store or the Core Agent.
 
 ```text
 node task.mjs host status

@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { lstatSync, readFileSync, realpathSync } from 'node:fs';
 import { userInfo } from 'node:os';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
-import { openTaskStore, validateWorkflow } from './index.mjs';
+import { BUILTIN_WORKFLOW_VERSION, builtinWorkflow, hashWorkflow, openTaskStore, readWorkflowMarkdown, validateWorkflow, workflowGraph } from './index.mjs';
 import {
   createPrivatePlan, instantiatePrivatePlan, isPrivatePlanImport, preparePrivatePlan,
 } from './private-plan-import.mjs';
@@ -92,8 +92,11 @@ function readJsonInput(path, cwd) {
   if (!info.isFile() || info.isSymbolicLink() || info.size > 2_000_000) {
     cliError('input_file', 'Input must be a regular, non-symlink JSON file no larger than 2 MB');
   }
-  try { return JSON.parse(readFileSync(absolute, 'utf8')); } catch (error) {
-    cliError('input_file', `Invalid JSON input: ${error.message}`);
+  try {
+    const text = readFileSync(absolute, 'utf8');
+    return absolute.endsWith('.workflow.md') ? readWorkflowMarkdown(text).definition : JSON.parse(text);
+  } catch (error) {
+    cliError('input_file', `Invalid input: ${error.message}`);
   }
 }
 
@@ -165,29 +168,14 @@ function commandId(submissionId, operation, attempt = 1) {
 }
 
 function advanceAutomaticStep(store, task, fromStepId, toStepId) {
-  if (task.workflowId !== 'automatic' || task.workflowVersion !== '1.0.0') return task;
+  if (task.workflowId !== 'automatic' || task.workflowVersion !== BUILTIN_WORKFLOW_VERSION) return task;
   const workflow = store.getWorkflow(task.workflowId, task.workflowVersion);
-  const expectedSteps = [
-    { id: 'plan', type: 'plan', transitions: ['execute'] },
-    { id: 'execute', type: 'dispatch', transitions: ['verify'] },
-    { id: 'verify', type: 'verify', transitions: ['approve'] },
-    { id: 'approve', type: 'approve', transitions: ['complete'] },
-    { id: 'complete', type: 'wait', transitions: [] },
-  ];
-  const definition = workflow?.definition;
-  const valid = workflow?.sha256 === task.workflowSha256
-    && definition?.entryStepId === 'plan'
-    && definition.terminalStepIds.length === 1 && definition.terminalStepIds[0] === 'complete'
-    && definition.steps.length === expectedSteps.length
-    && expectedSteps.every((expected, index) => {
-      const step = definition.steps[index];
-      return step.id === expected.id && step.type === expected.type
-        && JSON.stringify(step.transitions) === JSON.stringify(expected.transitions);
-    })
-    && !(definition.hooks?.length);
-  if (!valid) cliError('workflow_snapshot', 'Pinned automatic@1.0.0 workflow does not match its built-in definition');
+  const builtin = builtinWorkflow('automatic', BUILTIN_WORKFLOW_VERSION);
+  if (workflow?.sha256 !== task.workflowSha256 || !workflow?.definition || hashWorkflow(workflow.definition) !== hashWorkflow(builtin)) {
+    cliError('workflow_snapshot', `Pinned automatic@${BUILTIN_WORKFLOW_VERSION} workflow does not match its built-in definition`);
+  }
   if (task.stepId !== fromStepId) return task;
-  if (!expectedSteps.find((step) => step.id === fromStepId)?.transitions.includes(toStepId)) {
+  if (!workflowGraph(builtin).targets(fromStepId).includes(toStepId)) {
     cliError('workflow_transition', `Automatic workflow cannot transition ${fromStepId} -> ${toStepId}`);
   }
   return store.advanceWorkflow(task.id, { toStepId }, { expectedRevision: task.revision });
@@ -257,7 +245,7 @@ function validateSubmission(value, { scheduled = false } = {}) {
     cliError('host_command_input', 'workflowId and workflowVersion must be supplied together');
   }
   const workflowId = value.workflowId === undefined ? 'automatic' : requiredText(value.workflowId, 'workflowId', 200);
-  const workflowVersion = value.workflowVersion === undefined ? '1.0.0'
+  const workflowVersion = value.workflowVersion === undefined ? BUILTIN_WORKFLOW_VERSION
     : requiredText(value.workflowVersion, 'workflowVersion', 100);
   if (!/^[A-Za-z0-9._~-]{1,200}$/.test(workflowId) ||
       !/^[A-Za-z0-9._~-]{1,100}$/.test(workflowVersion)) {
