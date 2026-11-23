@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 | Version | Date | Highlights |
 |---------|------|-----------|
+| **1.5.5** | 2026-11-23 | Task Store workflow format `workflow/2` replaces `workflow/1` |
 | **1.5.4** | 2026-11-08 | npm scope `@aikido-method/cli` and token-free GitHub Actions trusted publishing |
 | **1.5.3** | 2026-11-08 | Node.js tooling standard, multi-host AI-KIDO CLI and integrations, deterministic workflows, and task-store support |
 | **1.5.2** | 2026-10-31 | New `/learn` self-learning command and an always-read `learned.md` shipped empty with every installation |
@@ -32,6 +33,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ---
 
 ## [Unreleased]
+
+## [1.5.5] - 2026-11-23
+
+### Changed
+
+- Task Store workflows use the `workflow/2` format (schema, validation, `.workflow.md` render and parse, patch and diff), which replaces `workflow/1`. Workflows saved as `workflow/1` are not read: save them again in `workflow/2`. Released as a patch, since no production store holds `workflow/1` data.
 
 ## [1.5.4] - 2026-11-08
 
