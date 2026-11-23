@@ -257,6 +257,7 @@ export function openTaskStore(options: TaskStoreOptions): TaskStore;
 export function resolveTaskStoreRoot(workspacePath: string, env?: Record<string, string | undefined>, platform?: string, home?: string): string;
 export function validateWorkflow(definition: WorkflowDefinition, options?: { resolve?: Partial<Record<'agent' | 'mcp' | 'skill' | 'script', (name: string) => boolean>> }): { valid: boolean; errors: string[] };
 export function builtinWorkflow(id: string, version?: string): WorkflowDefinition | undefined;
+export function labelText(label: WorkflowLabel | undefined, lang?: string): string;
 export function workflowGraph(definition: WorkflowDefinition): { entry: string; terminals: string[]; states: Map<string, WorkflowState>; targets(id: string): string[] };
 export function linearStates(definition: WorkflowDefinition): WorkflowState[] | undefined;
 export function hostHooks(definition: WorkflowDefinition): Array<{ id: string; version: string; sha256: string; phase: string; stepId?: string; eventTypes?: string[] }>;
