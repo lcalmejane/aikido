@@ -269,4 +269,9 @@ export function parseMermaid(text: string): { nodes: Map<string, 'state' | 'choi
 export function diagramPatch(definition: WorkflowDefinition, text: string): WorkflowPatchOp[];
 export function applyWorkflowPatch(definition: WorkflowDefinition, ops: WorkflowPatchOp[]): WorkflowDefinition;
 export function diffWorkflows(before: WorkflowDefinition, after: WorkflowDefinition): WorkflowChange[];
+export type WorkflowSimulation = { valid: boolean; errors: string[]; maxVisits?: number; paths: Array<{ trail: string[]; end: 'success' | 'failure' | 'cancelled' | 'loop-bound' | 'stuck' }>;
+  truncated?: boolean; covered: string[]; uncovered: string[]; terminals?: string[]; complete: boolean };
+export function simulateWorkflow(definition: WorkflowDefinition, options?: { maxPaths?: number }): WorkflowSimulation;
+export type WorkflowValueProposal = { path: string; value?: unknown };
+export function proposeWorkflowValues(definition: WorkflowDefinition, proposals: WorkflowValueProposal[]): { valid: boolean; errors: string[]; definition: WorkflowDefinition; changes: WorkflowChange[] };
 export function hashWorkflow(definition: WorkflowDefinition): string;

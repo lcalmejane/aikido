@@ -2,8 +2,12 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   applyWorkflowPatch, builtinWorkflow, diagramPatch, diffWorkflows, hostHooks, linearStates, parseMermaid,
-  readWorkflowMarkdown, renderMermaid, renderWorkflow, syncWorkflowMarkdown, validateWorkflow, workflowGraph,
+  proposeWorkflowValues, readWorkflowMarkdown, renderMermaid, renderWorkflow, simulateWorkflow, syncWorkflowMarkdown, validateWorkflow, workflowGraph,
 } from '../lib/task-store/index.mjs';
+import { runTaskCLI } from '../lib/task-store/cli.mjs';
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { draftFromDefinition } from '../lib/task-store/workflow-library.mjs';
 
 // The "Code generation" workflow of the workflow-2 specification, § 3.
@@ -143,4 +147,46 @@ test('diff reports states by id and field changes', () => {
   assert.ok(changes.some(change => change.op === 'remove' && change.path === 'states/echec'));
   assert.ok(changes.some(change => change.path === 'states/generation/next'));
   assert.deepEqual(diffWorkflows(before, generation()), []);
+});
+
+test('simulation walks every branch with stub agents, bounds loops and reports coverage', () => {
+  const run = simulateWorkflow(generation());
+  assert.equal(run.valid, true);
+  assert.equal(run.complete, true);
+  assert.deepEqual(run.uncovered, []);
+  assert.deepEqual(run.terminals.sort(), ['echec', 'fin']);
+  assert.ok(run.paths.some(path => path.trail.filter(id => id === 'generation').length === run.maxVisits));
+  assert.ok(run.paths.every(path => path.trail.filter(id => id === 'generation').length <= run.maxVisits));
+  assert.ok(run.paths.every(path => path.trail[0] === 'conception'));
+  const broken = generation(); broken.states[0].next = 'nowhere';
+  assert.equal(simulateWorkflow(broken).valid, false);
+});
+
+test('value proposals are validated and shown as a diff, never applied to the source', () => {
+  const source = generation();
+  const ok = proposeWorkflowValues(source, [{ path: 'states/generation/prompt', value: 'Implement with tests' }, { path: 'description' }]);
+  assert.equal(ok.valid, true);
+  assert.equal(source.states[1].prompt, 'Implement');
+  assert.deepEqual(ok.changes.map(change => change.path).sort(), ['description', 'states/generation/prompt']);
+  const bad = proposeWorkflowValues(source, [{ path: 'states/conception/next', value: 'nowhere' }]);
+  assert.equal(bad.valid, false);
+  assert.throws(() => proposeWorkflowValues(source, [{ path: 'states/conception/id', value: 'x' }]), /not editable/);
+  assert.throws(() => proposeWorkflowValues(source, [{ path: 'entry', value: 'x' }]), /not editable/);
+});
+
+test('the CLI renders, tests, diffs and proposes without a task store', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'wf-cli-'));
+  const file = join(dir, 'wf.json'); writeFileSync(file, JSON.stringify(generation()));
+  const other = generation(); other.version = '1.3.1';
+  const against = join(dir, 'old.json'); writeFileSync(against, JSON.stringify(other));
+  const proposals = join(dir, 'p.json'); writeFileSync(proposals, JSON.stringify([{ path: 'states/revue-code/prompt', value: 'Review' }]));
+  const call = (...args) => runTaskCLI(['workflow', ...args], { cwd: dir });
+  const rendered = call('render', '--file', file);
+  assert.equal(rendered.exitCode, 0);
+  const md = join(dir, 'wf.workflow.md'); writeFileSync(md, rendered.result.text);
+  assert.equal(call('sync', '--file', md).result.status, 'clean');
+  assert.equal(call('test', '--file', md).result.complete, true);
+  assert.deepEqual(call('diff', '--file', file, '--against', against).result.changes.map(change => change.path), ['version']);
+  assert.equal(call('propose', '--file', file, '--proposals', proposals).result.valid, true);
+  assert.notEqual(call('diff', '--file', file).exitCode, 0);
 });

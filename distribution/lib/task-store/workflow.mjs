@@ -643,3 +643,74 @@ export function diffWorkflows(before, after) {
   walk(before, after, '');
   return changes;
 }
+
+// ---------------------------------------------------------------------------------------------------------------
+// Simulation with stub agents (workflow_test) and validated value proposals (workflow_understand).
+
+/**
+ * Walks every branch from the entry with stub agents: each choice option is taken, parallel branches are visited,
+ * each state is entered at most `maxVisits` times (limits.maxAttempts, else 3) so loops stay bounded. Returns the
+ * paths (≤ `maxPaths`), their end (terminal outcome, `loop-bound` or `stuck`), covered and uncovered states.
+ */
+export function simulateWorkflow(definition, { maxPaths = 50 } = {}) {
+  const validation = validateWorkflow(definition);
+  if (!validation.valid) return { valid: false, errors: validation.errors, paths: [], covered: [], uncovered: [], complete: false };
+  const { entry, states } = workflowGraph(definition);
+  const maxVisits = Math.max(1, Math.min(10, definition.limits?.maxAttempts ?? 3));
+  const covered = new Set();
+  const paths = [];
+  let truncated = false;
+  const walk = (id, trail, visits) => {
+    if (paths.length >= maxPaths) { truncated = true; return; }
+    const state = states.get(id);
+    const count = (visits[id] ?? 0) + 1;
+    if (count > maxVisits) { paths.push({ trail, end: 'loop-bound' }); return; }
+    const seen = { ...visits, [id]: count };
+    const here = [...trail, id];
+    covered.add(id);
+    if (state.type === 'terminal') { paths.push({ trail: here, end: state.outcome ?? 'success' }); return; }
+    if (state.type === 'parallel') {
+      const inner = state.branches.flat();
+      inner.forEach(stateId => covered.add(stateId));
+      walk(state.next, [...here, ...inner], seen);
+      return;
+    }
+    const targets = stateTargets(state).filter(target => (seen[target] ?? 0) < maxVisits);
+    if (!targets.length) { paths.push({ trail: here, end: stateTargets(state).length ? 'loop-bound' : 'stuck' }); return; }
+    for (const target of [...new Set(targets)]) walk(target, here, seen);
+  };
+  walk(entry, [], {});
+  const uncovered = [...states.keys()].filter(id => !covered.has(id));
+  const terminals = [...new Set(paths.filter(path => OUTCOMES.includes(path.end)).map(path => path.trail.at(-1)))];
+  const stuck = paths.filter(path => path.end === 'stuck').length;
+  return { valid: true, errors: [], maxVisits, paths, truncated, covered: [...covered], uncovered, terminals,
+    complete: !uncovered.length && !stuck && terminals.length > 0 };
+}
+
+const settable = path => /^(label|description|defaults|inputs|limits|hooks)(\/|$)|^states\/[A-Za-z0-9._-]+\/(?!id(\/|$))[A-Za-z]/.test(path);
+
+/**
+ * Applies value proposals [{ path, value }] (value undefined → removed) to a copy: `states/<id>/<field>/...` or a
+ * top-level field. Structure (ids, entry, schema) changes through `applyWorkflowPatch`. Never touches `definition`.
+ * Returns { valid, errors, definition, changes } — the caller shows `changes` before applying anything.
+ */
+export function proposeWorkflowValues(definition, proposals) {
+  if (!Array.isArray(proposals) || !proposals.length) fail('workflow_patch', 'proposals must be a non-empty list');
+  const next = structuredClone(definition);
+  for (const [index, proposal] of proposals.entries()) {
+    const path = String(proposal?.path ?? '');
+    if (!settable(path)) fail('workflow_patch', `proposal ${index + 1}: path ${path || '(empty)'} is not editable by value`);
+    const keys = path.split('/');
+    let target = next;
+    if (keys[0] === 'states') {
+      target = next.states.find(state => state?.id === keys[1]);
+      if (!target) fail('workflow_patch', `proposal ${index + 1}: unknown state ${keys[1]}`);
+      keys.splice(0, 2);
+    }
+    const last = keys.pop();
+    for (const key of keys) target = isObject(target[key]) ? target[key] : (target[key] = {});
+    if (proposal.value === undefined) delete target[last]; else target[last] = proposal.value;
+  }
+  const validation = validateWorkflow(next);
+  return { valid: validation.valid, errors: validation.errors, definition: next, changes: diffWorkflows(definition, next) };
+}

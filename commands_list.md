@@ -39,3 +39,8 @@
 - **skill-manage**: Manage the complete AI‑KIDO skill lifecycle: search (`search`), install (`get`), update (`update`) and uninstall (`uninstall`) from a remote Git group ([`skill-manage.md`](prompts/hard_points/commands/skill-manage.md))
 - **validate-analyse-plan**: Validate the compliance of an AI‑KIDO analysis plan ([`validate-analyse-plan.md`](prompts/hard_points/commands/validate-analyse-plan.md))
 - **validate-search-plan**: Validate the compliance of an AI‑KIDO search plan ([`validate-search-plan.md`](prompts/hard_points/commands/validate-search-plan.md))
+- **workflow-new**: Create a workflow/2 draft, check and save it ([`workflow-new.md`](prompts/hard_points/commands/workflow-new.md))
+- **workflow-edit**: Change a workflow through a validated diff ([`workflow-edit.md`](prompts/hard_points/commands/workflow-edit.md))
+- **workflow-test**: Simulate a workflow with stub agents ([`workflow-test.md`](prompts/hard_points/commands/workflow-test.md))
+- **workflow-publish**: Publish a tested workflow version after confirmation ([`workflow-publish.md`](prompts/hard_points/commands/workflow-publish.md))
+- **workflow-score**: Automated share of a workflow ([`workflow-score.md`](prompts/hard_points/commands/workflow-score.md))

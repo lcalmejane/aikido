@@ -2,7 +2,10 @@ import { createHash } from 'node:crypto';
 import { lstatSync, readFileSync, realpathSync } from 'node:fs';
 import { userInfo } from 'node:os';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
-import { BUILTIN_WORKFLOW_VERSION, builtinWorkflow, hashWorkflow, openTaskStore, readWorkflowMarkdown, validateWorkflow, workflowGraph } from './index.mjs';
+import {
+  BUILTIN_WORKFLOW_VERSION, builtinWorkflow, diffWorkflows, hashWorkflow, openTaskStore, proposeWorkflowValues, readWorkflowMarkdown,
+  renderWorkflow, simulateWorkflow, syncWorkflowMarkdown, validateWorkflow, workflowGraph,
+} from './index.mjs';
 import {
   createPrivatePlan, instantiatePrivatePlan, isPrivatePlanImport, preparePrivatePlan,
 } from './private-plan-import.mjs';
@@ -11,7 +14,7 @@ const VALUE_OPTIONS = new Set([
   '--workspace', '--store', '--file', '--state', '--workflow', '--workflow-version',
   '--revision', '--to', '--reason', '--at', '--timezone', '--before', '--backlog',
   '--confirm-token', '--accepted', '--service-file', '--task-file', '--task-id', '--source',
-  '--plan-id', '--expected-sha256', '--expected-workflow-sha256',
+  '--plan-id', '--expected-sha256', '--expected-workflow-sha256', '--against', '--prefer', '--lang', '--proposals',
 ]);
 const FLAG_OPTIONS = new Set([
   '--dry-run', '--execute', '--due', '--confirm-missed', '--acknowledge-rejection',
@@ -381,6 +384,30 @@ function hostCommandResult(positional, options, cwd, workspacePath) {
   }, 'commands+scheduling');
 }
 
+/** Storeless workflow tools: render, sync (diagram ↔ JSON), diff, test (stub simulation), propose (validated values). */
+function workflowToolResult({ operation, options }, cwd) {
+  if (!options['--file']) cliError('usage', `workflow ${operation} requires --file <workflow.json|.workflow.md>`);
+  if (operation === 'sync') {
+    const prefer = options['--prefer'];
+    if (prefer !== undefined && !['json', 'human'].includes(prefer)) cliError('usage', '--prefer must be json or human');
+    readJsonInput(options['--file'], cwd);
+    try { return syncWorkflowMarkdown(readFileSync(resolve(cwd, options['--file']), 'utf8'), { prefer }); } catch (error) { cliError(error.code ?? 'workflow_invalid', error.message); }
+  }
+  const definition = readJsonInput(options['--file'], cwd);
+  if (operation === 'render') {
+    const validation = validateWorkflow(definition);
+    if (!validation.valid) cliError('workflow_invalid', validation.errors.join('; '));
+    return { text: renderWorkflow(definition, { lang: options['--lang'] ?? 'en' }) };
+  }
+  if (operation === 'diff') {
+    if (!options['--against']) cliError('usage', 'workflow diff requires --against <workflow.json|.workflow.md>');
+    return { changes: diffWorkflows(readJsonInput(options['--against'], cwd), definition) };
+  }
+  if (operation === 'test') return simulateWorkflow(definition);
+  if (!options['--proposals']) cliError('usage', 'workflow propose requires --proposals <[{ path, value }] json>');
+  try { return proposeWorkflowValues(definition, readJsonInput(options['--proposals'], cwd)); } catch (error) { cliError(error.code ?? 'workflow_patch', error.message); }
+}
+
 function operationResult(store, parsed, cwd) {
   const { area, operation, positional, options } = parsed;
   if (area === 'task' && operation === 'host-command') {
@@ -415,7 +442,7 @@ function operationResult(store, parsed, cwd) {
       if (!workflow) cliError('not_found', 'Workflow not found');
       return { status: 'ok', workflow };
     }
-    cliError('usage', 'Workflow operations: register/create --file, update <id> --file, validate --file, list, show <id>');
+    cliError('usage', 'Workflow operations: register/create --file, update <id> --file, validate|render|test --file, sync --file [--prefer json|human], diff --file --against, propose --file --proposals, list, show <id>');
   }
   if (area === 'plan') {
     if (operation === 'import') {
@@ -625,6 +652,9 @@ export function runTaskCLI(argv, { cwd = process.cwd(), env = process.env } = {}
         exitCode: validation.valid ? 0 : 1,
         result: { status: validation.valid ? 'ok' : 'error', ...validation },
       };
+    }
+    if (parsed.area === 'workflow' && ['render', 'sync', 'diff', 'test', 'propose'].includes(parsed.operation)) {
+      return { exitCode: 0, result: { status: 'ok', ...workflowToolResult(parsed, cwd) } };
     }
     if (parsed.area === 'task' && parsed.operation === 'host-command') {
       const result = operationResult(null, parsed, cwd);
