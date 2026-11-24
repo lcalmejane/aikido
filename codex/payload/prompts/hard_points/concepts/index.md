@@ -39,7 +39,8 @@ Each conceptual Hard Point must follow the format:
 
 ## Available Concept Hard Points
 
-*No concept has yet been promoted to Hard Point status.*
+- [Code Economy](code-economy.md) — smallest complete change, shared-cause fixes and protected quality
+- [Agent Economy](agent-economy.md) — reliable conclusions, useful retries, compact tools, targeted context and bounded delegation
 
 ## Promotion Process
 

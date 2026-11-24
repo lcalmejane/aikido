@@ -141,3 +141,5 @@ It does not create workers, discover/reset mailboxes, send peer messages,
 verify a reset, or authenticate a sender. The host adapter/coordinator must
 verify the descriptor and execute permitted operations. Documentation enables
 reasoned selection, not an unavailable host feature.
+
+Delegation briefs and worker replies also follow [Agent Economy](../../../prompts/hard_points/concepts/agent-economy.md).

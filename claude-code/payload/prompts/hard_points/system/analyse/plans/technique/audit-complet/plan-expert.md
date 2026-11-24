@@ -298,7 +298,7 @@ host exposes no native audit action, report the check as unavailable.
 - All improvement points documented with priority
 - Action plan with estimates
 - Precise source code references (file:line)
-- No false positives (manual validation recommended)
+- No false positives (manual validation recommended): every finding names a concrete scenario and impact, and "unused" claims are backed by a repository-wide search
 
 ## 📊 Extraction Strategy
 

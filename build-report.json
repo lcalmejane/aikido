@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "sourceRevision": "413b2f6f03939d3c403d8abb2dce1484d12ccc9b",
+  "sourceRevision": "bdef8823da300668dfb59b36bcb85b294fcc1849",
   "hosts": [
     {
       "host": "antigravity",
       "status": "qualified-not-tested",
       "generated": true,
       "commandDelivery": "fallback-skill",
-      "fileCount": 368,
+      "fileCount": 414,
       "agentFormat": "antigravity",
       "agentCount": 16
     },
@@ -16,7 +16,7 @@
       "status": "qualified-not-tested",
       "generated": true,
       "commandDelivery": "native-command",
-      "fileCount": 373,
+      "fileCount": 419,
       "agentFormat": "claude-plugin",
       "agentCount": 16
     },
@@ -25,7 +25,7 @@
       "status": "qualified-with-conditions-not-tested",
       "generated": true,
       "commandDelivery": "native-command",
-      "fileCount": 373,
+      "fileCount": 419,
       "agentFormat": "claude-plugin",
       "agentCount": 16
     },
@@ -34,7 +34,7 @@
       "status": "qualified-not-tested",
       "generated": true,
       "commandDelivery": "fallback-skill",
-      "fileCount": 368,
+      "fileCount": 414,
       "agentFormat": "codex",
       "agentCount": 16
     },
@@ -49,7 +49,7 @@
       "status": "qualified-not-tested",
       "generated": true,
       "commandDelivery": "fallback-skill",
-      "fileCount": 367,
+      "fileCount": 413,
       "agentFormat": "copilot",
       "agentCount": 16
     },
@@ -58,7 +58,7 @@
       "status": "qualified-not-tested",
       "generated": true,
       "commandDelivery": "native-plugin-prompt",
-      "fileCount": 368,
+      "fileCount": 414,
       "agentFormat": "copilot",
       "agentCount": 16
     },
@@ -67,7 +67,7 @@
       "status": "qualified-not-tested",
       "generated": true,
       "commandDelivery": "native-skill-command",
-      "fileCount": 368,
+      "fileCount": 414,
       "agentFormat": "kiro",
       "agentCount": 16
     },
@@ -76,7 +76,7 @@
       "status": "legacy-format-not-tested",
       "generated": true,
       "commandDelivery": "native-command",
-      "fileCount": 249,
+      "fileCount": 287,
       "agentFormat": "roomodes",
       "agentCount": 16
     },
@@ -85,7 +85,7 @@
       "status": "qualified-not-tested",
       "generated": true,
       "commandDelivery": "native-command",
-      "fileCount": 354,
+      "fileCount": 400,
       "agentFormat": "roomodes",
       "agentCount": 16
     }

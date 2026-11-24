@@ -2,7 +2,10 @@ import { createHash } from 'node:crypto';
 import { lstatSync, readFileSync, realpathSync } from 'node:fs';
 import { userInfo } from 'node:os';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
-import { openTaskStore, validateWorkflow } from './index.mjs';
+import {
+  BUILTIN_WORKFLOW_VERSION, builtinWorkflow, diffWorkflows, hashWorkflow, openTaskStore, proposeWorkflowValues, readWorkflowMarkdown,
+  renderWorkflow, simulateWorkflow, syncWorkflowMarkdown, validateWorkflow, workflowGraph,
+} from './index.mjs';
 import {
   createPrivatePlan, instantiatePrivatePlan, isPrivatePlanImport, preparePrivatePlan,
 } from './private-plan-import.mjs';
@@ -11,12 +14,33 @@ const VALUE_OPTIONS = new Set([
   '--workspace', '--store', '--file', '--state', '--workflow', '--workflow-version',
   '--revision', '--to', '--reason', '--at', '--timezone', '--before', '--backlog',
   '--confirm-token', '--accepted', '--service-file', '--task-file', '--task-id', '--source',
-  '--plan-id', '--expected-sha256', '--expected-workflow-sha256',
+  '--plan-id', '--expected-sha256', '--expected-workflow-sha256', '--against', '--prefer', '--lang', '--proposals',
 ]);
 const FLAG_OPTIONS = new Set([
   '--dry-run', '--execute', '--due', '--confirm-missed', '--acknowledge-rejection',
-  '--confirm-create', '--confirm-instantiate',
+  '--confirm-create', '--confirm-instantiate', '--full',
 ]);
+
+const TASK_SUMMARY_FIELDS = [
+  'id', 'title', 'state', 'executionStatus', 'revision', 'updatedAt', 'workflowId', 'backlogId', 'parentId', 'archivedAt',
+];
+
+/** Compact card returned by `task list`: whole cards can exceed the output limit of agent shells. */
+export function taskSummary(task) {
+  return Object.fromEntries(TASK_SUMMARY_FIELDS.filter(field => task[field] !== undefined).map(field => [field, task[field]]));
+}
+
+/** Compact plan returned by `plan list`; `plan show` or --full gives the whole plan. */
+export function planSummary(plan) {
+  const { id, title, state, type, revision, updatedAt } = plan;
+  return { id, title, state, type, revision, updatedAt, taskCount: plan.tasks?.length ?? 0 };
+}
+
+/** Printed result of a task command: write commands answer with the compact card unless --full is given. */
+export function compactTaskResult(argv, result) {
+  if (argv.includes('--full') || argv[1] === 'show' || !result?.task) return result;
+  return { ...result, task: taskSummary(result.task) };
+}
 
 function cliError(code, message) {
   const error = new Error(message);
@@ -71,8 +95,11 @@ function readJsonInput(path, cwd) {
   if (!info.isFile() || info.isSymbolicLink() || info.size > 2_000_000) {
     cliError('input_file', 'Input must be a regular, non-symlink JSON file no larger than 2 MB');
   }
-  try { return JSON.parse(readFileSync(absolute, 'utf8')); } catch (error) {
-    cliError('input_file', `Invalid JSON input: ${error.message}`);
+  try {
+    const text = readFileSync(absolute, 'utf8');
+    return absolute.endsWith('.workflow.md') ? readWorkflowMarkdown(text).definition : JSON.parse(text);
+  } catch (error) {
+    cliError('input_file', `Invalid input: ${error.message}`);
   }
 }
 
@@ -144,29 +171,14 @@ function commandId(submissionId, operation, attempt = 1) {
 }
 
 function advanceAutomaticStep(store, task, fromStepId, toStepId) {
-  if (task.workflowId !== 'automatic' || task.workflowVersion !== '1.0.0') return task;
+  if (task.workflowId !== 'automatic' || task.workflowVersion !== BUILTIN_WORKFLOW_VERSION) return task;
   const workflow = store.getWorkflow(task.workflowId, task.workflowVersion);
-  const expectedSteps = [
-    { id: 'plan', type: 'plan', transitions: ['execute'] },
-    { id: 'execute', type: 'dispatch', transitions: ['verify'] },
-    { id: 'verify', type: 'verify', transitions: ['approve'] },
-    { id: 'approve', type: 'approve', transitions: ['complete'] },
-    { id: 'complete', type: 'wait', transitions: [] },
-  ];
-  const definition = workflow?.definition;
-  const valid = workflow?.sha256 === task.workflowSha256
-    && definition?.entryStepId === 'plan'
-    && definition.terminalStepIds.length === 1 && definition.terminalStepIds[0] === 'complete'
-    && definition.steps.length === expectedSteps.length
-    && expectedSteps.every((expected, index) => {
-      const step = definition.steps[index];
-      return step.id === expected.id && step.type === expected.type
-        && JSON.stringify(step.transitions) === JSON.stringify(expected.transitions);
-    })
-    && !(definition.hooks?.length);
-  if (!valid) cliError('workflow_snapshot', 'Pinned automatic@1.0.0 workflow does not match its built-in definition');
+  const builtin = builtinWorkflow('automatic', BUILTIN_WORKFLOW_VERSION);
+  if (workflow?.sha256 !== task.workflowSha256 || !workflow?.definition || hashWorkflow(workflow.definition) !== hashWorkflow(builtin)) {
+    cliError('workflow_snapshot', `Pinned automatic@${BUILTIN_WORKFLOW_VERSION} workflow does not match its built-in definition`);
+  }
   if (task.stepId !== fromStepId) return task;
-  if (!expectedSteps.find((step) => step.id === fromStepId)?.transitions.includes(toStepId)) {
+  if (!workflowGraph(builtin).targets(fromStepId).includes(toStepId)) {
     cliError('workflow_transition', `Automatic workflow cannot transition ${fromStepId} -> ${toStepId}`);
   }
   return store.advanceWorkflow(task.id, { toStepId }, { expectedRevision: task.revision });
@@ -236,7 +248,7 @@ function validateSubmission(value, { scheduled = false } = {}) {
     cliError('host_command_input', 'workflowId and workflowVersion must be supplied together');
   }
   const workflowId = value.workflowId === undefined ? 'automatic' : requiredText(value.workflowId, 'workflowId', 200);
-  const workflowVersion = value.workflowVersion === undefined ? '1.0.0'
+  const workflowVersion = value.workflowVersion === undefined ? BUILTIN_WORKFLOW_VERSION
     : requiredText(value.workflowVersion, 'workflowVersion', 100);
   if (!/^[A-Za-z0-9._~-]{1,200}$/.test(workflowId) ||
       !/^[A-Za-z0-9._~-]{1,100}$/.test(workflowVersion)) {
@@ -372,6 +384,30 @@ function hostCommandResult(positional, options, cwd, workspacePath) {
   }, 'commands+scheduling');
 }
 
+/** Storeless workflow tools: render, sync (diagram ↔ JSON), diff, test (stub simulation), propose (validated values). */
+function workflowToolResult({ operation, options }, cwd) {
+  if (!options['--file']) cliError('usage', `workflow ${operation} requires --file <workflow.json|.workflow.md>`);
+  if (operation === 'sync') {
+    const prefer = options['--prefer'];
+    if (prefer !== undefined && !['json', 'human'].includes(prefer)) cliError('usage', '--prefer must be json or human');
+    readJsonInput(options['--file'], cwd);
+    try { return syncWorkflowMarkdown(readFileSync(resolve(cwd, options['--file']), 'utf8'), { prefer }); } catch (error) { cliError(error.code ?? 'workflow_invalid', error.message); }
+  }
+  const definition = readJsonInput(options['--file'], cwd);
+  if (operation === 'render') {
+    const validation = validateWorkflow(definition);
+    if (!validation.valid) cliError('workflow_invalid', validation.errors.join('; '));
+    return { text: renderWorkflow(definition, { lang: options['--lang'] ?? 'en' }) };
+  }
+  if (operation === 'diff') {
+    if (!options['--against']) cliError('usage', 'workflow diff requires --against <workflow.json|.workflow.md>');
+    return { changes: diffWorkflows(readJsonInput(options['--against'], cwd), definition) };
+  }
+  if (operation === 'test') return simulateWorkflow(definition);
+  if (!options['--proposals']) cliError('usage', 'workflow propose requires --proposals <[{ path, value }] json>');
+  try { return proposeWorkflowValues(definition, readJsonInput(options['--proposals'], cwd)); } catch (error) { cliError(error.code ?? 'workflow_patch', error.message); }
+}
+
 function operationResult(store, parsed, cwd) {
   const { area, operation, positional, options } = parsed;
   if (area === 'task' && operation === 'host-command') {
@@ -406,7 +442,7 @@ function operationResult(store, parsed, cwd) {
       if (!workflow) cliError('not_found', 'Workflow not found');
       return { status: 'ok', workflow };
     }
-    cliError('usage', 'Workflow operations: register/create --file, update <id> --file, validate --file, list, show <id>');
+    cliError('usage', 'Workflow operations: register/create --file, update <id> --file, validate|render|test --file, sync --file [--prefer json|human], diff --file --against, propose --file --proposals, list, show <id>');
   }
   if (area === 'plan') {
     if (operation === 'import') {
@@ -455,7 +491,10 @@ function operationResult(store, parsed, cwd) {
       });
       return { status: 'ok', plan };
     }
-    if (operation === 'list') return { status: 'ok', plans: store.listPlans() };
+    if (operation === 'list') {
+      const plans = store.listPlans();
+      return { status: 'ok', plans: options['--full'] ? plans : plans.map(planSummary) };
+    }
     if (operation === 'show') {
       const plan = store.getPlan(requireId(positional));
       if (!plan) cliError('not_found', 'Plan not found');
@@ -496,9 +535,12 @@ function operationResult(store, parsed, cwd) {
       if (!options['--file']) cliError('usage', 'task create requires --file <json>');
       return { status: 'ok', task: advanceAutomaticReady(store, store.createTask(readJsonInput(options['--file'], cwd))) };
     }
-    if (operation === 'list') return { status: 'ok', tasks: store.listTasks({
-      state: options['--state'], workflowId: options['--workflow'], backlogId: options['--backlog'],
-    }) };
+    if (operation === 'list') {
+      const tasks = store.listTasks({
+        state: options['--state'], workflowId: options['--workflow'], backlogId: options['--backlog'],
+      });
+      return { status: 'ok', tasks: options['--full'] ? tasks : tasks.map(taskSummary) };
+    }
     if (operation === 'show') {
       const task = store.getTask(requireId(positional));
       if (!task) cliError('not_found', 'Task not found');
@@ -567,6 +609,7 @@ function operationResult(store, parsed, cwd) {
     if (operation === 'archive') return { status: 'ok', task: store.archiveTask(requireId(positional), { expectedRevision: requireRevision(options) }) };
     if (operation === 'restore') return { status: 'ok', task: store.restoreTask(requireId(positional), { expectedRevision: requireRevision(options) }) };
     if (operation === 'purge-preview') return { status: 'ok', preview: store.previewPurge({
+      taskId: options['--task-id'],
       before: options['--before'], workflowId: options['--workflow'], backlogId: options['--backlog'],
     }) };
     if (operation === 'purge') {
@@ -609,6 +652,9 @@ export function runTaskCLI(argv, { cwd = process.cwd(), env = process.env } = {}
         exitCode: validation.valid ? 0 : 1,
         result: { status: validation.valid ? 'ok' : 'error', ...validation },
       };
+    }
+    if (parsed.area === 'workflow' && ['render', 'sync', 'diff', 'test', 'propose'].includes(parsed.operation)) {
+      return { exitCode: 0, result: { status: 'ok', ...workflowToolResult(parsed, cwd) } };
     }
     if (parsed.area === 'task' && parsed.operation === 'host-command') {
       const result = operationResult(null, parsed, cwd);

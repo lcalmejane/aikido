@@ -8,13 +8,57 @@ description: Manage private AI-KIDO task cards, plans and workflows with determi
 Use the installed `task-store/task.mjs` script with Node 24+, or the
 `@aikido-method/cli/task-store` package API. The canonical runtime, CLI, declarations
 and data/API contract are shipped in this Skill directory. Do not edit private
-task JSON, projections or journals directly, and never use an LLM to choose or
-apply a state transition.
+task JSON, projections or journals directly. An LLM applies progress
+transitions only through these commands and only from observable facts (see
+*Card progress*); it never decides a human acceptance.
+
+## Card progress — mandatory for every agent using the store
+
+Keep cards in step with the work, transparently, without asking the user:
+
+1. When work on a card starts, move it `backlog → ready → running`.
+2. When the work is delivered, move it to `review` and update its `summary`
+   with what was delivered (commits, proofs) and what remains.
+3. Blocked work goes to `waiting` with the reason; abandoned work is not
+   silently left `running`.
+4. Report the resulting card states in the turn's answer.
+
+Each card states its review mode with a label; without one it takes the review
+default of its pinned workflow (`review:automated` for Full Auto workflows),
+else `review:human`:
+
+- `review:human` — stop at `review`, present the delivery and remaining
+  criteria, and wait. Only the user accepts (`task accept`) or marks `done`.
+  Dependent cards wait until the dependency is accepted; say so instead of
+  forcing it.
+- `review:automated` — acceptance comes from the deterministic check named in
+  `acceptanceCriteria` (tests, CI, validator). Run it; when it passes, record
+  `task accept --accepted true` with the evidence in `--reason`, then `done`.
+  When it fails, record the rejection and keep the card out of `done`; a new
+  attempt follows the retry policy, otherwise the card is `blocked` with the
+  reason. Never ask a person to confirm a passing automated review.
+
+Never mark a `review:human` card accepted or done, and never invent an
+automated check to bypass a human review.
+
+Mechanics that `done` enforces:
+
+- `acceptanceCriteria` are stable identifiers (`[A-Za-z0-9._-]`, e.g.
+  `v0.1`); put each criterion's wording in the card `prompt` as
+  `<id> : <description>`. Free sentences can never be verified.
+- Record one verification per criterion, with its evidence, through the
+  package API `recordVerification(id, criterionId, evidence, {expectedRevision})`
+  (the CLI has no verify command yet).
+- Keep the workflow step in step with the state: for `implementation`,
+  `design` → `implement` (running) → `verify` (review) → `approval` →
+  `accepted` (after acceptance) through `advanceWorkflow`; `done` requires a
+  terminal step. The CLI advances steps only for `automatic`.
 
 ## Commands
 
 - `node <task-store-dir>/task.mjs task store init|doctor|reconcile`
 - `node <task-store-dir>/task.mjs task workflow create|update|register|validate|list|show ...`
+- `node <task-store-dir>/task.mjs host status` shows whether Tatami Core Agent is used; `workflow save|delete|sync` and card commands then go through it, otherwise they work locally.
 - `node <task-store-dir>/task.mjs plan import --source <workspace-relative-plan-path> [--workflow <id> --workflow-version <version>]`
 - `node <task-store-dir>/task.mjs plan import --source <workspace-relative-plan-path> --confirm-create --expected-sha256 <reviewed-source-hash> --expected-workflow-sha256 <reviewed-workflow-hash>`
 - `node <task-store-dir>/task.mjs plan import --plan-id <id> --revision <reviewed-revision> --confirm-instantiate`
@@ -51,11 +95,11 @@ Never accept them from card JSON, event payloads or model output.
   timestamps whose offset matches a valid IANA timezone.
 - Target selection is client-side envelope metadata. Never send `targetId` as
   a Core command input; Core derives the authorized route from session settings.
-- Create envelopes pin `automatic@1.0.0` by default, or preserve a supplied
+- Create envelopes pin `automatic@2.0.0` by default, or preserve a supplied
   `workflowId`/`workflowVersion` pair. Core create accepts and validates that
-  pair; schedule commands do not carry workflow fields. Core currently exposes
-  no workflow-discovery route, so do not invent custom workflow IDs.
-- `TaskStore.createTask` and CLI `task create` pin `automatic@1.0.0` when the
+  pair; schedule commands do not carry workflow fields. Discover workflow IDs with
+  `task.mjs workflow list`; never invent one.
+- `TaskStore.createTask` and CLI `task create` pin `automatic@2.0.0` when the
   workflow is omitted. Backlog cards stay at `plan`; only an explicit ready or
   schedule approval advances this exact built-in workflow to `execute`.
 - Core advances successful/partial results to `verify` while the card remains

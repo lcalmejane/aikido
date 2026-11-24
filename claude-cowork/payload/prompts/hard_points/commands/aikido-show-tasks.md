@@ -4,8 +4,9 @@ description: List or inspect private task cards without mutating their state.
 
 # /aikido-show-tasks
 
-Use `aikido task list [--state <state>]` or
-`aikido task show <id>`; when the npm CLI is unavailable, invoke the installed
+Use `aikido task list [--state <state>]` for compact summaries, or
+`aikido task show <id>` for one whole card (`task list --full` returns every
+whole card); when the npm CLI is unavailable, invoke the installed
 Task Store Skill's `task.mjs` with Node 24. Reads do not change revision or
 timestamps. Limit output to the authenticated caller's workspace and scope;
 do not include private prompt text in a shared response.

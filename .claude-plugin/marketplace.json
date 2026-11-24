@@ -8,7 +8,7 @@
     {
       "name": "aikido",
       "source": "./claude-code",
-      "version": "1.5.4",
+      "version": "1.5.5",
       "description": "AI-KIDO — AI Memory Bank Construction Method by Meta harness",
       "author": {
         "name": "AI-KIDO Team",

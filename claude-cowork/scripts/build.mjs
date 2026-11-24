@@ -612,10 +612,11 @@ export function buildDistribution({
       const packagePath = path.replace(/^distribution\//, '');
       writeUnique(packagePath, readFileSync(assertSourcePath(path, 'file')), 'runtime');
     }
-    for (const file of ['index.mjs', 'index.d.ts', 'cli.mjs', 'private-plan-import.mjs']) {
+    for (const file of ['index.mjs', 'index.d.ts', 'cli.mjs', 'private-plan-import.mjs', 'hosted-cli.mjs', 'module-link.mjs', 'workflow-library.mjs', 'workflow.mjs']) {
       const source = `prompts/hard_points/system/task-store/${file}`;
       writeUnique(`lib/task-store/${file}`, readFileSync(assertSourcePath(source, 'file')), 'runtime');
     }
+    writeUnique('lib/deps-check.mjs', readFileSync(assertSourcePath('prompts/hard_points/system/aikido-deps/deps-check.mjs', 'file')), 'runtime');
     // One detection implementation, shared with the project (prompts/.../system/host-sync/).
     writeUnique('lib/host-detect.mjs', readFileSync(assertSourcePath('prompts/hard_points/system/host-sync/host-detect.mjs', 'file')), 'runtime');
     writeUnique('catalog.json', readFileSync(assertSourcePath('distribution/catalog.json', 'file')), 'runtime');

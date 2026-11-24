@@ -113,16 +113,33 @@ export type TaskAttempt = {
   result: TaskResult | null;
   lease: { id: string; acquiredAt: string } | null;
 };
+export type WorkflowLabel = string | Record<string, string>;
+export type WorkflowCondition = { attemptsBelow: number } | { path: string; equals?: unknown; notEquals?: unknown; in?: unknown[]; exists?: boolean };
+export type WorkflowStateHook = { id: string; agent?: string | null; prompt?: string | null; script?: string | null; sha256?: string; version?: string; output?: string; onFailure?: string };
+export type WorkflowState = { id: string; label?: WorkflowLabel; mode?: 'auto' | 'manual' } & (
+  | { type: 'task'; stage?: 'plan' | 'dispatch' | 'verify'; agent?: string; prompt?: string; script?: string | null; mcp?: { mode: 'auto' | 'inherit' | 'list'; servers?: string[] };
+      tools?: 'auto' | 'inherit' | string[]; skills?: 'auto' | 'inherit' | string[]; hooks?: { pre?: WorkflowStateHook[]; post?: WorkflowStateHook[] }; output?: { schema?: Record<string, unknown> }; next: string }
+  | { type: 'choice'; branches?: Array<{ when: WorkflowCondition; to: string; label?: string }>; decide?: { agent: string; prompt: string; options: Array<{ id: string; to: string; label?: WorkflowLabel }> }; otherwise?: string }
+  | { type: 'parallel'; branches: string[][]; join?: 'all' | 'any' | number; next: string }
+  | { type: 'wait'; until?: string | Record<string, unknown>; next: string }
+  | { type: 'approval'; approvers?: string[]; timeout?: string | number; next: string }
+  | { type: 'terminal'; outcome?: 'success' | 'failure' | 'cancelled' });
 export type WorkflowDefinition = {
-  schemaVersion: 'workflow/1';
+  schemaVersion: 'workflow/2';
   id: string;
   version: string;
-  entryStepId: string;
-  terminalStepIds: string[];
-  steps: Array<{ id: string; type: 'plan' | 'dispatch' | 'wait' | 'verify' | 'approve'; transitions: Array<string | { to: string }> }>;
-  hooks?: Array<{ id: string; version: string; sha256: string; phase: string; stepId?: string; eventTypes?: string[] }>;
-  limits?: Record<string, number>;
+  publication?: 'draft' | 'testing' | 'published';
+  label?: WorkflowLabel;
+  description?: string;
+  defaults?: { mode?: 'auto' | 'manual'; review?: 'automated' | 'human'; agent?: string; capabilities?: 'auto' | 'inherit' | 'list'; retries?: number };
+  inputs?: Record<string, unknown>;
+  entry: string;
+  states: WorkflowState[];
+  hooks?: Array<{ id: string; version: string; sha256: string; phase: string; state?: string; eventTypes?: string[] }>;
+  limits?: Record<string, number | null>;
 };
+export type WorkflowPatchOp = { op: 'addState' | 'removeState' | 'renameState' | 'addTransition' | 'removeTransition'; id?: string; type?: string; label?: string; from?: string; to?: string; line?: number };
+export type WorkflowChange = { op: 'add' | 'remove' | 'change'; path: string; before?: unknown; after?: unknown };
 export type TaskEvent = {
   schemaVersion: 'task-event/1';
   eventId: string;
@@ -160,6 +177,7 @@ export class TaskStore {
   readonly storeRoot: string;
   readonly actor: TaskActor;
   getTask(id: string): TaskCard | null;
+  isTaskPurged(id: string): boolean;
   listTasks(filter?: Record<string, unknown>): TaskCard[];
   createTask(input: TaskCardInput, options?: Record<string, unknown>): TaskCard;
   updateTask(id: string, patch: Record<string, unknown>, options: { expectedRevision: number }): TaskCard;
@@ -218,7 +236,7 @@ export class TaskStore {
   recordVerification(id: string, criterionId: string, evidence: string, options: { expectedRevision: number }): TaskCard;
   archiveTask(id: string, options: { expectedRevision: number }): TaskCard;
   restoreTask(id: string, options: { expectedRevision: number }): TaskCard;
-  previewPurge(filter?: { before?: string; workflowId?: string; backlogId?: string }): Record<string, unknown>;
+  previewPurge(filter?: { taskId?: string; before?: string; workflowId?: string; backlogId?: string }): Record<string, unknown>;
   confirmPurge(token: string): { purged: string[]; tombstones: unknown[] };
   reconcile(): Record<string, number>;
   doctor(): Record<string, unknown>;
@@ -226,7 +244,8 @@ export class TaskStore {
 }
 export const TASK_STORE_SCHEMA: 'task-store/1';
 export const TASK_CARD_SCHEMA: 'task-card/1';
-export const WORKFLOW_SCHEMA: 'workflow/1';
+export const WORKFLOW_SCHEMA: 'workflow/2';
+export const BUILTIN_WORKFLOW_VERSION: '2.0.0';
 export const TASK_EVENT_SCHEMA: 'task-event/1';
 export const PRIVATE_PLAN_IMPORT_REF_KIND: 'aikido-legacy-plan-sha256';
 export const TASK_RESULT_STATUSES: readonly TaskResultStatus[];
@@ -236,5 +255,23 @@ export const SCHEDULE_STATUSES: readonly ScheduleStatus[];
 export const HOOK_COMMAND_TYPES: readonly string[];
 export function openTaskStore(options: TaskStoreOptions): TaskStore;
 export function resolveTaskStoreRoot(workspacePath: string, env?: Record<string, string | undefined>, platform?: string, home?: string): string;
-export function validateWorkflow(definition: WorkflowDefinition): { valid: boolean; errors: string[] };
+export function validateWorkflow(definition: WorkflowDefinition, options?: { resolve?: Partial<Record<'agent' | 'mcp' | 'skill' | 'script', (name: string) => boolean>> }): { valid: boolean; errors: string[] };
+export function builtinWorkflow(id: string, version?: string): WorkflowDefinition | undefined;
+export function labelText(label: WorkflowLabel | undefined, lang?: string): string;
+export function workflowGraph(definition: WorkflowDefinition): { entry: string; terminals: string[]; states: Map<string, WorkflowState>; targets(id: string): string[] };
+export function linearStates(definition: WorkflowDefinition): WorkflowState[] | undefined;
+export function hostHooks(definition: WorkflowDefinition): Array<{ id: string; version: string; sha256: string; phase: string; stepId?: string; eventTypes?: string[] }>;
+export function renderMermaid(definition: WorkflowDefinition, options?: { lang?: string }): string;
+export function renderWorkflow(definition: WorkflowDefinition, options?: { lang?: string }): string;
+export function readWorkflowMarkdown(text: string): { definition: WorkflowDefinition; front: Record<string, string>; human: string; diagram: string | null; status: 'clean' | 'json' | 'human' | 'conflict' };
+export function syncWorkflowMarkdown(text: string, options?: { prefer?: 'json' | 'human' }): { status: 'clean' | 'rendered' | 'patched' | 'conflict'; definition: WorkflowDefinition; patch: WorkflowPatchOp[]; text?: string };
+export function parseMermaid(text: string): { nodes: Map<string, 'state' | 'choice' | 'fork' | 'join'>; labels: Map<string, string>; edges: Array<{ from: string; to: string; label: string; line: number }> };
+export function diagramPatch(definition: WorkflowDefinition, text: string): WorkflowPatchOp[];
+export function applyWorkflowPatch(definition: WorkflowDefinition, ops: WorkflowPatchOp[]): WorkflowDefinition;
+export function diffWorkflows(before: WorkflowDefinition, after: WorkflowDefinition): WorkflowChange[];
+export type WorkflowSimulation = { valid: boolean; errors: string[]; maxVisits?: number; paths: Array<{ trail: string[]; end: 'success' | 'failure' | 'cancelled' | 'loop-bound' | 'stuck' }>;
+  truncated?: boolean; covered: string[]; uncovered: string[]; terminals?: string[]; complete: boolean };
+export function simulateWorkflow(definition: WorkflowDefinition, options?: { maxPaths?: number }): WorkflowSimulation;
+export type WorkflowValueProposal = { path: string; value?: unknown };
+export function proposeWorkflowValues(definition: WorkflowDefinition, proposals: WorkflowValueProposal[]): { valid: boolean; errors: string[]; definition: WorkflowDefinition; changes: WorkflowChange[] };
 export function hashWorkflow(definition: WorkflowDefinition): string;

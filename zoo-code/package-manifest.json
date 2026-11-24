@@ -2,17 +2,37 @@
   "schemaVersion": 1,
   "host": "zoo-code",
   "qualification": "qualified-not-tested",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "runtimeContract": 1,
   "hostSync": 1,
-  "sourceRevision": "413b2f6f03939d3c403d8abb2dce1484d12ccc9b",
+  "sourceRevision": "bdef8823da300668dfb59b36bcb85b294fcc1849",
   "source": {
     "type": "git",
     "ref": "github:lcalmejane/aikido",
-    "commit": "413b2f6f03939d3c403d8abb2dce1484d12ccc9b"
+    "commit": "bdef8823da300668dfb59b36bcb85b294fcc1849"
   },
   "commandDelivery": "native-command",
   "files": [
+    {
+      "path": ".roo/commands/aikido-core-agent-config.md",
+      "role": "command",
+      "sha256": "9d77b438ad331b4e82662a8e0b11693ceaf7c0e927be4613103fe850751b0724"
+    },
+    {
+      "path": ".roo/commands/aikido-create-workflow.md",
+      "role": "command",
+      "sha256": "fb6c16b34fb343e10f766e7f0f5cb654e91b3acc79add8246ba9094c0dc7a86a"
+    },
+    {
+      "path": ".roo/commands/aikido-delete-task.md",
+      "role": "command",
+      "sha256": "c33db8a13ba0f3fdf814d4b49223b862bce32ffae969f59a2d526e82cdb38a73"
+    },
+    {
+      "path": ".roo/commands/aikido-deps-check.md",
+      "role": "command",
+      "sha256": "f943640996969f130bc7583005baae0509c0c6af6ae5a1a2f826b7551446bf24"
+    },
     {
       "path": ".roo/commands/aikido-import-plan.md",
       "role": "command",
@@ -34,6 +54,11 @@
       "sha256": "b0a4e7a1256d83894d35e44f6369a689692e90d44a1ca318d1094a074ad83d18"
     },
     {
+      "path": ".roo/commands/aikido-review.md",
+      "role": "command",
+      "sha256": "dba419fb73dc3ff438263c5f5c11ac3e426cf454aee836215f1d7864e285c428"
+    },
+    {
       "path": ".roo/commands/aikido-schedule-task.md",
       "role": "command",
       "sha256": "305c7d085f5502ef24b06c718818f160caf56ba94cb441d3834a0af44d797c9c"
@@ -42,6 +67,21 @@
       "path": ".roo/commands/aikido-show-tasks.md",
       "role": "command",
       "sha256": "bc00de8ff65dcabeb13a5271e9e30ab2eb3fd82f090ec4f0c89dbf822031adb4"
+    },
+    {
+      "path": ".roo/commands/aikido-show-workflow.md",
+      "role": "command",
+      "sha256": "98202ebcf8b0f0e2f538a9f670b3f9d727baa96769c05de0a278b193840726ab"
+    },
+    {
+      "path": ".roo/commands/aikido-stop-task.md",
+      "role": "command",
+      "sha256": "d553180d6379ff74291fa4f4953211edb4239536660c68abea6220bc5b15afda"
+    },
+    {
+      "path": ".roo/commands/aikido-sync-tasks.md",
+      "role": "command",
+      "sha256": "14a5ba0ba7562373f84d0e741f3460465c3703ba73906d4c0b686b73bc127e9c"
     },
     {
       "path": ".roo/commands/analyse-aikido.md",
@@ -104,11 +144,6 @@
       "sha256": "12e8315b035e456e9d9e7917f9c2879c167cc9494e862a51f6ec2c1d6fce476e"
     },
     {
-      "path": ".roo/commands/create-workflow.md",
-      "role": "command",
-      "sha256": "95e0e195c2102d826eedaf971a94cae5a64b4c22eb238e18711e1c516a2ad85c"
-    },
-    {
       "path": ".roo/commands/download-site.md",
       "role": "command",
       "sha256": "3dd688644a0bccba2fed64bc2e686b13f00c17debbf7de3a938017302183e712"
@@ -159,11 +194,6 @@
       "sha256": "863ef7060e21ab162cc09b818e8f112ce496cf77d777fbc81211e3a6863a53cd"
     },
     {
-      "path": ".roo/commands/show-workflow.md",
-      "role": "command",
-      "sha256": "5df6bdf74fe5420422471532357ea0d8edd889e8b08ea4bd6880571658794953"
-    },
-    {
       "path": ".roo/commands/skill-manage.md",
       "role": "command",
       "sha256": "c78242ab4a34d51c97a401cd04ad7e4a5b7203d6899fbb2b5288fdd229fd8e22"
@@ -177,6 +207,51 @@
       "path": ".roo/commands/validate-search-plan.md",
       "role": "command",
       "sha256": "247bf039da1d2ebd38a913a82e1adf44760bde01b3ac497243eb44382785044f"
+    },
+    {
+      "path": ".roo/commands/workflow-edit.md",
+      "role": "command",
+      "sha256": "4e5bd1867954c15052e45211e6ee5b6a784e4d95f0a36c398a19cd92d9157c2f"
+    },
+    {
+      "path": ".roo/commands/workflow-new.md",
+      "role": "command",
+      "sha256": "fe70b10c05c50b05f2548287f362b9f0fa60957062e71549ef1abae1b3a5dd1a"
+    },
+    {
+      "path": ".roo/commands/workflow-publish.md",
+      "role": "command",
+      "sha256": "58ab84c826a4fe98d15440bcba627cc818b0f3d2cbf510561a288cc880ccfeef"
+    },
+    {
+      "path": ".roo/commands/workflow-score.md",
+      "role": "command",
+      "sha256": "c44ba118c9c665d2dee91ff3f08ed9d359368429e8bae952be6f47fd223ef1e7"
+    },
+    {
+      "path": ".roo/commands/workflow-test.md",
+      "role": "command",
+      "sha256": "88ae122df724da976fcec391156c0dc0569bd66394d3650f7bb2701f0b338880"
+    },
+    {
+      "path": ".roo/skills/aikido-deps/SKILL.md",
+      "role": "system-skill",
+      "sha256": "e126051c96ef92261cada83cfcfd1cba15964dacd14d5b4c3fd291fa3fce985a"
+    },
+    {
+      "path": ".roo/skills/aikido-deps/deps-check.mjs",
+      "role": "system-skill",
+      "sha256": "68dffeecef0e9e5776202a61a457a9cb0501c82b17c6178fcbe03b49d90a813f"
+    },
+    {
+      "path": ".roo/skills/aikido-tasks/SKILL.md",
+      "role": "system-skill",
+      "sha256": "426295cf19dfc5ed50f866bc3552c7dbccff0e9ed629cceb6a465a914b026f57"
+    },
+    {
+      "path": ".roo/skills/aikido-workflow/SKILL.md",
+      "role": "system-skill",
+      "sha256": "fed94cff830fe5885e874298c27cbe6f8f23c298e5c7b661bf2757cbb5c85d8c"
     },
     {
       "path": ".roo/skills/analyse/SKILL.md",
@@ -221,7 +296,7 @@
     {
       "path": ".roo/skills/analyse/plans/technique/audit-complet/plan-expert.md",
       "role": "system-skill",
-      "sha256": "93acc2c24fa254676dbed11009560915fbf3e56c095e2fcab9d03f0ce11a2f87"
+      "sha256": "1d4ac6b5b99f64aa8fc475be93880924efeef0512af921c98249a82ffe930dd0"
     },
     {
       "path": ".roo/skills/maj/SKILL.md",
@@ -461,7 +536,7 @@
     {
       "path": ".roo/skills/orchestrator/policy.json",
       "role": "system-skill",
-      "sha256": "c8ada4c7f77a0eb5088e5f0e0f83451fd33935c1fc14d040380da88f18a1ee43"
+      "sha256": "6c5faab51450eaf2ca8af64d93e105d516e393e6aaae31ea457c42579fbfef2f"
     },
     {
       "path": ".roo/skills/orchestrator/runtime.mjs",
@@ -481,7 +556,7 @@
     {
       "path": ".roo/skills/orchestrator/swarm.md",
       "role": "system-skill",
-      "sha256": "7e049ad401f5b9b1fb8a6054a401731d6f57754b29bf8abde7fefae929690a23"
+      "sha256": "04a53905032cf0779b2341eddcfe787bf12ea2b2ddac28aff6ac559fd481f43b"
     },
     {
       "path": ".roo/skills/orchestrator/tracker.mjs",
@@ -516,7 +591,7 @@
     {
       "path": ".roo/skills/search/SKILL.md",
       "role": "system-skill",
-      "sha256": "170c0ecea645b25c301cd83f076426b644db1964d9c658319185f84b694cff5d"
+      "sha256": "62ec5b7cfc446e9f726c549d266abd3aa705d93ec203b02409c1f80cf21f50b6"
     },
     {
       "path": ".roo/skills/search/config-query.mjs",
@@ -646,22 +721,32 @@
     {
       "path": ".roo/skills/task-store/SKILL.md",
       "role": "system-skill",
-      "sha256": "511395f5c38315bbf4f8fa9fa2a2cb4d2e694e9d1f3b9d8f6ed8a825750f0304"
+      "sha256": "5352eac1f31b6bfff7de1d45e337ec30236fa57516cc223d1236fda29c3a2179"
     },
     {
       "path": ".roo/skills/task-store/cli.mjs",
       "role": "system-skill",
-      "sha256": "b568321a78e8886f71e5622a1d60a03937a7bd49b38099e22b11cb01bda478ff"
+      "sha256": "bb993da3d3e6cb40fbb8711c61e3f3ca52d4d6a3dace14afa3bb1a5f6dc81f93"
+    },
+    {
+      "path": ".roo/skills/task-store/hosted-cli.mjs",
+      "role": "system-skill",
+      "sha256": "80700d6413644be98d38865f57d482d7a01f2d9227cb3004f0c30bbbf3d9588b"
     },
     {
       "path": ".roo/skills/task-store/index.d.ts",
       "role": "system-skill",
-      "sha256": "9d75426ec62f46c99a4c3aebd9cc2cdf4292132a71cd57abc47f095a2525bc6b"
+      "sha256": "5ce668ffd7336ee076d38b987932857a648225258ead13ce94ce10684bd730b0"
     },
     {
       "path": ".roo/skills/task-store/index.mjs",
       "role": "system-skill",
-      "sha256": "d1ea7498fa18e0f35cf1402e2a0e5c21da1de71b1535095be4b5317ede4e0675"
+      "sha256": "0468baec28d9e85fe3c403cac51e284c808e50c17d1ddede438b6470166af02b"
+    },
+    {
+      "path": ".roo/skills/task-store/module-link.mjs",
+      "role": "system-skill",
+      "sha256": "6ffd910c8e57f0549ba6cd3614bbee09789a8ab011066415f18dfdc736b8820c"
     },
     {
       "path": ".roo/skills/task-store/private-plan-import.mjs",
@@ -671,12 +756,22 @@
     {
       "path": ".roo/skills/task-store/task-store.md",
       "role": "system-skill",
-      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
+      "sha256": "e065ae64006132374aa39810287c064e19576134de65b3a97c8a3fac9ce3e3d8"
     },
     {
       "path": ".roo/skills/task-store/task.mjs",
       "role": "system-skill",
-      "sha256": "a336e6784dcd91d1588fe94f67fcc49a144a93f38b7d9e4a239abaca7a45066a"
+      "sha256": "7754911bf1b3e19ff8589a4bdba6ff713ea21d1a88031a43b57f3ad0c5c1c273"
+    },
+    {
+      "path": ".roo/skills/task-store/workflow-library.mjs",
+      "role": "system-skill",
+      "sha256": "76e59554caf12819d798d51550b5b804243b85512e26517c1be5f08fecf0d4e7"
+    },
+    {
+      "path": ".roo/skills/task-store/workflow.mjs",
+      "role": "system-skill",
+      "sha256": "feb73a6bc54f1cd579629b9f27a9ff7b45c5402216d4339d78794674824a8edf"
     },
     {
       "path": ".roo/skills/web/SKILL.md",
@@ -721,7 +816,7 @@
     {
       "path": "catalog.json",
       "role": "runtime",
-      "sha256": "3aaa71195605773a345d825b9e61ffbe77294ad0f88f31c4c4ebf543e2be474e"
+      "sha256": "baec4a2f387339a15fedbee4ac714a1930c3e02a9c30867810bfaa9cfcc301c6"
     },
     {
       "path": "lib/bootstrap-plan.mjs",
@@ -737,6 +832,11 @@
       "path": "lib/check-cli.mjs",
       "role": "runtime",
       "sha256": "68be79b2b64cb7feca744624c4d9767028c53383c9e62eda79a5f2420d6b1a80"
+    },
+    {
+      "path": "lib/deps-check.mjs",
+      "role": "runtime",
+      "sha256": "68dffeecef0e9e5776202a61a457a9cb0501c82b17c6178fcbe03b49d90a813f"
     },
     {
       "path": "lib/features.mjs",
@@ -776,22 +876,42 @@
     {
       "path": "lib/task-store/cli.mjs",
       "role": "runtime",
-      "sha256": "b568321a78e8886f71e5622a1d60a03937a7bd49b38099e22b11cb01bda478ff"
+      "sha256": "bb993da3d3e6cb40fbb8711c61e3f3ca52d4d6a3dace14afa3bb1a5f6dc81f93"
+    },
+    {
+      "path": "lib/task-store/hosted-cli.mjs",
+      "role": "runtime",
+      "sha256": "80700d6413644be98d38865f57d482d7a01f2d9227cb3004f0c30bbbf3d9588b"
     },
     {
       "path": "lib/task-store/index.d.ts",
       "role": "runtime",
-      "sha256": "9d75426ec62f46c99a4c3aebd9cc2cdf4292132a71cd57abc47f095a2525bc6b"
+      "sha256": "5ce668ffd7336ee076d38b987932857a648225258ead13ce94ce10684bd730b0"
     },
     {
       "path": "lib/task-store/index.mjs",
       "role": "runtime",
-      "sha256": "d1ea7498fa18e0f35cf1402e2a0e5c21da1de71b1535095be4b5317ede4e0675"
+      "sha256": "0468baec28d9e85fe3c403cac51e284c808e50c17d1ddede438b6470166af02b"
+    },
+    {
+      "path": "lib/task-store/module-link.mjs",
+      "role": "runtime",
+      "sha256": "6ffd910c8e57f0549ba6cd3614bbee09789a8ab011066415f18dfdc736b8820c"
     },
     {
       "path": "lib/task-store/private-plan-import.mjs",
       "role": "runtime",
       "sha256": "2083d9f87bbd8094ae6928ead6b9a322596a4d12daaf74c3f0e8c11e4007f10d"
+    },
+    {
+      "path": "lib/task-store/workflow-library.mjs",
+      "role": "runtime",
+      "sha256": "76e59554caf12819d798d51550b5b804243b85512e26517c1be5f08fecf0d4e7"
+    },
+    {
+      "path": "lib/task-store/workflow.mjs",
+      "role": "runtime",
+      "sha256": "feb73a6bc54f1cd579629b9f27a9ff7b45c5402216d4339d78794674824a8edf"
     },
     {
       "path": "lib/templates.mjs",
@@ -906,7 +1026,7 @@
     {
       "path": "payload/prompts/hard_points/ai-kido-light.md",
       "role": "payload",
-      "sha256": "63f8aad54340a6e62c55840101da9044f5abb07bd304b5279627a7c46c06807b"
+      "sha256": "98722aaf1c01df1e3a5c4dd803a619e329541bf9959923d5f342ff15c0cb99f6"
     },
     {
       "path": "payload/prompts/hard_points/ai-kido-light_details.md",
@@ -916,12 +1036,32 @@
     {
       "path": "payload/prompts/hard_points/ai-kido.md",
       "role": "payload",
-      "sha256": "8bbf54199930e318333d7439384a79a1521c69a7aade65270dd9f125cc2f252d"
+      "sha256": "b8e86474821fccefce504633fdc78d206b88e5378cf47f86f5e61afa85bb9b29"
     },
     {
       "path": "payload/prompts/hard_points/ai-kido_details.md",
       "role": "payload",
       "sha256": "0a74c7fca31aca9b25e79f63b3b9733b5b63c043b856b27434806bd40f3cab62"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/aikido-core-agent-config.md",
+      "role": "payload",
+      "sha256": "dd3d8bf92be75f5e205c5d0dfe04ad43232c0ffcd34a5fe930ec1964a264d17e"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/aikido-create-workflow.md",
+      "role": "payload",
+      "sha256": "b20c2896563706e28cbc583066702a234add4c8ad2e677c771d0a3ac3c5318e1"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/aikido-delete-task.md",
+      "role": "payload",
+      "sha256": "a2679bee1033a367b1b4abadbdcab0504d273c18aa6cdc9d9c23c80c83d7ffdf"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/aikido-deps-check.md",
+      "role": "payload",
+      "sha256": "9cac3f8e717171c799a3c543d8e3874662ca1eaa7ca1ca0662c258dc0540f9ae"
     },
     {
       "path": "payload/prompts/hard_points/commands/aikido-import-plan.md",
@@ -944,6 +1084,11 @@
       "sha256": "29e880cf30e171e339925c1e37113ddc49e169348750d132e90ea55d13240e7e"
     },
     {
+      "path": "payload/prompts/hard_points/commands/aikido-review.md",
+      "role": "payload",
+      "sha256": "775d28f056341211d3bc0ae38fc55bb3973d002d6c75bd10d048af3753d9f2ee"
+    },
+    {
       "path": "payload/prompts/hard_points/commands/aikido-schedule-task.md",
       "role": "payload",
       "sha256": "88c4887468784876865aa3fe3c3b371061aca1b64c690abc40f77f80676baa4a"
@@ -951,7 +1096,22 @@
     {
       "path": "payload/prompts/hard_points/commands/aikido-show-tasks.md",
       "role": "payload",
-      "sha256": "0692d3d0145313f9df5e79c9ba085ff1b0f70cd0f68c9ac7c40ee61efa540177"
+      "sha256": "46623e5c756f7a1cce208d7f81dd78d46544aad1cc6eae905bb7923256f72326"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/aikido-show-workflow.md",
+      "role": "payload",
+      "sha256": "8a2daa588490f87fcceab9f0b7bb4a6704c709aa5495fef4fdfd77123246ad11"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/aikido-stop-task.md",
+      "role": "payload",
+      "sha256": "66cfa8fccd8bb2e34820814d36db233d58df286d61c95a4429edcce348f41476"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/aikido-sync-tasks.md",
+      "role": "payload",
+      "sha256": "b27e5d9411055fb73c75cb921df46db951712880a2423360f677ea672923b8da"
     },
     {
       "path": "payload/prompts/hard_points/commands/analyse-aikido.md",
@@ -1014,11 +1174,6 @@
       "sha256": "c3498e4dd0081efc283754056a4fbf61aad9bd29131fda3df8e78f259025b942"
     },
     {
-      "path": "payload/prompts/hard_points/commands/create-workflow.md",
-      "role": "payload",
-      "sha256": "90c73ab657c9717e1f4f65b1bc66c8f4a52e9034689a31a132e1334abfdbb2c3"
-    },
-    {
       "path": "payload/prompts/hard_points/commands/init-aikido.md",
       "role": "payload",
       "sha256": "17146dea09069ee96e56ef3a4741ea58c62722d8ee401a7602dc583a86ccb500"
@@ -1064,11 +1219,6 @@
       "sha256": "c5a9f1485fc2e1a30fd96681b006a1de797a946819cff2922581b2b216ad22d8"
     },
     {
-      "path": "payload/prompts/hard_points/commands/show-workflow.md",
-      "role": "payload",
-      "sha256": "db7c20de08f23c876650ad55c21d4fa5e139cc87409a69c700134e42e35e5a92"
-    },
-    {
       "path": "payload/prompts/hard_points/commands/skill-manage.md",
       "role": "payload",
       "sha256": "c865fd10ad7dd02567e71186d4979406a5b1e82e7cf839a91d3405d3e875adae"
@@ -1084,9 +1234,44 @@
       "sha256": "fd40eeb70333d40c3bf14b63b18222bd8e49ddbf3c534a4496a0bf81c21c510b"
     },
     {
+      "path": "payload/prompts/hard_points/commands/workflow-edit.md",
+      "role": "payload",
+      "sha256": "91b4089dece003fb311a210c9f2d1b6900f74cae8a271269076f4bb78bf27f99"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/workflow-new.md",
+      "role": "payload",
+      "sha256": "ec299c6fd88c50630a5e8f0393b8be056e2c6bd3f490aa9c3be271adcaf97fed"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/workflow-publish.md",
+      "role": "payload",
+      "sha256": "a2fee465571845bf52c1bb40e57fb9a1518023c1e5b5e02511306d526652b094"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/workflow-score.md",
+      "role": "payload",
+      "sha256": "7af2b27dc7cc402d21a851419ca51d23ef712a362af2dd1d07048bbdfe6f200f"
+    },
+    {
+      "path": "payload/prompts/hard_points/commands/workflow-test.md",
+      "role": "payload",
+      "sha256": "8f263a8d5a6cb00dd1bd4d133b016f366dbdeadc287a185f630e4e558f1e038e"
+    },
+    {
+      "path": "payload/prompts/hard_points/concepts/agent-economy.md",
+      "role": "payload",
+      "sha256": "1de959185f80dff6f72aed4b0c4789e1195779cfca1b38be6893de761f659709"
+    },
+    {
+      "path": "payload/prompts/hard_points/concepts/code-economy.md",
+      "role": "payload",
+      "sha256": "478a4e3ed88496ae418737e1b0669517046ea78b38c09cead20d1d8f68164d7e"
+    },
+    {
       "path": "payload/prompts/hard_points/concepts/index.md",
       "role": "payload",
-      "sha256": "ff04416b62966ea9cbc9da3838def62f4d01fc0e107764b1d592e1de0ce98c0c"
+      "sha256": "49aa38d4b63df7129caa4d9f485ddb6d6d618f05489c513d935b960badc7a1d9"
     },
     {
       "path": "payload/prompts/hard_points/configuration/skills.cfg",
@@ -1112,6 +1297,26 @@
       "path": "payload/prompts/hard_points/system/Skills.md",
       "role": "payload",
       "sha256": "a2e6d77fd93e70c43bb150bc3b7bec753f0930926312a5d4de40d56a127e33a1"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/aikido-deps/SKILL.md",
+      "role": "payload",
+      "sha256": "e126051c96ef92261cada83cfcfd1cba15964dacd14d5b4c3fd291fa3fce985a"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/aikido-deps/deps-check.mjs",
+      "role": "payload",
+      "sha256": "68dffeecef0e9e5776202a61a457a9cb0501c82b17c6178fcbe03b49d90a813f"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/aikido-tasks/SKILL.md",
+      "role": "payload",
+      "sha256": "d5751c525cdd69b3be0880359f7a20c98f4a7ead12cbfbed32b4ca2ea62bfd3f"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/aikido-workflow/SKILL.md",
+      "role": "payload",
+      "sha256": "fed94cff830fe5885e874298c27cbe6f8f23c298e5c7b661bf2757cbb5c85d8c"
     },
     {
       "path": "payload/prompts/hard_points/system/analyse/SKILL.md",
@@ -1156,7 +1361,7 @@
     {
       "path": "payload/prompts/hard_points/system/analyse/plans/technique/audit-complet/plan-expert.md",
       "role": "payload",
-      "sha256": "93acc2c24fa254676dbed11009560915fbf3e56c095e2fcab9d03f0ce11a2f87"
+      "sha256": "1d4ac6b5b99f64aa8fc475be93880924efeef0512af921c98249a82ffe930dd0"
     },
     {
       "path": "payload/prompts/hard_points/system/host-actions.mjs",
@@ -1411,7 +1616,7 @@
     {
       "path": "payload/prompts/hard_points/system/orchestrator/policy.json",
       "role": "payload",
-      "sha256": "c8ada4c7f77a0eb5088e5f0e0f83451fd33935c1fc14d040380da88f18a1ee43"
+      "sha256": "6c5faab51450eaf2ca8af64d93e105d516e393e6aaae31ea457c42579fbfef2f"
     },
     {
       "path": "payload/prompts/hard_points/system/orchestrator/runtime.mjs",
@@ -1426,7 +1631,7 @@
     {
       "path": "payload/prompts/hard_points/system/orchestrator/swarm.md",
       "role": "payload",
-      "sha256": "74d67e64a353ce9e83aa674c9aefbfae646b36fdd17b0edd5cbe02de089466f1"
+      "sha256": "2f4d624e13d5915e4ea4de35d192602721ff9a13851e92c3a5511ed8502976d3"
     },
     {
       "path": "payload/prompts/hard_points/system/orchestrator/tracker.mjs",
@@ -1456,7 +1661,7 @@
     {
       "path": "payload/prompts/hard_points/system/search/SKILL.md",
       "role": "payload",
-      "sha256": "170c0ecea645b25c301cd83f076426b644db1964d9c658319185f84b694cff5d"
+      "sha256": "62ec5b7cfc446e9f726c549d266abd3aa705d93ec203b02409c1f80cf21f50b6"
     },
     {
       "path": "payload/prompts/hard_points/system/search/config-query.mjs",
@@ -1591,22 +1796,32 @@
     {
       "path": "payload/prompts/hard_points/system/task-store/SKILL.md",
       "role": "payload",
-      "sha256": "511395f5c38315bbf4f8fa9fa2a2cb4d2e694e9d1f3b9d8f6ed8a825750f0304"
+      "sha256": "5352eac1f31b6bfff7de1d45e337ec30236fa57516cc223d1236fda29c3a2179"
     },
     {
       "path": "payload/prompts/hard_points/system/task-store/cli.mjs",
       "role": "payload",
-      "sha256": "b568321a78e8886f71e5622a1d60a03937a7bd49b38099e22b11cb01bda478ff"
+      "sha256": "bb993da3d3e6cb40fbb8711c61e3f3ca52d4d6a3dace14afa3bb1a5f6dc81f93"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/task-store/hosted-cli.mjs",
+      "role": "payload",
+      "sha256": "80700d6413644be98d38865f57d482d7a01f2d9227cb3004f0c30bbbf3d9588b"
     },
     {
       "path": "payload/prompts/hard_points/system/task-store/index.d.ts",
       "role": "payload",
-      "sha256": "9d75426ec62f46c99a4c3aebd9cc2cdf4292132a71cd57abc47f095a2525bc6b"
+      "sha256": "5ce668ffd7336ee076d38b987932857a648225258ead13ce94ce10684bd730b0"
     },
     {
       "path": "payload/prompts/hard_points/system/task-store/index.mjs",
       "role": "payload",
-      "sha256": "d1ea7498fa18e0f35cf1402e2a0e5c21da1de71b1535095be4b5317ede4e0675"
+      "sha256": "0468baec28d9e85fe3c403cac51e284c808e50c17d1ddede438b6470166af02b"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/task-store/module-link.mjs",
+      "role": "payload",
+      "sha256": "6ffd910c8e57f0549ba6cd3614bbee09789a8ab011066415f18dfdc736b8820c"
     },
     {
       "path": "payload/prompts/hard_points/system/task-store/private-plan-import.mjs",
@@ -1616,12 +1831,22 @@
     {
       "path": "payload/prompts/hard_points/system/task-store/task-store.md",
       "role": "payload",
-      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3"
+      "sha256": "e065ae64006132374aa39810287c064e19576134de65b3a97c8a3fac9ce3e3d8"
     },
     {
       "path": "payload/prompts/hard_points/system/task-store/task.mjs",
       "role": "payload",
-      "sha256": "a336e6784dcd91d1588fe94f67fcc49a144a93f38b7d9e4a239abaca7a45066a"
+      "sha256": "7754911bf1b3e19ff8589a4bdba6ff713ea21d1a88031a43b57f3ad0c5c1c273"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/task-store/workflow-library.mjs",
+      "role": "payload",
+      "sha256": "76e59554caf12819d798d51550b5b804243b85512e26517c1be5f08fecf0d4e7"
+    },
+    {
+      "path": "payload/prompts/hard_points/system/task-store/workflow.mjs",
+      "role": "payload",
+      "sha256": "feb73a6bc54f1cd579629b9f27a9ff7b45c5402216d4339d78794674824a8edf"
     },
     {
       "path": "payload/prompts/hard_points/system/web/SKILL.md",
@@ -1654,6 +1879,11 @@
       "sha256": "885133587d5c692f12a46ad9327ff2ec038941b419d2843d59e41c9c6ec16ca5"
     },
     {
+      "path": "payload/prompts/hard_points/workflows/README.md",
+      "role": "payload",
+      "sha256": "a323a034896b3176a5995b8f1c9e821d6b5000578aedac5c227df247debabeb8"
+    },
+    {
       "path": "scripts/bootstrap-plan.mjs",
       "role": "runtime",
       "sha256": "496a012a4609e2c1f94cd09073ceadc700833b24d5c582bcdbe3a811857173f2"
@@ -1661,7 +1891,7 @@
     {
       "path": "scripts/build.mjs",
       "role": "runtime",
-      "sha256": "0dd1dc32a4f5b1f3589aa570985881876b7218b78be636c986551499975b5e30"
+      "sha256": "2a37e37e753d45b58bc8e8f50a084683068b1f19fe049eedf39806a88522d252"
     },
     {
       "path": "scripts/check-cli.mjs",
@@ -1676,7 +1906,7 @@
     {
       "path": "scripts/task.mjs",
       "role": "runtime",
-      "sha256": "d2e6167814a936d0aa37aea976271e2b51fc7e2f948ad6456a63935a6d77e654"
+      "sha256": "9d8ced6a3a99c97590d6470b3d7dd0c5c7fd1c8b247962e0b74182cfae95327e"
     },
     {
       "path": "scripts/update-plan.mjs",
@@ -1936,7 +2166,7 @@
       "source": "prompts/hard_points/ai-kido-light.md",
       "target": "prompts/hard_points/ai-kido-light.md",
       "packagePath": "payload/prompts/hard_points/ai-kido-light.md",
-      "sha256": "63f8aad54340a6e62c55840101da9044f5abb07bd304b5279627a7c46c06807b",
+      "sha256": "98722aaf1c01df1e3a5c4dd803a619e329541bf9959923d5f342ff15c0cb99f6",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -1952,7 +2182,7 @@
       "source": "prompts/hard_points/ai-kido.md",
       "target": "prompts/hard_points/ai-kido.md",
       "packagePath": "payload/prompts/hard_points/ai-kido.md",
-      "sha256": "8bbf54199930e318333d7439384a79a1521c69a7aade65270dd9f125cc2f252d",
+      "sha256": "b8e86474821fccefce504633fdc78d206b88e5378cf47f86f5e61afa85bb9b29",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -1961,6 +2191,38 @@
       "target": "prompts/hard_points/ai-kido_details.md",
       "packagePath": "payload/prompts/hard_points/ai-kido_details.md",
       "sha256": "0a74c7fca31aca9b25e79f63b3b9733b5b63c043b856b27434806bd40f3cab62",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/aikido-core-agent-config.md",
+      "target": "prompts/hard_points/commands/aikido-core-agent-config.md",
+      "packagePath": "payload/prompts/hard_points/commands/aikido-core-agent-config.md",
+      "sha256": "dd3d8bf92be75f5e205c5d0dfe04ad43232c0ffcd34a5fe930ec1964a264d17e",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/aikido-create-workflow.md",
+      "target": "prompts/hard_points/commands/aikido-create-workflow.md",
+      "packagePath": "payload/prompts/hard_points/commands/aikido-create-workflow.md",
+      "sha256": "b20c2896563706e28cbc583066702a234add4c8ad2e677c771d0a3ac3c5318e1",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/aikido-delete-task.md",
+      "target": "prompts/hard_points/commands/aikido-delete-task.md",
+      "packagePath": "payload/prompts/hard_points/commands/aikido-delete-task.md",
+      "sha256": "a2679bee1033a367b1b4abadbdcab0504d273c18aa6cdc9d9c23c80c83d7ffdf",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/aikido-deps-check.md",
+      "target": "prompts/hard_points/commands/aikido-deps-check.md",
+      "packagePath": "payload/prompts/hard_points/commands/aikido-deps-check.md",
+      "sha256": "9cac3f8e717171c799a3c543d8e3874662ca1eaa7ca1ca0662c258dc0540f9ae",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -1997,6 +2259,14 @@
       "policy": "three-way"
     },
     {
+      "source": "prompts/hard_points/commands/aikido-review.md",
+      "target": "prompts/hard_points/commands/aikido-review.md",
+      "packagePath": "payload/prompts/hard_points/commands/aikido-review.md",
+      "sha256": "775d28f056341211d3bc0ae38fc55bb3973d002d6c75bd10d048af3753d9f2ee",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
       "source": "prompts/hard_points/commands/aikido-schedule-task.md",
       "target": "prompts/hard_points/commands/aikido-schedule-task.md",
       "packagePath": "payload/prompts/hard_points/commands/aikido-schedule-task.md",
@@ -2008,7 +2278,31 @@
       "source": "prompts/hard_points/commands/aikido-show-tasks.md",
       "target": "prompts/hard_points/commands/aikido-show-tasks.md",
       "packagePath": "payload/prompts/hard_points/commands/aikido-show-tasks.md",
-      "sha256": "0692d3d0145313f9df5e79c9ba085ff1b0f70cd0f68c9ac7c40ee61efa540177",
+      "sha256": "46623e5c756f7a1cce208d7f81dd78d46544aad1cc6eae905bb7923256f72326",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/aikido-show-workflow.md",
+      "target": "prompts/hard_points/commands/aikido-show-workflow.md",
+      "packagePath": "payload/prompts/hard_points/commands/aikido-show-workflow.md",
+      "sha256": "8a2daa588490f87fcceab9f0b7bb4a6704c709aa5495fef4fdfd77123246ad11",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/aikido-stop-task.md",
+      "target": "prompts/hard_points/commands/aikido-stop-task.md",
+      "packagePath": "payload/prompts/hard_points/commands/aikido-stop-task.md",
+      "sha256": "66cfa8fccd8bb2e34820814d36db233d58df286d61c95a4429edcce348f41476",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/aikido-sync-tasks.md",
+      "target": "prompts/hard_points/commands/aikido-sync-tasks.md",
+      "packagePath": "payload/prompts/hard_points/commands/aikido-sync-tasks.md",
+      "sha256": "b27e5d9411055fb73c75cb921df46db951712880a2423360f677ea672923b8da",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -2109,14 +2403,6 @@
       "policy": "three-way"
     },
     {
-      "source": "prompts/hard_points/commands/create-workflow.md",
-      "target": "prompts/hard_points/commands/create-workflow.md",
-      "packagePath": "payload/prompts/hard_points/commands/create-workflow.md",
-      "sha256": "90c73ab657c9717e1f4f65b1bc66c8f4a52e9034689a31a132e1334abfdbb2c3",
-      "origin": "payload",
-      "policy": "three-way"
-    },
-    {
       "source": "prompts/hard_points/commands/init-aikido.md",
       "target": "prompts/hard_points/commands/init-aikido.md",
       "packagePath": "payload/prompts/hard_points/commands/init-aikido.md",
@@ -2189,14 +2475,6 @@
       "policy": "three-way"
     },
     {
-      "source": "prompts/hard_points/commands/show-workflow.md",
-      "target": "prompts/hard_points/commands/show-workflow.md",
-      "packagePath": "payload/prompts/hard_points/commands/show-workflow.md",
-      "sha256": "db7c20de08f23c876650ad55c21d4fa5e139cc87409a69c700134e42e35e5a92",
-      "origin": "payload",
-      "policy": "three-way"
-    },
-    {
       "source": "prompts/hard_points/commands/skill-manage.md",
       "target": "prompts/hard_points/commands/skill-manage.md",
       "packagePath": "payload/prompts/hard_points/commands/skill-manage.md",
@@ -2221,10 +2499,66 @@
       "policy": "three-way"
     },
     {
+      "source": "prompts/hard_points/commands/workflow-edit.md",
+      "target": "prompts/hard_points/commands/workflow-edit.md",
+      "packagePath": "payload/prompts/hard_points/commands/workflow-edit.md",
+      "sha256": "91b4089dece003fb311a210c9f2d1b6900f74cae8a271269076f4bb78bf27f99",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/workflow-new.md",
+      "target": "prompts/hard_points/commands/workflow-new.md",
+      "packagePath": "payload/prompts/hard_points/commands/workflow-new.md",
+      "sha256": "ec299c6fd88c50630a5e8f0393b8be056e2c6bd3f490aa9c3be271adcaf97fed",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/workflow-publish.md",
+      "target": "prompts/hard_points/commands/workflow-publish.md",
+      "packagePath": "payload/prompts/hard_points/commands/workflow-publish.md",
+      "sha256": "a2fee465571845bf52c1bb40e57fb9a1518023c1e5b5e02511306d526652b094",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/workflow-score.md",
+      "target": "prompts/hard_points/commands/workflow-score.md",
+      "packagePath": "payload/prompts/hard_points/commands/workflow-score.md",
+      "sha256": "7af2b27dc7cc402d21a851419ca51d23ef712a362af2dd1d07048bbdfe6f200f",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/commands/workflow-test.md",
+      "target": "prompts/hard_points/commands/workflow-test.md",
+      "packagePath": "payload/prompts/hard_points/commands/workflow-test.md",
+      "sha256": "8f263a8d5a6cb00dd1bd4d133b016f366dbdeadc287a185f630e4e558f1e038e",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/concepts/agent-economy.md",
+      "target": "prompts/hard_points/concepts/agent-economy.md",
+      "packagePath": "payload/prompts/hard_points/concepts/agent-economy.md",
+      "sha256": "1de959185f80dff6f72aed4b0c4789e1195779cfca1b38be6893de761f659709",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/concepts/code-economy.md",
+      "target": "prompts/hard_points/concepts/code-economy.md",
+      "packagePath": "payload/prompts/hard_points/concepts/code-economy.md",
+      "sha256": "478a4e3ed88496ae418737e1b0669517046ea78b38c09cead20d1d8f68164d7e",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
       "source": "prompts/hard_points/concepts/index.md",
       "target": "prompts/hard_points/concepts/index.md",
       "packagePath": "payload/prompts/hard_points/concepts/index.md",
-      "sha256": "ff04416b62966ea9cbc9da3838def62f4d01fc0e107764b1d592e1de0ce98c0c",
+      "sha256": "49aa38d4b63df7129caa4d9f485ddb6d6d618f05489c513d935b960badc7a1d9",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -2265,6 +2599,38 @@
       "target": "prompts/hard_points/system/Skills.md",
       "packagePath": "payload/prompts/hard_points/system/Skills.md",
       "sha256": "a2e6d77fd93e70c43bb150bc3b7bec753f0930926312a5d4de40d56a127e33a1",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/aikido-deps/SKILL.md",
+      "target": "prompts/hard_points/system/aikido-deps/SKILL.md",
+      "packagePath": "payload/prompts/hard_points/system/aikido-deps/SKILL.md",
+      "sha256": "e126051c96ef92261cada83cfcfd1cba15964dacd14d5b4c3fd291fa3fce985a",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/aikido-deps/deps-check.mjs",
+      "target": "prompts/hard_points/system/aikido-deps/deps-check.mjs",
+      "packagePath": "payload/prompts/hard_points/system/aikido-deps/deps-check.mjs",
+      "sha256": "68dffeecef0e9e5776202a61a457a9cb0501c82b17c6178fcbe03b49d90a813f",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/aikido-tasks/SKILL.md",
+      "target": "prompts/hard_points/system/aikido-tasks/SKILL.md",
+      "packagePath": "payload/prompts/hard_points/system/aikido-tasks/SKILL.md",
+      "sha256": "d5751c525cdd69b3be0880359f7a20c98f4a7ead12cbfbed32b4ca2ea62bfd3f",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/aikido-workflow/SKILL.md",
+      "target": "prompts/hard_points/system/aikido-workflow/SKILL.md",
+      "packagePath": "payload/prompts/hard_points/system/aikido-workflow/SKILL.md",
+      "sha256": "fed94cff830fe5885e874298c27cbe6f8f23c298e5c7b661bf2757cbb5c85d8c",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -2336,7 +2702,7 @@
       "source": "prompts/hard_points/system/analyse/plans/technique/audit-complet/plan-expert.md",
       "target": "prompts/hard_points/system/analyse/plans/technique/audit-complet/plan-expert.md",
       "packagePath": "payload/prompts/hard_points/system/analyse/plans/technique/audit-complet/plan-expert.md",
-      "sha256": "93acc2c24fa254676dbed11009560915fbf3e56c095e2fcab9d03f0ce11a2f87",
+      "sha256": "1d4ac6b5b99f64aa8fc475be93880924efeef0512af921c98249a82ffe930dd0",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -2744,7 +3110,7 @@
       "source": "prompts/hard_points/system/orchestrator/policy.json",
       "target": "prompts/hard_points/system/orchestrator/policy.json",
       "packagePath": "payload/prompts/hard_points/system/orchestrator/policy.json",
-      "sha256": "c8ada4c7f77a0eb5088e5f0e0f83451fd33935c1fc14d040380da88f18a1ee43",
+      "sha256": "6c5faab51450eaf2ca8af64d93e105d516e393e6aaae31ea457c42579fbfef2f",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -2768,7 +3134,7 @@
       "source": "prompts/hard_points/system/orchestrator/swarm.md",
       "target": "prompts/hard_points/system/orchestrator/swarm.md",
       "packagePath": "payload/prompts/hard_points/system/orchestrator/swarm.md",
-      "sha256": "74d67e64a353ce9e83aa674c9aefbfae646b36fdd17b0edd5cbe02de089466f1",
+      "sha256": "2f4d624e13d5915e4ea4de35d192602721ff9a13851e92c3a5511ed8502976d3",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -2816,7 +3182,7 @@
       "source": "prompts/hard_points/system/search/SKILL.md",
       "target": "prompts/hard_points/system/search/SKILL.md",
       "packagePath": "payload/prompts/hard_points/system/search/SKILL.md",
-      "sha256": "170c0ecea645b25c301cd83f076426b644db1964d9c658319185f84b694cff5d",
+      "sha256": "62ec5b7cfc446e9f726c549d266abd3aa705d93ec203b02409c1f80cf21f50b6",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -3032,7 +3398,7 @@
       "source": "prompts/hard_points/system/task-store/SKILL.md",
       "target": "prompts/hard_points/system/task-store/SKILL.md",
       "packagePath": "payload/prompts/hard_points/system/task-store/SKILL.md",
-      "sha256": "511395f5c38315bbf4f8fa9fa2a2cb4d2e694e9d1f3b9d8f6ed8a825750f0304",
+      "sha256": "5352eac1f31b6bfff7de1d45e337ec30236fa57516cc223d1236fda29c3a2179",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -3040,7 +3406,15 @@
       "source": "prompts/hard_points/system/task-store/cli.mjs",
       "target": "prompts/hard_points/system/task-store/cli.mjs",
       "packagePath": "payload/prompts/hard_points/system/task-store/cli.mjs",
-      "sha256": "b568321a78e8886f71e5622a1d60a03937a7bd49b38099e22b11cb01bda478ff",
+      "sha256": "bb993da3d3e6cb40fbb8711c61e3f3ca52d4d6a3dace14afa3bb1a5f6dc81f93",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/task-store/hosted-cli.mjs",
+      "target": "prompts/hard_points/system/task-store/hosted-cli.mjs",
+      "packagePath": "payload/prompts/hard_points/system/task-store/hosted-cli.mjs",
+      "sha256": "80700d6413644be98d38865f57d482d7a01f2d9227cb3004f0c30bbbf3d9588b",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -3048,7 +3422,7 @@
       "source": "prompts/hard_points/system/task-store/index.d.ts",
       "target": "prompts/hard_points/system/task-store/index.d.ts",
       "packagePath": "payload/prompts/hard_points/system/task-store/index.d.ts",
-      "sha256": "9d75426ec62f46c99a4c3aebd9cc2cdf4292132a71cd57abc47f095a2525bc6b",
+      "sha256": "5ce668ffd7336ee076d38b987932857a648225258ead13ce94ce10684bd730b0",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -3056,7 +3430,15 @@
       "source": "prompts/hard_points/system/task-store/index.mjs",
       "target": "prompts/hard_points/system/task-store/index.mjs",
       "packagePath": "payload/prompts/hard_points/system/task-store/index.mjs",
-      "sha256": "d1ea7498fa18e0f35cf1402e2a0e5c21da1de71b1535095be4b5317ede4e0675",
+      "sha256": "0468baec28d9e85fe3c403cac51e284c808e50c17d1ddede438b6470166af02b",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/task-store/module-link.mjs",
+      "target": "prompts/hard_points/system/task-store/module-link.mjs",
+      "packagePath": "payload/prompts/hard_points/system/task-store/module-link.mjs",
+      "sha256": "6ffd910c8e57f0549ba6cd3614bbee09789a8ab011066415f18dfdc736b8820c",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -3072,7 +3454,7 @@
       "source": "prompts/hard_points/system/task-store/task-store.md",
       "target": "prompts/hard_points/system/task-store/task-store.md",
       "packagePath": "payload/prompts/hard_points/system/task-store/task-store.md",
-      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3",
+      "sha256": "e065ae64006132374aa39810287c064e19576134de65b3a97c8a3fac9ce3e3d8",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -3080,7 +3462,23 @@
       "source": "prompts/hard_points/system/task-store/task.mjs",
       "target": "prompts/hard_points/system/task-store/task.mjs",
       "packagePath": "payload/prompts/hard_points/system/task-store/task.mjs",
-      "sha256": "a336e6784dcd91d1588fe94f67fcc49a144a93f38b7d9e4a239abaca7a45066a",
+      "sha256": "7754911bf1b3e19ff8589a4bdba6ff713ea21d1a88031a43b57f3ad0c5c1c273",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/task-store/workflow-library.mjs",
+      "target": "prompts/hard_points/system/task-store/workflow-library.mjs",
+      "packagePath": "payload/prompts/hard_points/system/task-store/workflow-library.mjs",
+      "sha256": "76e59554caf12819d798d51550b5b804243b85512e26517c1be5f08fecf0d4e7",
+      "origin": "payload",
+      "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/system/task-store/workflow.mjs",
+      "target": "prompts/hard_points/system/task-store/workflow.mjs",
+      "packagePath": "payload/prompts/hard_points/system/task-store/workflow.mjs",
+      "sha256": "feb73a6bc54f1cd579629b9f27a9ff7b45c5402216d4339d78794674824a8edf",
       "origin": "payload",
       "policy": "three-way"
     },
@@ -3131,9 +3529,45 @@
       "sha256": "885133587d5c692f12a46ad9327ff2ec038941b419d2843d59e41c9c6ec16ca5",
       "origin": "payload",
       "policy": "three-way"
+    },
+    {
+      "source": "prompts/hard_points/workflows/README.md",
+      "target": "prompts/hard_points/workflows/README.md",
+      "packagePath": "payload/prompts/hard_points/workflows/README.md",
+      "sha256": "a323a034896b3176a5995b8f1c9e821d6b5000578aedac5c227df247debabeb8",
+      "origin": "payload",
+      "policy": "three-way"
     }
   ],
   "projectFiles": [
+    {
+      "source": ".roo/commands/aikido-core-agent-config.md",
+      "target": ".roo/commands/aikido-core-agent-config.md",
+      "sha256": "9d77b438ad331b4e82662a8e0b11693ceaf7c0e927be4613103fe850751b0724",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".roo/commands/aikido-create-workflow.md",
+      "target": ".roo/commands/aikido-create-workflow.md",
+      "sha256": "fb6c16b34fb343e10f766e7f0f5cb654e91b3acc79add8246ba9094c0dc7a86a",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".roo/commands/aikido-delete-task.md",
+      "target": ".roo/commands/aikido-delete-task.md",
+      "sha256": "c33db8a13ba0f3fdf814d4b49223b862bce32ffae969f59a2d526e82cdb38a73",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".roo/commands/aikido-deps-check.md",
+      "target": ".roo/commands/aikido-deps-check.md",
+      "sha256": "f943640996969f130bc7583005baae0509c0c6af6ae5a1a2f826b7551446bf24",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
     {
       "source": ".roo/commands/aikido-import-plan.md",
       "target": ".roo/commands/aikido-import-plan.md",
@@ -3163,6 +3597,13 @@
       "policy": "three-way"
     },
     {
+      "source": ".roo/commands/aikido-review.md",
+      "target": ".roo/commands/aikido-review.md",
+      "sha256": "dba419fb73dc3ff438263c5f5c11ac3e426cf454aee836215f1d7864e285c428",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
       "source": ".roo/commands/aikido-schedule-task.md",
       "target": ".roo/commands/aikido-schedule-task.md",
       "sha256": "305c7d085f5502ef24b06c718818f160caf56ba94cb441d3834a0af44d797c9c",
@@ -3173,6 +3614,27 @@
       "source": ".roo/commands/aikido-show-tasks.md",
       "target": ".roo/commands/aikido-show-tasks.md",
       "sha256": "bc00de8ff65dcabeb13a5271e9e30ab2eb3fd82f090ec4f0c89dbf822031adb4",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".roo/commands/aikido-show-workflow.md",
+      "target": ".roo/commands/aikido-show-workflow.md",
+      "sha256": "98202ebcf8b0f0e2f538a9f670b3f9d727baa96769c05de0a278b193840726ab",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".roo/commands/aikido-stop-task.md",
+      "target": ".roo/commands/aikido-stop-task.md",
+      "sha256": "d553180d6379ff74291fa4f4953211edb4239536660c68abea6220bc5b15afda",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".roo/commands/aikido-sync-tasks.md",
+      "target": ".roo/commands/aikido-sync-tasks.md",
+      "sha256": "14a5ba0ba7562373f84d0e741f3460465c3703ba73906d4c0b686b73bc127e9c",
       "origin": "adapter",
       "policy": "three-way"
     },
@@ -3261,13 +3723,6 @@
       "policy": "three-way"
     },
     {
-      "source": ".roo/commands/create-workflow.md",
-      "target": ".roo/commands/create-workflow.md",
-      "sha256": "95e0e195c2102d826eedaf971a94cae5a64b4c22eb238e18711e1c516a2ad85c",
-      "origin": "adapter",
-      "policy": "three-way"
-    },
-    {
       "source": ".roo/commands/download-site.md",
       "target": ".roo/commands/download-site.md",
       "sha256": "3dd688644a0bccba2fed64bc2e686b13f00c17debbf7de3a938017302183e712",
@@ -3338,13 +3793,6 @@
       "policy": "three-way"
     },
     {
-      "source": ".roo/commands/show-workflow.md",
-      "target": ".roo/commands/show-workflow.md",
-      "sha256": "5df6bdf74fe5420422471532357ea0d8edd889e8b08ea4bd6880571658794953",
-      "origin": "adapter",
-      "policy": "three-way"
-    },
-    {
       "source": ".roo/commands/skill-manage.md",
       "target": ".roo/commands/skill-manage.md",
       "sha256": "c78242ab4a34d51c97a401cd04ad7e4a5b7203d6899fbb2b5288fdd229fd8e22",
@@ -3366,12 +3814,75 @@
       "policy": "three-way"
     },
     {
+      "source": ".roo/commands/workflow-edit.md",
+      "target": ".roo/commands/workflow-edit.md",
+      "sha256": "4e5bd1867954c15052e45211e6ee5b6a784e4d95f0a36c398a19cd92d9157c2f",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".roo/commands/workflow-new.md",
+      "target": ".roo/commands/workflow-new.md",
+      "sha256": "fe70b10c05c50b05f2548287f362b9f0fa60957062e71549ef1abae1b3a5dd1a",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".roo/commands/workflow-publish.md",
+      "target": ".roo/commands/workflow-publish.md",
+      "sha256": "58ab84c826a4fe98d15440bcba627cc818b0f3d2cbf510561a288cc880ccfeef",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".roo/commands/workflow-score.md",
+      "target": ".roo/commands/workflow-score.md",
+      "sha256": "c44ba118c9c665d2dee91ff3f08ed9d359368429e8bae952be6f47fd223ef1e7",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".roo/commands/workflow-test.md",
+      "target": ".roo/commands/workflow-test.md",
+      "sha256": "88ae122df724da976fcec391156c0dc0569bd66394d3650f7bb2701f0b338880",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
       "source": "adapters/zoo-code/rtk.md",
       "target": ".roo/rules/rtk.md",
       "sha256": "4759a86985bf3a8bd63dc456a1485a911b497259d4829d13f010f6b9f394aed3",
       "origin": "adapter",
       "policy": "three-way",
       "feature": "rtk"
+    },
+    {
+      "source": ".roo/skills/aikido-deps/SKILL.md",
+      "target": ".roo/skills/aikido-deps/SKILL.md",
+      "sha256": "e126051c96ef92261cada83cfcfd1cba15964dacd14d5b4c3fd291fa3fce985a",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".roo/skills/aikido-deps/deps-check.mjs",
+      "target": ".roo/skills/aikido-deps/deps-check.mjs",
+      "sha256": "68dffeecef0e9e5776202a61a457a9cb0501c82b17c6178fcbe03b49d90a813f",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".roo/skills/aikido-tasks/SKILL.md",
+      "target": ".roo/skills/aikido-tasks/SKILL.md",
+      "sha256": "426295cf19dfc5ed50f866bc3552c7dbccff0e9ed629cceb6a465a914b026f57",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".roo/skills/aikido-workflow/SKILL.md",
+      "target": ".roo/skills/aikido-workflow/SKILL.md",
+      "sha256": "fed94cff830fe5885e874298c27cbe6f8f23c298e5c7b661bf2757cbb5c85d8c",
+      "origin": "adapter",
+      "policy": "three-way"
     },
     {
       "source": ".roo/skills/analyse/SKILL.md",
@@ -3432,7 +3943,7 @@
     {
       "source": ".roo/skills/analyse/plans/technique/audit-complet/plan-expert.md",
       "target": ".roo/skills/analyse/plans/technique/audit-complet/plan-expert.md",
-      "sha256": "93acc2c24fa254676dbed11009560915fbf3e56c095e2fcab9d03f0ce11a2f87",
+      "sha256": "1d4ac6b5b99f64aa8fc475be93880924efeef0512af921c98249a82ffe930dd0",
       "origin": "adapter",
       "policy": "three-way"
     },
@@ -3768,7 +4279,7 @@
     {
       "source": ".roo/skills/orchestrator/policy.json",
       "target": ".roo/skills/orchestrator/policy.json",
-      "sha256": "c8ada4c7f77a0eb5088e5f0e0f83451fd33935c1fc14d040380da88f18a1ee43",
+      "sha256": "6c5faab51450eaf2ca8af64d93e105d516e393e6aaae31ea457c42579fbfef2f",
       "origin": "adapter",
       "policy": "three-way"
     },
@@ -3796,7 +4307,7 @@
     {
       "source": ".roo/skills/orchestrator/swarm.md",
       "target": ".roo/skills/orchestrator/swarm.md",
-      "sha256": "7e049ad401f5b9b1fb8a6054a401731d6f57754b29bf8abde7fefae929690a23",
+      "sha256": "04a53905032cf0779b2341eddcfe787bf12ea2b2ddac28aff6ac559fd481f43b",
       "origin": "adapter",
       "policy": "three-way"
     },
@@ -3845,7 +4356,7 @@
     {
       "source": ".roo/skills/search/SKILL.md",
       "target": ".roo/skills/search/SKILL.md",
-      "sha256": "170c0ecea645b25c301cd83f076426b644db1964d9c658319185f84b694cff5d",
+      "sha256": "62ec5b7cfc446e9f726c549d266abd3aa705d93ec203b02409c1f80cf21f50b6",
       "origin": "adapter",
       "policy": "three-way"
     },
@@ -4027,28 +4538,42 @@
     {
       "source": ".roo/skills/task-store/SKILL.md",
       "target": ".roo/skills/task-store/SKILL.md",
-      "sha256": "511395f5c38315bbf4f8fa9fa2a2cb4d2e694e9d1f3b9d8f6ed8a825750f0304",
+      "sha256": "5352eac1f31b6bfff7de1d45e337ec30236fa57516cc223d1236fda29c3a2179",
       "origin": "adapter",
       "policy": "three-way"
     },
     {
       "source": ".roo/skills/task-store/cli.mjs",
       "target": ".roo/skills/task-store/cli.mjs",
-      "sha256": "b568321a78e8886f71e5622a1d60a03937a7bd49b38099e22b11cb01bda478ff",
+      "sha256": "bb993da3d3e6cb40fbb8711c61e3f3ca52d4d6a3dace14afa3bb1a5f6dc81f93",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".roo/skills/task-store/hosted-cli.mjs",
+      "target": ".roo/skills/task-store/hosted-cli.mjs",
+      "sha256": "80700d6413644be98d38865f57d482d7a01f2d9227cb3004f0c30bbbf3d9588b",
       "origin": "adapter",
       "policy": "three-way"
     },
     {
       "source": ".roo/skills/task-store/index.d.ts",
       "target": ".roo/skills/task-store/index.d.ts",
-      "sha256": "9d75426ec62f46c99a4c3aebd9cc2cdf4292132a71cd57abc47f095a2525bc6b",
+      "sha256": "5ce668ffd7336ee076d38b987932857a648225258ead13ce94ce10684bd730b0",
       "origin": "adapter",
       "policy": "three-way"
     },
     {
       "source": ".roo/skills/task-store/index.mjs",
       "target": ".roo/skills/task-store/index.mjs",
-      "sha256": "d1ea7498fa18e0f35cf1402e2a0e5c21da1de71b1535095be4b5317ede4e0675",
+      "sha256": "0468baec28d9e85fe3c403cac51e284c808e50c17d1ddede438b6470166af02b",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".roo/skills/task-store/module-link.mjs",
+      "target": ".roo/skills/task-store/module-link.mjs",
+      "sha256": "6ffd910c8e57f0549ba6cd3614bbee09789a8ab011066415f18dfdc736b8820c",
       "origin": "adapter",
       "policy": "three-way"
     },
@@ -4062,14 +4587,28 @@
     {
       "source": ".roo/skills/task-store/task-store.md",
       "target": ".roo/skills/task-store/task-store.md",
-      "sha256": "d821ce913b6f83aad9c2c05135e8f8d9ec2b756302dde06207aafa8c84ba9df3",
+      "sha256": "e065ae64006132374aa39810287c064e19576134de65b3a97c8a3fac9ce3e3d8",
       "origin": "adapter",
       "policy": "three-way"
     },
     {
       "source": ".roo/skills/task-store/task.mjs",
       "target": ".roo/skills/task-store/task.mjs",
-      "sha256": "a336e6784dcd91d1588fe94f67fcc49a144a93f38b7d9e4a239abaca7a45066a",
+      "sha256": "7754911bf1b3e19ff8589a4bdba6ff713ea21d1a88031a43b57f3ad0c5c1c273",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".roo/skills/task-store/workflow-library.mjs",
+      "target": ".roo/skills/task-store/workflow-library.mjs",
+      "sha256": "76e59554caf12819d798d51550b5b804243b85512e26517c1be5f08fecf0d4e7",
+      "origin": "adapter",
+      "policy": "three-way"
+    },
+    {
+      "source": ".roo/skills/task-store/workflow.mjs",
+      "target": ".roo/skills/task-store/workflow.mjs",
+      "sha256": "feb73a6bc54f1cd579629b9f27a9ff7b45c5402216d4339d78794674824a8edf",
       "origin": "adapter",
       "policy": "three-way"
     },

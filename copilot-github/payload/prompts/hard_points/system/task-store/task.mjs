@@ -1,9 +1,10 @@
 #!/usr/bin/env node
-import { runTaskCLI } from './cli.mjs';
+import { runHostedTaskCLI } from './hosted-cli.mjs';
+import { compactTaskResult } from './cli.mjs';
 
 try {
-  const { exitCode, result } = runTaskCLI(process.argv.slice(2));
-  process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+  const { exitCode, result } = await runHostedTaskCLI(process.argv.slice(2));
+  process.stdout.write(`${JSON.stringify(compactTaskResult(process.argv.slice(2), result))}\n`);
   process.exitCode = exitCode;
 } catch (error) {
   process.stderr.write(`Task store: ${error.message}\n`);

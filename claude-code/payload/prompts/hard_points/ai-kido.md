@@ -37,6 +37,8 @@ Except for internal "agent‑aikido‑*" agents: before answering, use prompts/i
 16. **🤖 AGENTS.md Compliance**: Mandatory sync with AGENTS.md standard
 17. **🔄 Agent-Persona Bidirectionality**: 1:1 correspondence between AGENTS.md agents and AI-KIDO personas
 18. **⚙️ Commands**: Defined in [`prompts/hard_points/commands/`](commands/) — referenced only in [`AGENTS.md`](../../AGENTS.md), never in [`index.md`](../gen/index.md)
+19. **🪶 Code Economy**: Smallest complete change, shared-cause fixes, evidence-based reviews — [Code Economy](concepts/code-economy.md)
+20. **🎯 Agent Economy**: Failure is not absence, no blind retries, compact tools, targeted context, bounded delegation — [Agent Economy](concepts/agent-economy.md)
 
 ## AUTO-POPULATION RULES (summary)
 - **User Signal**: any reported error immediately creates a preventive rule.

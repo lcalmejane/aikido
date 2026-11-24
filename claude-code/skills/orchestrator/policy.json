@@ -3,7 +3,7 @@
   "activation": {
     "self": "agent-aikido-orchestrator",
     "lead_hosts": ["copilot", "copilot-sdk", "copilot-cli", "vscode-copilot"],
-    "native_hosts": ["claude-code", "kiro", "codex", "roo-code"]
+    "native_hosts": ["claude-code", "kiro", "codex", "roo-code", "tatami-core-agent", "tatami-agent"]
   },
   "limits": {
     "coordinator_output_tokens": 800,

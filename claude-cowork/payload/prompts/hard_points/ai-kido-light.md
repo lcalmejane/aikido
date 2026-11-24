@@ -21,6 +21,8 @@ AI‑KIDO is a **method**; its tools are a **meta-harness** whose agents, skills
    Follow [Swarm and reuse](system/orchestrator/swarm.md) if delegation is required;
    keep one worker unless explicitly requested, with verified tools and lifecycle.
 5. **Speed**: Minimal traversal time for the LLM.
+6. **Code Economy**: Smallest complete change, shared-cause fixes, evidence-based reviews — [Code Economy](concepts/code-economy.md).
+7. **Agent Economy**: Failure is not absence, no blind retries, compact tools, targeted context, bounded delegation — [Agent Economy](concepts/agent-economy.md).
 
 ## DIFFERENCES WITH STANDARD MODE
 | Aspect | Standard | Light |
