@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 | Version | Date | Highlights |
 |---------|------|-----------|
-| **1.5.5** | 2026-11-23 | Task Store workflow format `workflow/2` replaces `workflow/1` |
+| **1.5.5** | 2026-11-24 | Task Store `workflow/2` format with workflow simulation, scoring and publishing tools, task commands, `/aikido-review` and `aikido deps` |
 | **1.5.4** | 2026-11-08 | npm scope `@aikido-method/cli` and token-free GitHub Actions trusted publishing |
 | **1.5.3** | 2026-11-08 | Node.js tooling standard, multi-host AI-KIDO CLI and integrations, deterministic workflows, and task-store support |
 | **1.5.2** | 2026-10-31 | New `/learn` self-learning command and an always-read `learned.md` shipped empty with every installation |
@@ -34,11 +34,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-## [1.5.5] - 2026-11-23
+## [1.5.5] - 2026-11-24
+
+### Added
+
+- Workflow tooling for `workflow/2`: the `aikido-workflow` skill and the `/workflow-new`, `/workflow-edit`, `/workflow-test`, `/workflow-score` and `/workflow-publish` commands. The CLI simulates a workflow with stub agents (coverage, branches, loop bounds), scores its automated share and applies validated value proposals as diffs.
+- Task commands `/aikido-stop-task`, `/aikido-delete-task`, `/aikido-sync-tasks`, `/aikido-show-workflow`, `/aikido-create-workflow` and `/aikido-core-agent-config`, with the `aikido-tasks` skill, to run task cards with or without a Tatami Core Agent.
+- `/aikido-review`: review a change against evidence, reporting only reproducible findings, without editing code.
+- `aikido deps` and the `aikido-deps` skill (`/aikido-deps-check`): report outdated or nonexistent dependency versions in any project.
+- Code Economy and Agent Economy hard points; task CLI output is compact by default.
 
 ### Changed
 
+- Task cards show explicit progress, numbered acceptance criteria with their verification, and a human or automated review mode (Full Auto workflows).
+- Search: one Kimono snapshot per user prompt, shared with delegated agents and swarm workers.
 - Task Store workflows use the `workflow/2` format (schema, validation, `.workflow.md` render and parse, patch and diff), which replaces `workflow/1`. Workflows saved as `workflow/1` are not read: save them again in `workflow/2`. Released as a patch, since no production store holds `workflow/1` data.
+
+### Fixed
+
+- Task Store writer lock by process identity and token, purge check, interruption reason and task filter.
 
 ## [1.5.4] - 2026-11-08
 
